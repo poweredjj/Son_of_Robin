@@ -837,20 +837,11 @@ namespace SonOfRobin
             Vector2 goalPosition = this.sprite.position + movement;
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
 
-            bool isInWater = this.sprite.IsInWater;
-
             if (hasBeenMoved)
             {
                 this.ExpendEnergy(0.2f);
 
-                if (isInWater)
-                {
-                    if (this.sprite.particleEngine == null) this.sprite.particleEngine = new ParticleEngine(preset: ParticleEngine.Preset.WaterSplash, sprite: this.sprite);
-                    if (this.sprite.particleEngine.CurrentPreset != ParticleEngine.Preset.WaterSplash) this.sprite.particleEngine.ApplyPreset(ParticleEngine.Preset.WaterSplash);
-                    this.sprite.particleEngine.TurnOn(duration: 1);
-                }
-
-                if (isInWater && slowDownInWater)
+                if (this.sprite.IsInWater && slowDownInWater)
                 {
                     this.Stamina--;
 
@@ -868,11 +859,6 @@ namespace SonOfRobin
                     float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
                     new RumbleEvent(force: 0.04f + randomAddedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: 0.18f + randomAddedDelay);
                 }
-            }
-
-            if (!hasBeenMoved || !isInWater)
-            {
-                if (this.sprite.particleEngine != null && this.sprite.particleEngine.CurrentPreset == ParticleEngine.Preset.WaterSplash) this.sprite.particleEngine.TurnOff();
             }
 
             return hasBeenMoved;

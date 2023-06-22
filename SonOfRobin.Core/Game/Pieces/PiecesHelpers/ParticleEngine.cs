@@ -14,7 +14,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Empty, Fireplace, WaterSplash }
+        public enum Preset { Empty, Fireplace, WaterWalk }
 
         private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
         public Preset CurrentPreset { get; private set; }
@@ -50,7 +50,7 @@ namespace SonOfRobin
                     textureName = "circle_16x16";
                     break;
 
-                case Preset.WaterSplash:
+                case Preset.WaterWalk:
                     textureName = "circle_16x16";
                     break;
 
@@ -109,19 +109,19 @@ namespace SonOfRobin
 
                     break;
 
-                case Preset.WaterSplash:
+                case Preset.WaterWalk:
 
-                    this.particlesToEmitTarget = 1;
+                    this.particlesToEmitTarget = 3;
 
                     this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
-                        new ParticleEmitter(textureRegion, 150, TimeSpan.FromSeconds(2), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
+                        new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Scale = 0.3f,
+                                Scale = new Range<float>(0.1f, 0.4f),
                                 Color = HslColor.FromRgb(Color.Cyan),
-                                Speed = new Range<float>(5f, 20f),
+                                Speed = new Range<float>(6f, 25f),
                                 Quantity = 0,
                             },
 
@@ -131,9 +131,14 @@ namespace SonOfRobin
                                 {
                                     Interpolators =
                                     {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.35f),
+                                            EndValue = new Vector2(0.01f)
+                                        },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.75f,
+                                            StartValue = 0.42f,
                                             EndValue = 0f
                                         },
                                     }
@@ -214,8 +219,11 @@ namespace SonOfRobin
 
         public void Update()
         {
-            if (this.framesLeft > 0) this.framesLeft--;
-            if (this.framesLeft == 0) this.TurnOff();
+            if (this.framesLeft > 0)
+            {
+                this.framesLeft--;
+                if (this.framesLeft == 0) this.TurnOff();
+            }
 
             switch (this.CurrentPreset)
             {
@@ -223,8 +231,8 @@ namespace SonOfRobin
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
-                case Preset.WaterSplash:
-                    this.particleEffect.Position = this.sprite.position;
+                case Preset.WaterWalk:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 default:

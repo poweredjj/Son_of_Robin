@@ -855,7 +855,8 @@ namespace SonOfRobin
             }
 
             float realSpeed = walkSpeed;
-            if (slowDownInWater && this.sprite.IsInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
+            bool isInWater = this.sprite.IsInWater;
+            if (slowDownInWater && isInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
             if (slowDownOnRocks && this.sprite.IsOnRocks) realSpeed = Math.Max(1, walkSpeed * 0.65f);
 
             Vector2 positionDifference = goalPosition - this.sprite.position;
@@ -895,7 +896,16 @@ namespace SonOfRobin
             {
                 this.sprite.CharacterWalk();
                 this.soundPack.Play(action: this.sprite.WalkSoundAction);
-                if (this.sprite.IsInCameraRect) this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
+                if (this.sprite.IsInCameraRect)
+                {
+                    this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
+                    if (isInWater)
+                    {
+                        if (this.sprite.particleEngine == null) this.sprite.particleEngine = new ParticleEngine(preset: ParticleEngine.Preset.WaterWalk, sprite: this.sprite);
+                        if (this.sprite.particleEngine.CurrentPreset != ParticleEngine.Preset.WaterWalk) this.sprite.particleEngine.ApplyPreset(ParticleEngine.Preset.WaterWalk);
+                        this.sprite.particleEngine.TurnOn(duration: 1);
+                    }
+                }             
             }
             else this.sprite.CharacterStand();
 
