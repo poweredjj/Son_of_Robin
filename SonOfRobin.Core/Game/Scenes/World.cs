@@ -1373,8 +1373,8 @@ namespace SonOfRobin
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
 
             // drawing light and darkness
+            if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 2);
             SonOfRobinGame.SpriteBatch.End();
-
             this.DrawLightAndDarkness(this.lightSprites);
 
             // drawing field tips

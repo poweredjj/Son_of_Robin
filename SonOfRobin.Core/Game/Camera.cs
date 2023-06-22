@@ -38,6 +38,14 @@ namespace SonOfRobin
             float scale = 1f / (worldScale * this.CurrentZoom);
             scene.viewParams.ScaleX = scale;
             scene.viewParams.ScaleY = scale;
+
+            if (Preferences.debugShowOutsideCamera)
+            {
+                scene.viewParams.ScaleX *= 2;
+                scene.viewParams.ScaleY *= 2;
+                scene.viewParams.PosX += this.viewRect.Width / 2;
+                scene.viewParams.PosY += this.viewRect.Height / 2;
+            }
         }
 
         private bool disableFluidMotionMoveForOneFrame;
