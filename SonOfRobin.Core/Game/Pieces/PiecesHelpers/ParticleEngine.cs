@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
-using MonoGame.Extended.Particles.Modifiers.Containers;
 using MonoGame.Extended.Particles.Modifiers.Interpolators;
 using MonoGame.Extended.Particles.Profiles;
 using MonoGame.Extended.TextureAtlases;
@@ -14,8 +13,10 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Empty, Test1 }
+        public enum Preset { Empty, Fireplace }
+        private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
 
+        public bool IsOn { get; private set; }
         private Preset preset;
         private Sprite sprite;
         private Texture2D texture;
@@ -23,6 +24,7 @@ namespace SonOfRobin
 
         public ParticleEngine(Preset preset, Sprite sprite)
         {
+            this.IsOn = false;
             this.preset = preset;
             this.sprite = sprite;
 
@@ -30,7 +32,7 @@ namespace SonOfRobin
 
             switch (this.preset)
             {
-                case Preset.Test1:
+                case Preset.Fireplace:
                     textureName = "circle";
                     break;
 
@@ -39,27 +41,28 @@ namespace SonOfRobin
             }
 
             this.texture = TextureBank.GetTexture(textureName);
-            TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
-
             this.particleEffect = new ParticleEffect(autoTrigger: false);
-            this.particleEffect.Position = this.sprite.position;
+            if (presetsToTurnOn.Contains(this.preset)) this.TurnOn();
+        }
+
+        public void TurnOn()
+        {
+            if (this.IsOn) return;
+
+            TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
 
             switch (this.preset)
             {
-                case Preset.Test1:
+                case Preset.Fireplace:
                     this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
-                        new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5),
-
-                        Profile.BoxUniform(80,80))
+                        new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(2.0), Profile.Point())
                         {
                             Parameters = new ParticleReleaseParameters
 
                             {
-                                Speed = new Range<float>(0f, 50f),
-                                Quantity = 3,
-                                Rotation = new Range<float>(-1f, 1f),
-                                Scale = new Range<float>(0.5f, 1.2f)
+                                Speed = new Range<float>(12f, 60f),
+                                Quantity = 1,
                             },
 
                             Modifiers =
@@ -70,14 +73,22 @@ namespace SonOfRobin
                                     {
                                         new ColorInterpolator
                                         {
-                                            StartValue = new HslColor(0.33f, 0.5f, 0.5f),
-                                            EndValue = new HslColor(0.5f, 0.9f, 1.0f)
-                                        }
+                                            StartValue = Color.Yellow.ToHsl(),
+                                            EndValue = Color.Orange.ToHsl()
+                                        },
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.05f, 0.05f),
+                                            EndValue = new Vector2(0.8f, 0.8f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1f,
+                                            EndValue = 0f
+                                        },
                                     }
                                 },
-                                new RotationModifier {RotationRate = -2.1f},
-                                new RectangleContainerModifier {Width = 800, Height = 480},
-                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 30f},
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
                         }
                 };
@@ -87,6 +98,22 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
             }
+
+            this.IsOn = true;
+
+            this.Update();
+        }
+
+        public void TurnOff()
+        {
+            if (!this.IsOn) return;
+
+            foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
+            {
+                particleEmitter.Capacity = 0;
+            }
+
+            this.IsOn = false;
         }
 
         public void Dispose()
@@ -97,7 +124,17 @@ namespace SonOfRobin
 
         public void Update()
         {
-            this.particleEffect.Position = this.sprite.position;
+            switch (this.preset)
+            {
+                case Preset.Fireplace:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
+            }
+
+
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 

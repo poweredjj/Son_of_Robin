@@ -2828,7 +2828,7 @@ namespace SonOfRobin
 
                 case Name.ParticleEmitter:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, particlePreset: ParticleEngine.Preset.Test1, fireAffinity: 0f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, particlePreset: ParticleEngine.Preset.Fireplace, fireAffinity: 0f);
 
                         visualEffect.sprite.opacity = 0.0f;
 
