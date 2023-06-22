@@ -744,14 +744,14 @@ namespace SonOfRobin
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.GfxRect, this.GfxRect, Color.White * 0.35f);
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
-            if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge: calculateSubmerge, drawParticles: true);
+            if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge: calculateSubmerge);
             else
             {
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
                     if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate);
-                    this.DrawRoutine(calculateSubmerge: calculateSubmerge, drawParticles: !thereWillBeMoreEffects);
+                    this.DrawRoutine(calculateSubmerge: calculateSubmerge);
 
                     if (!thereWillBeMoreEffects)
                     {
@@ -760,6 +760,12 @@ namespace SonOfRobin
                         break;
                     }
                 }
+            }
+
+            if (this.particleEngine != null)
+            {
+                if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
+                this.particleEngine.Draw();
             }
 
             if (Preferences.debugShowRects)
@@ -776,7 +782,7 @@ namespace SonOfRobin
             if (Preferences.debugShowStatBars || this.boardPiece.ShowStatBars) this.boardPiece.DrawStatBar();
         }
 
-        public void DrawRoutine(bool calculateSubmerge, bool drawParticles, int offsetX = 0, int offsetY = 0)
+        public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
         {
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
@@ -801,12 +807,6 @@ namespace SonOfRobin
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
-
-            if (this.particleEngine != null && drawParticles)
-            {
-                this.particleEngine.Update();
-                this.particleEngine.Draw();
-            }
         }
 
         private void DrawFruits()
@@ -888,7 +888,7 @@ namespace SonOfRobin
 
                 Color originalColor = shadowSprite.color;
                 shadowSprite.color = color;
-                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY, drawParticles: false);
+                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
                 shadowSprite.color = originalColor;
             }
             else

@@ -1508,7 +1508,7 @@ namespace SonOfRobin
                     foreach (Sprite shadowSprite in blockingLightSpritesList)
                     {
                         // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
-                        if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y, drawParticles: false);
+                        if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y);
                     }
                     SonOfRobinGame.SpriteBatch.End();
 

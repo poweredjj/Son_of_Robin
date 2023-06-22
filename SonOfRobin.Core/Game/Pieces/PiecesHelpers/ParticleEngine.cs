@@ -41,48 +41,58 @@ namespace SonOfRobin
             this.texture = TextureBank.GetTexture(textureName);
             TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
 
-            this.particleEffect = new ParticleEffect(autoTrigger: false)
+            this.particleEffect = new ParticleEffect(autoTrigger: false);
+            this.particleEffect.Position = this.sprite.position;
+
+            switch (this.preset)
             {
-                Position = this.sprite.position,
-                Emitters = new List<ParticleEmitter>
-                  {
-                    new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5),
-                    Profile.BoxUniform(100,250))
+                case Preset.Test1:
+                    this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
-                        Parameters = new ParticleReleaseParameters
+                        new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5),
 
+                        Profile.BoxUniform(80,80))
                         {
-                            Speed = new Range<float>(0f, 50f),
-                            Quantity = 3,
-                            Rotation = new Range<float>(-1f, 1f),
-                            Scale = new Range<float>(1.0f, 2.5f)
-                        },
+                            Parameters = new ParticleReleaseParameters
 
-                        Modifiers =
-                        {
-                            new AgeModifier
                             {
-                                Interpolators =
-                                {
-                                    new ColorInterpolator
-                                    {
-                                        StartValue = new HslColor(0.33f, 0.5f, 0.5f),
-                                        EndValue = new HslColor(0.5f, 0.9f, 1.0f)
-                                    }
-                                }
+                                Speed = new Range<float>(0f, 50f),
+                                Quantity = 3,
+                                Rotation = new Range<float>(-1f, 1f),
+                                Scale = new Range<float>(0.5f, 1.2f)
                             },
-                            new RotationModifier {RotationRate = -2.1f},
-                            new RectangleContainerModifier {Width = 800, Height = 480},
-                            new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 30f},
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ColorInterpolator
+                                        {
+                                            StartValue = new HslColor(0.33f, 0.5f, 0.5f),
+                                            EndValue = new HslColor(0.5f, 0.9f, 1.0f)
+                                        }
+                                    }
+                                },
+                                new RotationModifier {RotationRate = -2.1f},
+                                new RectangleContainerModifier {Width = 800, Height = 480},
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 30f},
+                            }
                         }
-                    }
-                }
-            };
+                };
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
+            }
         }
 
         public void Dispose()
         {
             this.particleEffect.Dispose();
+            this.sprite.particleEngine = null;
         }
 
         public void Update()
