@@ -1034,8 +1034,11 @@ namespace SonOfRobin
             if (updateFog) this.world.map.dirtyFog = true;
         }
 
-        public int DrawSprites(Camera camera, List<Sprite> blockingLightSpritesList)
+        public int DrawSprites(List<Sprite> blockingLightSpritesList)
         {
+            // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
+            // in cases of sprites overlapping cell boundaries.
+
             if (Preferences.drawSunShadows)
             {
                 AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.world.islandClock.IslandDateTime, weather: this.world.weather);
@@ -1050,6 +1053,30 @@ namespace SonOfRobin
                         {
                             if (!shadowSprite.Visible) continue;
 
+                            Rectangle cameraRect = this.world.camera.viewRect;
+
+                            if (!shadowSprite.IsInCameraRect)
+                            {
+                                bool shadowLeftSide = sunLightData.sunPos.X < 0;
+                                bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
+
+                                if (shadowSprite.position.Y < cameraRect.Top &&
+                                    (shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))
+                                    continue;
+
+                                if (shadowSprite.position.Y > cameraRect.Bottom &&
+                                    (!shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Bottom - shadowSprite.position.Y)))
+                                    continue;
+
+                                if (shadowSprite.position.X > cameraRect.Right &&
+                                    (shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Right - shadowSprite.position.X)))
+                                    continue;
+
+                                if (shadowSprite.position.X < cameraRect.Left &&
+                                    (!shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Left - shadowSprite.position.X)))
+                                    continue;
+                            }
+
                             Vector2 sunPos = new(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
                             float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
 
@@ -1058,9 +1085,6 @@ namespace SonOfRobin
                     }
                 }
             }
-
-            // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
-            // in cases of sprites overlapping cell boundaries.
 
             var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
 

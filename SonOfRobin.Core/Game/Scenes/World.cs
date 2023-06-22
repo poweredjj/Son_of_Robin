@@ -1364,7 +1364,7 @@ namespace SonOfRobin
             this.Grid.DrawBackground(camera: this.camera);
 
             // drawing sprites
-            var noOfDisplayedSprites = this.Grid.DrawSprites(camera: this.camera, blockingLightSpritesList: this.blockingLightSpritesList);
+            var noOfDisplayedSprites = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);
 
             // updating debugText
             if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
@@ -1373,7 +1373,7 @@ namespace SonOfRobin
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
 
             // drawing light and darkness
-            if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 2);
+            if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 3);
             SonOfRobinGame.SpriteBatch.End();
             this.DrawLightAndDarkness(this.lightSprites);
 
