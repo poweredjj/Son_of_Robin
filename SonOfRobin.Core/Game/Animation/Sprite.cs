@@ -764,6 +764,8 @@ namespace SonOfRobin
 
             if (this.particleEngine != null)
             {
+                SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, reason unknown)
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
                 this.particleEngine.Draw();
             }
