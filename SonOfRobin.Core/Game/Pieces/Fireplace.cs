@@ -89,7 +89,7 @@ namespace SonOfRobin
                     this.AddToStateMachines();
                     this.sprite.AssignNewName(newAnimName: "on");
                     this.sprite.lightEngine.Activate();
-                    this.sprite.particleEngine.TurnOn();
+                    this.sprite.ParticleEngine.TurnOn();
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     this.soundPack.Play(PieceSoundPack.Action.IsOn);
@@ -101,7 +101,7 @@ namespace SonOfRobin
                     this.burnAllFuelEndFrame = 0;
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.sprite.lightEngine.Deactivate();
-                    this.sprite.particleEngine.TurnOff();
+                    this.sprite.ParticleEngine.TurnOff();
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
@@ -213,7 +213,6 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.isOn = (bool)pieceData["fireplace_isOn"];
-            if (this.isOn) this.sprite.particleEngine.TurnOn();
             this.currentCycleBurningFramesLeft = (int)(Int64)pieceData["fireplace_currentCycleBurningFramesLeft"];
             this.burnStartFrame = (int)(Int64)pieceData["fireplace_burnStartFrame"];
             this.burnAllFuelEndFrame = (int)(Int64)pieceData["fireplace_burnAllFuelEndFrame"];

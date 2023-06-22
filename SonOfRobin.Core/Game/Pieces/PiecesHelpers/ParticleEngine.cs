@@ -8,6 +8,7 @@ using MonoGame.Extended.Particles.Profiles;
 using MonoGame.Extended.TextureAtlases;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -18,22 +19,28 @@ namespace SonOfRobin
         private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
 
         private Preset preset;
-        private readonly int particlesQuantity;
+        private readonly int defaultParticlesQuantity;
+        private int currentParticlesQuantity;
         private Sprite sprite;
         private Texture2D texture;
         private ParticleEffect particleEffect;
+        public bool HasAnyParticles { get { return this.ActiveParticlesCount > 0; } }
+
+        public int ActiveParticlesCount
+        { get { return this.particleEffect.Emitters.Select(x => x.ActiveParticles).Sum(); } }
 
         public ParticleEngine(Preset preset, Sprite sprite)
         {
             this.preset = preset;
             this.sprite = sprite;
+            this.currentParticlesQuantity = 0;
 
             string textureName;
 
             switch (this.preset)
             {
                 case Preset.Fireplace:
-                    textureName = "circle";
+                    textureName = "circle_16x16";
                     break;
 
                 default:
@@ -49,7 +56,7 @@ namespace SonOfRobin
             {
                 case Preset.Fireplace:
 
-                    this.particlesQuantity = 1;
+                    this.defaultParticlesQuantity = 1;
 
                     this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
@@ -100,9 +107,11 @@ namespace SonOfRobin
 
         public void TurnOn(int particlesQuantity = 0)
         {
+            this.currentParticlesQuantity = particlesQuantity == 0 ? this.defaultParticlesQuantity : particlesQuantity;
+
             foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
             {
-                particleEmitter.Parameters.Quantity = particlesQuantity == 0 ? this.particlesQuantity : particlesQuantity;
+                particleEmitter.Parameters.Quantity = this.currentParticlesQuantity;
             }
 
             this.Update();
@@ -119,7 +128,39 @@ namespace SonOfRobin
         public void Dispose()
         {
             this.particleEffect.Dispose();
-            this.sprite.particleEngine = null;
+        }
+
+        public bool Equals(ParticleEngine particleEngine)
+        {
+            if (particleEngine == null) return false;
+
+            return
+                this.preset == particleEngine.preset &&
+                this.currentParticlesQuantity == particleEngine.currentParticlesQuantity;
+        }
+
+        public Dictionary<string, Object> Serialize()
+        {
+            Dictionary<string, Object> particleData = new Dictionary<string, object>
+            {
+                { "preset", this.preset },
+                { "currentParticlesQuantity", this.currentParticlesQuantity },
+            };
+
+            return particleData;
+        }
+
+        public static ParticleEngine Deserialize(Object particleData, Sprite sprite)
+        {
+            var particleDict = (Dictionary<string, Object>)particleData;
+
+            Preset preset = (Preset)(Int64)particleDict["preset"];
+            int currentParticlesQuantity = (int)(Int64)particleDict["currentParticlesQuantity"];
+
+            ParticleEngine particleEngine = new ParticleEngine(preset: preset, sprite: sprite);
+
+            if (currentParticlesQuantity > 0) particleEngine.TurnOn(currentParticlesQuantity);
+            return particleEngine;
         }
 
         public void Update()
