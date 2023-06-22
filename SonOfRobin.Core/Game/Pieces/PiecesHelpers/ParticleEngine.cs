@@ -14,13 +14,13 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Empty, Fireplace }
+        public enum Preset { Empty, Fireplace, WaterSplash }
 
         private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
-
-        private Preset preset;
-        private readonly int defaultParticlesQuantity;
-        private int currentParticlesQuantity;
+        public Preset CurrentPreset { get; private set; }
+        private int particlesToEmitTarget;
+        private int particlesToEmitCurrent;
+        private int framesLeft;
         private Sprite sprite;
         private Texture2D texture;
         private ParticleEffect particleEffect;
@@ -31,20 +31,31 @@ namespace SonOfRobin
 
         public ParticleEngine(Preset preset, Sprite sprite)
         {
-            this.preset = preset;
             this.sprite = sprite;
-            this.currentParticlesQuantity = 0;
+            this.particlesToEmitCurrent = 0;
+            this.framesLeft = 0;
+
+            this.ApplyPreset(preset);
+        }
+
+        public void ApplyPreset(Preset preset)
+        {
+            this.CurrentPreset = preset;
 
             string textureName;
 
-            switch (this.preset)
+            switch (this.CurrentPreset)
             {
                 case Preset.Fireplace:
                     textureName = "circle_16x16";
                     break;
 
+                case Preset.WaterSplash:
+                    textureName = "circle_16x16";
+                    break;
+
                 default:
-                    throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
+                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
             }
 
             this.texture = TextureBank.GetTexture(textureName);
@@ -52,11 +63,11 @@ namespace SonOfRobin
 
             TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
 
-            switch (this.preset)
+            switch (this.CurrentPreset)
             {
                 case Preset.Fireplace:
 
-                    this.defaultParticlesQuantity = 1;
+                    this.particlesToEmitTarget = 1;
 
                     this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
@@ -98,20 +109,57 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.WaterSplash:
+
+                    this.particlesToEmitTarget = 1;
+
+                    this.particleEffect.Emitters = new List<ParticleEmitter>
+                    {
+                        new ParticleEmitter(textureRegion, 150, TimeSpan.FromSeconds(2), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = 0.3f,
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.75f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        }
+                    };
+
+                    break;
+
                 default:
-                    throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
+                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
             }
 
-            if (presetsToTurnOn.Contains(this.preset)) this.TurnOn();
+            if (presetsToTurnOn.Contains(this.CurrentPreset)) this.TurnOn();
         }
 
-        public void TurnOn(int particlesQuantity = 0)
+        public void TurnOn(int particlesToEmit = 0, int duration = 0)
         {
-            this.currentParticlesQuantity = particlesQuantity == 0 ? this.defaultParticlesQuantity : particlesQuantity;
+            if (duration > 0) this.framesLeft = duration + 1;
+            this.particlesToEmitCurrent = particlesToEmit == 0 ? this.particlesToEmitTarget : particlesToEmit;
 
             foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
             {
-                particleEmitter.Parameters.Quantity = this.currentParticlesQuantity;
+                particleEmitter.Parameters.Quantity = this.particlesToEmitCurrent;
             }
 
             this.Update();
@@ -135,16 +183,16 @@ namespace SonOfRobin
             if (particleEngine == null) return false;
 
             return
-                this.preset == particleEngine.preset &&
-                this.currentParticlesQuantity == particleEngine.currentParticlesQuantity;
+                this.CurrentPreset == particleEngine.CurrentPreset &&
+                this.particlesToEmitCurrent == particleEngine.particlesToEmitCurrent;
         }
 
         public Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> particleData = new Dictionary<string, object>
             {
-                { "preset", this.preset },
-                { "currentParticlesQuantity", this.currentParticlesQuantity },
+                { "preset", this.CurrentPreset },
+                { "particlesToEmitCurrent", this.particlesToEmitCurrent },
             };
 
             return particleData;
@@ -152,27 +200,35 @@ namespace SonOfRobin
 
         public static ParticleEngine Deserialize(Object particleData, Sprite sprite)
         {
+            if (sprite.particleEngine != null) sprite.particleEngine.Dispose();
+
             var particleDict = (Dictionary<string, Object>)particleData;
 
             Preset preset = (Preset)(Int64)particleDict["preset"];
-            int currentParticlesQuantity = (int)(Int64)particleDict["currentParticlesQuantity"];
+            int particlesToEmitCurrent = (int)(Int64)particleDict["particlesToEmitCurrent"];
 
             ParticleEngine particleEngine = new ParticleEngine(preset: preset, sprite: sprite);
-
-            if (currentParticlesQuantity > 0) particleEngine.TurnOn(currentParticlesQuantity);
+            if (particlesToEmitCurrent > 0) particleEngine.TurnOn(particlesToEmitCurrent);
             return particleEngine;
         }
 
         public void Update()
         {
-            switch (this.preset)
+            if (this.framesLeft > 0) this.framesLeft--;
+            if (this.framesLeft == 0) this.TurnOff();
+
+            switch (this.CurrentPreset)
             {
                 case Preset.Fireplace:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
+                case Preset.WaterSplash:
+                    this.particleEffect.Position = this.sprite.position;
+                    break;
+
                 default:
-                    throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
+                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
             }
 
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);

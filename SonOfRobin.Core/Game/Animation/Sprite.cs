@@ -33,7 +33,7 @@ namespace SonOfRobin
         private bool visible;
 
         public LightEngine lightEngine;
-        public ParticleEngine ParticleEngine { get; private set; }
+        public ParticleEngine particleEngine;
         public AnimData.PkgName AnimPackage { get; private set; }
         public byte AnimSize { get; private set; }
         public string AnimName { get; private set; }
@@ -85,7 +85,7 @@ namespace SonOfRobin
             this.minDistance = minDistance;
             this.maxDistance = maxDistance;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
-            this.ParticleEngine = particlePreset == ParticleEngine.Preset.Empty ? null : new ParticleEngine(preset: particlePreset, sprite: this);
+            this.particleEngine = particlePreset == ParticleEngine.Preset.Empty ? null : new ParticleEngine(preset: particlePreset, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
@@ -243,7 +243,7 @@ namespace SonOfRobin
             if (this.allowedTerrain.HasBeenChanged) spriteDataDict["allowedTerrain"] = this.allowedTerrain.Serialize();
             if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;
             if (this.lightEngine != null && !this.lightEngine.Equals(pieceInfo.lightEngine)) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
-            if (this.ParticleEngine != null && !this.ParticleEngine.Equals(pieceInfo.particleEngine)) spriteDataDict["ParticleEngine"] = this.ParticleEngine.Serialize();
+            if (this.particleEngine != null && !this.particleEngine.Equals(pieceInfo.particleEngine)) spriteDataDict["particleEngine"] = this.particleEngine.Serialize();
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
             if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
             if (this.AnimName != pieceInfo.animName) spriteDataDict["animName"] = this.AnimName;
@@ -266,7 +266,7 @@ namespace SonOfRobin
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
-            if (spriteDict.ContainsKey("ParticleEngine")) this.ParticleEngine = ParticleEngine.Deserialize(particleData: spriteDict["ParticleEngine"], sprite: this);
+            if (spriteDict.ContainsKey("ParticleEngine")) this.particleEngine = ParticleEngine.Deserialize(particleData: spriteDict["particleEngine"], sprite: this);
             if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
             if (spriteDict.ContainsKey("color"))
             {
@@ -464,7 +464,7 @@ namespace SonOfRobin
 
         public void Destroy()
         {
-            this.ParticleEngine?.Dispose();
+            this.particleEngine?.Dispose();
         }
 
         private List<Cell.Group> GetGridGroups()
@@ -764,12 +764,12 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.ParticleEngine != null && this.ParticleEngine.HasAnyParticles)
+            if (this.particleEngine != null && this.particleEngine.HasAnyParticles)
             {
                 SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, reason unknown)
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
-                if (Scene.UpdateStack.Contains(this.world)) this.ParticleEngine.Update();
-                this.ParticleEngine.Draw();
+                if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
+                this.particleEngine.Draw();
             }
 
             if (Preferences.debugShowRects)
