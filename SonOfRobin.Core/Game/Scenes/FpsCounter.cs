@@ -122,7 +122,7 @@ namespace SonOfRobin
             else base.Remove();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             this.counterValue = (int)SonOfRobinGame.fps.FPS;
             if (Preferences.FpsCounterShowGraph) this.fpsHistory.AddRecord(this.counterValue);

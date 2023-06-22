@@ -88,7 +88,7 @@ namespace SonOfRobin
             return new Transition(transManager: this.transManager, outTrans: !inTrans, baseParamName: "PosX", targetVal: this.viewParams.PosX + this.viewParams.Width, duration: 12, endRemoveScene: !inTrans);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             this.UpdateView();
         }

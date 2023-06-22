@@ -161,7 +161,7 @@ namespace SonOfRobin
         {
             if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
 
-            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
             if (this.useFluidMotionForZoom)
             {

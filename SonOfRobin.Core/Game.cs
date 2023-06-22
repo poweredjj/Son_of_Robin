@@ -65,6 +65,7 @@ namespace SonOfRobin
         public static int CurrentDraw { get; private set; }
         public static float LastUpdateDelay { get; private set; }
         public static float LastDrawDelay { get; private set; }
+        public static GameTime CurrentGameTime { get; private set; }
 
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
@@ -254,10 +255,12 @@ namespace SonOfRobin
 
         protected override void Update(GameTime gameTime)
         {
+            CurrentGameTime = gameTime;
+
             CurrentUpdateAdvance();
             LastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
 
-            Scene.AllScenesInStackUpdate(gameTime: gameTime);
+            Scene.AllScenesInStackUpdate();
 
             base.Update(gameTime);
             fps.Update(gameTime);
@@ -274,6 +277,8 @@ namespace SonOfRobin
 
         protected override void Draw(GameTime gameTime)
         {
+            CurrentGameTime = gameTime;
+
             CurrentDraw++;
 
             LastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;

@@ -910,7 +910,7 @@ namespace SonOfRobin
             // width and height are set once in constructor
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.WorldCreationInProgress)
             {
@@ -1508,7 +1508,7 @@ namespace SonOfRobin
                     foreach (Sprite shadowSprite in blockingLightSpritesList)
                     {
                         // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
-                        if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y);
+                        if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y, drawParticles: false);
                     }
                     SonOfRobinGame.SpriteBatch.End();
 

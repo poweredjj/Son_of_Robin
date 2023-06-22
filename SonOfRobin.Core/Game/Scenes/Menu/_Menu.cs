@@ -459,7 +459,7 @@ namespace SonOfRobin
             this.creationComplete = true;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             this.EndCreation();
 

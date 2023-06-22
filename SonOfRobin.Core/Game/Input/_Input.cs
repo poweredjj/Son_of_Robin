@@ -26,7 +26,7 @@ namespace SonOfRobin
             }
         }
 
-        public static void UpdateInput(GameTime gameTime)
+        public static void UpdateInput()
         {
             bool savedGlobalInput = globalInputActive;
             bool savedLocalInput = localInputActive;
@@ -36,7 +36,7 @@ namespace SonOfRobin
             Mouse.GetState();
             Keyboard.GetState();
             GamePad.GetPreviousState(PlayerIndex.One);
-            TouchInput.GetState(gameTime: gameTime);
+            TouchInput.GetState();
             RefreshControlType();
             RumbleManager.Update();
             SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;

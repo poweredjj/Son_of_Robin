@@ -58,7 +58,7 @@ namespace SonOfRobin
             this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             int currentFrame = SonOfRobinGame.CurrentUpdate;
             DeleteOldMessages(currentFrame);

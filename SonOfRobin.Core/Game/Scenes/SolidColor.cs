@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.clearScreen = clearScreen;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         { }
 
         public override void Draw()

@@ -195,7 +195,7 @@ namespace SonOfRobin
             Menu.RebuildAllMenus();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {

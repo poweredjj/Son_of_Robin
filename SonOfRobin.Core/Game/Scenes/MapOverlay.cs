@@ -81,7 +81,7 @@ namespace SonOfRobin
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             this.map.blocksDrawsBelow = this.map.Mode == Map.MapMode.Full && this.viewParams.ScaleX == 1;
         }

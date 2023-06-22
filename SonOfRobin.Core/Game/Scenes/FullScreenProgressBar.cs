@@ -116,7 +116,7 @@ namespace SonOfRobin
             base.Remove();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (!this.isActive) return;
         }
@@ -205,11 +205,11 @@ namespace SonOfRobin
             Helpers.DrawTextureInsideRect(texture: this.loadingWheel, rectangle: wheelRect, color: Color.White * 0.8f, rotation: this.loadingWheelRotation, drawTestRect: false);
             this.loadingWheelRotation += 0.01f;
 
-             //Helpers.DrawRectangleOutline(rect: progressRect, color: Color.Green, borderWidth: 1); // for testing
-             //Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
-             //Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
-             //Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
-             //Helpers.DrawRectangleOutline(rect: wheelRect, color: Color.Lime, borderWidth: 1); // for testing
+            //Helpers.DrawRectangleOutline(rect: progressRect, color: Color.Green, borderWidth: 1); // for testing
+            //Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
+            //Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
+            //Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
+            //Helpers.DrawRectangleOutline(rect: wheelRect, color: Color.Lime, borderWidth: 1); // for testing
 
             SonOfRobinGame.SpriteBatch.End();
         }

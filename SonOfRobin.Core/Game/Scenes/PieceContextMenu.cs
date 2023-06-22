@@ -169,7 +169,7 @@ namespace SonOfRobin
             base.Remove();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             this.UpdateViewSizes();
             this.ProcessInput();

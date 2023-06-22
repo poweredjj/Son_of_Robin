@@ -35,7 +35,7 @@ namespace SonOfRobin
             if (!this.grabButtons && !this.grabKeys) throw new ArgumentException("No input source is selected.");
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             // virt button is needed for exiting in touch mode (when no other input is available)
 

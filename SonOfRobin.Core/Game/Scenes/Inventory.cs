@@ -363,7 +363,7 @@ namespace SonOfRobin
                     extInfoTextList.Add($"|  |");
                     extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
                 }
-                else extInfoTextList.Add($"| { Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
+                else extInfoTextList.Add($"| {Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}");
             }
 
             if (pieceInfo.toolRange > 0)
@@ -374,7 +374,7 @@ namespace SonOfRobin
 
             if (selectedPiece.stackSize > 1 && !slot.locked)
             {
-                extInfoTextList.Add($"| { selectedPiece.stackSize }");
+                extInfoTextList.Add($"| {selectedPiece.stackSize}");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
             }
 
@@ -465,7 +465,7 @@ namespace SonOfRobin
             this.UpdateViewParams();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.IgnoreUpdateAndDraw) return;
 

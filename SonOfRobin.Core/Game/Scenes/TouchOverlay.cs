@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace SonOfRobin
+﻿namespace SonOfRobin
 
 {
     public class TouchOverlay : Scene
@@ -14,7 +12,7 @@ namespace SonOfRobin
             VirtButton.RemoveAll();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         { }
 
         public override void Draw()

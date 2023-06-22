@@ -247,7 +247,7 @@ namespace SonOfRobin
             return canBeTurnedOn;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.Mode == MapMode.Off) return;
 

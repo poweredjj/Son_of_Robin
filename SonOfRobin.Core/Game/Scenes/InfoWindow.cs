@@ -320,7 +320,7 @@ namespace SonOfRobin
             this.isActive = false;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (!this.isActive) return;
 

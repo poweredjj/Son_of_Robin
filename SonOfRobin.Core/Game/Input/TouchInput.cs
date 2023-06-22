@@ -215,7 +215,7 @@ namespace SonOfRobin
         public static int FramesSinceLayoutChanged
         { get { return SonOfRobinGame.CurrentUpdate - lastFrameLayoutChanged; } }
 
-        public static void GetState(GameTime gameTime)
+        public static void GetState()
         {
             lastFrameTouchPanelState = touchPanelState;
             touchPanelState = (SonOfRobinGame.platform == Platform.Desktop || SonOfRobinGame.fakeMobileMode) && SonOfRobinGame.os != OS.Windows ?
@@ -228,7 +228,7 @@ namespace SonOfRobin
             if (!Preferences.EnableTouchButtons) return;
             Refresh();
 
-            dualStick.Update(gameTime);
+            dualStick.Update(SonOfRobinGame.CurrentGameTime);
 
             leftStick = dualStick.LeftStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
             rightStick = dualStick.RightStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;

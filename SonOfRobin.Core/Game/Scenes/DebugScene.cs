@@ -28,7 +28,7 @@ namespace SonOfRobin
             return new Transition(transManager: this.transManager, outTrans: !inTrans, baseParamName: "PosX", targetVal: this.viewParams.PosX - 700, duration: 12, endRemoveScene: !inTrans);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             ProcessDebugInput();
 
@@ -110,7 +110,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.HumanSkeleton, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))

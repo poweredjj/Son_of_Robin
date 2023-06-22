@@ -22,7 +22,6 @@ namespace SonOfRobin
             Draw
         }
 
-        public static GameTime CurrentGameTime { get; private set; }
         public static List<Scene> sceneStack = new() { };
         public static List<Scene> waitingScenes = new() { };
         private static bool adaptScenesToNewSize = false;
@@ -396,7 +395,7 @@ namespace SonOfRobin
             sceneStack.Insert(masterSceneIndex + 1, this);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void RenderToTarget()
@@ -417,10 +416,8 @@ namespace SonOfRobin
             }
         }
 
-        public static void AllScenesInStackUpdate(GameTime gameTime)
+        public static void AllScenesInStackUpdate()
         {
-            CurrentGameTime = gameTime;
-
             startUpdateTime = DateTime.Now;
             ProcessingMode = ProcessingModes.Update;
 
@@ -431,7 +428,7 @@ namespace SonOfRobin
             Scheduler.ProcessQueue();
 
             UpdateInputActiveTipsTouch();
-            Input.UpdateInput(gameTime: gameTime);
+            Input.UpdateInput();
 
             currentlyProcessedScene = null;
 
@@ -439,7 +436,7 @@ namespace SonOfRobin
             {
                 currentlyProcessedScene = scene;
                 Input.InputActive = scene.inputActive && SonOfRobinGame.Game.IsActive;
-                scene.Update(gameTime: gameTime);
+                scene.Update();
             }
 
             UpdateAllTransitions();

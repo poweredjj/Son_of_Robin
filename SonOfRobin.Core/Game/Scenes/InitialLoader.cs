@@ -71,7 +71,7 @@ namespace SonOfRobin
             GridTemplate.DeleteObsolete();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             bool finish = false;
 
@@ -197,7 +197,7 @@ namespace SonOfRobin
 
                         while (true)
                         {
-                            demoWorld.Update(gameTime: gameTime);
+                            demoWorld.Update();
 
                             if (!demoWorld.WorldCreationInProgress && !demoWorld.PopulatingInProgress) break;
                             else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock

@@ -33,6 +33,7 @@ namespace SonOfRobin
         private bool visible;
 
         public LightEngine lightEngine;
+        public ParticleEngine particleEngine;
         public AnimData.PkgName AnimPackage { get; private set; }
         public byte AnimSize { get; private set; }
         public string AnimName { get; private set; }
@@ -58,7 +59,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, ParticleEngine.Preset particlePreset = ParticleEngine.Preset.Empty, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -84,6 +85,7 @@ namespace SonOfRobin
             this.minDistance = minDistance;
             this.maxDistance = maxDistance;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
+            this.particleEngine = particlePreset == ParticleEngine.Preset.Empty ? null : new ParticleEngine(preset: particlePreset, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
@@ -458,6 +460,11 @@ namespace SonOfRobin
             if (pieceType == typeof(Animal)) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
         }
 
+        public void Destroy()
+        {
+            this.particleEngine?.Dispose();
+        }
+
         private List<Cell.Group> GetGridGroups()
         {
             var groupNames = new List<Cell.Group> { Cell.Group.All };
@@ -737,14 +744,14 @@ namespace SonOfRobin
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.GfxRect, this.GfxRect, Color.White * 0.35f);
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
-            if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
+            if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge: calculateSubmerge, drawParticles: true);
             else
             {
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
                     if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate);
-                    this.DrawRoutine(calculateSubmerge);
+                    this.DrawRoutine(calculateSubmerge: calculateSubmerge, drawParticles: !thereWillBeMoreEffects);
 
                     if (!thereWillBeMoreEffects)
                     {
@@ -769,7 +776,7 @@ namespace SonOfRobin
             if (Preferences.debugShowStatBars || this.boardPiece.ShowStatBars) this.boardPiece.DrawStatBar();
         }
 
-        public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
+        public void DrawRoutine(bool calculateSubmerge, bool drawParticles, int offsetX = 0, int offsetY = 0)
         {
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
@@ -794,6 +801,12 @@ namespace SonOfRobin
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
+
+            if (this.particleEngine != null && drawParticles)
+            {
+                this.particleEngine.Update();
+                this.particleEngine.Draw();
+            }
         }
 
         private void DrawFruits()
@@ -875,7 +888,7 @@ namespace SonOfRobin
 
                 Color originalColor = shadowSprite.color;
                 shadowSprite.color = color;
-                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
+                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY, drawParticles: false);
                 shadowSprite.color = originalColor;
             }
             else

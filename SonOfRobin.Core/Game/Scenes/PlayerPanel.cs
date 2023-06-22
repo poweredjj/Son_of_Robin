@@ -89,7 +89,7 @@ namespace SonOfRobin
             this.AdaptToNewSize();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.ShouldBeHidden) return;
         }

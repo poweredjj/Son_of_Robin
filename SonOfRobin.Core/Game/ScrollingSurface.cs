@@ -147,7 +147,7 @@ namespace SonOfRobin
 
         public void Update()
         {
-            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public void Draw(float opacityOverride = -1f)

@@ -66,7 +66,7 @@ namespace SonOfRobin
             topTips.tipCollection[tipName].highlighter.SetOnForNextRead();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             if (this.currentScene == null || Input.currentControlType == Input.ControlType.Touch) return;
 
