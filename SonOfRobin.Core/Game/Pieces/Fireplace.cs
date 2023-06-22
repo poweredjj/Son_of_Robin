@@ -213,6 +213,7 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.isOn = (bool)pieceData["fireplace_isOn"];
+            if (this.isOn) this.sprite.particleEngine.TurnOn();
             this.currentCycleBurningFramesLeft = (int)(Int64)pieceData["fireplace_currentCycleBurningFramesLeft"];
             this.burnStartFrame = (int)(Int64)pieceData["fireplace_burnStartFrame"];
             this.burnAllFuelEndFrame = (int)(Int64)pieceData["fireplace_burnAllFuelEndFrame"];

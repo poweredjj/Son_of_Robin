@@ -14,17 +14,17 @@ namespace SonOfRobin
     public class ParticleEngine
     {
         public enum Preset { Empty, Fireplace }
+
         private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
 
-        public bool IsOn { get; private set; }
         private Preset preset;
+        private readonly int particlesQuantity;
         private Sprite sprite;
         private Texture2D texture;
         private ParticleEffect particleEffect;
 
         public ParticleEngine(Preset preset, Sprite sprite)
         {
-            this.IsOn = false;
             this.preset = preset;
             this.sprite = sprite;
 
@@ -42,27 +42,23 @@ namespace SonOfRobin
 
             this.texture = TextureBank.GetTexture(textureName);
             this.particleEffect = new ParticleEffect(autoTrigger: false);
-            if (presetsToTurnOn.Contains(this.preset)) this.TurnOn();
-        }
-
-        public void TurnOn()
-        {
-            if (this.IsOn) return;
 
             TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
 
             switch (this.preset)
             {
                 case Preset.Fireplace:
+
+                    this.particlesQuantity = 1;
+
                     this.particleEffect.Emitters = new List<ParticleEmitter>
                     {
-                        new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(2.0), Profile.Point())
+                        new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                         {
                             Parameters = new ParticleReleaseParameters
-
                             {
-                                Speed = new Range<float>(12f, 60f),
-                                Quantity = 1,
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
                             },
 
                             Modifiers =
@@ -73,17 +69,17 @@ namespace SonOfRobin
                                     {
                                         new ColorInterpolator
                                         {
-                                            StartValue = Color.Yellow.ToHsl(),
-                                            EndValue = Color.Orange.ToHsl()
+                                            StartValue = HslColor.FromRgb(Color.Yellow),
+                                            EndValue = HslColor.FromRgb(Color.Yellow)
                                         },
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.05f, 0.05f),
-                                            EndValue = new Vector2(0.8f, 0.8f)
+                                            StartValue = new Vector2(0.02f),
+                                            EndValue = new Vector2(0.5f)
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 1f,
+                                            StartValue = 0.8f,
                                             EndValue = 0f
                                         },
                                     }
@@ -91,7 +87,7 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
                         }
-                };
+                    };
 
                     break;
 
@@ -99,21 +95,25 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
             }
 
-            this.IsOn = true;
+            if (presetsToTurnOn.Contains(this.preset)) this.TurnOn();
+        }
+
+        public void TurnOn(int particlesQuantity = 0)
+        {
+            foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
+            {
+                particleEmitter.Parameters.Quantity = particlesQuantity == 0 ? this.particlesQuantity : particlesQuantity;
+            }
 
             this.Update();
         }
 
         public void TurnOff()
         {
-            if (!this.IsOn) return;
-
             foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
             {
-                particleEmitter.Capacity = 0;
+                particleEmitter.Parameters.Quantity = 0;
             }
-
-            this.IsOn = false;
         }
 
         public void Dispose()
@@ -133,7 +133,6 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported preset - '{this.preset}'.");
             }
-
 
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
