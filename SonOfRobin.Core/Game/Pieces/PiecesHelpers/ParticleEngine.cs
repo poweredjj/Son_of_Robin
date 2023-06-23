@@ -162,13 +162,13 @@ namespace SonOfRobin
                     float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
                     float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
 
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
+                    particleEmitter = new ParticleEmitter(textureRegion, 700, TimeSpan.FromSeconds(1.35f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
                     {
                         Parameters = new ParticleReleaseParameters
                         {
-                            Scale = new Range<float>(0.5f, 2f),
+                            Scale = new Range<float>(1f, 2.6f),
                             Color = HslColor.FromRgb(Color.Cyan),
-                            Speed = new Range<float>(6f, 25f),
+                            Speed = new Range<float>(15f, 50f),
                             Quantity = 0,
                         },
 
@@ -180,8 +180,13 @@ namespace SonOfRobin
                                     {
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.6f,
+                                            StartValue = 0.7f,
                                             EndValue = 0f
+                                        },
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.01f),
+                                            EndValue = new Vector2(2.6f)
                                         },
                                     }
                                 },
@@ -195,12 +200,6 @@ namespace SonOfRobin
                                 //    MaxSpeed = 1f,
                                 //    Position = new Vector2(0,-150)
                                 //},
-                                //new VortexModifier()
-                                //{
-                                //    Mass = 10f,
-                                //    MaxSpeed = 1f,
-                                //    Position = new Vector2(-150,0)
-                                //}
                             }
                     };
 
