@@ -270,7 +270,7 @@ namespace SonOfRobin
             SeaWave,
 
             MeatRawPrime,
-            ParticleEmitter,
+            ParticleEmitter, // TODO make useful
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2831,6 +2831,8 @@ namespace SonOfRobin
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f);
 
                         visualEffect.sprite.opacity = 0.0f;
+
+                        // TODO add state machine logic, that removes this emitter when it ends
 
                         return visualEffect;
                     }

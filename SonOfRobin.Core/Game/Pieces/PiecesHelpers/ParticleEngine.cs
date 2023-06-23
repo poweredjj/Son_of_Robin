@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, Cooking, Brewing, WaterWalk, WaterWave }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave }
 
         public class PresetData
         {
@@ -68,6 +68,7 @@ namespace SonOfRobin
         {
             var textureNameDict = new Dictionary<Preset, string> {
                 {Preset.Fireplace, "circle_16x16_sharp" },
+                {Preset.BurnFlame, "circle_16x16_soft" },
                 {Preset.Cooking, "circle_16x16_sharp" },
                 {Preset.Brewing, "circle_16x16_sharp" },
                 {Preset.WaterWalk, "circle_16x16_sharp" },
@@ -113,6 +114,43 @@ namespace SonOfRobin
                                     }
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                    };
+
+                    break;
+
+                case Preset.BurnFlame:
+                    defaultParticlesToEmit = 2;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.0), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(Color.Yellow),
+                            Speed = new Range<float>(5f, 20f),
+                            Quantity = 0,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.02f),
+                                            EndValue = new Vector2(1.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.8f,
+                                            EndValue = 0f
+                                        },
+                                        new HueInterpolator { StartValue = 60f, EndValue = 20f }
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 150f},
                             }
                     };
 
@@ -363,6 +401,10 @@ namespace SonOfRobin
             {
                 case Preset.Fireplace:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.BurnFlame:
+                    this.particleEffect.Position = this.sprite.position;
                     break;
 
                 case Preset.Cooking:

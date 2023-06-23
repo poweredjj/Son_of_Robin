@@ -132,8 +132,11 @@ namespace SonOfRobin
 
                 float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
                 this.burningPiece.HitPoints -= hitPointsToTake;
-
-                if (this.burningPiece.sprite.blocksMovement) this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+                if (this.burningPiece.sprite.blocksMovement)
+                {
+                    ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 15);
+                    this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+                }
 
                 if (this.burningPiece.IsAnimalOrPlayer && !this.burningPiece.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
                     this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
