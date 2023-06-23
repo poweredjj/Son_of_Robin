@@ -51,7 +51,6 @@ namespace SonOfRobin
             public readonly Color color;
             public readonly float opacity;
             public readonly LightEngine lightEngine;
-            public readonly ParticleEngine particleEngine;
             public readonly string animName;
             public readonly byte animSize;
             public readonly PieceTemplate.Name fruitName;
@@ -91,7 +90,6 @@ namespace SonOfRobin
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
-                this.particleEngine = piece.sprite.particleEngine;
                 this.animName = piece.sprite.AnimName;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).Eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;

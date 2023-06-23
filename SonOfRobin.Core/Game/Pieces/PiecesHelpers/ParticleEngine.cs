@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
@@ -14,72 +13,82 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
+        public class PresetData
+        {
+            public readonly ParticleEmitter particleEmitter;
+            public readonly int particlesToEmitDefault;
+            public int framesLeft;
+            public bool IsActive { get; private set; }
+
+            public PresetData(int particlesToEmitDefault, ParticleEmitter particleEmitter)
+            {
+                this.particlesToEmitDefault = particlesToEmitDefault;
+                this.particleEmitter = particleEmitter;
+                this.framesLeft = 0;
+                this.IsActive = false;
+            }
+
+            public void TurnOn(int particlesToEmit = 0, int duration = 0)
+            {
+                if (duration > 0) this.framesLeft = duration + 1;
+                this.particleEmitter.Parameters.Quantity = particlesToEmit == 0 ? this.particlesToEmitDefault : particlesToEmit;
+                this.IsActive = true;
+            }
+
+            public void TurnOff()
+            {
+                this.particleEmitter.Parameters.Quantity = 0;
+                this.IsActive = false;
+            }
+        }
+
         public enum Preset { Empty, Fireplace, WaterWalk }
 
-        private static readonly List<Preset> presetsToTurnOn = new List<Preset> { };
-        public Preset CurrentPreset { get; private set; }
-        private int particlesToEmitTarget;
-        private int particlesToEmitCurrent;
-        private int framesLeft;
-        private Sprite sprite;
-        private Texture2D texture;
-        private ParticleEffect particleEffect;
+        public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
+
+        private readonly Sprite sprite;
+        private readonly ParticleEffect particleEffect;
+        private readonly Dictionary<Preset, PresetData> dataByPreset;
+
         public bool HasAnyParticles { get { return this.ActiveParticlesCount > 0; } }
 
         public int ActiveParticlesCount
         { get { return this.particleEffect.Emitters.Select(x => x.ActiveParticles).Sum(); } }
 
-        public ParticleEngine(Preset preset, Sprite sprite)
+        public ParticleEngine(Sprite sprite)
         {
             this.sprite = sprite;
-            this.particlesToEmitCurrent = 0;
-            this.framesLeft = 0;
-
-            this.ApplyPreset(preset);
+            this.dataByPreset = new Dictionary<Preset, PresetData>();
+            this.particleEffect = new ParticleEffect(autoTrigger: false);
+            this.particleEffect.Emitters = new List<ParticleEmitter>();
         }
 
-        public void ApplyPreset(Preset preset)
+        public void AddPreset(Preset preset)
         {
-            this.CurrentPreset = preset;
+            var textureNameDict = new Dictionary<Preset, string> {
+                {Preset.Fireplace, "circle_16x16" },
+                {Preset.WaterWalk, "circle_16x16" },
+            };
 
-            string textureName;
+            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
 
-            switch (this.CurrentPreset)
+            int particlesToEmitDefault;
+            ParticleEmitter particleEmitter;
+
+            switch (preset)
             {
                 case Preset.Fireplace:
-                    textureName = "circle_16x16";
-                    break;
+                    particlesToEmitDefault = 1;
 
-                case Preset.WaterWalk:
-                    textureName = "circle_16x16";
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
-            }
-
-            this.texture = TextureBank.GetTexture(textureName);
-            this.particleEffect = new ParticleEffect(autoTrigger: false);
-
-            TextureRegion2D textureRegion = new TextureRegion2D(this.texture);
-
-            switch (this.CurrentPreset)
-            {
-                case Preset.Fireplace:
-
-                    this.particlesToEmitTarget = 1;
-
-                    this.particleEffect.Emitters = new List<ParticleEmitter>
+                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                     {
-                        new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
+                        Parameters = new ParticleReleaseParameters
                         {
-                            Parameters = new ParticleReleaseParameters
-                            {
-                                Speed = new Range<float>(5f, 20f),
-                                Quantity = 0,
-                            },
+                            Speed = new Range<float>(5f, 20f),
+                            Quantity = 0,
+                        },
 
-                            Modifiers =
+                        Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -104,28 +113,23 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
-                        }
                     };
 
                     break;
 
                 case Preset.WaterWalk:
-
-                    this.particlesToEmitTarget = 3;
-
-                    this.particleEffect.Emitters = new List<ParticleEmitter>
+                    particlesToEmitDefault = 3;
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
                     {
-                        new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
+                        Parameters = new ParticleReleaseParameters
                         {
-                            Parameters = new ParticleReleaseParameters
-                            {
-                                Scale = new Range<float>(0.1f, 0.4f),
-                                Color = HslColor.FromRgb(Color.Cyan),
-                                Speed = new Range<float>(6f, 25f),
-                                Quantity = 0,
-                            },
+                            Scale = new Range<float>(0.1f, 0.4f),
+                            Color = HslColor.FromRgb(Color.Cyan),
+                            Speed = new Range<float>(6f, 25f),
+                            Quantity = 0,
+                        },
 
-                            Modifiers =
+                        Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -145,36 +149,40 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
                             }
-                        }
                     };
 
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
+                    throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
-            if (presetsToTurnOn.Contains(this.CurrentPreset)) this.TurnOn();
+            this.particleEffect.Emitters.Add(particleEmitter);
+            this.dataByPreset[preset] = new PresetData(particlesToEmitDefault: particlesToEmitDefault, particleEmitter: particleEmitter);
         }
 
-        public void TurnOn(int particlesToEmit = 0, int duration = 0)
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
         {
-            if (duration > 0) this.framesLeft = duration + 1;
-            this.particlesToEmitCurrent = particlesToEmit == 0 ? this.particlesToEmitTarget : particlesToEmit;
+            if (sprite.particleEngine == null) sprite.particleEngine = new ParticleEngine(sprite);
+            if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
-            foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
-            {
-                particleEmitter.Parameters.Quantity = this.particlesToEmitCurrent;
-            }
-
-            this.Update();
+            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
         }
 
-        public void TurnOff()
+        public static void TurnOff(Sprite sprite, Preset preset)
         {
-            foreach (ParticleEmitter particleEmitter in this.particleEffect.Emitters)
+            if (sprite.particleEngine == null || !sprite.particleEngine.dataByPreset.ContainsKey(preset)) return;
+
+            sprite.particleEngine.dataByPreset[preset].TurnOff();
+        }
+
+        public static void TurnOffAll(Sprite sprite)
+        {
+            if (sprite.particleEngine == null) return;
+
+            foreach (PresetData presetData in sprite.particleEngine.dataByPreset.Values)
             {
-                particleEmitter.Parameters.Quantity = 0;
+                presetData.TurnOff();
             }
         }
 
@@ -183,60 +191,68 @@ namespace SonOfRobin
             this.particleEffect.Dispose();
         }
 
-        public bool Equals(ParticleEngine particleEngine)
-        {
-            if (particleEngine == null) return false;
-
-            return
-                this.CurrentPreset == particleEngine.CurrentPreset &&
-                this.particlesToEmitCurrent == particleEngine.particlesToEmitCurrent;
-        }
-
         public Dictionary<string, Object> Serialize()
         {
+            var activePresetsList = new List<Preset>();
+
+            foreach (var kvp in this.dataByPreset)
+            {
+                Preset preset = kvp.Key;
+                PresetData presetData = kvp.Value;
+
+                if (presetData.IsActive && presetData.framesLeft == 0)
+                {
+                    activePresetsList.Add(preset);
+                }
+            }
+
+            if (!activePresetsList.Any()) return null;
+
             Dictionary<string, Object> particleData = new Dictionary<string, object>
             {
-                { "preset", this.CurrentPreset },
-                { "particlesToEmitCurrent", this.particlesToEmitCurrent },
+                { "activePresetsList", activePresetsList },
             };
 
             return particleData;
         }
 
-        public static ParticleEngine Deserialize(Object particleData, Sprite sprite)
+        public static void Deserialize(Object particleData, Sprite sprite)
         {
-            if (sprite.particleEngine != null) sprite.particleEngine.Dispose();
-
             var particleDict = (Dictionary<string, Object>)particleData;
 
-            Preset preset = (Preset)(Int64)particleDict["preset"];
-            int particlesToEmitCurrent = (int)(Int64)particleDict["particlesToEmitCurrent"];
-
-            ParticleEngine particleEngine = new ParticleEngine(preset: preset, sprite: sprite);
-            if (particlesToEmitCurrent > 0) particleEngine.TurnOn(particlesToEmitCurrent);
-            return particleEngine;
+            var activePresetsList = (List<Preset>)particleDict["activePresetsList"];
+            foreach (Preset preset in activePresetsList)
+            {
+                TurnOn(sprite: sprite, preset: preset);
+            }
         }
 
         public void Update()
         {
-            if (this.framesLeft > 0)
+            foreach (var kvp in this.dataByPreset)
             {
-                this.framesLeft--;
-                if (this.framesLeft == 0) this.TurnOff();
-            }
+                Preset preset = kvp.Key;
+                PresetData presetData = kvp.Value;
 
-            switch (this.CurrentPreset)
-            {
-                case Preset.Fireplace:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
+                if (presetData.framesLeft > 0)
+                {
+                    presetData.framesLeft--;
+                    if (presetData.framesLeft == 0) presetData.TurnOff();
+                }
 
-                case Preset.WaterWalk:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
+                switch (preset)
+                {
+                    case Preset.Fireplace:
+                        this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                        break;
 
-                default:
-                    throw new ArgumentException($"Unsupported preset - '{this.CurrentPreset}'.");
+                    case Preset.WaterWalk:
+                        this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported preset - '{preset}'.");
+                }
             }
 
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);

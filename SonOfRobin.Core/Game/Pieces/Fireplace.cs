@@ -28,7 +28,7 @@ namespace SonOfRobin
         public Fireplace(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, ushort scareRange,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, lightEngine: lightEngine, particlePreset: ParticleEngine.Preset.Fireplace, activeState: State.Empty, boardTask: Scheduler.TaskName.OpenContainer, fireAffinity: 0f)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, lightEngine: lightEngine, activeState: State.Empty, boardTask: Scheduler.TaskName.OpenContainer, fireAffinity: 0f)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
@@ -89,7 +89,7 @@ namespace SonOfRobin
                     this.AddToStateMachines();
                     this.sprite.AssignNewName(newAnimName: "on");
                     this.sprite.lightEngine.Activate();
-                    this.sprite.particleEngine.TurnOn();
+                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     this.soundPack.Play(PieceSoundPack.Action.IsOn);
@@ -101,7 +101,7 @@ namespace SonOfRobin
                     this.burnAllFuelEndFrame = 0;
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.sprite.lightEngine.Deactivate();
-                    this.sprite.particleEngine.TurnOff();
+                    ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }

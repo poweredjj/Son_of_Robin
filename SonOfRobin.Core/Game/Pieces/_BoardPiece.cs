@@ -123,14 +123,14 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, ParticleEngine.Preset particlePreset = ParticleEngine.Preset.Empty, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
             this.category = category;
             this.id = id;
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, allowedDensity: allowedDensity, lightEngine: lightEngine, particlePreset: particlePreset, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
 
             this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
             this.soundPack.Activate(this);
@@ -899,13 +899,8 @@ namespace SonOfRobin
                 if (this.sprite.IsInCameraRect)
                 {
                     this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
-                    if (isInWater)
-                    {
-                        if (this.sprite.particleEngine == null) this.sprite.particleEngine = new ParticleEngine(preset: ParticleEngine.Preset.WaterWalk, sprite: this.sprite);
-                        if (this.sprite.particleEngine.CurrentPreset != ParticleEngine.Preset.WaterWalk) this.sprite.particleEngine.ApplyPreset(ParticleEngine.Preset.WaterWalk);
-                        this.sprite.particleEngine.TurnOn(duration: 1);
-                    }
-                }             
+                    if (isInWater) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWalk, duration: 1);
+                }
             }
             else this.sprite.CharacterStand();
 

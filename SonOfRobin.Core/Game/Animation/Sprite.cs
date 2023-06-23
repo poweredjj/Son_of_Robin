@@ -59,7 +59,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, ParticleEngine.Preset particlePreset = ParticleEngine.Preset.Empty, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -85,7 +85,7 @@ namespace SonOfRobin
             this.minDistance = minDistance;
             this.maxDistance = maxDistance;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
-            this.particleEngine = particlePreset == ParticleEngine.Preset.Empty ? null : new ParticleEngine(preset: particlePreset, sprite: this);
+            this.particleEngine = null;
             this.visible = visible; // initially it is assigned normally
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
@@ -243,7 +243,11 @@ namespace SonOfRobin
             if (this.allowedTerrain.HasBeenChanged) spriteDataDict["allowedTerrain"] = this.allowedTerrain.Serialize();
             if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;
             if (this.lightEngine != null && !this.lightEngine.Equals(pieceInfo.lightEngine)) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
-            if (this.particleEngine != null && !this.particleEngine.Equals(pieceInfo.particleEngine)) spriteDataDict["particleEngine"] = this.particleEngine.Serialize();
+            if (this.particleEngine != null)
+            {
+                var particleData = this.particleEngine.Serialize();
+                if (particleData != null) spriteDataDict["particleEngine"] = particleData;
+            }
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
             if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
             if (this.AnimName != pieceInfo.animName) spriteDataDict["animName"] = this.AnimName;
@@ -266,7 +270,7 @@ namespace SonOfRobin
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
-            if (spriteDict.ContainsKey("ParticleEngine")) this.particleEngine = ParticleEngine.Deserialize(particleData: spriteDict["particleEngine"], sprite: this);
+            if (spriteDict.ContainsKey("particleEngine")) ParticleEngine.Deserialize(particleData: spriteDict["particleEngine"], sprite: this);
             if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
             if (spriteDict.ContainsKey("color"))
             {
@@ -764,12 +768,12 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.particleEngine != null && this.particleEngine.HasAnyParticles)
+            if (this.particleEngine != null)
             {
                 SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, reason unknown)
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
-                this.particleEngine.Draw();
+                if (this.particleEngine.HasAnyParticles) this.particleEngine.Draw();
             }
 
             if (Preferences.debugShowRects)
