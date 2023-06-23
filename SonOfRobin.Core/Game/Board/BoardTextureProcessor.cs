@@ -26,6 +26,12 @@ namespace SonOfRobin
 
             public void Process()
             {
+                if (this.cell.grid.world.HasBeenRemoved)
+                {
+                    GC.Collect();
+                    return;
+                }
+
                 if (!this.IsTimedOut && this.cell.boardGraphics.Texture == null) this.cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
             }
         }
@@ -118,6 +124,15 @@ namespace SonOfRobin
                 .OrderBy(task => task.cell.GetDistance(cameraCenter))
                 .Take(100) // to avoid taking too much time processing one batch
                 .ToList();
+
+            foreach (ProcessingTask task in tasksByDistance)
+            {
+                if (task.cell.grid.world.HasBeenRemoved)
+                {
+                    GC.Collect();
+                    return;
+                }
+            }
 
             if (tasksByDistance.Count() >= 8)
             {

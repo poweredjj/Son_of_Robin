@@ -139,7 +139,7 @@ namespace SonOfRobin
             this.piecesData = new ConcurrentBag<object> { };
             this.allSteps = this.saveMode ? 8 + this.piecePackagesToSave.Count : 7 + this.PiecesFilesCount;
 
-            if (this.saveMode) DeleteAllSaveTemps();
+            if (this.saveMode) DeleteAllSaveTemps();      
         }
 
         private List<List<BoardPiece>> PreparePiecePackages()

@@ -181,6 +181,22 @@ namespace SonOfRobin
             this.soundPaused = false;
         }
 
+        public override void Remove()
+        {
+            this.Grid.Destroy();
+            Sound.StopAll();
+            RumbleManager.StopAll();
+            base.Remove();
+            new Scheduler.Task(taskName: Scheduler.TaskName.GCCollect, delay: 60 * 5); // needed to properly release memory after removing world
+            new Scheduler.Task(taskName: Scheduler.TaskName.GCCollect, delay: 60 * 25); // to account for longer processing (or something)
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", color: new Color(255, 180, 66));
+        }
+
+        ~World()
+        {
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", color: new Color(120, 255, 174));
+        }
+
         public PieceTemplate.Name PlayerName
         {
             get
@@ -418,11 +434,7 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
-                    if (this.backgroundTask == null)
-                    {
-                        this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
-                        GC.Collect();
-                    }
+                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());        
                     else
                     {
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
@@ -500,6 +512,8 @@ namespace SonOfRobin
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
+            GC.Collect();
+
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
         }
 
@@ -518,14 +532,6 @@ namespace SonOfRobin
 
             TimeSpan populatingDuration = DateTime.Now - startTime;
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
-        }
-
-        public override void Remove()
-        {
-            this.Grid.Destroy();
-            Sound.StopAll();
-            RumbleManager.StopAll();
-            base.Remove();
         }
 
         private void Deserialize(bool gridOnly)
