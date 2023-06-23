@@ -119,6 +119,7 @@ namespace SonOfRobin
             this.IsOn = true;
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Cooking);
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
         }
@@ -128,6 +129,7 @@ namespace SonOfRobin
             this.IsOn = false;
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
+            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Cooking);
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
         }

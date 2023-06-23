@@ -13,6 +13,8 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
+        public enum Preset { Fireplace, Cooking, Brewing, WaterWalk, WaterWave }
+
         public class PresetData
         {
             public readonly ParticleEmitter particleEmitter;
@@ -43,8 +45,6 @@ namespace SonOfRobin
             }
         }
 
-        public enum Preset { Empty, Fireplace, WaterWalk, WaterWave }
-
         public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
 
         private readonly Sprite sprite;
@@ -68,6 +68,8 @@ namespace SonOfRobin
         {
             var textureNameDict = new Dictionary<Preset, string> {
                 {Preset.Fireplace, "circle_16x16_sharp" },
+                {Preset.Cooking, "circle_16x16_sharp" },
+                {Preset.Brewing, "circle_16x16_sharp" },
                 {Preset.WaterWalk, "circle_16x16_sharp" },
                 {Preset.WaterWave, "circle_16x16_soft" },
             };
@@ -86,6 +88,7 @@ namespace SonOfRobin
                     {
                         Parameters = new ParticleReleaseParameters
                         {
+                            Color = HslColor.FromRgb(Color.Yellow),
                             Speed = new Range<float>(5f, 20f),
                             Quantity = 0,
                         },
@@ -96,11 +99,6 @@ namespace SonOfRobin
                                 {
                                     Interpolators =
                                     {
-                                        new ColorInterpolator
-                                        {
-                                            StartValue = HslColor.FromRgb(Color.Yellow),
-                                            EndValue = HslColor.FromRgb(Color.Yellow)
-                                        },
                                         new ScaleInterpolator
                                         {
                                             StartValue = new Vector2(0.02f),
@@ -109,6 +107,80 @@ namespace SonOfRobin
                                         new OpacityInterpolator
                                         {
                                             StartValue = 0.8f,
+                                            EndValue = 0f
+                                        },
+                                        new HueInterpolator { StartValue = 60f, EndValue = 20f }
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                    };
+
+                    break;
+
+                case Preset.Cooking:
+                    defaultParticlesToEmit = 1;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(Color.White),
+                            Speed = new Range<float>(5f, 20f),
+                            Quantity = 0,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.02f),
+                                            EndValue = new Vector2(0.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.5f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                    };
+
+                    break;
+
+                case Preset.Brewing:
+                    defaultParticlesToEmit = 1;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height))
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(Color.Red),
+                            Speed = new Range<float>(6f, 25f),
+                            Quantity = 0,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new HueInterpolator { StartValue = 0f, EndValue = 360f },
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.05f),
+                                            EndValue = new Vector2(0.75f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.75f,
                                             EndValue = 0f
                                         },
                                     }
@@ -167,7 +239,7 @@ namespace SonOfRobin
                         Parameters = new ParticleReleaseParameters
                         {
                             Color = HslColor.FromRgb(Color.Cyan),
-                            Speed = new Range<float>(15f, 65f),
+                            Speed = new Range<float>(10f, 45f),
                             Quantity = 0,
                         },
 
@@ -179,7 +251,7 @@ namespace SonOfRobin
                                     {
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.37f,
+                                            StartValue = 0.25f,
                                             EndValue = 0f
                                         },
                                         new ScaleInterpolator
@@ -191,7 +263,7 @@ namespace SonOfRobin
                                 },
                                 new DragModifier
                                 {
-                                    Density = 1f, DragCoefficient = 1f
+                                    Density = 0.7f, DragCoefficient = 1f
                                 },
                             }
                     };
@@ -290,6 +362,14 @@ namespace SonOfRobin
             switch (preset)
             {
                 case Preset.Fireplace:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.Cooking:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
+                    break;
+
+                case Preset.Brewing:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 

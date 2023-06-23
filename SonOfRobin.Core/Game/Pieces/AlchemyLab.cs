@@ -127,6 +127,7 @@ namespace SonOfRobin
             this.IsOn = true;
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
         }
@@ -136,6 +137,7 @@ namespace SonOfRobin
             this.IsOn = false;
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
+            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
         }
@@ -161,7 +163,7 @@ namespace SonOfRobin
             if (BottleSlot.IsEmpty)
             {
                 {
-                    new TextWindow(text: $"I need an | { PieceInfo.GetInfo(PieceTemplate.Name.EmptyBottle).readableName }.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.EmptyBottle) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"I need an | {PieceInfo.GetInfo(PieceTemplate.Name.EmptyBottle).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.EmptyBottle) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -358,7 +360,7 @@ namespace SonOfRobin
 
         public void ShowBrewingProgress()
         {
-            new TextWindow(text: $"Brewing will be done in { TimeSpanToString(this.TimeToFinishBrewing) }.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+            new TextWindow(text: $"Brewing will be done in {TimeSpanToString(this.TimeToFinishBrewing)}.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)
