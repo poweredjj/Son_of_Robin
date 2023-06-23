@@ -70,7 +70,7 @@ namespace SonOfRobin
                 {Preset.Fireplace, "circle_16x16_sharp" },
                 {Preset.BurnFlame, "circle_16x16_soft" },
                 {Preset.Cooking, "circle_16x16_sharp" },
-                {Preset.Brewing, "circle_16x16_sharp" },
+                {Preset.Brewing, "bubble_16x16" },
                 {Preset.WaterWalk, "circle_16x16_sharp" },
                 {Preset.WaterWave, "circle_16x16_soft" },
             };
@@ -202,6 +202,7 @@ namespace SonOfRobin
                             Color = HslColor.FromRgb(Color.Red),
                             Speed = new Range<float>(6f, 25f),
                             Quantity = 0,
+                            Rotation = 0,
                         },
 
                         Modifiers =
@@ -218,8 +219,8 @@ namespace SonOfRobin
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.75f,
-                                            EndValue = 0f
+                                            StartValue = 1f,
+                                            EndValue = 0.2f
                                         },
                                     }
                                 },
