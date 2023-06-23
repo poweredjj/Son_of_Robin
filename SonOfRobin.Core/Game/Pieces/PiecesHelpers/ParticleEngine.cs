@@ -67,9 +67,9 @@ namespace SonOfRobin
         public void AddPreset(Preset preset)
         {
             var textureNameDict = new Dictionary<Preset, string> {
-                {Preset.Fireplace, "circle_16x16" },
-                {Preset.WaterWalk, "circle_16x16" },
-                {Preset.WaterWave, "circle_16x16" },
+                {Preset.Fireplace, "circle_16x16_sharp" },
+                {Preset.WaterWalk, "circle_16x16_sharp" },
+                {Preset.WaterWave, "circle_16x16_soft" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
@@ -159,15 +159,17 @@ namespace SonOfRobin
                 case Preset.WaterWave:
                     defaultParticlesToEmit = 3;
 
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5f), Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                    float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
+                    float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
                     {
                         Parameters = new ParticleReleaseParameters
                         {
-                            Scale = new Range<float>(0.3f, 1f),
+                            Scale = new Range<float>(0.5f, 2f),
                             Color = HslColor.FromRgb(Color.Cyan),
                             Speed = new Range<float>(6f, 25f),
                             Quantity = 0,
-                            Rotation = this.sprite.rotation,
                         },
 
                         Modifiers =
@@ -176,19 +178,29 @@ namespace SonOfRobin
                                 {
                                     Interpolators =
                                     {
-                                        new ScaleInterpolator
-                                        {
-                                            StartValue = new Vector2(0.35f),
-                                            EndValue = new Vector2(0.01f)
-                                        },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.42f,
+                                            StartValue = 0.6f,
                                             EndValue = 0f
                                         },
                                     }
                                 },
-                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                                new DragModifier
+                                {
+                                    Density = 1f, DragCoefficient = 1f
+                                },
+                                //new VortexModifier()
+                                //{
+                                //    Mass = 10f,
+                                //    MaxSpeed = 1f,
+                                //    Position = new Vector2(0,-150)
+                                //},
+                                //new VortexModifier()
+                                //{
+                                //    Mass = 10f,
+                                //    MaxSpeed = 1f,
+                                //    Position = new Vector2(-150,0)
+                                //}
                             }
                     };
 

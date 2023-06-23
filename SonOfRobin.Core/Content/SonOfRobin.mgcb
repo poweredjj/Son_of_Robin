@@ -1245,7 +1245,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/chests.png
 
-#begin gfx/circle_16x16.png
+#begin gfx/circle_16x16_sharp.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1255,7 +1255,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/circle_16x16.png
+/build:gfx/circle_16x16_sharp.png
+
+#begin gfx/circle_16x16_soft.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/circle_16x16_soft.png
 
 #begin gfx/clay.png
 /importer:TextureImporter
