@@ -895,11 +895,13 @@ namespace SonOfRobin
             if (hasBeenMoved)
             {
                 this.sprite.CharacterWalk();
-                this.soundPack.Play(action: this.sprite.WalkSoundAction);
+
                 if (this.sprite.IsInCameraRect)
                 {
+                    this.soundPack.Play(action: this.sprite.WalkSoundAction);
                     this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
-                    if (isInWater && this.sprite.IsInCameraRect)
+
+                    if (isInWater)
                     {
                         int particlesToEmit = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 0, newMax: 9, oldVal: Terrain.waterLevelMax - this.sprite.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
 

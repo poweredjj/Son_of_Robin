@@ -319,6 +319,8 @@ namespace SonOfRobin
 
         public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
         {
+            if (duration > 0 && !sprite.IsInCameraRect) return;
+
             if (sprite.particleEngine == null) sprite.particleEngine = new ParticleEngine(sprite);
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
