@@ -899,7 +899,12 @@ namespace SonOfRobin
                 if (this.sprite.IsInCameraRect)
                 {
                     this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
-                    if (isInWater) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWalk, duration: 1);
+                    if (isInWater && this.sprite.IsInCameraRect)
+                    {
+                        int particlesToEmit = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 0, newMax: 9, oldVal: Terrain.waterLevelMax - this.sprite.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+
+                        ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: particlesToEmit, duration: 1);
+                    }
                 }
             }
             else this.sprite.CharacterStand();
