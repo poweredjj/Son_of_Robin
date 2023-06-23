@@ -169,6 +169,8 @@ namespace SonOfRobin
                 }
             }
 
+            if (this.sprite.opacity > 0) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWave, particlesToEmit: (int)(this.sprite.opacity * 6), duration: 10);
+
             this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
 

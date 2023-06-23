@@ -137,6 +137,7 @@ namespace SonOfRobin
         public static bool showDebris = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;
+        public static bool showParticles = true;
         public static bool useMultipleThreads = true;
         private static int darknessResolution = 1;
 
@@ -591,6 +592,7 @@ namespace SonOfRobin
             prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
+            prefsData["showParticles"] = showParticles;
             prefsData["rumbleEnabled"] = rumbleEnabled;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
@@ -663,6 +665,7 @@ namespace SonOfRobin
                     halfFramerate = (bool)prefsData["cap30FPS"];
                     debugMode = (bool)prefsData["debugMode"];
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
+                    showParticles = (bool)prefsData["showParticles"];
 
                     prefsLoaded = true;
                 }

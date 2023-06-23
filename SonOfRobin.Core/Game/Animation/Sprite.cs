@@ -768,10 +768,8 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.particleEngine != null)
+            if (this.particleEngine != null && Preferences.showParticles)
             {
-                SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, reason unknown)
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
                 if (this.particleEngine.HasAnyParticles) this.particleEngine.Draw();
             }

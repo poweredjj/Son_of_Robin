@@ -16,13 +16,14 @@ namespace SonOfRobin
         public class PresetData
         {
             public readonly ParticleEmitter particleEmitter;
-            public readonly int particlesToEmitDefault;
+            public readonly int defaultParticlesToEmit;
             public int framesLeft;
             public bool IsActive { get; private set; }
 
-            public PresetData(int particlesToEmitDefault, ParticleEmitter particleEmitter)
+            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter)
             {
-                this.particlesToEmitDefault = particlesToEmitDefault;
+                this.defaultParticlesToEmit = defaultParticlesToEmit;
+
                 this.particleEmitter = particleEmitter;
                 this.framesLeft = 0;
                 this.IsActive = false;
@@ -31,7 +32,7 @@ namespace SonOfRobin
             public void TurnOn(int particlesToEmit = 0, int duration = 0)
             {
                 if (duration > 0) this.framesLeft = duration + 1;
-                this.particleEmitter.Parameters.Quantity = particlesToEmit == 0 ? this.particlesToEmitDefault : particlesToEmit;
+                this.particleEmitter.Parameters.Quantity = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
                 this.IsActive = true;
             }
 
@@ -42,7 +43,7 @@ namespace SonOfRobin
             }
         }
 
-        public enum Preset { Empty, Fireplace, WaterWalk }
+        public enum Preset { Empty, Fireplace, WaterWalk, WaterWave }
 
         public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
 
@@ -68,17 +69,18 @@ namespace SonOfRobin
             var textureNameDict = new Dictionary<Preset, string> {
                 {Preset.Fireplace, "circle_16x16" },
                 {Preset.WaterWalk, "circle_16x16" },
+                {Preset.WaterWave, "circle_16x16" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
 
-            int particlesToEmitDefault;
+            int defaultParticlesToEmit;
             ParticleEmitter particleEmitter;
 
             switch (preset)
             {
                 case Preset.Fireplace:
-                    particlesToEmitDefault = 1;
+                    defaultParticlesToEmit = 1;
 
                     particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                     {
@@ -118,7 +120,8 @@ namespace SonOfRobin
                     break;
 
                 case Preset.WaterWalk:
-                    particlesToEmitDefault = 3;
+                    defaultParticlesToEmit = 3;
+
                     particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
                     {
                         Parameters = new ParticleReleaseParameters
@@ -153,12 +156,50 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.WaterWave:
+                    defaultParticlesToEmit = 3;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5f), Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Scale = new Range<float>(0.3f, 1f),
+                            Color = HslColor.FromRgb(Color.Cyan),
+                            Speed = new Range<float>(6f, 25f),
+                            Quantity = 0,
+                            Rotation = this.sprite.rotation,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.35f),
+                                            EndValue = new Vector2(0.01f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.42f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                    };
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
             this.particleEffect.Emitters.Add(particleEmitter);
-            this.dataByPreset[preset] = new PresetData(particlesToEmitDefault: particlesToEmitDefault, particleEmitter: particleEmitter);
+            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter);
         }
 
         public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
@@ -229,30 +270,35 @@ namespace SonOfRobin
 
         public void Update()
         {
-            foreach (var kvp in this.dataByPreset)
-            {
-                Preset preset = kvp.Key;
-                PresetData presetData = kvp.Value;
+            if (!this.dataByPreset.Any()) return;
 
+            foreach (PresetData presetData in this.dataByPreset.Values)
+            {
                 if (presetData.framesLeft > 0)
                 {
                     presetData.framesLeft--;
                     if (presetData.framesLeft == 0) presetData.TurnOff();
                 }
+            }
 
-                switch (preset)
-                {
-                    case Preset.Fireplace:
-                        this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                        break;
+            Preset preset = this.dataByPreset.First().Key;
 
-                    case Preset.WaterWalk:
-                        this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                        break;
+            switch (preset)
+            {
+                case Preset.Fireplace:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
 
-                    default:
-                        throw new ArgumentException($"Unsupported preset - '{preset}'.");
-                }
+                case Preset.WaterWalk:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;
+
+                case Preset.WaterWave:
+                    this.particleEffect.Position = this.sprite.position;
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
@@ -260,6 +306,8 @@ namespace SonOfRobin
 
         public void Draw()
         {
+            SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix);
             SonOfRobinGame.SpriteBatch.Draw(this.particleEffect);
         }
     }
