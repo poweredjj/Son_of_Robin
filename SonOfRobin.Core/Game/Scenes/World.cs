@@ -418,7 +418,11 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
-                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    if (this.backgroundTask == null)
+                    {
+                        this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                        GC.Collect();
+                    }
                     else
                     {
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
@@ -497,7 +501,6 @@ namespace SonOfRobin
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
-            GC.Collect();
         }
 
         private void ProcessAllPopulatingSteps()
