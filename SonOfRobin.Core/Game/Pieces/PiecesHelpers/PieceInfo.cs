@@ -58,23 +58,18 @@ namespace SonOfRobin
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
-            public readonly float fireAffinity;
-            public readonly int[] maxMassForSize;
-            public readonly float adultSizeMass;
+            public readonly ReadOnlyParams readOnlyParams;
 
             public Info(BoardPiece piece)
             {
-                ReadOnlyParams readOnlyParams = ReadOnlyParams.GetParamsForName(piece.name);
+                ReadOnlyParams readOnlyParams = piece.readOnlyParams;
 
                 this.animSize = piece.sprite.AnimSize;
                 this.mass = piece.Mass;
-                this.maxMassForSize = readOnlyParams.MaxMassForSize;
-                this.adultSizeMass = readOnlyParams.AdultSizeMass;
 
-                if (this.maxMassForSize != null) piece.Mass = this.maxMassForSize.Last(); // to show frame of biggest size
+                if (piece.readOnlyParams.maxMassForSize != null) piece.Mass = piece.readOnlyParams.maxMassForSize.Last(); // to show frame of biggest size
                 this.frame = piece.sprite.AnimFrame;
                 piece.Mass = this.mass; // reverting to original mass
-
 
                 this.name = piece.name;
                 this.category = piece.category;
@@ -85,7 +80,7 @@ namespace SonOfRobin
                 this.strength = piece.strength;
                 this.speed = piece.speed;
                 this.type = piece.GetType();
-                this.serialize = readOnlyParams.Serialize;
+                this.serialize = readOnlyParams.serialize;
                 this.initialActiveState = piece.activeState;
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
@@ -103,7 +98,6 @@ namespace SonOfRobin
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).Eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = piece.GetType() == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
-                this.fireAffinity = readOnlyParams.FireAffinity;
 
                 this.convertsWhenUsed = false;
                 if (piece.GetType() == typeof(Potion))
