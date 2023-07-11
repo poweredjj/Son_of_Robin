@@ -58,6 +58,7 @@ namespace SonOfRobin
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
+            public readonly float fireAffinity;
 
             public Info(BoardPiece piece)
             {
@@ -97,6 +98,7 @@ namespace SonOfRobin
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).Eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = piece.GetType() == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
+                this.fireAffinity = readOnlyParams.FireAffinity;
 
                 this.convertsWhenUsed = false;
                 if (piece.GetType() == typeof(Potion))

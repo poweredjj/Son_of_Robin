@@ -94,7 +94,6 @@ namespace SonOfRobin
         public float maxHitPoints;
         public readonly bool indestructible;
         public readonly byte stackSize;
-        public readonly float fireAffinity;
         public readonly PieceInfo.Info pieceInfo;
         private float burnLevel;
         public virtual PieceStorage PieceStorage { get; protected set; }
@@ -122,7 +121,7 @@ namespace SonOfRobin
         private readonly bool canShrink;
         private float hitPoints;
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
@@ -175,7 +174,6 @@ namespace SonOfRobin
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
             this.burnLevel = 0f;
-            this.fireAffinity = fireAffinity;
             this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
@@ -264,7 +262,7 @@ namespace SonOfRobin
                 bool wasBurning = this.IsBurning;
 
                 float valDiff = value - this.burnLevel;
-                if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.fireAffinity / 4 : this.fireAffinity;
+                if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);

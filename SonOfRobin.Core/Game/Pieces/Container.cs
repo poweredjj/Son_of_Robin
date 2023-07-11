@@ -8,10 +8,10 @@ namespace SonOfRobin
     {
         public readonly bool pieceStorageIsGlobal;
 
-        public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, float fireAffinity,
+        public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, byte storageWidth, byte storageHeight, string readableName, string description, Category category,
             byte animSize = 0, string animName = "open", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, Yield appearDebris = null, int maxHitPoints = 1, PieceSoundPack soundPack = null, bool pieceStorageIsGlobal = false) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, activeState: State.Empty, movesWhenDropped: false, soundPack: soundPack, appearDebris: appearDebris, boardTask: Scheduler.TaskName.OpenContainer, fireAffinity: fireAffinity)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, activeState: State.Empty, movesWhenDropped: false, soundPack: soundPack, appearDebris: appearDebris, boardTask: Scheduler.TaskName.OpenContainer)
         {
             this.pieceStorageIsGlobal = pieceStorageIsGlobal;
 
