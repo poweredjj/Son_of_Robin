@@ -960,10 +960,10 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
-                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", movesWhenDropped: false, isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -985,10 +985,10 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
-                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", movesWhenDropped: false, isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -1010,10 +1010,10 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
                                 });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
-                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", movesWhenDropped: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -1035,10 +1035,10 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
                        });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
-                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", movesWhenDropped: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -1279,7 +1279,7 @@ namespace SonOfRobin
                         byte storageWidth = 3;
                         byte storageHeight = 2;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestWooden, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, readableName: "wooden chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
@@ -1295,7 +1295,7 @@ namespace SonOfRobin
                         byte storageWidth = 4;
                         byte storageHeight = 4;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestStone, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 50, readableName: "stone chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
@@ -1312,7 +1312,7 @@ namespace SonOfRobin
                         byte storageWidth = 6;
                         byte storageHeight = 4;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
 
@@ -1325,7 +1325,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Crystal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.", soundPack: soundPack, pieceStorageIsGlobal: true);
 
@@ -1346,7 +1346,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
 
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
@@ -1397,7 +1397,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
 
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
@@ -1456,10 +1456,10 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f, movesWhenDropped: false);
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", movesWhenDropped: false, soundPack: soundPack, isAffectedByWind: true);
+                            minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack, isAffectedByWind: true);
 
                         return decoration;
                     }
@@ -1476,10 +1476,10 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", movesWhenDropped: false, soundPack: soundPack, isAffectedByWind: true);
+                            minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack, isAffectedByWind: true);
 
                         return boardPiece;
                     }
@@ -3224,7 +3224,7 @@ namespace SonOfRobin
                         ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Metal,
-                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -3237,7 +3237,7 @@ namespace SonOfRobin
                         ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 500, generation: generation, stackSize: 6, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 500, generation: generation, stackSize: 6, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
 
                         return decoration;
                     }
@@ -3267,10 +3267,10 @@ namespace SonOfRobin
 
                 case Name.Hole:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
-                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 1, readableName: "hole", description: "Empty dig site.", movesWhenDropped: false, destructionDelay: 60 * 30, isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 1, readableName: "hole", description: "Empty dig site.", destructionDelay: 60 * 30, isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -3284,20 +3284,20 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyStump));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", movesWhenDropped: false, yield: yield, soundPack: soundPack, isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", yield: yield, soundPack: soundPack, isAffectedByWind: false);
 
                         return boardPiece;
                     }
 
                 case Name.HumanSkeleton:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f);
+                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, movesWhenDropped: false);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Flesh,
-                            minDistance: 0, maxDistance: 500, generation: generation, yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", movesWhenDropped: false, isAffectedByWind: false);
+                            minDistance: 0, maxDistance: 500, generation: generation, yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", isAffectedByWind: false);
 
                         return boardPiece;
                     }

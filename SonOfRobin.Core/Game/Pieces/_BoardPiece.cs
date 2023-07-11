@@ -111,7 +111,6 @@ namespace SonOfRobin
         { get { return this.passiveMovement != Vector2.Zero; } }
 
         public bool rotatesWhenDropped;
-        public readonly bool movesWhenDropped;
         private readonly int destructionDelay;
         public BoardPiece visualAid;
         public readonly string readableName;
@@ -122,7 +121,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Category category, State activeState, ReadOnlyParams readOnlyParams,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
@@ -166,7 +165,6 @@ namespace SonOfRobin
             this.passiveMovement = Vector2.Zero;
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;
-            this.movesWhenDropped = movesWhenDropped;
             this.canBePickedUp = canBePickedUp;
             this.yield = yield;
             this.appearDebris = appearDebris;
@@ -790,7 +788,7 @@ namespace SonOfRobin
 
         public void AddPassiveMovement(Vector2 movement, bool force = false)
         {
-            if (!this.movesWhenDropped && !force) return;
+            if (!this.readOnlyParams.movesWhenDropped && !force) return;
 
             if (this.GetType() == typeof(Player) && this.alive)
             {
