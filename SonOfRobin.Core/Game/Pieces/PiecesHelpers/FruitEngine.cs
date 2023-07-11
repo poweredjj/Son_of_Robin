@@ -32,7 +32,7 @@ namespace SonOfRobin
         }
 
         private bool FruitCanBeAdded
-        { get { return this.currentMass > this.oneFruitTargetMass && this.plant.Mass >= this.plant.adultSizeMass; } }
+        { get { return this.currentMass > this.oneFruitTargetMass && this.plant.Mass >= this.plant.pieceInfo.adultSizeMass; } }
 
         public int MaxAreaWidth
         { get { return (int)((float)this.plant.sprite.GfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }

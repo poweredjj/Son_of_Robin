@@ -6,12 +6,15 @@ namespace SonOfRobin
     {
         public bool Serialize { get; private set; }
         public float FireAffinity { get; private set; }
-
+        public int[] MaxMassForSize { get; private set; }
+        public float AdultSizeMass { get; private set; }
 
         private ReadOnlyParams()
         {
             this.Serialize = true;
-            this.FireAffinity = 0.0f;
+            this.FireAffinity = 0f;
+            this.MaxMassForSize = null;
+            this.AdultSizeMass = 0f; // AdultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
         }
 
         public static ReadOnlyParams GetParamsForName(PieceTemplate.Name name)
@@ -43,22 +46,27 @@ namespace SonOfRobin
 
                 case PieceTemplate.Name.GrassRegular:
                     readOnlyParams.FireAffinity = 0.3f;
+                    readOnlyParams.MaxMassForSize = new int[] { 100, 150 };
                     break;
 
                 case PieceTemplate.Name.GrassGlow:
                     readOnlyParams.FireAffinity = 0.3f;
+                    readOnlyParams.MaxMassForSize = new int[] { 100, 150 };
                     break;
 
                 case PieceTemplate.Name.GrassDesert:
                     readOnlyParams.FireAffinity = 0.8f;
+                    readOnlyParams.MaxMassForSize = new int[] { 250 };
                     break;
 
                 case PieceTemplate.Name.PlantPoison:
                     readOnlyParams.FireAffinity = 0.3f;
+                    readOnlyParams.MaxMassForSize = new int[] { 800 };
                     break;
 
                 case PieceTemplate.Name.Rushes:
                     readOnlyParams.FireAffinity = 0.2f;
+                    readOnlyParams.MaxMassForSize = new int[] { 400 };
                     break;
 
                 case PieceTemplate.Name.WaterLily:
@@ -67,18 +75,22 @@ namespace SonOfRobin
 
                 case PieceTemplate.Name.FlowersPlain:
                     readOnlyParams.FireAffinity = 0.6f;
+                    readOnlyParams.MaxMassForSize = new int[] { 400 };
                     break;
 
                 case PieceTemplate.Name.FlowersRed:
                     readOnlyParams.FireAffinity = 0.6f;
+                    readOnlyParams.MaxMassForSize = new int[] { 400 };
                     break;
 
                 case PieceTemplate.Name.FlowersMountain:
                     readOnlyParams.FireAffinity = 0.6f;
+                    readOnlyParams.MaxMassForSize = new int[] { 500 };
                     break;
 
                 case PieceTemplate.Name.Cactus:
                     readOnlyParams.FireAffinity = 0.3f;
+                    readOnlyParams.MaxMassForSize = new int[] { 10000 };
                     break;
 
                 case PieceTemplate.Name.SeedsGeneric:
@@ -95,30 +107,44 @@ namespace SonOfRobin
 
                 case PieceTemplate.Name.TreeSmall:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 1000, 2500 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.TreeBig:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 1000, 2500 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.PalmTree:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 2500, 8000, 10000 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.Oak:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 1000, 2500 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.AppleTree:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 1000, 2500 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.CherryTree:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 1000, 2500 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.BananaTree:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 2500, 8000, 10000 };
+                    readOnlyParams.AdultSizeMass = readOnlyParams.MaxMassForSize[1];
                     break;
 
                 case PieceTemplate.Name.CarrotPlant:
@@ -127,10 +153,12 @@ namespace SonOfRobin
 
                 case PieceTemplate.Name.TomatoPlant:
                     readOnlyParams.FireAffinity = 0.4f;
+                    readOnlyParams.MaxMassForSize = new int[] { 450, 900 };
                     break;
 
                 case PieceTemplate.Name.CoffeeShrub:
                     readOnlyParams.FireAffinity = 0.4f;
+                    readOnlyParams.MaxMassForSize = new int[] { 600 };
                     break;
 
                 case PieceTemplate.Name.Apple:
@@ -183,18 +211,22 @@ namespace SonOfRobin
 
                 case PieceTemplate.Name.Rabbit:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 200, 500 };
                     break;
 
                 case PieceTemplate.Name.Fox:
                     readOnlyParams.FireAffinity = 0.65f;
+                    readOnlyParams.MaxMassForSize = new int[] { 500, 1000 };
                     break;
 
                 case PieceTemplate.Name.Tiger:
                     readOnlyParams.FireAffinity = 0.6f;
+                    readOnlyParams.MaxMassForSize = new int[] { 500, 2000 };
                     break;
 
                 case PieceTemplate.Name.Frog:
                     readOnlyParams.FireAffinity = 0.15f;
+                    readOnlyParams.MaxMassForSize = new int[] { 300, 800 };
                     break;
 
                 case PieceTemplate.Name.MineralsBig:
@@ -486,6 +518,7 @@ namespace SonOfRobin
                 case PieceTemplate.Name.BurningFlame:
                     readOnlyParams.Serialize = false;
                     readOnlyParams.FireAffinity = 0;
+                    readOnlyParams.MaxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
                     break;
 
                 case PieceTemplate.Name.CookingTrigger:

@@ -59,17 +59,22 @@ namespace SonOfRobin
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
             public readonly float fireAffinity;
+            public readonly int[] maxMassForSize;
+            public readonly float adultSizeMass;
 
             public Info(BoardPiece piece)
             {
+                ReadOnlyParams readOnlyParams = ReadOnlyParams.GetParamsForName(piece.name);
+
                 this.animSize = piece.sprite.AnimSize;
                 this.mass = piece.Mass;
+                this.maxMassForSize = readOnlyParams.MaxMassForSize;
+                this.adultSizeMass = readOnlyParams.AdultSizeMass;
 
-                if (piece.maxMassForSize != null) piece.Mass = piece.maxMassForSize.Last(); // to show frame of biggest size
+                if (this.maxMassForSize != null) piece.Mass = this.maxMassForSize.Last(); // to show frame of biggest size
                 this.frame = piece.sprite.AnimFrame;
                 piece.Mass = this.mass; // reverting to original mass
 
-                ReadOnlyParams readOnlyParams = ReadOnlyParams.GetParamsForName(piece.name);
 
                 this.name = piece.name;
                 this.category = piece.category;
