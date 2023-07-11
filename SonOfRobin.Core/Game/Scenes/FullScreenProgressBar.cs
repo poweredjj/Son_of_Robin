@@ -203,7 +203,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barColor);
 
             Helpers.DrawTextureInsideRect(texture: this.loadingWheel, rectangle: wheelRect, color: Color.White * 0.8f, rotation: this.loadingWheelRotation, drawTestRect: false);
-            this.loadingWheelRotation += 0.01f;
+            this.loadingWheelRotation += 0.02f;
 
             //Helpers.DrawRectangleOutline(rect: progressRect, color: Color.Green, borderWidth: 1); // for testing
             //Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
