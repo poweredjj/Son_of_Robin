@@ -8,6 +8,7 @@ namespace SonOfRobin
 {
     public class PieceInfo
     {
+
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info>();
         public static readonly Dictionary<Type, List<PieceTemplate.Name>> namesForType = new Dictionary<Type, List<PieceTemplate.Name>>();
         public static bool HasBeenInitialized { get; private set; } = false;
@@ -67,6 +68,8 @@ namespace SonOfRobin
                 this.frame = piece.sprite.AnimFrame;
                 piece.Mass = this.mass; // reverting to original mass
 
+                ReadOnlyParams readOnlyParams = ReadOnlyParams.GetParamsForName(piece.name);
+
                 this.name = piece.name;
                 this.category = piece.category;
                 this.allowedTerrain = piece.sprite.allowedTerrain;
@@ -76,7 +79,7 @@ namespace SonOfRobin
                 this.strength = piece.strength;
                 this.speed = piece.speed;
                 this.type = piece.GetType();
-                this.serialize = piece.serialize;
+                this.serialize = readOnlyParams.Serialize;
                 this.initialActiveState = piece.activeState;
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;

@@ -151,7 +151,7 @@ namespace SonOfRobin
 
             foreach (Sprite sprite in this.world.Grid.GetSpritesFromAllCells(Cell.Group.All))
             {
-                if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.serialize)
+                if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.pieceInfo.serialize && !sprite.boardPiece.isTemporaryDecoration)
                 {
                     // there is no point in serializing dead small plants
                     if (!sprite.boardPiece.alive && !sprite.blocksMovement && sprite.boardPiece.GetType() == typeof(Plant)) continue;

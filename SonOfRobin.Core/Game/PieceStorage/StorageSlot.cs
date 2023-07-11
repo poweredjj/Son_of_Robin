@@ -173,7 +173,7 @@ namespace SonOfRobin
             var pieceList = new List<Object> { };
 
             foreach (BoardPiece piece in this.pieceList)
-            { if (piece.serialize) pieceList.Add(piece.Serialize()); }
+            { if (piece.pieceInfo.serialize) pieceList.Add(piece.Serialize()); }
 
             var slotData = new Dictionary<string, object>
             {

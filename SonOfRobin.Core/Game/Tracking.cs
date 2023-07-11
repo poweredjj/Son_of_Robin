@@ -202,7 +202,7 @@ namespace SonOfRobin
         public bool ShouldThisBeRemoved(World world)
         {
             return !this.BothSpritesExistAndOnBoard ||
-                       (this.followingSprite.boardPiece.serialize == false &&
+                       (this.followingSprite.boardPiece.pieceInfo.serialize == false &&
                        this.followingSprite.opacity < 0.05f &&
                        this.followingSprite.opacityFade != null &&
                        world.CurrentUpdate > this.firstTrackingFrame + 100);
