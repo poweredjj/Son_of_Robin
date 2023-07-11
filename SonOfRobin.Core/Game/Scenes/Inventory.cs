@@ -348,7 +348,7 @@ namespace SonOfRobin
 
             if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
             {
-                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
+                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 1);
                 extInfoTextList.Add($"| +{fedPercent}%");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
             }

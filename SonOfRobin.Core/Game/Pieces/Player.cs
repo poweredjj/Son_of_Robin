@@ -551,7 +551,7 @@ namespace SonOfRobin
 
         public float ConvertMassToEnergyAmount(float mass)
         {
-            return mass * 30f;
+            return mass * 15f;
         }
 
         private int ConvertEnergyAmountToFedLevel(float energyAmount)

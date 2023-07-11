@@ -1346,7 +1346,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FryingPan, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true));
 
-                        var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 20, foodMassMultiplier: 1.1f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, soundPack: soundPack, canBeUsedDuringRain: false, fireAffinity: 0f);
+                        var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, soundPack: soundPack, canBeUsedDuringRain: false, fireAffinity: 0f);
 
                         hotPlate.sprite.AssignNewName("off");
                         return hotPlate;
@@ -1358,7 +1358,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Cooking, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.PotLid, ignore3DAlways: true));
 
-                        var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, foodMassMultiplier: 1.4f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, soundPack: soundPack, canBeUsedDuringRain: true, fireAffinity: 0f);
+                        var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, soundPack: soundPack, canBeUsedDuringRain: true, fireAffinity: 0f);
 
                         cookingPot.sprite.AssignNewName("off");
                         return cookingPot;
@@ -1756,13 +1756,13 @@ namespace SonOfRobin
                 case Name.Apple:
                     {
                         return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 70, readableName: "apple", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 60, readableName: "apple", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Cherry:
                     {
                         return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 40, readableName: "cherry", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 50, readableName: "cherry", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Banana:
@@ -1774,13 +1774,13 @@ namespace SonOfRobin
                 case Name.Tomato:
                     {
                         return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 20, readableName: "tomato", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "tomato", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Carrot:
                     {
                         return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: false,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 20, readableName: "carrot", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "carrot", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.HerbsGreen:
