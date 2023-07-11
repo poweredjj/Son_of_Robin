@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class AlchemyLab : BoardPiece
     {
-        public static readonly List<PieceTemplate.Name> baseNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat };
+        public static readonly List<PieceTemplate.Name> baseNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
 
         private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
 
@@ -250,6 +250,10 @@ namespace SonOfRobin
                 switch (baseName)
                 {
                     case PieceTemplate.Name.Fat:
+                        potionName = PieceTemplate.Name.BottleOfOil;
+                        break;
+
+                    case PieceTemplate.Name.SeedsGeneric:
                         potionName = PieceTemplate.Name.BottleOfOil;
                         break;
 

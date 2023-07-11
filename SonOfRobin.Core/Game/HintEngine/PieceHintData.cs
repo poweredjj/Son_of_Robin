@@ -446,7 +446,7 @@ namespace SonOfRobin
                     ),
 
                 new PieceHint(
-                    type: PieceHint.Type.MakeOilPositive,
+                    type: PieceHint.Type.MakeOilPositiveFat,
                     message: $"I could use my | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName }\nfrom this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
@@ -454,6 +454,18 @@ namespace SonOfRobin
                         new CountComparison(name: PieceTemplate.Name.AlchemyLabStandard, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) },
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 1 } }
                     ),
+
+                new PieceHint(
+                    type: PieceHint.Type.MakeOilPositiveSeeds,
+                    message: $"I could use my | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName }\nfrom these | { PieceInfo.GetInfo(PieceTemplate.Name.SeedsGeneric).readableName }.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) },
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.SeedsGeneric },
+                    piecesCraftedCount: new List<CountComparison> {
+                        new CountComparison(name: PieceTemplate.Name.AlchemyLabStandard, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) },
+                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 1 } }
+                    ),
+
+
                 };
 
             CheckData(newPieceHintList);
