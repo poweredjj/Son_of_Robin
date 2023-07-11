@@ -139,7 +139,7 @@ namespace SonOfRobin
             this.piecesData = new ConcurrentBag<object> { };
             this.allSteps = this.saveMode ? 8 + this.piecePackagesToSave.Count : 7 + this.PiecesFilesCount;
 
-            if (this.saveMode) DeleteAllSaveTemps();      
+            if (this.saveMode) DeleteAllSaveTemps();
         }
 
         private List<List<BoardPiece>> PreparePiecePackages()
@@ -417,6 +417,12 @@ namespace SonOfRobin
 
                 string coolingPath = Path.Combine(this.saveTempPath, coolingName);
                 FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
+            }
+
+            if (this.HasBeenRemoved) // in case of cancelled save
+            {
+                Directory.Delete(path: this.saveTempPath, recursive: true);
+                return;
             }
 
             this.processedSteps++;
