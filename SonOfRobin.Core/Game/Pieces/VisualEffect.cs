@@ -26,7 +26,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % 60 != 0) return;
 
             var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
-            var predatorPieces = nearbyPieces.Where(piece => PieceInfo.GetInfo(piece.name).isCarnivorous);
+            var predatorPieces = nearbyPieces.Where(piece => piece.pieceInfo.isCarnivorous);
 
             foreach (BoardPiece piece in predatorPieces)
             {

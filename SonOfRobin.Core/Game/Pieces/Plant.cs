@@ -78,9 +78,7 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.name);
-
-            if (pieceInfo.massTakenMultiplier != this.massTakenMultiplier) pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
+            if (this.pieceInfo.massTakenMultiplier != this.massTakenMultiplier) pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
             if (this.fruitEngine != null) this.fruitEngine.Serialize(pieceData);
 
             return pieceData;

@@ -95,6 +95,7 @@ namespace SonOfRobin
         public readonly bool indestructible;
         public readonly byte stackSize;
         public readonly float fireAffinity;
+        public readonly PieceInfo.Info pieceInfo;
         private float burnLevel;
         public virtual PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
@@ -179,6 +180,7 @@ namespace SonOfRobin
             this.fireAffinity = fireAffinity;
             this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
+            this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
         }
 
         public virtual bool ShowStatBars
@@ -416,7 +418,7 @@ namespace SonOfRobin
                 { "base_sprite", this.sprite.Serialize() }
             };
 
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.name);
+            PieceInfo.Info pieceInfo = this.pieceInfo;
 
             if (this.maxAge > 0) pieceData["base_maxAge"] = this.maxAge;
             if (pieceInfo.mass != this.mass) pieceData["base_mass"] = this.mass;

@@ -238,7 +238,7 @@ namespace SonOfRobin
                 { "animPackage", this.AnimPackage },
             };
 
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.boardPiece.name);
+            PieceInfo.Info pieceInfo = this.boardPiece.pieceInfo;
 
             if (this.allowedTerrain.HasBeenChanged) spriteDataDict["allowedTerrain"] = this.allowedTerrain.Serialize();
             if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;

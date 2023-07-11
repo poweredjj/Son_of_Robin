@@ -344,7 +344,7 @@ namespace SonOfRobin
             var extInfoTextList = new List<string>();
             var extInfoImageList = new List<Texture2D>();
 
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(selectedPiece.name);
+            PieceInfo.Info pieceInfo = selectedPiece.pieceInfo;
 
             if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
             {
@@ -358,7 +358,7 @@ namespace SonOfRobin
             {
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
 
-                if (PieceInfo.GetInfo(selectedPiece.name).toolIndestructible)
+                if (selectedPiece.pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
                     extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));

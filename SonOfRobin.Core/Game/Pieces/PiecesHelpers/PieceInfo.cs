@@ -169,6 +169,11 @@ namespace SonOfRobin
             return info[pieceName];
         }
 
+        public static Info TryToGetInfo(PieceTemplate.Name pieceName)
+        {
+            return info.ContainsKey(pieceName) ? info[pieceName] : null;
+        }
+
         public static Texture2D GetTexture(PieceTemplate.Name pieceName)
         {
             // to simplify frequently used query
