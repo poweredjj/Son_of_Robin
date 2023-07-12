@@ -425,10 +425,10 @@ namespace SonOfRobin
         public virtual void Deserialize(Dictionary<string, Object> pieceData)
         {
             if (pieceData.ContainsKey("base_mass")) this.mass = (float)(double)pieceData["base_mass"];
+            if (pieceData.ContainsKey("base_maxHitPoints")) this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"]; // must be deserialized before base_hitPoints
             if (pieceData.ContainsKey("base_hitPoints")) this.HitPoints = (float)(double)pieceData["base_hitPoints"];
             if (pieceData.ContainsKey("base_speed")) this.speed = (float)(double)pieceData["base_speed"];
             if (pieceData.ContainsKey("base_strength")) this.strength = (int)(Int64)pieceData["base_strength"];
-            if (pieceData.ContainsKey("base_maxHitPoints")) this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
             if (pieceData.ContainsKey("base_bioWear")) this.bioWear = (float)(double)pieceData["base_bioWear"];
             if (pieceData.ContainsKey("base_currentAge")) this.currentAge = (int)(Int64)pieceData["base_currentAge"];
             if (pieceData.ContainsKey("base_activeState")) this.activeState = (State)(Int64)pieceData["base_activeState"];
