@@ -398,7 +398,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
-                             minDistance: 0, maxDistance: 80, mass: 1, maxAge: 600, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield);
+                             minDistance: 0, maxDistance: 80, maxAge: 600, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield);
 
                         return boardPiece;
                     }
@@ -416,7 +416,7 @@ namespace SonOfRobin
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
-                            minDistance: 0, maxDistance: 400, mass: 1, maxAge: 1000, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
+                            minDistance: 0, maxDistance: 400, maxAge: 1000, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
 
                         return boardPiece;
                     }
@@ -434,7 +434,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
-                            minDistance: 60, maxDistance: 100, mass: 1, maxAge: 900, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
+                            minDistance: 60, maxDistance: 100, maxAge: 900, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
 
                         return boardPiece;
                     }
@@ -453,7 +453,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain,
-                            minDistance: 30, maxDistance: 90, mass: 1, maxAge: 950, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield);
+                            minDistance: 30, maxDistance: 90, maxAge: 950, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield);
 
                         return boardPiece;
                     }
@@ -470,7 +470,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsCyan, chanceToDrop: 1, maxNumberToDrop: 1) });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 120, mass: 1, maxAge: 600, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 120, maxAge: 600, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
 
                         return boardPiece;
                     }
@@ -492,7 +492,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlue, chanceToDrop: 10, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                            minDistance: 25, maxDistance: 80, mass: 1, maxAge: 1800, massTakenMultiplier: 0.4f, generation: generation, staysAfterDeath: 300, floatsOnWater: true, readableName: "water lily", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3), yield: yield, maxHitPoints: 10);
+                            minDistance: 25, maxDistance: 80, maxAge: 1800, massTakenMultiplier: 0.4f, generation: generation, staysAfterDeath: 300, floatsOnWater: true, readableName: "water lily", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3), yield: yield, maxHitPoints: 10);
 
                         return boardPiece;
                     }
@@ -513,7 +513,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                          minDistance: 0, maxDistance: 100, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield);
+                          minDistance: 0, maxDistance: 100, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield);
 
                         return boardPiece;
                     }
@@ -531,7 +531,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 20, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
-                          minDistance: 0, maxDistance: 100, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield);
+                          minDistance: 0, maxDistance: 100, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield);
 
                         return boardPiece;
                     }
@@ -548,7 +548,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
-                          minDistance: 0, maxDistance: 250, mass: 1, maxAge: 4000, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield);
+                          minDistance: 0, maxDistance: 250, maxAge: 4000, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield);
 
                         return boardPiece;
                     }
@@ -578,7 +578,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                            minDistance: 50, maxDistance: 300, mass: 1, maxAge: 30000, massTakenMultiplier: 1.35f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 50, maxDistance: 300, maxAge: 30000, massTakenMultiplier: 1.35f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -605,7 +605,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -634,7 +634,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -663,7 +663,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "apple tree", description: "Apples can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "apple tree", description: "Apples can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -692,7 +692,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "cherry tree", description: "Cherries can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "cherry tree", description: "Cherries can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -720,7 +720,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            minDistance: 200, maxDistance: 400, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "banana tree", description: "Bananas can grow on it.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
+                            minDistance: 200, maxDistance: 400, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "banana tree", description: "Bananas can grow on it.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -746,7 +746,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            minDistance: 200, maxDistance: 400, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
+                            minDistance: 200, maxDistance: 400, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -766,7 +766,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
                     }
@@ -786,7 +786,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "coffee shrub", description: "Coffee can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "coffee shrub", description: "Coffee can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
                     }
@@ -806,7 +806,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
                     }
@@ -824,7 +824,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
-                            minDistance: 50, maxDistance: 600, mass: 1, maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield);
+                            minDistance: 50, maxDistance: 600, maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield);
 
                         return boardPiece;
                     }
@@ -1454,7 +1454,7 @@ namespace SonOfRobin
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedTerrain: allowedTerrain,
-                            minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.");
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 6, rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.");
 
                         return boardPiece;
                     }
@@ -1819,7 +1819,7 @@ namespace SonOfRobin
                         // stackSize should be 1, to avoid mixing different kinds of seeds together
 
                         BoardPiece boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 1,
-                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "seeds", description: "Can be planted.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, readableName: "seeds", description: "Can be planted.");
 
                         return boardPiece;
                     }
@@ -1827,7 +1827,7 @@ namespace SonOfRobin
                 case Name.Acorn:
                     {
                         BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 6,
-                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 50, readableName: "acorn", description: "Can be planted or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, readableName: "acorn", description: "Can be planted or cooked.");
 
                         ((Seed)acorn).PlantToGrow = Name.Oak; // every "non-generic" seed must have its PlantToGrow attribute set
 
@@ -1837,7 +1837,7 @@ namespace SonOfRobin
                 case Name.CoffeeRaw:
                     {
                         BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 12,
-                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "raw coffee", description: "Can be planted or roasted.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, readableName: "raw coffee", description: "Can be planted or roasted.");
 
                         ((Seed)coffeeRaw).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
 
@@ -1859,7 +1859,7 @@ namespace SonOfRobin
                 case Name.Apple:
                     {
                         BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 60, readableName: "apple", description: "Can be eaten or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, readableName: "apple", description: "Can be eaten or cooked.");
 
                         return boardPiece;
                     }
@@ -1867,7 +1867,7 @@ namespace SonOfRobin
                 case Name.Cherry:
                     {
                         BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 50, readableName: "cherry", description: "Can be eaten or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, readableName: "cherry", description: "Can be eaten or cooked.");
 
                         return boardPiece;
                     }
@@ -1875,7 +1875,7 @@ namespace SonOfRobin
                 case Name.Banana:
                     {
                         BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 80, readableName: "banana", description: "Can be eaten or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, readableName: "banana", description: "Can be eaten or cooked.");
 
                         return boardPiece;
                     }
@@ -1883,7 +1883,7 @@ namespace SonOfRobin
                 case Name.Tomato:
                     {
                         BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "tomato", description: "Can be eaten or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, readableName: "tomato", description: "Can be eaten or cooked.");
 
                         return boardPiece;
                     }
@@ -1891,7 +1891,7 @@ namespace SonOfRobin
                 case Name.Carrot:
                     {
                         BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: false,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "carrot", description: "Can be eaten or cooked.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, readableName: "carrot", description: "Can be eaten or cooked.");
 
                         return boardPiece;
                     }
@@ -1905,7 +1905,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1919,7 +1919,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1933,7 +1933,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "black herbs", description: "Contain poison.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "black herbs", description: "Contain poison.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1947,7 +1947,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1961,7 +1961,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1975,7 +1975,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "red herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "red herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1989,7 +1989,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2000,7 +2000,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, floatsOnWater: false, readableName: "empty bottle", description: "Can be used to make a potion.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, rotatesWhenDropped: true, floatsOnWater: false, readableName: "empty bottle", description: "Can be used to make a potion.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2011,7 +2011,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "coffee", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "coffee", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2024,7 +2024,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2035,7 +2035,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, floatsOnWater: false, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, floatsOnWater: false, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2050,7 +2050,7 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular, blocksMovement: false,
                             allowedTerrain: beachToVolcano, buffList: buffList,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 100, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2065,7 +2065,7 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime, blocksMovement: false,
                             allowedTerrain: beachToVolcano, buffList: buffList,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 250, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2076,7 +2076,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, blocksMovement: false, allowedTerrain: beachToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 130, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2088,7 +2088,7 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Fat, blocksMovement: false,
                             allowedTerrain: beachToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 50, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, readableName: "fat", description: "Can be cooked or crafted.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, readableName: "fat", description: "Can be cooked or crafted.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2097,7 +2097,7 @@ namespace SonOfRobin
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Leather, blocksMovement: false,
                             allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, mass: 100, rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
 
                         return boardPiece;
                     }
@@ -2106,7 +2106,7 @@ namespace SonOfRobin
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger, blocksMovement: false,
                             allowedTerrain: beachToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 560, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "burger", description: "Will remain fresh forever.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "burger", description: "Will remain fresh forever.");
 
                         return boardPiece;
                     }
@@ -2114,7 +2114,7 @@ namespace SonOfRobin
                 case Name.Meal:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MealStandard, blocksMovement: false,
-                            allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "cooked meal", description: "Can be eaten.");
+                            allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "cooked meal", description: "Can be eaten.");
 
                         return boardPiece;
                     }
@@ -2144,7 +2144,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.1f,
-                            minDistance: 10, maxDistance: 45, maxHitPoints: 150, mass: 35, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 400, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, generation: generation, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack);
+                            minDistance: 10, maxDistance: 45, maxHitPoints: 150, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 400, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, generation: generation, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2176,7 +2176,7 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.6f,
-                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 500, eats: eats, strength: 30, generation: generation, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack);
+                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 500, eats: eats, strength: 30, generation: generation, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2211,7 +2211,7 @@ namespace SonOfRobin
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f, retaliateChance: 1f,
-                         minDistance: 5, maxDistance: 30, maxHitPoints: 1600, mass: 80, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, generation: generation, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
+                         minDistance: 5, maxDistance: 30, maxHitPoints: 1600, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, generation: generation, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2241,7 +2241,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.05f,
-                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack);
+                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2658,7 +2658,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, blocksMovement: true, equipType: Equipment.EquipType.Backpack,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
 
                         return boardPiece;
                     }
@@ -2670,7 +2670,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, equipType: Equipment.EquipType.Backpack,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
 
                         return boardPiece;
                     }
@@ -2682,7 +2682,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, blocksMovement: true, equipType: Equipment.EquipType.Backpack,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
 
                         return boardPiece;
                     }
@@ -2693,7 +2693,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, blocksMovement: false, equipType: Equipment.EquipType.Belt,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
 
                         return boardPiece;
                     }
@@ -2704,7 +2704,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, equipType: Equipment.EquipType.Belt,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
 
                         return boardPiece;
                     }
@@ -2715,7 +2715,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, blocksMovement: false, equipType: Equipment.EquipType.Belt,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
 
                         return boardPiece;
                     }
@@ -2725,7 +2725,7 @@ namespace SonOfRobin
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, equipType: Equipment.EquipType.Map,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
 
                         return boardPiece;
                     }
@@ -2738,7 +2738,7 @@ namespace SonOfRobin
                         };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, equipType: Equipment.EquipType.Head,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat.");
 
                         return boardPiece;
                     }
@@ -2751,7 +2751,7 @@ namespace SonOfRobin
                         };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, equipType: Equipment.EquipType.Legs,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
 
                         return boardPiece;
                     }
@@ -2765,7 +2765,7 @@ namespace SonOfRobin
                         };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, blocksMovement: false, equipType: Equipment.EquipType.Chest,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "dungarees", description: "Dungarees.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "dungarees", description: "Dungarees.");
 
                         return boardPiece;
                     }
@@ -2775,7 +2775,7 @@ namespace SonOfRobin
                         LightEngine storedLightEngine = new LightEngine(size: 400, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
                         BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, rotatesWhenDropped: true, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
 
                         return boardPiece;
                     }
@@ -2785,7 +2785,7 @@ namespace SonOfRobin
                         LightEngine storedLightEngine = new LightEngine(size: 600, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
                         BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.");
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, rotatesWhenDropped: true, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.");
 
                         return boardPiece;
                     }
@@ -2798,7 +2798,7 @@ namespace SonOfRobin
                         LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
                         BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack);
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack);
 
                         return boardPiece;
                     }

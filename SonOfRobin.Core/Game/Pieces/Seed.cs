@@ -8,9 +8,9 @@ namespace SonOfRobin
         private PieceTemplate.Name plantToGrow;
 
         public Seed(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, int generation = 0, int mass = 1, bool rotatesWhenDropped = true, byte stackSize = 1) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, int generation = 0, bool rotatesWhenDropped = true, byte stackSize = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, mass: mass, toolbarTask: Scheduler.TaskName.Plant, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty, stackSize: stackSize)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, toolbarTask: Scheduler.TaskName.Plant, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty, stackSize: stackSize)
         {
         }
 

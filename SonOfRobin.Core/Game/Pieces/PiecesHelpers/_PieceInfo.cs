@@ -43,7 +43,6 @@ namespace SonOfRobin
             public readonly float startHitPoints;
             public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
-            public readonly float mass;
             public readonly bool canBeHit;
             public readonly float speed;
             public readonly Color color;
@@ -60,6 +59,7 @@ namespace SonOfRobin
             public readonly bool serialize;
 
             public readonly BoardPiece.Category category;
+            public readonly float startingMass;
             public readonly float fireAffinity;
             public readonly int[] maxMassForSize;
             public readonly bool movesWhenDropped;
@@ -73,8 +73,6 @@ namespace SonOfRobin
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
-                this.mass = piece.Mass;
-
                 this.name = piece.name;
                 this.type = piece.GetType();
                 this.allowedTerrain = piece.sprite.allowedTerrain;
@@ -152,6 +150,7 @@ namespace SonOfRobin
                 // setting default values params non-present in boardPiece
 
                 this.category = BoardPiece.Category.NotSet;
+                this.startingMass = 1;
                 this.serialize = true;
                 this.fireAffinity = 0f;
                 this.maxMassForSize = null;
@@ -174,20 +173,24 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.PlayerBoy:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 50000;
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 50000;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -385,16 +388,19 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Acorn:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 5;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.CoffeeRaw:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 5;
                         this.fireAffinity = 0.6f;
                         break;
 
@@ -404,85 +410,101 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Apple:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 60;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Banana:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 80;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Cherry:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Tomato:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.Carrot:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.MeatRawRegular:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 100;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 250;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.MeatDried:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 250;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.Fat:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.Leather:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 100;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.Burger:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 560;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.Meal:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 200;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.Rabbit:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 35;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 200, 500 };
                         break;
 
                     case PieceTemplate.Name.Fox:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 60;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 1000 };
                         break;
 
                     case PieceTemplate.Name.Tiger:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 80;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 2000 };
                         break;
 
                     case PieceTemplate.Name.Frog:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 10;
                         this.fireAffinity = 0.15f;
                         this.maxMassForSize = new int[] { 300, 800 };
                         break;
@@ -666,6 +688,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Clam:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 50;
                         this.fireAffinity = 0.1f;
                         break;
 
@@ -810,6 +833,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.BurningFlame:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 60;
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
                         break;
 
@@ -1029,70 +1053,84 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.BackpackSmall:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BackpackMedium:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 500;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BackpackBig:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 700;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltSmall:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltMedium:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 300;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltBig:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 400;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.Map:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.Dungarees:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 150;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.HatSimple:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.BootsProtective:
                         this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 500;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.TorchSmall:
                         this.category = BoardPiece.Category.Wood;
+                        this.startingMass = 100;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.TorchBig:
                         this.category = BoardPiece.Category.Wood;
+                        this.startingMass = 180;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
                         this.category = BoardPiece.Category.Metal;
+                        this.startingMass = 300;
                         break;
 
                     case PieceTemplate.Name.LanternFull:
                         this.category = BoardPiece.Category.Metal;
+                        this.startingMass = 350;
                         break;
 
                     case PieceTemplate.Name.Candle:
@@ -1114,53 +1152,64 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.HerbsBlack:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsBlue:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsCyan:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsGreen:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsYellow:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsRed:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsViolet:
                         this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 100;
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 200;
                         break;
 
                     case PieceTemplate.Name.PotionCoffee:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 200;
                         break;
 
                     case PieceTemplate.Name.BottleOfOil:
                         this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 200;
                         this.fireAffinity = 1.0f;
                         break;
 
@@ -1245,6 +1294,7 @@ namespace SonOfRobin
                 // checking for params, that need to be set
 
                 if (this.category == BoardPiece.Category.NotSet) throw new ArgumentNullException($"{this.name} - category not set.");
+                if (this.startingMass <= 0) throw new ArgumentNullException($"{this.name} - starting mass incorrect value.");
 
                 if (this.type == typeof(Plant))
                 {

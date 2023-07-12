@@ -78,7 +78,6 @@ namespace SonOfRobin
         public int lastFrameSMProcessed;
         public float speed;
         private float mass;
-        public readonly float startingMass;
         public bool exists;
         public bool alive;
         public int generation;
@@ -119,11 +118,12 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
             this.id = id;
+            this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
 
             this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
 
@@ -140,8 +140,7 @@ namespace SonOfRobin
             this.showStatBarsTillFrame = 0;
             this.speed = speed;
             this.strength = strength;
-            this.mass = mass;
-            this.startingMass = mass;
+            this.mass = this.pieceInfo != null ? this.pieceInfo.startingMass : 1;
             this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
             this.generation = generation;
             this.exists = true;
@@ -170,7 +169,6 @@ namespace SonOfRobin
             this.burnLevel = 0f;
             this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
-            this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
         }
 
         public virtual bool ShowStatBars
@@ -412,7 +410,7 @@ namespace SonOfRobin
             PieceInfo.Info pieceInfo = this.pieceInfo;
 
             if (this.maxAge > 0) pieceData["base_maxAge"] = this.maxAge;
-            if (pieceInfo.mass != this.mass) pieceData["base_mass"] = this.mass;
+            if (pieceInfo.startingMass != this.mass) pieceData["base_mass"] = this.mass;
             if (this.buffEngine.HasAnyBuff) pieceData["base_buffEngine"] = this.buffEngine.Serialize();
             if (pieceInfo.initialActiveState != this.activeState) pieceData["base_activeState"] = this.activeState;
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();

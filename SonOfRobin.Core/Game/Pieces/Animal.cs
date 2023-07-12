@@ -35,10 +35,10 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int mass, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: maleAnimPkgName, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack, isAffectedByWind: false)
+            base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack, isAffectedByWind: false)
         {
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
@@ -135,8 +135,8 @@ namespace SonOfRobin
             }
             else // burning "fat"
             {
-                if (this.Mass >= this.startingMass * 2)
-                { this.Mass = Math.Max(this.Mass - energyAmount, this.startingMass); }
+                if (this.Mass >= this.pieceInfo.startingMass * 2)
+                { this.Mass = Math.Max(this.Mass - energyAmount, this.pieceInfo.startingMass); }
                 else
                 { this.HitPoints = Math.Max(this.HitPoints - 0.05f, 0); }
             }
@@ -153,7 +153,7 @@ namespace SonOfRobin
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
-            if (this.pregnancyMass > 0 && this.pregnancyMass < this.startingMass * this.maxChildren)
+            if (this.pregnancyMass > 0 && this.pregnancyMass < this.pieceInfo.startingMass * this.maxChildren)
             { this.pregnancyMass += massGained; }
             else
             { this.Mass = Math.Min(this.Mass + massGained, this.maxMass); }
@@ -712,15 +712,15 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
 
             // excess fat can be converted to pregnancy
-            if (this.Mass > this.startingMass * 2 && this.pregnancyMass < this.startingMass * this.maxChildren)
+            if (this.Mass > this.pieceInfo.startingMass * 2 && this.pregnancyMass < this.pieceInfo.startingMass * this.maxChildren)
             {
-                var missingMass = (this.startingMass * this.maxChildren) - this.pregnancyMass;
-                var convertedFat = Convert.ToInt32(Math.Floor(Math.Min(this.Mass - (this.startingMass * 2), missingMass)));
+                var missingMass = (this.pieceInfo.startingMass * this.maxChildren) - this.pregnancyMass;
+                var convertedFat = Convert.ToInt32(Math.Floor(Math.Min(this.Mass - (this.pieceInfo.startingMass * 2), missingMass)));
                 this.Mass -= convertedFat;
                 this.pregnancyMass += convertedFat;
             }
 
-            int noOfChildren = (int)Math.Min(Math.Floor(this.pregnancyMass / this.startingMass), this.maxChildren);
+            int noOfChildren = (int)Math.Min(Math.Floor(this.pregnancyMass / this.pieceInfo.startingMass), this.maxChildren);
             int childrenBorn = 0;
 
             for (int i = 0; i < noOfChildren; i++)
@@ -743,7 +743,7 @@ namespace SonOfRobin
                 if (child.sprite.IsOnBoard)
                 {
                     childrenBorn++;
-                    this.pregnancyMass -= (int)this.startingMass;
+                    this.pregnancyMass -= (int)this.pieceInfo.startingMass;
 
                     var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: child.sprite.position, templateName: PieceTemplate.Name.Backlight);
                     new Tracking(world: world, targetSprite: child.sprite, followingSprite: backlight.sprite, targetXAlign: XAlign.Center, targetYAlign: YAlign.Center);
@@ -752,7 +752,7 @@ namespace SonOfRobin
 
             if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
 
-            if (this.pregnancyMass > this.startingMass)
+            if (this.pregnancyMass > this.pieceInfo.startingMass)
             {
                 this.isPregnant = true;
                 this.pregnancyFramesLeft = 90;
