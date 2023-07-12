@@ -326,9 +326,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, minDistance: 0, maxDistance: 3, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, minDistance: 0, maxDistance: 3, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -338,9 +336,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: false);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, readOnlyParams: readOnlyParams, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1);
+                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1);
 
                         return boardPiece;
                     }
@@ -350,9 +346,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, readOnlyParams: readOnlyParams, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1);
+                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1);
 
                         return boardPiece;
                     }
@@ -362,9 +356,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.0f);
-
-                        Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, readOnlyParams: readOnlyParams, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1);
+                        Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1);
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
@@ -381,9 +373,7 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.0f);
-
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1);
 
                         spectator.sprite.lightEngine = new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         spectator.sprite.lightEngine.AssignSprite(spectator.sprite);
@@ -410,9 +400,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, maxMassForSize: new int[] { 100, 150 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                              minDistance: 0, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxAge: 600, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield);
 
                         return boardPiece;
@@ -433,9 +421,7 @@ namespace SonOfRobin
 
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, maxMassForSize: new int[] { 100, 150 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
 
                         return boardPiece;
@@ -456,9 +442,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 300, bioWear: 0.36f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f, maxMassForSize: new int[] { 250 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassDesert, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                             minDistance: 60, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 900, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
 
                         return boardPiece;
@@ -480,9 +464,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
                         var reproduction = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, maxMassForSize: new int[] { 800 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                             minDistance: 30, maxDistance: 90, bestEnvironment: bestEnvironment, mass: 1, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield, dropSeedChance: 70);
 
                         return boardPiece;
@@ -503,9 +485,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
                         var reproduction = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f, maxMassForSize: new int[] { 400 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant, minDistance: 0, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxAge: 600, reproduction: reproduction, massToBurn: 15, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant, minDistance: 0, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxAge: 600, reproduction: reproduction, massToBurn: 15, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
 
                         return boardPiece;
                     }
@@ -529,9 +509,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
                         var reproduction = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.0f);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                             minDistance: 25, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1800, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.4f, generation: generation, staysAfterDeath: 300, floatsOnWater: true, readableName: "water lily", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3), yield: yield, maxHitPoints: 10);
 
                         return boardPiece;
@@ -555,9 +533,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         var reproduction = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f, maxMassForSize: new int[] { 400 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                           minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 20);
 
                         return boardPiece;
@@ -578,9 +554,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         var reproduction = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f, maxMassForSize: new int[] { 400 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersRed, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                           minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield, dropSeedChance: 20);
 
                         return boardPiece;
@@ -600,9 +574,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
                         var reproduction = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f, maxMassForSize: new int[] { 500 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersYellow2, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                           minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxAge: 4000, reproduction: reproduction, massToBurn: 3, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 15);
 
                         return boardPiece;
@@ -635,10 +607,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        int[] maxMassForSize = new int[] { 1000, 2500 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 50, maxDistance: 300, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 15, massTakenMultiplier: 1.35f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
@@ -668,10 +637,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        int[] maxMassForSize = new int[] { 1000, 2500 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
@@ -702,10 +668,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        int[] maxMassForSize = new int[] { 1000, 2500 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack, dropSeedChance: 20);
 
                         return boardPiece;
@@ -736,12 +699,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
-
-                        int[] maxMassForSize = new int[] { 1000, 2500 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "apple tree", description: "Apples can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
@@ -772,12 +730,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
-
-                        int[] maxMassForSize = new int[] { 1000, 2500 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "cherry tree", description: "Cherries can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
@@ -807,10 +760,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        int[] maxMassForSize = new int[] { 2500, 8000, 10000 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 200, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 15000, reproduction: reproduction, massToBurn: 12, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "banana tree", description: "Bananas can grow on it.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
@@ -839,10 +789,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
-                        int[] maxMassForSize = new int[] { 2500, 8000, 10000 };
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: maxMassForSize, adultSizeMass: maxMassForSize[1]);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 200, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 15000, reproduction: reproduction, massToBurn: 12, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
@@ -864,9 +811,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f, maxMassForSize: new int[] { 450, 900 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.TomatoPlant, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                            maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
@@ -888,9 +833,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f, maxMassForSize: new int[] { 600 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CoffeeShrub, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                            maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "coffee shrub", description: "Coffee can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
@@ -912,9 +855,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CarrotPlant, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                            maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, dropSeedChance: 8);
 
                         return boardPiece;
@@ -935,9 +876,7 @@ namespace SonOfRobin
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
                         var reproduction = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, maxMassForSize: new int[] { 10000 });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.Cactus, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 50, maxDistance: 600, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, reproduction: reproduction, massToBurn: 10, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield, dropSeedChance: 50);
 
                         return boardPiece;
@@ -960,9 +899,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                             minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -985,9 +922,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                             minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1010,9 +945,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
                                 });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                             minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
 
                         return boardPiece;
@@ -1035,9 +968,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
                        });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                             minDistance: 0, maxDistance: 500, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0), isAffectedByWind: false);
 
                         return boardPiece;
@@ -1046,9 +977,8 @@ namespace SonOfRobin
                 case Name.Backlight:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Backlight, minDistance: 0, maxDistance: 0, destructionDelay: -1, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "backlight", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Backlight, minDistance: 0, maxDistance: 0, destructionDelay: -1, allowedTerrain: allowedTerrain, generation: generation, readableName: "backlight", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1056,11 +986,10 @@ namespace SonOfRobin
                 case Name.BloodSplatter:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.BloodSplatter1, AnimData.PkgName.BloodSplatter2, AnimData.PkgName.BloodSplatter3 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 250, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain,
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 250, allowedTerrain: allowedTerrain,
                             minDistance: 0, maxDistance: 10, generation: generation, readableName: "bloodSplatter", description: "A pool of blood.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
@@ -1069,9 +998,8 @@ namespace SonOfRobin
                 case Name.Attack:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, minDistance: 0, maxDistance: 3, destructionDelay: -1, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, minDistance: 0, maxDistance: 3, destructionDelay: -1, allowedTerrain: allowedTerrain, generation: generation, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1079,9 +1007,8 @@ namespace SonOfRobin
                 case Name.MapMarker:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false);
 
                         return boardPiece;
                     }
@@ -1089,9 +1016,8 @@ namespace SonOfRobin
                 case Name.Miss:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Miss, minDistance: 0, maxDistance: 3, destructionDelay: 60, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "miss", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Miss, minDistance: 0, maxDistance: 3, destructionDelay: 60, allowedTerrain: allowedTerrain, generation: generation, readableName: "miss", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1099,9 +1025,8 @@ namespace SonOfRobin
                 case Name.Zzz:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return visualEffect;
                     }
@@ -1109,9 +1034,8 @@ namespace SonOfRobin
                 case Name.Heart:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, destructionDelay: 40, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, destructionDelay: 40, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1119,9 +1043,8 @@ namespace SonOfRobin
                 case Name.MusicNote:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MusicNoteSmall, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "music note", description: "Sound visual.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MusicNoteSmall, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "music note", description: "Sound visual.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1129,9 +1052,8 @@ namespace SonOfRobin
                 case Name.Crosshair:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1139,9 +1061,8 @@ namespace SonOfRobin
                 case Name.BubbleExclamationRed:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return visualEffect;
                     }
@@ -1149,9 +1070,8 @@ namespace SonOfRobin
                 case Name.BubbleExclamationBlue:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return visualEffect;
                     }
@@ -1159,9 +1079,8 @@ namespace SonOfRobin
                 case Name.BubbleCraftGreen:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
                         return visualEffect;
                     }
@@ -1169,9 +1088,8 @@ namespace SonOfRobin
                 case Name.CookingTrigger:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1179,9 +1097,8 @@ namespace SonOfRobin
                 case Name.BrewTrigger:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1189,9 +1106,8 @@ namespace SonOfRobin
                 case Name.UpgradeTrigger:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1199,9 +1115,8 @@ namespace SonOfRobin
                 case Name.FireplaceTriggerOn:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1209,9 +1124,8 @@ namespace SonOfRobin
                 case Name.FireplaceTriggerOff:
                     {
                         var allowedTerrain = canGoAnywhere;
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1235,9 +1149,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.7f);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack, isAffectedByWind: true);
 
                         return boardPiece;
@@ -1263,9 +1175,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.7f);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack, isAffectedByWind: true);
 
                         return boardPiece;
@@ -1279,9 +1189,7 @@ namespace SonOfRobin
                         byte storageWidth = 3;
                         byte storageHeight = 2;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestWooden, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestWooden, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, readableName: "wooden chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
 
                         return boardPiece;
@@ -1295,9 +1203,7 @@ namespace SonOfRobin
                         byte storageWidth = 4;
                         byte storageHeight = 4;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestStone, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestStone, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 50, readableName: "stone chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
 
                         return boardPiece;
@@ -1312,9 +1218,7 @@ namespace SonOfRobin
                         byte storageWidth = 6;
                         byte storageHeight = 4;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
+                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1325,9 +1229,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Crystal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.", soundPack: soundPack, pieceStorageIsGlobal: true);
+                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Crystal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.", soundPack: soundPack, pieceStorageIsGlobal: true);
 
                         return boardPiece;
                     }
@@ -1346,9 +1248,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
-
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
@@ -1397,9 +1297,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
-
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
@@ -1456,9 +1354,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f, movesWhenDropped: false);
-
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack, isAffectedByWind: true);
 
                         return decoration;
@@ -1476,9 +1372,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 50, generation: generation, yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack, isAffectedByWind: true);
 
                         return boardPiece;
@@ -1486,9 +1380,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopEssential:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopEssential, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopEssential, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftEssential, maxHitPoints: 30, readableName: "essential workshop", description: "Essential crafting workshop.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1496,9 +1388,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopBasic:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopBasic, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopBasic, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftBasic, maxHitPoints: 30, readableName: "basic workshop", description: "Basic crafting workshop.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1506,9 +1396,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopAdvanced:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopAdvanced, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopAdvanced, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftAdvanced, maxHitPoints: 80, readableName: "advanced workshop", description: "Advanced crafting workshop.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1516,9 +1404,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopMaster:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMaster, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMaster, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftMaster, maxHitPoints: 80, readableName: "master workshop", description: "Master's crafting workshop.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1526,9 +1412,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopLeatherBasic:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherBasic, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherBasic, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftLeatherBasic, maxHitPoints: 30, readableName: "basic leather workshop", description: "For making basic items out of leather.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1536,9 +1420,7 @@ namespace SonOfRobin
 
                 case Name.WorkshopLeatherAdvanced:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherAdvanced, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherAdvanced, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftLeatherAdvanced, maxHitPoints: 30, readableName: "advanced leather workshop", description: "For making advanced items out of leather.", canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1546,9 +1428,7 @@ namespace SonOfRobin
 
                 case Name.Furnace:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Furnace, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Furnace, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), canBeUsedDuringRain: false);
 
                         return boardPiece;
@@ -1556,9 +1436,7 @@ namespace SonOfRobin
 
                 case Name.Anvil:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Anvil, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Anvil, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftAnvil, maxHitPoints: 80, readableName: "anvil", description: "For metal forming.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 1f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), canBeUsedDuringRain: true);
 
                         return boardPiece;
@@ -1566,13 +1444,11 @@ namespace SonOfRobin
 
                 case Name.HotPlate:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FryingPan, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true));
 
-                        var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, soundPack: soundPack, canBeUsedDuringRain: false);
+                        var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, soundPack: soundPack, canBeUsedDuringRain: false);
 
                         hotPlate.sprite.AssignNewName("off");
                         return hotPlate;
@@ -1580,13 +1456,11 @@ namespace SonOfRobin
 
                 case Name.CookingPot:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Cooking, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.PotLid, ignore3DAlways: true));
 
-                        var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, soundPack: soundPack, canBeUsedDuringRain: true);
+                        var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, soundPack: soundPack, canBeUsedDuringRain: true);
 
                         cookingPot.sprite.AssignNewName("off");
                         return cookingPot;
@@ -1594,13 +1468,11 @@ namespace SonOfRobin
 
                 case Name.AlchemyLabStandard:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f);
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
 
-                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1, soundPack: soundPack);
+                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1, soundPack: soundPack);
 
                         alchemyLab.sprite.AssignNewName("off");
                         return alchemyLab;
@@ -1608,13 +1480,11 @@ namespace SonOfRobin
 
                 case Name.AlchemyLabAdvanced:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f);
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
 
-                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3, soundPack: soundPack);
+                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3, soundPack: soundPack);
 
                         alchemyLab.sprite.AssignNewName("off");
                         return alchemyLab;
@@ -1622,12 +1492,10 @@ namespace SonOfRobin
 
                 case Name.UpgradeBench:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
 
-                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
+                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
 
                         combineWorkshop.sprite.AssignNewName("off");
                         return combineWorkshop;
@@ -1635,12 +1503,10 @@ namespace SonOfRobin
 
                 case Name.Clam:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
                             minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.");
 
@@ -1655,9 +1521,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: animPkg, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.", soundPack: soundPack);
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: animPkg, blocksMovement: false, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1667,9 +1531,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stone, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "stone", description: "Crafting material.");
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stone, blocksMovement: false, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "stone", description: "Crafting material.");
 
                         return boardPiece;
                     }
@@ -1679,9 +1541,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Granite, blocksMovement: true, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "granite", description: "Crafting material.");
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Granite, blocksMovement: true, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "granite", description: "Crafting material.");
 
                         return boardPiece;
                     }
@@ -1694,9 +1554,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropMud, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clay, blocksMovement: true, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "clay", description: "Crafting material.", soundPack: soundPack);
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clay, blocksMovement: true, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "clay", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1709,18 +1567,14 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropRope, cooldown: 15, maxPitchVariation: 0.4f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Flesh, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, floatsOnWater: false, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.", soundPack: soundPack);
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, blocksMovement: false, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Flesh, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, floatsOnWater: false, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
                     }
 
                 case Name.WoodLogRegular:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogRegular, blocksMovement: true, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogRegular, blocksMovement: true, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, floatsOnWater: false, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "regular wood log", description: "Crafting material.");
 
                         return boardPiece;
@@ -1728,9 +1582,7 @@ namespace SonOfRobin
 
                 case Name.WoodLogHard:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.9f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogHard, blocksMovement: true, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogHard, blocksMovement: true, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, floatsOnWater: false, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "hard wood log", description: "Crafting material.");
 
                         return boardPiece;
@@ -1738,9 +1590,7 @@ namespace SonOfRobin
 
                 case Name.WoodPlank:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodPlank, blocksMovement: true, category: BoardPiece.Category.Wood, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodPlank, blocksMovement: true, category: BoardPiece.Category.Wood,
                             allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, yield: null, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "wood plank", description: "Crafting material.");
 
                         return boardPiece;
@@ -1748,9 +1598,7 @@ namespace SonOfRobin
 
                 case Name.IronNail:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Nail, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Nail, blocksMovement: false, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Metal,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 50, floatsOnWater: false, yield: null, maxHitPoints: 1, rotatesWhenDropped: true, readableName: "nail", description: "Crafting material.");
 
                         return boardPiece;
@@ -1771,9 +1619,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Clam, chanceToDrop: 30, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1796,9 +1642,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 10, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1820,9 +1664,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 3),
                                     new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1843,9 +1685,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 4),
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1867,9 +1707,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1888,9 +1726,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1911,9 +1747,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Crystal,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Crystal,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1932,9 +1766,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 8)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Crystal,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Crystal,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1953,9 +1785,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
                           minDistance: 0, maxDistance: 1000, generation: generation, yield: yield, maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -1966,9 +1796,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, blocksMovement: false, allowedTerrain: beachToVolcano,
                             category: BoardPiece.Category.Stone,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 8, floatsOnWater: false, readableName: "coal", description: "Crafting material and fuel.", soundPack: soundPack);
 
@@ -1980,9 +1808,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropCrystal, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crystal, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crystal, blocksMovement: false, allowedTerrain: beachToVolcano,
                             category: BoardPiece.Category.Crystal, rotatesWhenDropped: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, readableName: "crystal", description: "Crafting material.", soundPack: soundPack);
 
@@ -1994,9 +1820,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, blocksMovement: false, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 8, floatsOnWater: false, readableName: "iron ore", description: "Can be used to make iron bars.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2007,9 +1831,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, blocksMovement: false, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 8, floatsOnWater: false, readableName: "glass sand", description: "Can be used to make glass.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2020,9 +1842,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronBar, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronBar, blocksMovement: true, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronBar, blocksMovement: true, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, floatsOnWater: false, rotatesWhenDropped: true, readableName: "iron bar", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2033,9 +1853,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronRod, cooldown: 15, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronRod, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronRod, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 18, floatsOnWater: false, rotatesWhenDropped: true, readableName: "iron rod", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2046,9 +1864,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronPlate, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 18, floatsOnWater: false, rotatesWhenDropped: true, readableName: "iron plate", description: "Crafting material.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2058,9 +1874,7 @@ namespace SonOfRobin
                     {
                         // stackSize should be 1, to avoid mixing different kinds of seeds together
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, stackSize: 1,
+                        BoardPiece boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 1,
                             minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "seeds", description: "Can be planted.");
 
                         return boardPiece;
@@ -2068,22 +1882,17 @@ namespace SonOfRobin
 
                 case Name.Acorn:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f);
-
-                        BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, stackSize: 6,
+                        BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 6,
                             minDistance: 0, maxDistance: 1000, generation: generation, mass: 50, readableName: "acorn", description: "Can be planted or cooked.");
 
                         ((Seed)acorn).PlantToGrow = Name.Oak; // every "non-generic" seed must have its PlantToGrow attribute set
-
 
                         return acorn;
                     }
 
                 case Name.CoffeeRaw:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f);
-
-                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, stackSize: 12,
+                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 12,
                             minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "raw coffee", description: "Can be planted or roasted.");
 
                         ((Seed)coffeeRaw).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
@@ -2098,18 +1907,14 @@ namespace SonOfRobin
                              new Buff(type: BuffEngine.BuffType.MaxStamina, value: 50f, autoRemoveDelay: 60 * 60 * 1),
                         };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", buffList: buffList);
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", buffList: buffList);
 
                         return boardPiece;
                     }
 
                 case Name.Apple:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f);
-
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
+                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 60, readableName: "apple", description: "Can be eaten or cooked.");
 
                         return boardPiece;
@@ -2117,9 +1922,7 @@ namespace SonOfRobin
 
                 case Name.Cherry:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f);
-
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
+                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 50, readableName: "cherry", description: "Can be eaten or cooked.");
 
                         return boardPiece;
@@ -2127,9 +1930,7 @@ namespace SonOfRobin
 
                 case Name.Banana:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f);
-
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
+                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 80, readableName: "banana", description: "Can be eaten or cooked.");
 
                         return boardPiece;
@@ -2137,9 +1938,7 @@ namespace SonOfRobin
 
                 case Name.Tomato:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f);
-
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
+                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "tomato", description: "Can be eaten or cooked.");
 
                         return boardPiece;
@@ -2147,9 +1946,7 @@ namespace SonOfRobin
 
                 case Name.Carrot:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f);
-
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: false,
+                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: false,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 50, readableName: "carrot", description: "Can be eaten or cooked.");
 
                         return boardPiece;
@@ -2163,9 +1960,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2180,9 +1975,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2197,9 +1990,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "black herbs", description: "Contain poison.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2214,9 +2005,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2231,9 +2020,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2248,9 +2035,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "red herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
@@ -2265,9 +2050,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, blocksMovement: false, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.SmallPlant,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.SmallPlant,
                             minDistance: 0, maxDistance: 200, generation: generation, stackSize: 20, rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion and meal ingredient.", mass: 30, buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
@@ -2278,9 +2061,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, floatsOnWater: false, readableName: "empty bottle", description: "Can be used to make a potion.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2291,9 +2072,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "coffee", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
@@ -2306,9 +2085,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
@@ -2319,9 +2096,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano,
+                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, floatsOnWater: false, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
@@ -2335,9 +2110,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, buffList: buffList,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 100, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
 
@@ -2352,9 +2125,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, buffList: buffList,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 250, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
 
@@ -2366,11 +2137,8 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: beachToVolcano, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: beachToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 130, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack);
-
 
                         return boardPiece;
                     }
@@ -2380,9 +2148,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Fat, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Fat, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 50, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, readableName: "fat", description: "Can be cooked or crafted.", soundPack: soundPack);
 
@@ -2391,9 +2157,7 @@ namespace SonOfRobin
 
                 case Name.Leather:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.7f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Leather, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Leather, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, mass: 100, rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
 
@@ -2402,20 +2166,16 @@ namespace SonOfRobin
 
                 case Name.Burger:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 280, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "burger", description: "Will remain fresh forever.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 560, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "burger", description: "Will remain fresh forever.");
 
                         return boardPiece;
                     }
 
                 case Name.Meal:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MealStandard, blocksMovement: false, category: BoardPiece.Category.Indestructible, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MealStandard, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "cooked meal", description: "Can be eaten.");
 
                         return boardPiece;
@@ -2445,9 +2205,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: new int[] { 200, 500 });
-
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.1f,
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.1f,
                             minDistance: 10, maxDistance: 45, maxHitPoints: 150, mass: 35, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 400, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, generation: generation, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2479,9 +2237,7 @@ namespace SonOfRobin
 
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.65f, maxMassForSize: new int[] { 500, 1000 });
-
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.6f,
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.6f,
                          minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 500, eats: eats, strength: 30, generation: generation, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2516,9 +2272,7 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f, maxMassForSize: new int[] { 500, 2000 });
-
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, speed: 2.4f, retaliateChance: 1f,
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f, retaliateChance: 1f,
                          minDistance: 5, maxDistance: 30, maxHitPoints: 1600, mass: 80, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, generation: generation, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2548,9 +2302,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryFrog1, SoundData.Name.CryFrog2, SoundData.Name.CryFrog3, SoundData.Name.CryFrog4, }, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.15f, maxMassForSize: new int[] { 300, 800 });
-
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.05f,
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.05f,
                        minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack);
 
                         return boardPiece;
@@ -2560,9 +2312,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 0.5f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams();
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: true, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
 
                         return boardPiece;
@@ -2572,9 +2322,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 1f }, { BoardPiece.Category.Wood, 5f }, { BoardPiece.Category.Flesh, 3f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
 
                         return boardPiece;
@@ -2584,9 +2332,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 2f }, { BoardPiece.Category.Wood, 8f }, { BoardPiece.Category.Flesh, 5f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Stone,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
 
                         return boardPiece;
@@ -2596,9 +2342,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 3f }, { BoardPiece.Category.Wood, 15 }, { BoardPiece.Category.Flesh, 8f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
 
                         return boardPiece;
@@ -2608,9 +2352,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 6f }, { BoardPiece.Category.Wood, 40 }, { BoardPiece.Category.Flesh, 10f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
 
                         return boardPiece;
@@ -2620,9 +2362,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 1.5f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
 
                         return boardPiece;
@@ -2632,9 +2372,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 5f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
 
                         return boardPiece;
@@ -2644,9 +2382,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 15f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Crystal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Crystal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
 
                         return boardPiece;
@@ -2656,9 +2392,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 7f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
 
                         return boardPiece;
@@ -2668,9 +2402,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
 
                         return boardPiece;
@@ -2680,9 +2412,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
 
                         return boardPiece;
@@ -2692,9 +2422,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 14f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
 
                         return boardPiece;
@@ -2704,9 +2432,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.SmallPlant, 0.0f }, { BoardPiece.Category.Stone, 5f }, { BoardPiece.Category.Wood, 1f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
 
                         return boardPiece;
@@ -2716,9 +2442,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 8f }, { BoardPiece.Category.Wood, 2f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Stone,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Stone,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
 
                         return boardPiece;
@@ -2728,9 +2452,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
 
                         return boardPiece;
@@ -2740,9 +2462,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 30f }, { BoardPiece.Category.Wood, 6f }, { BoardPiece.Category.Crystal, 6f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
 
                         return boardPiece;
@@ -2752,9 +2472,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 2f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.", range: 20);
 
                         return boardPiece;
@@ -2764,9 +2482,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 3f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.", range: 40);
 
                         return boardPiece;
@@ -2776,9 +2492,7 @@ namespace SonOfRobin
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.1f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80);
 
                         return boardPiece;
@@ -2791,9 +2505,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
                         var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
 
                         return boardPiece;
@@ -2806,9 +2518,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
                         var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f);
-
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
 
                         return boardPiece;
@@ -2816,45 +2526,35 @@ namespace SonOfRobin
 
                 case Name.ArrowWood:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 8, indestructible: false, maxHitPoints: 15, stackSize: 15, canBeStuck: true, readableName: "wooden arrow", description: "Very weak arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 8, indestructible: false, maxHitPoints: 15, stackSize: 15, canBeStuck: true, readableName: "wooden arrow", description: "Very weak arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowStone:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 12, indestructible: false, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 12, indestructible: false, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowIron:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.7f);
-
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 20, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 20, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowBurning:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1.0f);
-
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 1, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 1, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
 
                         return boardPiece;
                     }
 
                 case Name.ArrowCrystal:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.4f);
-
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, readOnlyParams: readOnlyParams, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 40, indestructible: false, maxHitPoints: 50, stackSize: 15, canBeStuck: true, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 40, indestructible: false, maxHitPoints: 50, stackSize: 15, canBeStuck: true, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
 
                         return boardPiece;
                     }
@@ -2863,9 +2563,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisStone, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "stone debris", description: "Floats around after hitting stone things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisStone, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "stone debris", description: "Floats around after hitting stone things.");
 
                         return boardPiece;
                     }
@@ -2874,9 +2572,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisPlant, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "plant debris", description: "Floats around after hitting plant things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisPlant, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "plant debris", description: "Floats around after hitting plant things.");
 
                         return boardPiece;
                     }
@@ -2885,9 +2581,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisWood, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "wood debris", description: "Floats around after hitting wood things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisWood, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, readableName: "wood debris", description: "Floats around after hitting wood things.");
 
                         return boardPiece;
                     }
@@ -2899,9 +2593,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "leaf", description: "Floats around after hitting plant things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "leaf", description: "Floats around after hitting plant things.");
 
                         return boardPiece;
                     }
@@ -2910,9 +2602,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisCrystal, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "crystal shard", description: "Floats around after hitting crystal things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisCrystal, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "crystal shard", description: "Floats around after hitting crystal things.");
 
                         return boardPiece;
                     }
@@ -2924,9 +2614,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
 
                         return boardPiece;
                     }
@@ -2938,9 +2626,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
 
                         return boardPiece;
                     }
@@ -2952,9 +2638,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 80, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
+                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 80, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
 
                         heartDebris.sprite.opacity = 0.7f;
 
@@ -2968,9 +2652,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 40, destructionDelayMaxOffset: 15, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...", isAffectedByWind: false);
+                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 40, destructionDelayMaxOffset: 15, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...", isAffectedByWind: false);
 
                         var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
                         Color color = colors[random.Next(0, colors.Count)];
@@ -2986,9 +2668,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false);
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.", isAffectedByWind: false);
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, destructionDelay: 180, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.", isAffectedByWind: false);
 
                         return boardPiece;
                     }
@@ -3001,9 +2681,7 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false, waitingAfterSleepPossible: false, wakeUpBuffs: wakeUpBuffs);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1);
-
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nNot very comfortable.");
 
                         return boardPiece;
@@ -3015,9 +2693,7 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.7f);
-
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentMedium, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentMedium, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nAlso allows waiting inside.", lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
 
                         return boardPiece;
@@ -3031,9 +2707,7 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.6f);
-
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nAlso allows waiting inside.", lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
 
                         return boardPiece;
@@ -3045,9 +2719,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)2),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
 
                         return boardPiece;
@@ -3059,9 +2731,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)3),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
 
                         return boardPiece;
@@ -3073,9 +2743,7 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)4),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, blocksMovement: true, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
 
                         return boardPiece;
@@ -3086,9 +2754,7 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
 
                         return boardPiece;
@@ -3099,9 +2765,7 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
 
                         return boardPiece;
@@ -3112,9 +2776,7 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
 
                         return boardPiece;
@@ -3124,9 +2786,7 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Map, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Map,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
 
                         return boardPiece;
@@ -3139,9 +2799,7 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.HeatProtection, value: null)
                         };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Head, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Head,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat.");
 
                         return boardPiece;
@@ -3154,9 +2812,7 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.SwampProtection, value: null)
                         };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Legs, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
 
                         return boardPiece;
@@ -3170,9 +2826,7 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f),
                         };
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.5f);
-
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Chest, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Chest,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "dungarees", description: "Dungarees.");
 
                         return boardPiece;
@@ -3182,9 +2836,7 @@ namespace SonOfRobin
                     {
                         LightEngine storedLightEngine = new LightEngine(size: 400, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
-
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
 
                         return boardPiece;
@@ -3193,9 +2845,8 @@ namespace SonOfRobin
                 case Name.TorchBig:
                     {
                         LightEngine storedLightEngine = new LightEngine(size: 600, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 1f);
 
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.");
 
                         return boardPiece;
@@ -3208,9 +2859,7 @@ namespace SonOfRobin
 
                         LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine, readOnlyParams: readOnlyParams,
+                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack);
 
                         return boardPiece;
@@ -3221,9 +2870,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Metal,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Metal,
                             minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
 
                         return boardPiece;
@@ -3234,9 +2881,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.2f);
-
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Wood,
+                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 500, generation: generation, stackSize: 6, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack);
 
                         return decoration;
@@ -3246,9 +2891,7 @@ namespace SonOfRobin
                     {
                         ushort range = 150;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f);
-
-                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Campfire, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
+                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Campfire, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
                         fireplace.sprite.AssignNewName("off");
                         return fireplace;
@@ -3258,18 +2901,14 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0f);
-
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SkullAndBones, minDistance: 0, maxDistance: 0, destructionDelay: 60 * 60 * 5, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "predator repellent", description: "Scares predators and is invisible.", activeState: BoardPiece.State.ScareAnimalsAway, visible: false);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SkullAndBones, minDistance: 0, maxDistance: 0, destructionDelay: 60 * 60 * 5, allowedTerrain: allowedTerrain, generation: generation, readableName: "predator repellent", description: "Scares predators and is invisible.", activeState: BoardPiece.State.ScareAnimalsAway, visible: false);
 
                         return boardPiece;
                     }
 
                 case Name.Hole:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Indestructible,
                             minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 1, readableName: "hole", description: "Empty dig site.", destructionDelay: 60 * 30, isAffectedByWind: false);
 
                         return boardPiece;
@@ -3284,9 +2923,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyStump));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.8f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, readOnlyParams: readOnlyParams, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedTerrain: beachToVolcano, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 500, generation: generation, maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", yield: yield, soundPack: soundPack, isAffectedByWind: false);
 
                         return boardPiece;
@@ -3294,9 +2931,7 @@ namespace SonOfRobin
 
                 case Name.HumanSkeleton:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(fireAffinity: 0.3f, movesWhenDropped: false);
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Flesh,
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Flesh,
                             minDistance: 0, maxDistance: 500, generation: generation, yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", isAffectedByWind: false);
 
                         return boardPiece;
@@ -3306,9 +2941,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: true, fireAffinity: 0, maxMassForSize: new int[] { 100, 250, 500, 750, 1000, 2000, 2500 });
-
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
 
                         return flame;
                     }
@@ -3319,9 +2952,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        VisualEffect lavalight = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, minDistance: 0, maxDistance: 500, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, generation: generation, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 0.3f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: false, castShadows: true), ignoresCollisions: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0));
+                        VisualEffect lavalight = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, minDistance: 0, maxDistance: 500, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 0.3f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: false, castShadows: true), ignoresCollisions: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0));
 
                         lavalight.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
 
@@ -3338,9 +2969,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 1);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly, ignoresCollisions: false, visible: true, fogExplodesWhenBurns: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly, ignoresCollisions: false, visible: true, fogExplodesWhenBurns: true);
 
                         visualEffect.sprite.color = Color.LimeGreen;
                         visualEffect.sprite.opacity = 0.4f;
@@ -3359,9 +2988,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 3);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 1);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "gas", description: "Lava gas.", activeState: BoardPiece.State.FogMoveRandomly, ignoresCollisions: false, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "gas", description: "Lava gas.", activeState: BoardPiece.State.FogMoveRandomly, ignoresCollisions: false, visible: true);
 
                         visualEffect.sprite.color = new Color(255, 206, 28);
                         visualEffect.sprite.opacity = 0.45f;
@@ -3371,9 +2998,7 @@ namespace SonOfRobin
 
                 case Name.RainDrop:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0f);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, ignoresCollisions: true, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, ignoresCollisions: true, visible: true);
 
                         visualEffect.sprite.opacity = 0.75f;
 
@@ -3385,9 +3010,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.ShootFire, maxPitchVariation: 0.6f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0f);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, ignoresCollisions: true, visible: true, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true), soundPack: soundPack);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, ignoresCollisions: true, visible: true, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true), soundPack: soundPack);
 
                         return visualEffect;
                     }
@@ -3405,9 +3028,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f));
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, ignoresCollisions: false, visible: true, soundPack: soundPack);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, ignoresCollisions: false, visible: true, soundPack: soundPack);
 
                         visualEffect.sprite.opacity = 0f;
 
@@ -3424,9 +3045,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Cyan;
 
@@ -3442,9 +3061,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, generatesWind: true, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, generatesWind: true, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.White;
 
@@ -3461,9 +3078,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Blue;
 
@@ -3482,9 +3097,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night });
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night });
 
                         ambientSound.sprite.color = Color.Black;
 
@@ -3503,9 +3116,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon }, playOnlyWhenIsSunny: true);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon }, playOnlyWhenIsSunny: true);
 
                         ambientSound.sprite.color = Color.Green;
 
@@ -3522,9 +3133,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60);
 
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, readOnlyParams: readOnlyParams, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient lava sound", description: "Ambient sound for lava.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient lava sound", description: "Ambient sound for lava.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Yellow;
 
@@ -3533,9 +3142,7 @@ namespace SonOfRobin
 
                 case Name.ParticleEmitter:
                     {
-                        ReadOnlyParams readOnlyParams = new ReadOnlyParams(serialize: false, fireAffinity: 0);
-
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, destructionDelay: 0, readOnlyParams: readOnlyParams, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, ignoresCollisions: true, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, ignoresCollisions: true, visible: true);
 
                         visualEffect.sprite.opacity = 0.0f;
 
