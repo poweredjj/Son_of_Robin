@@ -14,9 +14,9 @@ namespace SonOfRobin
         private readonly bool fogExplodesWhenBurns;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
+            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = true, int generation = 0, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false, soundPack: soundPack)
         {
             this.fogExplodesWhenBurns = fogExplodesWhenBurns;
         }

@@ -105,7 +105,6 @@ namespace SonOfRobin
         { get { return this.passiveMovement != Vector2.Zero; } }
 
         public bool rotatesWhenDropped;
-        private readonly int destructionDelay;
         public BoardPiece visualAid;
         public readonly string readableName;
         public readonly string description;
@@ -114,7 +113,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
         {
             this.world = world;
             this.name = name;
@@ -126,7 +125,6 @@ namespace SonOfRobin
             this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
             this.soundPack.Activate(this);
 
-            this.destructionDelay = destructionDelay;
             this.activeState = activeState;
             this.lastFrameSMProcessed = 0;
             this.maxHitPoints = maxHitPoints;
@@ -236,6 +234,9 @@ namespace SonOfRobin
 
         public byte StackSize
         { get { return this.pieceInfo == null ? (byte)1 : this.pieceInfo.stackSize; } }
+
+        public int DestructionDelay
+        { get { return this.pieceInfo == null ? 0 : this.pieceInfo.destructionDelay; } }
 
         public bool IsBurning
         { get { return this.burnLevel >= 0.5f; } }
@@ -387,10 +388,10 @@ namespace SonOfRobin
 
         public void AddPlannedDestruction()
         {
-            if (this.destructionDelay == 0) return;
+            if (this.DestructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.destructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.destructionDelay, boardPiece: this);
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()

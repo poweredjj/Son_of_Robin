@@ -70,6 +70,7 @@ namespace SonOfRobin
             public readonly bool canShrink;
             public readonly bool canBePickedUp;
             public readonly byte stackSize;
+            public readonly int destructionDelay;
 
             public Info(BoardPiece piece)
             {
@@ -162,6 +163,7 @@ namespace SonOfRobin
                 this.canShrink = false;
                 this.canBePickedUp = false;
                 this.stackSize = 1;
+                this.destructionDelay = 0;
 
                 // setting values for names
 
@@ -829,21 +831,25 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Backlight:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = -1;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 250;
                         break;
 
                     case PieceTemplate.Name.Attack:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = -1;
                         break;
 
                     case PieceTemplate.Name.Miss:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 60;
                         break;
 
                     case PieceTemplate.Name.Zzz:
@@ -854,6 +860,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Heart:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 40;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
@@ -894,6 +901,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Explosion:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = -1;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
@@ -1087,51 +1095,61 @@ namespace SonOfRobin
                     case PieceTemplate.Name.DebrisPlant:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 60;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 60;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 60;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 230;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 230;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 230;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 90;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 230;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 110;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.destructionDelay = 230;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -1264,6 +1282,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 0.0f;
+                        this.destructionDelay = 60 * 60 * 5;
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
@@ -1351,6 +1370,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Hole:
                         this.category = BoardPiece.Category.Indestructible;
                         this.movesWhenDropped = false;
+                        this.destructionDelay = 60 * 30;
                         break;
 
                     case PieceTemplate.Name.TreeStump:
