@@ -96,8 +96,6 @@ namespace SonOfRobin
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
         public readonly Yield appearDebris; // yield that is used to make debris when placing this piece
-        public readonly Scheduler.TaskName boardTask;
-        public readonly Scheduler.TaskName toolbarTask;
         protected int passiveRotation;
         protected Vector2 passiveMovement;
 
@@ -113,7 +111,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
         {
             this.world = world;
             this.name = name;
@@ -146,8 +144,6 @@ namespace SonOfRobin
             this.PieceStorage = null; // updated in child classes - if needed
             this.buffEngine = new BuffEngine(piece: this);
             this.buffList = buffList == null ? new List<Buff> { } : buffList;
-            this.boardTask = boardTask;
-            this.toolbarTask = toolbarTask;
             this.passiveMovement = Vector2.Zero;
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;

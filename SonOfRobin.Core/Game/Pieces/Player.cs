@@ -222,7 +222,7 @@ namespace SonOfRobin
             get
             {
                 BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
-                return activeToolbarPiece != null && activeToolbarPiece.toolbarTask != Scheduler.TaskName.Empty;
+                return activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask != Scheduler.TaskName.Empty;
             }
         }
 
@@ -261,7 +261,7 @@ namespace SonOfRobin
 
                 var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
 
-                var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
+                var interestingPieces = nearbyPieces.Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty).ToList();
                 if (interestingPieces.Count > 0)
                 {
                     BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
@@ -783,7 +783,7 @@ namespace SonOfRobin
                 {
                     this.pointWalkTarget = Vector2.Zero; // to avoid interacting indefinitely
                     this.world.HintEngine.Disable(Tutorials.Type.Interact);
-                    new Scheduler.Task(taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
+                    new Scheduler.Task(taskName: pieceToInteract.pieceInfo.boardTask, delay: 0, executeHelper: pieceToInteract);
                 }
             }
         }
@@ -1278,8 +1278,8 @@ namespace SonOfRobin
 
             if (!this.CanSeeAnything &&
                 activeToolbarPiece?.GetType() != typeof(PortableLight) &&
-                activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetDrinked &&
-                activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetEaten)
+                activeToolbarPiece?.pieceInfo.toolbarTask != Scheduler.TaskName.GetDrinked &&
+                activeToolbarPiece?.pieceInfo.toolbarTask != Scheduler.TaskName.GetEaten)
             {
                 if (!highlightOnly) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
                 return false;
@@ -1322,7 +1322,7 @@ namespace SonOfRobin
                     {"highlightOnly", highlightOnly},
                 };
 
-            new Scheduler.Task(taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
+            new Scheduler.Task(taskName: activeToolbarPiece.pieceInfo.toolbarTask, delay: 0, executeHelper: executeHelper);
             return true;
         }
 

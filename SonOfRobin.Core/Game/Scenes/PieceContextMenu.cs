@@ -141,8 +141,8 @@ namespace SonOfRobin
         {
             var contextActionList = new List<ContextAction> { };
 
-            if (this.piece.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
-            if (this.piece.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
+            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
+            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
             if (this.piece.GetType() == typeof(Seed)) contextActionList.Add(ContextAction.Plant);
             if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
             if (addMove) contextActionList.Add(ContextAction.Move);
@@ -307,7 +307,7 @@ namespace SonOfRobin
                         executeHelper["buttonHeld"] = false;
                         executeHelper["highlightOnly"] = false;
 
-                        new Scheduler.Task(taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
+                        new Scheduler.Task(taskName: food.pieceInfo.toolbarTask, delay: 0, executeHelper: executeHelper);
 
                         return;
                     }
@@ -324,7 +324,7 @@ namespace SonOfRobin
                         executeHelper["buttonHeld"] = false;
                         executeHelper["highlightOnly"] = false;
 
-                        new Scheduler.Task(taskName: potion.toolbarTask, delay: 0, executeHelper: executeHelper);
+                        new Scheduler.Task(taskName: potion.pieceInfo.toolbarTask, delay: 0, executeHelper: executeHelper);
 
                         return;
                     }

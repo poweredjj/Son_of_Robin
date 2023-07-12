@@ -346,7 +346,7 @@ namespace SonOfRobin
 
             PieceInfo.Info pieceInfo = selectedPiece.pieceInfo;
 
-            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
+            if (selectedPiece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten)
             {
                 float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 1);
                 extInfoTextList.Add($"| +{fedPercent}%");

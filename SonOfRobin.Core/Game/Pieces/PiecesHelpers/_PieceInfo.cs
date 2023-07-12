@@ -28,8 +28,6 @@ namespace SonOfRobin
             public readonly List<Buff> buffList;
             public readonly AnimFrame frame;
             public readonly Texture2D texture;
-            public readonly Scheduler.TaskName toolbarTask;
-            public readonly Scheduler.TaskName boardTask;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;
@@ -71,6 +69,8 @@ namespace SonOfRobin
             public readonly bool canBePickedUp;
             public readonly byte stackSize;
             public readonly int destructionDelay;
+            public readonly Scheduler.TaskName toolbarTask;
+            public readonly Scheduler.TaskName boardTask;
 
             public Info(BoardPiece piece)
             {
@@ -87,8 +87,6 @@ namespace SonOfRobin
                 this.readableName = piece.readableName;
                 this.description = piece.description;
                 this.buffList = piece.buffList;
-                this.toolbarTask = piece.toolbarTask;
-                this.boardTask = piece.boardTask;
                 this.canBeHit = piece.canBeHit;
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
@@ -164,6 +162,8 @@ namespace SonOfRobin
                 this.canBePickedUp = false;
                 this.stackSize = 1;
                 this.destructionDelay = 0;
+                this.boardTask = Scheduler.TaskName.Empty;
+                this.toolbarTask = Scheduler.TaskName.Empty;
 
                 // setting values for names
 
@@ -288,6 +288,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -297,6 +298,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -338,6 +340,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.plantDropSeedChance = 20;
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -348,6 +351,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -358,6 +362,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -378,6 +383,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 12;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
@@ -387,6 +393,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantDropSeedChance = 8;
+                        this.boardTask = Scheduler.TaskName.DropFruit;
                         break;
 
                     case PieceTemplate.Name.Acorn:
@@ -395,6 +402,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.toolbarTask = Scheduler.TaskName.Plant;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -402,6 +410,7 @@ namespace SonOfRobin
                         this.startingMass = 5;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Plant;
                         break;
 
                     case PieceTemplate.Name.CoffeeRaw:
@@ -410,6 +419,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
+                        this.toolbarTask = Scheduler.TaskName.Plant;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
@@ -424,6 +434,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
                         this.stackSize = 10;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Banana:
@@ -432,6 +443,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
                         this.stackSize = 10;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Cherry:
@@ -440,6 +452,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
                         this.stackSize = 16;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Tomato:
@@ -449,6 +462,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.canBePickedUp = true;
                         this.stackSize = 10;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Carrot:
@@ -457,6 +471,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
                         this.stackSize = 10;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.MeatRawRegular:
@@ -465,6 +480,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
@@ -473,6 +489,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -481,6 +498,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Fat:
@@ -505,6 +523,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 5;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Meal:
@@ -512,6 +531,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
                     case PieceTemplate.Name.Rabbit:
@@ -588,97 +608,117 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.ChestStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.2f;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.ChestIron:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.Campfire:
                         this.category = BoardPiece.Category.Stone;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.WorkshopEssential:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabStandard:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
+                        this.boardTask = Scheduler.TaskName.InteractWithLab;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
                         this.category = BoardPiece.Category.Wood;
+                        this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.Furnace:
                         this.category = BoardPiece.Category.Stone;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
+                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
                         break;
 
                     case PieceTemplate.Name.HotPlate:
                         this.category = BoardPiece.Category.Stone;
+                        this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         break;
 
                     case PieceTemplate.Name.CookingPot:
                         this.category = BoardPiece.Category.Metal;
+                        this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         break;
 
                     case PieceTemplate.Name.UpgradeBench:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
                         break;
 
                     case PieceTemplate.Name.Stick:
@@ -940,126 +980,147 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.toolIndestructible = true;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.AxeWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.AxeStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.AxeIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.AxeCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.PickaxeWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.PickaxeStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.PickaxeIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.PickaxeCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.SpearWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.SpearStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.SpearIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ScytheStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ScytheIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ShovelStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ShovelIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ShovelCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.BowBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.BowAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.ArrowWood:
@@ -1155,16 +1216,19 @@ namespace SonOfRobin
                     case PieceTemplate.Name.TentSmall:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
+                        this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         break;
 
                     case PieceTemplate.Name.TentMedium:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
+                        this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         break;
 
                     case PieceTemplate.Name.TentBig:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.6f;
+                        this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         break;
 
                     case PieceTemplate.Name.BackpackSmall:
@@ -1243,6 +1307,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 3;
+                        this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         break;
 
                     case PieceTemplate.Name.TorchBig:
@@ -1251,17 +1316,19 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 3;
-                        break;
-
-                    case PieceTemplate.Name.LanternEmpty:
-                        this.category = BoardPiece.Category.Metal;
-                        this.startingMass = 300;
-                        this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         break;
 
                     case PieceTemplate.Name.LanternFull:
                         this.category = BoardPiece.Category.Metal;
                         this.startingMass = 350;
+                        this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
+                        break;
+
+                    case PieceTemplate.Name.LanternEmpty:
+                        this.category = BoardPiece.Category.Metal;
+                        this.startingMass = 300;
                         this.canBePickedUp = true;
                         break;
 
@@ -1352,12 +1419,14 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
                     case PieceTemplate.Name.PotionCoffee:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
                         this.canBePickedUp = true;
+                        this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
                     case PieceTemplate.Name.BottleOfOil:
