@@ -29,7 +29,7 @@ namespace SonOfRobin
             int maxAge, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksPlantGrowth: true, minDistance: minDistance, maxDistance: maxDistance, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, allowedDensity: allowedDensity, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, minDistance: minDistance, maxDistance: maxDistance, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, allowedDensity: allowedDensity, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;

@@ -71,6 +71,7 @@ namespace SonOfRobin
             public readonly Scheduler.TaskName toolbarTask;
             public readonly Scheduler.TaskName boardTask;
             public readonly bool spriteBlocksMovement;
+            public readonly bool spriteBlocksPlantGrowth;
 
             public Info(BoardPiece piece)
             {
@@ -165,6 +166,7 @@ namespace SonOfRobin
                 this.boardTask = Scheduler.TaskName.Empty;
                 this.toolbarTask = Scheduler.TaskName.Empty;
                 this.spriteBlocksMovement = false;
+                this.spriteBlocksPlantGrowth = false;
 
                 // setting values for names
 
@@ -207,6 +209,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
@@ -217,6 +220,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantMaxExistingNumber = 300;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
@@ -226,6 +230,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 300, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
@@ -236,6 +241,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
                         this.plantDropSeedChance = 70;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -245,6 +251,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.WaterLily:
@@ -253,6 +260,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -263,6 +271,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -273,6 +282,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -283,6 +293,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
                         this.plantDropSeedChance = 15;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
@@ -293,6 +304,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -303,6 +315,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -406,6 +419,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantDropSeedChance = 8;
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.spriteBlocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.Acorn:
