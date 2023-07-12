@@ -113,11 +113,10 @@ namespace SonOfRobin
         public readonly string description;
         public bool canBeHit;
         public bool isTemporaryDecoration;
-        private readonly bool canShrink;
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
         {
             this.world = world;
             this.name = name;
@@ -165,7 +164,6 @@ namespace SonOfRobin
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
             this.burnLevel = 0f;
-            this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
         }
 
@@ -334,7 +332,7 @@ namespace SonOfRobin
         {
             byte newSpriteSize = this.SpriteSize;
             if (this.sprite.AnimSize == newSpriteSize) return true;
-            if (!this.canShrink && this.sprite.AnimSize > newSpriteSize) return true;
+            if (!this.pieceInfo.canShrink && this.sprite.AnimSize > newSpriteSize) return true;
 
             this.sprite.AssignNewSize(newSpriteSize);
             return this.sprite.AnimSize == newSpriteSize;

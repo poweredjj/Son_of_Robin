@@ -69,6 +69,7 @@ namespace SonOfRobin
             public readonly int plantMaxExistingNumber;
             public readonly int plantDropSeedChance;
             public readonly bool toolIndestructible;
+            public readonly bool canShrink;
 
             public Info(BoardPiece piece)
             {
@@ -106,7 +107,6 @@ namespace SonOfRobin
                 }
 
                 this.shootsProjectile = false;
-                this.toolIndestructible = false;
                 this.toolRange = 0;
                 if (this.type == typeof(Tool))
                 {
@@ -161,6 +161,7 @@ namespace SonOfRobin
                 this.plantMaxExistingNumber = 0;
                 this.plantDropSeedChance = 0;
                 this.toolIndestructible = false;
+                this.canShrink = false;
 
                 // setting values for names
 
@@ -835,6 +836,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 60;
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
+                        this.canShrink = true;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
