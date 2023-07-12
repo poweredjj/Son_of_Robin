@@ -26,7 +26,6 @@ namespace SonOfRobin
             public readonly bool shootsProjectile;
             public readonly Equipment.EquipType equipType;
             public bool isCarnivorous;
-            public readonly BoardPiece.Category category;
             public readonly bool canBePickedUp;
             public readonly List<Buff> buffList;
             public readonly AnimFrame frame;
@@ -60,6 +59,7 @@ namespace SonOfRobin
             // data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
 
+            public readonly BoardPiece.Category category;
             public readonly float fireAffinity;
             public readonly int[] maxMassForSize;
             public readonly bool movesWhenDropped;
@@ -77,7 +77,6 @@ namespace SonOfRobin
 
                 this.name = piece.name;
                 this.type = piece.GetType();
-                this.category = piece.category;
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.maxHitPoints = piece.maxHitPoints;
@@ -152,6 +151,7 @@ namespace SonOfRobin
 
                 // setting default values params non-present in boardPiece
 
+                this.category = BoardPiece.Category.NotSet;
                 this.serialize = true;
                 this.fireAffinity = 0f;
                 this.maxMassForSize = null;
@@ -168,24 +168,30 @@ namespace SonOfRobin
                 switch (this.name)
                 {
                     case PieceTemplate.Name.Empty:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.PlayerBoy:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
+                        this.category = BoardPiece.Category.Flesh;
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
+                        this.category = BoardPiece.Category.Flesh;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
@@ -194,6 +200,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
@@ -203,6 +210,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.8f;
                         this.maxMassForSize = new int[] { 250 };
                         this.plantMassToBurn = 5;
@@ -211,6 +219,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 800 };
                         this.plantMassToBurn = 5;
@@ -220,6 +229,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Rushes:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
@@ -228,6 +238,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.WaterLily:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
@@ -235,6 +246,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
@@ -244,6 +256,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
@@ -253,6 +266,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 500 };
                         this.plantMassToBurn = 3;
@@ -261,7 +275,26 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 15;
                         break;
 
+                    case PieceTemplate.Name.TomatoPlant:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.fireAffinity = 0.4f;
+                        this.maxMassForSize = new int[] { 450, 900 };
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
+                        break;
+
+                    case PieceTemplate.Name.CoffeeShrub:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.fireAffinity = 0.4f;
+                        this.maxMassForSize = new int[] { 600 };
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
+                        break;
+
                     case PieceTemplate.Name.Cactus:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 10000 };
                         this.plantMassToBurn = 10;
@@ -271,6 +304,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -280,6 +314,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.TreeBig:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -289,6 +324,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Oak:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -299,6 +335,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.AppleTree:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -308,6 +345,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CherryTree:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -317,6 +355,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.PalmTree:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -326,6 +365,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BananaTree:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
@@ -335,6 +375,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.4f;
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
@@ -342,694 +383,852 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 8;
                         break;
 
-                    case PieceTemplate.Name.TomatoPlant:
-                        this.fireAffinity = 0.4f;
-                        this.maxMassForSize = new int[] { 450, 900 };
-                        this.plantMassToBurn = 9;
-                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
-                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-                        break;
-
-                    case PieceTemplate.Name.CoffeeShrub:
-                        this.fireAffinity = 0.4f;
-                        this.maxMassForSize = new int[] { 600 };
-                        this.plantMassToBurn = 9;
-                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
-                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
+                    case PieceTemplate.Name.Acorn:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.CoffeeRaw:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.Apple:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Banana:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Cherry:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.15f;
                         break;
 
                     case PieceTemplate.Name.Tomato:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.15f;
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.Carrot:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.15f;
                         break;
 
-                    case PieceTemplate.Name.Acorn:
-                        this.fireAffinity = 0.6f;
-                        break;
-
                     case PieceTemplate.Name.MeatRawRegular:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.MeatDried:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.Fat:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.Leather:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.Burger:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.Meal:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.Rabbit:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 200, 500 };
                         break;
 
                     case PieceTemplate.Name.Fox:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 1000 };
                         break;
 
                     case PieceTemplate.Name.Tiger:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 2000 };
                         break;
 
                     case PieceTemplate.Name.Frog:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.15f;
                         this.maxMassForSize = new int[] { 300, 800 };
                         break;
 
                     case PieceTemplate.Name.MineralsBig:
+                        this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.MineralsSmall:
+                        this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.MineralsMossyBig:
+                        this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.MineralsMossySmall:
+                        this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.JarTreasure:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.JarBroken:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.5f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.CrateStarting:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.CrateRegular:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.ChestWooden:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.ChestStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.2f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.ChestIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
+                        this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
+                        this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.Campfire:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.WorkshopEssential:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabStandard:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.Furnace:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.Anvil:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.HotPlate:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.CookingPot:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.UpgradeBench:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.Stick:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.WoodLogRegular:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.WoodLogHard:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.9f;
                         break;
 
                     case PieceTemplate.Name.WoodPlank:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.Stone:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.Granite:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.Clay:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.Rope:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.Clam:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.CoalDeposit:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.BeachDigSite:
+                        this.category = BoardPiece.Category.Dirt;
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
+                        this.category = BoardPiece.Category.Dirt;
                         break;
 
                     case PieceTemplate.Name.DesertDigSite:
+                        this.category = BoardPiece.Category.Dirt;
                         break;
 
                     case PieceTemplate.Name.GlassDigSite:
+                        this.category = BoardPiece.Category.Dirt;
                         break;
 
                     case PieceTemplate.Name.SwampDigSite:
+                        this.category = BoardPiece.Category.Dirt;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:
+                        this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositBig:
+                        this.category = BoardPiece.Category.Crystal;
                         break;
 
                     case PieceTemplate.Name.Coal:
+                        this.category = BoardPiece.Category.Stone;
                         break;
 
                     case PieceTemplate.Name.IronOre:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.IronBar:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.IronRod:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.IronNail:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.IronPlate:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.GlassSand:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.Crystal:
+                        this.category = BoardPiece.Category.Crystal;
                         break;
 
                     case PieceTemplate.Name.Backlight:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Attack:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Miss:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Zzz:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Heart:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.Explosion:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.UpgradeTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.BrewTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.FireplaceTriggerOn:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.FireplaceTriggerOff:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.KnifeSimple:
+                        this.category = BoardPiece.Category.Wood;
                         break;
 
                     case PieceTemplate.Name.AxeWood:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.AxeStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.AxeIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.AxeCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.PickaxeWood:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.PickaxeStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.PickaxeIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.PickaxeCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.SpearWood:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.SpearStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.SpearIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.ScytheStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.ScytheIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.ShovelStone:
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.ShovelIron:
+                        this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.ShovelCrystal:
+                        this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
                         break;
 
                     case PieceTemplate.Name.BowBasic:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.BowAdvanced:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.ArrowWood:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.ArrowStone:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.ArrowIron:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.ArrowCrystal:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.4f;
                         break;
 
                     case PieceTemplate.Name.ArrowBurning:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.DebrisPlant:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.TentMedium:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         break;
 
                     case PieceTemplate.Name.TentBig:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.6f;
                         break;
 
                     case PieceTemplate.Name.BackpackSmall:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BackpackMedium:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BackpackBig:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltSmall:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltMedium:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.BeltBig:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.Map:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.Dungarees:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         break;
 
                     case PieceTemplate.Name.HatSimple:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.8f;
                         break;
 
                     case PieceTemplate.Name.BootsProtective:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.3f;
                         break;
 
                     case PieceTemplate.Name.TorchSmall:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.TorchBig:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.LanternFull:
+                        this.category = BoardPiece.Category.Metal;
                         break;
 
                     case PieceTemplate.Name.Candle:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HumanSkeleton:
+                        this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.3f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.PredatorRepellant:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 0.0f;
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsBlue:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsCyan:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsGreen:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsYellow:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsRed:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.HerbsViolet:
+                        this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.PotionCoffee:
+                        this.category = BoardPiece.Category.Indestructible;
                         break;
 
                     case PieceTemplate.Name.BottleOfOil:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.Hole:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.TreeStump:
+                        this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.movesWhenDropped = false;
                         break;
 
                     case PieceTemplate.Name.LavaFlame:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SwampGas:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.LavaGas:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWavesObsolete:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWind:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SoundNoonCicadas:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SoundLava:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.SeaWave:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         break;
 
@@ -1044,6 +1243,8 @@ namespace SonOfRobin
                 this.texture = this.frame.texture;
 
                 // checking for params, that need to be set
+
+                if (this.category == BoardPiece.Category.NotSet) throw new ArgumentNullException($"{this.name} - category not set.");
 
                 if (this.type == typeof(Plant))
                 {

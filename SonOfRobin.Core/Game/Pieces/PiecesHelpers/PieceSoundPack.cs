@@ -161,7 +161,9 @@ namespace SonOfRobin
         {
             var soundNameList = new List<SoundData.Name>();
 
-            switch (boardPiece.category)
+            BoardPiece.Category category = boardPiece.pieceInfo == null ? BoardPiece.Category.Wood : boardPiece.pieceInfo.category;
+
+            switch (category)
             {
                 case BoardPiece.Category.Wood:
                     soundNameList.Add(SoundData.Name.HitWood);
@@ -206,7 +208,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {category}.");
             }
 
             return soundNameList;
@@ -216,7 +218,9 @@ namespace SonOfRobin
         {
             var soundNameList = new List<SoundData.Name>();
 
-            switch (boardPiece.category)
+            BoardPiece.Category category = boardPiece.pieceInfo == null ? BoardPiece.Category.Wood : boardPiece.pieceInfo.category;
+
+            switch (category)
             {
                 case BoardPiece.Category.Wood:
                     soundNameList.Add(SoundData.Name.ChestClose);
@@ -251,7 +255,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {category}.");
             }
 
             return soundNameList;
@@ -261,7 +265,9 @@ namespace SonOfRobin
         {
             var soundNameList = new List<SoundData.Name>();
 
-            switch (boardPiece.category)
+            BoardPiece.Category category = boardPiece.pieceInfo == null ? BoardPiece.Category.Wood : boardPiece.pieceInfo.category;
+
+            switch (category)
             {
                 case BoardPiece.Category.Wood:
                     soundNameList.Add(SoundData.Name.DestroyWood);
@@ -303,7 +309,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {category}.");
             }
 
             return soundNameList;

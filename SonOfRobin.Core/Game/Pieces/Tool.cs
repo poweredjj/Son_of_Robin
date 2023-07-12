@@ -13,10 +13,10 @@ namespace SonOfRobin
         public readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
-        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
+        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, category: category, buffList: buffList, activeState: State.Empty, toolbarTask: Scheduler.TaskName.Hit)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, toolbarTask: Scheduler.TaskName.Hit)
         {
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
@@ -101,13 +101,13 @@ namespace SonOfRobin
             foreach (BoardPiece currentTarget in targets)
             {
                 float currentMultiplier = 0;
-                if (this.multiplierByCategory.ContainsKey(currentTarget.category)) currentMultiplier = this.multiplierByCategory[currentTarget.category];
+                if (this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category)) currentMultiplier = this.multiplierByCategory[currentTarget.pieceInfo.category];
                 if (isVeryTired) currentMultiplier /= 2;
                 if (currentMultiplier == 0) continue;
 
                 if (!highlightOnly)
                 {
-                    switch (currentTarget.category)
+                    switch (currentTarget.pieceInfo.category)
                     {
                         case Category.Wood:
                             this.world.HintEngine.Disable(PieceHint.Type.WoodNegative);
@@ -150,7 +150,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new ArgumentException($"Unsupported targetCategory - {currentTarget.category}.");
+                            throw new ArgumentException($"Unsupported targetCategory - {currentTarget.pieceInfo.category}.");
                     }
 
                     if (this.name == PieceTemplate.Name.KnifeSimple) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
@@ -248,7 +248,7 @@ namespace SonOfRobin
                 target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
-                if (target.category == Category.SmallPlant) numberOfExplosions = 0;
+                if (target.pieceInfo.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
                     Vector2 posOffset = new(world.random.Next(0, target.sprite.AnimFrame.gfxWidth), world.random.Next(0, target.sprite.AnimFrame.gfxHeight));

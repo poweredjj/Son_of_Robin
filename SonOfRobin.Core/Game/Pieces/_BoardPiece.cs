@@ -50,7 +50,7 @@ namespace SonOfRobin
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
         public enum Category
-        { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
+        { NotSet, Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
 
         public static Texture2D GetTextureForCategory(Category category)
         {
@@ -72,7 +72,6 @@ namespace SonOfRobin
         public readonly World world;
         public readonly string id;
         public readonly PieceTemplate.Name name;
-        public readonly Category category;
         public Sprite sprite;
         public State activeState;
         public PieceSoundPack soundPack;
@@ -119,12 +118,11 @@ namespace SonOfRobin
         private readonly bool canShrink;
         private float hitPoints;
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Category category, State activeState,
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
-            this.category = category;
             this.id = id;
 
             this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
