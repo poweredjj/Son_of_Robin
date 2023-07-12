@@ -62,11 +62,11 @@ namespace SonOfRobin
 
             public readonly float fireAffinity;
             public readonly int[] maxMassForSize;
+            public readonly bool movesWhenDropped;
             public readonly float plantAdultSizeMass; // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
             public readonly float plantMassToBurn;
             public readonly PlantReproductionData plantReproductionData;
-
-            public readonly bool movesWhenDropped;
+            public readonly Dictionary<Terrain.Name, byte> plantBestEnvironment;
 
             public Info(BoardPiece piece)
             {
@@ -153,10 +153,11 @@ namespace SonOfRobin
                 this.serialize = true;
                 this.fireAffinity = 0f;
                 this.maxMassForSize = null;
+                this.movesWhenDropped = true;
                 this.plantAdultSizeMass = 0f;
                 this.plantMassToBurn = 0;
                 this.plantReproductionData = null;
-                this.movesWhenDropped = true;
+                this.plantBestEnvironment = null;
 
                 // setting values for names
 
@@ -185,6 +186,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
@@ -192,6 +194,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
@@ -199,6 +202,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 250 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 300, bioWear: 0.36f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
@@ -206,6 +210,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 800 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -213,12 +218,14 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
                         break;
 
                     case PieceTemplate.Name.WaterLily:
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -226,6 +233,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -233,6 +241,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -240,6 +249,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 500 };
                         this.plantMassToBurn = 3;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -247,6 +257,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 10000 };
                         this.plantMassToBurn = 10;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -255,6 +266,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 15;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.3f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         break;
 
                     case PieceTemplate.Name.TreeBig:
@@ -263,6 +275,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         break;
 
                     case PieceTemplate.Name.Oak:
@@ -271,6 +284,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -279,6 +293,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -287,6 +302,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -295,6 +311,7 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 12;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         break;
 
                     case PieceTemplate.Name.BananaTree:
@@ -303,12 +320,14 @@ namespace SonOfRobin
                         this.plantAdultSizeMass = this.maxMassForSize[1];
                         this.plantMassToBurn = 12;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
                         this.fireAffinity = 0.4f;
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
@@ -316,6 +335,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 450, 900 };
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -323,6 +343,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 600 };
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -350,6 +371,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Tomato:
                         this.fireAffinity = 0.15f;
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         break;
 
                     case PieceTemplate.Name.Carrot:
@@ -1015,6 +1037,7 @@ namespace SonOfRobin
                 {
                     if (this.plantMassToBurn == 0) throw new ArgumentNullException($"{this.name} - plantMassToBurn not set.");
                     if (this.plantReproductionData == null) throw new ArgumentNullException($"{this.name} - plantReproductionData not set.");
+                    if (this.plantBestEnvironment == null) throw new ArgumentNullException($"{this.name} - plantBestEnvironment not set.");
                 }
             }
 

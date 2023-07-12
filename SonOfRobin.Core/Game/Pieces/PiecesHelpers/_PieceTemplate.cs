@@ -397,10 +397,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 3, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                             minDistance: 0, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxAge: 600, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield);
+                             minDistance: 0, maxDistance: 80, mass: 1, maxAge: 600, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield);
 
                         return boardPiece;
                     }
@@ -415,12 +413,10 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 100, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
+                            minDistance: 0, maxDistance: 400, mass: 1, maxAge: 1000, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
 
                         return boardPiece;
                     }
@@ -437,10 +433,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 60, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 900, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
+                            minDistance: 60, maxDistance: 100, mass: 1, maxAge: 900, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
 
                         return boardPiece;
                     }
@@ -458,10 +452,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 30, maxDistance: 90, bestEnvironment: bestEnvironment, mass: 1, maxAge: 950, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield, dropSeedChance: 70);
+                            minDistance: 30, maxDistance: 90, mass: 1, maxAge: 950, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield, dropSeedChance: 70);
 
                         return boardPiece;
                     }
@@ -478,9 +470,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsCyan, chanceToDrop: 1, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant, minDistance: 0, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxAge: 600, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant, minDistance: 0, maxDistance: 120, mass: 1, maxAge: 600, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40), yield: yield);
 
                         return boardPiece;
                     }
@@ -501,10 +491,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlue, chanceToDrop: 10, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 25, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1800, massTakenMultiplier: 0.4f, generation: generation, staysAfterDeath: 300, floatsOnWater: true, readableName: "water lily", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3), yield: yield, maxHitPoints: 10);
+                            minDistance: 25, maxDistance: 80, mass: 1, maxAge: 1800, massTakenMultiplier: 0.4f, generation: generation, staysAfterDeath: 300, floatsOnWater: true, readableName: "water lily", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3), yield: yield, maxHitPoints: 10);
 
                         return boardPiece;
                     }
@@ -524,10 +512,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 20);
+                          minDistance: 0, maxDistance: 100, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 20);
 
                         return boardPiece;
                     }
@@ -544,10 +530,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 20, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield, dropSeedChance: 20);
+                          minDistance: 0, maxDistance: 100, mass: 1, maxAge: 550, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield, dropSeedChance: 20);
 
                         return boardPiece;
                     }
@@ -563,10 +547,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxAge: 4000, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 15);
+                          minDistance: 0, maxDistance: 250, mass: 1, maxAge: 4000, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, dropSeedChance: 15);
 
                         return boardPiece;
                     }
@@ -582,8 +564,6 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
-
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
@@ -598,7 +578,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 50, maxDistance: 300, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, massTakenMultiplier: 1.35f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 50, maxDistance: 300, mass: 1, maxAge: 30000, massTakenMultiplier: 1.35f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -610,8 +590,6 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
-
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -627,7 +605,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -640,7 +618,6 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Acorn);
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
@@ -657,7 +634,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack, dropSeedChance: 20);
+                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack, dropSeedChance: 20);
 
                         return boardPiece;
                     }
@@ -670,7 +647,6 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Apple);
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
@@ -687,7 +663,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "apple tree", description: "Apples can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "apple tree", description: "Apples can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -700,7 +676,6 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 120f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Cherry);
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
@@ -717,7 +692,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 40, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "cherry tree", description: "Cherries can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
+                            minDistance: 40, maxDistance: 400, mass: 1, maxAge: 30000, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "cherry tree", description: "Cherries can grow on it.", allowedDensity: new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -730,7 +705,6 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 250f, yOffsetPercent: -0.29f, areaWidthPercent: 0.85f, areaHeightPercent: 0.3f, fruitName: Name.Banana);
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
@@ -746,7 +720,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 200, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "banana tree", description: "Bananas can grow on it.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
+                            minDistance: 200, maxDistance: 400, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "banana tree", description: "Bananas can grow on it.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -758,8 +732,6 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 210) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
-
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -774,7 +746,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 200, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
+                            minDistance: 200, maxDistance: 400, mass: 1, maxAge: 15000, massTakenMultiplier: 1.5f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", allowedDensity: new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2), soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -791,11 +763,10 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
                     }
@@ -812,11 +783,10 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "coffee shrub", description: "Coffee can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "coffee shrub", description: "Coffee can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield);
 
                         return boardPiece;
                     }
@@ -833,11 +803,10 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, dropSeedChance: 8);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, mass: 1, maxAge: 1000, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, dropSeedChance: 8);
 
                         return boardPiece;
                     }
@@ -854,10 +823,8 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 50, maxDistance: 600, bestEnvironment: bestEnvironment, mass: 1, maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield, dropSeedChance: 50);
+                            minDistance: 50, maxDistance: 600, mass: 1, maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield, dropSeedChance: 50);
 
                         return boardPiece;
                     }
