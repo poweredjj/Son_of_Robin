@@ -57,10 +57,12 @@ namespace SonOfRobin
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
 
+            // data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
             public readonly float fireAffinity;
             public readonly int[] maxMassForSize;
             public readonly float plantAdultSizeMass; // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
+            public readonly float plantMassToBurn; // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
 
             public readonly bool movesWhenDropped;
 
@@ -70,6 +72,7 @@ namespace SonOfRobin
                 this.mass = piece.Mass;
 
                 this.name = piece.name;
+                this.type = piece.GetType();
                 this.category = piece.category;
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
@@ -77,7 +80,6 @@ namespace SonOfRobin
                 this.startHitPoints = piece.HitPoints;
                 this.strength = piece.strength;
                 this.speed = piece.speed;
-                this.type = piece.GetType();
                 this.initialActiveState = piece.activeState;
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
@@ -91,12 +93,12 @@ namespace SonOfRobin
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
                 this.animName = piece.sprite.AnimName;
-                if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).Eats;
-                this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
-                this.cookerFoodMassMultiplier = piece.GetType() == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
+                if (this.type == typeof(Animal)) this.eats = ((Animal)piece).Eats;
+                this.equipType = this.type == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
+                this.cookerFoodMassMultiplier = this.type == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
 
                 this.convertsWhenUsed = false;
-                if (piece.GetType() == typeof(Potion))
+                if (this.type == typeof(Potion))
                 {
                     this.convertsWhenUsed = true;
                     this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
@@ -105,7 +107,7 @@ namespace SonOfRobin
                 this.shootsProjectile = false;
                 this.toolIndestructible = false;
                 this.toolRange = 0;
-                if (piece.GetType() == typeof(Tool))
+                if (this.type == typeof(Tool))
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
@@ -114,14 +116,14 @@ namespace SonOfRobin
                     this.toolRange = tool.range;
                 }
 
-                if (piece.GetType() == typeof(Shelter))
+                if (this.type == typeof(Shelter))
                 {
                     Shelter shelter = (Shelter)piece;
                     SleepEngine sleepEngine = shelter.sleepEngine;
                     this.buffList.AddRange(sleepEngine.wakeUpBuffs);
                 }
 
-                if (piece.GetType() == typeof(Projectile))
+                if (this.type == typeof(Projectile))
                 {
                     // "emulating" tool multiplier list
                     this.strengthMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower / 4 } };
@@ -133,7 +135,7 @@ namespace SonOfRobin
 
                 this.hasFruit = false;
                 this.massTakenMultiplier = 1;
-                if (piece.GetType() == typeof(Plant))
+                if (this.type == typeof(Plant))
                 {
                     Plant plant = (Plant)piece;
                     if (plant.fruitEngine != null)
@@ -150,6 +152,7 @@ namespace SonOfRobin
                 this.fireAffinity = 0f;
                 this.maxMassForSize = null;
                 this.plantAdultSizeMass = 0f;
+                this.plantMassToBurn = 0;
                 this.movesWhenDropped = true;
 
                 // setting values for names
@@ -177,50 +180,60 @@ namespace SonOfRobin
                     case PieceTemplate.Name.GrassRegular:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
                         this.fireAffinity = 0.8f;
                         this.maxMassForSize = new int[] { 250 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 800 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.Rushes:
                         this.fireAffinity = 0.2f;
                         this.maxMassForSize = new int[] { 400 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.WaterLily:
                         this.maxMassForSize = new int[] { 400 };
+                        this.plantMassToBurn = 5;
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
+                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
+                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 500 };
+                        this.plantMassToBurn = 3;
                         break;
 
                     case PieceTemplate.Name.Cactus:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 10000 };
+                        this.plantMassToBurn = 10;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -238,56 +251,66 @@ namespace SonOfRobin
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 15;
                         break;
 
                     case PieceTemplate.Name.TreeBig:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
                         break;
 
                     case PieceTemplate.Name.PalmTree:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 12;
                         break;
 
                     case PieceTemplate.Name.Oak:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
                         break;
 
                     case PieceTemplate.Name.AppleTree:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
                         break;
 
                     case PieceTemplate.Name.CherryTree:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
                         break;
 
                     case PieceTemplate.Name.BananaTree:
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
                         this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 12;
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
                         this.fireAffinity = 0.4f;
+                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
                         this.fireAffinity = 0.4f;
                         this.maxMassForSize = new int[] { 450, 900 };
+                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
                         this.fireAffinity = 0.4f;
                         this.maxMassForSize = new int[] { 600 };
+                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.Apple:
@@ -962,6 +985,13 @@ namespace SonOfRobin
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
                 this.frame = piece.sprite.AnimFrame;
                 this.texture = this.frame.texture;
+
+                // checking for params, that need to be set
+
+                if (this.type == typeof(Plant))
+                {
+                    if (this.plantMassToBurn == 0) throw new ArgumentNullException($"{this.name} - plantMassToBurn not set.");
+                }
             }
 
             public List<string> BuffDescList
