@@ -21,7 +21,6 @@ namespace SonOfRobin
     public class Plant : BoardPiece
     {
         public float massTakenMultiplier;
-        private readonly int maxExistingNumber;
         private float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
         private int lastFrameProcessed; // for time delta calculation
@@ -29,13 +28,12 @@ namespace SonOfRobin
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Category category,
             int maxAge, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0, PieceSoundPack soundPack = null, int dropSeedChance = 0) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null, int dropSeedChance = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, blocksPlantGrowth: true, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: mass, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, readableName: readableName, description: description, allowedDensity: allowedDensity, category: category, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;
-            this.maxExistingNumber = maxExistingNumber;
             this.occupiedFieldWealth = -1f;
             this.dropSeedChance = dropSeedChance;
             this.fruitEngine = fruitEngine;
@@ -148,7 +146,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
+                bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
                 if (canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.startingMass)
                 {
                     BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name, generation: this.generation + 1);

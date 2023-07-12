@@ -67,6 +67,7 @@ namespace SonOfRobin
             public readonly float plantMassToBurn;
             public readonly PlantReproductionData plantReproductionData;
             public readonly Dictionary<Terrain.Name, byte> plantBestEnvironment;
+            public readonly int plantMaxExistingNumber;
 
             public Info(BoardPiece piece)
             {
@@ -158,6 +159,7 @@ namespace SonOfRobin
                 this.plantMassToBurn = 0;
                 this.plantReproductionData = null;
                 this.plantBestEnvironment = null;
+                this.plantMaxExistingNumber = 0;
 
                 // setting values for names
 
@@ -195,6 +197,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
+                        this.plantMaxExistingNumber = 300;
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
