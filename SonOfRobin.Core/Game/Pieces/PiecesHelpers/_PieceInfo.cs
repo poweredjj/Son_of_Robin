@@ -695,42 +695,42 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WorkshopEssential:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
@@ -750,13 +750,13 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Furnace:
                         this.category = BoardPiece.Category.Stone;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
-                        this.toolbarTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.spriteBlocksMovement = true;
                         break;
 
