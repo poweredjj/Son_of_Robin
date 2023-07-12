@@ -1194,30 +1194,35 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 15;
                         break;
 
                     case PieceTemplate.Name.ArrowStone:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
+                        this.stackSize = 15;
                         break;
 
                     case PieceTemplate.Name.ArrowIron:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.7f;
                         this.canBePickedUp = true;
+                        this.stackSize = 15;
                         break;
 
                     case PieceTemplate.Name.ArrowCrystal:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
+                        this.stackSize = 15;
                         break;
 
                     case PieceTemplate.Name.ArrowBurning:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 15;
                         break;
 
                     case PieceTemplate.Name.DebrisPlant:
