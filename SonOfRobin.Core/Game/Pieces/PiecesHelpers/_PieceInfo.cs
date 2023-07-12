@@ -68,6 +68,7 @@ namespace SonOfRobin
             public readonly PlantReproductionData plantReproductionData;
             public readonly Dictionary<Terrain.Name, byte> plantBestEnvironment;
             public readonly int plantMaxExistingNumber;
+            public readonly int plantDropSeedChance;
 
             public Info(BoardPiece piece)
             {
@@ -160,6 +161,7 @@ namespace SonOfRobin
                 this.plantReproductionData = null;
                 this.plantBestEnvironment = null;
                 this.plantMaxExistingNumber = 0;
+                this.plantDropSeedChance = 0;
 
                 // setting values for names
 
@@ -214,6 +216,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
+                        this.plantDropSeedChance = 70;
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -237,6 +240,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
+                        this.plantDropSeedChance = 20;
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -245,6 +249,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
+                        this.plantDropSeedChance = 20;
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -253,6 +258,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 3;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
+                        this.plantDropSeedChance = 15;
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -261,6 +267,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 10;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
+                        this.plantDropSeedChance = 50;
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -288,6 +295,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
+                        this.plantDropSeedChance = 20;
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -331,6 +339,7 @@ namespace SonOfRobin
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
+                        this.plantDropSeedChance = 8;
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
