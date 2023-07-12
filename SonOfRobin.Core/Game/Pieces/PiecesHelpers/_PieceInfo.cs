@@ -18,7 +18,6 @@ namespace SonOfRobin
             public readonly string readableName;
             public readonly string description;
             public readonly AllowedTerrain allowedTerrain;
-            public readonly int stackSize;
             public readonly Type type;
             public readonly bool blocksMovement;
             public readonly bool convertsWhenUsed;
@@ -70,6 +69,7 @@ namespace SonOfRobin
             public readonly bool toolIndestructible;
             public readonly bool canShrink;
             public readonly bool canBePickedUp;
+            public readonly byte stackSize;
 
             public Info(BoardPiece piece)
             {
@@ -85,7 +85,6 @@ namespace SonOfRobin
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
                 this.description = piece.description;
-                this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;
@@ -162,6 +161,7 @@ namespace SonOfRobin
                 this.toolIndestructible = false;
                 this.canShrink = false;
                 this.canBePickedUp = false;
+                this.stackSize = 1;
 
                 // setting values for names
 
@@ -392,6 +392,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -406,11 +407,13 @@ namespace SonOfRobin
                         this.startingMass = 5;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Apple:
@@ -418,6 +421,7 @@ namespace SonOfRobin
                         this.startingMass = 60;
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
+                        this.stackSize = 10;
                         break;
 
                     case PieceTemplate.Name.Banana:
@@ -425,6 +429,7 @@ namespace SonOfRobin
                         this.startingMass = 80;
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
+                        this.stackSize = 10;
                         break;
 
                     case PieceTemplate.Name.Cherry:
@@ -432,6 +437,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
+                        this.stackSize = 16;
                         break;
 
                     case PieceTemplate.Name.Tomato:
@@ -440,6 +446,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.canBePickedUp = true;
+                        this.stackSize = 10;
                         break;
 
                     case PieceTemplate.Name.Carrot:
@@ -447,6 +454,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
+                        this.stackSize = 10;
                         break;
 
                     case PieceTemplate.Name.MeatRawRegular:
@@ -454,6 +462,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
@@ -461,6 +470,7 @@ namespace SonOfRobin
                         this.startingMass = 250;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -468,6 +478,7 @@ namespace SonOfRobin
                         this.startingMass = 250;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.Fat:
@@ -475,6 +486,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
+                        this.stackSize = 5;
                         break;
 
                     case PieceTemplate.Name.Leather:
@@ -482,6 +494,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.fireAffinity = 0.7f;
                         this.canBePickedUp = true;
+                        this.stackSize = 4;
                         break;
 
                     case PieceTemplate.Name.Burger:
@@ -489,6 +502,7 @@ namespace SonOfRobin
                         this.startingMass = 560;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 5;
                         break;
 
                     case PieceTemplate.Name.Meal:
@@ -669,46 +683,54 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.WoodLogRegular:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 4;
                         break;
 
                     case PieceTemplate.Name.WoodLogHard:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.9f;
                         this.canBePickedUp = true;
+                        this.stackSize = 4;
                         break;
 
                     case PieceTemplate.Name.WoodPlank:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Stone:
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Granite:
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Clay:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Rope:
                         this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.Clam:
@@ -716,6 +738,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.CoalDeposit:
@@ -758,41 +781,49 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Coal:
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
+                        this.stackSize = 8;
                         break;
 
                     case PieceTemplate.Name.IronOre:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
+                        this.stackSize = 8;
                         break;
 
                     case PieceTemplate.Name.IronBar:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
+                        this.stackSize = 5;
                         break;
 
                     case PieceTemplate.Name.IronRod:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
+                        this.stackSize = 18;
                         break;
 
                     case PieceTemplate.Name.IronNail:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
+                        this.stackSize = 50;
                         break;
 
                     case PieceTemplate.Name.IronPlate:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
+                        this.stackSize = 18;
                         break;
 
                     case PieceTemplate.Name.GlassSand:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
+                        this.stackSize = 8;
                         break;
 
                     case PieceTemplate.Name.Crystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.canBePickedUp = true;
+                        this.stackSize = 12;
                         break;
 
                     case PieceTemplate.Name.Backlight:
@@ -1193,6 +1224,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 3;
                         break;
 
                     case PieceTemplate.Name.TorchBig:
@@ -1200,6 +1232,7 @@ namespace SonOfRobin
                         this.startingMass = 180;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.stackSize = 3;
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
@@ -1218,6 +1251,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 6;
                         break;
 
                     case PieceTemplate.Name.HumanSkeleton:
@@ -1237,6 +1271,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsBlue:
@@ -1244,6 +1279,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsCyan:
@@ -1251,6 +1287,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsGreen:
@@ -1258,6 +1295,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsYellow:
@@ -1265,6 +1303,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsRed:
@@ -1272,6 +1311,7 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.HerbsViolet:
@@ -1279,12 +1319,14 @@ namespace SonOfRobin
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
+                        this.stackSize = 20;
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 100;
                         this.canBePickedUp = true;
+                        this.stackSize = 3;
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:

@@ -372,9 +372,9 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/area"));
             }
 
-            if (selectedPiece.stackSize > 1 && !slot.locked)
+            if (selectedPiece.StackSize > 1 && !slot.locked)
             {
-                extInfoTextList.Add($"| {selectedPiece.stackSize}");
+                extInfoTextList.Add($"| {selectedPiece.StackSize}");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
             }
 

@@ -50,7 +50,7 @@ namespace SonOfRobin
             get
             {
                 if (this.pieceList.Count == 0) return false;
-                else return Math.Min(this.pieceList[0].stackSize, this.stackLimit) == this.pieceList.Count;
+                else return Math.Min(this.pieceList[0].StackSize, this.stackLimit) == this.pieceList.Count;
             }
         }
 
@@ -93,8 +93,9 @@ namespace SonOfRobin
             if (this.locked || (piece.pieceInfo != null && !piece.pieceInfo.canBePickedUp)) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
 
-            if (this.IsEmpty) return pieceCount <= Math.Min(piece.stackSize, this.stackLimit);
-            else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].stackSize, this.stackLimit);
+
+            if (this.IsEmpty) return pieceCount <= Math.Min(piece.StackSize, this.stackLimit);
+            else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].StackSize, this.stackLimit);
         }
 
         public int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
@@ -104,7 +105,7 @@ namespace SonOfRobin
             if (this.locked || !pieceInfo.canBePickedUp) return 0;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(pieceName)) return 0;
             if (this.IsEmpty) return Math.Min(pieceInfo.stackSize, this.stackLimit);
-            if (pieceName == this.PieceName) return Math.Min(this.pieceList[0].stackSize, this.stackLimit) - this.pieceList.Count;
+            if (pieceName == this.PieceName) return Math.Min(this.pieceList[0].StackSize, this.stackLimit) - this.pieceList.Count;
 
             return 0;
         }

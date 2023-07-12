@@ -311,7 +311,7 @@ namespace SonOfRobin
                             while (true)
                             {
                                 BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName, closestFreeSpot: true);
-                                int amountToCreate = piece.stackSize;
+                                int amountToCreate = piece.StackSize;
 
                                 if (piece.sprite.IsOnBoard)
                                 {
