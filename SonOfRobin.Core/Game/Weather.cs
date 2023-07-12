@@ -361,7 +361,7 @@ namespace SonOfRobin
                     Type pieceType = piece.GetType();
                     Sprite sprite = piece.sprite;
 
-                    if (piece.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
+                    if (piece.pieceInfo.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
                     {
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
 
@@ -376,7 +376,7 @@ namespace SonOfRobin
 
         private static bool IsSpriteAffectedByWind(Sprite sprite, bool strongWind)
         {
-            return !sprite.boardPiece.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind);
+            return !sprite.boardPiece.pieceInfo.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind);
         }
 
         public void AddLocalizedWind(Vector2 windOriginLocation)

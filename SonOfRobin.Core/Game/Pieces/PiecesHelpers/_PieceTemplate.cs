@@ -1036,7 +1036,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1045,7 +1045,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1054,7 +1054,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1063,7 +1063,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -1072,7 +1072,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = canGoAnywhere;
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, canBePickedUp: true, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
@@ -2879,7 +2879,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
 
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
 
                         return flame;
                     }

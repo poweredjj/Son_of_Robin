@@ -48,7 +48,7 @@ namespace SonOfRobin
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
             byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: false, maxHitPoints: maxHitPoints, readableName: readableName, description: description, yield: yield, strength: strength, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, isAffectedByWind: false)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, maxHitPoints: maxHitPoints, readableName: readableName, description: description, yield: yield, strength: strength, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, isAffectedByWind: false)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -107,11 +107,10 @@ namespace SonOfRobin
             this.recipeToBuild = null;
             this.simulatedPieceToBuild = null;
 
-            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.KnifeSimple, world: this.world);
-
-            StorageSlot handSlot = this.ToolStorage.FindCorrectSlot(handTool);
-            this.ToolStorage.AddPiece(handTool);
-            handSlot.locked = true;
+            BoardPiece knifeTool = PieceTemplate.Create(templateName: PieceTemplate.Name.KnifeSimple, world: this.world);
+            StorageSlot knifeSlot = this.ToolStorage.FindCorrectSlot(knifeTool);
+            this.ToolStorage.AddPiece(knifeTool);
+            knifeSlot.locked = true;
         }
 
         public override bool ShowStatBars
@@ -283,7 +282,7 @@ namespace SonOfRobin
                 int offsetY = (int)centerOffset.Y;
 
                 var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
-                interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp);
+                interestingPieces = interestingPieces.Where(piece => piece.pieceInfo.canBePickedUp);
                 if (!interestingPieces.Any()) return null;
 
                 BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);

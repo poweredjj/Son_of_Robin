@@ -581,8 +581,6 @@ namespace SonOfRobin
 
         private static void CheckIfRecipesAreCorrect()
         {
-            var a = recipesByCategory;
-
             foreach (List<Recipe> recipeList in recipesByCategory.Values)
             {
                 foreach (Recipe recipe in recipeList)
