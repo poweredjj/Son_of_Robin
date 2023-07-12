@@ -14,9 +14,9 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, toolbarTask: Scheduler.TaskName.Hit)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, toolbarTask: Scheduler.TaskName.Hit)
         {
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
@@ -48,7 +48,7 @@ namespace SonOfRobin
             Projectile projectile = this.CheckForAmmo(removePiece: true);
             if (projectile == null) return;
 
-            if (!this.indestructible)
+            if (!this.pieceInfo.toolIndestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
                 if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
@@ -192,7 +192,7 @@ namespace SonOfRobin
             {
                 player.Stamina -= 50;
                 this.hitCooldown = this.world.CurrentUpdate + 30;
-                if (!this.indestructible)
+                if (!this.pieceInfo.toolIndestructible)
                 {
                     this.HitPoints -= 1;
                     this.HitPoints = Math.Max(0, this.HitPoints);

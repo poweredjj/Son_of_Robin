@@ -89,7 +89,6 @@ namespace SonOfRobin
         public int strength;
         public int showStatBarsTillFrame;
         public float maxHitPoints;
-        public readonly bool indestructible;
         public readonly byte stackSize;
         public readonly PieceInfo.Info pieceInfo;
         private float burnLevel;
@@ -118,7 +117,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
@@ -134,7 +133,6 @@ namespace SonOfRobin
             this.destructionDelay = destructionDelay;
             this.activeState = activeState;
             this.lastFrameSMProcessed = 0;
-            this.indestructible = indestructible;
             this.maxHitPoints = maxHitPoints;
             this.HitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;

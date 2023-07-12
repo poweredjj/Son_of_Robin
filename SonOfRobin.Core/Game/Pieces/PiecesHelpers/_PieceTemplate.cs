@@ -2251,7 +2251,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 0.5f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: true, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
 
                         return boardPiece;
                     }
@@ -2261,7 +2261,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 1f }, { BoardPiece.Category.Wood, 5f }, { BoardPiece.Category.Flesh, 3f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
 
                         return boardPiece;
                     }
@@ -2271,7 +2271,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 2f }, { BoardPiece.Category.Wood, 8f }, { BoardPiece.Category.Flesh, 5f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
 
                         return boardPiece;
                     }
@@ -2281,7 +2281,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 3f }, { BoardPiece.Category.Wood, 15 }, { BoardPiece.Category.Flesh, 8f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
 
                         return boardPiece;
                     }
@@ -2291,7 +2291,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 6f }, { BoardPiece.Category.Wood, 40 }, { BoardPiece.Category.Flesh, 10f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
 
                         return boardPiece;
                     }
@@ -2301,7 +2301,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 1.5f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
 
                         return boardPiece;
                     }
@@ -2311,7 +2311,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 5f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
 
                         return boardPiece;
                     }
@@ -2321,7 +2321,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 15f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
 
                         return boardPiece;
                     }
@@ -2331,7 +2331,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 7f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
 
                         return boardPiece;
                     }
@@ -2341,7 +2341,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 5, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
 
                         return boardPiece;
                     }
@@ -2351,7 +2351,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
 
                         return boardPiece;
                     }
@@ -2361,7 +2361,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 14f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 10, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
 
                         return boardPiece;
                     }
@@ -2371,7 +2371,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.SmallPlant, 0.0f }, { BoardPiece.Category.Stone, 5f }, { BoardPiece.Category.Wood, 1f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
 
                         return boardPiece;
                     }
@@ -2381,7 +2381,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 8f }, { BoardPiece.Category.Wood, 2f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
 
                         return boardPiece;
                     }
@@ -2391,7 +2391,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
 
                         return boardPiece;
                     }
@@ -2401,7 +2401,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 30f }, { BoardPiece.Category.Wood, 6f }, { BoardPiece.Category.Crystal, 6f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
 
                         return boardPiece;
                     }
@@ -2411,7 +2411,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 2f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.", range: 20);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.", range: 20);
 
                         return boardPiece;
                     }
@@ -2421,7 +2421,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 3f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.", range: 40);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.", range: 40);
 
                         return boardPiece;
                     }
@@ -2431,7 +2431,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80);
 
                         return boardPiece;
                     }
@@ -2444,7 +2444,7 @@ namespace SonOfRobin
                         var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }
@@ -2457,42 +2457,42 @@ namespace SonOfRobin
                         var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: shallowWaterToVolcano,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, hitPower: hitPower, multiplierByCategory: multiplierByCategory, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowWood:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 8, indestructible: false, maxHitPoints: 15, stackSize: 15, canBeStuck: true, readableName: "wooden arrow", description: "Very weak arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 8, maxHitPoints: 15, stackSize: 15, canBeStuck: true, readableName: "wooden arrow", description: "Very weak arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowStone:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 12, indestructible: false, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 12, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowIron:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 20, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 20, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowBurning:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 1, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 10, maxHitPoints: 1, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
 
                         return boardPiece;
                     }
 
                 case Name.ArrowCrystal:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 40, indestructible: false, maxHitPoints: 50, stackSize: 15, canBeStuck: true, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, generation: generation, baseHitPower: 40, maxHitPoints: 50, stackSize: 15, canBeStuck: true, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
 
                         return boardPiece;
                     }

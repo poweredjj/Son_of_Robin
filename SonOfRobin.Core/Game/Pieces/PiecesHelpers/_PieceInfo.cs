@@ -38,7 +38,6 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly float massTakenMultiplier;
             public readonly float maxHitPoints;
-            public readonly bool toolIndestructible;
             public readonly int toolRange;
             public readonly float startHitPoints;
             public readonly BoardPiece.State initialActiveState;
@@ -69,6 +68,7 @@ namespace SonOfRobin
             public readonly Dictionary<Terrain.Name, byte> plantBestEnvironment;
             public readonly int plantMaxExistingNumber;
             public readonly int plantDropSeedChance;
+            public readonly bool toolIndestructible;
 
             public Info(BoardPiece piece)
             {
@@ -113,7 +113,6 @@ namespace SonOfRobin
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
                     this.strengthMultiplierByCategory = tool.multiplierByCategory;
-                    this.toolIndestructible = tool.indestructible;
                     this.toolRange = tool.range;
                 }
 
@@ -161,6 +160,7 @@ namespace SonOfRobin
                 this.plantBestEnvironment = null;
                 this.plantMaxExistingNumber = 0;
                 this.plantDropSeedChance = 0;
+                this.toolIndestructible = false;
 
                 // setting values for names
 
@@ -859,6 +859,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.KnifeSimple:
                         this.category = BoardPiece.Category.Wood;
+                        this.toolIndestructible = true;
                         break;
 
                     case PieceTemplate.Name.AxeWood:

@@ -17,9 +17,9 @@ namespace SonOfRobin
         private readonly bool isBurning;
 
         public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, List<Buff> buffList = null, bool isBurning = false, LightEngine lightEngine = null) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, Yield yield = null, bool rotatesWhenDropped = true, List<Buff> buffList = null, bool isBurning = false, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
         {
             this.canBeStuck = canBeStuck;
             this.isBurning = isBurning;
@@ -89,7 +89,7 @@ namespace SonOfRobin
                     Animal animal = (Animal)closestAnimal;
                     Tool.HitTarget(attacker: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
-                    if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
+                    if (!this.pieceInfo.toolIndestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
                         this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(10, 35));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
@@ -112,7 +112,7 @@ namespace SonOfRobin
                 }
                 else // target is not animal
                 {
-                    if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
+                    if (!this.pieceInfo.toolIndestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
                         this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(0, 15));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
