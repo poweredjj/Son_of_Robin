@@ -154,7 +154,7 @@ namespace SonOfRobin
                 if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.pieceInfo.serialize && !sprite.boardPiece.isTemporaryDecoration)
                 {
                     // there is no point in serializing dead small plants
-                    if (!sprite.boardPiece.alive && !sprite.blocksMovement && sprite.boardPiece.GetType() == typeof(Plant)) continue;
+                    if (!sprite.boardPiece.alive && !sprite.BlocksMovement && sprite.boardPiece.GetType() == typeof(Plant)) continue;
 
                     currentPieceList.Add(sprite.boardPiece);
                     if (currentPieceList.Count >= maxPiecesInPackage)

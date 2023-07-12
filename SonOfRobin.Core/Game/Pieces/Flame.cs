@@ -13,7 +13,7 @@ namespace SonOfRobin
         public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = true, int generation = 0, bool visible = true, bool ignoresCollisions = true, AllowedDensity allowedDensity = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false))
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false))
         {
             // looped sound would populate all sound channels fast, so non-looped short sound is used instead
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
@@ -132,7 +132,7 @@ namespace SonOfRobin
 
                 float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
                 this.burningPiece.HitPoints -= hitPointsToTake;
-                if (this.burningPiece.sprite.blocksMovement)
+                if (this.burningPiece.pieceInfo.spriteBlocksMovement)
                 {
                     ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 15);
                     this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;

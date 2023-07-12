@@ -54,7 +54,7 @@ namespace SonOfRobin
 
         private int CheckBlocking(IEnumerable<BoardPiece> nearbyPieces)
         {
-            return nearbyPieces.Where(piece => piece.sprite.blocksMovement).Count();
+            return nearbyPieces.Where(piece => piece.sprite.BlocksMovement).Count();
         }
     }
 }

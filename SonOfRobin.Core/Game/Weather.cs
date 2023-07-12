@@ -348,7 +348,7 @@ namespace SonOfRobin
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
-                    if (sprite.blocksMovement) finalRotation *= 0.3f;
+                    if (sprite.BlocksMovement) finalRotation *= 0.3f;
 
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: rotationSlowdown);
                 }
@@ -376,7 +376,7 @@ namespace SonOfRobin
 
         private static bool IsSpriteAffectedByWind(Sprite sprite, bool strongWind)
         {
-            return !sprite.boardPiece.pieceInfo.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind);
+            return !sprite.boardPiece.pieceInfo.canBePickedUp && sprite.isAffectedByWind && (!sprite.BlocksMovement || strongWind);
         }
 
         public void AddLocalizedWind(Vector2 windOriginLocation)
@@ -402,11 +402,11 @@ namespace SonOfRobin
             {
                 Sprite sprite = piece.sprite;
 
-                if (!sprite.blocksMovement)
+                if (!sprite.BlocksMovement)
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
-                    if (sprite.blocksMovement) finalRotation *= 0.3f;
+                    if (sprite.BlocksMovement) finalRotation *= 0.3f;
 
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: this.world.random.Next(8, 18));
                 }

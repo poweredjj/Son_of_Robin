@@ -1301,9 +1301,9 @@ namespace SonOfRobin
                                 {
                                     bool isPlant = sprite.boardPiece.GetType() == typeof(Plant);
 
-                                    if (!sprite.blocksMovement && !isPlant) continue;
+                                    if (!sprite.BlocksMovement && !isPlant) continue;
 
-                                    var blockingSprites = sprite.GetCollidingSprites(new List<Cell.Group> { sprite.blocksMovement ? Cell.Group.ColMovement : Cell.Group.ColPlantGrowth });
+                                    var blockingSprites = sprite.GetCollidingSprites(new List<Cell.Group> { sprite.BlocksMovement ? Cell.Group.ColMovement : Cell.Group.ColPlantGrowth });
 
                                     bool pieceIsBlocked = false;
 
@@ -1311,9 +1311,9 @@ namespace SonOfRobin
                                     {
                                         if (blockedPieces.Contains(blockingSprite.boardPiece)) continue;
 
-                                        if (isPlant && !sprite.blocksMovement &&
+                                        if (isPlant && !sprite.BlocksMovement &&
                                             (blockingSprite.boardPiece.GetType() != typeof(Plant)) ||
-                                            blockingSprite.blocksMovement)
+                                            blockingSprite.BlocksMovement)
                                         {
                                             continue;
                                         }
@@ -1599,7 +1599,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Recipe plantRecipe = new(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
+                            Recipe plantRecipe = new(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).spriteBlocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
 
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                             plantRecipe.TryToProducePieces(player: player, showMessages: false);
