@@ -21,7 +21,6 @@ namespace SonOfRobin
     public class Plant : BoardPiece
     {
         private readonly Dictionary<Terrain.Name, byte> bestEnvironment;
-        public readonly PlantReproductionData reproduction;
         public float massTakenMultiplier;
         private readonly int maxExistingNumber;
         private float occupiedFieldWealth;
@@ -30,14 +29,13 @@ namespace SonOfRobin
         public readonly int dropSeedChance;
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<Terrain.Name, byte> bestEnvironment, string readableName, string description, Category category,
-            int maxAge, PlantReproductionData reproduction, float massTakenMultiplier,
+            int maxAge, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0, PieceSoundPack soundPack = null, int dropSeedChance = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, blocksPlantGrowth: true, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: mass, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, readableName: readableName, description: description, allowedDensity: allowedDensity, category: category, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.bestEnvironment = bestEnvironment;
-            this.reproduction = reproduction;
             this.massTakenMultiplier = massTakenMultiplier;
             this.maxExistingNumber = maxExistingNumber;
             this.occupiedFieldWealth = -1f; // to be changed
@@ -144,7 +142,7 @@ namespace SonOfRobin
                 if (this.PieceStorage.EmptySlotsCount > 0 || this.world.CurrentUpdate % 100 == 0)
                 {
                     this.fruitEngine.AddMass(massTaken / 90); // some mass is "copied" to fruit
-                    if (this.Mass > this.reproduction.massNeeded / 2) this.fruitEngine.TryToConvertMassIntoFruit();
+                    if (this.Mass > this.pieceInfo.plantReproductionData.massNeeded / 2) this.fruitEngine.TryToConvertMassIntoFruit();
                 }
             }
 
@@ -153,7 +151,7 @@ namespace SonOfRobin
             while (true)
             {
                 bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
-                if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
+                if (canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.startingMass)
                 {
                     BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name, generation: this.generation + 1);
                     if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
@@ -161,8 +159,8 @@ namespace SonOfRobin
 
                     if (newPlant.sprite.IsOnBoard)
                     {
-                        this.Mass -= this.reproduction.massLost;
-                        this.bioWear += this.reproduction.bioWear;
+                        this.Mass -= this.pieceInfo.plantReproductionData.massLost;
+                        this.bioWear += this.pieceInfo.plantReproductionData.bioWear;
                     }
                 }
 

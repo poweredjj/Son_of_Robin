@@ -59,10 +59,12 @@ namespace SonOfRobin
 
             // data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
+
             public readonly float fireAffinity;
             public readonly int[] maxMassForSize;
             public readonly float plantAdultSizeMass; // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
-            public readonly float plantMassToBurn; // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
+            public readonly float plantMassToBurn;
+            public readonly PlantReproductionData plantReproductionData;
 
             public readonly bool movesWhenDropped;
 
@@ -153,6 +155,7 @@ namespace SonOfRobin
                 this.maxMassForSize = null;
                 this.plantAdultSizeMass = 0f;
                 this.plantMassToBurn = 0;
+                this.plantReproductionData = null;
                 this.movesWhenDropped = true;
 
                 // setting values for names
@@ -181,59 +184,145 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
                         this.fireAffinity = 0.8f;
                         this.maxMassForSize = new int[] { 250 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 300, bioWear: 0.36f);
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 800 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
                         break;
 
                     case PieceTemplate.Name.Rushes:
                         this.fireAffinity = 0.2f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
                         break;
 
                     case PieceTemplate.Name.WaterLily:
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 500 };
                         this.plantMassToBurn = 3;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
                         break;
 
                     case PieceTemplate.Name.Cactus:
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 10000 };
                         this.plantMassToBurn = 10;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
+                        break;
+
+                    case PieceTemplate.Name.TreeSmall:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 1000, 2500 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 15;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.3f);
+                        break;
+
+                    case PieceTemplate.Name.TreeBig:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 1000, 2500 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        break;
+
+                    case PieceTemplate.Name.Oak:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 1000, 2500 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        break;
+
+                    case PieceTemplate.Name.AppleTree:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 1000, 2500 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        break;
+
+                    case PieceTemplate.Name.CherryTree:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 1000, 2500 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 35;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
+                        break;
+
+                    case PieceTemplate.Name.PalmTree:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 2500, 8000, 10000 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 12;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
+                        break;
+
+                    case PieceTemplate.Name.BananaTree:
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 2500, 8000, 10000 };
+                        this.plantAdultSizeMass = this.maxMassForSize[1];
+                        this.plantMassToBurn = 12;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
+                        break;
+
+                    case PieceTemplate.Name.CarrotPlant:
+                        this.fireAffinity = 0.4f;
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        break;
+
+                    case PieceTemplate.Name.TomatoPlant:
+                        this.fireAffinity = 0.4f;
+                        this.maxMassForSize = new int[] { 450, 900 };
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        break;
+
+                    case PieceTemplate.Name.CoffeeShrub:
+                        this.fireAffinity = 0.4f;
+                        this.maxMassForSize = new int[] { 600 };
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -245,72 +334,6 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
-                        break;
-
-                    case PieceTemplate.Name.TreeSmall:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 1000, 2500 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 15;
-                        break;
-
-                    case PieceTemplate.Name.TreeBig:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 1000, 2500 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 35;
-                        break;
-
-                    case PieceTemplate.Name.PalmTree:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 2500, 8000, 10000 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 12;
-                        break;
-
-                    case PieceTemplate.Name.Oak:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 1000, 2500 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 35;
-                        break;
-
-                    case PieceTemplate.Name.AppleTree:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 1000, 2500 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 35;
-                        break;
-
-                    case PieceTemplate.Name.CherryTree:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 1000, 2500 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 35;
-                        break;
-
-                    case PieceTemplate.Name.BananaTree:
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 2500, 8000, 10000 };
-                        this.plantAdultSizeMass = this.maxMassForSize[1];
-                        this.plantMassToBurn = 12;
-                        break;
-
-                    case PieceTemplate.Name.CarrotPlant:
-                        this.fireAffinity = 0.4f;
-                        this.plantMassToBurn = 9;
-                        break;
-
-                    case PieceTemplate.Name.TomatoPlant:
-                        this.fireAffinity = 0.4f;
-                        this.maxMassForSize = new int[] { 450, 900 };
-                        this.plantMassToBurn = 9;
-                        break;
-
-                    case PieceTemplate.Name.CoffeeShrub:
-                        this.fireAffinity = 0.4f;
-                        this.maxMassForSize = new int[] { 600 };
-                        this.plantMassToBurn = 9;
                         break;
 
                     case PieceTemplate.Name.Apple:
@@ -991,6 +1014,7 @@ namespace SonOfRobin
                 if (this.type == typeof(Plant))
                 {
                     if (this.plantMassToBurn == 0) throw new ArgumentNullException($"{this.name} - plantMassToBurn not set.");
+                    if (this.plantReproductionData == null) throw new ArgumentNullException($"{this.name} - plantReproductionData not set.");
                 }
             }
 
