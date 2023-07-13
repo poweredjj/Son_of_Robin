@@ -89,7 +89,7 @@ namespace SonOfRobin
             public readonly int animalMaxChildren;
             public readonly float animalRetaliateChance; // 0 - 1, used only for animals that do not eat player
             public readonly int animalSightRange;
-
+            public readonly int ambsoundPlayDelay;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -201,6 +201,7 @@ namespace SonOfRobin
                 this.animalMaxChildren = 0;
                 this.animalRetaliateChance = -1;
                 this.animalSightRange = 0;
+                this.ambsoundPlayDelay = -1;
 
                 // setting values for names
 
@@ -2222,36 +2223,42 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 300;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 300;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWind:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 0;
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 0;
                         break;
 
                     case PieceTemplate.Name.SoundNoonCicadas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 0;
                         break;
 
                     case PieceTemplate.Name.SoundLava:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 0;
                         break;
 
                     case PieceTemplate.Name.SeaWave:
@@ -2300,6 +2307,10 @@ namespace SonOfRobin
                     if (this.animalMaxChildren == 0) throw new ArgumentNullException($"{this.name} - animalMaxChildren not set.");
                     if (this.animalRetaliateChance == -1) throw new ArgumentNullException($"{this.name} - animalRetaliateChance not set.");
                     if (this.animalSightRange == 0) throw new ArgumentNullException($"{this.name} - animalSightRange not set.");
+                }
+                if (this.type == typeof(AmbientSound))
+                {
+                    if (this.ambsoundPlayDelay == -1) throw new ArgumentNullException($"{this.name} - ambsoundPlayDelay not set.");
                 }
             }
 

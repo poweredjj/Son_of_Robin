@@ -9,7 +9,6 @@ namespace SonOfRobin
         private const float visFullOpacity = 1f;
         private const float visMinOpacity = 0.3f;
 
-        private readonly int playDelay;
         private readonly int playDelayMaxVariation;
         private readonly int checkDelay;
         private readonly List<IslandClock.PartOfDay> partOfDayList;
@@ -19,14 +18,13 @@ namespace SonOfRobin
         private int currentDelay;
         private int waitUntilFrame;
 
-        public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound, int playDelay,
+        public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
            bool visible = false, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false, bool playOnlyWhenIsSunny = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
 
-            this.playDelay = playDelay;
             this.playDelayMaxVariation = playDelayMaxVariation;
             this.partOfDayList = partOfDayList;
             this.generatesWind = generatesWind;
@@ -80,9 +78,9 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate < this.waitUntilFrame || !this.CanBePlayedNow) return;
 
-            if (this.playDelay > 0 || this.playDelayMaxVariation > 0)
+            if (this.pieceInfo.ambsoundPlayDelay > 0 || this.playDelayMaxVariation > 0)
             {
-                this.currentDelay = this.playDelay;
+                this.currentDelay = this.pieceInfo.ambsoundPlayDelay;
                 if (this.playDelayMaxVariation > 0) this.currentDelay += Random.Next(0, this.playDelayMaxVariation);
                 this.waitUntilFrame = this.world.CurrentUpdate + this.currentDelay;
                 this.showStatBarsTillFrame = this.waitUntilFrame;

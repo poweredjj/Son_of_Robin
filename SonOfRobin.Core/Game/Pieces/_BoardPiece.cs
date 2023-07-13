@@ -94,10 +94,6 @@ namespace SonOfRobin
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         protected int passiveRotation;
         protected Vector2 passiveMovement;
-
-        public bool HasPassiveMovement
-        { get { return this.passiveMovement != Vector2.Zero; } }
-
         public bool rotatesWhenDropped;
         public BoardPiece visualAid;
         public readonly string readableName;
@@ -145,6 +141,9 @@ namespace SonOfRobin
             this.burnLevel = 0f;
             this.isTemporaryDecoration = false; // to be set later
         }
+
+        public bool HasPassiveMovement
+        { get { return this.passiveMovement != Vector2.Zero; } }
 
         public virtual bool ShowStatBars
         { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }

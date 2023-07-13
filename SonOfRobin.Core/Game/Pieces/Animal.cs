@@ -12,7 +12,6 @@ namespace SonOfRobin
         public const int maxFedLevel = 1000;
 
         private readonly float maxStamina;
-
         private int pregnancyMass;
         public int pregnancyFramesLeft;
         public bool isPregnant;
