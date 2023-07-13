@@ -91,6 +91,7 @@ namespace SonOfRobin
             public readonly int animalSightRange;
             public readonly int ambsoundPlayDelay;
             public readonly int ambsoundPlayDelayMaxVariation;
+            public readonly List<IslandClock.PartOfDay> ambsoundPartOfDayList;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -204,6 +205,7 @@ namespace SonOfRobin
                 this.animalSightRange = 0;
                 this.ambsoundPlayDelay = -1;
                 this.ambsoundPlayDelayMaxVariation = 0;
+                this.ambsoundPartOfDayList = null;
 
                 // setting values for names
 
@@ -2249,6 +2251,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
+                        this.ambsoundPartOfDayList = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night };
                         break;
 
                     case PieceTemplate.Name.SoundNoonCicadas:
@@ -2256,6 +2259,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
+                        this.ambsoundPartOfDayList = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon };
                         break;
 
                     case PieceTemplate.Name.SoundLava:

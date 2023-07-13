@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -9,22 +8,21 @@ namespace SonOfRobin
         private const float visFullOpacity = 1f;
         private const float visMinOpacity = 0.3f;
 
-        private readonly int checkDelay;
-        private readonly List<IslandClock.PartOfDay> partOfDayList;
         private readonly bool generatesWind;
+
         private readonly bool playOnlyWhenIsSunny;
+        private readonly int checkDelay;
 
         private int currentDelay;
         private int waitUntilFrame;
 
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
-           bool visible = false, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false, bool playOnlyWhenIsSunny = false) :
+           bool visible = false, bool generatesWind = false, bool playOnlyWhenIsSunny = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
 
-            this.partOfDayList = partOfDayList;
             this.generatesWind = generatesWind;
             this.playOnlyWhenIsSunny = playOnlyWhenIsSunny;
 
@@ -39,7 +37,7 @@ namespace SonOfRobin
             get
             {
                 if (this.playOnlyWhenIsSunny && this.world.weather.SunVisibility < 0.85f) return false;
-                return this.partOfDayList == null ? true : this.partOfDayList.Contains(this.world.islandClock.CurrentPartOfDay);
+                return this.pieceInfo.ambsoundPartOfDayList == null ? true : this.pieceInfo.ambsoundPartOfDayList.Contains(this.world.islandClock.CurrentPartOfDay);
             }
         }
 
