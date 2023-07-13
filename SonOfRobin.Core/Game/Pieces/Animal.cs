@@ -12,7 +12,6 @@ namespace SonOfRobin
         public const int maxFedLevel = 1000;
 
         private readonly float maxStamina;
-        public readonly ushort sightRange;
 
         private int pregnancyMass;
         public int pregnancyFramesLeft;
@@ -28,7 +27,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -44,7 +43,6 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxStamina = maxStamina;
             this.stamina = maxStamina;
-            this.sightRange = sightRange;
             this.Eats = eats;
             this.IsEatenBy = PieceInfo.GetIsEatenBy(this.name);
             this.aiData = new AiData(this);
@@ -164,7 +162,7 @@ namespace SonOfRobin
         }
 
         public IEnumerable<BoardPiece> GetSeenPieces()
-        { return world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
+        { return world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange); }
 
         private void UpdateAttackCooldown()
         {
@@ -264,7 +262,7 @@ namespace SonOfRobin
             // choosing what to do
 
             DecisionEngine decisionEngine = new DecisionEngine();
-            decisionEngine.AddChoice(action: DecisionEngine.Action.Flee, piece: enemyPiece, priority: 1.2f - ((float)enemyDistance / this.sightRange));
+            decisionEngine.AddChoice(action: DecisionEngine.Action.Flee, piece: enemyPiece, priority: 1.2f - ((float)enemyDistance / this.pieceInfo.animalSightRange));
             decisionEngine.AddChoice(action: DecisionEngine.Action.Eat, piece: foodPiece, priority: this.HitPointsPercent > 0.3f ? 1.2f - this.FedPercentage : 1.5f);
             decisionEngine.AddChoice(action: DecisionEngine.Action.Mate, piece: matingPartner, priority: 1f);
             var bestChoice = decisionEngine.GetBestChoice();
@@ -432,7 +430,7 @@ namespace SonOfRobin
 
         public override void SM_AnimalChaseTarget()
         {
-            if (this.target == null || !this.target.exists || !this.target.sprite.IsOnBoard || Vector2.Distance(this.sprite.position, this.target.sprite.position) > this.sightRange)
+            if (this.target == null || !this.target.exists || !this.target.sprite.IsOnBoard || Vector2.Distance(this.sprite.position, this.target.sprite.position) > this.pieceInfo.animalSightRange)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -804,7 +802,7 @@ namespace SonOfRobin
                 int searchRange = 0;
                 while (true)
                 {
-                    searchRange += this.sightRange;
+                    searchRange += this.pieceInfo.animalSightRange;
 
                     var cellsWithinDistance = (IEnumerable<Cell>)this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
 
@@ -842,7 +840,7 @@ namespace SonOfRobin
         {
             this.soundPack.Play(PieceSoundPack.Action.Cry);
 
-            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange * 3);
+            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
 
             bool targetIsPlayer = this.target.GetType() == typeof(Player);

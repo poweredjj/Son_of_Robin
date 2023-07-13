@@ -51,6 +51,7 @@ namespace SonOfRobin
 
             // "template" data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
+
             public readonly BoardPiece.Category category;
             public readonly float startingMass;
             public readonly float fireAffinity;
@@ -87,6 +88,7 @@ namespace SonOfRobin
             public readonly int animalPregnancyDuration;
             public readonly int animalMaxChildren;
             public readonly float animalRetaliateChance; // 0 - 1, used only for animals that do not eat player
+            public readonly int animalSightRange;
 
             public Info(BoardPiece piece)
             {
@@ -198,6 +200,7 @@ namespace SonOfRobin
                 this.animalPregnancyDuration = 0;
                 this.animalMaxChildren = 0;
                 this.animalRetaliateChance = -1;
+                this.animalSightRange = 0;
 
                 // setting values for names
 
@@ -808,6 +811,7 @@ namespace SonOfRobin
                         this.animalPregnancyDuration = 2000;
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.1f;
+                        this.animalSightRange = 400;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -836,6 +840,7 @@ namespace SonOfRobin
                         this.animalPregnancyDuration = 4000;
                         this.animalMaxChildren = 6;
                         this.animalRetaliateChance = 0.6f;
+                        this.animalSightRange = 500;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -864,6 +869,7 @@ namespace SonOfRobin
                         this.animalPregnancyDuration = 3500;
                         this.animalMaxChildren = 5;
                         this.animalRetaliateChance = 1f;
+                        this.animalSightRange = 700;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -891,6 +897,7 @@ namespace SonOfRobin
                         this.animalPregnancyDuration = 2000;
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.05f;
+                        this.animalSightRange = 250;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2292,6 +2299,7 @@ namespace SonOfRobin
                     if (this.animalPregnancyDuration == 0) throw new ArgumentNullException($"{this.name} - animalPregnancyDuration not set.");
                     if (this.animalMaxChildren == 0) throw new ArgumentNullException($"{this.name} - animalMaxChildren not set.");
                     if (this.animalRetaliateChance == -1) throw new ArgumentNullException($"{this.name} - animalRetaliateChance not set.");
+                    if (this.animalSightRange == 0) throw new ArgumentNullException($"{this.name} - animalSightRange not set.");
                 }
             }
 

@@ -396,7 +396,7 @@ namespace SonOfRobin
                         Animal animal = (Animal)this.boardPiece;
                         BoardPiece target = (BoardPiece)this.eventHelper;
 
-                        if (!animal.alive || Vector2.Distance(animal.sprite.position, target.sprite.position) > animal.sightRange) return;
+                        if (!animal.alive || Vector2.Distance(animal.sprite.position, target.sprite.position) > animal.pieceInfo.animalSightRange) return;
 
                         animal.target = target;
                         animal.aiData.Reset();
