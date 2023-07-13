@@ -27,9 +27,9 @@ namespace SonOfRobin
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, int staysAfterDeath = 800, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", float speed = 1, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, staysAfterDeath: staysAfterDeath, maxAge: maxAge, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;

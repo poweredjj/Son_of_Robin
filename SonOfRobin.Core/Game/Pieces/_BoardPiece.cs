@@ -80,7 +80,6 @@ namespace SonOfRobin
         private float mass;
         public bool exists;
         public bool alive;
-        private readonly int staysAfterDeath;
         public int maxAge;
         public int currentAge;
         public float bioWear;
@@ -110,7 +109,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
+            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
         {
             this.world = world;
             this.name = name;
@@ -130,7 +129,6 @@ namespace SonOfRobin
             this.speed = speed;
             this.strength = strength;
             this.mass = this.pieceInfo != null ? this.pieceInfo.startingMass : 1;
-            this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
             this.exists = true;
             this.alive = true;
             this.maxAge = maxAge == 0 ? 0 : Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));
@@ -504,7 +502,7 @@ namespace SonOfRobin
             if (this.PieceStorage != null && this.GetType() != typeof(Plant)) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
-            if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
+            if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
         }
 
         public virtual void Destroy()

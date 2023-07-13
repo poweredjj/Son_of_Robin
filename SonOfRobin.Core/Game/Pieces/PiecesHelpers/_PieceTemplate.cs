@@ -397,7 +397,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 3, maxNumberToDrop: 1) });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.", yield: yield);
 
                         return boardPiece;
                     }
@@ -415,7 +415,7 @@ namespace SonOfRobin
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
-                            maxAge: 1000, massTakenMultiplier: 0.49f, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
+                            maxAge: 1000, massTakenMultiplier: 0.49f, readableName: "regular grass", description: "A special type of grass.", yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
 
                         return boardPiece;
                     }
@@ -433,7 +433,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
-                             maxAge: 900, massTakenMultiplier: 0.63f, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", yield: yield);
+                             maxAge: 900, massTakenMultiplier: 0.63f, readableName: "desert grass", description: "A grass, that grows on sand.", yield: yield);
 
                         return boardPiece;
                     }
@@ -452,7 +452,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain,
-                            maxAge: 950, massTakenMultiplier: 0.63f, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", yield: yield);
+                            maxAge: 950, massTakenMultiplier: 0.63f, readableName: "poisonous plant", description: "Poisonous plant.", yield: yield);
 
                         return boardPiece;
                     }
@@ -469,7 +469,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsCyan, chanceToDrop: 1, maxNumberToDrop: 1) });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.", yield: yield);
 
                         return boardPiece;
                     }
@@ -491,7 +491,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlue, chanceToDrop: 10, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                            maxAge: 1800, massTakenMultiplier: 0.4f, staysAfterDeath: 300, readableName: "water lily", description: "A water plant.", yield: yield, maxHitPoints: 10);
+                            maxAge: 1800, massTakenMultiplier: 0.4f, readableName: "water lily", description: "A water plant.", yield: yield, maxHitPoints: 10);
 
                         return boardPiece;
                     }
@@ -512,7 +512,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                           maxAge: 550, massTakenMultiplier: 1f, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", yield: yield);
+                           maxAge: 550, massTakenMultiplier: 1f, readableName: "regular flower", description: "A flower.", yield: yield);
 
                         return boardPiece;
                     }
@@ -530,7 +530,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 20, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
-                           maxAge: 550, massTakenMultiplier: 1f, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield);
+                           maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield);
 
                         return boardPiece;
                     }
@@ -547,7 +547,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
-                         maxAge: 4000, massTakenMultiplier: 0.98f, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", yield: yield);
+                         maxAge: 4000, massTakenMultiplier: 0.98f, readableName: "mountain flower", description: "A mountain flower.", yield: yield);
 
                         return boardPiece;
                     }
@@ -577,7 +577,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             maxAge: 30000, massTakenMultiplier: 1.35f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", soundPack: soundPack);
+                             maxAge: 30000, massTakenMultiplier: 1.35f, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -604,7 +604,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -633,7 +633,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "oak", description: "Acorns can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "oak", description: "Acorns can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -662,7 +662,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "apple tree", description: "Apples can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "apple tree", description: "Apples can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -691,7 +691,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "cherry tree", description: "Cherries can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "cherry tree", description: "Cherries can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -719,7 +719,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            maxAge: 15000, massTakenMultiplier: 1.5f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, readableName: "banana tree", description: "Bananas can grow on it.", soundPack: soundPack);
+                            maxAge: 15000, massTakenMultiplier: 1.5f, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, readableName: "banana tree", description: "Bananas can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -745,7 +745,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            maxAge: 15000, massTakenMultiplier: 1.5f, staysAfterDeath: 15000, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", soundPack: soundPack);
+                            maxAge: 15000, massTakenMultiplier: 1.5f, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -765,7 +765,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, staysAfterDeath: 500, fruitEngine: fruitEngine, readableName: "tomato plant", description: "Tomatoes can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "tomato plant", description: "Tomatoes can grow on it.", yield: yield);
 
                         return boardPiece;
                     }
@@ -785,7 +785,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, staysAfterDeath: 500, fruitEngine: fruitEngine, readableName: "coffee shrub", description: "Coffee can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "coffee shrub", description: "Coffee can grow on it.", yield: yield);
 
                         return boardPiece;
                     }
@@ -805,7 +805,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, staysAfterDeath: 500, fruitEngine: fruitEngine, readableName: "carrot plant", description: "Carrots can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "carrot plant", description: "Carrots can grow on it.", yield: yield);
 
                         return boardPiece;
                     }
@@ -823,7 +823,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", yield: yield);
+                            maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.", yield: yield);
 
                         return boardPiece;
                     }

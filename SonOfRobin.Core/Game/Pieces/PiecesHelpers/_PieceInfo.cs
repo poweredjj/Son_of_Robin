@@ -51,6 +51,7 @@ namespace SonOfRobin
 
             // data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
+
             public readonly BoardPiece.Category category;
             public readonly float startingMass;
             public readonly float fireAffinity;
@@ -77,6 +78,7 @@ namespace SonOfRobin
             public readonly bool floatsOnWater;
             public readonly bool isAffectedByWind;
             public readonly AllowedDensity allowedDensity;
+            public readonly int staysAfterDeath;
 
             public Info(BoardPiece piece)
             {
@@ -178,6 +180,7 @@ namespace SonOfRobin
                 this.floatsOnWater = false;
                 this.isAffectedByWind = true;
                 this.allowedDensity = null;
+                this.staysAfterDeath = 0;
 
                 // setting values for names
 
@@ -656,6 +659,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
+                        this.staysAfterDeath = 40 * 60;
                         break;
 
                     case PieceTemplate.Name.Fox:
@@ -667,6 +671,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
+                        this.staysAfterDeath = 40 * 60;
                         break;
 
                     case PieceTemplate.Name.Tiger:
@@ -678,6 +683,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
+                        this.staysAfterDeath = 40 * 60;
                         break;
 
                     case PieceTemplate.Name.Frog:
@@ -689,6 +695,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
+                        this.staysAfterDeath = 40 * 60;
                         break;
 
                     case PieceTemplate.Name.MineralsSmall:
