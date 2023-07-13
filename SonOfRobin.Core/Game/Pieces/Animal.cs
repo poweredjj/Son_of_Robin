@@ -10,7 +10,6 @@ namespace SonOfRobin
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
 
-        private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
         public readonly float retaliateChance; // 0 - 1, used only for animals that do not eat player
         private readonly int maxFedLevel;
@@ -31,7 +30,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -39,7 +38,6 @@ namespace SonOfRobin
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
             this.target = null;
-            this.pregnancyDuration = pregnancyDuration;
             this.pregnancyMass = 0;
             this.pregnancyFramesLeft = 0;
             this.isPregnant = false;
@@ -682,9 +680,9 @@ namespace SonOfRobin
 
             Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0
-            female.pregnancyFramesLeft = (int)female.pregnancyDuration;
+            female.pregnancyFramesLeft = (int)female.pieceInfo.animalPregnancyDuration;
 
-            new WorldEvent(world: this.world, delay: (int)female.pregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
+            new WorldEvent(world: this.world, delay: (int)female.pieceInfo.animalPregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
 
             this.stamina = 0;
             animalMate.stamina = 0;
