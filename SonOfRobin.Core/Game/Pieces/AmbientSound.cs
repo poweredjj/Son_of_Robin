@@ -22,7 +22,7 @@ namespace SonOfRobin
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound, int playDelay,
            bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false, bool playOnlyWhenIsSunny = false) :
 
-            base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, generation: 0, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
+            base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
 

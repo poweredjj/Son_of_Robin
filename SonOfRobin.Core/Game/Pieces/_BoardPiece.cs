@@ -80,7 +80,6 @@ namespace SonOfRobin
         private float mass;
         public bool exists;
         public bool alive;
-        public int generation;
         private readonly int staysAfterDeath;
         public int maxAge;
         public int currentAge;
@@ -111,7 +110,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, int generation = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
         {
             this.world = world;
             this.name = name;
@@ -132,7 +131,6 @@ namespace SonOfRobin
             this.strength = strength;
             this.mass = this.pieceInfo != null ? this.pieceInfo.startingMass : 1;
             this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
-            this.generation = generation;
             this.exists = true;
             this.alive = true;
             this.maxAge = maxAge == 0 ? 0 : Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));

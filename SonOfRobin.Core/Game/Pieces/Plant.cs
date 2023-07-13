@@ -27,9 +27,9 @@ namespace SonOfRobin
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", float speed = 1, int staysAfterDeath = 800, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, allowedDensity: allowedDensity, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, staysAfterDeath: staysAfterDeath, maxAge: maxAge, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, allowedDensity: allowedDensity, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;
@@ -147,7 +147,7 @@ namespace SonOfRobin
                 bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
                 if (canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.pieceInfo.startingMass)
                 {
-                    BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name, generation: this.generation + 1);
+                    BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name);
                     if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
                     newPlant.PlaceOnBoard(randomPlacement: false, position: this.sprite.position);
 
