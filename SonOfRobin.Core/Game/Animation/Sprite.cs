@@ -735,7 +735,11 @@ namespace SonOfRobin
 
             if (this.ObstructsCameraTarget && this.opacityFade == null) new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
 
-            if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
+            if (Scene.UpdateStack.Contains(this.world))
+            {
+                this.opacityFade?.Process();
+                if (!this.boardPiece.exists) return; // opacityFade might destroy the piece
+            }
 
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.GfxRect, this.GfxRect, Color.White * 0.35f);
 
