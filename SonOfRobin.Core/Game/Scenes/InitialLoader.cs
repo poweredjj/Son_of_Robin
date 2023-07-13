@@ -142,6 +142,7 @@ namespace SonOfRobin
 
                 case Step.MakeCraftRecipes:
                     Craft.PopulateAllCategories();
+                    PieceInfo.Info.GetYieldForAntiCraft(); // need to be invoked after populating craft recipes
                     break;
 
                 case Step.CreateScenes:

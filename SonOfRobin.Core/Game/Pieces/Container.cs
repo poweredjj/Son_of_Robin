@@ -9,9 +9,9 @@ namespace SonOfRobin
         public readonly bool pieceStorageIsGlobal;
 
         public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description,
-            byte animSize = 0, string animName = "open", Yield appearDebris = null, int maxHitPoints = 1, PieceSoundPack soundPack = null, bool pieceStorageIsGlobal = false) :
+            byte animSize = 0, string animName = "open", int maxHitPoints = 1, PieceSoundPack soundPack = null, bool pieceStorageIsGlobal = false) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack, appearDebris: appearDebris)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
         {
             this.pieceStorageIsGlobal = pieceStorageIsGlobal;
 

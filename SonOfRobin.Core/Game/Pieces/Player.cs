@@ -433,7 +433,7 @@ namespace SonOfRobin
         public override void Destroy()
         {
             if (!this.exists) return;
-            this.pieceInfo.yield.DropFinalPieces(piece: this);
+            this.pieceInfo.Yield.DropFinalPieces(piece: this);
             base.Destroy();
         }
 

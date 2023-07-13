@@ -204,7 +204,7 @@ namespace SonOfRobin
                     {
                         // duplicated in PieceTemplate
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                        if (yieldPiece.appearDebris != null) yieldPiece.appearDebris.DropDebris(piece: piece, ignoreProcessingTime: true);
+                        if (yieldPiece.pieceInfo.appearDebris != null) yieldPiece.pieceInfo.appearDebris.DropDebris(piece: piece, ignoreProcessingTime: true);
                     }
 
                     if (yieldPiece.sprite.IsOnBoard)

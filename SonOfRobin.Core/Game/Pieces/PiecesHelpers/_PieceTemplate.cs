@@ -290,7 +290,7 @@ namespace SonOfRobin
             {
                 // duplicated in Yield
                 boardPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
+                if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
 
                 // adding opacityFade
 
@@ -1015,7 +1015,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: beachToVolcano, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: beachToVolcano, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
@@ -1056,7 +1056,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: beachToVolcano, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: beachToVolcano, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,

@@ -224,15 +224,15 @@ namespace SonOfRobin
                 }
             }
 
-            if (target.pieceInfo.yield != null && !target.IsBurning) target.pieceInfo.yield.DropFirstPieces(piece: target, hitPower: hitPower);
+            if (target.pieceInfo.Yield != null && !target.IsBurning) target.pieceInfo.Yield.DropFirstPieces(piece: target, hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
             if (target.HitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
             {
                 Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
-                if (target.pieceInfo.yield != null && target.exists && !target.IsBurning)
+                if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                 {
-                    target.pieceInfo.yield.DropFinalPieces(piece: target);
+                    target.pieceInfo.Yield.DropFinalPieces(piece: target);
                     world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
                 }
 

@@ -561,7 +561,7 @@ namespace SonOfRobin
 
                 if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-                if (this.target.pieceInfo.yield != null) this.target.pieceInfo.yield.DropDebris(piece: this.target);
+                if (this.target.pieceInfo.Yield != null) this.target.pieceInfo.Yield.DropDebris(piece: this.target);
 
                 this.soundPack.Play(PieceSoundPack.Action.Cry);
 
@@ -614,12 +614,12 @@ namespace SonOfRobin
 
             this.soundPack.Play(PieceSoundPack.Action.Eat);
 
-            if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.yield != null && this.world.random.Next(0, 25) == 0)
+            if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && this.world.random.Next(0, 25) == 0)
             {
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
-                this.target.pieceInfo.yield.DropDebris(this.target);
+                this.target.pieceInfo.Yield.DropDebris(this.target);
                 this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
             }
 
@@ -634,12 +634,12 @@ namespace SonOfRobin
 
             if (this.target.Mass <= 0)
             {
-                if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.yield != null)
+                if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null)
                 {
                     target.soundPack.Play(PieceSoundPack.Action.IsHit);
 
                     PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
-                    this.target.pieceInfo.yield.DropDebris(this.target);
+                    this.target.pieceInfo.Yield.DropDebris(this.target);
                 }
                 this.target.Destroy();
                 this.activeState = State.AnimalAssessSituation;
@@ -685,8 +685,8 @@ namespace SonOfRobin
                 return;
             }
 
-            this.pieceInfo.yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
-            animalMate.pieceInfo.yield?.DropDebris(piece: animalMate, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            animalMate.pieceInfo.Yield?.DropDebris(piece: animalMate, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
 
             Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0

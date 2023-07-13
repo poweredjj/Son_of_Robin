@@ -502,7 +502,7 @@ namespace SonOfRobin
 
                             var nearbyPieces = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: activeTool.range == 0 ? (ushort)60 : (ushort)activeTool.range, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
 
-                            nearbyPieces = nearbyPieces.Where(piece => piece.pieceInfo.yield != null && piece.exists).ToList();
+                            nearbyPieces = nearbyPieces.Where(piece => piece.pieceInfo.Yield != null && piece.exists).ToList();
 
                             if (activeTool.range == 0)
                             {

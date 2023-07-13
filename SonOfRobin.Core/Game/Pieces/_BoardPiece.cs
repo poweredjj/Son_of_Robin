@@ -92,7 +92,6 @@ namespace SonOfRobin
         public virtual PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
-        public readonly Yield appearDebris; // yield that is used to make debris when placing this piece
         protected int passiveRotation;
         protected Vector2 passiveMovement;
 
@@ -108,7 +107,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
+            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
         {
             this.world = world;
             this.name = name;
@@ -142,7 +141,6 @@ namespace SonOfRobin
             this.passiveMovement = Vector2.Zero;
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;
-            this.appearDebris = appearDebris;
             this.canBeHit = true;
             this.burnLevel = 0f;
             this.isTemporaryDecoration = false; // to be set later
