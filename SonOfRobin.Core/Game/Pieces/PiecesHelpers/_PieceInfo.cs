@@ -51,7 +51,6 @@ namespace SonOfRobin
 
             // data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
-
             public readonly BoardPiece.Category category;
             public readonly float startingMass;
             public readonly float fireAffinity;
@@ -1775,7 +1774,6 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 500;
-                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.SwampGas:
