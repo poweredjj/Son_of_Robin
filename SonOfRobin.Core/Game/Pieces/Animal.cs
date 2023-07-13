@@ -10,7 +10,6 @@ namespace SonOfRobin
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
 
-        private readonly int maxMass;
         private readonly float massBurnedMultiplier;
         private readonly byte awareness;
         private readonly int matureAge;
@@ -35,7 +34,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -43,7 +42,6 @@ namespace SonOfRobin
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
             this.target = null;
-            this.maxMass = maxMass;
             this.massBurnedMultiplier = massBurnedMultiplier;
             this.awareness = awareness;
             this.matureAge = matureAge;
@@ -74,7 +72,7 @@ namespace SonOfRobin
         { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
 
         public float MaxMassPercentage
-        { get { return this.Mass / this.maxMass; } }
+        { get { return this.Mass / this.pieceInfo.animalMaxMass; } }
 
         public override Dictionary<string, Object> Serialize()
         {
@@ -119,7 +117,7 @@ namespace SonOfRobin
                 new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
                 new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
-                new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.maxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
+                new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.pieceInfo.animalMaxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
             }
 
             StatBar.FinishThisBatch();
@@ -156,7 +154,7 @@ namespace SonOfRobin
             if (this.pregnancyMass > 0 && this.pregnancyMass < this.pieceInfo.startingMass * this.maxChildren)
             { this.pregnancyMass += massGained; }
             else
-            { this.Mass = Math.Min(this.Mass + massGained, this.maxMass); }
+            { this.Mass = Math.Min(this.Mass + massGained, this.pieceInfo.animalMaxMass); }
         }
 
         public IEnumerable<BoardPiece> AssessAsMatingPartners(IEnumerable<BoardPiece> pieces)
@@ -657,7 +655,7 @@ namespace SonOfRobin
                 if (this.target.GetType() == typeof(Plant)) this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
             }
 
-            if ((this.Mass >= this.maxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.awareness) == 0)
+            if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.awareness) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -728,7 +726,7 @@ namespace SonOfRobin
                 if (this.world.pieceCountByName[this.name] >= this.world.maxAnimalsPerName)
                 {
                     var fat = this.pregnancyMass;
-                    this.Mass = Math.Min(this.Mass + fat, this.maxMass);
+                    this.Mass = Math.Min(this.Mass + fat, this.pieceInfo.animalMaxMass);
                     this.pregnancyMass = 0;
 
                     this.activeState = State.AnimalAssessSituation;
@@ -759,7 +757,7 @@ namespace SonOfRobin
             }
             else
             {
-                this.Mass = Math.Min(this.Mass + this.pregnancyMass, this.maxMass);
+                this.Mass = Math.Min(this.Mass + this.pregnancyMass, this.pieceInfo.animalMaxMass);
                 this.pregnancyMass = 0;
             }
 

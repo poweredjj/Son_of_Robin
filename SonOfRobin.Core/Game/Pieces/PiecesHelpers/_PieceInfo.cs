@@ -81,6 +81,7 @@ namespace SonOfRobin
             public readonly int staysAfterDeath;
             public Yield Yield { get; private set; }
             public readonly Yield appearDebris;
+            public readonly int animalMaxMass;
 
             public Info(BoardPiece piece)
             {
@@ -185,6 +186,7 @@ namespace SonOfRobin
                 this.staysAfterDeath = 0;
                 this.Yield = null;
                 this.appearDebris = null; // yield that is used to make debris when placing this piece
+                this.animalMaxMass = 0;
 
                 // setting values for names
 
@@ -788,6 +790,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+                        this.animalMaxMass = 5000;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -809,6 +812,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+                        this.animalMaxMass = 15000;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -830,6 +834,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+                        this.animalMaxMass = 15000;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -850,6 +855,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+                        this.animalMaxMass = 1200;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2226,7 +2232,7 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported name - {this.name}.");
                 }
 
-                // setting some variables, that need params non-present in boardPiece            
+                // setting some variables, that need params non-present in boardPiece
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
                 this.frame = piece.sprite.AnimFrame;
                 this.texture = this.frame.texture;
@@ -2241,6 +2247,10 @@ namespace SonOfRobin
                     if (this.plantMassToBurn == 0) throw new ArgumentNullException($"{this.name} - plantMassToBurn not set.");
                     if (this.plantReproductionData == null) throw new ArgumentNullException($"{this.name} - plantReproductionData not set.");
                     if (this.plantBestEnvironment == null) throw new ArgumentNullException($"{this.name} - plantBestEnvironment not set.");
+                }
+                if (this.type == typeof(Animal))
+                {
+                    if (this.animalMaxMass == 0) throw new ArgumentNullException($"{this.name} - animalMaxMass not set.");
                 }
             }
 
