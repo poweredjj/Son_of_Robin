@@ -46,14 +46,13 @@ namespace SonOfRobin
         public AllowedTerrain allowedTerrain;
         private readonly AllowedDensity allowedDensity;
 
-        private readonly bool floatsOnWater;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -65,7 +64,6 @@ namespace SonOfRobin
             this.AnimSize = animSize;
             this.AnimName = animName;
             this.color = Color.White;
-            this.floatsOnWater = floatsOnWater;
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = 0;
             this.GfxRect = Rectangle.Empty;
@@ -798,7 +796,7 @@ namespace SonOfRobin
             if (this.rotation == 0)
             {
                 int submergeCorrection = 0;
-                if (!this.floatsOnWater && calculateSubmerge && this.IsInWater)
+                if (!this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
                 {
                     submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
                 }

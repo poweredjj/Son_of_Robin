@@ -75,6 +75,7 @@ namespace SonOfRobin
             public readonly int placeMinDistance;
             public readonly int placeMaxDistance;
             public readonly bool ignoresCollisions;
+            public readonly bool floatsOnWater;
 
             public Info(BoardPiece piece)
             {
@@ -173,6 +174,7 @@ namespace SonOfRobin
                 this.placeMinDistance = 0;
                 this.placeMaxDistance = 100;
                 this.ignoresCollisions = false;
+                this.floatsOnWater = false;
 
                 // setting values for names
 
@@ -212,6 +214,7 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.placeMaxDistance = 65535;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -281,6 +284,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 25;
                         this.placeMaxDistance = 80;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -1030,6 +1034,7 @@ namespace SonOfRobin
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
@@ -1038,6 +1043,7 @@ namespace SonOfRobin
                         this.destructionDelay = 250;
                         this.placeMaxDistance = 10;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Attack:
@@ -1046,6 +1052,7 @@ namespace SonOfRobin
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 3;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Miss:
@@ -1054,6 +1061,7 @@ namespace SonOfRobin
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Zzz:
@@ -1061,6 +1069,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Heart:
@@ -1069,6 +1078,7 @@ namespace SonOfRobin
                         this.destructionDelay = 40;
                         this.placeMaxDistance = 2;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
@@ -1076,6 +1086,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
@@ -1083,6 +1094,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
@@ -1090,6 +1102,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
@@ -1097,6 +1110,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
@@ -1104,6 +1118,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
@@ -1111,6 +1126,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
@@ -1118,6 +1134,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Explosion:
@@ -1126,6 +1143,7 @@ namespace SonOfRobin
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
@@ -1135,6 +1153,7 @@ namespace SonOfRobin
                         this.canShrink = true;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -1174,6 +1193,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.AxeStone:
@@ -1181,6 +1201,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.AxeIron:
@@ -1188,6 +1209,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.AxeCrystal:
@@ -1195,6 +1217,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.PickaxeWood:
@@ -1202,6 +1225,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.PickaxeStone:
@@ -1209,6 +1233,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.PickaxeIron:
@@ -1216,6 +1241,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.PickaxeCrystal:
@@ -1223,6 +1249,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SpearWood:
@@ -1230,6 +1257,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SpearStone:
@@ -1237,6 +1265,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SpearIron:
@@ -1244,6 +1273,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
@@ -1251,6 +1281,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ScytheStone:
@@ -1258,6 +1289,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ScytheIron:
@@ -1265,6 +1297,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
@@ -1272,6 +1305,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ShovelStone:
@@ -1279,6 +1313,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ShovelIron:
@@ -1286,6 +1321,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ShovelCrystal:
@@ -1293,6 +1329,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BowBasic:
@@ -1300,6 +1337,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BowAdvanced:
@@ -1307,6 +1345,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ArrowWood:
@@ -1314,6 +1353,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 15;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ArrowStone:
@@ -1321,6 +1361,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.stackSize = 15;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ArrowIron:
@@ -1328,6 +1369,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.canBePickedUp = true;
                         this.stackSize = 15;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ArrowCrystal:
@@ -1335,6 +1377,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.stackSize = 15;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ArrowBurning:
@@ -1342,6 +1385,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 15;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisPlant:
@@ -1350,6 +1394,7 @@ namespace SonOfRobin
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
@@ -1358,6 +1403,7 @@ namespace SonOfRobin
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
@@ -1366,6 +1412,7 @@ namespace SonOfRobin
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
@@ -1374,6 +1421,7 @@ namespace SonOfRobin
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
@@ -1382,6 +1430,7 @@ namespace SonOfRobin
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
@@ -1390,6 +1439,7 @@ namespace SonOfRobin
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
@@ -1398,6 +1448,7 @@ namespace SonOfRobin
                         this.destructionDelay = 90;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
@@ -1406,6 +1457,7 @@ namespace SonOfRobin
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
@@ -1414,6 +1466,7 @@ namespace SonOfRobin
                         this.destructionDelay = 110;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
@@ -1422,6 +1475,7 @@ namespace SonOfRobin
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -1716,37 +1770,44 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SoundSeaWavesObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWind:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundNoonCicadas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundLava:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SeaWave:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 500;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:

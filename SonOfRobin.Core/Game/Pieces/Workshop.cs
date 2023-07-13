@@ -10,9 +10,9 @@ namespace SonOfRobin
         public readonly bool canBeUsedDuringRain;
 
         public Workshop(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, MenuTemplate.Name craftMenuTemplate, string readableName, string description, bool canBeUsedDuringRain,
-            byte animSize = 0, string animName = "off", bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool emitsLightWhenCrafting = false, LightEngine lightEngine = null) :
+            byte animSize = 0, string animName = "off", int generation = 0, Yield yield = null, int maxHitPoints = 1, bool emitsLightWhenCrafting = false, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, generation: generation, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
         {
             this.craftMenuTemplate = craftMenuTemplate;
             this.emitsLightWhenCrafting = emitsLightWhenCrafting;

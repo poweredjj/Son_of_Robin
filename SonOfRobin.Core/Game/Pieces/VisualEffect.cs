@@ -14,9 +14,9 @@ namespace SonOfRobin
         private readonly bool fogExplodesWhenBurns;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", bool floatsOnWater = true, int generation = 0, bool visible = true, LightEngine lightEngine = null, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
+            byte animSize = 0, string animName = "default", int generation = 0, bool visible = true, LightEngine lightEngine = null, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, generation: generation, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false, soundPack: soundPack)
         {
             this.fogExplodesWhenBurns = fogExplodesWhenBurns;
         }
