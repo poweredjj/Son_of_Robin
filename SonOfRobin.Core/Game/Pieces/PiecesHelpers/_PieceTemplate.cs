@@ -336,7 +336,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: false);
 
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1);
+                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "boy", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1);
 
                         return boardPiece;
                     }
@@ -346,7 +346,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1);
+                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "girl", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1);
 
                         return boardPiece;
                     }
@@ -356,7 +356,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1);
+                        Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "demoness", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1);
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
@@ -393,11 +393,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 3, maxNumberToDrop: 1) });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.", yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.");
 
                         return boardPiece;
                     }
@@ -408,14 +404,10 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 96, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 50, max: 255) }});
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsGreen, chanceToDrop: 100, maxNumberToDrop: 1) });
-
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
-                            maxAge: 1000, massTakenMultiplier: 0.49f, readableName: "regular grass", description: "A special type of grass.", yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
+                            maxAge: 1000, massTakenMultiplier: 0.49f, readableName: "regular grass", description: "A special type of grass.", lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
 
                         return boardPiece;
                     }
@@ -428,12 +420,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
-                             maxAge: 900, massTakenMultiplier: 0.63f, readableName: "desert grass", description: "A grass, that grows on sand.", yield: yield);
+                             maxAge: 900, massTakenMultiplier: 0.63f, readableName: "desert grass", description: "A grass, that grows on sand.");
 
                         return boardPiece;
                     }
@@ -447,12 +435,8 @@ namespace SonOfRobin
                         },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain,
-                            maxAge: 950, massTakenMultiplier: 0.63f, readableName: "poisonous plant", description: "Poisonous plant.", yield: yield);
+                            maxAge: 950, massTakenMultiplier: 0.63f, readableName: "poisonous plant", description: "Poisonous plant.");
 
                         return boardPiece;
                     }
@@ -465,11 +449,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsCyan, chanceToDrop: 1, maxNumberToDrop: 1) });
-
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.", yield: yield);
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.");
 
                         return boardPiece;
                     }
@@ -486,12 +466,8 @@ namespace SonOfRobin
                         },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, false } });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlue, chanceToDrop: 10, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                            maxAge: 1800, massTakenMultiplier: 0.4f, readableName: "water lily", description: "A water plant.", yield: yield, maxHitPoints: 10);
+                            maxAge: 1800, massTakenMultiplier: 0.4f, readableName: "water lily", description: "A water plant.", maxHitPoints: 10);
 
                         return boardPiece;
                     }
@@ -507,12 +483,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                           maxAge: 550, massTakenMultiplier: 1f, readableName: "regular flower", description: "A flower.", yield: yield);
+                           maxAge: 550, massTakenMultiplier: 1f, readableName: "regular flower", description: "A flower.");
 
                         return boardPiece;
                     }
@@ -525,12 +497,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 20, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
-                           maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield);
+                           maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false));
 
                         return boardPiece;
                     }
@@ -542,12 +510,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
-                         maxAge: 4000, massTakenMultiplier: 0.98f, readableName: "mountain flower", description: "A mountain flower.", yield: yield);
+                         maxAge: 4000, massTakenMultiplier: 0.98f, readableName: "mountain flower", description: "A mountain flower.");
 
                         return boardPiece;
                     }
@@ -563,21 +527,11 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 2)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             maxAge: 30000, massTakenMultiplier: 1.35f, yield: yield, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", soundPack: soundPack);
+                             maxAge: 30000, massTakenMultiplier: 1.35f, maxHitPoints: 50, readableName: "small tree", description: "A small tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -590,21 +544,11 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -619,21 +563,11 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Acorn);
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "oak", description: "Acorns can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "oak", description: "Acorns can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -648,21 +582,11 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Apple);
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "apple tree", description: "Apples can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "apple tree", description: "Apples can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -677,21 +601,11 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 120f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Cherry);
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, massTakenMultiplier: 3.1f, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "cherry tree", description: "Cherries can grow on it.", soundPack: soundPack);
+                            maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "cherry tree", description: "Cherries can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -706,20 +620,11 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 250f, yOffsetPercent: -0.29f, areaWidthPercent: 0.85f, areaHeightPercent: 0.3f, fruitName: Name.Banana);
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 80, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            maxAge: 15000, massTakenMultiplier: 1.5f, yield: yield, maxHitPoints: 160, fruitEngine: fruitEngine, readableName: "banana tree", description: "Bananas can grow on it.", soundPack: soundPack);
+                            maxAge: 15000, massTakenMultiplier: 1.5f, maxHitPoints: 160, fruitEngine: fruitEngine, readableName: "banana tree", description: "Bananas can grow on it.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -732,20 +637,11 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 80, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
-                            maxAge: 15000, massTakenMultiplier: 1.5f, yield: yield, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", soundPack: soundPack);
+                            maxAge: 15000, massTakenMultiplier: 1.5f, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -758,14 +654,10 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
-
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "tomato plant", description: "Tomatoes can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "tomato plant", description: "Tomatoes can grow on it.");
 
                         return boardPiece;
                     }
@@ -778,14 +670,10 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
-
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "coffee shrub", description: "Coffee can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "coffee shrub", description: "Coffee can grow on it.");
 
                         return boardPiece;
                     }
@@ -798,14 +686,10 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
-
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "carrot plant", description: "Carrots can grow on it.", yield: yield);
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "carrot plant", description: "Carrots can grow on it.");
 
                         return boardPiece;
                     }
@@ -818,12 +702,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
-
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
-                            maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.", yield: yield);
+                            maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.");
 
                         return boardPiece;
                     }
@@ -838,15 +718,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1)},
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                              yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
+                               maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -861,15 +734,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1)},
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
+                              maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -883,16 +749,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
-                                });
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
+                              maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -906,16 +764,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.MineralsMossySmall, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.MineralsMossySmall, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
-                       });
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
+                              maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -1082,21 +932,11 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Wood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
-                                });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                              maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1107,22 +947,11 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Wood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 5, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
-                                });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                              maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1182,33 +1011,25 @@ namespace SonOfRobin
 
                 case Name.ChestTreasureNormal:
                     {
-                        var yield = new Yield(debrisType: Yield.DebrisType.Wood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 5),
-                                });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: beachToVolcano, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: beachToVolcano, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 2, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 2, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
                             });
 
                         while (true)
@@ -1231,32 +1052,24 @@ namespace SonOfRobin
 
                 case Name.ChestTreasureBig:
                     {
-                        var yield = new Yield(debrisType: Yield.DebrisType.Wood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 4),
-                                new Yield.DroppedPiece(pieceName: Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 10),
-                                });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: beachToVolcano, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
+                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: beachToVolcano, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 4, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 4, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
                             });
 
                         while (true)
@@ -1281,27 +1094,13 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Ceramic,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.JarBroken, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                new Yield.DroppedPiece(pieceName: Name.MeatDried, chanceToDrop: 50, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.BowBasic, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 2, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ScytheStone, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.ShovelStone, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.SpearStone, chanceToDrop: 10, maxNumberToDrop: 1),
-                                });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding1));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack);
+                              maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack);
 
                         return decoration;
                     }
@@ -1310,16 +1109,12 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Ceramic,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1) });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack);
+                              maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1536,7 +1331,7 @@ namespace SonOfRobin
                 case Name.WoodPlank:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodPlank,
-                            allowedTerrain: beachToVolcano, yield: null, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "wood plank", description: "Crafting material.");
+                            allowedTerrain: beachToVolcano, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "wood plank", description: "Crafting material.");
 
                         return boardPiece;
                     }
@@ -1544,7 +1339,7 @@ namespace SonOfRobin
                 case Name.IronNail:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Nail, allowedTerrain: beachToVolcano,
-                             yield: null, maxHitPoints: 1, rotatesWhenDropped: true, readableName: "nail", description: "Crafting material.");
+                              maxHitPoints: 1, rotatesWhenDropped: true, readableName: "nail", description: "Crafting material.");
 
                         return boardPiece;
                     }
@@ -1555,17 +1350,8 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax + 5), (byte)(Terrain.waterLevelMax + 25)) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },});
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                                finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: Name.JarTreasure, chanceToDrop: 2, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Clam, chanceToDrop: 30, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
+                            maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1578,17 +1364,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                                finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: Name.JarTreasure, chanceToDrop: 4, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 25, maxNumberToDrop: 2),
-                                    new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 10, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
+                            maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1601,16 +1378,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                                finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: Name.JarTreasure, chanceToDrop: 6, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 3),
-                                    new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
+                            maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1623,15 +1392,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                                finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 4),
-                                    new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
+                            maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1641,19 +1403,8 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: Name.ChestTreasureBig, chanceToDrop: 2, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.ChestTreasureNormal, chanceToDrop: 8, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.JarTreasure, chanceToDrop: 15, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 20, maxNumberToDrop: 2),
-                                    new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
+                            maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1665,14 +1416,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 2)},
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
+                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
 
                         return boardPiece;
                     }
@@ -1684,16 +1429,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 70, maxNumberToDrop: 1) },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
+                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
                         return boardPiece;
                     }
@@ -1705,14 +1442,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)},
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 8)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
+                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         return boardPiece;
                     }
@@ -1724,14 +1455,8 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)},
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
+                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
 
                         return boardPiece;
                     }
@@ -2129,21 +1854,12 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Blood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 1, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 50, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 50, maxNumberToDrop: 1)
-                            });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.1f,
-                            maxHitPoints: 150, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 400, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack);
+                            maxHitPoints: 150, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 400, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, readableName: "rabbit", description: "A small animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2157,15 +1873,6 @@ namespace SonOfRobin
                         var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Blood,
-                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                          finalDroppedPieces: new List<Yield.DroppedPiece> {
-                              new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 2),
-                              new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 5, maxNumberToDrop: 1),
-                              new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
-                              new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) }
-                          );
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
                         var soundPack = new PieceSoundPack();
@@ -2175,7 +1882,7 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.6f,
-                         maxHitPoints: 300, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 500, eats: eats, strength: 30, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack);
+                         maxHitPoints: 300, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 500, eats: eats, strength: 30, readableName: "fox", description: "An animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2188,14 +1895,6 @@ namespace SonOfRobin
 
                         var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
-
-                        var yield = new Yield(debrisType: Yield.DebrisType.Blood,
-                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                          finalDroppedPieces: new List<Yield.DroppedPiece> {
-                              new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 100, maxNumberToDrop: 3),
-                              new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2),
-                              new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2)
-                          });
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
@@ -2210,7 +1909,7 @@ namespace SonOfRobin
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f, retaliateChance: 1f,
-                         maxHitPoints: 1600, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
+                         maxHitPoints: 1600, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2224,13 +1923,6 @@ namespace SonOfRobin
                         var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
 
-                        var yield = new Yield(debrisType: Yield.DebrisType.Blood,
-                        firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                        finalDroppedPieces: new List<Yield.DroppedPiece> {
-                            new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 40, maxNumberToDrop: 1),
-                            new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
-                        });
-
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
                             );
@@ -2240,7 +1932,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f, retaliateChance: 0.05f,
-                       maxHitPoints: 150, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack);
+                       maxHitPoints: 150, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, readableName: "frog", description: "A water animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2853,15 +2545,11 @@ namespace SonOfRobin
 
                 case Name.TreeStump:
                     {
-                        var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.WoodLogRegular, chanceToDrop: 20, maxNumberToDrop: 1) });
-
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyStump));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedTerrain: beachToVolcano,
-                             maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", yield: yield, soundPack: soundPack);
+                             maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2869,7 +2557,7 @@ namespace SonOfRobin
                 case Name.HumanSkeleton:
                     {
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: canGoAnywhere,
-                             yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.");
+                              maxHitPoints: 100, readableName: "skeleton", description: "Human remains.");
 
                         return boardPiece;
                     }
@@ -3124,13 +2812,6 @@ namespace SonOfRobin
                 soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f));
                 soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerMale));
             }
-        }
-
-        private static Yield CreatePlayerYield()
-        {
-            return new Yield(debrisType: Yield.DebrisType.Blood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HumanSkeleton, chanceToDrop: 100, maxNumberToDrop: 1) });
         }
 
         private static AllowedTerrain CreatePlayerAllowedTerrain()

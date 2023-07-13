@@ -14,9 +14,9 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
-            byte animSize = 0, string animName = "default", Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
+            byte animSize = 0, string animName = "default", bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, yield: yield, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,  maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
         {
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
@@ -224,15 +224,15 @@ namespace SonOfRobin
                 }
             }
 
-            if (target.yield != null && !target.IsBurning) target.yield.DropFirstPieces(piece: target, hitPower: hitPower);
+            if (target.pieceInfo.yield != null && !target.IsBurning) target.pieceInfo.yield.DropFirstPieces(piece: target, hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
             if (target.HitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
             {
                 Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
-                if (target.yield != null && target.exists && !target.IsBurning)
+                if (target.pieceInfo.yield != null && target.exists && !target.IsBurning)
                 {
-                    target.yield.DropFinalPieces(piece: target);
+                    target.pieceInfo.yield.DropFinalPieces(piece: target);
                     world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
                 }
 

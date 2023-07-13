@@ -27,9 +27,9 @@ namespace SonOfRobin
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 1, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge,  maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;
@@ -113,7 +113,7 @@ namespace SonOfRobin
             if (this.name == PieceTemplate.Name.CarrotPlant) this.world.HintEngine.Disable(PieceHint.Type.CarrotPlant);
             if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.HintEngine.Disable(PieceHint.Type.FruitTree);
 
-            Yield debrisYield = new Yield(debrisTypeList: this.yield.DebrisTypeList);
+            Yield debrisYield = new Yield(debrisTypeList: this.pieceInfo.yield.DebrisTypeList);
             debrisYield.DropDebris(piece: this);
             Sound.QuickPlay(SoundData.Name.DropPlant);
 

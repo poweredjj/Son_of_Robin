@@ -11,9 +11,9 @@ namespace SonOfRobin
         private readonly LightEngine storedLightEngine;
 
         public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool canBeUsedDuringRain, LightEngine storedLightEngine,
-            byte animSize = 0, string animName = "off", Yield yield = null, int maxHitPoints = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,  yield: yield, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,   maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
         {
             this.storedLightEngine = storedLightEngine;
 

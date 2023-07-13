@@ -79,6 +79,7 @@ namespace SonOfRobin
             public readonly bool isAffectedByWind;
             public readonly AllowedDensity allowedDensity;
             public readonly int staysAfterDeath;
+            public readonly Yield yield;
 
             public Info(BoardPiece piece)
             {
@@ -181,6 +182,7 @@ namespace SonOfRobin
                 this.isAffectedByWind = true;
                 this.allowedDensity = null;
                 this.staysAfterDeath = 0;
+                this.yield = null;
 
                 // setting values for names
 
@@ -199,6 +201,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.isAffectedByWind = false;
+                        this.yield = CreatePlayerYield();
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
@@ -208,6 +211,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.isAffectedByWind = false;
+                        this.yield = CreatePlayerYield();
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
@@ -216,6 +220,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.isAffectedByWind = false;
+                        this.yield = CreatePlayerYield();
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
@@ -237,6 +242,10 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 80;
                         this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsGreen, chanceToDrop: 3, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
@@ -250,6 +259,10 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsGreen, chanceToDrop: 100, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
@@ -262,6 +275,10 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 60;
                         this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
@@ -276,6 +293,10 @@ namespace SonOfRobin
                         this.placeMinDistance = 30;
                         this.placeMaxDistance = 90;
                         this.allowedDensity = new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -288,6 +309,10 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 120;
                         this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsCyan, chanceToDrop: 1, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.WaterLily:
@@ -301,6 +326,10 @@ namespace SonOfRobin
                         this.placeMaxDistance = 80;
                         this.floatsOnWater = true;
                         this.allowedDensity = new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsBlue, chanceToDrop: 10, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -313,6 +342,10 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -325,6 +358,10 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsRed, chanceToDrop: 20, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -338,6 +375,10 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 250;
                         this.allowedDensity = new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
@@ -352,6 +393,10 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -366,6 +411,10 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
@@ -380,6 +429,10 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -394,6 +447,10 @@ namespace SonOfRobin
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 600;
                         this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -408,6 +465,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 300;
                         this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 20, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 2)});
                         break;
 
                     case PieceTemplate.Name.TreeBig:
@@ -422,6 +489,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.Oak:
@@ -438,6 +515,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -453,6 +540,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -468,6 +565,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 50, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -482,6 +589,16 @@ namespace SonOfRobin
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 80, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+
                         break;
 
                     case PieceTemplate.Name.BananaTree:
@@ -497,6 +614,15 @@ namespace SonOfRobin
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 80, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 40, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.Acorn:
@@ -660,6 +786,15 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Blood,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 1, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 50, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 50, maxNumberToDrop: 1)
+                            });
                         break;
 
                     case PieceTemplate.Name.Fox:
@@ -672,6 +807,15 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Blood,
+                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                          finalDroppedPieces: new List<Yield.DroppedPiece> {
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 2),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 5, maxNumberToDrop: 1),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) }
+                          );
                         break;
 
                     case PieceTemplate.Name.Tiger:
@@ -684,6 +828,14 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Blood,
+                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                          finalDroppedPieces: new List<Yield.DroppedPiece> {
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 100, maxNumberToDrop: 3),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2)
+                          });
                         break;
 
                     case PieceTemplate.Name.Frog:
@@ -696,6 +848,13 @@ namespace SonOfRobin
                         this.placeMaxDistance = 45;
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Blood,
+                        firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                        finalDroppedPieces: new List<Yield.DroppedPiece> {
+                            new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawRegular, chanceToDrop: 40, maxNumberToDrop: 1),
+                            new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
+                        });
                         break;
 
                     case PieceTemplate.Name.MineralsSmall:
@@ -704,6 +863,13 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.MineralsMossySmall:
@@ -712,6 +878,13 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.MineralsBig:
@@ -721,6 +894,14 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
+                                });
                         break;
 
                     case PieceTemplate.Name.MineralsMossyBig:
@@ -730,6 +911,14 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MineralsMossySmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MineralsMossySmall, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
+                       });
                         break;
 
                     case PieceTemplate.Name.JarTreasure:
@@ -738,6 +927,20 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Ceramic,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarBroken, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatDried, chanceToDrop: 50, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BowBasic, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BowAdvanced, chanceToDrop: 2, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                });
                         break;
 
                     case PieceTemplate.Name.JarBroken:
@@ -746,6 +949,10 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Ceramic,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.CrateStarting:
@@ -753,6 +960,16 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Wood,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeStone, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
+                                });
                         break;
 
                     case PieceTemplate.Name.CrateRegular:
@@ -760,6 +977,17 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Wood,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 5, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
+                                });
                         break;
 
                     case PieceTemplate.Name.ChestWooden:
@@ -797,6 +1025,14 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Wood,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 5),
+                                });
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
@@ -804,6 +1040,14 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Wood,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 4),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 10),
+                                });
                         break;
 
                     case PieceTemplate.Name.Campfire:
@@ -976,42 +1220,98 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 2)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
                         break;
 
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 2, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clam, chanceToDrop: 30, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 4, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 25, maxNumberToDrop: 2),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Acorn, chanceToDrop: 10, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 6, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 25, maxNumberToDrop: 3),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
                         break;
 
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 4),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
                         break;
 
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureBig, chanceToDrop: 2, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureNormal, chanceToDrop: 8, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 15, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 20, maxNumberToDrop: 2),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:
@@ -1020,6 +1320,12 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Crystal,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 8)});
                         break;
 
                     case PieceTemplate.Name.CrystalDepositBig:
@@ -1027,6 +1333,14 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisType: Yield.DebrisType.Crystal,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 70, maxNumberToDrop: 1) },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)});
                         break;
 
                     case PieceTemplate.Name.Coal:
@@ -1824,6 +2138,10 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.isAffectedByWind = false;
+
+                        this.yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 20, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.LavaFlame:
@@ -1904,6 +2222,7 @@ namespace SonOfRobin
 
                 // setting some variables, that need params non-present in boardPiece
 
+                if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
                 this.frame = piece.sprite.AnimFrame;
                 this.texture = this.frame.texture;
@@ -1919,6 +2238,13 @@ namespace SonOfRobin
                     if (this.plantReproductionData == null) throw new ArgumentNullException($"{this.name} - plantReproductionData not set.");
                     if (this.plantBestEnvironment == null) throw new ArgumentNullException($"{this.name} - plantBestEnvironment not set.");
                 }
+            }
+
+            private static Yield CreatePlayerYield()
+            {
+                return new Yield(debrisType: Yield.DebrisType.Blood,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HumanSkeleton, chanceToDrop: 100, maxNumberToDrop: 1) });
             }
 
             public List<string> BuffDescList

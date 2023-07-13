@@ -285,7 +285,7 @@ namespace SonOfRobin
                     {
                         BoardPiece boardPiece = sprite.boardPiece;
 
-                        if (boardPiece != null && boardPiece.exists && boardPiece.yield != null) boardPiece.yield.DropFinalPieces(piece: boardPiece);
+                        if (boardPiece != null && boardPiece.exists && boardPiece.pieceInfo.yield != null) boardPiece.pieceInfo.yield.DropFinalPieces(piece: boardPiece);
                         boardPiece.Destroy();
                     }
                 }
@@ -299,7 +299,7 @@ namespace SonOfRobin
                 {
                     if (piece != world.Player)
                     {
-                        if (piece != null && piece.exists && piece.yield != null) piece.yield.DropFinalPieces(piece: piece);
+                        if (piece != null && piece.exists && piece.pieceInfo.yield != null) piece.pieceInfo.yield.DropFinalPieces(piece: piece);
                         piece.Destroy();
                     }
                 }

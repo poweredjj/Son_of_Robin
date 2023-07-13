@@ -46,9 +46,9 @@ namespace SonOfRobin
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
-            byte animSize = 0, string animName = "default", Yield yield = null, PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
+            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, yield: yield, strength: strength, activeState: activeState, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description,  strength: strength, activeState: activeState, soundPack: soundPack)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -433,7 +433,7 @@ namespace SonOfRobin
         public override void Destroy()
         {
             if (!this.exists) return;
-            this.yield.DropFinalPieces(piece: this);
+            this.pieceInfo.yield.DropFinalPieces(piece: this);
             base.Destroy();
         }
 
