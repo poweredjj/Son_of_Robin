@@ -2676,7 +2676,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, generatesWind: true, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.White;
 

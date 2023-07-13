@@ -8,20 +8,17 @@ namespace SonOfRobin
         private const float visFullOpacity = 1f;
         private const float visMinOpacity = 0.3f;
 
-        private readonly bool generatesWind;
         private readonly int checkDelay;
 
         private int currentDelay;
         private int waitUntilFrame;
 
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
-           bool visible = false, bool generatesWind = false) :
+           bool visible = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
-
-            this.generatesWind = generatesWind;
 
             this.waitUntilFrame = 0;
 
@@ -63,7 +60,7 @@ namespace SonOfRobin
                     this.soundPack.Stop(PieceSoundPack.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
                 }
-                if (this.generatesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
+                if (this.pieceInfo.ambsoundGeneratesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
                 return;
             }
 

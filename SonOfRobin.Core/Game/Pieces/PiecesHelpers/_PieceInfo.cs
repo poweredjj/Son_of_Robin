@@ -93,6 +93,7 @@ namespace SonOfRobin
             public readonly int ambsoundPlayDelayMaxVariation;
             public readonly List<IslandClock.PartOfDay> ambsoundPartOfDayList;
             public readonly bool ambsoundPlayOnlyWhenIsSunny;
+            public readonly bool ambsoundGeneratesWind;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -208,6 +209,7 @@ namespace SonOfRobin
                 this.ambsoundPlayDelayMaxVariation = 0;
                 this.ambsoundPartOfDayList = null;
                 this.ambsoundPlayOnlyWhenIsSunny = false;
+                this.ambsoundGeneratesWind = false;
 
                 // setting values for names
 
@@ -2246,6 +2248,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
                         this.ambsoundPlayDelayMaxVariation = 200;
+                        this.ambsoundGeneratesWind = true;
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
