@@ -86,6 +86,7 @@ namespace SonOfRobin
             public readonly int animalMatureAge;
             public readonly int animalPregnancyDuration;
             public readonly int animalMaxChildren;
+            public readonly float animalRetaliateChance; // 0 - 1, used only for animals that do not eat player
 
             public Info(BoardPiece piece)
             {
@@ -196,6 +197,7 @@ namespace SonOfRobin
                 this.animalMatureAge = 0;
                 this.animalPregnancyDuration = 0;
                 this.animalMaxChildren = 0;
+                this.animalRetaliateChance = -1;
 
                 // setting values for names
 
@@ -805,6 +807,7 @@ namespace SonOfRobin
                         this.animalMatureAge = 1200;
                         this.animalPregnancyDuration = 2000;
                         this.animalMaxChildren = 8;
+                        this.animalRetaliateChance = 0.1f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -832,6 +835,7 @@ namespace SonOfRobin
                         this.animalMatureAge = 2000;
                         this.animalPregnancyDuration = 4000;
                         this.animalMaxChildren = 6;
+                        this.animalRetaliateChance = 0.6f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -859,6 +863,7 @@ namespace SonOfRobin
                         this.animalMatureAge = 4000;
                         this.animalPregnancyDuration = 3500;
                         this.animalMaxChildren = 5;
+                        this.animalRetaliateChance = 1f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -885,6 +890,7 @@ namespace SonOfRobin
                         this.animalMatureAge = 1200;
                         this.animalPregnancyDuration = 2000;
                         this.animalMaxChildren = 8;
+                        this.animalRetaliateChance = 0.05f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2285,6 +2291,7 @@ namespace SonOfRobin
                     if (this.animalMatureAge == 0) throw new ArgumentNullException($"{this.name} - animalMatureAge not set.");
                     if (this.animalPregnancyDuration == 0) throw new ArgumentNullException($"{this.name} - animalPregnancyDuration not set.");
                     if (this.animalMaxChildren == 0) throw new ArgumentNullException($"{this.name} - animalMaxChildren not set.");
+                    if (this.animalRetaliateChance == -1) throw new ArgumentNullException($"{this.name} - animalRetaliateChance not set.");
                 }
             }
 
