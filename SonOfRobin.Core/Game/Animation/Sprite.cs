@@ -113,10 +113,10 @@ namespace SonOfRobin
         }
 
         public bool BlocksMovement
-        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.spriteBlocksMovement; } }
+        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksMovement; } }
 
         public bool BlocksPlantGrowth
-        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.spriteBlocksPlantGrowth; } }
+        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksPlantGrowth; } }
 
         public bool IsInWater
         { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax; } }
@@ -195,8 +195,8 @@ namespace SonOfRobin
             if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
             else
             {
-                int minDistance = minDistanceOverride == -1 ? this.boardPiece.pieceInfo.spriteMinDistance : minDistanceOverride;
-                int maxDistance = maxDistanceOverride == -1 ? this.boardPiece.pieceInfo.spriteMaxDistance : maxDistanceOverride;
+                int minDistance = minDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMinDistance : minDistanceOverride;
+                int maxDistance = maxDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMaxDistance : maxDistanceOverride;
 
                 if (closestFreeSpot)
                 {

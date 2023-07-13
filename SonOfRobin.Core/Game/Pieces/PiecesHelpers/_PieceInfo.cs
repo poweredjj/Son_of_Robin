@@ -70,10 +70,10 @@ namespace SonOfRobin
             public readonly int destructionDelay;
             public readonly Scheduler.TaskName toolbarTask;
             public readonly Scheduler.TaskName boardTask;
-            public readonly bool spriteBlocksMovement;
-            public readonly bool spriteBlocksPlantGrowth;
-            public readonly int spriteMinDistance;
-            public readonly int spriteMaxDistance;
+            public readonly bool blocksMovement;
+            public readonly bool blocksPlantGrowth;
+            public readonly int placeMinDistance;
+            public readonly int placeMaxDistance;
 
             public Info(BoardPiece piece)
             {
@@ -167,10 +167,10 @@ namespace SonOfRobin
                 this.destructionDelay = 0;
                 this.boardTask = Scheduler.TaskName.Empty;
                 this.toolbarTask = Scheduler.TaskName.Empty;
-                this.spriteBlocksMovement = false;
-                this.spriteBlocksPlantGrowth = false;
-                this.spriteMinDistance = 0;
-                this.spriteMaxDistance = 100;
+                this.blocksMovement = false;
+                this.blocksPlantGrowth = false;
+                this.placeMinDistance = 0;
+                this.placeMaxDistance = 100;
 
                 // setting values for names
 
@@ -185,29 +185,29 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 65535;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 65535;
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 65535;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 65535;
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 65535;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 65535;
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
-                        this.spriteMaxDistance = 65535;
+                        this.placeMaxDistance = 65535;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -217,8 +217,8 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMaxDistance = 80;
+                        this.blocksPlantGrowth = true;
+                        this.placeMaxDistance = 80;
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
@@ -229,8 +229,8 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantMaxExistingNumber = 300;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMaxDistance = 400;
+                        this.blocksPlantGrowth = true;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
@@ -240,8 +240,8 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 300, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 60;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 60;
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
@@ -252,9 +252,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
                         this.plantDropSeedChance = 70;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 30;
-                        this.spriteMaxDistance = 90;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 30;
+                        this.placeMaxDistance = 90;
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -264,8 +264,8 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMaxDistance = 120;
+                        this.blocksPlantGrowth = true;
+                        this.placeMaxDistance = 120;
                         break;
 
                     case PieceTemplate.Name.WaterLily:
@@ -274,9 +274,9 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 25;
-                        this.spriteMaxDistance = 80;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 25;
+                        this.placeMaxDistance = 80;
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -287,7 +287,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
-                        this.spriteBlocksPlantGrowth = true;
+                        this.blocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -298,7 +298,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
-                        this.spriteBlocksPlantGrowth = true;
+                        this.blocksPlantGrowth = true;
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -309,8 +309,8 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 175 } };
                         this.plantDropSeedChance = 15;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMaxDistance = 250;
+                        this.blocksPlantGrowth = true;
+                        this.placeMaxDistance = 250;
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
@@ -321,9 +321,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 20;
-                        this.spriteMaxDistance = 200;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 20;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -334,9 +334,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 20;
-                        this.spriteMaxDistance = 200;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 20;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
@@ -347,9 +347,9 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantDropSeedChance = 8;
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksPlantGrowth = true;
-                        this.spriteMinDistance = 20;
-                        this.spriteMaxDistance = 200;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 20;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -360,9 +360,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
                         this.plantDropSeedChance = 50;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 50;
-                        this.spriteMaxDistance = 600;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 50;
+                        this.placeMaxDistance = 600;
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -373,9 +373,9 @@ namespace SonOfRobin
                         this.plantMassToBurn = 15;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 50;
-                        this.spriteMaxDistance = 300;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 50;
+                        this.placeMaxDistance = 300;
                         break;
 
                     case PieceTemplate.Name.TreeBig:
@@ -386,9 +386,9 @@ namespace SonOfRobin
                         this.plantMassToBurn = 35;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 40;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 40;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.Oak:
@@ -401,9 +401,9 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.plantDropSeedChance = 20;
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 40;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 40;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -415,9 +415,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 40;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 40;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -429,9 +429,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 40;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 40;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -442,9 +442,9 @@ namespace SonOfRobin
                         this.plantMassToBurn = 12;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 200;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 200;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.BananaTree:
@@ -456,9 +456,9 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 200;
-                        this.spriteMaxDistance = 400;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 200;
+                        this.placeMaxDistance = 400;
                         break;
 
                     case PieceTemplate.Name.Acorn:
@@ -468,7 +468,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.Plant;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -486,7 +486,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.Plant;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
@@ -502,7 +502,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Banana:
@@ -512,7 +512,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Cherry:
@@ -522,7 +522,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 16;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Tomato:
@@ -533,7 +533,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Carrot:
@@ -543,7 +543,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.MeatRawRegular:
@@ -553,7 +553,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
@@ -563,7 +563,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -573,7 +573,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Fat:
@@ -582,7 +582,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
                         this.stackSize = 5;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Leather:
@@ -591,7 +591,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.canBePickedUp = true;
                         this.stackSize = 4;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Burger:
@@ -601,7 +601,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Meal:
@@ -617,9 +617,9 @@ namespace SonOfRobin
                         this.startingMass = 35;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 200, 500 };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 10;
-                        this.spriteMaxDistance = 45;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 10;
+                        this.placeMaxDistance = 45;
                         break;
 
                     case PieceTemplate.Name.Fox:
@@ -627,9 +627,9 @@ namespace SonOfRobin
                         this.startingMass = 60;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 1000 };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 10;
-                        this.spriteMaxDistance = 45;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 10;
+                        this.placeMaxDistance = 45;
                         break;
 
                     case PieceTemplate.Name.Tiger:
@@ -637,9 +637,9 @@ namespace SonOfRobin
                         this.startingMass = 80;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 2000 };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 10;
-                        this.spriteMaxDistance = 45;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 10;
+                        this.placeMaxDistance = 45;
                         break;
 
                     case PieceTemplate.Name.Frog:
@@ -647,67 +647,67 @@ namespace SonOfRobin
                         this.startingMass = 10;
                         this.fireAffinity = 0.15f;
                         this.maxMassForSize = new int[] { 300, 800 };
-                        this.spriteBlocksMovement = true;
-                        this.spriteMinDistance = 10;
-                        this.spriteMaxDistance = 45;
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 10;
+                        this.placeMaxDistance = 45;
                         break;
 
                     case PieceTemplate.Name.MineralsSmall:
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.MineralsMossySmall:
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.MineralsBig:
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.MineralsMossyBig:
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.JarTreasure:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 50;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 50;
                         break;
 
                     case PieceTemplate.Name.JarBroken:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.5f;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 50;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 50;
                         break;
 
                     case PieceTemplate.Name.CrateStarting:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 50;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 50;
                         break;
 
                     case PieceTemplate.Name.CrateRegular:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 50;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 50;
                         break;
 
                     case PieceTemplate.Name.ChestWooden:
@@ -715,7 +715,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.ChestStone:
@@ -723,128 +723,128 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.ChestIron:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Campfire:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopEssential:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabStandard:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.fireAffinity = 0.3f;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Furnace:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.HotPlate:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.CookingPot:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.UpgradeBench:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Stick:
@@ -852,7 +852,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.WoodLogRegular:
@@ -860,8 +860,8 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 4;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.WoodLogHard:
@@ -869,8 +869,8 @@ namespace SonOfRobin
                         this.fireAffinity = 0.9f;
                         this.canBePickedUp = true;
                         this.stackSize = 4;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.WoodPlank:
@@ -878,22 +878,22 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Stone:
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Granite:
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Clay:
@@ -901,8 +901,8 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Rope:
@@ -922,50 +922,50 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.CoalDeposit:
                         this.category = BoardPiece.Category.Stone;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
                         this.category = BoardPiece.Category.Stone;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositBig:
                         this.category = BoardPiece.Category.Crystal;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Coal:
@@ -984,7 +984,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 5;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.IronRod:
@@ -1009,105 +1009,105 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         this.stackSize = 8;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Crystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 1000;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Backlight:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = -1;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 250;
-                        this.spriteMaxDistance = 10;
+                        this.placeMaxDistance = 10;
                         break;
 
                     case PieceTemplate.Name.Attack:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = -1;
-                        this.spriteMaxDistance = 3;
+                        this.placeMaxDistance = 3;
                         break;
 
                     case PieceTemplate.Name.Miss:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.Zzz:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.Heart:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 40;
-                        this.spriteMaxDistance = 2;
+                        this.placeMaxDistance = 2;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.Explosion:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = -1;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
@@ -1115,7 +1115,7 @@ namespace SonOfRobin
                         this.startingMass = 60;
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
                         this.canShrink = true;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -1329,91 +1329,91 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 90;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 110;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.TentMedium:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.TentBig:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.6f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.BackpackSmall:
@@ -1421,8 +1421,8 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BackpackMedium:
@@ -1430,8 +1430,8 @@ namespace SonOfRobin
                         this.startingMass = 500;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BackpackBig:
@@ -1439,8 +1439,8 @@ namespace SonOfRobin
                         this.startingMass = 700;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BeltSmall:
@@ -1448,7 +1448,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BeltMedium:
@@ -1456,7 +1456,7 @@ namespace SonOfRobin
                         this.startingMass = 300;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BeltBig:
@@ -1464,7 +1464,7 @@ namespace SonOfRobin
                         this.startingMass = 400;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.Map:
@@ -1472,7 +1472,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.Dungarees:
@@ -1480,7 +1480,7 @@ namespace SonOfRobin
                         this.startingMass = 150;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.HatSimple:
@@ -1488,7 +1488,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.BootsProtective:
@@ -1496,7 +1496,7 @@ namespace SonOfRobin
                         this.startingMass = 500;
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.TorchSmall:
@@ -1522,14 +1522,14 @@ namespace SonOfRobin
                         this.startingMass = 350;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
                         this.category = BoardPiece.Category.Metal;
                         this.startingMass = 300;
                         this.canBePickedUp = true;
-                        this.spriteBlocksMovement = true;
+                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.Candle:
@@ -1543,8 +1543,8 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Flesh;
                         this.fireAffinity = 0.3f;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.PredatorRepellant:
@@ -1552,7 +1552,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.fireAffinity = 0.0f;
                         this.destructionDelay = 60 * 60 * 5;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
@@ -1561,7 +1561,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsBlue:
@@ -1570,7 +1570,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsCyan:
@@ -1579,7 +1579,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsGreen:
@@ -1588,7 +1588,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsYellow:
@@ -1597,7 +1597,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsRed:
@@ -1606,7 +1606,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.HerbsViolet:
@@ -1615,7 +1615,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 20;
-                        this.spriteMaxDistance = 200;
+                        this.placeMaxDistance = 200;
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
@@ -1623,7 +1623,7 @@ namespace SonOfRobin
                         this.startingMass = 100;
                         this.canBePickedUp = true;
                         this.stackSize = 3;
-                        this.spriteMaxDistance = 1000;
+                        this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:
@@ -1651,36 +1651,36 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.movesWhenDropped = false;
                         this.destructionDelay = 60 * 30;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.TreeStump:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.movesWhenDropped = false;
-                        this.spriteBlocksMovement = true;
-                        this.spriteMaxDistance = 500;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.LavaFlame:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.SwampGas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.LavaGas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWavesObsolete:
@@ -1716,13 +1716,13 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SeaWave:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 500;
+                        this.placeMaxDistance = 500;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
-                        this.spriteMaxDistance = 0;
+                        this.placeMaxDistance = 0;
                         break;
 
                     default:

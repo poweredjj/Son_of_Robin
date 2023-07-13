@@ -132,7 +132,7 @@ namespace SonOfRobin
 
                 float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
                 this.burningPiece.HitPoints -= hitPointsToTake;
-                if (this.burningPiece.pieceInfo.spriteBlocksMovement)
+                if (this.burningPiece.pieceInfo.blocksMovement)
                 {
                     ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 15);
                     this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
