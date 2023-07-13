@@ -2662,7 +2662,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Cyan;
 
@@ -2691,7 +2691,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Blue;
 

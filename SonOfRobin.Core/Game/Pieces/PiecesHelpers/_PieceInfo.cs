@@ -90,6 +90,7 @@ namespace SonOfRobin
             public readonly float animalRetaliateChance; // 0 - 1, used only for animals that do not eat player
             public readonly int animalSightRange;
             public readonly int ambsoundPlayDelay;
+            public readonly int ambsoundPlayDelayMaxVariation;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -202,6 +203,7 @@ namespace SonOfRobin
                 this.animalRetaliateChance = -1;
                 this.animalSightRange = 0;
                 this.ambsoundPlayDelay = -1;
+                this.ambsoundPlayDelayMaxVariation = 0;
 
                 // setting values for names
 
@@ -2224,6 +2226,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 300;
+                        this.ambsoundPlayDelayMaxVariation = 200;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
@@ -2238,6 +2241,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
+                        this.ambsoundPlayDelayMaxVariation = 200;
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
