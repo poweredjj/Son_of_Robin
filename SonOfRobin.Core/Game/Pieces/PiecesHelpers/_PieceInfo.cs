@@ -85,6 +85,7 @@ namespace SonOfRobin
             public readonly int animalAwareness;
             public readonly int animalMatureAge;
             public readonly int animalPregnancyDuration;
+            public readonly int animalMaxChildren;
 
             public Info(BoardPiece piece)
             {
@@ -194,6 +195,7 @@ namespace SonOfRobin
                 this.animalAwareness = 0;
                 this.animalMatureAge = 0;
                 this.animalPregnancyDuration = 0;
+                this.animalMaxChildren = 0;
 
                 // setting values for names
 
@@ -802,6 +804,7 @@ namespace SonOfRobin
                         this.animalAwareness = 200;
                         this.animalMatureAge = 1200;
                         this.animalPregnancyDuration = 2000;
+                        this.animalMaxChildren = 8;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -828,6 +831,7 @@ namespace SonOfRobin
                         this.animalAwareness = 80;
                         this.animalMatureAge = 2000;
                         this.animalPregnancyDuration = 4000;
+                        this.animalMaxChildren = 6;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -854,6 +858,7 @@ namespace SonOfRobin
                         this.animalAwareness = 50;
                         this.animalMatureAge = 4000;
                         this.animalPregnancyDuration = 3500;
+                        this.animalMaxChildren = 5;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -879,6 +884,7 @@ namespace SonOfRobin
                         this.animalAwareness = 100;
                         this.animalMatureAge = 1200;
                         this.animalPregnancyDuration = 2000;
+                        this.animalMaxChildren = 8;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2278,6 +2284,7 @@ namespace SonOfRobin
                     if (this.animalAwareness == 0) throw new ArgumentNullException($"{this.name} - animalAwareness not set.");
                     if (this.animalMatureAge == 0) throw new ArgumentNullException($"{this.name} - animalMatureAge not set.");
                     if (this.animalPregnancyDuration == 0) throw new ArgumentNullException($"{this.name} - animalPregnancyDuration not set.");
+                    if (this.animalMaxChildren == 0) throw new ArgumentNullException($"{this.name} - animalMaxChildren not set.");
                 }
             }
 

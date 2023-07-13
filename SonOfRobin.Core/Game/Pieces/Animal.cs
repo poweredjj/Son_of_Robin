@@ -10,7 +10,6 @@ namespace SonOfRobin
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
 
-        private readonly byte maxChildren;
         public readonly float retaliateChance; // 0 - 1, used only for animals that do not eat player
         private readonly int maxFedLevel;
         private readonly float maxStamina;
@@ -30,7 +29,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -41,7 +40,6 @@ namespace SonOfRobin
             this.pregnancyMass = 0;
             this.pregnancyFramesLeft = 0;
             this.isPregnant = false;
-            this.maxChildren = maxChildren;
             this.retaliateChance = retaliateChance;
             this.attackCooldown = 0; // earliest world.currentUpdate, when attacking will be possible
             this.regenCooldown = 0; // earliest world.currentUpdate, when increasing hit points will be possible
@@ -143,7 +141,7 @@ namespace SonOfRobin
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
-            if (this.pregnancyMass > 0 && this.pregnancyMass < this.pieceInfo.startingMass * this.maxChildren)
+            if (this.pregnancyMass > 0 && this.pregnancyMass < this.pieceInfo.startingMass * this.pieceInfo.animalMaxChildren)
             { this.pregnancyMass += massGained; }
             else
             { this.Mass = Math.Min(this.Mass + massGained, this.pieceInfo.animalMaxMass); }
@@ -702,15 +700,15 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
 
             // excess fat can be converted to pregnancy
-            if (this.Mass > this.pieceInfo.startingMass * 2 && this.pregnancyMass < this.pieceInfo.startingMass * this.maxChildren)
+            if (this.Mass > this.pieceInfo.startingMass * 2 && this.pregnancyMass < this.pieceInfo.startingMass * this.pieceInfo.animalMaxChildren)
             {
-                var missingMass = (this.pieceInfo.startingMass * this.maxChildren) - this.pregnancyMass;
+                var missingMass = (this.pieceInfo.startingMass * this.pieceInfo.animalMaxChildren) - this.pregnancyMass;
                 var convertedFat = Convert.ToInt32(Math.Floor(Math.Min(this.Mass - (this.pieceInfo.startingMass * 2), missingMass)));
                 this.Mass -= convertedFat;
                 this.pregnancyMass += convertedFat;
             }
 
-            int noOfChildren = (int)Math.Min(Math.Floor(this.pregnancyMass / this.pieceInfo.startingMass), this.maxChildren);
+            int noOfChildren = (int)Math.Min(Math.Floor(this.pregnancyMass / this.pieceInfo.startingMass), this.pieceInfo.animalMaxChildren);
             int childrenBorn = 0;
 
             for (int i = 0; i < noOfChildren; i++)
