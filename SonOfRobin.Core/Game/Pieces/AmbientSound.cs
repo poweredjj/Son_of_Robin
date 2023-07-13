@@ -9,7 +9,6 @@ namespace SonOfRobin
         private const float visMinOpacity = 0.3f;
 
         private readonly int checkDelay;
-
         private int currentDelay;
         private int waitUntilFrame;
 

@@ -94,6 +94,7 @@ namespace SonOfRobin
             public readonly List<IslandClock.PartOfDay> ambsoundPartOfDayList;
             public readonly bool ambsoundPlayOnlyWhenIsSunny;
             public readonly bool ambsoundGeneratesWind;
+            public readonly bool visFogExplodesWhenBurns;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -210,6 +211,7 @@ namespace SonOfRobin
                 this.ambsoundPartOfDayList = null;
                 this.ambsoundPlayOnlyWhenIsSunny = false;
                 this.ambsoundGeneratesWind = false;
+                this.visFogExplodesWhenBurns = false;
 
                 // setting values for names
 
@@ -2218,6 +2220,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
+                        this.visFogExplodesWhenBurns = true;
                         break;
 
                     case PieceTemplate.Name.LavaGas:

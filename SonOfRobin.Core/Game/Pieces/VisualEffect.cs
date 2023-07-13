@@ -11,14 +11,12 @@ namespace SonOfRobin
         private Tweener tweener;
         private int rainStepsLeft;
         private Vector2 rainStep;
-        private readonly bool fogExplodesWhenBurns;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
+            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, soundPack: soundPack)
         {
-            this.fogExplodesWhenBurns = fogExplodesWhenBurns;
         }
 
         public override void SM_ScarePredatorsAway()
@@ -209,7 +207,7 @@ namespace SonOfRobin
             // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
             // It should only be used for temporary decorations or pieces that will not get saved.
 
-            if (this.fogExplodesWhenBurns && this.IsBurning)
+            if (this.pieceInfo.visFogExplodesWhenBurns && this.IsBurning)
             {
                 this.world.HintEngine.Disable(PieceHint.Type.ExplosiveGas);
 
