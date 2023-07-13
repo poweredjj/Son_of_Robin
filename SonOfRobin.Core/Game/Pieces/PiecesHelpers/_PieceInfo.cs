@@ -76,6 +76,7 @@ namespace SonOfRobin
             public readonly int placeMaxDistance;
             public readonly bool ignoresCollisions;
             public readonly bool floatsOnWater;
+            public readonly AllowedDensity allowedDensity;
 
             public Info(BoardPiece piece)
             {
@@ -175,6 +176,7 @@ namespace SonOfRobin
                 this.placeMaxDistance = 100;
                 this.ignoresCollisions = false;
                 this.floatsOnWater = false;
+                this.allowedDensity = null;
 
                 // setting values for names
 
@@ -226,6 +228,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 80;
+                        this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8);
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
@@ -238,6 +241,7 @@ namespace SonOfRobin
                         this.plantMaxExistingNumber = 300;
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
@@ -249,6 +253,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 60;
+                        this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0);
                         break;
 
                     case PieceTemplate.Name.PlantPoison:
@@ -262,6 +267,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 30;
                         this.placeMaxDistance = 90;
+                        this.allowedDensity = new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4);
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -273,6 +279,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 120;
+                        this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40);
                         break;
 
                     case PieceTemplate.Name.WaterLily:
@@ -285,6 +292,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 25;
                         this.placeMaxDistance = 80;
                         this.floatsOnWater = true;
+                        this.allowedDensity = new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3);
                         break;
 
                     case PieceTemplate.Name.FlowersPlain:
@@ -296,6 +304,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
+                        this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.FlowersRed:
@@ -307,6 +316,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
+                        this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.FlowersMountain:
@@ -319,6 +329,7 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 15;
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 250;
+                        this.allowedDensity = new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
@@ -332,6 +343,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
+                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
@@ -345,6 +357,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
+                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
@@ -358,6 +371,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
+                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
                         break;
 
                     case PieceTemplate.Name.Cactus:
@@ -371,6 +385,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 600;
+                        this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -384,6 +399,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 300;
+                        this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.TreeBig:
@@ -397,6 +413,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.Oak:
@@ -412,6 +429,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -426,6 +444,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -440,6 +459,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -453,6 +473,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
                         break;
 
                     case PieceTemplate.Name.BananaTree:
@@ -467,6 +488,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
+                        this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
                         break;
 
                     case PieceTemplate.Name.Acorn:
@@ -679,6 +701,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.MineralsMossyBig:
@@ -686,6 +709,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.JarTreasure:
@@ -1751,6 +1775,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 500;
+                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.SwampGas:

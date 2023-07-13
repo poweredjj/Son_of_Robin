@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class AllowedDensity
     {
-        private BoardPiece piece;
-        private Sprite sprite;
         private readonly ushort radious;
         private readonly int maxNoOfPiecesTotal;
         private readonly int maxNoOfPiecesSameName;
@@ -22,37 +21,29 @@ namespace SonOfRobin
             this.maxNoOfPiecesBlocking = maxNoOfPiecesBlocking; // -1 means no limit
         }
 
-        public void FinishCreation(BoardPiece piece, Sprite sprite)
+        public bool CanBePlacedHere(BoardPiece piece)
         {
-            this.piece = piece;
-            this.sprite = sprite;
-        }
-
-        public bool CanBePlacedHere()
-        {
-            var nearbyPieces = this.piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: this.radious);
+            var nearbyPieces = piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radious);
 
             if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count() > this.maxNoOfPiecesTotal) return false;
-            if (this.maxNoOfPiecesSameName != -1 && this.CheckSameNameCount(nearbyPieces) > this.maxNoOfPiecesSameName) return false;
-            if (this.maxNoOfPiecesSameClass != -1 && this.CheckSameClass(nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
-            if (this.maxNoOfPiecesBlocking != -1 && this.CheckBlocking(nearbyPieces) > this.maxNoOfPiecesBlocking) return false;
+            if (this.maxNoOfPiecesSameName != -1 && CheckSameNameCount(name: piece.name, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameName) return false;
+            if (this.maxNoOfPiecesSameClass != -1 && CheckSameClass(type: piece.GetType(), nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
+            if (this.maxNoOfPiecesBlocking != -1 && CheckBlocking(nearbyPieces) > this.maxNoOfPiecesBlocking) return false;
 
             return true;
         }
 
-        private int CheckSameNameCount(IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckSameNameCount(PieceTemplate.Name name, IEnumerable<BoardPiece> nearbyPieces)
         {
-            PieceTemplate.Name name = this.piece.name;
             return nearbyPieces.Where(piece => piece.name == name).Count();
         }
 
-        private int CheckSameClass(IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckSameClass(Type type, IEnumerable<BoardPiece> nearbyPieces)
         {
-            var className = this.piece.GetType();
-            return nearbyPieces.Where(piece => piece.GetType() == className).Count();
+            return nearbyPieces.Where(piece => piece.GetType() == type).Count();
         }
 
-        private int CheckBlocking(IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckBlocking(IEnumerable<BoardPiece> nearbyPieces)
         {
             return nearbyPieces.Where(piece => piece.sprite.BlocksMovement).Count();
         }

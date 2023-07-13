@@ -11,9 +11,9 @@ namespace SonOfRobin
         private int burningFramesLeft;
 
         public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", bool visible = true, AllowedDensity allowedDensity = null) :
+            byte animSize = 0, string animName = "default", bool visible = true) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,  readableName: readableName, description: description, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false))
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,  readableName: readableName, description: description, visible: visible, activeState: activeState, isAffectedByWind: false, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false))
         {
             // looped sound would populate all sound channels fast, so non-looped short sound is used instead
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));

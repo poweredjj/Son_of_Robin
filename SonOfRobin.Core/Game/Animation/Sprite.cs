@@ -27,7 +27,6 @@ namespace SonOfRobin
 
         public float opacity;
         public OpacityFade opacityFade;
-
         public AnimFrame AnimFrame { get; private set; }
         public Color color;
         private bool visible;
@@ -44,7 +43,6 @@ namespace SonOfRobin
         public readonly bool isAffectedByWind;
 
         public AllowedTerrain allowedTerrain;
-        private readonly AllowedDensity allowedDensity;
 
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
@@ -52,7 +50,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -70,8 +68,6 @@ namespace SonOfRobin
             this.ColRect = Rectangle.Empty;
             this.isAffectedByWind = isAffectedByWind;
             this.allowedTerrain = allowedTerrain;
-            this.allowedDensity = allowedDensity;
-            if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.particleEngine = null;
             this.visible = visible; // initially it is assigned normally
             this.effectCol = new EffectCol(world: world);
@@ -573,7 +569,7 @@ namespace SonOfRobin
             if (this.world == null) return false;
             if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
             if (this.IgnoresCollisions) return false;
-            if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
+            if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
             if (!this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
