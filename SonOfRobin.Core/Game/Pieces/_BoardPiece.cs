@@ -110,14 +110,14 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, int staysAfterDeath = 800, float maxHitPoints = 1, Yield yield = null, Yield appearDebris = null, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
         {
             this.world = world;
             this.name = name;
             this.id = id;
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine, isAffectedByWind: isAffectedByWind);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
 
             this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
             this.soundPack.Activate(this);

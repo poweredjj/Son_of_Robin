@@ -75,6 +75,7 @@ namespace SonOfRobin
             public readonly int placeMaxDistance;
             public readonly bool ignoresCollisions;
             public readonly bool floatsOnWater;
+            public readonly bool isAffectedByWind;
             public readonly AllowedDensity allowedDensity;
 
             public Info(BoardPiece piece)
@@ -175,6 +176,7 @@ namespace SonOfRobin
                 this.placeMaxDistance = 100;
                 this.ignoresCollisions = false;
                 this.floatsOnWater = false;
+                this.isAffectedByWind = true;
                 this.allowedDensity = null;
 
                 // setting values for names
@@ -193,6 +195,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
@@ -201,6 +204,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
@@ -208,6 +212,7 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
@@ -216,6 +221,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 65535;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -649,6 +655,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Fox:
@@ -659,6 +666,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Tiger:
@@ -669,6 +677,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Frog:
@@ -679,6 +688,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MineralsSmall:
@@ -686,6 +696,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MineralsMossySmall:
@@ -693,6 +704,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MineralsBig:
@@ -701,6 +713,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MineralsMossyBig:
@@ -709,6 +722,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.JarTreasure:
@@ -954,36 +968,43 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CoalDeposit:
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:
@@ -991,12 +1012,14 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.CrystalDepositBig:
                         this.category = BoardPiece.Category.Crystal;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Coal:
@@ -1076,6 +1099,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 3;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Miss:
@@ -1085,6 +1109,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Zzz:
@@ -1093,6 +1118,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Heart:
@@ -1102,6 +1128,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 2;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
@@ -1110,6 +1137,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
@@ -1118,6 +1146,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
@@ -1126,6 +1155,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
@@ -1134,6 +1164,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
@@ -1142,6 +1173,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
@@ -1150,6 +1182,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
@@ -1158,6 +1191,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Explosion:
@@ -1167,6 +1201,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
@@ -1177,6 +1212,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -1418,6 +1454,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
@@ -1427,6 +1464,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
@@ -1436,6 +1474,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
@@ -1445,6 +1484,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
@@ -1454,6 +1494,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
@@ -1463,6 +1504,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
@@ -1472,6 +1514,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
@@ -1481,6 +1524,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
@@ -1490,6 +1534,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
@@ -1499,6 +1544,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -1651,6 +1697,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.PredatorRepellant:
@@ -1760,6 +1807,7 @@ namespace SonOfRobin
                         this.destructionDelay = 60 * 30;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.TreeStump:
@@ -1768,6 +1816,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.LavaFlame:
@@ -1831,6 +1880,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.floatsOnWater = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:
@@ -1838,6 +1888,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     default:

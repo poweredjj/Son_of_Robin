@@ -38,7 +38,7 @@ namespace SonOfRobin
         public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, Yield yield = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack, isAffectedByWind: false)
+            base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
         {
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);

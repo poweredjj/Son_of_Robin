@@ -40,7 +40,6 @@ namespace SonOfRobin
         private int currentFrameTimeLeft; // measured in game frames
         public Rectangle GfxRect { get; private set; }
         public Rectangle ColRect { get; private set; }
-        public readonly bool isAffectedByWind;
 
         public AllowedTerrain allowedTerrain;
 
@@ -50,7 +49,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -66,7 +65,6 @@ namespace SonOfRobin
             this.currentFrameTimeLeft = 0;
             this.GfxRect = Rectangle.Empty;
             this.ColRect = Rectangle.Empty;
-            this.isAffectedByWind = isAffectedByWind;
             this.allowedTerrain = allowedTerrain;
             this.particleEngine = null;
             this.visible = visible; // initially it is assigned normally

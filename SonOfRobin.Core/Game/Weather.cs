@@ -376,7 +376,7 @@ namespace SonOfRobin
 
         private static bool IsSpriteAffectedByWind(Sprite sprite, bool strongWind)
         {
-            return !sprite.boardPiece.pieceInfo.canBePickedUp && sprite.isAffectedByWind && (!sprite.BlocksMovement || strongWind);
+            return !sprite.boardPiece.pieceInfo.canBePickedUp && sprite.boardPiece.pieceInfo.isAffectedByWind && (!sprite.BlocksMovement || strongWind);
         }
 
         public void AddLocalizedWind(Vector2 windOriginLocation)

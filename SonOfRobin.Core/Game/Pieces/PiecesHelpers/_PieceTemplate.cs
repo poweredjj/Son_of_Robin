@@ -846,7 +846,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                              yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
+                              yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -869,7 +869,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", isAffectedByWind: false);
+                             yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -892,7 +892,7 @@ namespace SonOfRobin
                                 });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", isAffectedByWind: false);
+                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -915,7 +915,7 @@ namespace SonOfRobin
                        });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", isAffectedByWind: false);
+                             yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
                         return boardPiece;
                     }
@@ -1096,7 +1096,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack, isAffectedByWind: true);
+                             yield: yield, maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1122,7 +1122,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack, isAffectedByWind: true);
+                             yield: yield, maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1301,7 +1301,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack, isAffectedByWind: true);
+                             yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack);
 
                         return decoration;
                     }
@@ -1319,7 +1319,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain,
-                             yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack, isAffectedByWind: true);
+                             yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1565,7 +1565,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1588,7 +1588,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1610,7 +1610,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1631,7 +1631,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1653,7 +1653,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }
@@ -1672,7 +1672,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
 
                         return boardPiece;
                     }
@@ -1693,7 +1693,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 3)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
                         return boardPiece;
                     }
@@ -1712,7 +1712,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 8)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         return boardPiece;
                     }
@@ -1731,7 +1731,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
-                           yield: yield, maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.", isAffectedByWind: false);
+                           yield: yield, maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
 
                         return boardPiece;
                     }
@@ -2589,7 +2589,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...", isAffectedByWind: false);
+                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
 
                         var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
                         Color color = colors[random.Next(0, colors.Count)];
@@ -2605,7 +2605,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.", isAffectedByWind: false);
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.");
 
                         return boardPiece;
                     }
@@ -2808,7 +2808,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: canGoAnywhere,
-                             maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", rotatesWhenDropped: true, isAffectedByWind: true, soundPack: soundPack);
+                             maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", rotatesWhenDropped: true, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2819,7 +2819,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f));
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: canGoAnywhere,
-                             maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", rotatesWhenDropped: true, isAffectedByWind: true, soundPack: soundPack);
+                             maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", rotatesWhenDropped: true, soundPack: soundPack);
 
                         return decoration;
                     }
@@ -2846,7 +2846,7 @@ namespace SonOfRobin
                 case Name.Hole:
                     {
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, allowedTerrain: beachToVolcano,
-                             maxHitPoints: 1, readableName: "hole", description: "Empty dig site.", isAffectedByWind: false);
+                             maxHitPoints: 1, readableName: "hole", description: "Empty dig site.");
 
                         return boardPiece;
                     }
@@ -2861,7 +2861,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyStump));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedTerrain: beachToVolcano,
-                             maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", yield: yield, soundPack: soundPack, isAffectedByWind: false);
+                             maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", yield: yield, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2869,7 +2869,7 @@ namespace SonOfRobin
                 case Name.HumanSkeleton:
                     {
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: canGoAnywhere,
-                             yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", isAffectedByWind: false);
+                             yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.");
 
                         return boardPiece;
                     }

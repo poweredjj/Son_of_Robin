@@ -5,10 +5,10 @@ namespace SonOfRobin
 {
     public class Decoration : BoardPiece
     {
-        public Decoration(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool isAffectedByWind,
+        public Decoration(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
              byte animSize = 0, string animName = "default", Yield yield = null, int maxHitPoints = 1, bool rotatesWhenDropped = false, PieceSoundPack soundPack = null) :
 
-             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, rotatesWhenDropped: rotatesWhenDropped, soundPack: soundPack, isAffectedByWind: isAffectedByWind)
+             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, rotatesWhenDropped: rotatesWhenDropped, soundPack: soundPack)
         {
         }
 
