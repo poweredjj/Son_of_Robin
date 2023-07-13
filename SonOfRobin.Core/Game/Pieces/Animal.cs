@@ -10,7 +10,6 @@ namespace SonOfRobin
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
 
-        private readonly byte awareness;
         private readonly int matureAge;
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
@@ -33,7 +32,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -41,7 +40,6 @@ namespace SonOfRobin
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
             this.target = null;
-            this.awareness = awareness;
             this.matureAge = matureAge;
             this.pregnancyDuration = pregnancyDuration;
             this.pregnancyMass = 0;
@@ -331,7 +329,7 @@ namespace SonOfRobin
                     if (this.target.GetType() == typeof(Animal)) // target animal has a chance to flee early
                     {
                         Animal animalTarget = (Animal)this.target;
-                        if (this.world.random.Next(0, (int)(animalTarget.awareness / 3)) == 0)
+                        if (this.world.random.Next(0, (int)(animalTarget.pieceInfo.animalAwareness / 3)) == 0)
                         {
                             animalTarget.target = this;
                             animalTarget.aiData.Reset();
@@ -409,7 +407,7 @@ namespace SonOfRobin
 
             // after some walking, it would be a good idea to stop and look around
 
-            if (!successfullWalking || !this.aiData.dontStop && (this.world.random.Next(0, this.awareness * 2) == 0))
+            if (!successfullWalking || !this.aiData.dontStop && (this.world.random.Next(0, this.pieceInfo.animalAwareness * 2) == 0))
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -434,7 +432,7 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
 
             this.stamina = Math.Min(this.stamina + 3, this.maxStamina);
-            if (this.stamina == this.maxStamina || this.world.random.Next(0, this.awareness * 10) == 0)
+            if (this.stamina == this.maxStamina || this.world.random.Next(0, this.pieceInfo.animalAwareness * 10) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -466,7 +464,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.random.Next(0, this.awareness) == 0) // once in a while it is good to look around and assess situation
+            if (this.world.random.Next(0, this.pieceInfo.animalAwareness) == 0) // once in a while it is good to look around and assess situation
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -653,7 +651,7 @@ namespace SonOfRobin
                 if (this.target.GetType() == typeof(Plant)) this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
             }
 
-            if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.awareness) == 0)
+            if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.pieceInfo.animalAwareness) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
