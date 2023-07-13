@@ -49,9 +49,8 @@ namespace SonOfRobin
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
 
-            // data not present in BoardPiece (set directly in PieceInfo)
+            // "template" data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
-
             public readonly BoardPiece.Category category;
             public readonly float startingMass;
             public readonly float fireAffinity;
@@ -82,6 +81,7 @@ namespace SonOfRobin
             public Yield Yield { get; private set; }
             public readonly Yield appearDebris;
             public readonly int animalMaxMass;
+            public readonly float animalMassBurnedMultiplier;
 
             public Info(BoardPiece piece)
             {
@@ -187,6 +187,7 @@ namespace SonOfRobin
                 this.Yield = null;
                 this.appearDebris = null; // yield that is used to make debris when placing this piece
                 this.animalMaxMass = 0;
+                this.animalMassBurnedMultiplier = 0;
 
                 // setting values for names
 
@@ -791,6 +792,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 5000;
+                        this.animalMassBurnedMultiplier = 1f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -813,6 +815,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 15000;
+                        this.animalMassBurnedMultiplier = 1.3f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -835,6 +838,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 15000;
+                        this.animalMassBurnedMultiplier = 0.5f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -856,6 +860,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 1200;
+                        this.animalMassBurnedMultiplier = 1;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2251,6 +2256,7 @@ namespace SonOfRobin
                 if (this.type == typeof(Animal))
                 {
                     if (this.animalMaxMass == 0) throw new ArgumentNullException($"{this.name} - animalMaxMass not set.");
+                    if (this.animalMassBurnedMultiplier == 0) throw new ArgumentNullException($"{this.name} - animalMassBurnedMultiplier not set.");
                 }
             }
 
