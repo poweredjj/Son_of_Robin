@@ -74,6 +74,7 @@ namespace SonOfRobin
             public readonly bool blocksPlantGrowth;
             public readonly int placeMinDistance;
             public readonly int placeMaxDistance;
+            public readonly bool ignoresCollisions;
 
             public Info(BoardPiece piece)
             {
@@ -171,6 +172,7 @@ namespace SonOfRobin
                 this.blocksPlantGrowth = false;
                 this.placeMinDistance = 0;
                 this.placeMaxDistance = 100;
+                this.ignoresCollisions = false;
 
                 // setting values for names
 
@@ -179,6 +181,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Empty:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.PlayerBoy:
@@ -208,6 +211,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
                         this.placeMaxDistance = 65535;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -1025,6 +1029,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
@@ -1032,6 +1037,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 250;
                         this.placeMaxDistance = 10;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Attack:
@@ -1039,6 +1045,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 3;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Miss:
@@ -1046,12 +1053,14 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Zzz:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Heart:
@@ -1059,48 +1068,56 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 40;
                         this.placeMaxDistance = 2;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.Explosion:
@@ -1108,6 +1125,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = -1;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BurningFlame:
@@ -1116,6 +1134,7 @@ namespace SonOfRobin
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
                         this.canShrink = true;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -1330,6 +1349,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisStone:
@@ -1337,6 +1357,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisWood:
@@ -1344,6 +1365,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 60;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisLeaf:
@@ -1351,6 +1373,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystal:
@@ -1358,6 +1381,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramic:
@@ -1365,6 +1389,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisStar:
@@ -1372,6 +1397,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 90;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisSoot:
@@ -1379,6 +1405,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.DebrisHeart:
@@ -1386,6 +1413,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 110;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.BloodDrop:
@@ -1393,6 +1421,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.destructionDelay = 230;
                         this.placeMaxDistance = 500;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -1553,6 +1582,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.0f;
                         this.destructionDelay = 60 * 60 * 5;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
@@ -1723,6 +1753,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
                         break;
 
                     default:

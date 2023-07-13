@@ -41,7 +41,6 @@ namespace SonOfRobin
         private int currentFrameTimeLeft; // measured in game frames
         public Rectangle GfxRect { get; private set; }
         public Rectangle ColRect { get; private set; }
-        public readonly bool ignoresCollisions;
         public readonly bool isAffectedByWind;
 
         public AllowedTerrain allowedTerrain;
@@ -54,7 +53,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -71,7 +70,6 @@ namespace SonOfRobin
             this.currentFrameTimeLeft = 0;
             this.GfxRect = Rectangle.Empty;
             this.ColRect = Rectangle.Empty;
-            this.ignoresCollisions = ignoresCollisions;
             this.isAffectedByWind = isAffectedByWind;
             this.allowedTerrain = allowedTerrain;
             this.allowedDensity = allowedDensity;
@@ -114,6 +112,9 @@ namespace SonOfRobin
 
         public bool BlocksMovement
         { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksMovement; } }
+
+        public bool IgnoresCollisions
+        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.ignoresCollisions; } }
 
         public bool BlocksPlantGrowth
         { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksPlantGrowth; } }
@@ -472,7 +473,7 @@ namespace SonOfRobin
         {
             var groupNames = new List<Cell.Group> { Cell.Group.All };
 
-            if (!this.ignoresCollisions)
+            if (!this.IgnoresCollisions)
             {
                 if (this.BlocksPlantGrowth || this.BlocksMovement) groupNames.Add(Cell.Group.ColPlantGrowth); // what blocks movement, should block plant growth too
                 if (this.BlocksMovement) groupNames.Add(Cell.Group.ColMovement);
@@ -573,7 +574,7 @@ namespace SonOfRobin
         {
             if (this.world == null) return false;
             if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
-            if (this.ignoresCollisions) return false;
+            if (this.IgnoresCollisions) return false;
             if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
             if (!this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
