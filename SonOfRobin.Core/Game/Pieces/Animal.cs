@@ -9,8 +9,8 @@ namespace SonOfRobin
     {
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
+        public const int maxFedLevel = 1000;
 
-        private readonly int maxFedLevel;
         private readonly float maxStamina;
         public readonly ushort sightRange;
 
@@ -41,7 +41,6 @@ namespace SonOfRobin
             this.isPregnant = false;
             this.attackCooldown = 0; // earliest world.currentUpdate, when attacking will be possible
             this.regenCooldown = 0; // earliest world.currentUpdate, when increasing hit points will be possible
-            this.maxFedLevel = 1000;
             this.fedLevel = maxFedLevel;
             this.maxStamina = maxStamina;
             this.stamina = maxStamina;
@@ -103,7 +102,7 @@ namespace SonOfRobin
             if (Preferences.debugShowStatBars)
             {
                 new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
-                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
+                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
                 new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.pieceInfo.animalMaxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
             }
@@ -136,7 +135,7 @@ namespace SonOfRobin
             int massGained = Math.Max(Convert.ToInt32(energyAmount / 4), 1);
 
             if (this.world.CurrentUpdate >= this.regenCooldown) this.HitPoints += energyAmount / 3;
-            this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
+            this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
             if (this.pregnancyMass > 0 && this.pregnancyMass < this.pieceInfo.startingMass * this.pieceInfo.animalMaxChildren)
