@@ -16,18 +16,18 @@ namespace SonOfRobin
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
         public readonly float retaliateChance; // 0 - 1, used only for animals that do not eat player
+        private readonly int maxFedLevel;
+        private readonly float maxStamina;
+        public readonly ushort sightRange;
 
         private int pregnancyMass;
         public int pregnancyFramesLeft;
         public bool isPregnant;
         private int attackCooldown;
         private int regenCooldown;
-        private readonly int maxFedLevel;
         private int fedLevel;
         public bool IsFemale { get; private set; }
-        private readonly float maxStamina;
         private float stamina;
-        public readonly ushort sightRange;
         public AiData aiData;
         public BoardPiece target;
 
