@@ -8,9 +8,9 @@ namespace SonOfRobin
         public readonly bool mightContainSeeds;
 
         public Fruit(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool mightContainSeeds,
-            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool rotatesWhenDropped = true) :
+            byte animSize = 0, string animName = "default", bool floatsOnWater = false, int generation = 0, Yield yield = null, bool rotatesWhenDropped = true) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, minDistance: minDistance, maxDistance: maxDistance, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, yield: yield, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, generation: generation, yield: yield, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty)
         {
             this.mightContainSeeds = mightContainSeeds;
         }

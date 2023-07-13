@@ -47,9 +47,6 @@ namespace SonOfRobin
         public AllowedTerrain allowedTerrain;
         private readonly AllowedDensity allowedDensity;
 
-        private readonly int minDistance;
-        private readonly int maxDistance;
-
         private readonly bool floatsOnWater;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
@@ -57,7 +54,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -78,8 +75,6 @@ namespace SonOfRobin
             this.isAffectedByWind = isAffectedByWind;
             this.allowedTerrain = allowedTerrain;
             this.allowedDensity = allowedDensity;
-            this.minDistance = minDistance;
-            this.maxDistance = maxDistance;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.particleEngine = null;
             this.visible = visible; // initially it is assigned normally
@@ -200,8 +195,8 @@ namespace SonOfRobin
             if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
             else
             {
-                int minDistance = minDistanceOverride == -1 ? this.minDistance : minDistanceOverride;
-                int maxDistance = maxDistanceOverride == -1 ? this.maxDistance : maxDistanceOverride;
+                int minDistance = minDistanceOverride == -1 ? this.boardPiece.pieceInfo.spriteMinDistance : minDistanceOverride;
+                int maxDistance = maxDistanceOverride == -1 ? this.boardPiece.pieceInfo.spriteMaxDistance : maxDistanceOverride;
 
                 if (closestFreeSpot)
                 {
