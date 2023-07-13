@@ -82,7 +82,7 @@ namespace SonOfRobin
         { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
-        private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp };
+        private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris };
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -379,8 +379,14 @@ namespace SonOfRobin
 
                 case EventName.YieldDropDebris:
                     {
-                        Yield yield = (Yield)this.eventHelper;
-                        yield.DropDebris(ignoreProcessingTime: true);
+                        // example eventHelper for this task
+                        // var eventHelper = new Dictionary<string, Object> { { "piece", piece }, { "yield", yield } };
+
+                        var eventHelperDict = (Dictionary<string, Object>)this.eventHelper;
+                        Yield yield = (Yield)eventHelperDict["yield"];
+                        BoardPiece piece = (BoardPiece)eventHelperDict["piece"];
+
+                        yield.DropDebris(piece: piece, ignoreProcessingTime: true);
 
                         return;
                     }

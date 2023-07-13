@@ -561,7 +561,7 @@ namespace SonOfRobin
 
                 if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-                if (this.target.yield != null) this.target.yield.DropDebris();
+                if (this.target.yield != null) this.target.yield.DropDebris(piece: this.target);
 
                 this.soundPack.Play(PieceSoundPack.Action.Cry);
 
@@ -619,7 +619,7 @@ namespace SonOfRobin
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
-                this.target.yield.DropDebris();
+                this.target.yield.DropDebris(this.target);
                 this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
             }
 
@@ -639,7 +639,7 @@ namespace SonOfRobin
                     target.soundPack.Play(PieceSoundPack.Action.IsHit);
 
                     PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
-                    this.target.yield.DropDebris();
+                    this.target.yield.DropDebris(this.target);
                 }
                 this.target.Destroy();
                 this.activeState = State.AnimalAssessSituation;
@@ -685,8 +685,8 @@ namespace SonOfRobin
                 return;
             }
 
-            this.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
-            animalMate.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            this.yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            animalMate.yield?.DropDebris(piece: animalMate, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
 
             Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0

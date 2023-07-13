@@ -290,7 +290,7 @@ namespace SonOfRobin
             {
                 // duplicated in Yield
                 boardPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
+                if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
 
                 // adding opacityFade
 
@@ -1213,7 +1213,7 @@ namespace SonOfRobin
 
                         while (true)
                         {
-                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces();
+                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: treasureChest);
 
                             if (chestContents.Count >= 2)
                             {
@@ -1261,7 +1261,7 @@ namespace SonOfRobin
 
                         while (true)
                         {
-                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces();
+                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: treasureChest);
 
                             if (chestContents.Count >= 4)
                             {

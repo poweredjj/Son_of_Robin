@@ -434,7 +434,7 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
-                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());        
+                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
                     else
                     {
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
@@ -1213,7 +1213,7 @@ namespace SonOfRobin
 
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 
-            Yield debrisYield = new Yield(boardPiece: builtPiece, debrisType: plantMode ? Yield.DebrisType.Leaf : Yield.DebrisType.Star);
+            Yield debrisYield = new Yield(debrisType: plantMode ? Yield.DebrisType.Leaf : Yield.DebrisType.Star);
 
             if (plantMode)
             {
@@ -1233,7 +1233,7 @@ namespace SonOfRobin
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishBuilding, world: this, delay: buildDuration, boardPiece: null);
             new WorldEvent(eventName: WorldEvent.EventName.PlaySoundByName, world: this, delay: buildDuration, boardPiece: null, eventHelper: plantMode ? SoundData.Name.MovingPlant : SoundData.Name.Chime);
-            new WorldEvent(eventName: WorldEvent.EventName.YieldDropDebris, world: this, delay: buildDuration, boardPiece: null, eventHelper: debrisYield);
+            new WorldEvent(eventName: WorldEvent.EventName.YieldDropDebris, world: this, delay: buildDuration, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "piece", builtPiece }, { "yield", debrisYield } });
         }
 
         public void ExitBuildMode(bool restoreCraftMenu, bool showCraftMessages = false)

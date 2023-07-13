@@ -146,8 +146,6 @@ namespace SonOfRobin
             this.yield = yield;
             this.appearDebris = appearDebris;
             if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
-            if (this.yield != null) this.yield.AddPiece(this);
-            if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
             this.burnLevel = 0f;
             this.isTemporaryDecoration = false; // to be set later

@@ -28,9 +28,6 @@ namespace SonOfRobin
             }
         }
 
-        private BoardPiece mainPiece;
-        private float firstPiecesDivider;
-
         public List<DebrisType> DebrisTypeList
         { get { return this.debrisTypeList; } }
 
@@ -52,51 +49,40 @@ namespace SonOfRobin
             this.debrisTypeList = new List<DebrisType> { debrisType };
         }
 
-        public Yield(DebrisType debrisType, BoardPiece boardPiece = null)
+        public Yield(DebrisType debrisType)
         {
             // for dropping debris only
 
             this.debrisTypeList = new List<DebrisType> { debrisType };
-            if (boardPiece != null) this.AddPiece(boardPiece);
         }
 
-        public Yield(List<DebrisType> debrisTypeList, BoardPiece boardPiece = null)
+        public Yield(List<DebrisType> debrisTypeList)
         {
             // for dropping debris only
 
             this.debrisTypeList = debrisTypeList;
-            if (boardPiece != null) this.AddPiece(boardPiece);
         }
 
-        public void AddPiece(BoardPiece mainPiece)
+        public void DropFirstPieces(int hitPower, BoardPiece piece)
         {
-            // must be added after creating main piece
-            if (this.mainPiece != null) throw new ArgumentException($"Cannot add another piece ('{mainPiece.readableName}') to yield.");
-
-            this.mainPiece = mainPiece;
-            this.firstPiecesDivider = mainPiece.maxHitPoints;
+            this.DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
+            this.DropDebris(piece: piece);
         }
 
-        public void DropFirstPieces(int hitPower)
+        public void DropFinalPieces(BoardPiece piece)
         {
-            this.DropPieces(multiplier: hitPower / this.firstPiecesDivider, droppedPieceList: this.firstDroppedPieces);
-            this.DropDebris();
+            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            this.DropDebris(piece);
         }
 
-        public void DropFinalPieces()
+        public List<BoardPiece> GetAllPieces(BoardPiece piece)
         {
-            this.DropPieces(multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
-            this.DropDebris();
-        }
-
-        public List<BoardPiece> GetAllPieces()
-        {
-            var firstPieces = this.GetPieces(multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
-            var finalPieces = this.GetPieces(multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            var firstPieces = this.GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
+            var finalPieces = this.GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null)
+        public void DropDebris(BoardPiece piece, bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null)
         {
             var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
 
@@ -104,8 +90,8 @@ namespace SonOfRobin
 
             // debris should be created on screen, when there is available CPU time
             if (!Preferences.showDebris ||
-                !this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position) ||
-                (!ignoreProcessingTime && !this.mainPiece.world.CanProcessMoreNonPlantsNow)) return;
+                !piece.world.camera.viewRect.Contains(piece.sprite.position) ||
+                (!ignoreProcessingTime && !piece.world.CanProcessMoreNonPlantsNow)) return;
 
             var debrisList = new List<DroppedPiece> { };
 
@@ -158,20 +144,22 @@ namespace SonOfRobin
                 }
             }
 
-            this.DropPieces(multiplier: 1f, droppedPieceList: debrisList);
+            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: debrisList);
         }
 
-        private List<BoardPiece> GetPieces(float multiplier, List<DroppedPiece> droppedPieceList)
+        private List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
         {
+            Type type = piece.GetType();
+
             int extraDroppedPieces = 0;
-            if (this.mainPiece?.GetType() == typeof(Animal))
+            if (type == typeof(Animal))
             {
-                Animal animal = (Animal)this.mainPiece;
+                Animal animal = (Animal)piece;
                 extraDroppedPieces = (int)(animal.MaxMassPercentage * 2);
             }
-            else if (this.mainPiece?.GetType() == typeof(Plant))
+            else if (type == typeof(Plant))
             {
-                if (this.mainPiece.Mass < ((Plant)this.mainPiece).pieceInfo.plantAdultSizeMass)
+                if (piece.Mass < ((Plant)piece).pieceInfo.plantAdultSizeMass)
                 {
                     multiplier /= 6f;
                     // MessageLog.AddMessage(msgType: MsgType.User, message: $"Plant {this.mainPiece.readableName} is not adult, multiplier changed to {multiplier}."); // for testing
@@ -199,9 +187,9 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private void DropPieces(float multiplier, List<DroppedPiece> droppedPieceList)
+        private void DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
         {
-            var piecesToDrop = this.GetPieces(multiplier: multiplier, droppedPieceList: droppedPieceList);
+            var piecesToDrop = this.GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
             int noOfTries = 10;
 
             foreach (BoardPiece yieldPiece in piecesToDrop)
@@ -210,13 +198,13 @@ namespace SonOfRobin
                 {
                     yieldPiece.sprite.allowedTerrain = new AllowedTerrain(); // to avoid restricting placement
 
-                    yieldPiece.PlaceOnBoard(randomPlacement: false, position: this.mainPiece.sprite.position, closestFreeSpot: true);
+                    yieldPiece.PlaceOnBoard(randomPlacement: false, position: piece.sprite.position, closestFreeSpot: true);
 
                     if (yieldPiece.sprite.IsOnBoard)
                     {
                         // duplicated in PieceTemplate
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                        if (yieldPiece.appearDebris != null) yieldPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
+                        if (yieldPiece.appearDebris != null) yieldPiece.appearDebris.DropDebris(piece: piece, ignoreProcessingTime: true);
                     }
 
                     if (yieldPiece.sprite.IsOnBoard)
@@ -225,7 +213,7 @@ namespace SonOfRobin
 
                         yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
 
-                        Vector2 posDiff = Helpers.VectorAbsMax(vector: this.mainPiece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
+                        Vector2 posDiff = Helpers.VectorAbsMax(vector: piece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
                         posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation
                         yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80));
                         break;
