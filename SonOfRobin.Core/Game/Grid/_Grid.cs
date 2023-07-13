@@ -1270,7 +1270,7 @@ namespace SonOfRobin
             foreach (Cell cell in cellsWithPNGByDistance)
             {
                 cell.boardGraphics.LoadTexture();
-                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
+                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds + Scene.LastDrawDuration.Milliseconds > 12) return;
             }
         }
 

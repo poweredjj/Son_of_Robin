@@ -365,16 +365,16 @@ namespace SonOfRobin
         }
 
         public bool CanProcessMoreCameraRectPiecesNow
-        { get { return UpdateTimeElapsed.Milliseconds <= 13 * this.updateMultiplier; } }
+        { get { return UpdateTimeElapsed.Milliseconds + LastDrawDuration.Milliseconds <= 14 * this.updateMultiplier; } }
 
         public bool CanProcessMoreNonPlantsNow
-        { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
+        { get { return UpdateTimeElapsed.Milliseconds + LastDrawDuration.Milliseconds <= 8 * this.updateMultiplier; } }
 
         public bool CanProcessMorePlantsNow
-        { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
+        { get { return UpdateTimeElapsed.Milliseconds + LastDrawDuration.Milliseconds <= 10 * this.updateMultiplier; } }
 
         public bool CanProcessAnyStateMachineNow
-        { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
+        { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds + LastDrawDuration.Milliseconds <= 9 * this.updateMultiplier; } }
 
         public float PieceCount
         {

@@ -55,11 +55,16 @@ namespace SonOfRobin
 
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
+
         public static TimeSpan UpdateTimeElapsed
         { get { return DateTime.Now - startUpdateTime; } }
 
         public static TimeSpan DrawTimeElapsed
         { get { return DateTime.Now - startDrawTime; } }
+
+        public static TimeSpan LastUpdateDuration { get; private set; } = TimeSpan.Zero;
+
+        public static TimeSpan LastDrawDuration { get; private set; } = TimeSpan.Zero;
 
         public InputTypes InputType { get; set; }
 
@@ -442,6 +447,8 @@ namespace SonOfRobin
             UpdateAllTransitions();
 
             if (sceneStack.Count == 0) throw new DivideByZeroException("SceneStack is empty.");
+
+            LastUpdateDuration = UpdateTimeElapsed;
         }
 
         private static void CheckWaitingScenes()
@@ -492,7 +499,7 @@ namespace SonOfRobin
                 scene.Draw();
             }
 
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
+            LastDrawDuration = DrawTimeElapsed;
         }
 
         public static void SetRenderTarget(RenderTarget2D newRenderTarget)
