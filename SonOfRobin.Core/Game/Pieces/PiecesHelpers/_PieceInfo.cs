@@ -83,6 +83,7 @@ namespace SonOfRobin
             public readonly int animalMaxMass;
             public readonly float animalMassBurnedMultiplier;
             public readonly int animalAwareness;
+            public readonly int animalMatureAge;
 
             public Info(BoardPiece piece)
             {
@@ -190,6 +191,7 @@ namespace SonOfRobin
                 this.animalMaxMass = 0;
                 this.animalMassBurnedMultiplier = 0;
                 this.animalAwareness = 0;
+                this.animalMatureAge = 0;
 
                 // setting values for names
 
@@ -796,6 +798,7 @@ namespace SonOfRobin
                         this.animalMaxMass = 5000;
                         this.animalMassBurnedMultiplier = 1f;
                         this.animalAwareness = 200;
+                        this.animalMatureAge = 1200;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -820,6 +823,7 @@ namespace SonOfRobin
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 1.3f;
                         this.animalAwareness = 80;
+                        this.animalMatureAge = 2000;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -844,6 +848,7 @@ namespace SonOfRobin
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 0.5f;
                         this.animalAwareness = 50;
+                        this.animalMatureAge = 4000;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -867,6 +872,7 @@ namespace SonOfRobin
                         this.animalMaxMass = 1200;
                         this.animalMassBurnedMultiplier = 1;
                         this.animalAwareness = 100;
+                        this.animalMatureAge = 1200;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2264,6 +2270,7 @@ namespace SonOfRobin
                     if (this.animalMaxMass == 0) throw new ArgumentNullException($"{this.name} - animalMaxMass not set.");
                     if (this.animalMassBurnedMultiplier == 0) throw new ArgumentNullException($"{this.name} - animalMassBurnedMultiplier not set.");
                     if (this.animalAwareness == 0) throw new ArgumentNullException($"{this.name} - animalAwareness not set.");
+                    if (this.animalMatureAge == 0) throw new ArgumentNullException($"{this.name} - animalMatureAge not set.");
                 }
             }
 

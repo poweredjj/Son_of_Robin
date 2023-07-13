@@ -10,7 +10,6 @@ namespace SonOfRobin
         public const int attackDistanceDynamic = 16;
         public const int attackDistanceStatic = 4;
 
-        private readonly int matureAge;
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
         public readonly float retaliateChance; // 0 - 1, used only for animals that do not eat player
@@ -32,7 +31,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -40,7 +39,6 @@ namespace SonOfRobin
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
             this.target = null;
-            this.matureAge = matureAge;
             this.pregnancyDuration = pregnancyDuration;
             this.pregnancyMass = 0;
             this.pregnancyFramesLeft = 0;
@@ -166,7 +164,7 @@ namespace SonOfRobin
             matingPartners = matingPartners.Where(animal =>
             animal.IsFemale != this.IsFemale &&
             animal.pregnancyMass == 0 &&
-            animal.currentAge >= animal.matureAge
+            animal.currentAge >= animal.pieceInfo.animalMatureAge
             );
 
             return matingPartners;
@@ -255,7 +253,7 @@ namespace SonOfRobin
 
             BoardPiece matingPartner = null;
 
-            if (this.currentAge >= matureAge &&
+            if (this.currentAge >= this.pieceInfo.animalMatureAge &&
                 this.pregnancyMass == 0 &&
                 enemyPiece == null &&
                 seenPieces.Where(piece => piece.name == this.name).Count() <= 3) // will not mate in a crowded area
