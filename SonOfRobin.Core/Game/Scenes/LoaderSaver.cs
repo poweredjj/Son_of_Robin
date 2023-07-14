@@ -459,7 +459,6 @@ namespace SonOfRobin
             }
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
-            this.world.lastSaved = DateTime.Now;
             this.processingComplete = true;
         }
 

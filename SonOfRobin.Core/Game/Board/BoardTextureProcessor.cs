@@ -41,6 +41,7 @@ namespace SonOfRobin
         private Task backgroundTask;
         private readonly ConcurrentBag<ProcessingTask> tasksToProcess;
         private DateTime lastCellAddedTime;
+        public bool IsProcessingNow { get; private set; }
 
         public TimeSpan TimeSinceLastCellAdded
         { get { return DateTime.Now - lastCellAddedTime; } }
@@ -50,6 +51,7 @@ namespace SonOfRobin
 
         public BoardTextureProcessor()
         {
+            this.IsProcessingNow = false;
             this.lastCellAddedTime = DateTime.MinValue;
             this.tasksToProcess = new ConcurrentBag<ProcessingTask>();
             this.StartBackgroundTask();
@@ -116,6 +118,8 @@ namespace SonOfRobin
         {
             if (!tasksToProcess.Any()) return;
 
+            this.IsProcessingNow = true;
+
             Vector2 cameraCenter = tasksToProcess[0].cell.grid.world.camera.CurrentPos;
 
             var tasksByDistance = tasksToProcess
@@ -148,6 +152,7 @@ namespace SonOfRobin
                     task.Process();
                 }
             }
+            this.IsProcessingNow = false;
         }
     }
 }

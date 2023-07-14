@@ -29,7 +29,7 @@ namespace SonOfRobin
             int maxAge, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 1, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge,  maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
             this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;
@@ -158,7 +158,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (!canReproduce || !this.world.CanProcessMoreNonPlantsNow) break;
+                if (!canReproduce || !this.world.CanProcessMorePlantsNow) break;
             }
 
             this.GrowOlder(timeDelta: timeDelta);
