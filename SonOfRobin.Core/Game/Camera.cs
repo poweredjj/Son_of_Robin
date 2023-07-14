@@ -76,7 +76,7 @@ namespace SonOfRobin
                 return new Rectangle(
                     x: this.viewRect.X,
                     y: this.viewRect.Y,
-                    width: this.viewRect.Width + 3,
+                    width: this.viewRect.Width + 4,
                     height: this.viewRect.Height + 3);
             }
         }
