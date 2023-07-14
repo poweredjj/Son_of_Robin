@@ -346,7 +346,6 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.WaterLily:
                         this.category = BoardPiece.Category.SmallPlant;
-                        this.maxMassForSize = new int[] { 400 };
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1500, massLost: 1000, bioWear: 0.7f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 80 }, { Terrain.Name.Height, 45 } };
