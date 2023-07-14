@@ -24,8 +24,18 @@ namespace SonOfRobin
 
         public readonly string templatePath;
 
+        private bool PNGTemplateFound;
+
         public bool PNGTemplateExists
-        { get { return File.Exists(templatePath); } }
+        {
+            get
+            {
+                if (this.PNGTemplateFound) return true;
+
+                this.PNGTemplateFound = File.Exists(templatePath); // buffering info if PNG found, because of disk operation cost
+                return this.PNGTemplateFound;
+            }
+        }
 
         public BoardGraphics(Grid grid, Cell cell)
         {
@@ -33,6 +43,7 @@ namespace SonOfRobin
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
             this.Texture = null;
             this.hasBeenCopiedElsewhere = false;
+            this.PNGTemplateFound = false;
         }
 
         public void LoadTexture()

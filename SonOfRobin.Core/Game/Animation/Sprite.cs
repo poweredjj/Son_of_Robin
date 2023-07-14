@@ -328,7 +328,7 @@ namespace SonOfRobin
 
         private bool FindFreeSpotRandomly(bool ignoreCollisions = false, bool ignoreDensity = false)
         {
-            if (!ignoreCollisions && !this.world.CanProcessAnyStateMachineNow) return false;
+            if (!ignoreCollisions && !this.world.CanFindFreeSpotForNewBoardPieceNow) return false;
 
             for (int tryIndex = 0; tryIndex < 4; tryIndex++)
             {

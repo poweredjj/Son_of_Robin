@@ -366,7 +366,7 @@ namespace SonOfRobin
         { get { return UpdateTimeElapsed + LastDrawDuration; } }
 
         public bool CanProcessMoreCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 12 * this.updateMultiplier; } }
+        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 15 * this.updateMultiplier; } }
 
         public bool CanProcessMoreNonPlantsNow
         { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 13 * this.updateMultiplier; } }
@@ -374,7 +374,7 @@ namespace SonOfRobin
         public bool CanProcessMorePlantsNow
         { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 15 * this.updateMultiplier; } }
 
-        public bool CanProcessAnyStateMachineNow
+        public bool CanFindFreeSpotForNewBoardPieceNow
         { get { return !this.plantsProcessing || this.WorldElapsedUpdateTime.Milliseconds <= 15 * this.updateMultiplier; } }
 
         public float PieceCount
@@ -941,7 +941,7 @@ namespace SonOfRobin
             }
 
             this.Grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, maxNoToLoad: 5);
+            this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, maxNoToLoad: 3);
 
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
 
@@ -1044,17 +1044,18 @@ namespace SonOfRobin
 
         private void StateMachinesProcessCameraView()
         {
-            if (!this.CanProcessMoreCameraRectPiecesNow)
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
-                return;
-            }
+            int processedPiecesCount = 0;
 
             foreach (BoardPiece piece in this.Grid.GetPiecesInCameraView(groupName: Cell.Group.StateMachinesNonPlants, compareWithCameraRect: true))
             {
                 this.ProcessOneNonPlant(piece);
+                processedPiecesCount++;
 
-                if (!this.CanProcessMoreCameraRectPiecesNow) return;
+                if (processedPiecesCount > 30 && !this.CanProcessMoreCameraRectPiecesNow) // even in the worst case, some pieces must be processed
+                {
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                    return;
+                }
             }
         }
 

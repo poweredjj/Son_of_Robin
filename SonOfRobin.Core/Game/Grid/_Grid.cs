@@ -1246,7 +1246,7 @@ namespace SonOfRobin
 
         public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, int maxNoToLoad)
         {
-            if (SonOfRobinGame.LastUpdateDelay > 20) return;
+            if (SonOfRobinGame.LastUpdateDelay > 20 || SonOfRobinGame.fps.FPS < 20) return;
 
             var cellsInCameraViewWithNoTexturesSearch = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
             if (visitedByPlayerOnly) cellsInCameraViewWithNoTexturesSearch = cellsInCameraViewWithNoTexturesSearch.Where(cell => cell.VisitedByPlayer);
@@ -1270,7 +1270,7 @@ namespace SonOfRobin
             foreach (Cell cell in cellsWithPNGByDistance)
             {
                 cell.boardGraphics.LoadTexture();
-                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || this.world.WorldElapsedUpdateTime.Milliseconds > 13) return;
+                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || this.world.WorldElapsedUpdateTime.Milliseconds > 14 || SonOfRobinGame.fps.FPS < 20) return;
             }
         }
 

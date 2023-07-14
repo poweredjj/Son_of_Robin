@@ -32,7 +32,7 @@ namespace SonOfRobin
                     return;
                 }
 
-                if (!this.IsTimedOut && this.cell.boardGraphics.Texture == null) this.cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+                if (!this.IsTimedOut && this.cell.boardGraphics.Texture == null && SonOfRobinGame.fps.FPS >= 25) this.cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
             }
         }
 
