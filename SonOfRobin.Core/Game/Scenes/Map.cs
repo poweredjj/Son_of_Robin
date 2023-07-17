@@ -397,7 +397,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
-            bool showDetailedMap = this.camera.CurrentZoom >= 0.12f;
+            bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
             var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
