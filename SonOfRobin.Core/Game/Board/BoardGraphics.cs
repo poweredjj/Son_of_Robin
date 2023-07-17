@@ -25,14 +25,17 @@ namespace SonOfRobin
         public readonly string templatePath;
 
         private bool PNGTemplateFound;
+        private int PNGTemplateCheckCooldown; // next frame, when checking PNG template will be possible
 
         public bool PNGTemplateExists
         {
             get
             {
                 if (this.PNGTemplateFound) return true;
+                if (SonOfRobinGame.CurrentDraw < this.PNGTemplateCheckCooldown) return false;
 
                 this.PNGTemplateFound = File.Exists(templatePath); // buffering info if PNG found, because of disk operation cost
+                this.PNGTemplateCheckCooldown = SonOfRobinGame.CurrentDraw + 20;
                 return this.PNGTemplateFound;
             }
         }
@@ -44,6 +47,7 @@ namespace SonOfRobin
             this.Texture = null;
             this.hasBeenCopiedElsewhere = false;
             this.PNGTemplateFound = false;
+            this.PNGTemplateCheckCooldown = 0;
         }
 
         public void LoadTexture()
