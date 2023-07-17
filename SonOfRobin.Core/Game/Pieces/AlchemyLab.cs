@@ -244,7 +244,7 @@ namespace SonOfRobin
             bool customPotion = true;
             PieceTemplate.Name potionName = PieceTemplate.Name.PotionGeneric;
             string potionReadableName = "Potion";
-            string potionDescription = pieceInfo.description;
+            string potionDescription = PieceInfo.GetInfo(potionName).description;
 
             {
                 PieceTemplate.Name baseName = storedBases[0].name;
