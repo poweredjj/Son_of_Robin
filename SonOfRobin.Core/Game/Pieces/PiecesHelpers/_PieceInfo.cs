@@ -1283,6 +1283,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CoalDeposit:
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
+                        this.blocksMovement = true;
                         this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -1295,6 +1296,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.IronDeposit:
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
+                        this.blocksMovement = true;
                         this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
