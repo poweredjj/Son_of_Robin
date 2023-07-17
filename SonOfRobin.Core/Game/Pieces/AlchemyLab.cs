@@ -14,7 +14,7 @@ namespace SonOfRobin
 
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
-        private static readonly List<PieceTemplate.Name> potionNames = new List<PieceTemplate.Name> { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionCoffee, PieceTemplate.Name.PotionGeneric };
+        private static readonly List<PieceTemplate.Name> potionNames = new List<PieceTemplate.Name> { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionGeneric };
 
         private readonly int boosterSpace;
 
@@ -243,6 +243,7 @@ namespace SonOfRobin
 
             bool customPotion = true;
             PieceTemplate.Name potionName = PieceTemplate.Name.PotionGeneric;
+            string potionReadableName = "Potion";
 
             {
                 PieceTemplate.Name baseName = storedBases[0].name;
@@ -251,14 +252,16 @@ namespace SonOfRobin
                 {
                     case PieceTemplate.Name.Fat:
                         potionName = PieceTemplate.Name.BottleOfOil;
+                        potionReadableName = PieceInfo.GetInfo(potionName).readableName;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
+                        potionReadableName = PieceInfo.GetInfo(potionName).readableName;
                         potionName = PieceTemplate.Name.BottleOfOil;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
-                        potionName = PieceTemplate.Name.PotionCoffee;
+                        potionReadableName = "Coffee potion";
                         break;
 
                     default:
@@ -300,7 +303,14 @@ namespace SonOfRobin
                 adjustedBuffList.Add(adjustedBuff);
             }
 
+            if (adjustedBuffList.Any() && !potionReadableName.ToLower().Contains("coffee"))
+            {
+                string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
+                potionReadableName = $"{potionReadableName} of {adjustedBuffList[0].PotionText}{plusSign}";
+            }
+
             potion.buffList = adjustedBuffList;
+            potion.readableName = potionReadableName;
 
             // setting potion color
 
@@ -320,6 +330,8 @@ namespace SonOfRobin
 
                 potion.sprite.AssignNewPackage(colorByBoosterDict[boosterName]);
             }
+
+            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(AnimData.PkgName.PotionBrown);
 
             // destroying every inserted piece
 

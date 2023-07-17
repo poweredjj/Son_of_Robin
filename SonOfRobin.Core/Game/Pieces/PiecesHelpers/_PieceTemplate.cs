@@ -250,7 +250,7 @@ namespace SonOfRobin
             EmptyBottle,
 
             PotionGeneric,
-            PotionCoffee,
+            PotionCoffeeObsolete,  // kept for compatibility with old saves
             BottleOfOil,
 
             Hole,
@@ -1734,7 +1734,7 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.PotionCoffee:
+                case Name.PotionCoffeeObsolete:
                     {
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));

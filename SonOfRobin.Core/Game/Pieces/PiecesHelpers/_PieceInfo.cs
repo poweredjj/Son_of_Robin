@@ -2174,7 +2174,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
-                    case PieceTemplate.Name.PotionCoffee:
+                    case PieceTemplate.Name.PotionCoffeeObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
                         this.canBePickedUp = true;

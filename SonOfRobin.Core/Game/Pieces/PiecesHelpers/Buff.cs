@@ -304,6 +304,54 @@ namespace SonOfRobin
             return description;
         }
 
+        public string PotionText
+        {
+            get
+            {
+                switch (this.type)
+                {
+                    case BuffEngine.BuffType.Speed:
+                        return "speed";
+
+                    case BuffEngine.BuffType.Strength:
+                        return "strength";
+
+                    case BuffEngine.BuffType.HP:
+                        return "health";
+
+                    case BuffEngine.BuffType.MaxHP:
+                        return "max health";
+
+                    case BuffEngine.BuffType.MaxStamina:
+                        return "stamina";
+
+                    case BuffEngine.BuffType.HeatProtection:
+                        return "heat protection";
+
+                    case BuffEngine.BuffType.SwampProtection:
+                        return "swamp protection";
+
+                    case BuffEngine.BuffType.Wet:
+                        return null;
+
+                    case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
+                        return null;
+
+                    case BuffEngine.BuffType.RegenPoison:
+                        return this.isPositive ? "regen" : "poison";
+
+                    case BuffEngine.BuffType.Haste:
+                        return "haste";
+
+                    case BuffEngine.BuffType.Fatigue:
+                        return this.isPositive ? "rest" : "fatigue";
+
+                    default:
+                        throw new ArgumentException($"Unsupported buff type - {this.type}.");
+                }
+            }
+        }
+
         private string GetIconText()
         {
             string sign = this.SignString;
