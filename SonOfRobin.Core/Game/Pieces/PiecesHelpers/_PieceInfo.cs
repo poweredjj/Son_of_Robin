@@ -2297,7 +2297,8 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.FertileGroundMedium:
                         this.category = BoardPiece.Category.Dirt;
-                        this.ignoresCollisions = true;
+                        this.blocksPlantGrowth = false;
+                        this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = false;
 
