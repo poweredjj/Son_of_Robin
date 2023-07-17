@@ -85,7 +85,7 @@ namespace SonOfRobin
         {
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
-            this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
+            this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
             this.SetViewParamsForMiniature();
 
@@ -119,6 +119,7 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map background {width}x{height} (fullscreen {this.FullScreen})");
 
                 Texture2D mapTexture = BoardGraphics.GetMapTextureScaledForScreenSize(grid: this.world.Grid, width: width, height: height);
+
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
@@ -396,7 +397,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
-            bool showDetailedMap = this.camera.CurrentZoom >= 0.3f;
+            bool showDetailedMap = this.camera.CurrentZoom >= 0.12f;
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
             var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later

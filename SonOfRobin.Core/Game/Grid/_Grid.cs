@@ -4,7 +4,6 @@ using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
@@ -391,9 +390,18 @@ namespace SonOfRobin
 
                 case Stage.MakeEntireMapImage:
                     string mapImagePath = BoardGraphics.GetWholeIslandMapPath(this);
-                    if (!File.Exists(mapImagePath)) BoardGraphics.CreateAndSaveEntireMapImage(this);
 
-                    this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
+                    try
+                    { this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath); }
+                    catch (AggregateException)
+                    { }
+
+                    if (this.WholeIslandPreviewTexture == null)
+                    {
+                        BoardGraphics.CreateAndSaveEntireMapImage(this);
+                        this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
+                    }
+
                     this.CreationInProgress = false;
 
                     break;
