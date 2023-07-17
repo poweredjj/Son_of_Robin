@@ -347,7 +347,7 @@ namespace SonOfRobin
                         return this.isPositive ? "rest" : "fatigue";
 
                     default:
-                        throw new ArgumentException($"Unsupported buff type - {this.type}.");
+                        return "this buff has no potionText defined";
                 }
             }
         }
