@@ -244,6 +244,7 @@ namespace SonOfRobin
             bool customPotion = true;
             PieceTemplate.Name potionName = PieceTemplate.Name.PotionGeneric;
             string potionReadableName = "Potion";
+            string potionDescription = pieceInfo.description;
 
             {
                 PieceTemplate.Name baseName = storedBases[0].name;
@@ -262,6 +263,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.CoffeeRoasted:
                         potionReadableName = "Coffee potion";
+                        potionDescription = "A strong coffee.";
                         break;
 
                     default:
@@ -303,6 +305,12 @@ namespace SonOfRobin
                 adjustedBuffList.Add(adjustedBuff);
             }
 
+            if (!adjustedBuffList.Any())
+            {
+                potionReadableName = $"{potionReadableName} of the fool";
+                potionDescription = "A useless potion.";
+            }
+
             if (adjustedBuffList.Any() && !potionReadableName.ToLower().Contains("coffee"))
             {
                 string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
@@ -311,6 +319,7 @@ namespace SonOfRobin
 
             potion.buffList = adjustedBuffList;
             potion.readableName = potionReadableName;
+            potion.description = potionDescription;
 
             // setting potion color
 
@@ -328,10 +337,10 @@ namespace SonOfRobin
 
                 PieceTemplate.Name boosterName = storedBoosters[0].name;
 
-                potion.sprite.AssignNewPackage(colorByBoosterDict[boosterName]);
+                potion.sprite.AssignNewPackage(newAnimPackage: colorByBoosterDict[boosterName], checkForCollision: false);
             }
 
-            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(AnimData.PkgName.PotionBrown);
+            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.PotionBrown, checkForCollision: false);
 
             // destroying every inserted piece
 

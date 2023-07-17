@@ -564,7 +564,7 @@ namespace SonOfRobin
 
         public bool CheckForCollision(bool ignoreDensity = false)
         {
-            if (this.world == null || !this.IsOnBoard) return false;
+            if (this.world == null || (this.boardPiece.pieceInfo.canBePickedUp && !this.IsOnBoard)) return false;
             if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
             if (this.IgnoresCollisions) return false;
             if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
@@ -614,7 +614,7 @@ namespace SonOfRobin
             this.ColRect = colRect;
         }
 
-        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true)
+        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)
         {
             if (this.AnimPackage == newAnimPackage) return;
 
@@ -623,7 +623,7 @@ namespace SonOfRobin
             if (setEvenIfMissing || CheckIfAnimPackageExists(newAnimPackage))
             {
                 this.AnimPackage = newAnimPackage;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
                 if (!frameAssignedCorrectly) this.AnimPackage = oldAnimPackage;
             }
         }

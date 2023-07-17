@@ -97,7 +97,7 @@ namespace SonOfRobin
         public bool rotatesWhenDropped;
         public BoardPiece visualAid;
         public string readableName;
-        public readonly string description;
+        public string description;
         public bool canBeHit;
         public bool isTemporaryDecoration;
         private float hitPoints;
@@ -407,6 +407,7 @@ namespace SonOfRobin
             if (this.bioWear > 0) pieceData["base_bioWear"] = this.bioWear;
             if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
             if (this.readableName != pieceInfo.readableName) pieceData["base_readableName"] = this.readableName;
+            if (this.description != pieceInfo.description) pieceData["base_description"] = this.readableName;
 
             return pieceData;
         }
@@ -429,6 +430,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             if (pieceData.ContainsKey("base_readableName")) this.readableName = (string)pieceData["base_readableName"];
+            if (pieceData.ContainsKey("base_description")) this.description = (string)pieceData["base_description"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
             this.UpdateEfficiency();
