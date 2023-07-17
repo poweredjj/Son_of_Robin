@@ -18,7 +18,7 @@ namespace SonOfRobin
         public readonly int colHeight;
         public readonly Vector2 gfxOffset;
         public readonly Vector2 colOffset;
-        public readonly byte layer;
+        public readonly int layer;
         public readonly int duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
@@ -27,7 +27,7 @@ namespace SonOfRobin
         public readonly Rectangle textureRect;
         public readonly Vector2 rotationOrigin;
 
-        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, int duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             // some frames are duplicated and can be reused (this can be verified by checking ID)
 
@@ -37,12 +37,12 @@ namespace SonOfRobin
             else return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
-        private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, int duration, bool crop, float scale, float depthPercent)
+        private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent)
         {
             return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
         }
 
-        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, int duration, bool crop, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
+        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
         {
             // should not be invoked from other classes directly
 

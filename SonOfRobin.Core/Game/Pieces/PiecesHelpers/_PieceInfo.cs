@@ -43,7 +43,7 @@ namespace SonOfRobin
             public readonly float opacity;
             public readonly LightEngine lightEngine;
             public readonly string animName;
-            public readonly byte animSize;
+            public readonly int animSize;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -2293,6 +2293,18 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.isAffectedByWind = false;
+                        break;
+
+                    case PieceTemplate.Name.FertileGroundMedium:
+                        this.category = BoardPiece.Category.Dirt;
+                        this.ignoresCollisions = true;
+                        this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = false;
+
+                        this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 70, maxNumberToDrop: 1) });
+
                         break;
 
                     default:

@@ -373,9 +373,10 @@ namespace SonOfRobin
 
             SeaWave,
             MeatRawPrime,
+            FertileGroundMedium,
         }
 
-        public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
+        public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
         {
             if (!framesForPkgs.ContainsKey(animPackage)) framesForPkgs[animPackage] = frameList[0];
 
@@ -760,6 +761,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Hole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hole", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.MeatRawRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.MeatRawPrime, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.FertileGroundMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
@@ -1128,7 +1130,7 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 320, y: 128, width: 32, height: 32, scale: 0.5f));
         }
 
-        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             List<AnimFrame> frameList = new List<AnimFrame>
             {
@@ -1137,7 +1139,7 @@ namespace SonOfRobin
             return frameList;
         }
 
-        public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, int duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame ConvertImageToFrame(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, int duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             Texture2D atlasTexture = TextureBank.GetTexture(atlasName);
             if (width == 0) width = atlasTexture.Width;
@@ -1146,7 +1148,7 @@ namespace SonOfRobin
             return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
-        public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
+        public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 96;
             int offsetY = setNoY * 128;

@@ -34,7 +34,7 @@ namespace SonOfRobin
         public LightEngine lightEngine;
         public ParticleEngine particleEngine;
         public AnimData.PkgName AnimPackage { get; private set; }
-        public byte AnimSize { get; private set; }
+        public int AnimSize { get; private set; }
         public string AnimName { get; private set; }
         private byte currentFrameIndex;
         private int currentFrameTimeLeft; // measured in game frames
@@ -49,7 +49,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, int animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -281,7 +281,7 @@ namespace SonOfRobin
             return this.world.Grid.GetExtProperty(name: name, position: this.position);
         }
 
-        public static string GetCompleteAnimId(AnimData.PkgName animPackage, byte animSize, string animName)
+        public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)
         { return $"{animPackage}-{animSize}-{animName}"; }
 
         public int GetAnimDuration()
@@ -632,7 +632,7 @@ namespace SonOfRobin
         {
             if (this.AnimSize == newAnimSize) return;
 
-            byte oldAnimSize = this.AnimSize;
+            int oldAnimSize = this.AnimSize;
 
             if (setEvenIfMissing || CheckIfAnimSizeExists(newAnimSize))
             {
