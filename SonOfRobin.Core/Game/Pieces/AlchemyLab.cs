@@ -241,7 +241,7 @@ namespace SonOfRobin
                 }
             }
 
-            bool customPotion = true;
+            bool customPotion = false;
             PieceTemplate.Name potionName = PieceTemplate.Name.PotionGeneric;
             string potionReadableName = "Potion";
             string potionDescription = PieceInfo.GetInfo(potionName).description;
@@ -254,27 +254,30 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Fat:
                         potionName = PieceTemplate.Name.BottleOfOil;
                         potionReadableName = PieceInfo.GetInfo(potionName).readableName;
+                        potionDescription = PieceInfo.GetInfo(potionName).description;
+                        customPotion = true;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
-                        potionReadableName = PieceInfo.GetInfo(potionName).readableName;
                         potionName = PieceTemplate.Name.BottleOfOil;
+                        potionReadableName = PieceInfo.GetInfo(potionName).readableName;
+                        potionDescription = PieceInfo.GetInfo(potionName).description;
+                        customPotion = true;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
                         potionReadableName = "Coffee potion";
                         potionDescription = "A strong coffee.";
+                        customPotion = true;
                         break;
 
                     default:
-                        customPotion = false;
                         break;
                 }
             }
 
             Player player = this.world.Player;
             int brewLevel = player.BrewLevel;
-
             // brewLevel = 5; // for testing
 
             // creating potion
@@ -305,17 +308,20 @@ namespace SonOfRobin
                 adjustedBuffList.Add(adjustedBuff);
             }
 
-            if (!adjustedBuffList.Any())
+            if (!customPotion)
             {
-                potionReadableName = $"{potionReadableName} of the fool";
-                potionDescription = "A useless potion.";
-            }
+                if (!adjustedBuffList.Any())
+                {
+                    potionReadableName = $"{potionReadableName} of the fool";
+                    potionDescription = "A useless potion.";
+                }
 
-            if (adjustedBuffList.Any() && !potionReadableName.ToLower().Contains("coffee"))
-            {
-                string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
-                potionReadableName = $"{potionReadableName} of {adjustedBuffList[0].PotionText}{plusSign}";
-                if (adjustedBuffList.Count > 1) potionDescription = "A potion of many effects.";
+                if (adjustedBuffList.Any() && !potionReadableName.ToLower().Contains("coffee"))
+                {
+                    string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
+                    potionReadableName = $"{potionReadableName} of {adjustedBuffList[0].PotionText}{plusSign}";
+                    if (adjustedBuffList.Count > 1) potionDescription = "A potion of many effects.";
+                }
             }
 
             potion.buffList = adjustedBuffList;
