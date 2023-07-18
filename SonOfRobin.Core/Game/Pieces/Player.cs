@@ -48,7 +48,7 @@ namespace SonOfRobin
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
             byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description,  strength: strength, activeState: activeState, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: activeState, soundPack: soundPack)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -331,7 +331,7 @@ namespace SonOfRobin
                 float oldVal = this.stamina;
                 this.stamina = Math.Min(Math.Max(value, 0), this.maxStamina);
 
-                float staminaDifference = oldVal - this.stamina;
+                float staminaDifference = this.stamina - oldVal;
                 if (staminaDifference < 0) this.Fatigue -= staminaDifference / 10f;
             }
         }
@@ -521,7 +521,7 @@ namespace SonOfRobin
             }
         }
 
-        public void ExpendEnergy(float energyAmount, bool addFatigue = true)
+        public void ExpendEnergy(float energyAmount, bool addFatigue)
         {
             if (Preferences.DebugGodMode) return;
 
@@ -710,7 +710,7 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
-            this.ExpendEnergy(0.1f);
+            this.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
             if (!this.Walk()) this.Stamina++;
 
             this.CheckGround();
@@ -838,7 +838,7 @@ namespace SonOfRobin
 
             if (hasBeenMoved)
             {
-                this.ExpendEnergy(0.2f);
+                this.ExpendEnergy(energyAmount: 0.2f, addFatigue: true);
 
                 if (this.sprite.IsInWater && slowDownInWater)
                 {
@@ -963,7 +963,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledShooting()
         {
-            this.ExpendEnergy(0.1f);
+            this.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
             this.CheckGround();
             this.CheckLowHP();
 

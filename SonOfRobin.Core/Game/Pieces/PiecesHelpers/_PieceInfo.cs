@@ -106,7 +106,6 @@ namespace SonOfRobin
                 this.strength = piece.strength;
                 this.speed = piece.speed;
                 this.initialActiveState = piece.activeState;
-
                 this.readableName = piece.readableName;
                 this.description = piece.description;
                 this.buffList = piece.buffList;
