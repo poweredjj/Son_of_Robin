@@ -81,7 +81,7 @@ namespace SonOfRobin
 
         public void SimulateUnprocessedGrowth() // for plants that are placed during world creation
         {
-            this.lastFrameProcessed -= 60 * 60 * this.world.random.Next(1, 10);
+            this.lastFrameProcessed -= 60 * 60 * this.world.random.Next(10, 30);
         }
 
         public void DropSeeds()
