@@ -560,6 +560,18 @@ namespace SonOfRobin
             return null;
         }
 
+        public void DestroyCollidingPlants(int delay)
+        {
+            if (!this.sprite.IsOnBoard) return;
+
+            var collidingPlants = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: Math.Max(this.sprite.AnimFrame.colWidth, this.sprite.AnimFrame.colHeight)).Where(piece => piece.GetType() == typeof(Plant) && piece.sprite.ColRect.Intersects(this.sprite.ColRect));
+
+            foreach (BoardPiece plantPiece in collidingPlants)
+            {
+                new Scheduler.Task(taskName: Scheduler.TaskName.DestroyAndDropDebris, delay: delay, executeHelper: plantPiece);
+            }
+        }
+
         public void StateMachineWork()
         {
             // checking if state machine can be processed

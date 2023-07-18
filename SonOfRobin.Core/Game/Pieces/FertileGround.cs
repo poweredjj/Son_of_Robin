@@ -9,23 +9,18 @@ namespace SonOfRobin
 
         public FertileGround(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, float wealthMultiplier) :
 
-            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, activeState: State.Empty, maxHitPoints: 250)
+            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, activeState: State.Empty, maxHitPoints: 150)
         {
             this.wealthMultiplier = wealthMultiplier;
-
-            // TODO add code for destroying all overlapping plants here
         }
 
         public override void Destroy()
         {
             if (!this.exists) return;
 
-            // TODO add code for destroying all overlapping plants here
-
+            if (!this.world.BuildMode) this.DestroyCollidingPlants(delay: 0); // BuildMode check, to avoid invoking when destroying simulatedPieceToBuild
             base.Destroy();
         }
-
-
 
         public override Dictionary<string, Object> Serialize()
         {

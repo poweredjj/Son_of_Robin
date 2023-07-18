@@ -315,6 +315,7 @@ namespace SonOfRobin
             {
                 string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
                 potionReadableName = $"{potionReadableName} of {adjustedBuffList[0].PotionText}{plusSign}";
+                if (adjustedBuffList.Count > 1) potionDescription = "A potion of many effects.";
             }
 
             potion.buffList = adjustedBuffList;

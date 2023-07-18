@@ -161,7 +161,7 @@ namespace SonOfRobin
         }
 
         public IEnumerable<BoardPiece> GetSeenPieces()
-        { return world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange); }
+        { return this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange); }
 
         private void UpdateAttackCooldown()
         {

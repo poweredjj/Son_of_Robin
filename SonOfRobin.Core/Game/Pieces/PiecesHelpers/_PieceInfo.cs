@@ -95,6 +95,7 @@ namespace SonOfRobin
             public readonly bool ambsoundPlayOnlyWhenIsSunny;
             public readonly bool ambsoundGeneratesWind;
             public readonly bool visFogExplodesWhenBurns;
+            public readonly bool destroysPlantsWhenBuilt;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -211,6 +212,7 @@ namespace SonOfRobin
                 this.ambsoundPlayOnlyWhenIsSunny = false;
                 this.ambsoundGeneratesWind = false;
                 this.visFogExplodesWhenBurns = false;
+                this.destroysPlantsWhenBuilt = false;
 
                 // setting values for names
 
@@ -1055,6 +1057,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.ChestStone:
@@ -1063,6 +1066,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.ChestIron:
@@ -1070,6 +1074,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
@@ -1077,6 +1082,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
@@ -1117,6 +1123,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopEssential:
@@ -1124,6 +1131,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
@@ -1131,6 +1139,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
@@ -1138,6 +1147,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
@@ -1145,6 +1155,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
@@ -1152,6 +1163,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
@@ -1159,6 +1171,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabStandard:
@@ -1166,6 +1179,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
@@ -1173,30 +1187,35 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.fireAffinity = 0.3f;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.Furnace:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.HotPlate:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.CookingPot:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.UpgradeBench:
@@ -1204,6 +1223,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.Stick:
@@ -1938,6 +1958,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.TentMedium:
@@ -1945,6 +1966,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.TentBig:
@@ -1952,6 +1974,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.6f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.BackpackSmall:
@@ -2300,6 +2323,7 @@ namespace SonOfRobin
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = false;
+                        this.destroysPlantsWhenBuilt = true;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
