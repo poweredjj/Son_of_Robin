@@ -2805,7 +2805,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (big)", description: "Seeds can be planted here.", maxHitPoints: 100);
+                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundBig, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (big)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
                         return patch;
                     }
