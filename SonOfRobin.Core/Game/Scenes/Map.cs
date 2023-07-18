@@ -347,7 +347,7 @@ namespace SonOfRobin
                 else currentZoom += TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false);
 
                 currentZoom = Math.Min(currentZoom, this.InitialZoom);
-                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
+                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.4f);
 
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
             }
