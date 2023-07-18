@@ -51,11 +51,16 @@ namespace SonOfRobin
                 // calculated once - because occupied field value will not change
 
                 float totalWealth = 0;
+
+                bool hasBeenPlanted = this.IsPlantMadeByPlayer;
+
                 foreach (var kvp in this.pieceInfo.plantBestEnvironment)
                 {
-                    totalWealth += 255 - Math.Abs(kvp.Value - this.sprite.GetFieldValue(kvp.Key));
+                    totalWealth += 255;
+                    if (!hasBeenPlanted) totalWealth -= Math.Abs(kvp.Value - this.sprite.GetFieldValue(kvp.Key));
                 }
                 totalWealth /= 255;
+
 
                 this.occupiedFieldWealth = totalWealth;
                 return this.occupiedFieldWealth;
@@ -125,9 +130,11 @@ namespace SonOfRobin
 
         public static FertileGround GetFertileGround(BoardPiece plantPiece)
         {
+            Vector2 plantPieceCenter = plantPiece.sprite.position;
+
             foreach (Sprite sprite in plantPiece.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }))
             {
-                if (sprite.boardPiece.GetType() == typeof(FertileGround) && plantPiece.sprite.ColRect.Intersects(sprite.ColRect)) return (FertileGround)sprite.boardPiece;
+                if (sprite.boardPiece.GetType() == typeof(FertileGround) && sprite.ColRect.Contains(plantPieceCenter)) return (FertileGround)sprite.boardPiece;
             }
 
             return null;
@@ -152,7 +159,7 @@ namespace SonOfRobin
 
             this.Mass += (-this.pieceInfo.plantMassToBurn * timeDelta) + massTaken;
 
-            FertileGround fertileGroundPiece = null;
+            FertileGround fertileGroundPiece = null; // to search for fertileGroundPiece only once
 
             while (true)
             {
@@ -168,7 +175,7 @@ namespace SonOfRobin
 
                         newPlant.createdByPlayer = true;
                         newPlant.canBeHit = false;
-                        ((Plant)newPlant).massTakenMultiplier *= fertileGroundPiece.soilWealthMultiplier;
+                        ((Plant)newPlant).massTakenMultiplier *= fertileGroundPiece.pieceInfo.fertileGroundSoilWealthMultiplier;
                     }
 
                     newPlant.PlaceOnBoard(randomPlacement: false, position: this.sprite.position);

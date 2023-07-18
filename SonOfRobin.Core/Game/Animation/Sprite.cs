@@ -200,7 +200,7 @@ namespace SonOfRobin
                     if (this.boardPiece.IsPlantMadeByPlayer)
                     {
                         minDistance = 0;
-                        maxDistance = 100;
+                        maxDistance = 150;
                     }
 
                     placedCorrectly = this.FindFreeSpotNearby(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);

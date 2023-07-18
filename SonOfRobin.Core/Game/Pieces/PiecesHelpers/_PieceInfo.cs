@@ -97,6 +97,7 @@ namespace SonOfRobin
             public readonly bool ambsoundGeneratesWind;
             public readonly bool visFogExplodesWhenBurns;
             public readonly bool destroysPlantsWhenBuilt;
+            public readonly float fertileGroundSoilWealthMultiplier;
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
@@ -215,6 +216,7 @@ namespace SonOfRobin
                 this.ambsoundGeneratesWind = false;
                 this.visFogExplodesWhenBurns = false;
                 this.destroysPlantsWhenBuilt = false;
+                this.fertileGroundSoilWealthMultiplier = 0;
 
                 // setting values for names
 
@@ -2326,6 +2328,7 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
+                        this.fertileGroundSoilWealthMultiplier = 1.7f;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },

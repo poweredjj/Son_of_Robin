@@ -60,7 +60,7 @@ namespace SonOfRobin
             this.drawParamsList.Add(new InvokerDrawParams(
                 isMain: true,
                 name: recipe.pieceToCreate,
-                text: $"own\n{ mainPieceOwnedCount }",
+                text: $"own\n{mainPieceOwnedCount}",
                 counter: recipe.amountToCreate,
                 bgColor: canBeCrafted ? Color.Green : Color.Red));
 
@@ -223,8 +223,14 @@ namespace SonOfRobin
 
             if (pieceInfo.cookerFoodMassMultiplier > 0)
             {
-                extInfoTextList.Add($"| x{ pieceInfo.cookerFoodMassMultiplier }");
+                extInfoTextList.Add($"| x{pieceInfo.cookerFoodMassMultiplier}");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+            }
+
+            if (pieceInfo.fertileGroundSoilWealthMultiplier > 0)
+            {
+                extInfoTextList.Add($"| x{pieceInfo.fertileGroundSoilWealthMultiplier}");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sapling"));
             }
 
             int fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);

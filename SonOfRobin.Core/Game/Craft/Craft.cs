@@ -306,7 +306,9 @@ namespace SonOfRobin
 
                     if (piece.GetType() == typeof(Plant))
                     {
-                        ((Plant)piece).massTakenMultiplier *= 1.7f; // when the player plants something, it should grow better than normal
+                        FertileGround fertileGround = Plant.GetFertileGround(piece);
+
+                        ((Plant)piece).massTakenMultiplier *= fertileGround.pieceInfo.fertileGroundSoilWealthMultiplier; // when the player plants something, it should grow better than normal
                     }
                 }
 
