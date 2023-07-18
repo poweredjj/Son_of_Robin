@@ -1677,7 +1677,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
+                             rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1691,7 +1691,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
+                             rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1705,7 +1705,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "red herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
+                             rotatesWhenDropped: true, readableName: "red herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1719,7 +1719,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion and meal ingredient.", buffList: buffList, soundPack: soundPack);
+                             rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion ingredient.", buffList: buffList, soundPack: soundPack);
 
                         return boardPiece;
                     }
