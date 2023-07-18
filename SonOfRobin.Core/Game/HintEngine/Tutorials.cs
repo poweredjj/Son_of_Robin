@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -324,8 +324,14 @@ namespace SonOfRobin
                 new HintMessage(text: "1. Open inventory.", boxType: messageTextType),
                 new HintMessage(text: "2. Pick | one item.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Candle) }, boxType: messageTextType),
                 new HintMessage(text: "3. Release it over | the other item.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty) }, boxType: messageTextType),
-                new HintMessage(text: "After confirmation, a | new item will be created.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternFull) }, boxType: messageTextType),
-    });
+                new HintMessage(text: "After confirmation, a | new item will be created.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternFull) }, boxType: messageTextType)});
+
+            new Tutorial(type: Type.Plant, name: "planting", title: "Planting seeds.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "1.Craft a | fertile ground.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FertileGroundMedium) }, boxType: messageTextType),
+                new HintMessage(text: "2. Stand close to the | fertile ground.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FertileGroundMedium) }, boxType: messageTextType),
+                new HintMessage(text: "3. Select the seed | you want to plant\nfrom inventory and use 'plant' option.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) }, boxType: messageTextType),
+                new HintMessage(text: "4. Pick a spot, where the | plant is colored green.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoffeeShrub) }, boxType: messageTextType)});
 
             CheckData();
         }

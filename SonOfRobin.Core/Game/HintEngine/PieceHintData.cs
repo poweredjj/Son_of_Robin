@@ -465,7 +465,19 @@ namespace SonOfRobin
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 1 } }
                     ),
 
+                new PieceHint(
+                    type: PieceHint.Type.PlantingNegative,
+                    message: "I need a | fertile ground to plant these seeds.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.FertileGroundMedium) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.SeedsGeneric },
+                    piecesCraftedCount: new List<CountComparison> { new CountComparison(name: PieceTemplate.Name.FertileGroundSmall, count: 0, comparison: CountComparison.Comparison.Equal) }),
 
+               new PieceHint(
+                    type: PieceHint.Type.PlantingPositive, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
+                    message: "Now I can plant seeds | | |.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric), PieceInfo.GetTexture(PieceTemplate.Name.Acorn), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw)},
+                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.PlantingNegative },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Plant }),
                 };
 
             CheckData(newPieceHintList);
