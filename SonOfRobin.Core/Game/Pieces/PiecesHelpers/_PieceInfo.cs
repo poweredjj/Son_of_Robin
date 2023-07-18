@@ -708,7 +708,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Cherry:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.startingMass = 50;
+                        this.startingMass = 30;
                         this.fireAffinity = 0.15f;
                         this.canBePickedUp = true;
                         this.stackSize = 16;
