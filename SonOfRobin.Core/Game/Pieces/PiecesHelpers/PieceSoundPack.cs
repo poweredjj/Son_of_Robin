@@ -193,6 +193,10 @@ namespace SonOfRobin
                     soundNameList.Add(SoundData.Name.HitFlesh2);
                     break;
 
+                case BoardPiece.Category.Leather:
+                    soundNameList.Add(SoundData.Name.HitLeather);
+                    break;
+
                 case BoardPiece.Category.Dirt:
                     soundNameList.Add(SoundData.Name.Dig1);
                     soundNameList.Add(SoundData.Name.Dig2);
@@ -240,6 +244,10 @@ namespace SonOfRobin
 
                 case BoardPiece.Category.Flesh:
                     soundNameList.Add(SoundData.Name.DropGeneric);
+                    break;
+
+                case BoardPiece.Category.Leather:
+                    soundNameList.Add(SoundData.Name.DropLeather);
                     break;
 
                 case BoardPiece.Category.Dirt:
@@ -294,6 +302,10 @@ namespace SonOfRobin
                 case BoardPiece.Category.Flesh:
                     soundNameList.Add(SoundData.Name.DestroyFlesh1);
                     soundNameList.Add(SoundData.Name.DestroyFlesh2);
+                    break;
+
+                case BoardPiece.Category.Leather:
+                    soundNameList.Add(SoundData.Name.DestroyLeather);
                     break;
 
                 case BoardPiece.Category.Dirt:

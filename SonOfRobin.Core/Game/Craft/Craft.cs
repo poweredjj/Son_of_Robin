@@ -149,6 +149,10 @@ namespace SonOfRobin
                         debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Blood };
                         break;
 
+                    case BoardPiece.Category.Leather:
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
+                        break;
+
                     case BoardPiece.Category.Crystal:
                         debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Crystal };
                         break;

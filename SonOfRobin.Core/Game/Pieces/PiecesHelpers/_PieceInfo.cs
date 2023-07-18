@@ -1285,7 +1285,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Rope:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
@@ -1978,7 +1978,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BackpackSmall:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -1987,7 +1987,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BackpackMedium:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 500;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -1996,7 +1996,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BackpackBig:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 700;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -2005,7 +2005,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BeltSmall:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -2013,7 +2013,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BeltMedium:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 300;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -2021,7 +2021,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BeltBig:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 400;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -2029,7 +2029,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Map:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
@@ -2037,7 +2037,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Dungarees:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 150;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
@@ -2045,7 +2045,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.HatSimple:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
@@ -2053,7 +2053,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BootsProtective:
-                        this.category = BoardPiece.Category.Flesh;
+                        this.category = BoardPiece.Category.Leather;
                         this.startingMass = 500;
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;

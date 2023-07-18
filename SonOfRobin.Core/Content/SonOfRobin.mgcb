@@ -7233,6 +7233,12 @@
 /processorParam:Quality=Best
 /build:sound/141334__lluiset7__error-2.ogg
 
+#begin sound/144266__dwoboyle__impact-leatherbelt-001.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/144266__dwoboyle__impact-leatherbelt-001.ogg
+
 #begin sound/145242__nathanaelj83__water-step.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -7316,6 +7322,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short.ogg
+
+#begin sound/203086__mafon2__two-thumps.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/203086__mafon2__two-thumps.ogg
 
 #begin sound/209399__samulis__bow-release.ogg
 /importer:OggImporter
@@ -7796,6 +7808,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/467610__triqystudio__pickupitem.ogg
+
+#begin sound/471745__juanfg__break.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/471745__juanfg__break.ogg
 
 #begin sound/475094__josh74000mc__thunder3.ogg
 /importer:OggImporter

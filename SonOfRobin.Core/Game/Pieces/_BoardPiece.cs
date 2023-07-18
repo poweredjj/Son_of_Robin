@@ -50,7 +50,7 @@ namespace SonOfRobin
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
         public enum Category
-        { NotSet, Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
+        { NotSet, Wood, Stone, Metal, SmallPlant, Flesh, Leather, Dirt, Crystal, Indestructible }
 
         public static Texture2D GetTextureForCategory(Category category)
         {
@@ -61,6 +61,7 @@ namespace SonOfRobin
                 Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
                 Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
                 Category.Flesh => AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture,
+                Category.Leather => AnimData.framesForPkgs[AnimData.PkgName.Leather].texture,
                 Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
                 Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
                 _ => AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture,

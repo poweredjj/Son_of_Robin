@@ -279,6 +279,9 @@ namespace SonOfRobin
             ShootFire,
             AnvilHit,
             BoilingPotionLoop,
+            DropLeather,
+            HitLeather,
+            DestroyLeather,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -499,6 +502,9 @@ namespace SonOfRobin
             { Name.ShootFire, "234083__211redman112__lasgun-fire" },
             { Name.AnvilHit, "386124__ldezem__anvil-lokomo-a-100-kg-combination-of-hot-and-cold-hits" },
             { Name.BoilingPotionLoop, "62282__robinhood76__00517-alchemist-laboratory-arrangement_loop" },
+            { Name.DropLeather, "203086__mafon2__two-thumps" },
+            { Name.HitLeather, "144266__dwoboyle__impact-leatherbelt-001" },
+            { Name.DestroyLeather, "471745__juanfg__break" },
             };
     }
 }

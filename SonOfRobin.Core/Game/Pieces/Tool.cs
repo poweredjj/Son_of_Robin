@@ -141,6 +141,9 @@ namespace SonOfRobin
                             if (this.readableName.Contains("axe")) this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
                             break;
 
+                        case Category.Leather:
+                            break;
+
                         case Category.Indestructible:
                             break;
 
