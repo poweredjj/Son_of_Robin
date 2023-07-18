@@ -244,7 +244,7 @@ namespace SonOfRobin
 
                             foreach (BoardPiece nearbyPiece in nearbyPieces)
                             {
-                                if (!nearbyPiece.canBeHit) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
+                                if (nearbyPiece.createdByPlayer) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
                             }
                             piece.BurnLevel += 1;
                             break;

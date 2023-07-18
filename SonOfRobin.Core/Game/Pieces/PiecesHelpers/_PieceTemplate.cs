@@ -281,9 +281,15 @@ namespace SonOfRobin
             return CreatePiece(templateName: templateName, world: world, id: id);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
         {
             BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id);
+
+            if (createdByPlayer)
+            {
+                boardPiece.createdByPlayer = true;
+                boardPiece.canBeHit = false; // to protect item from accidental player hit
+            }
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
 
@@ -294,7 +300,6 @@ namespace SonOfRobin
                 if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
 
                 // adding opacityFade
-
                 if (boardPiece.sprite.IsInCameraRect && (opacityFadeDurationByName.ContainsKey(templateName) || boardPiece.GetType() == typeof(Plant)))
                 {
                     float destOpacity = boardPiece.sprite.opacity;
@@ -2774,7 +2779,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", wealthMultiplier: 1.5f);
+                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", soilWealthMultiplier: 1.5f, maxHitPoints: 80);
 
                         return patch;
                     }

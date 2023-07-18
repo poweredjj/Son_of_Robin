@@ -88,7 +88,7 @@ namespace SonOfRobin
             {
                 foreach (BoardPiece currentTarget in targets)
                 {
-                    if (!currentTarget.canBeHit)
+                    if (!currentTarget.canBeHit && this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category))
                     {
                         var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {currentTarget.readableName}?" }, { "taskName", Scheduler.TaskName.AllowPieceToBeHit }, { "executeHelper", currentTarget }, { "blocksUpdatesBelow", true } };
                         MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);

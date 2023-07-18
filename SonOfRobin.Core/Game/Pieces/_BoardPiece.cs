@@ -100,6 +100,7 @@ namespace SonOfRobin
         public string readableName;
         public string description;
         public bool canBeHit;
+        public bool createdByPlayer;
         public bool isTemporaryDecoration;
         private float hitPoints;
 
@@ -139,6 +140,7 @@ namespace SonOfRobin
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;
             this.canBeHit = true;
+            this.createdByPlayer = false;
             this.burnLevel = 0f;
             this.isTemporaryDecoration = false; // to be set later
         }
@@ -342,6 +344,9 @@ namespace SonOfRobin
             }
         }
 
+        public bool IsPlantMadeByPlayer
+        { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
+
         public static Random Random
         {
             get
@@ -404,6 +409,7 @@ namespace SonOfRobin
             if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
             if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
             if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
+            if (this.createdByPlayer != pieceInfo.createdByPlayer) pieceData["base_createdByPlayer"] = this.createdByPlayer;
             if (!this.alive) pieceData["base_alive"] = this.alive;
             if (this.bioWear > 0) pieceData["base_bioWear"] = this.bioWear;
             if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
@@ -430,6 +436,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_buffList")) this.buffList = (List<Buff>)pieceData["base_buffList"];
             if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
+            if (pieceData.ContainsKey("base_createdByPlayer")) this.createdByPlayer = (bool)pieceData["base_createdByPlayer"];
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             if (pieceData.ContainsKey("base_readableName")) this.readableName = (string)pieceData["base_readableName"];
             if (pieceData.ContainsKey("base_description")) this.description = (string)pieceData["base_description"];
@@ -565,11 +572,11 @@ namespace SonOfRobin
         {
             if (!this.sprite.IsOnBoard) return;
 
-            var collidingPlants = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: Math.Max(this.sprite.AnimFrame.colWidth, this.sprite.AnimFrame.colHeight)).Where(piece => piece.GetType() == typeof(Plant) && piece.sprite.ColRect.Intersects(this.sprite.ColRect));
+            var collidingPlants = this.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }).Where(sprite => sprite.boardPiece.GetType() == typeof(Plant) && sprite.ColRect.Intersects(this.sprite.ColRect));
 
-            foreach (BoardPiece plantPiece in collidingPlants)
+            foreach (Sprite collidingPlant in collidingPlants)
             {
-                new Scheduler.Task(taskName: Scheduler.TaskName.DestroyAndDropDebris, delay: delay, executeHelper: plantPiece);
+                new Scheduler.Task(taskName: Scheduler.TaskName.DestroyAndDropDebris, delay: delay, executeHelper: collidingPlant.boardPiece);
             }
         }
 

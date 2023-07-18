@@ -188,15 +188,21 @@ namespace SonOfRobin
             if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
             else
             {
-                int minDistance = minDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMinDistance : minDistanceOverride;
-                int maxDistance = maxDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMaxDistance : maxDistanceOverride;
-
                 if (closestFreeSpot)
                 {
                     placedCorrectly = this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity);
                 }
                 else
                 {
+                    int minDistance = minDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMinDistance : minDistanceOverride;
+                    int maxDistance = maxDistanceOverride == -1 ? this.boardPiece.pieceInfo.placeMaxDistance : maxDistanceOverride;
+
+                    if (this.boardPiece.IsPlantMadeByPlayer)
+                    {
+                        minDistance = 0;
+                        maxDistance = 100;
+                    }
+
                     placedCorrectly = this.FindFreeSpotNearby(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
                 }
             }
@@ -567,8 +573,12 @@ namespace SonOfRobin
             if (this.world == null) return false;
             if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
             if (this.IgnoresCollisions) return false;
+
+            bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;
+            if (plantingMode) ignoreDensity = true;
+
             if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
-            if (!this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
+            if (!plantingMode && !this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 
@@ -576,6 +586,8 @@ namespace SonOfRobin
             {
                 if (this.ColRect.Intersects(sprite.ColRect) && sprite.id != this.id) return true;
             }
+
+            if (plantingMode && Plant.GetFertileGround(this.boardPiece) == null) return true;
 
             return false;
         }

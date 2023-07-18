@@ -123,6 +123,16 @@ namespace SonOfRobin
             return true;
         }
 
+        public static FertileGround GetFertileGround(BoardPiece plantPiece)
+        {
+            foreach (Sprite sprite in plantPiece.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }))
+            {
+                if (sprite.boardPiece.GetType() == typeof(FertileGround) && plantPiece.sprite.ColRect.Intersects(sprite.ColRect)) return (FertileGround)sprite.boardPiece;
+            }
+
+            return null;
+        }
+
         public override void SM_GrowthAndReproduction()
         {
             int growthSlowdown = Preferences.debugFastPlantGrowth ? 1 : 90; // 1 - fastest, more - slower
@@ -142,6 +152,8 @@ namespace SonOfRobin
 
             this.Mass += (-this.pieceInfo.plantMassToBurn * timeDelta) + massTaken;
 
+            FertileGround fertileGroundPiece = null;
+
             while (true)
             {
                 bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
@@ -149,6 +161,16 @@ namespace SonOfRobin
                 {
                     BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name);
                     if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
+
+                    if (this.createdByPlayer)
+                    {
+                        if (fertileGroundPiece == null) fertileGroundPiece = GetFertileGround(this);
+
+                        newPlant.createdByPlayer = true;
+                        newPlant.canBeHit = false;
+                        ((Plant)newPlant).massTakenMultiplier *= fertileGroundPiece.soilWealthMultiplier;
+                    }
+
                     newPlant.PlaceOnBoard(randomPlacement: false, position: this.sprite.position);
 
                     if (newPlant.sprite.IsOnBoard)

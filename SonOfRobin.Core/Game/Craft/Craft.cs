@@ -299,10 +299,8 @@ namespace SonOfRobin
                 {
                     if (!world.BuildMode) throw new ArgumentException("World is not in BuildMode.");
 
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.pieceToCreate, world: world, position: player.simulatedPieceToBuild.sprite.position, ignoreCollisions: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.pieceToCreate, world: world, position: player.simulatedPieceToBuild.sprite.position, ignoreCollisions: true, createdByPlayer: true);
                     craftedPieces.Add(piece);
-
-                    piece.canBeHit = false; // to protect crafted item from accidental player hit
 
                     if (!piece.sprite.IsOnBoard) throw new ArgumentException($"Piece has not been placed correctly on the board - {piece.name}.");
 

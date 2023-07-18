@@ -5,13 +5,13 @@ namespace SonOfRobin
 {
     public class FertileGround : BoardPiece
     {
-        public readonly float wealthMultiplier;
+        public readonly float soilWealthMultiplier;
 
-        public FertileGround(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, float wealthMultiplier) :
+        public FertileGround(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, float soilWealthMultiplier, float maxHitPoints) :
 
-            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, activeState: State.Empty, maxHitPoints: 150)
+            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, activeState: State.Empty, maxHitPoints: maxHitPoints)
         {
-            this.wealthMultiplier = wealthMultiplier;
+            this.soilWealthMultiplier = soilWealthMultiplier;
         }
 
         public override void Destroy()

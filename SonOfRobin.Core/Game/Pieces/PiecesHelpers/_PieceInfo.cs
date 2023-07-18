@@ -38,6 +38,7 @@ namespace SonOfRobin
             public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
             public readonly bool canBeHit;
+            public readonly bool createdByPlayer;
             public readonly float speed;
             public readonly Color color;
             public readonly float opacity;
@@ -111,6 +112,7 @@ namespace SonOfRobin
                 this.description = piece.description;
                 this.buffList = piece.buffList;
                 this.canBeHit = piece.canBeHit;
+                this.createdByPlayer = piece.createdByPlayer;
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
