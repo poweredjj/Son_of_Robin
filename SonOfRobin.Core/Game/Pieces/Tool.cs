@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -84,114 +85,113 @@ namespace SonOfRobin
             bool anyTargetHit = false;
             bool fieldTipShown = false;
 
-            if (!highlightOnly)
-            {
-                foreach (BoardPiece currentTarget in targets)
-                {
-                    if (!currentTarget.canBeHit && this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category))
-                    {
-                        var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {currentTarget.readableName}?" }, { "taskName", Scheduler.TaskName.AllowPieceToBeHit }, { "executeHelper", currentTarget }, { "blocksUpdatesBelow", true } };
-                        MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+            var targetsForCurrentTool = targets.Where(target => this.multiplierByCategory.ContainsKey(target.pieceInfo.category));
+            var targetsThatCanBeHit = targetsForCurrentTool.Where(target => target.canBeHit).ToList();
+            var targetsThatCannotBeHit = targetsForCurrentTool.Where(target => !target.canBeHit).ToList();
 
-                        return;
-                    }
-                }
+            if (!highlightOnly && !targetsThatCanBeHit.Any() && targetsThatCannotBeHit.Any())
+            {
+                BoardPiece currentTarget = targetsThatCannotBeHit[0];
+
+                var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {currentTarget.readableName}?" }, { "taskName", Scheduler.TaskName.AllowPieceToBeHit }, { "executeHelper", currentTarget }, { "blocksUpdatesBelow", true } };
+                MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+
+                return;
             }
 
-            foreach (BoardPiece currentTarget in targets)
+            if (highlightOnly)
             {
-                float currentMultiplier = 0;
-                if (this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category)) currentMultiplier = this.multiplierByCategory[currentTarget.pieceInfo.category];
-                if (isVeryTired) currentMultiplier /= 2;
-                if (currentMultiplier == 0) continue;
-
-                if (!highlightOnly)
-                {
-                    switch (currentTarget.pieceInfo.category)
-                    {
-                        case Category.Wood:
-                            this.world.HintEngine.Disable(PieceHint.Type.WoodNegative);
-                            this.world.HintEngine.Disable(PieceHint.Type.WoodPositive);
-                            this.world.HintEngine.Disable(Tutorials.Type.GetWood);
-
-                            if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.HintEngine.Disable(PieceHint.Type.CrateAnother);
-
-                            break;
-
-                        case Category.Stone:
-                            this.world.HintEngine.Disable(PieceHint.Type.StoneNegative);
-                            this.world.HintEngine.Disable(PieceHint.Type.StonePositive);
-                            this.world.HintEngine.Disable(Tutorials.Type.Mine);
-                            break;
-
-                        case Category.Crystal:
-                            this.world.HintEngine.Disable(PieceHint.Type.CrystalNegative);
-                            this.world.HintEngine.Disable(PieceHint.Type.CrystalPositive);
-                            break;
-
-                        case Category.Metal:
-                            break;
-
-                        case Category.SmallPlant:
-                            break;
-
-                        case Category.Flesh:
-                            this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
-                            if (this.readableName.Contains("spear")) this.world.HintEngine.Disable(PieceHint.Type.AnimalSpear);
-                            if (this.readableName.Contains("axe")) this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
-                            break;
-
-                        case Category.Leather:
-                            break;
-
-                        case Category.Indestructible:
-                            break;
-
-                        case Category.Dirt:
-                            this.world.HintEngine.Disable(PieceHint.Type.DigSiteNegative);
-                            this.world.HintEngine.Disable(PieceHint.Type.DigSitePositive);
-                            break;
-
-                        default:
-                            throw new ArgumentException($"Unsupported targetCategory - {currentTarget.pieceInfo.category}.");
-                    }
-
-                    if (this.name == PieceTemplate.Name.KnifeSimple) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
-                    if (currentTarget.name == PieceTemplate.Name.CoalDeposit)
-                    {
-                        this.world.HintEngine.Disable(PieceHint.Type.CoalDepositNegative);
-                        this.world.HintEngine.Disable(PieceHint.Type.CoalDepositPositive);
-                    }
-                    if (currentTarget.name == PieceTemplate.Name.IronDeposit)
-                    {
-                        this.world.HintEngine.Disable(PieceHint.Type.IronDepositNegative);
-                        this.world.HintEngine.Disable(PieceHint.Type.IronDepositPositive);
-                    }
-                    this.world.HintEngine.Disable(Tutorials.Type.Hit);
-                }
-
-                if (highlightOnly)
+                foreach (BoardPiece target in targetsForCurrentTool)
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
-                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.AnimFrame.textureSize, priority: 0));
+                    target.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: target.sprite.AnimFrame.textureSize, priority: 0));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                     if (!fieldTipShown)
                     {
-                        FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), targetSprite: currentTarget.sprite, alignment: FieldTip.Alignment.RightIn);
+                        FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), targetSprite: target.sprite, alignment: FieldTip.Alignment.RightIn);
                         fieldTipShown = true;
                     }
                 }
-                else
+
+                return;
+            }
+
+            foreach (BoardPiece currentTarget in targetsThatCanBeHit)
+            {
+                float currentMultiplier = this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category) ? this.multiplierByCategory[currentTarget.pieceInfo.category] : 0;
+                if (isVeryTired) currentMultiplier /= 2;
+                if (currentMultiplier == 0) continue;
+
+                switch (currentTarget.pieceInfo.category)
                 {
-                    int currentHitPower = (int)Math.Max((this.hitPower + this.world.Player.strength) * currentMultiplier, 1);
-                    HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
-                    anyTargetHit = true;
+                    case Category.Wood:
+                        this.world.HintEngine.Disable(PieceHint.Type.WoodNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.WoodPositive);
+                        this.world.HintEngine.Disable(Tutorials.Type.GetWood);
+
+                        if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.HintEngine.Disable(PieceHint.Type.CrateAnother);
+
+                        break;
+
+                    case Category.Stone:
+                        this.world.HintEngine.Disable(PieceHint.Type.StoneNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.StonePositive);
+                        this.world.HintEngine.Disable(Tutorials.Type.Mine);
+                        break;
+
+                    case Category.Crystal:
+                        this.world.HintEngine.Disable(PieceHint.Type.CrystalNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.CrystalPositive);
+                        break;
+
+                    case Category.Metal:
+                        break;
+
+                    case Category.SmallPlant:
+                        break;
+
+                    case Category.Flesh:
+                        this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
+                        if (this.readableName.Contains("spear")) this.world.HintEngine.Disable(PieceHint.Type.AnimalSpear);
+                        if (this.readableName.Contains("axe")) this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
+                        break;
+
+                    case Category.Leather:
+                        break;
+
+                    case Category.Indestructible:
+                        break;
+
+                    case Category.Dirt:
+                        this.world.HintEngine.Disable(PieceHint.Type.DigSiteNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.DigSitePositive);
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported targetCategory - {currentTarget.pieceInfo.category}.");
                 }
+
+                if (this.name == PieceTemplate.Name.KnifeSimple) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
+                if (currentTarget.name == PieceTemplate.Name.CoalDeposit)
+                {
+                    this.world.HintEngine.Disable(PieceHint.Type.CoalDepositNegative);
+                    this.world.HintEngine.Disable(PieceHint.Type.CoalDepositPositive);
+                }
+                if (currentTarget.name == PieceTemplate.Name.IronDeposit)
+                {
+                    this.world.HintEngine.Disable(PieceHint.Type.IronDepositNegative);
+                    this.world.HintEngine.Disable(PieceHint.Type.IronDepositPositive);
+                }
+                this.world.HintEngine.Disable(Tutorials.Type.Hit);
+
+                int currentHitPower = (int)Math.Max((this.hitPower + this.world.Player.strength) * currentMultiplier, 1);
+                HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
+                anyTargetHit = true;
             } // target iteration end
 
-            if (!highlightOnly && anyTargetHit)
+            if (anyTargetHit)
             {
                 player.Stamina -= 50;
                 this.hitCooldown = this.world.CurrentUpdate + 30;
