@@ -61,7 +61,6 @@ namespace SonOfRobin
                 }
                 totalWealth /= 255;
 
-
                 this.occupiedFieldWealth = totalWealth;
                 return this.occupiedFieldWealth;
             }
