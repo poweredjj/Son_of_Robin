@@ -2321,6 +2321,21 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
+                    case PieceTemplate.Name.FertileGroundSmall:
+                        this.category = BoardPiece.Category.Dirt;
+                        this.blocksPlantGrowth = false;
+                        this.blocksMovement = false;
+                        this.allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = false;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.fertileGroundSoilWealthMultiplier = 1.4f;
+
+                        this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 70, maxNumberToDrop: 1) });
+
+                        break;
+
                     case PieceTemplate.Name.FertileGroundMedium:
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
@@ -2332,7 +2347,22 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 70, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 70, maxNumberToDrop: 2) });
+
+                        break;
+
+                    case PieceTemplate.Name.FertileGroundBig:
+                        this.category = BoardPiece.Category.Dirt;
+                        this.blocksPlantGrowth = false;
+                        this.blocksMovement = false;
+                        this.allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = false;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.fertileGroundSoilWealthMultiplier = 2.2f;
+
+                        this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 70, maxNumberToDrop: 3) });
 
                         break;
 

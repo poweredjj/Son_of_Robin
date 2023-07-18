@@ -200,7 +200,7 @@ namespace SonOfRobin
                     if (this.boardPiece.IsPlantMadeByPlayer)
                     {
                         minDistance = 0;
-                        maxDistance = 150;
+                        maxDistance = 200;
                     }
 
                     placedCorrectly = this.FindFreeSpotNearby(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
@@ -576,18 +576,24 @@ namespace SonOfRobin
 
             bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;
             if (plantingMode) ignoreDensity = true;
+            bool isPlant = this.boardPiece.GetType() == typeof(Plant);
 
             if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
             if (!plantingMode && !this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
-            var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
+            var gridTypeToCheck = isPlant ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 
             foreach (Sprite sprite in this.world.Grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
             {
                 if (this.ColRect.Intersects(sprite.ColRect) && sprite.id != this.id) return true;
             }
 
-            if (plantingMode && Plant.GetFertileGround(this.boardPiece) == null) return true;
+            if (isPlant)
+            {
+                FertileGround fertileGround = Plant.GetFertileGround(this.boardPiece);
+                if (plantingMode && fertileGround == null) return true;
+                if (!plantingMode && fertileGround != null) return true;
+            }
 
             return false;
         }

@@ -16,7 +16,7 @@ namespace SonOfRobin
         {
             if (!this.exists) return;
 
-            if (!this.world.BuildMode) this.DestroyCollidingPlants(delay: 0); // BuildMode check, to avoid invoking when destroying simulatedPieceToBuild
+            if (!this.world.BuildMode) this.DestroyContainedPlants(delay: 0); // BuildMode check, to avoid invoking when destroying simulatedPieceToBuild
             base.Destroy();
         }
 

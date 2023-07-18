@@ -1617,6 +1617,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/fat.png
 
+#begin gfx/fertile_ground_big.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/fertile_ground_big.png
+
 #begin gfx/fertile_ground_medium.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1628,6 +1640,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/fertile_ground_medium.png
+
+#begin gfx/fertile_ground_small.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/fertile_ground_small.png
 
 #begin gfx/flames.jpg
 /importer:TextureImporter

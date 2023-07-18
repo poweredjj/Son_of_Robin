@@ -1206,7 +1206,7 @@ namespace SonOfRobin
             this.Player.activeState = BoardPiece.State.PlayerWaitForBuilding;
 
             BoardPiece builtPiece = this.Player.recipeToBuild.TryToProducePieces(player: this.Player, showMessages: false)[0];
-            if (builtPiece.pieceInfo.destroysPlantsWhenBuilt) builtPiece.DestroyCollidingPlants(delay: buildDuration);
+            if (builtPiece.pieceInfo.destroysPlantsWhenBuilt) builtPiece.DestroyContainedPlants(delay: buildDuration);
 
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 

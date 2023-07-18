@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000003f; // version number should be incremented with any change of graphics assets
+        public const float currentVersion = 1.000004f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -373,7 +373,9 @@ namespace SonOfRobin
 
             SeaWave,
             MeatRawPrime,
+            FertileGroundSmall,
             FertileGroundMedium,
+            FertileGroundBig,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -762,6 +764,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MeatRawRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.MeatRawPrime, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.FertileGroundMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
+            AddFrameList(animPackage: PkgName.FertileGroundBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1f));
+            AddFrameList(animPackage: PkgName.FertileGroundSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));

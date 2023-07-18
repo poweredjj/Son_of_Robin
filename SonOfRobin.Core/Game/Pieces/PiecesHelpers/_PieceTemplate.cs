@@ -271,7 +271,9 @@ namespace SonOfRobin
 
             MeatRawPrime,
             ParticleEmitter, // TODO make useful
+            FertileGroundSmall,
             FertileGroundMedium,
+            FertileGroundBig,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2772,6 +2774,18 @@ namespace SonOfRobin
                         return visualEffect;
                     }
 
+                case Name.FertileGroundSmall:
+                    {
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
+                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
+                        });
+
+                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundSmall, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (small)", description: "Seeds can be planted here.", maxHitPoints: 60);
+
+                        return patch;
+                    }
+
                 case Name.FertileGroundMedium:
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
@@ -2780,6 +2794,18 @@ namespace SonOfRobin
                         });
 
                         FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", maxHitPoints: 80);
+
+                        return patch;
+                    }
+
+                case Name.FertileGroundBig:
+                    {
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
+                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
+                        });
+
+                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (big)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
                         return patch;
                     }

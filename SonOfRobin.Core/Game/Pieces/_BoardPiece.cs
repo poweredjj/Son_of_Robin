@@ -568,11 +568,11 @@ namespace SonOfRobin
             return null;
         }
 
-        public void DestroyCollidingPlants(int delay)
+        public void DestroyContainedPlants(int delay)
         {
             if (!this.sprite.IsOnBoard) return;
 
-            var collidingPlants = this.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }).Where(sprite => sprite.boardPiece.GetType() == typeof(Plant) && sprite.ColRect.Intersects(this.sprite.ColRect));
+            var collidingPlants = this.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }).Where(sprite => sprite.boardPiece.GetType() == typeof(Plant) && this.sprite.ColRect.Contains(sprite.position));
 
             foreach (Sprite collidingPlant in collidingPlants)
             {
