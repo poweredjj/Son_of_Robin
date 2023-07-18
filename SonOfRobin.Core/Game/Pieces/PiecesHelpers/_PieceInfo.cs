@@ -2351,7 +2351,7 @@ namespace SonOfRobin
 
                         break;
 
-                    case PieceTemplate.Name.FertileGroundBig:
+                    case PieceTemplate.Name.FertileGroundLarge:
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;

@@ -273,7 +273,7 @@ namespace SonOfRobin
             ParticleEmitter, // TODO make useful
             FertileGroundSmall,
             FertileGroundMedium,
-            FertileGroundBig,
+            FertileGroundLarge,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2798,14 +2798,14 @@ namespace SonOfRobin
                         return patch;
                     }
 
-                case Name.FertileGroundBig:
+                case Name.FertileGroundLarge:
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundBig, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (big)", description: "Seeds can be planted here.", maxHitPoints: 100);
+                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundLarge, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (large)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
                         return patch;
                     }

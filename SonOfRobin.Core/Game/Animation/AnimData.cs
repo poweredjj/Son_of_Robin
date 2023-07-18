@@ -375,7 +375,7 @@ namespace SonOfRobin
             MeatRawPrime,
             FertileGroundSmall,
             FertileGroundMedium,
-            FertileGroundBig,
+            FertileGroundLarge,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -763,9 +763,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Hole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hole", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.MeatRawRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.MeatRawPrime, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.FertileGroundMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
-            AddFrameList(animPackage: PkgName.FertileGroundBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1f));
             AddFrameList(animPackage: PkgName.FertileGroundSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
+            AddFrameList(animPackage: PkgName.FertileGroundMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
+            AddFrameList(animPackage: PkgName.FertileGroundLarge, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1.3f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
