@@ -408,6 +408,7 @@ namespace SonOfRobin
             if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
             if (this.readableName != pieceInfo.readableName) pieceData["base_readableName"] = this.readableName;
             if (this.description != pieceInfo.description) pieceData["base_description"] = this.readableName;
+            if (this.showStatBarsTillFrame > this.world.CurrentUpdate) pieceData["base_showStatBarsTillFrame"] = this.showStatBarsTillFrame;
 
             return pieceData;
         }
@@ -431,6 +432,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             if (pieceData.ContainsKey("base_readableName")) this.readableName = (string)pieceData["base_readableName"];
             if (pieceData.ContainsKey("base_description")) this.description = (string)pieceData["base_description"];
+            if (pieceData.ContainsKey("base_showStatBarsTillFrame")) this.showStatBarsTillFrame = (int)(Int64)pieceData["base_showStatBarsTillFrame"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
             this.UpdateEfficiency();
