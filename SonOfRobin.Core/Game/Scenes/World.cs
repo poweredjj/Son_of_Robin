@@ -369,7 +369,7 @@ namespace SonOfRobin
         { get { return this.WorldElapsedUpdateTime.Milliseconds <= 15 * this.updateMultiplier; } }
 
         public bool CanProcessMoreNonPlantsNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 13 * this.updateMultiplier; } }
+        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 12 * this.updateMultiplier; } }
 
         public bool CanProcessMorePlantsNow
         { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 15 * this.updateMultiplier; } }
