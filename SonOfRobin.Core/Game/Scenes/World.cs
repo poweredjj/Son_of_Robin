@@ -1181,6 +1181,7 @@ namespace SonOfRobin
             this.touchLayout = TouchLayout.WorldBuild;
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
             this.Player.activeState = BoardPiece.State.PlayerControlledBuilding;
+            this.Player.RemovePassiveMovement(); // player moved by wind could lose "connection" to a chest, resulting in a crash
 
             this.stateMachineTypesManager.DisableMultiplier();
             this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);

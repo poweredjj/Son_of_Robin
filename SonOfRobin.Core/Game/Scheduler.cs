@@ -1474,6 +1474,7 @@ namespace SonOfRobin
                             Vector2 movement = (Vector2)movementData["movement"];
 
                             if (piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
+                            
                             return;
                         }
 
@@ -1622,7 +1623,6 @@ namespace SonOfRobin
 
                             return;
                         }
-
 
                     default:
                         throw new ArgumentException($"Unsupported taskName - {taskName}.");

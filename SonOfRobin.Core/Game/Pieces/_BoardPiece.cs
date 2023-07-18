@@ -791,6 +791,9 @@ namespace SonOfRobin
 
             if (this.GetType() == typeof(Player) && this.alive)
             {
+                // player moved by wind could lose "connection" to a chest, resulting in a crash
+                if (this.activeState == State.PlayerControlledBuilding || this.activeState == State.PlayerWaitForBuilding) return;
+
                 float movementPower = (Math.Abs(movement.X) + Math.Abs(movement.Y)) / 3200f;
                 new RumbleEvent(force: Math.Min(movementPower * 0.8f, 1), durationSeconds: movementPower * 2.0f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, fadeOutSeconds: 0.34f);
             }
@@ -803,6 +806,12 @@ namespace SonOfRobin
 
             if (this.rotatesWhenDropped) this.passiveRotation = Random.Next(-maxRotation, maxRotation);
             this.AddToStateMachines();
+        }
+
+        public void RemovePassiveMovement()
+        {
+            this.passiveMovement = Vector2.Zero;
+            this.passiveRotation = 0;
         }
 
         public virtual bool ProcessPassiveMovement()

@@ -587,6 +587,8 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledBuilding()
         {
+            this.RemovePassiveMovement(); // to ensure that player will not move
+
             Vector2 newPos = this.simulatedPieceToBuild.sprite.position + this.world.analogMovementLeftStick;
 
             if (this.world.analogMovementLeftStick != Vector2.Zero) newPos += this.world.analogMovementLeftStick;
@@ -639,6 +641,8 @@ namespace SonOfRobin
         public override void SM_PlayerWaitForBuilding()
         {
             // needs to be updated from the outside
+
+            this.RemovePassiveMovement(); // to ensure that player will not move
 
             this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
             this.Fatigue += this.buildFatigueForOneFrame;
