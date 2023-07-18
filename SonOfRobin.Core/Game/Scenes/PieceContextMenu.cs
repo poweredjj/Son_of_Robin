@@ -141,11 +141,11 @@ namespace SonOfRobin
         {
             var contextActionList = new List<ContextAction> { };
 
+            if (addMove) contextActionList.Add(ContextAction.Move);
             if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
             if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
             if (this.piece.GetType() == typeof(Seed)) contextActionList.Add(ContextAction.Plant);
             if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
-            if (addMove) contextActionList.Add(ContextAction.Move);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (addCook) contextActionList.Add(ContextAction.Cook);
             if (addBrew) contextActionList.Add(ContextAction.Brew);
