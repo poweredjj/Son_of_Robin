@@ -1287,7 +1287,10 @@ namespace SonOfRobin
                 activeToolbarPiece?.pieceInfo.toolbarTask != Scheduler.TaskName.GetDrinked &&
                 activeToolbarPiece?.pieceInfo.toolbarTask != Scheduler.TaskName.GetEaten)
             {
-                if (!highlightOnly) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
+                if (!highlightOnly && !buttonHeld) // buttonHeld check is needed in case of destroying the only (plant) light source
+                {
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
+                }
                 return false;
             }
 
