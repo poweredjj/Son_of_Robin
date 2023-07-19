@@ -613,7 +613,7 @@ namespace SonOfRobin
             float buildDistance = Vector2.Distance(this.sprite.position, newPos);
             if (buildDistance <= 200 + pieceSize) this.simulatedPieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
 
-            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.simulatedPieceToBuild.sprite.CheckForCollision(ignoreDensity: true);
+            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.simulatedPieceToBuild.sprite.CheckForCollision(ignoreDensity: false);
             if (canBuildHere)
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Confirm);

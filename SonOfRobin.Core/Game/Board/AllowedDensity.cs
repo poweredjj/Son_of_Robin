@@ -26,26 +26,28 @@ namespace SonOfRobin
             var nearbyPieces = piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radious);
 
             if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count() > this.maxNoOfPiecesTotal) return false;
-            if (this.maxNoOfPiecesSameName != -1 && CheckSameNameCount(name: piece.name, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameName) return false;
-            if (this.maxNoOfPiecesSameClass != -1 && CheckSameClass(type: piece.GetType(), nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
-            if (this.maxNoOfPiecesBlocking != -1 && CheckBlocking(nearbyPieces) > this.maxNoOfPiecesBlocking) return false;
+            if (this.maxNoOfPiecesSameName != -1 && CheckSameNameCount(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameName) return false;
+            if (this.maxNoOfPiecesSameClass != -1 && CheckSameClass(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
+            if (this.maxNoOfPiecesBlocking != -1 && CheckBlocking(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesBlocking) return false;
 
             return true;
         }
 
-        private static int CheckSameNameCount(PieceTemplate.Name name, IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckSameNameCount(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
         {
-            return nearbyPieces.Where(piece => piece.name == name).Count();
+            PieceTemplate.Name name = piece.name;
+            return nearbyPieces.Where(checkedPiece => checkedPiece.name == name && checkedPiece != piece).Count();
         }
 
-        private static int CheckSameClass(Type type, IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckSameClass(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
         {
-            return nearbyPieces.Where(piece => piece.GetType() == type).Count();
+            Type type = piece.GetType();
+            return nearbyPieces.Where(checkedPiece => checkedPiece.GetType() == type && checkedPiece != piece).Count();
         }
 
-        private static int CheckBlocking(IEnumerable<BoardPiece> nearbyPieces)
+        private static int CheckBlocking(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
         {
-            return nearbyPieces.Where(piece => piece.sprite.BlocksMovement).Count();
+            return nearbyPieces.Where(checkedPiece => checkedPiece.sprite.BlocksMovement && checkedPiece != piece).Count();
         }
     }
 }
