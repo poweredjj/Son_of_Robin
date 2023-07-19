@@ -141,7 +141,11 @@ namespace SonOfRobin
 
         public override void SM_GrowthAndReproduction()
         {
-            int growthSlowdown = Preferences.debugFastPlantGrowth ? 1 : 90; // 1 - fastest, more - slower
+            int growthSlowdown = this.createdByPlayer ? 20 : 100; // 1 - fastest, more - slower
+            if (Preferences.debugFastPlantGrowth) growthSlowdown = 1;
+
+            //if (this.sprite.color == Color.White) this.sprite.color = Color.Blue; // for testing
+            //else this.sprite.color = Color.White; // for testing
 
             int timeDelta = Math.Max((this.world.CurrentUpdate - this.lastFrameProcessed) / growthSlowdown, 1); // timeDelta must be slowed down, for reasonable growth rate
             this.lastFrameProcessed = this.world.CurrentUpdate;
@@ -160,10 +164,12 @@ namespace SonOfRobin
 
             FertileGround fertileGroundPiece = null; // to search for fertileGroundPiece only once
 
-            while (true)
+            for (int i = 0; i < 10; i++) // infinite loop would cause locking when plant has enough mass, but no free spot for a "child" can be found
             {
                 bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
-                if (canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.pieceInfo.startingMass)
+                bool haveEnoughMass = canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.pieceInfo.startingMass;
+
+                if (haveEnoughMass)
                 {
                     BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name);
                     if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
@@ -186,7 +192,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (!canReproduce || !this.world.CanProcessMorePlantsNow) break;
+                if (!haveEnoughMass || !canReproduce || !this.world.CanProcessMorePlantsNow) break;
             }
 
             this.GrowOlder(timeDelta: timeDelta);

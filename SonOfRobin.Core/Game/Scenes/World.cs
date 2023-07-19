@@ -1136,28 +1136,28 @@ namespace SonOfRobin
             {
                 this.plantCellsQueue = new List<Cell>(this.Grid.allCells.ToList());
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
-                return; // to avoid doing too many calculations in one update
+
+                if (!this.CanProcessMorePlantsNow) return; // to avoid doing too many calculations in one update
             }
 
-            if (this.plantSpritesQueue.Count == 0)
+            if (!this.plantSpritesQueue.Any())
             {
-                int noOfCellsToAdd = 500;
-
-                for (int i = 0; i < noOfCellsToAdd; i++)
+                while (true)
                 {
                     int randomCellNo = random.Next(0, plantCellsQueue.Count);
                     Cell cell = this.plantCellsQueue[randomCellNo];
                     this.plantCellsQueue.RemoveAt(randomCellNo);
                     this.plantSpritesQueue.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants].Values); // not shuffled to save cpu time
 
-                    if (plantCellsQueue.Count == 0) break;
+                    if (!plantCellsQueue.Any() || !this.CanProcessMorePlantsNow) break;
                 }
-                return; // to avoid doing too many calculations in one update
+
+                if (!this.CanProcessMorePlantsNow) return; // to avoid doing too many calculations in one update
             }
 
             while (true)
             {
-                if (plantSpritesQueue.Count == 0) return;
+                if (!this.plantSpritesQueue.Any()) return;
 
                 Plant currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
                 this.plantSpritesQueue.RemoveAt(0);
