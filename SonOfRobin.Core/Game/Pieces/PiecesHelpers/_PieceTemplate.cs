@@ -274,6 +274,8 @@ namespace SonOfRobin
             FertileGroundSmall,
             FertileGroundMedium,
             FertileGroundLarge,
+            WoodenFenceHorizontal,
+            WoodenFenceVertical,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2808,6 +2810,22 @@ namespace SonOfRobin
                         FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundLarge, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (large)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
                         return patch;
+                    }
+
+                case Name.WoodenFenceHorizontal:
+                    {
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodenFenceHorizontal, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "wooden fence (horizontal)", description: "A fence.");
+
+                        return boardPiece;
+                    }
+
+                case Name.WoodenFenceVertical:
+                    {
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodenFenceVertical, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "wooden fence (vertical)", description: "A fence.");
+
+                        return boardPiece;
                     }
 
                 default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
