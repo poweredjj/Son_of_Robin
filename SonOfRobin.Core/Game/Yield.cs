@@ -69,10 +69,10 @@ namespace SonOfRobin
             this.DropDebris(piece: piece);
         }
 
-        public void DropFinalPieces(BoardPiece piece)
+        public void DropFinalPieces(BoardPiece piece, float hitPower = 1f)
         {
-            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
-            this.DropDebris(piece);
+            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces, hitPower: hitPower);
+            this.DropDebris(piece: piece, hitPower: hitPower);
         }
 
         public List<BoardPiece> GetAllPieces(BoardPiece piece)
@@ -82,7 +82,7 @@ namespace SonOfRobin
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(BoardPiece piece, bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null)
+        public void DropDebris(BoardPiece piece, bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null, float hitPower = 1f)
         {
             var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
 
@@ -144,7 +144,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: debrisList);
+            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: debrisList, hitPower: hitPower);
         }
 
         private List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
@@ -187,7 +187,7 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private void DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
+        private void DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList, float hitPower = 1f)
         {
             var piecesToDrop = this.GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
             int noOfTries = 10;
@@ -215,7 +215,7 @@ namespace SonOfRobin
 
                         Vector2 posDiff = Helpers.VectorAbsMax(vector: piece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
                         posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation
-                        yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80));
+                        yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80) * hitPower);
                         break;
                     }
                 }

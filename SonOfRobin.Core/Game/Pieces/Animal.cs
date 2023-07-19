@@ -607,7 +607,7 @@ namespace SonOfRobin
 
             bool eatingPlantOrFruit = this.target.IsPlantOrFruit;  // meat is more nutricious than plants
 
-            var bittenMass = Math.Min(2, this.target.Mass);
+            float bittenMass = Math.Min(1, this.target.Mass);
             this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
 
             this.target.Mass = Math.Max(this.target.Mass - bittenMass, 0);
@@ -636,7 +636,12 @@ namespace SonOfRobin
 
                 this.world.swayManager.AddSwayEvent(targetSprite: this.sprite, sourceSprite: null, targetRotation: finalRotation * 0.8f, playSound: true, rotationSlowdown: 2);
 
-                if (this.target.GetType() == typeof(Plant)) this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
+                if (this.target.GetType() == typeof(Plant))
+                {
+                    if (this.world.random.Next(30) == 0) this.target.pieceInfo.Yield.DropDebris(piece: this.target, hitPower: 0.5f);
+
+                    this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
+                }
             }
 
             if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.pieceInfo.animalAwareness) == 0)
