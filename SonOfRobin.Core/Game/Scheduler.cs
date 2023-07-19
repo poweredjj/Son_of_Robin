@@ -1636,29 +1636,31 @@ namespace SonOfRobin
 
                             // checking for proper player alignment
 
-                            bool canJump = true;
+                            bool playerOnTheLeft = playerPos.X < obstaclePos.X;
+                            bool playerOnTheTop = playerPos.Y < obstaclePos.Y;
 
-                            if (horizontal)
+                            bool canJump;
+
+                            switch (player.sprite.orientation)
                             {
-                                if (playerPos.Y < obstaclePos.Y)
-                                {
-                                    if (player.sprite.orientation != Sprite.Orientation.down) canJump = false;
-                                }
-                                else
-                                {
-                                    if (player.sprite.orientation != Sprite.Orientation.up) canJump = false;
-                                }
-                            }
-                            else
-                            {
-                                if (playerPos.X < obstaclePos.X)
-                                {
-                                    if (player.sprite.orientation != Sprite.Orientation.right) canJump = false;
-                                }
-                                else
-                                {
-                                    if (player.sprite.orientation != Sprite.Orientation.left) canJump = false;
-                                }
+                                case Sprite.Orientation.left:
+                                    canJump = !horizontal && !playerOnTheLeft;
+                                    break;
+
+                                case Sprite.Orientation.right:
+                                    canJump = !horizontal && playerOnTheLeft;
+                                    break;
+
+                                case Sprite.Orientation.up:
+                                    canJump = horizontal && !playerOnTheTop;
+                                    break;
+
+                                case Sprite.Orientation.down:
+                                    canJump = horizontal && playerOnTheTop;
+                                    break;
+
+                                default:
+                                    throw new ArgumentException($"Unsupported orientation - '{player.sprite.orientation}'.");
                             }
 
                             if (!canJump)
@@ -1690,7 +1692,7 @@ namespace SonOfRobin
 
                             // performing jump
 
-                            bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 20);
+                            bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 15);
                             if (hasJumped)
                             {
                                 player.soundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);
