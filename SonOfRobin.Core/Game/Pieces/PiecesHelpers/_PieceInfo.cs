@@ -2369,7 +2369,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WoodenFenceHorizontal:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
-                        this.boardTask = Scheduler.TaskName.JumpOverTheFence;
+                        this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -2377,7 +2377,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WoodenFenceVertical:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
-                        this.boardTask = Scheduler.TaskName.JumpOverTheFence;
+                        this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;

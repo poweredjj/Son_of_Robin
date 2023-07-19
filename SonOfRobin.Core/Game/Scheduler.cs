@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Scheduler
     {
         public enum TaskName
-        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollect, DestroyAndDropDebris, JumpOverTheFence }
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollect, DestroyAndDropDebris, MakePlayerJumpOverThisPiece }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
@@ -1624,35 +1624,47 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.JumpOverTheFence:
+                    case TaskName.MakePlayerJumpOverThisPiece:
                         {
-                            BoardPiece fence = (BoardPiece)this.ExecuteHelper;
-                            Player player = fence.world.Player;
+                            BoardPiece obstacle = (BoardPiece)this.ExecuteHelper;
+                            Player player = obstacle.world.Player;
 
-                            Vector2 fencePos = fence.sprite.position;
+                            Vector2 obstaclePos = obstacle.sprite.position;
                             Vector2 playerPos = player.sprite.position;
 
-                            bool horizontal = fence.sprite.AnimFrame.colWidth > fence.sprite.AnimFrame.colHeight;
+                            bool horizontal = obstacle.sprite.AnimFrame.colWidth > obstacle.sprite.AnimFrame.colHeight;
 
                             // checking for proper player alignment
 
+                            bool canJump = true;
+
                             if (horizontal)
                             {
-                                if (player.sprite.position.X < fence.sprite.ColRect.Left ||
-                                    player.sprite.position.X > fence.sprite.ColRect.Right)
+                                if (playerPos.Y < obstaclePos.Y)
                                 {
-                                    Sound.QuickPlay(SoundData.Name.Error);
-                                    return;
+                                    if (player.sprite.orientation != Sprite.Orientation.down) canJump = false;
+                                }
+                                else
+                                {
+                                    if (player.sprite.orientation != Sprite.Orientation.up) canJump = false;
                                 }
                             }
                             else
                             {
-                                if (player.sprite.position.Y < fence.sprite.ColRect.Top ||
-                                    player.sprite.position.Y > fence.sprite.ColRect.Bottom)
+                                if (playerPos.X < obstaclePos.X)
                                 {
-                                    Sound.QuickPlay(SoundData.Name.Error);
-                                    return;
+                                    if (player.sprite.orientation != Sprite.Orientation.right) canJump = false;
                                 }
+                                else
+                                {
+                                    if (player.sprite.orientation != Sprite.Orientation.left) canJump = false;
+                                }
+                            }
+
+                            if (!canJump)
+                            {
+                                Sound.QuickPlay(SoundData.Name.Error);
+                                return;
                             }
 
                             // calculating jump movement
@@ -1660,27 +1672,23 @@ namespace SonOfRobin
                             if (horizontal)
                             {
                                 {
-                                    int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
-                                    yDiff *= 2;
+                                    int yDiff = (int)Math.Abs(obstaclePos.Y - playerPos.Y) * 2;
 
-                                    if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
+                                    if (playerPos.Y < obstaclePos.Y) playerPos.Y += yDiff;
                                     else playerPos.Y -= yDiff;
                                 }
                             }
                             else
                             {
                                 {
-                                    int xDiff = (int)Math.Abs(fencePos.X - playerPos.X);
-                                    xDiff *= 2;
+                                    int xDiff = (int)Math.Abs(obstaclePos.X - playerPos.X) * 2;
 
-                                    if (playerPos.X < fencePos.X) playerPos.X += xDiff;
+                                    if (playerPos.X < obstaclePos.X) playerPos.X += xDiff;
                                     else playerPos.X -= xDiff;
                                 }
                             }
 
                             // performing jump
-
-                            // PieceTemplate.CreateAndPlaceOnBoard(world: player.world, position: playerPos, templateName: PieceTemplate.Name.Heart, minDistanceOverride: 0, maxDistanceOverride: 0); // for testing
 
                             bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 20);
                             if (hasJumped)
