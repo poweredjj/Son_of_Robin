@@ -40,9 +40,9 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FertileGroundLarge, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Clay, 6 }, { PieceTemplate.Name.ShovelIron, 1 }}, fatigue: fatigueStructureBig, isReversible: false, isHidden: true, craftCountToLevelUp: 3, maxLevel: 3),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodenFenceHorizontal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.WoodLogRegular, 4 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodenFenceHorizontal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.WoodPlank, 12 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodenFenceVertical, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.WoodLogRegular, 4 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodenFenceVertical, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.WoodPlank, 12 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 20 }, { PieceTemplate.Name.WoodLogRegular, 4 }}, fatigue: fatigueStructureSmall,  isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TentMedium }),
 
