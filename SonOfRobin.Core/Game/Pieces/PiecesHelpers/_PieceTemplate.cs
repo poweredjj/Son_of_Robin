@@ -2850,7 +2850,7 @@ namespace SonOfRobin
 
             soundPack.AddAction(action: PieceSoundPack.Action.PlayerSprint, sound: new Sound(name: SoundData.Name.Sprint, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.5f));
 
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerJump, sound: new Sound(name: SoundData.Name.Jump, pitchChange: female ? 0.4f : -0.4f, maxPitchVariation: 0.2f, ignore3DAlways: true, volume: 0.5f));
+            soundPack.AddAction(action: PieceSoundPack.Action.PlayerJump, sound: new Sound(name: SoundData.Name.Jump, pitchChange: female ? 0.4f : -0.18f, maxPitchVariation: 0.15f, ignore3DAlways: true, volume: 0.5f));
 
             soundPack.AddAction(action: PieceSoundPack.Action.PlayerSpeak, sound: new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true));
 
