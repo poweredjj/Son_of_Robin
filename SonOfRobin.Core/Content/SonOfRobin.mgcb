@@ -7665,6 +7665,12 @@
 /processorParam:Quality=Best
 /build:sound/367010__tanapistorius__digging_3.ogg
 
+#begin sound/380471__acebrian__jump.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/380471__acebrian__jump.ogg
+
 #begin sound/384362__ali-6868__digging-a-hole-and-shovelling-soil-dirt-2.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

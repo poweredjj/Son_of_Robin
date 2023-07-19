@@ -1626,9 +1626,40 @@ namespace SonOfRobin
 
                     case TaskName.JumpOverTheFence:
                         {
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
+                            BoardPiece fence = (BoardPiece)this.ExecuteHelper;
+                            Player player = fence.world.Player;
 
-                            // TODO add code
+                            Vector2 fencePos = fence.sprite.position;
+                            Vector2 playerPos = player.sprite.position;
+
+                            bool horizontal = fence.sprite.AnimFrame.colWidth > fence.sprite.AnimFrame.colHeight;
+                            if (horizontal)
+                            {
+                                int yDiff = (int)Math.Abs((fencePos.Y - playerPos.Y));
+                                yDiff *= 2;
+
+                                if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
+                                else playerPos.Y -= yDiff;
+                            }
+                            else
+                            {
+                                int xDiff = (int)Math.Abs(fencePos.X - playerPos.X);
+                                xDiff *= 2;
+
+                                if (playerPos.X < fencePos.X) playerPos.X += xDiff;
+                                else playerPos.X -= xDiff;
+                            }
+
+                            // PieceTemplate.CreateAndPlaceOnBoard(world: player.world, position: playerPos, templateName: PieceTemplate.Name.Heart, minDistanceOverride: 0, maxDistanceOverride: 0); // for testing
+
+                            bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 20);
+
+                            if (hasJumped)
+                            {
+                                player.soundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);
+                                player.Stamina -= 100;
+                            }
+                            else Sound.QuickPlay(SoundData.Name.Error);
 
                             return;
                         }

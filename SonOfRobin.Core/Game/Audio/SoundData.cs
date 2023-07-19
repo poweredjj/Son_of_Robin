@@ -282,6 +282,7 @@ namespace SonOfRobin
             DropLeather,
             HitLeather,
             DestroyLeather,
+            Jump,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -505,6 +506,7 @@ namespace SonOfRobin
             { Name.DropLeather, "203086__mafon2__two-thumps" },
             { Name.HitLeather, "144266__dwoboyle__impact-leatherbelt-001" },
             { Name.DestroyLeather, "471745__juanfg__break" },
+            { Name.Jump, "380471__acebrian__jump" },
             };
     }
 }
