@@ -255,16 +255,14 @@ namespace SonOfRobin
         {
             get
             {
-                Vector2 centerOffset = this.GetCenterOffset();
-                int offsetX = (int)centerOffset.X;
-                int offsetY = (int)centerOffset.Y;
+                Point centerOffset = this.GetCenterOffset();
 
                 Rectangle interactRect = this.sprite.ColRect;
-                interactRect.X += offsetX;
-                interactRect.Y += offsetY;
+                interactRect.X += centerOffset.X;
+                interactRect.Y += centerOffset.Y;
                 Vector2 interactRectCenter = new Vector2(interactRect.Center.X, interactRect.Center.Y);
 
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 150, offsetX: offsetX, offsetY: offsetY);
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 150);
 
                 try
                 {
@@ -283,15 +281,13 @@ namespace SonOfRobin
             {
                 if (!this.CanSeeAnything) return null;
 
-                Vector2 centerOffset = this.GetCenterOffset();
-                int offsetX = (int)centerOffset.X;
-                int offsetY = (int)centerOffset.Y;
+                Point centerOffset = this.GetCenterOffset();
 
-                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true);
                 interestingPieces = interestingPieces.Where(piece => piece.pieceInfo.canBePickedUp);
                 if (!interestingPieces.Any()) return null;
 
-                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
+                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: centerOffset.X, offsetY: centerOffset.Y);
                 return closestPiece;
             }
         }
@@ -1184,7 +1180,7 @@ namespace SonOfRobin
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
 
-        private Vector2 GetCenterOffset()
+        private Point GetCenterOffset()
         {
             int offsetX = 0;
             int offsetY = 0;
@@ -1212,7 +1208,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported sprite orientation - {this.sprite.orientation}.");
             }
 
-            return new Vector2(offsetX, offsetY);
+            return new Point(offsetX, offsetY);
         }
 
         private void PickUpClosestPiece(BoardPiece closestPiece)
@@ -1317,17 +1313,15 @@ namespace SonOfRobin
                 }
             }
 
-            Vector2 centerOffset = this.GetCenterOffset();
-            int offsetX = (int)centerOffset.X;
-            int offsetY = (int)centerOffset.Y;
+            Point centerOffset = this.GetCenterOffset();
 
             var executeHelper = new Dictionary<string, Object> {
                     {"player", this},
                     {"slot", this.ActiveSlot},
                     {"toolbarPiece", activeToolbarPiece},
                     {"shootingPower", this.shootingPower},
-                    {"offsetX", offsetX},
-                    {"offsetY", offsetY},
+                    {"offsetX", centerOffset.X},
+                    {"offsetY", centerOffset.Y},
                     {"buttonHeld", buttonHeld},
                     {"highlightOnly", highlightOnly},
                 };

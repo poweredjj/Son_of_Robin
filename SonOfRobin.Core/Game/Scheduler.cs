@@ -1635,19 +1635,37 @@ namespace SonOfRobin
                             bool horizontal = fence.sprite.AnimFrame.colWidth > fence.sprite.AnimFrame.colHeight;
                             if (horizontal)
                             {
-                                int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
-                                yDiff *= 2;
+                                if (player.sprite.position.X < fence.sprite.ColRect.Left ||
+                                    player.sprite.position.X > fence.sprite.ColRect.Right)
+                                {
+                                    Sound.QuickPlay(SoundData.Name.Error);
+                                    return;
+                                }
+                                else
+                                {
+                                    int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
+                                    yDiff *= 2;
 
-                                if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
-                                else playerPos.Y -= yDiff;
+                                    if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
+                                    else playerPos.Y -= yDiff;
+                                }
                             }
                             else
                             {
-                                int xDiff = (int)Math.Abs(fencePos.X - playerPos.X);
-                                xDiff *= 2;
+                                if (player.sprite.position.Y < fence.sprite.ColRect.Top ||
+                                    player.sprite.position.Y > fence.sprite.ColRect.Bottom)
+                                {
+                                    Sound.QuickPlay(SoundData.Name.Error);
+                                    return;
+                                }
+                                else
+                                {
+                                    int xDiff = (int)Math.Abs(fencePos.X - playerPos.X);
+                                    xDiff *= 2;
 
-                                if (playerPos.X < fencePos.X) playerPos.X += xDiff;
-                                else playerPos.X -= xDiff;
+                                    if (playerPos.X < fencePos.X) playerPos.X += xDiff;
+                                    else playerPos.X -= xDiff;
+                                }
                             }
 
                             // PieceTemplate.CreateAndPlaceOnBoard(world: player.world, position: playerPos, templateName: PieceTemplate.Name.Heart, minDistanceOverride: 0, maxDistanceOverride: 0); // for testing
