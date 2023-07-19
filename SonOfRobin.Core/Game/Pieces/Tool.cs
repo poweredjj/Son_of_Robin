@@ -52,7 +52,11 @@ namespace SonOfRobin
             if (!this.pieceInfo.toolIndestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
-                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                if (this.HitPoints == 0)
+                {
+                    this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f, ignoreProcessingTime: true);
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                }
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -132,7 +136,6 @@ namespace SonOfRobin
                         this.world.HintEngine.Disable(Tutorials.Type.GetWood);
 
                         if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.HintEngine.Disable(PieceHint.Type.CrateAnother);
-
                         break;
 
                     case Category.Stone:
@@ -201,7 +204,13 @@ namespace SonOfRobin
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
                     if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
-                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+
+                    if (this.HitPoints == 0)
+                    {
+                        player.pieceInfo.Yield.DropDebris(piece: player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f, ignoreProcessingTime: true);
+
+                        this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                    }
                 }
             }
         }
