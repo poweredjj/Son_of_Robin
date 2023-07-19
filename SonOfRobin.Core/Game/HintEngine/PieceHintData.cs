@@ -480,9 +480,16 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Plant }),
 
                new PieceHint(
-                    type: PieceHint.Type.WoodenFence, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
+                    type: PieceHint.Type.WoodenFenceNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
                     message: "Maybe I should build a | wooden fence, to protect my | | crops.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodenFenceHorizontal), PieceInfo.GetTexture(PieceTemplate.Name.CarrotPlant), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw)}),
+
+               new PieceHint(
+                    type: PieceHint.Type.WoodenFencePositive, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodenFenceHorizontal, PieceTemplate.Name.WoodenFenceVertical },
+                    message: "I might be able to jump over this | fence.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodenFenceHorizontal) },
+                    alsoDisables: new List<PieceHint.Type> { PieceHint.Type.WoodenFenceNegative }),
+
             };
 
             CheckData(newPieceHintList);
