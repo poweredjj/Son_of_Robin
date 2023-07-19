@@ -1635,7 +1635,7 @@ namespace SonOfRobin
                             bool horizontal = fence.sprite.AnimFrame.colWidth > fence.sprite.AnimFrame.colHeight;
                             if (horizontal)
                             {
-                                int yDiff = (int)Math.Abs((fencePos.Y - playerPos.Y));
+                                int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
                                 yDiff *= 2;
 
                                 if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
@@ -1653,7 +1653,6 @@ namespace SonOfRobin
                             // PieceTemplate.CreateAndPlaceOnBoard(world: player.world, position: playerPos, templateName: PieceTemplate.Name.Heart, minDistanceOverride: 0, maxDistanceOverride: 0); // for testing
 
                             bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 20);
-
                             if (hasJumped)
                             {
                                 player.soundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);

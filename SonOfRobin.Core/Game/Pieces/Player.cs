@@ -259,15 +259,21 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                Rectangle interactRect = this.sprite.ColRect;
+                interactRect.X += offsetX;
+                interactRect.Y += offsetY;
+                Vector2 interactRectCenter = new Vector2(interactRect.Center.X, interactRect.Center.Y);
 
-                var interestingPieces = nearbyPieces.Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty).ToList();
-                if (interestingPieces.Count > 0)
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 150, offsetX: offsetX, offsetY: offsetY);
+
+                try
                 {
-                    BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
-                    return closestPiece;
+                    return nearbyPieces.Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && interactRect.Intersects(piece.sprite.ColRect)).OrderBy(piece => Vector2.Distance(interactRectCenter, piece.sprite.position)).First();
                 }
-                else return null;
+                catch (NullReferenceException)
+                { return null; }
+                catch (InvalidOperationException)
+                { return null; }
             }
         }
 
