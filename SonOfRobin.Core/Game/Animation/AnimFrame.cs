@@ -126,13 +126,16 @@ namespace SonOfRobin
 
         private Rectangle FindCollisionBounds()
         {
-            // checking bottom part of the frame for collision bounds
-
-            int bottomPartHeight = Math.Max((int)(this.texture.Width * this.depthPercent), 20);
-            bottomPartHeight = Math.Min(bottomPartHeight, this.texture.Height);
-
             int sliceWidth = this.texture.Width;
-            int sliceHeight = this.layer == 1 ? bottomPartHeight : this.texture.Height;
+            int sliceHeight = this.texture.Height;
+
+            if (this.layer == 1)
+            {
+                // checking bottom part of the frame for collision bounds
+                sliceHeight = Math.Max((int)(this.texture.Height * this.depthPercent), 20);
+                sliceHeight = Math.Min(sliceHeight, this.texture.Height);
+            }
+
             int sliceX = 0;
             int sliceY = this.texture.Height - sliceHeight;
 
