@@ -1633,6 +1633,9 @@ namespace SonOfRobin
                             Vector2 playerPos = player.sprite.position;
 
                             bool horizontal = fence.sprite.AnimFrame.colWidth > fence.sprite.AnimFrame.colHeight;
+
+                            // checking for proper player alignment
+
                             if (horizontal)
                             {
                                 if (player.sprite.position.X < fence.sprite.ColRect.Left ||
@@ -1640,14 +1643,6 @@ namespace SonOfRobin
                                 {
                                     Sound.QuickPlay(SoundData.Name.Error);
                                     return;
-                                }
-                                else
-                                {
-                                    int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
-                                    yDiff *= 2;
-
-                                    if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
-                                    else playerPos.Y -= yDiff;
                                 }
                             }
                             else
@@ -1658,7 +1653,22 @@ namespace SonOfRobin
                                     Sound.QuickPlay(SoundData.Name.Error);
                                     return;
                                 }
-                                else
+                            }
+
+                            // calculating jump movement
+
+                            if (horizontal)
+                            {
+                                {
+                                    int yDiff = (int)Math.Abs(fencePos.Y - playerPos.Y);
+                                    yDiff *= 2;
+
+                                    if (playerPos.Y < fencePos.Y) playerPos.Y += yDiff;
+                                    else playerPos.Y -= yDiff;
+                                }
+                            }
+                            else
+                            {
                                 {
                                     int xDiff = (int)Math.Abs(fencePos.X - playerPos.X);
                                     xDiff *= 2;
@@ -1667,6 +1677,8 @@ namespace SonOfRobin
                                     else playerPos.X -= xDiff;
                                 }
                             }
+
+                            // performing jump
 
                             // PieceTemplate.CreateAndPlaceOnBoard(world: player.world, position: playerPos, templateName: PieceTemplate.Name.Heart, minDistanceOverride: 0, maxDistanceOverride: 0); // for testing
 
