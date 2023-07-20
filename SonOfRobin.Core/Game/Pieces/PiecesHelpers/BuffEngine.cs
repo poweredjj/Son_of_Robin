@@ -497,7 +497,7 @@ namespace SonOfRobin
                     Buff newBuff = null;
                     foreach (Buff buff in sameTypeBuffList)
                     {
-                        newBuff = MergeTwoSameTypeBuffs(world: world, buff1: newBuff, buff2: buff);
+                        newBuff = MergeTwoSameTypeBuffs(buff1: newBuff, buff2: buff);
                     }
                     mergedBuffList.Add(newBuff);
                 }
@@ -506,7 +506,7 @@ namespace SonOfRobin
             return mergedBuffList;
         }
 
-        public static Buff MergeTwoSameTypeBuffs(World world, Buff buff1, Buff buff2)
+        public static Buff MergeTwoSameTypeBuffs(Buff buff1, Buff buff2)
         {
             if (buff1 == null && buff2 != null) return buff2;
             if (buff2 == null && buff1 != null) return buff1;

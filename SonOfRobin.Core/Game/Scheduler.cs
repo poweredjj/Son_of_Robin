@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Scheduler
     {
         public enum TaskName
-        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPiecesToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollect, DestroyAndDropDebris, MakePlayerJumpOverThisPiece }
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPiecesToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollect, DestroyAndDropDebris, MakePlayerJumpOverThisPiece, InventoryApplyPotion }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
@@ -1533,6 +1533,14 @@ namespace SonOfRobin
                             new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                             new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.AnimFrame.texture, piece2.sprite.AnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+
+                            return;
+                        }
+
+                    case TaskName.InventoryApplyPotion:
+                        {
+                            Inventory inventory = (Inventory)this.ExecuteHelper;
+                            inventory.TryToApplyPotion(slot: inventory.ActiveSlot, execute: true);
 
                             return;
                         }

@@ -29,6 +29,7 @@ namespace SonOfRobin
         private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
         public static readonly Sound soundCombine = new Sound(SoundData.Name.AnvilHit);
+        public static readonly Sound soundApplyPotion = new Sound(SoundData.Name.Drink);
 
         public static LayoutType Layout { get; private set; } = LayoutType.None;
 
@@ -1004,6 +1005,7 @@ namespace SonOfRobin
             if (this.draggedPieces.Count == initialDraggedCount && this.draggedPieces[0].name == initialTopPieceName)
             {
                 if (this.TryToCombinePieces(slot)) return; // will display a confirmation menu, if combination is possible
+                if (this.TryToApplyPotion(slot: slot, execute: false)) return; // will display a confirmation menu, if combination is possible
                 this.SwapDraggedAndSlotPieces(slot: slot);
             }
 
@@ -1040,6 +1042,77 @@ namespace SonOfRobin
             }
 
             return false;
+        }
+
+        public bool TryToApplyPotion(StorageSlot slot, bool execute)
+        {
+            if (!this.draggedPieces.Any() || slot.PieceCount == 0) return false;
+            if (this.draggedPieces.Count > 1 && slot.PieceCount > 1) return false;
+            if (this.draggedPieces[0].name != PieceTemplate.Name.PotionGeneric && slot.pieceList[0].name != PieceTemplate.Name.PotionGeneric) return false;
+
+            Potion potion;
+            List<BoardPiece> targetPieces;
+            bool potionInsideSlot;
+
+            if (this.draggedPieces[0].name == PieceTemplate.Name.PotionGeneric)
+            {
+                potion = (Potion)this.draggedPieces[0];
+                targetPieces = slot.pieceList;
+                potionInsideSlot = false;
+            }
+            else
+            {
+                potion = (Potion)slot.pieceList[0];
+                targetPieces = this.draggedPieces;
+                potionInsideSlot = true;
+            }
+
+            if (targetPieces[0].GetType() != typeof(Projectile) && targetPieces[0].GetType() != typeof(Tool)) return false;
+
+            var allowedBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.RegenPoison, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
+            var buffsThatCanBeMoved = potion.buffList.Where(buff => allowedBuffTypes.Contains(buff.type) && !buff.isPositive).ToList();
+            if (!buffsThatCanBeMoved.Any()) return false;
+
+            var piecesThatCanReceiveBuffs = targetPieces.Where(piece => !piece.buffList.Any()).ToList();
+            if (!piecesThatCanReceiveBuffs.Any()) return false;
+
+            string counterText = targetPieces.Count > 1 ? $" x{targetPieces.Count}" : "";
+
+            if (!execute)
+            {
+                var optionList = new List<object>();
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryApplyPotion }, { "executeHelper", this } });
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
+
+                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?" }, { "customOptionList", optionList } };
+                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
+            }
+            else // execute == true
+            {
+                foreach (BoardPiece receivingPiece in piecesThatCanReceiveBuffs)
+                {
+                    foreach (Buff buff in buffsThatCanBeMoved)
+                    {
+                        receivingPiece.buffList.Add(Buff.CopyBuff(buff));
+                    }
+                }
+
+                BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: potion.world);
+
+                if (potionInsideSlot) slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+                else
+                {
+                    this.draggedPieces.Clear();
+                    this.draggedPieces.Add(emptyContainter);
+                }
+
+                soundApplyPotion.Play();
+                new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
+
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been applied to | {targetPieces[0].readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+            }
+
+            return true;
         }
 
         private void SwapDraggedAndSlotPieces(StorageSlot slot)
