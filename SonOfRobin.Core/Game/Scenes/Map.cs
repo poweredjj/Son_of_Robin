@@ -496,8 +496,8 @@ namespace SonOfRobin
 
             var spritesBag = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch);
 
-            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
-            var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
+            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(UpgradeBench), typeof(Fireplace) };
+            var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.WoodenFenceHorizontal, PieceTemplate.Name.WoodenFenceVertical };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
@@ -532,12 +532,25 @@ namespace SonOfRobin
 
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
 
-                    int maxWidth = 300; // to avoid sprites being too large (big tent, for example)
-                    if (destRect.Width > maxWidth)
+                    int maxSize = 300; // to avoid sprites being too large (big tent, for example)
+
+                    if (destRect.Width > destRect.Height)
                     {
-                        float aspect = (float)destRect.Height / (float)destRect.Width;
-                        int widthReduction = destRect.Width - maxWidth;
-                        destRect.Inflate(-widthReduction / 2, (-widthReduction * aspect) / 2);
+                        if (destRect.Width > maxSize)
+                        {
+                            float aspect = (float)destRect.Height / (float)destRect.Width;
+                            int widthReduction = destRect.Width - maxSize;
+                            destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
+                        }
+                    }
+                    else
+                    {
+                        if (destRect.Height > maxSize)
+                        {
+                            float aspect = (float)destRect.Width / (float)destRect.Height;
+                            int heightReduction = destRect.Height - maxSize;
+                            destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
+                        }
                     }
 
                     if (this.Mode == MapMode.Mini && !this.camera.viewRect.Contains(destRect))
