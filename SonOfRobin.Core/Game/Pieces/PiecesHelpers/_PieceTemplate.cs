@@ -1699,7 +1699,7 @@ namespace SonOfRobin
                 case Name.HerbsDarkViolet:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Speed, value: -1f, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Speed, value: -0.5f, autoRemoveDelay: 60 * 60 * 3)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
