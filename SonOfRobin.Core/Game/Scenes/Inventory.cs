@@ -1069,6 +1069,7 @@ namespace SonOfRobin
 
             var piecesThatCanReceiveBuffs = targetPieces.Where(
                 piece => !piece.buffList.Any() &&
+                !piece.pieceInfo.shootsProjectile &&
                 piece.pieceInfo.strengthMultiplierByCategory != null &&
                 piece.pieceInfo.strengthMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
                 piece.pieceInfo.strengthMultiplierByCategory[BoardPiece.Category.Flesh] > 1f)
