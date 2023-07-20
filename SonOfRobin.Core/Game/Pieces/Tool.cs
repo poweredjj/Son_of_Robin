@@ -95,9 +95,9 @@ namespace SonOfRobin
 
             if (!highlightOnly && !targetsThatCanBeHit.Any() && targetsThatCannotBeHit.Any())
             {
-                BoardPiece currentTarget = targetsThatCannotBeHit[0];
+                string piecesText = targetsThatCannotBeHit.Count == 1 ? targetsThatCannotBeHit[0].readableName : $"these targets ({targetsThatCannotBeHit.Count})";
 
-                var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {currentTarget.readableName}?" }, { "taskName", Scheduler.TaskName.AllowPieceToBeHit }, { "executeHelper", currentTarget }, { "blocksUpdatesBelow", true } };
+                var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {piecesText}?" }, { "taskName", Scheduler.TaskName.AllowPiecesToBeHit }, { "executeHelper", targetsThatCannotBeHit }, { "blocksUpdatesBelow", true } };
                 MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
 
                 return;
