@@ -927,13 +927,10 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.CookingPot;
-                var frameListOff = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 192, y: 144, width: 32, height: 32, duration: 6),
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 224, y: 144, width: 32, height: 32, duration: 6),
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 256, y: 144, width: 32, height: 32, duration: 6)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: frameListOff);
+
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off",
+                    frameList: ConvertImageToFrameList(atlasName: "Candacis_flames1", layer: 1, x: 192, y: 144, width: 32, height: 32));
+
                 var frameListOn = new List<AnimFrame>
                 {
                     ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 0, y: 144, width: 32, height: 32, duration: 6),
