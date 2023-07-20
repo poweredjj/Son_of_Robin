@@ -45,6 +45,7 @@ namespace SonOfRobin
             AnimalRunForClosestWater,
             AnimalCallForHelp,
             SeaWaveMove,
+            EmitParticles,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -775,6 +776,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.EmitParticles:
+                    {
+                        this.SM_EmitParticles();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -945,6 +952,8 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_ScarePredatorsAway()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_EmitParticles()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()

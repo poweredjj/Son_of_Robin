@@ -266,5 +266,10 @@ namespace SonOfRobin
                 this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
             }
         }
+
+        public override void SM_EmitParticles()
+        {
+            if (!this.sprite.particleEngine.HasAnyParticles) this.Destroy();
+        }
     }
 }

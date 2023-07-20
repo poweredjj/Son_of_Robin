@@ -346,7 +346,7 @@ namespace SonOfRobin
 
             Hole,
 
-            WhiteSpot,
+            WhiteSpotLayer1,
             NewIcon,
             MapEdges,
             SmallWhiteCircle,
@@ -384,6 +384,8 @@ namespace SonOfRobin
             HerbsBrown,
             HerbsDarkViolet,
             HerbsDarkGreen,
+            WhiteSpotLayer0,
+            WhiteSpotLayer2,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -793,7 +795,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.DebrisSoot3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_3", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.MusicNoteSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
-            AddFrameList(animPackage: PkgName.WhiteSpot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayer0, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayer1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayer2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.SmallWhiteCircle, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "small_white_circle", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));

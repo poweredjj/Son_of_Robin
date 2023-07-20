@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish }
 
         public class PresetData
         {
@@ -73,6 +73,7 @@ namespace SonOfRobin
                 {Preset.Brewing, "bubble_16x16" },
                 {Preset.WaterWalk, "circle_16x16_sharp" },
                 {Preset.WaterWave, "circle_16x16_soft" },
+                {Preset.CookingFinish, "circle_16x16_soft" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
@@ -309,6 +310,45 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.CookingFinish:
+                    defaultParticlesToEmit = 8;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(Color.White),
+                            Speed = new Range<float>(10f, 120f),
+                            Quantity = 1,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(2.0f),
+                                            EndValue = new Vector2(0.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.35f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new DragModifier
+                                {
+                                    Density = 1f, DragCoefficient = 1f
+                                },
+                            }
+                    };
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -317,7 +357,7 @@ namespace SonOfRobin
             this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter);
         }
 
-        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
         {
             if (duration > 0 && !sprite.IsInCameraRect) return;
 
@@ -325,6 +365,7 @@ namespace SonOfRobin
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
             sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
+            if (update) sprite.particleEngine.Update();
         }
 
         public static void TurnOff(Sprite sprite, Preset preset)
@@ -423,6 +464,10 @@ namespace SonOfRobin
                     break;
 
                 case Preset.WaterWave:
+                    this.particleEffect.Position = this.sprite.position;
+                    break;
+
+                case Preset.CookingFinish:
                     this.particleEffect.Position = this.sprite.position;
                     break;
 

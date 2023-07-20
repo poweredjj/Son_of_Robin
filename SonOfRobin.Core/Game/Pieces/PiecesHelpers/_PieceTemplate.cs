@@ -270,7 +270,7 @@ namespace SonOfRobin
             SeaWave,
 
             MeatRawPrime,
-            ParticleEmitter, // TODO make useful
+            ParticleEmitter,
             FertileGroundSmall,
             FertileGroundMedium,
             FertileGroundLarge,
@@ -291,7 +291,7 @@ namespace SonOfRobin
             return CreatePiece(templateName: templateName, world: world, id: id);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, bool precisePlacement = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
         {
             BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id);
 
@@ -301,7 +301,7 @@ namespace SonOfRobin
                 boardPiece.canBeHit = false; // to protect item from accidental player hit
             }
 
-            boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
+            boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
 
             if (boardPiece.sprite.IsOnBoard)
             {
@@ -1257,7 +1257,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
 
-                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
+                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "upgrade bench (obsolete)", description: "For upgrading items.", soundPack: soundPack);
 
                         combineWorkshop.sprite.AssignNewName("off");
                         return combineWorkshop;
@@ -1798,7 +1798,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "coffee", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                             rotatesWhenDropped: true, readableName: "coffee (obsolete)", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -2728,7 +2728,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea waves sound (obsolete)", description: "Ambient sound for sea waves.", sound: sound, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Cyan;
 
@@ -2815,11 +2815,9 @@ namespace SonOfRobin
 
                 case Name.ParticleEmitter:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpot, allowedTerrain: terrainCanGoAnywhere, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.Empty, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayer0, allowedTerrain: terrainCanGoAnywhere, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
 
-                        visualEffect.sprite.opacity = 0.0f;
-
-                        // TODO add state machine logic, that removes this emitter when it ends
+                        visualEffect.sprite.opacity = 0f;
 
                         return visualEffect;
                     }

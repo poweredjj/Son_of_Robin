@@ -8631,6 +8631,12 @@
 /processorParam:Quality=Best
 /build:sound/87572__huluvu42__platzender-kopf-nachschlag.ogg
 
+#begin sound/90143__pengo_au__steam_burst.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/90143__pengo_au__steam_burst.ogg
+
 #begin sound/95007__j1987__stonegrind1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

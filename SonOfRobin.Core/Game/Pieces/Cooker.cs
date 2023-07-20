@@ -30,6 +30,7 @@ namespace SonOfRobin
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOffOptional, sound: new Sound(name: SoundData.Name.SteamHit));
 
             this.IsOn = false;
             this.cookingDoneFrame = 0;
@@ -137,6 +138,10 @@ namespace SonOfRobin
             ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Cooking);
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+            this.soundPack.Play(PieceSoundPack.Action.TurnOffOptional);
+            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y), templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer2);
+            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.CookingFinish, duration: 8, update: true);
         }
 
         public override void DrawStatBar()

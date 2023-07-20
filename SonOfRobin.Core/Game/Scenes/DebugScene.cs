@@ -111,6 +111,7 @@ namespace SonOfRobin
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
                     BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, closestFreeSpot: true);
+                    ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.CookingFinish, duration: 8);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
