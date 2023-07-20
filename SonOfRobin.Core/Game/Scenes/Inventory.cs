@@ -1114,7 +1114,7 @@ namespace SonOfRobin
                 soundApplyPotion.Play();
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been applied to | {targetPieces[0].readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

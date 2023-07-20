@@ -588,7 +588,7 @@ namespace SonOfRobin
             }
 
             if (plantingMode && Plant.GetFertileGround(this.boardPiece) == null) return true;
-            if (!plantingMode && this.boardPiece.GetType() == typeof(Plant) && !Preferences.debugShowPlantGrowthInCamera && this.IsInCameraRect) return true;
+            if (this.boardPiece.GetType() == typeof(Plant) && this.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera && !this.world.BuildMode) return true;
 
             return false;
         }
