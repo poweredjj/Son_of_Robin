@@ -317,10 +317,10 @@ namespace SonOfRobin
                 switch (this.type)
                 {
                     case BuffEngine.BuffType.Speed:
-                        return "speed";
+                        return this.isPositive ? "speed" : "slowdown";
 
                     case BuffEngine.BuffType.Strength:
-                        return "strength";
+                        return this.isPositive ? "strength" : "weakness";
 
                     case BuffEngine.BuffType.HP:
                         return "health";

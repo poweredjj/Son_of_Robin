@@ -380,6 +380,9 @@ namespace SonOfRobin
             FenceVerticalShort,
             FenceHorizontalLong,
             FenceVerticalLong,
+
+            HerbsBrown,
+            HerbsDarkViolet,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -755,6 +758,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.HerbsYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_yellow", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsRed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_red", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsViolet, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_violet", layer: 0));
+            AddFrameList(animPackage: PkgName.HerbsBrown, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_brown", layer: 0));
+            AddFrameList(animPackage: PkgName.HerbsDarkViolet, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_dark_violet", layer: 0));
             AddFrameList(animPackage: PkgName.SpearWood, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_wood", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));

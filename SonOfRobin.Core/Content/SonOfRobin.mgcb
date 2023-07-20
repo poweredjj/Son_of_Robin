@@ -1917,6 +1917,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/herbs_blue.png
 
+#begin gfx/herbs_brown.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/herbs_brown.png
+
 #begin gfx/herbs_cyan.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1928,6 +1940,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/herbs_cyan.png
+
+#begin gfx/herbs_dark_violet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/herbs_dark_violet.png
 
 #begin gfx/herbs_green.png
 /importer:TextureImporter

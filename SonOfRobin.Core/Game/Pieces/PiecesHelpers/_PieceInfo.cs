@@ -330,7 +330,12 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsBlack, chanceToDrop: 15, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsBrown, chanceToDrop: 8, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsDarkViolet, chanceToDrop: 8, maxNumberToDrop: 1),
+                            }
+                            );
                         break;
 
                     case PieceTemplate.Name.Rushes:
@@ -2123,6 +2128,24 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
+                        this.fireAffinity = 0.2f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 20;
+                        this.placeMaxDistance = 200;
+                        break;
+
+                    case PieceTemplate.Name.HerbsBrown:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
+                        this.fireAffinity = 0.2f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 20;
+                        this.placeMaxDistance = 200;
+                        break;
+
+                    case PieceTemplate.Name.HerbsDarkViolet:
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
