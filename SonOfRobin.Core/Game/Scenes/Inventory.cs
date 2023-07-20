@@ -1067,14 +1067,17 @@ namespace SonOfRobin
                 potionInsideSlot = true;
             }
 
-            if (targetPieces[0].GetType() != typeof(Projectile) && targetPieces[0].GetType() != typeof(Tool)) return false;
+            var piecesThatCanReceiveBuffs = targetPieces.Where(
+                piece => !piece.buffList.Any() &&
+                piece.pieceInfo.strengthMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
+                piece.pieceInfo.strengthMultiplierByCategory[BoardPiece.Category.Flesh] > 1f)
+                .ToList();
+
+            if (!piecesThatCanReceiveBuffs.Any()) return false;
 
             var allowedBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.RegenPoison, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
             var buffsThatCanBeMoved = potion.buffList.Where(buff => allowedBuffTypes.Contains(buff.type) && !buff.isPositive).ToList();
             if (!buffsThatCanBeMoved.Any()) return false;
-
-            var piecesThatCanReceiveBuffs = targetPieces.Where(piece => !piece.buffList.Any()).ToList();
-            if (!piecesThatCanReceiveBuffs.Any()) return false;
 
             string counterText = targetPieces.Count > 1 ? $" x{targetPieces.Count}" : "";
 
