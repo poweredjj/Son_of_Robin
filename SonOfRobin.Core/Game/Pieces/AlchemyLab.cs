@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         public static readonly List<PieceTemplate.Name> baseNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
 
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsDarkGreen, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
 
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
@@ -340,6 +340,7 @@ namespace SonOfRobin
                     { PieceTemplate.Name.HerbsBlack, AnimData.PkgName.PotionBlack  },
                     { PieceTemplate.Name.HerbsBrown, AnimData.PkgName.PotionDarkYellow  },
                     { PieceTemplate.Name.HerbsDarkViolet, AnimData.PkgName.PotionDarkViolet  },
+                    { PieceTemplate.Name.HerbsDarkGreen, AnimData.PkgName.PotionDarkGreen  },
                     { PieceTemplate.Name.HerbsBlue, AnimData.PkgName.PotionBlue  },
                     { PieceTemplate.Name.HerbsCyan, AnimData.PkgName.PotionCyan  },
                     { PieceTemplate.Name.HerbsGreen, AnimData.PkgName.PotionGreen  },

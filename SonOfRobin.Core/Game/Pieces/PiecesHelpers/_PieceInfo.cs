@@ -488,7 +488,11 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsViolet, chanceToDrop: 40, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsViolet, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.HerbsDarkGreen, chanceToDrop: 12, maxNumberToDrop: 1),
+                            }
+                            );
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -2146,6 +2150,15 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.HerbsDarkViolet:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.startingMass = 30;
+                        this.fireAffinity = 0.2f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 20;
+                        this.placeMaxDistance = 200;
+                        break;
+
+                    case PieceTemplate.Name.HerbsDarkGreen:
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
