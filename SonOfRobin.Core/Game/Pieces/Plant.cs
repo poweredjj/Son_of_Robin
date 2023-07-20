@@ -90,7 +90,7 @@ namespace SonOfRobin
 
         public void DropSeeds()
         {
-            if (this.pieceInfo.plantDropSeedChance == 0 || this.IsBurning) return;
+            if (this.createdByPlayer || this.pieceInfo.plantDropSeedChance == 0 || this.IsBurning) return;
 
             bool dropSeed = this.world.random.Next(this.pieceInfo.plantDropSeedChance) == 0;
             if (dropSeed)
