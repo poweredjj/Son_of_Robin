@@ -37,7 +37,8 @@ namespace SonOfRobin
             this.ingredientSpace = ingredientSpace;
             this.canBeUsedDuringRain = canBeUsedDuringRain;
 
-            this.CreateAndConfigureStorage();
+            this.CreateStorage();
+            this.ConfigureStorage();
         }
 
         private StorageSlot FlameTriggerSlot
@@ -49,14 +50,17 @@ namespace SonOfRobin
         private StorageSlot FuelSlot
         { get { return this.PieceStorage.GetSlot(2, 0); } }
 
-        private void CreateAndConfigureStorage()
+        private void CreateStorage()
         {
             byte storageWidth = (byte)(this.ingredientSpace + 1);
             storageWidth = Math.Max(storageWidth, (byte)3);
             byte storageHeight = 2;
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
+        }
 
+        private void ConfigureStorage()
+        {
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
                 slot.locked = true;
@@ -68,8 +72,8 @@ namespace SonOfRobin
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
             flameTriggerSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger };
-            BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.CookingTrigger, world: this.world);
-            flameTriggerSlot.AddPiece(flameTrigger);
+            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.Create(templateName: PieceTemplate.Name.CookingTrigger, world: this.world));
+
             flameTriggerSlot.locked = true;
 
             StorageSlot mealSlot = this.MealSlot;
@@ -112,6 +116,7 @@ namespace SonOfRobin
             this.cookingStartFrame = (int)(Int64)pieceData["cooker_cookingStartFrame"];
             this.cookingDoneFrame = (int)(Int64)pieceData["cooker_cookingDoneFrame"];
             this.IsOn = (bool)pieceData["cooker_IsOn"];
+            this.ConfigureStorage();
         }
 
         public void TurnOn()

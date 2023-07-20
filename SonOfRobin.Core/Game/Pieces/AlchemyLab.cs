@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         public static readonly List<PieceTemplate.Name> baseNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
 
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
 
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
@@ -37,7 +37,8 @@ namespace SonOfRobin
             this.brewingDoneFrame = 0;
             this.boosterSpace = boosterSpace;
 
-            this.CreateAndConfigureStorage();
+            this.CreateStorage();
+            this.ConfigureStorage();
         }
 
         private StorageSlot FlameTriggerSlot
@@ -52,14 +53,17 @@ namespace SonOfRobin
         private StorageSlot FuelSlot
         { get { return this.PieceStorage.GetSlot(3, 0); } }
 
-        private void CreateAndConfigureStorage()
+        private void CreateStorage()
         {
             byte storageWidth = (byte)(this.boosterSpace + 1);
             storageWidth = Math.Max(storageWidth, (byte)4);
             byte storageHeight = 2;
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Lab, stackLimit: 1);
+        }
 
+        private void ConfigureStorage()
+        {
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
                 slot.locked = true;
@@ -71,8 +75,7 @@ namespace SonOfRobin
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
             flameTriggerSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BrewTrigger };
-            BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.BrewTrigger, world: this.world);
-            flameTriggerSlot.AddPiece(flameTrigger);
+            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.Create(templateName: PieceTemplate.Name.BrewTrigger, world: this.world));
             flameTriggerSlot.locked = true;
 
             StorageSlot bottleSlot = this.BottleSlot;
@@ -120,6 +123,7 @@ namespace SonOfRobin
             this.brewingStartFrame = (int)(Int64)pieceData["lab_brewingStartFrame"];
             this.brewingDoneFrame = (int)(Int64)pieceData["lab_brewingDoneFrame"];
             this.IsOn = (bool)pieceData["lab_IsOn"];
+            this.ConfigureStorage();
         }
 
         public void TurnOn()
@@ -334,6 +338,8 @@ namespace SonOfRobin
             {
                 var colorByBoosterDict = new Dictionary<PieceTemplate.Name, AnimData.PkgName> {
                     { PieceTemplate.Name.HerbsBlack, AnimData.PkgName.PotionBlack  },
+                    { PieceTemplate.Name.HerbsBrown, AnimData.PkgName.PotionDarkYellow  },
+                    { PieceTemplate.Name.HerbsDarkViolet, AnimData.PkgName.PotionDarkViolet  },
                     { PieceTemplate.Name.HerbsBlue, AnimData.PkgName.PotionBlue  },
                     { PieceTemplate.Name.HerbsCyan, AnimData.PkgName.PotionCyan  },
                     { PieceTemplate.Name.HerbsGreen, AnimData.PkgName.PotionGreen  },
