@@ -850,11 +850,7 @@ namespace SonOfRobin
             bool targetIsPlayer = this.target.GetType() == typeof(Player);
 
             bool willFollowPlayerAnywhere = targetIsPlayer && !this.sprite.IsInWater && this.world.random.Next(4) == 0;
-
-            if (willFollowPlayerAnywhere)
-            {
-                this.sprite.allowedTerrain.AddUpdateTerrain(terrainName: Terrain.Name.Height, allowedRange: new AllowedRange(min: Terrain.waterLevelMax, max: (byte)(Terrain.volcanoEdgeMin - 1)));
-            }
+            if (willFollowPlayerAnywhere) this.sprite.allowedTerrain.CopyTerrainFromTemplate(this.world.Player.sprite.allowedTerrain);
 
             foreach (BoardPiece allyPiece in allyList)
             {
@@ -873,7 +869,7 @@ namespace SonOfRobin
                     allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
                     new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                    if (willFollowPlayerAnywhere) allyAnimal.sprite.allowedTerrain.AddUpdateTerrain(terrainName: Terrain.Name.Height, allowedRange: new AllowedRange(min: Terrain.waterLevelMax, max: (byte)(Terrain.volcanoEdgeMin - 1)));
+                    if (willFollowPlayerAnywhere) allyAnimal.sprite.allowedTerrain.CopyTerrainFromTemplate(this.world.Player.sprite.allowedTerrain);
                 }
             }
 

@@ -124,6 +124,11 @@ namespace SonOfRobin
             this.HasBeenChanged = true;
         }
 
+        public void ClearTerrain()
+        {
+            this.rangesByTerrainName.Clear();
+        }
+
         public void AddUpdateNameInExtProperties(ExtBoardProps.Name name, bool value)
         {
             this.extPropertiesDict[name] = value;

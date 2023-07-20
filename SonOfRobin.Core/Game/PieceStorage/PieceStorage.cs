@@ -274,33 +274,22 @@ namespace SonOfRobin
         public BoardPiece RemoveTopPiece(StorageSlot slot)
         { return slot.RemoveTopPiece(); }
 
-        public void DropTopPieceFromSlot(int x, int y, bool addMovement = false)
-        {
-            try
-            {
-                StorageSlot slot = this.slots[x, y];
-                this.DropPiecesFromSlot(slot: slot, addMovement: addMovement);
-            }
-            catch (IndexOutOfRangeException)
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
-        }
-
-        public void DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
+        public bool DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
         {
             while (true)
             {
                 BoardPiece piece = slot.RemoveTopPiece();
-                if (piece == null) return;
+                if (piece == null) return true;
 
                 bool freeSpotFound = this.DropPieceToTheGround(piece: piece, addMovement: addMovement);
                 if (!freeSpotFound)
                 {
                     if (!destroyIfFreeSpotNotFound) slot.AddPiece(piece);
-                    return;
+                    return false;
                 }
                 else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White);
 
-                if (!dropAllPieces) return;
+                if (!dropAllPieces) return true;
             }
         }
 
@@ -335,7 +324,7 @@ namespace SonOfRobin
             if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
 
             // the piece should fall naturally to places, where player can go to
-            piece.sprite.allowedTerrain.AddUpdateTerrain(terrainName: Terrain.Name.Height, allowedRange: new AllowedRange(min: Terrain.waterLevelMax / 2, max: (byte)(Terrain.volcanoEdgeMin - 1)));
+            piece.sprite.allowedTerrain.CopyTerrainFromTemplate(this.storagePiece.sprite.allowedTerrain);
 
             piece.PlaceOnBoard(randomPlacement: false, position: this.storagePiece.sprite.position, closestFreeSpot: true, addPlannedDestruction: false);
 

@@ -263,13 +263,15 @@ namespace SonOfRobin
             {
                 case ContextAction.Drop:
                     {
-                        this.storage.DropPiecesFromSlot(slot: this.slot, addMovement: true);
+                        bool droppedCorrectly = this.storage.DropPiecesFromSlot(slot: this.slot, addMovement: true);
+                        if (!droppedCorrectly) new TextWindow(text: "Cannot drop the item.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, startingSound: SoundData.Name.Error);
                         return;
                     }
 
                 case ContextAction.DropAll:
                     {
-                        this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
+                        bool droppedCorrectly = this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
+                        if (!droppedCorrectly) new TextWindow(text: "Cannot drop the items.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, startingSound: SoundData.Name.Error);
                         return;
                     }
 
