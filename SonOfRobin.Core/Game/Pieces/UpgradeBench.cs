@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 
+
+// TODO remove - kept for compatibility with old saves
+
 namespace SonOfRobin
 {
     public class UpgradeBench : BoardPiece

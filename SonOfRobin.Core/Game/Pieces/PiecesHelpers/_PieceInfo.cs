@@ -1222,7 +1222,7 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
-                    case PieceTemplate.Name.UpgradeBench:
+                    case PieceTemplate.Name.UpgradeBenchObsolete:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;

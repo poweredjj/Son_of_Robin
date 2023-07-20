@@ -111,7 +111,7 @@ namespace SonOfRobin
             Anvil,
             HotPlate,
             CookingPot,
-            UpgradeBench,
+            UpgradeBenchObsolete,
 
             Stick,
             WoodLogRegular,
@@ -1248,7 +1248,7 @@ namespace SonOfRobin
                         return alchemyLab;
                     }
 
-                case Name.UpgradeBench:
+                case Name.UpgradeBenchObsolete:
                     {
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
