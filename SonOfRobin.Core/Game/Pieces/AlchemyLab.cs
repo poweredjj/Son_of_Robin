@@ -243,7 +243,7 @@ namespace SonOfRobin
 
             bool customPotion = false;
             PieceTemplate.Name potionName = PieceTemplate.Name.PotionGeneric;
-            string potionReadableName = "Potion";
+            string potionReadableName = "potion";
             string potionDescription = PieceInfo.GetInfo(potionName).description;
 
             {
@@ -266,7 +266,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
-                        potionReadableName = "Coffee potion";
+                        potionReadableName = "coffee potion";
                         potionDescription = "A strong coffee.";
                         customPotion = true;
                         break;
