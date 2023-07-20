@@ -274,8 +274,10 @@ namespace SonOfRobin
             FertileGroundSmall,
             FertileGroundMedium,
             FertileGroundLarge,
-            WoodenFenceHorizontal,
-            WoodenFenceVertical,
+            FenceHorizontalShort,
+            FenceVerticalShort,
+            FenceHorizontalLong,
+            FenceVerticalLong,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2812,18 +2814,34 @@ namespace SonOfRobin
                         return patch;
                     }
 
-                case Name.WoodenFenceHorizontal:
+                case Name.FenceHorizontalShort:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodenFenceHorizontal, allowedTerrain: terrainFieldCraft,
-                              maxHitPoints: 150, readableName: "wooden fence (horizontal)", description: "A fence.");
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalShort, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "short fence (horizontal)", description: "A short fence.");
 
                         return boardPiece;
                     }
 
-                case Name.WoodenFenceVertical:
+                case Name.FenceVerticalShort:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodenFenceVertical, allowedTerrain: terrainFieldCraft,
-                              maxHitPoints: 150, readableName: "wooden fence (vertical)", description: "A fence.");
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalShort, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "short fence (vertical)", description: "A short fence.");
+
+                        return boardPiece;
+                    }
+
+                case Name.FenceHorizontalLong:
+                    {
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalLong, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "long fence (horizontal)", description: "A long fence.");
+
+                        return boardPiece;
+                    }
+
+                case Name.FenceVerticalLong:
+                    {
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalLong, allowedTerrain: terrainFieldCraft,
+                              maxHitPoints: 150, readableName: "long fence (vertical)", description: "A long fence.");
 
                         return boardPiece;
                     }

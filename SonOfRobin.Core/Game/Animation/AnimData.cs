@@ -376,8 +376,10 @@ namespace SonOfRobin
             FertileGroundSmall,
             FertileGroundMedium,
             FertileGroundLarge,
-            WoodenFenceHorizontal,
-            WoodenFenceVertical,
+            FenceHorizontalShort,
+            FenceVerticalShort,
+            FenceHorizontalLong,
+            FenceVerticalLong,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -768,8 +770,10 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.FertileGroundSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
             AddFrameList(animPackage: PkgName.FertileGroundMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
             AddFrameList(animPackage: PkgName.FertileGroundLarge, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1.3f));
-            AddFrameList(animPackage: PkgName.WoodenFenceHorizontal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wooden_fence_horizontal", layer: 1, depthPercent: 0.2f));
-            AddFrameList(animPackage: PkgName.WoodenFenceVertical, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wooden_fence_vertical", layer: 1, depthPercent: 0.9f));
+            AddFrameList(animPackage: PkgName.FenceHorizontalShort, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_short", layer: 1, depthPercent: 0.2f));
+            AddFrameList(animPackage: PkgName.FenceVerticalShort, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
+            AddFrameList(animPackage: PkgName.FenceHorizontalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
+            AddFrameList(animPackage: PkgName.FenceVerticalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));

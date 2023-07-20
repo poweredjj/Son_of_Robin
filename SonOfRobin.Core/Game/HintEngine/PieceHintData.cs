@@ -482,12 +482,12 @@ namespace SonOfRobin
                new PieceHint(
                     type: PieceHint.Type.WoodenFenceNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
                     message: "Maybe I should build a | wooden fence, to protect my | | crops.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodenFenceHorizontal), PieceInfo.GetTexture(PieceTemplate.Name.CarrotPlant), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw)}),
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort), PieceInfo.GetTexture(PieceTemplate.Name.CarrotPlant), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw)}),
 
                new PieceHint(
-                    type: PieceHint.Type.WoodenFencePositive, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodenFenceHorizontal, PieceTemplate.Name.WoodenFenceVertical },
+                    type: PieceHint.Type.WoodenFencePositive, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort },
                     message: "I might be able to jump over this | fence.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodenFenceHorizontal) },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort) },
                     alsoDisables: new List<PieceHint.Type> { PieceHint.Type.WoodenFenceNegative }),
 
             };
