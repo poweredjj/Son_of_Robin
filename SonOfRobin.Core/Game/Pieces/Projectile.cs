@@ -157,7 +157,15 @@ namespace SonOfRobin
                 this.passiveMovement = Vector2.Zero;
                 if (this.sprite.IsInWater) this.Destroy();
                 if (this.isBurning) this.Explode();
-                else this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                else
+                {
+                    this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                    if (this.sprite.IsOnLava)
+                    {
+                        this.BurnLevel = 1;
+                        new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 120, destroyPiece: true);
+                    }
+                }
                 return false;
             }
 
