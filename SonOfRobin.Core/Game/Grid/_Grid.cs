@@ -1063,7 +1063,7 @@ namespace SonOfRobin
 
                             Rectangle cameraRect = this.world.camera.viewRect;
 
-                            if (!shadowSprite.IsInCameraRect)
+                            if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.pieceInfo.hasFlatShadow)
                             {
                                 bool shadowLeftSide = sunLightData.sunPos.X < 0;
                                 bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed

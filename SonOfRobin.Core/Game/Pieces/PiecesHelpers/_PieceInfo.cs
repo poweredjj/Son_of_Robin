@@ -97,6 +97,7 @@ namespace SonOfRobin
             public readonly bool ambsoundGeneratesWind;
             public readonly bool visFogExplodesWhenBurns;
             public readonly bool destroysPlantsWhenBuilt;
+            public readonly bool hasFlatShadow;
             public readonly float fertileGroundSoilWealthMultiplier;
 
             public bool CanHurtAnimals
@@ -228,6 +229,7 @@ namespace SonOfRobin
                 this.ambsoundGeneratesWind = false;
                 this.visFogExplodesWhenBurns = false;
                 this.destroysPlantsWhenBuilt = false;
+                this.hasFlatShadow = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
 
                 // setting values for names
@@ -1266,6 +1268,7 @@ namespace SonOfRobin
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.WoodLogHard:
@@ -1275,6 +1278,7 @@ namespace SonOfRobin
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.WoodPlank:
@@ -1283,6 +1287,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Stone:
@@ -1290,6 +1295,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Granite:
@@ -1298,6 +1304,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Clay:
@@ -1307,6 +1314,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Rope:
@@ -1470,6 +1478,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.IronRod:
@@ -2051,6 +2060,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Map:
@@ -2109,6 +2119,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
@@ -2116,6 +2127,7 @@ namespace SonOfRobin
                         this.startingMass = 300;
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Candle:
@@ -2123,6 +2135,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.HumanSkeleton:
@@ -2132,6 +2145,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.PredatorRepellant:
@@ -2269,6 +2283,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.TreeStump:
@@ -2420,6 +2435,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.FenceVerticalShort:
@@ -2428,6 +2444,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.FenceHorizontalLong:
@@ -2436,6 +2453,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.FenceVerticalLong:
@@ -2444,6 +2462,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.hasFlatShadow = true;
                         break;
 
                     default:

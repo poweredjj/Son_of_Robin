@@ -893,12 +893,7 @@ namespace SonOfRobin
             float distance = Vector2.Distance(lightPos, shadowSprite.position);
             AnimFrame frame = shadowSprite.AnimFrame;
 
-            var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.Stone, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton, AnimData.PkgName.Lantern, AnimData.PkgName.LanternFrame, AnimData.PkgName.Candle, AnimData.PkgName.FenceHorizontalShort, AnimData.PkgName.FenceVerticalShort, AnimData.PkgName.FenceHorizontalLong, AnimData.PkgName.FenceVerticalLong };
-
-            bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.AnimPackage);
-
-            if (flatShadow)
+            if (shadowSprite.boardPiece.pieceInfo.hasFlatShadow)
             {
                 float xDiff = shadowSprite.position.X - lightPos.X;
                 float yDiff = shadowSprite.position.Y - lightPos.Y;
@@ -908,6 +903,11 @@ namespace SonOfRobin
 
                 float offsetX = Math.Max(Math.Min(xDiff / 6f, xLimit), -xLimit);
                 float offsetY = Math.Max(Math.Min(yDiff / 6f, yLimit), -yLimit);
+
+                Rectangle simulRect = shadowSprite.GfxRect;
+                simulRect.X += (int)offsetX;
+                simulRect.Y += (int)offsetY;
+                if (!shadowSprite.world.camera.viewRect.Intersects(simulRect)) return;
 
                 Color originalColor = shadowSprite.color;
                 shadowSprite.color = color;
