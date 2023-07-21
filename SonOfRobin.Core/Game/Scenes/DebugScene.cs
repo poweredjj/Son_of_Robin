@@ -346,9 +346,16 @@ namespace SonOfRobin
             //    world.camera.AddRandomShake();
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    new RumbleEvent(force: 0.35f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                new RumbleEvent(force: 0.35f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
+                if (world == null) return;
+
+                ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.BrewingFinish, duration: 8);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

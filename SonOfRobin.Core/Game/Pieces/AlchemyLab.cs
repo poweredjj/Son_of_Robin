@@ -144,6 +144,7 @@ namespace SonOfRobin
             ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BrewingFinish, duration: 8);
         }
 
         public override void DrawStatBar()
