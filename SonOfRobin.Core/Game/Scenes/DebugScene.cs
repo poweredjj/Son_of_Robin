@@ -355,7 +355,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.BrewingFinish, duration: 8);
+                ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 6);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

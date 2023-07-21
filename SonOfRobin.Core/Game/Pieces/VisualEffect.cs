@@ -195,6 +195,8 @@ namespace SonOfRobin
 
                         collidingPiece.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: pushMovement, maxVal: 400f));
 
+                        ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 7);
+
                         // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
                     }
                 }
