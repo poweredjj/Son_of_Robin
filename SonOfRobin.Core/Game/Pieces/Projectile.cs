@@ -19,7 +19,7 @@ namespace SonOfRobin
         public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
             byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, bool isBurning = false, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,   maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
         {
             this.canBeStuck = canBeStuck;
             this.isBurning = isBurning;
@@ -57,6 +57,11 @@ namespace SonOfRobin
             {
                 this.sprite.AssignNewName("burning");
                 if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
+
+                BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer2);
+                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: particleEmitter.sprite);
+                ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.BurnFlame, update: true, duration: 45);
             }
 
             this.soundPack.Play(PieceSoundPack.Action.ArrowFly);
