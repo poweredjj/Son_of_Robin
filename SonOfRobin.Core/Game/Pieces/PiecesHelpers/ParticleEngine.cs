@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk }
 
         public class PresetData
         {
@@ -76,6 +76,7 @@ namespace SonOfRobin
                 {Preset.CookingFinish, "circle_16x16_soft" },
                 {Preset.BrewingFinish, "bubble_16x16" },
                 {Preset.Excavated, "circle_16x16_sharp" },
+                {Preset.MudWalk, "circle_16x16_soft" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
@@ -430,6 +431,43 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.MudWalk:
+                    defaultParticlesToEmit = 3;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 11, radiate: Profile.CircleRadiation.Out))
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(new Color(29, 51, 4)),
+                            Speed = new Range<float>(10f, 45f),
+                            Quantity = 0,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.55f),
+                                            EndValue = new Vector2(2.4f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1.0f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 8f},
+                                new DragModifier { Density = 2.2f, DragCoefficient = 1.6f },
+                            }
+                    };
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -528,10 +566,6 @@ namespace SonOfRobin
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
-                case Preset.BurnFlame:
-                    this.particleEffect.Position = this.sprite.position;
-                    break;
-
                 case Preset.Cooking:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
                     break;
@@ -544,24 +578,13 @@ namespace SonOfRobin
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
-                case Preset.WaterWave:
-                    this.particleEffect.Position = this.sprite.position;
-                    break;
-
-                case Preset.CookingFinish:
-                    this.particleEffect.Position = this.sprite.position;
-                    break;
-
-                case Preset.BrewingFinish:
-                    this.particleEffect.Position = this.sprite.position;
-                    break;
-
-                case Preset.Excavated:
-                    this.particleEffect.Position = this.sprite.position;
+                case Preset.MudWalk:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported preset - '{preset}'.");
+                    this.particleEffect.Position = this.sprite.position;
+                    break;
             }
 
             this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);

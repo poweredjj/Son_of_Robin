@@ -920,6 +920,11 @@ namespace SonOfRobin
 
                         ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: particlesToEmit, duration: 1);
                     }
+
+                    if (!isInWater && this.sprite.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp))
+                    {
+                        ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MudWalk, particlesToEmit: 2, duration: 1);
+                    }
                 }
             }
             else this.sprite.CharacterStand();
