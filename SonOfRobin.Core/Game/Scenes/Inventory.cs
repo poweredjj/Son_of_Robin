@@ -397,8 +397,10 @@ namespace SonOfRobin
             var combineEntries = PieceInfo.GetCombinesWithTextEntryList(pieceName: selectedPiece.name, scale: 0.7f);
             entryList.AddRange(combineEntries);
 
-            if (selectedPiece.buffList != null)
+            if (selectedPiece.buffList != null && selectedPiece.buffList.Any())
             {
+                if (selectedPiece.pieceInfo.CanHurtAnimals) entryList.Add(new InfoWindow.TextEntry(text: "Target receives:", color: Color.White, scale: smallScale));
+
                 foreach (Buff buff in selectedPiece.buffList)
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f)); }
             }
@@ -1069,10 +1071,7 @@ namespace SonOfRobin
 
             var piecesThatCanReceiveBuffs = targetPieces.Where(
                 piece => !piece.buffList.Any() &&
-                !piece.pieceInfo.shootsProjectile &&
-                piece.pieceInfo.strengthMultiplierByCategory != null &&
-                piece.pieceInfo.strengthMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
-                piece.pieceInfo.strengthMultiplierByCategory[BoardPiece.Category.Flesh] > 1f)
+                piece.pieceInfo.CanHurtAnimals)
                 .ToList();
 
             if (!piecesThatCanReceiveBuffs.Any()) return false;
@@ -1100,6 +1099,12 @@ namespace SonOfRobin
                     {
                         receivingPiece.buffList.Add(Buff.CopyBuff(buff));
                     }
+
+                    if (buffsThatCanBeMoved.Any())
+                    {
+                        string plusSign = buffsThatCanBeMoved.Count > 1 ? "+" : "";
+                        receivingPiece.readableName = $"{receivingPiece.readableName} of {buffsThatCanBeMoved[0].PotionText}{plusSign}";
+                    }
                 }
 
                 BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: potion.world);
@@ -1114,7 +1119,8 @@ namespace SonOfRobin
                 soundApplyPotion.Play();
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                // pieceInfo.readableName is used to show original name (before the change)
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

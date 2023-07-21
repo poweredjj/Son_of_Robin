@@ -98,6 +98,18 @@ namespace SonOfRobin
             public readonly bool visFogExplodesWhenBurns;
             public readonly bool destroysPlantsWhenBuilt;
             public readonly float fertileGroundSoilWealthMultiplier;
+
+            public bool CanHurtAnimals
+            {
+                get
+                {
+                    return
+                        this.strengthMultiplierByCategory != null &&
+                        this.strengthMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
+                        this.strengthMultiplierByCategory[BoardPiece.Category.Flesh] > 0f;
+                }
+            }
+
             public Info(BoardPiece piece)
             {
                 this.animSize = piece.sprite.AnimSize;
