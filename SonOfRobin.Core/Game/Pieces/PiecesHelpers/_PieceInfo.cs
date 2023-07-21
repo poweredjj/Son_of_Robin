@@ -2311,6 +2311,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
                         this.visFogExplodesWhenBurns = true;
+                        this.allowedDensity = new AllowedDensity(radius: 370, maxNoOfPiecesSameName: 3);
                         break;
 
                     case PieceTemplate.Name.LavaGas:
