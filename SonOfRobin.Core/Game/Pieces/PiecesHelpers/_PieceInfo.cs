@@ -379,7 +379,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 25;
                         this.placeMaxDistance = 80;
                         this.floatsOnWater = true;
-                        this.allowedDensity = new AllowedDensity(radius: 50, maxNoOfPiecesSameName: 3);
+                        this.allowedDensity = new AllowedDensity(radius: 82, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
