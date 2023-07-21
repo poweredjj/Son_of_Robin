@@ -12,8 +12,10 @@ namespace SonOfRobin
 
         private readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;
+
         public List<Buff> BuffList
         { get { return this.buffDict.Values.ToList(); } }
+
         public bool HasAnyBuff
         { get { return this.buffDict.Any(); } }
 
@@ -202,28 +204,28 @@ namespace SonOfRobin
 
                 case BuffType.Speed:
                     {
-                        if (add)
-                        {
-                            float newSpeed = this.piece.speed + (float)buff.value;
-                            if (newSpeed <= 0) return false;
+                        float buffVal = (float)buff.value;
+                        if (!add) buffVal *= -1;
 
-                            this.piece.speed = newSpeed;
-                        }
-                        else this.piece.speed -= (float)buff.value;
+                        float correctedBuffVal = Math.Max(buffVal + this.piece.speed, 1f) - this.piece.speed;
+                        if (add && correctedBuffVal == 0) return false;
+
+                        if (correctedBuffVal != buffVal) buff.value = add ? correctedBuffVal : -correctedBuffVal;
+                        this.piece.speed += correctedBuffVal;
 
                         return true;
                     }
 
                 case BuffType.Strength:
                     {
-                        if (add)
-                        {
-                            int newStrength = this.piece.strength + (int)buff.value;
-                            if (newStrength <= 0) return false;
+                        int buffVal = (int)buff.value;
+                        if (!add) buffVal *= -1;
 
-                            this.piece.strength = newStrength;
-                        }
-                        else this.piece.strength -= (int)buff.value;
+                        int correctedBuffVal = Math.Max(buffVal + this.piece.strength, 1) - this.piece.strength;
+                        if (add && correctedBuffVal == 0) return false;
+
+                        if (correctedBuffVal != buffVal) buff.value = add ? correctedBuffVal : -correctedBuffVal;
+                        this.piece.strength += correctedBuffVal;
 
                         return true;
                     }
@@ -238,14 +240,14 @@ namespace SonOfRobin
 
                 case BuffType.MaxHP:
                     {
-                        if (add)
-                        {
-                            float newMaxHP = this.piece.maxHitPoints + (float)buff.value;
-                            if (newMaxHP < 3) return false;
+                        float buffVal = (float)buff.value;
+                        if (!add) buffVal *= -1;
 
-                            this.piece.maxHitPoints = newMaxHP;
-                        }
-                        else this.piece.maxHitPoints -= (float)buff.value;
+                        float correctedBuffVal = Math.Max(buffVal + this.piece.maxHitPoints, 3f) - this.piece.maxHitPoints;
+                        if (add && correctedBuffVal == 0) return false;
+
+                        if (correctedBuffVal != buffVal) buff.value = add ? correctedBuffVal : -correctedBuffVal;
+                        this.piece.maxHitPoints += correctedBuffVal;
 
                         this.piece.HitPoints = Math.Min(this.piece.HitPoints, this.piece.maxHitPoints);
 
@@ -255,21 +257,18 @@ namespace SonOfRobin
                 case BuffType.MaxStamina:
                     {
                         if (!this.CheckIfPieceIsPlayer(buff)) return false;
-
                         Player player = (Player)this.piece;
 
-                        float valueChange = add ? (float)buff.value : -(float)buff.value;
+                        float buffVal = (float)buff.value;
+                        if (!add) buffVal *= -1;
 
-                        if (add)
-                        {
-                            float newMaxStamina = player.maxStamina + valueChange;
-                            if (newMaxStamina <= 10) return false;
+                        float correctedBuffVal = Math.Max(buffVal + player.maxStamina, 10f) - player.maxStamina;
+                        if (add && correctedBuffVal == 0) return false;
 
-                            player.maxStamina = newMaxStamina;
-                        }
-                        else player.maxStamina += valueChange;
+                        if (correctedBuffVal != buffVal) buff.value = add ? correctedBuffVal : -correctedBuffVal;
+                        player.maxStamina += correctedBuffVal;
 
-                        if (valueChange > 0) player.stamina = player.maxStamina;
+                        if (buffVal > 0) player.stamina = player.maxStamina;
                         else player.stamina = Math.Min(player.stamina, player.maxStamina);
 
                         return true;

@@ -11,7 +11,7 @@ namespace SonOfRobin
         public readonly bool isPositive;
         public readonly string description;
         public readonly string iconText;
-        public readonly object value;
+        public object value;
         public readonly bool canKill;
         public readonly int autoRemoveDelay;
         public int activationFrame;

@@ -494,7 +494,7 @@ namespace SonOfRobin
 
                 //world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
 
-                world.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Speed, autoRemoveDelay: 4 * 60, value: 3f), world: world);
+                world.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.MaxStamina, autoRemoveDelay: 4 * 60, value: 600f), world: world);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
