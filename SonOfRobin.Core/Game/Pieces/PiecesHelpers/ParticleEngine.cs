@@ -58,8 +58,11 @@ namespace SonOfRobin
                     if (this.delayFramesLeft > 0) return;
                 }
 
-                int variation = this.particleToEmitMaxVariation > 0 ? SonOfRobinGame.random.Next(this.particleToEmitMaxVariation + 1) : 0;
-                this.particleEmitter.Parameters.Quantity = this.currentParticlesToEmit + variation;
+                if (this.delayFramesLeft == 0)
+                {
+                    int variation = this.particleToEmitMaxVariation > 0 ? SonOfRobinGame.random.Next(this.particleToEmitMaxVariation + 1) : 0;
+                    this.particleEmitter.Parameters.Quantity = this.currentParticlesToEmit + variation;
+                }
 
                 if (moveCounters && this.framesLeft > 0)
                 {
@@ -503,10 +506,9 @@ namespace SonOfRobin
 
                 case Preset.LavaFlame:
                     defaultParticlesToEmit = 1;
-                    particlesToEmitMaxVariation = 2;
-                    maxDelay = 120;
+                    maxDelay = 130;
 
-                    particleEmitter = new ParticleEmitter(textureRegion, 40, TimeSpan.FromSeconds(4.5), Profile.Point())
+                    particleEmitter = new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(3.5), Profile.Point())
                     {
                         Parameters = new ParticleReleaseParameters
                         {
@@ -523,7 +525,7 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.25f),
+                                            StartValue = new Vector2(0.22f),
                                             EndValue = new Vector2(3.2f)
                                         },
                                         new OpacityInterpolator
@@ -533,7 +535,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 4f},
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 7f},
                             }
                     };
 
