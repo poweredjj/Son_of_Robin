@@ -63,16 +63,18 @@ namespace SonOfRobin
             this.debrisTypeList = debrisTypeList;
         }
 
-        public void DropFirstPieces(int hitPower, BoardPiece piece)
+        public int DropFirstPieces(int hitPower, BoardPiece piece)
         {
-            this.DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
+            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
             this.DropDebris(piece: piece);
+            return droppedPiecesCount;
         }
 
-        public void DropFinalPieces(BoardPiece piece, float hitPower = 1f)
+        public int DropFinalPieces(BoardPiece piece, float hitPower = 1f)
         {
-            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces, hitPower: hitPower);
+            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces, hitPower: hitPower);
             this.DropDebris(piece: piece, hitPower: hitPower);
+            return droppedPiecesCount;
         }
 
         public List<BoardPiece> GetAllPieces(BoardPiece piece)
@@ -187,8 +189,9 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private void DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList, float hitPower = 1f)
+        private int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList, float hitPower = 1f)
         {
+            int droppedPiecesCount = 0;
             var piecesToDrop = this.GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
             int noOfTries = 10;
 
@@ -197,19 +200,17 @@ namespace SonOfRobin
                 for (int j = 0; j < noOfTries; j++)
                 {
                     yieldPiece.sprite.allowedTerrain = new AllowedTerrain(); // to avoid restricting placement
-
                     yieldPiece.PlaceOnBoard(randomPlacement: false, position: piece.sprite.position, closestFreeSpot: true);
 
                     if (yieldPiece.sprite.IsOnBoard)
                     {
+                        droppedPiecesCount++;
+
                         // duplicated in PieceTemplate
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
                         if (yieldPiece.pieceInfo.appearDebris != null) yieldPiece.pieceInfo.appearDebris.DropDebris(piece: piece, ignoreProcessingTime: true);
-                    }
 
-                    if (yieldPiece.sprite.IsOnBoard)
-                    {
-                        //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Yield - {yieldPiece.readableName} ID {yieldPiece.id} dropped.");
+                        // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");
 
                         yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
 
@@ -220,6 +221,8 @@ namespace SonOfRobin
                     }
                 }
             }
+
+            return droppedPiecesCount;
         }
     }
 }

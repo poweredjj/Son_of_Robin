@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated }
 
         public class PresetData
         {
@@ -75,6 +75,7 @@ namespace SonOfRobin
                 {Preset.WaterWave, "circle_16x16_soft" },
                 {Preset.CookingFinish, "circle_16x16_soft" },
                 {Preset.BrewingFinish, "bubble_16x16" },
+                {Preset.Excavated, "circle_16x16_sharp" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
@@ -390,6 +391,45 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.Excavated:
+                    defaultParticlesToEmit = 10;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(new Color(128, 106, 50)),
+                            Speed = new Range<float>(15f, 140f),
+                            Quantity = 1,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(2.0f),
+                                            EndValue = new Vector2(0.8f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.2f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new DragModifier
+                                {
+                                    Density = 1f, DragCoefficient = 1f
+                                },
+                            }
+                    };
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -513,6 +553,10 @@ namespace SonOfRobin
                     break;
 
                 case Preset.BrewingFinish:
+                    this.particleEffect.Position = this.sprite.position;
+                    break;
+
+                case Preset.Excavated:
                     this.particleEffect.Position = this.sprite.position;
                     break;
 

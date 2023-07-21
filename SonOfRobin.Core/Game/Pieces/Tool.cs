@@ -247,7 +247,15 @@ namespace SonOfRobin
                 Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                 if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                 {
-                    target.pieceInfo.Yield.DropFinalPieces(piece: target);
+                    int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target);
+
+                    if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
+                    {
+                        BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                        particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer0);
+                        ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
+                    }
+
                     world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
                 }
 
