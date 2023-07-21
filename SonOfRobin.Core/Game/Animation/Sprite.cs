@@ -199,8 +199,8 @@ namespace SonOfRobin
 
                     if (this.boardPiece.IsPlantMadeByPlayer)
                     {
-                        minDistance = 30;
-                        maxDistance = 115;
+                        minDistance = 0;
+                        maxDistance = 60;
                     }
 
                     placedCorrectly = this.FindFreeSpotNearby(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
@@ -575,9 +575,19 @@ namespace SonOfRobin
             if (this.IgnoresCollisions) return false;
 
             bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;
-            if (plantingMode) ignoreDensity = true;
+            if (plantingMode)
+            {
+                AllowedDensity plantingDensity = this.BlocksMovement ?
+                    new AllowedDensity(radious: 50, maxNoOfPiecesBlocking: 0) :
+                    new AllowedDensity(radious: 30, maxNoOfPiecesSameName: 0);
 
-            if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
+                if (!plantingDensity.CanBePlacedHere(this.boardPiece)) return true;
+            }
+            else
+            {
+                if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
+            }
+
             if (!plantingMode && !this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
