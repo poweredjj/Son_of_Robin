@@ -13,20 +13,30 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame }
 
         public class PresetData
         {
-            public readonly ParticleEmitter particleEmitter;
+            private readonly ParticleEmitter particleEmitter;
             public readonly int defaultParticlesToEmit;
-            public int framesLeft;
+            public readonly int particleToEmitMaxVariation;
+            private int currentParticlesToEmit;
+            private int framesLeft;
+            public int delayFramesLeft { get; private set; }
             public bool IsActive { get; private set; }
+            public bool Serialize { get { return this.IsActive && this.framesLeft == 0; } }
+            public bool HasFinished { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
 
-            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter)
+            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0)
             {
+                if (particlesToEmitMaxVariation < 0) throw new ArgumentOutOfRangeException($"particleToEmitMaxVariation cannot be < 0 - {particlesToEmitMaxVariation}");
+
                 this.defaultParticlesToEmit = defaultParticlesToEmit;
+                this.particleToEmitMaxVariation = particlesToEmitMaxVariation;
+                this.currentParticlesToEmit = 0;
 
                 this.particleEmitter = particleEmitter;
+                this.delayFramesLeft = maxDelay > 0 ? SonOfRobinGame.random.Next(maxDelay + 1) : 0;
                 this.framesLeft = 0;
                 this.IsActive = false;
             }
@@ -34,8 +44,28 @@ namespace SonOfRobin
             public void TurnOn(int particlesToEmit = 0, int duration = 0)
             {
                 if (duration > 0) this.framesLeft = duration + 1;
-                this.particleEmitter.Parameters.Quantity = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
+
+                this.currentParticlesToEmit = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
                 this.IsActive = true;
+                this.Update(moveCounters: false);
+            }
+
+            public void Update(bool moveCounters = true)
+            {
+                if (moveCounters && this.delayFramesLeft > 0)
+                {
+                    this.delayFramesLeft--;
+                    if (this.delayFramesLeft > 0) return;
+                }
+
+                int variation = this.particleToEmitMaxVariation > 0 ? SonOfRobinGame.random.Next(this.particleToEmitMaxVariation + 1) : 0;
+                this.particleEmitter.Parameters.Quantity = this.currentParticlesToEmit + variation;
+
+                if (moveCounters && this.framesLeft > 0)
+                {
+                    this.framesLeft--;
+                    if (this.framesLeft == 0) this.TurnOff();
+                }
             }
 
             public void TurnOff()
@@ -67,21 +97,24 @@ namespace SonOfRobin
         public void AddPreset(Preset preset)
         {
             var textureNameDict = new Dictionary<Preset, string> {
-                {Preset.Fireplace, "circle_16x16_sharp" },
-                {Preset.BurnFlame, "circle_16x16_soft" },
-                {Preset.Cooking, "circle_16x16_sharp" },
-                {Preset.Brewing, "bubble_16x16" },
-                {Preset.WaterWalk, "circle_16x16_sharp" },
-                {Preset.WaterWave, "circle_16x16_soft" },
-                {Preset.CookingFinish, "circle_16x16_soft" },
-                {Preset.BrewingFinish, "bubble_16x16" },
-                {Preset.Excavated, "circle_16x16_sharp" },
-                {Preset.MudWalk, "circle_16x16_soft" },
+                { Preset.Fireplace, "circle_16x16_sharp" },
+                { Preset.BurnFlame, "circle_16x16_soft" },
+                { Preset.Cooking, "circle_16x16_sharp" },
+                { Preset.Brewing, "bubble_16x16" },
+                { Preset.WaterWalk, "circle_16x16_sharp" },
+                { Preset.WaterWave, "circle_16x16_soft" },
+                { Preset.CookingFinish, "circle_16x16_soft" },
+                { Preset.BrewingFinish, "bubble_16x16" },
+                { Preset.Excavated, "circle_16x16_sharp" },
+                { Preset.MudWalk, "circle_16x16_soft" },
+                { Preset.LavaFlame, "circle_16x16_sharp" },
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
 
             int defaultParticlesToEmit;
+            int particlesToEmitMaxVariation = 0;
+            int maxDelay = 0;
             ParticleEmitter particleEmitter;
 
             switch (preset)
@@ -468,12 +501,50 @@ namespace SonOfRobin
 
                     break;
 
+                case Preset.LavaFlame:
+                    defaultParticlesToEmit = 1;
+                    particlesToEmitMaxVariation = 2;
+                    maxDelay = 120;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 40, TimeSpan.FromSeconds(4.5), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(Color.Yellow),
+                            Speed = new Range<float>(2f, 7f),
+                            Quantity = 0,
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.25f),
+                                            EndValue = new Vector2(3.2f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.43f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 4f},
+                            }
+                    };
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
             this.particleEffect.Emitters.Add(particleEmitter);
-            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter);
+            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay);
         }
 
         public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
@@ -518,10 +589,7 @@ namespace SonOfRobin
                 Preset preset = kvp.Key;
                 PresetData presetData = kvp.Value;
 
-                if (presetData.IsActive && presetData.framesLeft == 0)
-                {
-                    activePresetsList.Add(preset);
-                }
+                if (presetData.Serialize) activePresetsList.Add(preset);
             }
 
             if (!activePresetsList.Any()) return null;
@@ -549,17 +617,18 @@ namespace SonOfRobin
         {
             if (!this.dataByPreset.Any()) return;
 
-            foreach (PresetData presetData in this.dataByPreset.Values)
+            foreach (var kvp in this.dataByPreset.ToList())
             {
-                if (presetData.framesLeft > 0)
-                {
-                    presetData.framesLeft--;
-                    if (presetData.framesLeft == 0) presetData.TurnOff();
-                }
+                Preset presetName = kvp.Key;
+                PresetData presetData = kvp.Value;
+
+                if (presetData.IsActive) presetData.Update();
+                if (presetData.HasFinished) this.dataByPreset.Remove(presetName);
             }
 
-            Preset preset = this.dataByPreset.First().Key;
+            if (!this.dataByPreset.Any()) return;
 
+            Preset preset = this.dataByPreset.First().Key;
             switch (preset)
             {
                 case Preset.Fireplace:

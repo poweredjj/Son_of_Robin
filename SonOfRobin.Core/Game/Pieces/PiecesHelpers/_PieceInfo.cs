@@ -99,6 +99,7 @@ namespace SonOfRobin
             public readonly bool destroysPlantsWhenBuilt;
             public readonly bool hasFlatShadow;
             public readonly float fertileGroundSoilWealthMultiplier;
+            public readonly int inOpacityFadeDuration;
 
             public bool CanHurtAnimals
             {
@@ -231,6 +232,7 @@ namespace SonOfRobin
                 this.destroysPlantsWhenBuilt = false;
                 this.hasFlatShadow = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
+                this.inOpacityFadeDuration = 0;
 
                 // setting values for names
 
@@ -1015,6 +1017,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+                        this.inOpacityFadeDuration = 30;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Ceramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1117,6 +1120,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.inOpacityFadeDuration = 30;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1134,6 +1138,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
+                        this.inOpacityFadeDuration = 30;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1559,6 +1564,7 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
                         this.isAffectedByWind = false;
+                        this.inOpacityFadeDuration = 30;
                         break;
 
                     case PieceTemplate.Name.Heart:
@@ -1605,6 +1611,7 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
                         this.isAffectedByWind = false;
+                        this.inOpacityFadeDuration = 30;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
@@ -1653,6 +1660,7 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
                         this.isAffectedByWind = false;
+                        this.inOpacityFadeDuration = 30;
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -2303,6 +2311,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 500;
+                        this.inOpacityFadeDuration = 30;
                         break;
 
                     case PieceTemplate.Name.SwampGas:
@@ -2312,6 +2321,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.visFogExplodesWhenBurns = true;
                         this.allowedDensity = new AllowedDensity(radius: 370, maxNoOfPiecesSameName: 3);
+                        this.inOpacityFadeDuration = 180;
                         break;
 
                     case PieceTemplate.Name.LavaGas:
@@ -2319,6 +2329,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
+                        this.inOpacityFadeDuration = 120;
                         break;
 
                     case PieceTemplate.Name.SoundSeaWavesObsolete:

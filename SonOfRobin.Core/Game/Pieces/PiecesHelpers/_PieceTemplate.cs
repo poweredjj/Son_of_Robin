@@ -7,18 +7,6 @@ namespace SonOfRobin
 {
     public class PieceTemplate
     {
-        private static readonly Dictionary<Name, int> opacityFadeDurationByName = new Dictionary<Name, int> {
-            { Name.BurningFlame, 30 },
-            { Name.Zzz, 30 },
-            { Name.BubbleExclamationRed, 30 },
-            { Name.JarTreasure, 30 },
-            { Name.ChestTreasureNormal, 30 },
-            { Name.ChestTreasureBig, 30 },
-            { Name.SwampGas, 180 },
-            { Name.LavaGas, 120 },
-            { Name.LavaFlame, 30 },
-            };
-
         public enum Name
         {
             Empty, // to be used instead of null
@@ -310,12 +298,12 @@ namespace SonOfRobin
                 if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
 
                 // adding opacityFade
-                if (boardPiece.sprite.IsInCameraRect && (opacityFadeDurationByName.ContainsKey(templateName) || boardPiece.GetType() == typeof(Plant)))
+                if (boardPiece.sprite.IsInCameraRect && boardPiece.pieceInfo.inOpacityFadeDuration > 0)
                 {
                     float destOpacity = boardPiece.sprite.opacity;
                     boardPiece.sprite.opacity = 0f;
                     new OpacityFade(sprite: boardPiece.sprite, destOpacity: destOpacity,
-                        duration: opacityFadeDurationByName.ContainsKey(templateName) ? opacityFadeDurationByName[templateName] : 30);
+                        duration: boardPiece.pieceInfo.inOpacityFadeDuration);
                 }
             }
 
@@ -2643,11 +2631,12 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        VisualEffect lavalight = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 0.3f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: false, castShadows: true));
+                        VisualEffect lavaFlame = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 0.3f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: false, castShadows: true));
 
-                        lavalight.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
+                        lavaFlame.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
+                        ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.LavaFlame, particlesToEmit: 1);
 
-                        return lavalight;
+                        return lavaFlame;
                     }
 
                 case Name.SwampGas:
