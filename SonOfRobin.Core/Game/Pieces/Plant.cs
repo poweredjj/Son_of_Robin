@@ -102,12 +102,14 @@ namespace SonOfRobin
             }
         }
 
-        public bool DropFruit()
+        public bool DropFruit(bool showMessage)
         {
+            if (this.PieceStorage == null) return false;
+
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                if (showMessage) new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
                 return false;
             }

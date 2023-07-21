@@ -771,7 +771,7 @@ namespace SonOfRobin
                     case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)this.ExecuteHelper;
-                            bool fruitDropped = fruitPlant.DropFruit();
+                            bool fruitDropped = fruitPlant.DropFruit(showMessage: true);
 
                             if (fruitDropped)
                             {

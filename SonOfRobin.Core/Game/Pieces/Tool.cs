@@ -224,7 +224,10 @@ namespace SonOfRobin
 
             if (target.GetType() == typeof(Plant))
             {
-                if (target.Mass < ((Plant)target).pieceInfo.plantAdultSizeMass) hitPower *= 3; // making the impression of the plant being weaker, without messing with its max HP
+                Plant plant = (Plant)target;
+
+                plant.DropFruit(showMessage: false);
+                if (target.Mass < plant.pieceInfo.plantAdultSizeMass) hitPower *= 3; // making the impression of the plant being weaker, without messing with its max HP
             }
 
             target.HitPoints -= hitPower;
@@ -251,6 +254,7 @@ namespace SonOfRobin
                 if (target.GetType() == typeof(Plant))
                 {
                     ((Plant)target).DropSeeds();
+
                     if (target.PieceStorage != null) target.PieceStorage.DropAllPiecesToTheGround(addMovement: true); // plants do not drop their contents (fruits) by themselves
                 }
 
@@ -318,7 +322,7 @@ namespace SonOfRobin
                     var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
                     animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
                 }
-                else
+                else // not animal
                 {
                     float hitPercentage = Math.Min((float)hitPower / (float)target.maxHitPoints, target.maxHitPoints);
 
