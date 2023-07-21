@@ -289,7 +289,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 80;
-                        this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8);
+                        this.allowedDensity = new AllowedDensity(radius: 75, maxNoOfPiecesSameName: 8);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -306,7 +306,7 @@ namespace SonOfRobin
                         this.plantMaxExistingNumber = 300;
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 350, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -322,7 +322,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 40 } };
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 60;
-                        this.allowedDensity = new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 75, maxNoOfPiecesTotal: 0);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -340,7 +340,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 30;
                         this.placeMaxDistance = 90;
-                        this.allowedDensity = new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4);
+                        this.allowedDensity = new AllowedDensity(radius: 70, maxNoOfPiecesTotal: 4);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -361,7 +361,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 220 }, { Terrain.Name.Height, 92 } };
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 120;
-                        this.allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 40);
+                        this.allowedDensity = new AllowedDensity(radius: 120, maxNoOfPiecesTotal: 40);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -377,7 +377,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 25;
                         this.placeMaxDistance = 80;
                         this.floatsOnWater = true;
-                        this.allowedDensity = new AllowedDensity(radious: 50, maxNoOfPiecesSameName: 3);
+                        this.allowedDensity = new AllowedDensity(radius: 50, maxNoOfPiecesSameName: 3);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -393,7 +393,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
-                        this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -409,7 +409,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
-                        this.allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -426,7 +426,7 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 15;
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 250;
-                        this.allowedDensity = new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 240, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -444,7 +444,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
-                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -462,7 +462,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
-                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -480,7 +480,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
-                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2);
+                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -498,7 +498,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 600;
-                        this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -520,7 +520,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 300;
-                        this.allowedDensity = new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -544,7 +544,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -570,7 +570,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -595,7 +595,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -620,7 +620,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 360, maxNoOfPiecesSameName: 1);
+                        this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -644,7 +644,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
+                        this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -669,7 +669,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 2);
+                        this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
 
                         this.Yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Wood, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -980,7 +980,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -997,7 +997,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.allowedDensity = new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -2388,7 +2388,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameClass: 0);
                         this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.4f;
@@ -2403,7 +2403,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radious: 180, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 180, maxNoOfPiecesSameClass: 0);
                         this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.7f;
@@ -2418,7 +2418,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radious: 245, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 245, maxNoOfPiecesSameClass: 0);
                         this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 2.2f;
