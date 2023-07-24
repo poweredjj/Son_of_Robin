@@ -257,7 +257,7 @@ namespace SonOfRobin
                         animal.aiData.Reset();
                     }
 
-                    var collidingSprites = this.sprite.GetCollidingSprites(cellGroupsToCheck: new List<Cell.Group> { Cell.Group.All });
+                    var collidingSprites = this.sprite.GetCollidingSprites(cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
 
                     bool flameFound = false;
                     foreach (Sprite collidingSprite in collidingSprites)
