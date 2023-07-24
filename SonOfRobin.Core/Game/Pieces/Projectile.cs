@@ -32,6 +32,13 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropArrow, maxPitchVariation: 0.3f, cooldown: 20));
         }
 
+        public override void Destroy()
+        {
+            if (!this.exists) return;
+            if (this.isBurning) this.Explode();
+            base.Destroy();
+        }
+
         public void GetThrown(Vector2 startPosition, Vector2 movement, float hitPowerMultiplier, int shootingPower)
         {
             this.realHitPower = (int)(this.baseHitPower * hitPowerMultiplier);
@@ -94,7 +101,7 @@ namespace SonOfRobin
                     Animal animal = (Animal)closestAnimal;
                     Tool.HitTarget(attacker: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
-                    if (!this.pieceInfo.toolIndestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
+                    if (!this.pieceInfo.toolIndestructible)
                     {
                         this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(10, 35));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
@@ -117,7 +124,7 @@ namespace SonOfRobin
                 }
                 else // target is not animal
                 {
-                    if (!this.pieceInfo.toolIndestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
+                    if (!this.pieceInfo.toolIndestructible)
                     {
                         this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(0, 15));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
@@ -129,8 +136,6 @@ namespace SonOfRobin
                         }
                     }
                 }
-
-                if (this.shootMode && this.isBurning) this.Explode();
 
                 this.shootMode = false;
 
@@ -155,8 +160,7 @@ namespace SonOfRobin
                 this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
                 this.shootMode = false;
                 this.passiveMovement = Vector2.Zero;
-                if (this.sprite.IsInWater) this.Destroy();
-                if (this.isBurning) this.Explode();
+                if (this.sprite.IsInWater || this.isBurning) this.Destroy();
                 else
                 {
                     this.soundPack.Play(PieceSoundPack.Action.IsDropped);
@@ -199,7 +203,6 @@ namespace SonOfRobin
             }
 
             PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
-            this.Destroy();
         }
 
         public override Dictionary<string, Object> Serialize()
