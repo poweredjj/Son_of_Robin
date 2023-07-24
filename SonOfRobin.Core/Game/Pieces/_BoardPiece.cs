@@ -70,6 +70,7 @@ namespace SonOfRobin
         }
 
         protected const float passiveMovementMultiplier = 100f;
+        public const float minBurnLevelForFlame = 0.5f;
 
         public readonly World world;
         public readonly string id;
@@ -227,7 +228,7 @@ namespace SonOfRobin
         { get { return this.pieceInfo == null ? 0 : this.pieceInfo.destructionDelay; } }
 
         public bool IsBurning
-        { get { return this.burnLevel >= 0.5f; } }
+        { get { return this.burnLevel >= minBurnLevelForFlame; } }
 
         public float BurnLevel
         {
@@ -463,7 +464,7 @@ namespace SonOfRobin
         {
             new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
-            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
+            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
 
             StatBar.FinishThisBatch();
         }

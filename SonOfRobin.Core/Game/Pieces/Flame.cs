@@ -19,7 +19,7 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
             this.burningPieceChecked = false;
-            this.burningFramesLeft = Random.Next(60, 25 * 60);
+            this.burningFramesLeft = Random.Next(60, 40 * 60);
         }
 
         public override void SM_FlameBurn()
@@ -42,8 +42,9 @@ namespace SonOfRobin
 
             if (this.burningFramesLeft <= 0 && this.burningPiece != null)
             {
-                this.burningPiece = null;
-                this.Mass /= 3;
+                this.Destroy();
+                this.burningPiece.BurnLevel = minBurnLevelForFlame - 0.05f; // must be below minBurnLevelForFlame, otherwise glitches will happen
+                return;
             }
 
             // checking for rain and water
@@ -78,9 +79,9 @@ namespace SonOfRobin
 
             // calculating burn values
 
-            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 20), 25), 110);
+            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 20), 25), 120);
 
-            float baseBurnVal = Math.Max(this.Mass / 60f, 1);
+            float baseBurnVal = Math.Max(this.Mass / 50f, 1);
             if (isRaining) baseBurnVal /= 4;
 
             float baseHitPointsVal = (float)baseBurnVal / 180f;
@@ -154,7 +155,7 @@ namespace SonOfRobin
                 if (isRaining) this.Mass *= 0.985f;
                 else this.Mass += baseBurnVal;
 
-                if (this.burningPiece.HitPoints == 0)
+                if (this.burningPiece.HitPoints < 1)
                 {
                     bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
 
