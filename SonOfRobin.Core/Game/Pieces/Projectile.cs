@@ -112,7 +112,7 @@ namespace SonOfRobin
                         }
                     }
 
-                    if (this.canBeStuck && this.exists)
+                    if (!this.isBurning && this.canBeStuck && this.exists)
                     {
                         Tracking tracking = new Tracking(world: this.world, targetSprite: animal.sprite, followingSprite: this.sprite, turnOffDelay: this.world.random.Next(200, 2000), bounceWhenRemoved: true);
                         if (tracking.isCorrect)
@@ -139,7 +139,7 @@ namespace SonOfRobin
 
                 this.shootMode = false;
 
-                if (attachedToTarget || (!this.isBurning && this.canBeStuck && this.world.random.Next(0, 2) == 1))
+                if (attachedToTarget || (this.canBeStuck && this.world.random.Next(0, 2) == 1))
                 {
                     this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;
@@ -179,30 +179,29 @@ namespace SonOfRobin
 
         private void Explode()
         {
-            var piecesToHeat = new List<BoardPiece>();
+            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
 
-            var piecesWithinSmallRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 70, compareWithBottom: true);
+            Rectangle explosionRect = new Rectangle(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
+            explosionRect.Inflate(50, 50);
+
             var ignoredTypesList = new List<Type> { typeof(Player), typeof(Debris), typeof(Flame) };
 
-            foreach (BoardPiece piece in piecesWithinSmallRange)
-            {
-                if (!ignoredTypesList.Contains(piece.GetType())) piecesToHeat.Add(piece);
-            }
+            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
 
-            var piecesWithinLargeRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 180, compareWithBottom: false);
-            var piecesAffectedInLargeRange = new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas };
-
-            foreach (BoardPiece piece in piecesWithinLargeRange)
+            IEnumerable<BoardPiece> piecesToHeat;
+            try
             {
-                if (piecesAffectedInLargeRange.Contains(piece.name) && !piecesToHeat.Contains(piece)) piecesToHeat.Add(piece);
+                piecesToHeat = nearbyPieces.Where(piece => !ignoredTypesList.Contains(piece.GetType()) && explosionRect.Intersects(piece.sprite.ColRect));
             }
+            catch (NullReferenceException)
+            { return; }
+            catch (InvalidOperationException)
+            { return; }
 
             foreach (BoardPiece piece in piecesToHeat)
             {
                 piece.BurnLevel += this.baseHitPower * 12;
             }
-
-            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
         }
 
         public override Dictionary<string, Object> Serialize()

@@ -160,9 +160,19 @@ namespace SonOfRobin
                     break;
 
                 case Preset.BurnFlame:
-                    defaultParticlesToEmit = 2;
+                    defaultParticlesToEmit = 1;
 
-                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.0), Profile.Circle(radius: this.sprite.ColRect.Width / 3, radiate: Profile.CircleRadiation.Out))
+                    float shortEdge = Math.Min(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
+                    float longEdge = Math.Max(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
+
+                    bool longRectangle = longEdge / shortEdge > 1.6f;
+                    float sizeMultiplier = longRectangle ? 2f : 1f;
+
+                    Profile profile = longRectangle ?
+                        Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height) :
+                        Profile.Circle(radius: this.sprite.ColRect.Width / 3, radiate: Profile.CircleRadiation.Out);
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(1.0), profile: profile)
                     {
                         Parameters = new ParticleReleaseParameters
                         {
@@ -179,8 +189,8 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.4f),
-                                            EndValue = new Vector2(1.5f)
+                                            StartValue = new Vector2(0.4f * sizeMultiplier),
+                                            EndValue = new Vector2(1.5f * sizeMultiplier)
                                         },
                                         new OpacityInterpolator
                                         {

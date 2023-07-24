@@ -6,7 +6,8 @@ namespace SonOfRobin
 {
     public class Flame : BoardPiece
     {
-        private BoardPiece burningPiece;
+        public BoardPiece BurningPiece { get; private set; }
+
         private bool burningPieceChecked; // one time check, after deserialization
         private int burningFramesLeft;
 
@@ -30,20 +31,20 @@ namespace SonOfRobin
 
             // attaching burningPiece
 
-            if (this.burningPiece == null && !this.burningPieceChecked)
+            if (this.BurningPiece == null && !this.burningPieceChecked)
             {
                 // one time check after deserialization, to properly assign burningPiece again
 
                 Sprite burningSprite = this.world.trackingManager.GetTargetSprite(this.sprite);
-                if (burningSprite != null) this.burningPiece = burningSprite.boardPiece;
+                if (burningSprite != null) this.BurningPiece = burningSprite.boardPiece;
 
                 this.burningPieceChecked = true;
             }
 
-            if (this.burningFramesLeft <= 0 && this.burningPiece != null)
+            if (this.burningFramesLeft <= 0 && this.BurningPiece != null)
             {
                 this.Destroy();
-                this.burningPiece.BurnLevel = minBurnLevelForFlame - 0.05f; // must be below minBurnLevelForFlame, otherwise glitches will happen
+                this.BurningPiece.BurnLevel = minBurnLevelForFlame - 0.05f; // must be below minBurnLevelForFlame, otherwise glitches will happen
                 return;
             }
 
@@ -53,24 +54,24 @@ namespace SonOfRobin
             bool isRaining = this.world.weather.IsRaining;
             this.Mass -= rainPercentage * 0.01f;
 
-            if (this.burningPiece != null && this.burningPiece.exists)
+            if (this.BurningPiece != null && this.BurningPiece.exists)
             {
-                if (!this.burningPiece.sprite.IsOnBoard)
+                if (!this.BurningPiece.sprite.IsOnBoard)
                 {
-                    this.burningPiece.BurnLevel = 0;
+                    this.BurningPiece.BurnLevel = 0;
                     this.StopBurning();
                     return;
                 }
 
-                if (this.burningPiece.sprite.IsOnBoard && this.burningPiece.sprite.IsInWater)
+                if (this.BurningPiece.sprite.IsOnBoard && this.BurningPiece.sprite.IsInWater)
                 {
-                    this.burningPiece.BurnLevel = 0;
+                    this.BurningPiece.BurnLevel = 0;
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
                     this.StopBurning();
                     return;
                 }
 
-                if (!this.burningPiece.IsBurning)
+                if (!this.BurningPiece.IsBurning)
                 {
                     this.StopBurning();
                     return;
@@ -97,7 +98,7 @@ namespace SonOfRobin
 
                 heatedPiece.BurnLevel += baseBurnVal * distanceMultiplier;
 
-                if (heatedPiece != this.burningPiece && heatedPiece.IsAnimalOrPlayer)
+                if (heatedPiece != this.BurningPiece && heatedPiece.IsAnimalOrPlayer)
                 {
                     if (!heatedPiece.IsBurning) // getting damage before burning
                     {
@@ -127,22 +128,22 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.burningPiece != null && this.burningPiece.exists)
+            if (this.BurningPiece != null && this.BurningPiece.exists)
             {
                 // affecting burningPiece
 
-                float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
-                this.burningPiece.HitPoints -= hitPointsToTake;
-                if (this.burningPiece.pieceInfo.blocksMovement)
+                float hitPointsToTake = this.BurningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.BurningPiece.maxHitPoints / 700f);
+                this.BurningPiece.HitPoints -= hitPointsToTake;
+                if (this.BurningPiece.pieceInfo.blocksMovement)
                 {
-                    ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.burningPiece.BurnLevel * 5));
-                    this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+                    ParticleEngine.TurnOn(sprite: this.BurningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.BurningPiece.BurnLevel * 2));
+                    this.BurningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
                 }
 
-                if (this.burningPiece.IsAnimalOrPlayer && !this.burningPiece.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
-                    this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+                if (this.BurningPiece.IsAnimalOrPlayer && !this.BurningPiece.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
+                    this.BurningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
-                if (this.burningPiece.GetType() == typeof(Player))
+                if (this.BurningPiece.GetType() == typeof(Player))
                 {
                     if (!this.world.solidColorManager.AnySolidColorPresent)
                     {
@@ -155,16 +156,16 @@ namespace SonOfRobin
                 if (isRaining) this.Mass *= 0.985f;
                 else this.Mass += baseBurnVal;
 
-                if (this.burningPiece.HitPoints < 1)
+                if (this.BurningPiece.HitPoints < 1)
                 {
-                    bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
+                    bool isAnimal = this.BurningPiece.GetType() == typeof(Animal);
 
-                    if (isAnimal) this.burningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                    if (isAnimal) this.BurningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                     Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
 
-                    this.burningPiece.pieceInfo.Yield?.DropDebris(piece: this.burningPiece, debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
-                    this.burningPiece.Destroy();
-                    this.burningPiece = null;
+                    this.BurningPiece.pieceInfo.Yield?.DropDebris(piece: this.BurningPiece, debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
+                    this.BurningPiece.Destroy();
+                    this.BurningPiece = null;
                 }
             }
             else

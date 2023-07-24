@@ -236,8 +236,6 @@ namespace SonOfRobin
             { return this.burnLevel; }
             set
             {
-                bool wasBurning = this.IsBurning;
-
                 float valDiff = value - this.burnLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
@@ -250,23 +248,23 @@ namespace SonOfRobin
                 this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
                 if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, boardPiece: this, framesLeft: -1));
 
-                bool isBurning = this.IsBurning;
-
-                if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
+                if (this.IsBurning)
                 {
-                    Animal animal = (Animal)this;
-                    animal.activeState = State.AnimalRunForClosestWater;
-                    animal.aiData.Reset();
-                }
+                    if (this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
+                    {
+                        Animal animal = (Animal)this;
+                        animal.activeState = State.AnimalRunForClosestWater;
+                        animal.aiData.Reset();
+                    }
 
-                if (isBurning && wasBurning != isBurning)
-                {
-                    var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
+                    var collidingSprites = this.sprite.GetCollidingSprites(cellGroupsToCheck: new List<Cell.Group> { Cell.Group.All });
 
                     bool flameFound = false;
-                    foreach (BoardPiece piece in reallyClosePieces)
+                    foreach (Sprite collidingSprite in collidingSprites)
                     {
-                        if (piece.name == PieceTemplate.Name.BurningFlame)
+                        BoardPiece collidingPiece = collidingSprite.boardPiece;
+
+                        if (collidingPiece.name == PieceTemplate.Name.BurningFlame && ((Flame)collidingPiece).BurningPiece == this)
                         {
                             flameFound = true;
                             break;
@@ -276,6 +274,8 @@ namespace SonOfRobin
                     if (!flameFound)
                     {
                         BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
+
+                        MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} creating flame for {this.readableName}");
 
                         int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.GfxRect.Bottom - flame.sprite.GfxRect.Bottom + 2;
 
