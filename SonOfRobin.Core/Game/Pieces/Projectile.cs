@@ -16,7 +16,7 @@ namespace SonOfRobin
         private readonly bool canBeStuck;
         private readonly bool isBurning;
 
-        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
+        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int baseHitPower, int maxHitPoints, bool canBeStuck, string readableName, string description,
             byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, bool isBurning = false, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
