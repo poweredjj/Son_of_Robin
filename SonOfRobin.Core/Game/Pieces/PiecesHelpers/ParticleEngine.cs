@@ -162,7 +162,7 @@ namespace SonOfRobin
                 case Preset.BurnFlame:
                     defaultParticlesToEmit = 2;
 
-                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.0), Profile.Point())
+                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.0), Profile.Circle(radius: this.sprite.ColRect.Width / 3, radiate: Profile.CircleRadiation.Out))
                     {
                         Parameters = new ParticleReleaseParameters
                         {
@@ -179,7 +179,7 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.02f),
+                                            StartValue = new Vector2(0.4f),
                                             EndValue = new Vector2(1.5f)
                                         },
                                         new OpacityInterpolator

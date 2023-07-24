@@ -135,7 +135,7 @@ namespace SonOfRobin
                 this.burningPiece.HitPoints -= hitPointsToTake;
                 if (this.burningPiece.pieceInfo.blocksMovement)
                 {
-                    ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 15);
+                    ParticleEngine.TurnOn(sprite: this.burningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.burningPiece.BurnLevel * 5));
                     this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
                 }
 

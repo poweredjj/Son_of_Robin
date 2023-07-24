@@ -139,7 +139,7 @@ namespace SonOfRobin
 
                 this.shootMode = false;
 
-                if (attachedToTarget || (this.canBeStuck && this.world.random.Next(0, 2) == 1))
+                if (attachedToTarget || (!this.isBurning && this.canBeStuck && this.world.random.Next(0, 2) == 1))
                 {
                     this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;
