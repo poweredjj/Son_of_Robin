@@ -8,7 +8,7 @@
         public BurnInstance(float intensity, BoardPiece boardPiece, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectBurn, framesLeft: framesLeft, priority: priority)
         {
             this.intensity = intensity;
-            this.phaseModifier = boardPiece.efficiency;
+            this.phaseModifier = boardPiece.GetType() == typeof(Plant) ? boardPiece.sprite.position.X : 1;
         }
 
         public override void TurnOn(int currentUpdate)
