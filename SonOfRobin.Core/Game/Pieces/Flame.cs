@@ -11,6 +11,8 @@ namespace SonOfRobin
         private bool burningPieceChecked; // one time check, after deserialization
         private int burningFramesLeft;
 
+        // TODO remove - kept for compatibility with old saves
+
         public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", bool visible = true) :
 

@@ -119,7 +119,9 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.BootsProtective, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.FlameLight, closestFreeSpot: true);
+
+                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: piece.sprite, offsetX: 0, offsetY: 0, followSlowDown: 8);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D3))

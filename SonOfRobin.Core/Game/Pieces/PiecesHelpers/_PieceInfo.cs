@@ -1651,7 +1651,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.BurningFlame:
+                    case PieceTemplate.Name.BurningFlameObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 60;
                         this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
@@ -2394,6 +2394,15 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.isAffectedByWind = false;
+                        break;
+
+                    case PieceTemplate.Name.FlameLight:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
+                        this.isAffectedByWind = false;
+                        this.inOpacityFadeDuration = 30;
                         break;
 
                     case PieceTemplate.Name.FertileGroundSmall:
