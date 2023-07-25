@@ -2402,7 +2402,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.isAffectedByWind = false;
-                        this.inOpacityFadeDuration = 40;
                         break;
 
                     case PieceTemplate.Name.FertileGroundSmall:

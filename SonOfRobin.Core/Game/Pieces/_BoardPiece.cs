@@ -502,6 +502,7 @@ namespace SonOfRobin
             this.sprite.Destroy();
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();
+            if (this.flameLight != null) new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 0, duration: 30, destroyPiece: true);
             this.exists = false;
         }
 
@@ -808,6 +809,8 @@ namespace SonOfRobin
 
             // affecting this piece
 
+            this.HeatLevel += isRaining ? 0.005f : 0.01f;
+
             float hitPointsToTake = this.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.maxHitPoints / 700f);
             this.HitPoints -= hitPointsToTake;
             if (this.pieceInfo.blocksMovement)
@@ -887,23 +890,23 @@ namespace SonOfRobin
                 }
             }
 
-            // updating flameLight lightEngine
+            // creating and updating flameLight
 
-            if (this.flameLight == null)
+            if (this.flameLight == null && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
             {
                 this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 
                 this.flameLight.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0, width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height);
                 this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
+                this.flameLight.sprite.lightEngine.Activate();
 
                 new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
+
+                this.flameLight.sprite.opacity = 0f;
+                new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 80);
             }
 
-            this.flameLight.sprite.lightEngine.Size = Math.Max(affectedDistance * 5, 50);
-            if (!this.flameLight.sprite.lightEngine.IsActive && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
-            {
-                this.flameLight.sprite.lightEngine.Activate();
-            }
+            if (this.flameLight != null) this.flameLight.sprite.lightEngine.Size = Math.Max(affectedDistance * 5, 50);
         }
 
         public void AddPassiveMovement(Vector2 movement, bool force = false)
