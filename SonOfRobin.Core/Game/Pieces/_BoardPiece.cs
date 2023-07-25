@@ -70,7 +70,6 @@ namespace SonOfRobin
         }
 
         protected const float passiveMovementMultiplier = 100f;
-        public const float minBurnLevelForFlame = 0.5f;
 
         public readonly World world;
         public readonly string id;
@@ -91,7 +90,7 @@ namespace SonOfRobin
         public int showStatBarsTillFrame;
         public float maxHitPoints;
         public readonly PieceInfo.Info pieceInfo;
-        private float burnLevel;
+        private float heatLevel;
         public virtual PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
@@ -99,6 +98,7 @@ namespace SonOfRobin
         protected Vector2 passiveMovement;
         public bool rotatesWhenDropped;
         public BoardPiece visualAid;
+        private BoardPiece flameLight;
         public string readableName;
         public string description;
         public bool canBeHit;
@@ -143,12 +143,13 @@ namespace SonOfRobin
             this.rotatesWhenDropped = rotatesWhenDropped;
             this.canBeHit = true;
             this.createdByPlayer = false;
-            this.burnLevel = 0f;
+            this.heatLevel = 0f;
+            this.flameLight = null;
             this.isTemporaryDecoration = false; // to be set later
         }
 
         public bool HasPassiveMovement
-        { get { return this.passiveMovement != Vector2.Zero; } }
+        { get { return this.passiveMovement != Vector2.Zero || this.passiveRotation != 0; } }
 
         public virtual bool ShowStatBars
         { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
@@ -228,25 +229,29 @@ namespace SonOfRobin
         { get { return this.pieceInfo == null ? 0 : this.pieceInfo.destructionDelay; } }
 
         public bool IsBurning
-        { get { return this.burnLevel >= minBurnLevelForFlame; } }
+        { get { return this.heatLevel >= 0.5f; } }
 
-        public float BurnLevel
+        public float HeatLevel
         {
             get
-            { return this.burnLevel; }
+            { return this.heatLevel; }
             set
             {
-                float valDiff = value - this.burnLevel;
+                float previousHeatLevel = this.heatLevel;
+
+                float valDiff = value - this.heatLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
-                this.burnLevel += valDiff;
-                this.burnLevel = Math.Max(this.burnLevel, 0);
-                this.burnLevel = Math.Min(this.burnLevel, 1);
-
-                if (this.burnLevel > 0) this.world.coolingManager.AddPiece(this);
+                this.heatLevel += valDiff;
+                this.heatLevel = Math.Max(this.heatLevel, 0);
+                this.heatLevel = Math.Min(this.heatLevel, 1);
 
                 this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
-                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, boardPiece: this, framesLeft: -1));
+                if (this.heatLevel > 0)
+                {
+                    this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.heatLevel, boardPiece: this, framesLeft: -1));
+                    this.world.AddPieceToHeatQueue(this);
+                }
 
                 if (this.IsBurning)
                 {
@@ -257,38 +262,24 @@ namespace SonOfRobin
                         animal.aiData.Reset();
                     }
 
-                    var collidingSprites = this.sprite.GetCollidingSprites(cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
-
-                    bool flameFound = false;
-                    foreach (Sprite collidingSprite in collidingSprites)
-                    {
-                        BoardPiece collidingPiece = collidingSprite.boardPiece;
-
-                        if (collidingPiece.name == PieceTemplate.Name.BurningFlame && ((Flame)collidingPiece).BurningPiece == this)
-                        {
-                            flameFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!flameFound)
-                    {
-                        BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
-
-                        MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} creating flame for {this.readableName}");
-
-                        int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.GfxRect.Bottom - flame.sprite.GfxRect.Bottom + 2;
-
-                        new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
-
-                        if (this.GetType() == typeof(Player))
-                        {
-                            flame.sprite.opacityFade.Finish();
-                            Sound.QuickPlay(name: SoundData.Name.StartFireBig);
-                        }
-                    }
-
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
+
+                    if (previousHeatLevel == 0)
+                    {
+                        int delay = this.world.random.Next(60, 15 * 60);
+                        if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
+
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
+                        new WorldEvent(eventName: WorldEvent.EventName.Cool, world: this.world, delay: delay, boardPiece: this);
+                    }
+                }
+                else
+                {
+                    if (this.flameLight != null)
+                    {
+                        new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 0, duration: 80, destroyPiece: true);
+                        this.flameLight = null;
+                    }
                 }
             }
         }
@@ -406,7 +397,7 @@ namespace SonOfRobin
             if (pieceInfo.startHitPoints != this.HitPoints) pieceData["base_hitPoints"] = this.HitPoints;
             if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
             if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
-            if (this.burnLevel > 0) pieceData["base_burnLevel"] = this.burnLevel;
+            if (this.heatLevel > 0) pieceData["base_heatLevel"] = this.heatLevel;
             var soundPackSerialized = this.soundPack.Serialize();
             if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
             if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
@@ -439,7 +430,8 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_createdByPlayer")) this.createdByPlayer = (bool)pieceData["base_createdByPlayer"];
-            if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
+            if (pieceData.ContainsKey("base_burnLevel")) this.heatLevel = (float)(double)pieceData["base_burnLevel"]; // for compatibility with old saves
+            if (pieceData.ContainsKey("base_heatLevel")) this.heatLevel = (float)(double)pieceData["base_heatLevel"];
             if (pieceData.ContainsKey("base_readableName")) this.readableName = (string)pieceData["base_readableName"];
             if (pieceData.ContainsKey("base_description")) this.description = (string)pieceData["base_description"];
             if (pieceData.ContainsKey("base_showStatBarsTillFrame")) this.showStatBarsTillFrame = (int)(Int64)pieceData["base_showStatBarsTillFrame"];
@@ -464,7 +456,7 @@ namespace SonOfRobin
         {
             new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
-            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
+            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
 
             StatBar.FinishThisBatch();
         }
@@ -521,6 +513,7 @@ namespace SonOfRobin
             this.sprite.Destroy();
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();
+            if (this.flameLight != null) new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 0, duration: 30, destroyPiece: true);
             this.exists = false;
         }
 
@@ -793,6 +786,156 @@ namespace SonOfRobin
             }
         }
 
+        public void ProcessHeat()
+        {
+            // cooling down
+
+            if (!this.sprite.IsOnBoard)
+            {
+                this.heatLevel = 0; // changing the value directly
+                this.world.RemovePieceFromHeatQueue(this);
+                return;
+            }
+
+            bool isRaining = this.world.weather.IsRaining;
+
+            this.HeatLevel -= isRaining ? 0.015f : 0.0035f;
+            if (this.sprite.IsInWater)
+            {
+                if (this.IsBurning) this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
+                this.HeatLevel = 0;
+            }
+
+            if (this.HeatLevel == 0)
+            {
+                this.world.RemovePieceFromHeatQueue(this);
+                return;
+            }
+
+            if (!this.IsBurning) return;
+
+            // processing burning
+
+            if (!this.soundPack.IsPlaying(PieceSoundPack.Action.Burning)) this.soundPack.Play(PieceSoundPack.Action.Burning);
+
+            // affecting this piece
+
+            this.HeatLevel += isRaining ? 0.005f : 0.01f;
+
+            float hitPointsToTake = this.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.maxHitPoints / 700f);
+            this.HitPoints -= hitPointsToTake;
+            if (this.pieceInfo.blocksMovement) this.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+
+            int particleFrameDivider = this.pieceInfo.blocksMovement ? 1 : (int)(6f / this.HeatLevel);
+
+            if (this.world.CurrentUpdate % particleFrameDivider == 0)
+            {
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
+            }
+
+            if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
+                this.soundPack.Play(PieceSoundPack.Action.Cry);
+
+            if (this.GetType() == typeof(Player))
+            {
+                if (!this.world.solidColorManager.AnySolidColorPresent)
+                {
+                    this.world.camera.AddRandomShake();
+                    this.world.FlashRedOverlay();
+                    new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.4f);
+                }
+            }
+
+            if (this.HitPoints < 1)
+            {
+                bool isAnimal = this.GetType() == typeof(Animal);
+
+                if (isAnimal) this.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
+
+                this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
+                this.Destroy();
+                return;
+            }
+
+            // warming up nearby pieces
+
+            float baseBurnVal = Math.Max(this.heatLevel / 70f, 0.05f);
+            float baseHitPointsVal = (float)baseBurnVal / 180f;
+
+            Rectangle heatRect = this.sprite.GfxRect;
+            heatRect.Inflate(this.sprite.GfxRect.Width * 0.8f, this.sprite.GfxRect.Height * 0.8f);
+
+            IEnumerable<BoardPiece> piecesToHeat;
+            try
+            {
+                piecesToHeat = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150)
+                    .Where(piece => piece.pieceInfo.fireAffinity > 0 && heatRect.Intersects(piece.sprite.ColRect));
+            }
+            catch (NullReferenceException) { piecesToHeat = new List<BoardPiece>(); }
+            catch (InvalidOperationException) { piecesToHeat = new List<BoardPiece>(); }
+
+            foreach (BoardPiece heatedPiece in piecesToHeat)
+            {
+                if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
+
+                heatedPiece.HeatLevel += baseBurnVal * 0.28f;
+
+                if (heatedPiece.IsAnimalOrPlayer)
+                {
+                    if (!heatedPiece.IsBurning) // getting damage before burning
+                    {
+                        float hitPointsToSubtract = baseHitPointsVal * 0.4f;
+                        heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
+
+                        if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
+                        {
+                            heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+
+                            if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
+                            {
+                                this.world.camera.AddRandomShake();
+                                this.world.FlashRedOverlay();
+                                new RumbleEvent(force: 0.07f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.7f);
+                            }
+                        }
+
+                        if (heatedPiece.GetType() == typeof(Animal))
+                        {
+                            Animal animal = (Animal)heatedPiece;
+                            animal.target = this;
+                            animal.aiData.Reset();
+                            animal.activeState = State.AnimalFlee;
+                        }
+                    }
+                }
+            }
+
+            // creating and updating flameLight
+
+            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 4)
+            {
+                this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
+
+                this.flameLight.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0, width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height);
+                this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
+                this.flameLight.sprite.lightEngine.Activate();
+
+                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
+
+                this.flameLight.sprite.opacity = 0f;
+                new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);
+            }
+
+            if (this.flameLight != null)
+            {
+                int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
+                int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
+
+                this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
+            }
+        }
+
         public void AddPassiveMovement(Vector2 movement, bool force = false)
         {
             if (!this.pieceInfo.movesWhenDropped && !force) return;
@@ -824,7 +967,7 @@ namespace SonOfRobin
 
         public virtual bool ProcessPassiveMovement()
         {
-            if (this.passiveMovement == Vector2.Zero && this.passiveRotation == 0) return false;
+            if (!this.HasPassiveMovement) return false;
 
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} processing passive movement for {this.readableName}.");
 
@@ -959,6 +1102,7 @@ namespace SonOfRobin
 
         public virtual void SM_ScarePredatorsAway()
         { throw new DivideByZeroException("This method should not be executed."); }
+
         public virtual void SM_EmitParticles()
         { throw new DivideByZeroException("This method should not be executed."); }
 

@@ -70,7 +70,7 @@ namespace SonOfRobin
                 {
                     weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
                 }
-                debugLines.Add($"weather {weatherText}");
+                debugLines.Add($"heat {world.HeatQueueSize} weather {weatherText}");
                 debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
                 debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
                 debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
@@ -119,7 +119,9 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.BootsProtective, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
+
+                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: piece.sprite, offsetX: 0, offsetY: 0, followSlowDown: 8);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D3))
@@ -398,7 +400,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(2f)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.5f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(2f)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3))

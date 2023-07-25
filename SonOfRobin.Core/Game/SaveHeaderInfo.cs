@@ -105,7 +105,7 @@ namespace SonOfRobin
 
                 if (this.saveIsCorrect)
                 {
-                    var necessaryFileList = new List<string> { LoaderSaver.hintsName, LoaderSaver.trackingName, LoaderSaver.eventsName, LoaderSaver.coolingName, LoaderSaver.weatherName, LoaderSaver.gridName, $"{LoaderSaver.piecesPrefix}0.json" };
+                    var necessaryFileList = new List<string> { LoaderSaver.hintsName, LoaderSaver.trackingName, LoaderSaver.eventsName, LoaderSaver.weatherName, LoaderSaver.gridName, $"{LoaderSaver.piecesPrefix}0.json" };
 
                     var saveFileNames = Directory.GetFiles(this.fullPath).Select(path => Path.GetFileName(path).Replace(".gzip", ""));
 

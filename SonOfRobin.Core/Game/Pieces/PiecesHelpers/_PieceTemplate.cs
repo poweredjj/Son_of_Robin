@@ -148,7 +148,7 @@ namespace SonOfRobin
 
             RainDrop,
             Explosion,
-            BurningFlame,
+            BurningFlameObsolete,
 
             CookingTrigger,
             UpgradeTrigger,
@@ -270,6 +270,8 @@ namespace SonOfRobin
             HerbsBrown,
             HerbsDarkViolet,
             HerbsDarkGreen,
+
+            EmptyVisualEffect,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2616,11 +2618,11 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.BurningFlame:
+                case Name.BurningFlameObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
 
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "flame (obsolete)", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
 
                         return flame;
                     }
@@ -2807,6 +2809,13 @@ namespace SonOfRobin
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayer0, allowedTerrain: terrainCanGoAnywhere, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
 
                         visualEffect.sprite.opacity = 0f;
+
+                        return visualEffect;
+                    }
+
+                case Name.EmptyVisualEffect:
+                    {
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: terrainCanGoAnywhere, readableName: "empty visual effect", description: "Empty visual effect.", activeState: BoardPiece.State.Empty, visible: true);
 
                         return visualEffect;
                     }
