@@ -73,6 +73,7 @@ namespace SonOfRobin
 
             public void TurnOff()
             {
+                this.framesLeft = 0;
                 this.delayFramesLeft = 0;
                 this.particleEmitter.Parameters.Quantity = 0;
                 this.IsActive = false;
@@ -591,16 +592,6 @@ namespace SonOfRobin
             foreach (PresetData presetData in sprite.particleEngine.dataByPreset.Values)
             {
                 presetData.TurnOff();
-            }
-        }
-
-        public static void TurnOffAllWithoutDelay(Sprite sprite)
-        {
-            if (sprite.particleEngine == null) return;
-
-            foreach (PresetData presetData in sprite.particleEngine.dataByPreset.Values)
-            {
-                if (presetData.delayFramesLeft == 0) presetData.TurnOff();
             }
         }
 
