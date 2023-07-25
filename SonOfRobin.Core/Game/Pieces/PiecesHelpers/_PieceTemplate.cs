@@ -271,7 +271,7 @@ namespace SonOfRobin
             HerbsDarkViolet,
             HerbsDarkGreen,
 
-            FlameLight,
+            EmptyVisualEffect,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2813,12 +2813,9 @@ namespace SonOfRobin
                         return visualEffect;
                     }
 
-                case Name.FlameLight:
+                case Name.EmptyVisualEffect:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: terrainCanGoAnywhere, readableName: "flame light", description: "Light, produced by flames.", activeState: BoardPiece.State.Empty, visible: true);
-
-                        visualEffect.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0);
-                        visualEffect.sprite.lightEngine.AssignSprite(visualEffect.sprite);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: terrainCanGoAnywhere, readableName: "empty visual effect", description: "Empty visual effect.", activeState: BoardPiece.State.Empty, visible: true);
 
                         return visualEffect;
                     }

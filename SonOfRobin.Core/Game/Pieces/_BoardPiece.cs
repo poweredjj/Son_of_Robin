@@ -266,7 +266,7 @@ namespace SonOfRobin
                 {
                     if (this.flameLight != null)
                     {
-                        new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 0, duration: 40, destroyPiece: true);
+                        new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 0, duration: 80, destroyPiece: true);
                         this.flameLight = null;
                     }
                 }
@@ -805,11 +805,6 @@ namespace SonOfRobin
             // processing burning
 
             if (!this.soundPack.IsPlaying(PieceSoundPack.Action.Burning)) this.soundPack.Play(PieceSoundPack.Action.Burning);
-            if (this.flameLight == null)
-            {
-                this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.FlameLight, closestFreeSpot: true);
-                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
-            }
 
             // affecting this piece
 
@@ -893,6 +888,16 @@ namespace SonOfRobin
             }
 
             // updating flameLight lightEngine
+
+            if (this.flameLight == null)
+            {
+                this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
+
+                this.flameLight.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0, width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height);
+                this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
+
+                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
+            }
 
             this.flameLight.sprite.lightEngine.Size = Math.Max(affectedDistance * 5, 50);
             if (!this.flameLight.sprite.lightEngine.IsActive && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)

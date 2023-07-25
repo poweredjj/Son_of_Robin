@@ -2396,13 +2396,13 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.FlameLight:
+                    case PieceTemplate.Name.EmptyVisualEffect:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.isAffectedByWind = false;
-                        this.inOpacityFadeDuration = 30;
+                        this.inOpacityFadeDuration = 40;
                         break;
 
                     case PieceTemplate.Name.FertileGroundSmall:
