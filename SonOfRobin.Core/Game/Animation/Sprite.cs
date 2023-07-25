@@ -470,9 +470,9 @@ namespace SonOfRobin
                 {
                     // creating particleEmitter, that will finish particle animation of this destroyed sprite
 
+                    ParticleEngine.TurnOffAllWithoutDelay(this); // every "infinite" preset should end
                     BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                    particleEmitter.sprite.particleEngine = new ParticleEngine(sprite: particleEmitter.sprite, particleEngine: this.particleEngine);
-                    ParticleEngine.TurnOffAllWithoutDelay(particleEmitter.sprite); // every "infinite" preset should end
+                    this.particleEngine.ReassignSprite(particleEmitter.sprite);
                 }
                 else this.particleEngine?.Dispose();
             }

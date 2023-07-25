@@ -73,6 +73,7 @@ namespace SonOfRobin
 
             public void TurnOff()
             {
+                this.delayFramesLeft = 0;
                 this.particleEmitter.Parameters.Quantity = 0;
                 this.IsActive = false;
             }
@@ -80,7 +81,7 @@ namespace SonOfRobin
 
         public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
 
-        private readonly Sprite sprite;
+        private Sprite sprite;
         private readonly ParticleEffect particleEffect;
         private readonly Dictionary<Preset, PresetData> dataByPreset;
 
@@ -97,13 +98,10 @@ namespace SonOfRobin
             this.particleEffect.Emitters = new List<ParticleEmitter>();
         }
 
-        public ParticleEngine(Sprite sprite, ParticleEngine particleEngine)
+        public void ReassignSprite(Sprite sprite)
         {
-            // "moves" ParticleEngine to other sprite (the original sprite should be destroyed after that)
             this.sprite = sprite;
-            this.dataByPreset = particleEngine.dataByPreset;
-            this.particleEffect = particleEngine.particleEffect;
-            this.particleEffect.Emitters = particleEffect.Emitters;
+            sprite.particleEngine = this;
         }
 
         public void AddPreset(Preset preset)
