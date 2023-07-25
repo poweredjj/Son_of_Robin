@@ -34,9 +34,9 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	// Calculate burning effect
 	float burnVal = sin((input.TextureCoordinates.y + time + phaseModifier) * 5) * 0.1;
-	float3 burnColor = float3(1.0, 0.8, 0.0) * burnVal;
+	float3 burnColor = float3(1.0, 1.0, 0.0) * burnVal;
 
-	float4 fireColor = float4(0.8, 0.0, 0.0, 1.0) * (1.0 - input.TextureCoordinates.y);
+	float4 fireColor = float4(1.0, 0.0, 0.0, 1.0) * (1.0 - input.TextureCoordinates.y);
 
 	// Modify color calculation to add burning effect
 	float4 finalColor;

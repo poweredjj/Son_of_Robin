@@ -169,13 +169,13 @@ namespace SonOfRobin
                     break;
 
                 case Preset.BurnFlame:
-                    defaultParticlesToEmit = 1;
-
                     float shortEdge = Math.Min(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
                     float longEdge = Math.Max(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
 
                     bool longRectangle = longEdge / shortEdge > 1.6f;
                     float sizeMultiplier = longRectangle ? 2f : 1f;
+
+                    defaultParticlesToEmit = longRectangle ? 2 : 1;
 
                     Profile profile = longRectangle ?
                         Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height) :

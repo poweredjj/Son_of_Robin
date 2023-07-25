@@ -70,6 +70,7 @@ namespace SonOfRobin
         }
 
         protected const float passiveMovementMultiplier = 100f;
+        public const float minBurnVal = 0.5f;
 
         public readonly World world;
         public readonly string id;
@@ -229,7 +230,7 @@ namespace SonOfRobin
         { get { return this.pieceInfo == null ? 0 : this.pieceInfo.destructionDelay; } }
 
         public bool IsBurning
-        { get { return this.heatLevel >= 0.5f; } }
+        { get { return this.heatLevel >= minBurnVal; } }
 
         public float HeatLevel
         {
@@ -270,7 +271,7 @@ namespace SonOfRobin
                         if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
 
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
-                        new WorldEvent(eventName: WorldEvent.EventName.Cool, world: this.world, delay: delay, boardPiece: this);
+                        new WorldEvent(eventName: WorldEvent.EventName.StopBurning, world: this.world, delay: delay, boardPiece: this);
                     }
                 }
                 else
@@ -913,7 +914,7 @@ namespace SonOfRobin
 
             // creating and updating flameLight
 
-            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 4)
+            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 3)
             {
                 this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 
@@ -921,7 +922,7 @@ namespace SonOfRobin
                 this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
                 this.flameLight.sprite.lightEngine.Activate();
 
-                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
+                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flameLight.sprite);
 
                 this.flameLight.sprite.opacity = 0f;
                 new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);

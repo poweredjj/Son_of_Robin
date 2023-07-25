@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing, Cool }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing, StopBurning }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
         private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris };
@@ -199,10 +199,10 @@ namespace SonOfRobin
                         return;
                     }
 
-                case EventName.Cool:
+                case EventName.StopBurning:
                     {
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.boardPiece.readableName} cooling.", color: Color.LightCyan);
-                        this.boardPiece.HeatLevel = 0;
+                        this.boardPiece.HeatLevel = Math.Max(BoardPiece.minBurnVal - 0.1f, 0);
 
                         return;
                     }
