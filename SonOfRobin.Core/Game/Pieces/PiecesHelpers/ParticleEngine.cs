@@ -89,12 +89,21 @@ namespace SonOfRobin
         public int ActiveParticlesCount
         { get { return this.particleEffect.Emitters.Select(x => x.ActiveParticles).Sum(); } }
 
-        public ParticleEngine(Sprite sprite)
+        private ParticleEngine(Sprite sprite)
         {
             this.sprite = sprite;
             this.dataByPreset = new Dictionary<Preset, PresetData>();
             this.particleEffect = new ParticleEffect(autoTrigger: false);
             this.particleEffect.Emitters = new List<ParticleEmitter>();
+        }
+
+        public ParticleEngine(Sprite sprite, ParticleEngine particleEngine)
+        {
+            // "moves" ParticleEngine to other sprite (the original sprite should be destroyed after that)
+            this.sprite = sprite;
+            this.dataByPreset = particleEngine.dataByPreset;
+            this.particleEffect = particleEngine.particleEffect;
+            this.particleEffect.Emitters = particleEffect.Emitters;
         }
 
         public void AddPreset(Preset preset)
@@ -584,6 +593,16 @@ namespace SonOfRobin
             foreach (PresetData presetData in sprite.particleEngine.dataByPreset.Values)
             {
                 presetData.TurnOff();
+            }
+        }
+
+        public static void TurnOffAllWithoutDelay(Sprite sprite)
+        {
+            if (sprite.particleEngine == null) return;
+
+            foreach (PresetData presetData in sprite.particleEngine.dataByPreset.Values)
+            {
+                if (presetData.delayFramesLeft == 0) presetData.TurnOff();
             }
         }
 

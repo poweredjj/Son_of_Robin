@@ -464,7 +464,18 @@ namespace SonOfRobin
 
         public void Destroy()
         {
-            this.particleEngine?.Dispose();
+            if (this.particleEngine != null)
+            {
+                if (this.IsOnBoard && this.particleEngine.HasAnyParticles)
+                {
+                    // creating particleEmitter, that will finish particle animation of this destroyed sprite
+
+                    BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                    particleEmitter.sprite.particleEngine = new ParticleEngine(sprite: particleEmitter.sprite, particleEngine: this.particleEngine);
+                    ParticleEngine.TurnOffAllWithoutDelay(particleEmitter.sprite); // every "infinite" preset should end
+                }
+                else this.particleEngine?.Dispose();
+            }
         }
 
         private List<Cell.Group> GetGridGroups()

@@ -64,11 +64,7 @@ namespace SonOfRobin
             {
                 this.sprite.AssignNewName("burning");
                 if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
-
-                BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer2);
-                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: particleEmitter.sprite);
-                ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.BurnFlame, update: true, duration: 45);
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame);
             }
 
             this.soundPack.Play(PieceSoundPack.Action.ArrowFly);

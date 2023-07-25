@@ -1224,6 +1224,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.32f, durationSeconds: 0, smallMotor: true, fadeInSeconds: 0.065f, fadeOutSeconds: 0.065f);
 
                 closestPiece.sprite.rotation = 0f;
+                closestPiece.HeatLevel = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.HintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
             }
