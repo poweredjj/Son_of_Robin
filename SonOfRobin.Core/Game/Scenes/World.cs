@@ -390,6 +390,9 @@ namespace SonOfRobin
             }
         }
 
+        public int HeatQueueSize
+        { get { return this.heatQueue.Count; } }
+
         private Vector2 DarknessMaskScale
         {
             get

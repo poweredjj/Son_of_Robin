@@ -235,8 +235,6 @@ namespace SonOfRobin
             { return this.heatLevel; }
             set
             {
-                bool wasBurning = this.IsBurning;
-
                 float valDiff = value - this.heatLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
@@ -259,8 +257,6 @@ namespace SonOfRobin
                         animal.activeState = State.AnimalRunForClosestWater;
                         animal.aiData.Reset();
                     }
-
-                    if (!wasBurning) this.soundPack.Play(action: PieceSoundPack.Action.BurnStart);
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
                 }
@@ -772,8 +768,21 @@ namespace SonOfRobin
         {
             // cooling down
 
-            this.HeatLevel -= this.world.weather.IsRaining ? 0.02f : 0.0035f;
-            if (this.sprite.IsInWater) this.HeatLevel = 0;
+            if (!this.sprite.IsOnBoard)
+            {
+                this.heatLevel = 0; // changing the value directly
+                this.world.RemovePieceFromHeatQueue(this);
+                return;
+            }
+
+            bool isRaining = this.world.weather.IsRaining;
+
+            this.HeatLevel -= isRaining ? 0.02f : 0.0035f;
+            if (this.sprite.IsInWater)
+            {
+                if (this.IsBurning) this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
+                this.HeatLevel = 0;
+            }
 
             if (this.HeatLevel == 0)
             {
@@ -785,87 +794,53 @@ namespace SonOfRobin
 
             // processing burning
 
-            //if (!this.soundPack.IsPlaying(PieceSoundPack.Action.IsOn)) this.soundPack.Play(PieceSoundPack.Action.IsOn);
+            if (!this.soundPack.IsPlaying(PieceSoundPack.Action.Burning)) this.soundPack.Play(PieceSoundPack.Action.Burning);
 
-            //// checking for rain and water
+            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 30), 25), 125);
+            float baseBurnVal = Math.Max(this.heatLevel / 130f, 0.1f);
+            if (isRaining) baseBurnVal /= 4;
+            float baseHitPointsVal = (float)baseBurnVal / 180f;
 
-            //float rainPercentage = this.world.weather.RainPercentage;
-            //bool isRaining = this.world.weather.IsRaining;
-            //this.Mass -= rainPercentage * 0.01f;
+            // warming up nearby pieces
 
-            //if (this.BurningPiece != null && this.BurningPiece.exists)
-            //{
-            //    if (!this.BurningPiece.sprite.IsOnBoard)
-            //    {
-            //        this.BurningPiece.BurnLevel = 0;
-            //        this.StopBurning();
-            //        return;
-            //    }
+            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
+            foreach (BoardPiece heatedPiece in piecesWithinRange)
+            {
+                if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
 
-            //    if (this.BurningPiece.sprite.IsOnBoard && this.BurningPiece.sprite.IsInWater)
-            //    {
-            //        this.BurningPiece.BurnLevel = 0;
-            //        this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
-            //        this.StopBurning();
-            //        return;
-            //    }
+                float distanceMultiplier = 1f - (Vector2.Distance(this.sprite.position, heatedPiece.sprite.position) / (float)affectedDistance);
 
-            //    if (!this.BurningPiece.IsBurning)
-            //    {
-            //        this.StopBurning();
-            //        return;
-            //    }
-            //}
+                heatedPiece.HeatLevel += baseBurnVal * distanceMultiplier;
 
-            //// calculating burn values
+                if (heatedPiece.IsAnimalOrPlayer)
+                {
+                    if (!heatedPiece.IsBurning) // getting damage before burning
+                    {
+                        float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
+                        heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
 
-            //int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 20), 25), 120);
+                        if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
+                        {
+                            heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
-            //float baseBurnVal = Math.Max(this.Mass / 50f, 1);
-            //if (isRaining) baseBurnVal /= 4;
+                            if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
+                            {
+                                this.world.camera.AddRandomShake();
+                                this.world.FlashRedOverlay();
+                                new RumbleEvent(force: 0.07f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.7f);
+                            }
+                        }
 
-            //float baseHitPointsVal = (float)baseBurnVal / 180f;
-
-            //// warming up nearby pieces
-
-            //var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
-            //foreach (BoardPiece heatedPiece in piecesWithinRange)
-            //{
-            //    if (heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
-
-            //    float distanceMultiplier = 1f - (Vector2.Distance(this.sprite.position, heatedPiece.sprite.position) / (float)affectedDistance);
-
-            //    heatedPiece.HeatLevel += baseBurnVal * distanceMultiplier;
-
-            //    if (heatedPiece != this.BurningPiece && heatedPiece.IsAnimalOrPlayer)
-            //    {
-            //        if (!heatedPiece.IsBurning) // getting damage before burning
-            //        {
-            //            float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
-            //            heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
-
-            //            if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
-            //            {
-            //                heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
-
-            //                if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
-            //                {
-            //                    this.world.camera.AddRandomShake();
-            //                    this.world.FlashRedOverlay();
-            //                    new RumbleEvent(force: 0.07f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.7f);
-            //                }
-            //            }
-
-            //            if (heatedPiece.GetType() == typeof(Animal))
-            //            {
-            //                Animal animal = (Animal)heatedPiece;
-            //                animal.target = this;
-            //                animal.aiData.Reset();
-            //                animal.activeState = State.AnimalFlee;
-            //            }
-            //        }
-            //    }
-            //}
+                        if (heatedPiece.GetType() == typeof(Animal))
+                        {
+                            Animal animal = (Animal)heatedPiece;
+                            animal.target = this;
+                            animal.aiData.Reset();
+                            animal.activeState = State.AnimalFlee;
+                        }
+                    }
+                }
+            }
 
             //if (this.BurningPiece != null && this.BurningPiece.exists)
             //{

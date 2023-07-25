@@ -7,7 +7,7 @@ namespace SonOfRobin
     public class PieceSoundPack
     {
         public enum Action
-        { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, StepMud, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient, PlayerJump, BurnStart, BurnLoop, BurnEnd }
+        { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, StepMud, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient, PlayerJump, Burning, BurnEnd }
 
         private readonly Dictionary<Action, Sound> soundDict;
         private BoardPiece boardPiece;
@@ -91,10 +91,9 @@ namespace SonOfRobin
                 sound.AddBoardPiece(this.boardPiece);
             }
 
-            AddAction(action: Action.BurnStart, sound: new Sound(name: SoundData.Name.StartFireBig, maxPitchVariation: 0.2f));
             AddAction(action: Action.BurnEnd, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
             // looped sound would populate all sound channels fast, so non-looped short sound is used instead
-            AddAction(action: Action.BurnLoop, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
+            AddAction(action: Action.Burning, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
 
             AddAction(action: Action.IsHit, sound: new Sound(nameList: GetHitSoundNames(boardPiece), boardPiece: this.boardPiece, maxPitchVariation: 0.5f), replaceExisting: false);
 

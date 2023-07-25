@@ -70,7 +70,7 @@ namespace SonOfRobin
                 {
                     weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
                 }
-                debugLines.Add($"weather {weatherText}");
+                debugLines.Add($"heat {world.HeatQueueSize} weather {weatherText}");
                 debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
                 debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
                 debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
