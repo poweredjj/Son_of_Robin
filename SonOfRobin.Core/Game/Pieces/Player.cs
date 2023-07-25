@@ -929,7 +929,7 @@ namespace SonOfRobin
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.HitPoints -= 0.5f;
-                this.BurnLevel += 0.12f;
+                this.HeatLevel += 0.12f;
                 this.soundPack.Play(PieceSoundPack.Action.StepLava);
                 new RumbleEvent(force: 1f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
             }

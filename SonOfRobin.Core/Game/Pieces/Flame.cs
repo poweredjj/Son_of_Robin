@@ -44,7 +44,7 @@ namespace SonOfRobin
             if (this.burningFramesLeft <= 0 && this.BurningPiece != null)
             {
                 this.Destroy();
-                this.BurningPiece.BurnLevel = minBurnLevelForFlame - 0.05f; // must be below minBurnLevelForFlame, otherwise glitches will happen
+                this.BurningPiece.HeatLevel = 0.45f; // must be below minBurnLevelForFlame, otherwise glitches will happen
                 return;
             }
 
@@ -58,14 +58,14 @@ namespace SonOfRobin
             {
                 if (!this.BurningPiece.sprite.IsOnBoard)
                 {
-                    this.BurningPiece.BurnLevel = 0;
+                    this.BurningPiece.HeatLevel = 0;
                     this.StopBurning();
                     return;
                 }
 
                 if (this.BurningPiece.sprite.IsOnBoard && this.BurningPiece.sprite.IsInWater)
                 {
-                    this.BurningPiece.BurnLevel = 0;
+                    this.BurningPiece.HeatLevel = 0;
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
                     this.StopBurning();
                     return;
@@ -96,7 +96,7 @@ namespace SonOfRobin
 
                 float distanceMultiplier = 1f - (Vector2.Distance(this.sprite.position, heatedPiece.sprite.position) / (float)affectedDistance);
 
-                heatedPiece.BurnLevel += baseBurnVal * distanceMultiplier;
+                heatedPiece.HeatLevel += baseBurnVal * distanceMultiplier;
 
                 if (heatedPiece != this.BurningPiece && heatedPiece.IsAnimalOrPlayer)
                 {
@@ -136,7 +136,7 @@ namespace SonOfRobin
                 this.BurningPiece.HitPoints -= hitPointsToTake;
                 if (this.BurningPiece.pieceInfo.blocksMovement)
                 {
-                    ParticleEngine.TurnOn(sprite: this.BurningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.BurningPiece.BurnLevel * 2));
+                    ParticleEngine.TurnOn(sprite: this.BurningPiece.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.BurningPiece.HeatLevel * 2));
                     this.BurningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
                 }
 

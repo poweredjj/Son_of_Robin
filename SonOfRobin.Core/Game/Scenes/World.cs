@@ -62,6 +62,7 @@ namespace SonOfRobin
         private readonly List<Sprite> temporaryDecorationSprites;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
+        private Dictionary<string, BoardPiece> heatQueue;
         public List<Sprite> nonPlantSpritesQueue;
         public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
@@ -73,7 +74,6 @@ namespace SonOfRobin
         public readonly TrackingManager trackingManager;
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
-        public readonly CoolingManager coolingManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -120,7 +120,6 @@ namespace SonOfRobin
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.worldEventManager = new WorldEventManager(this);
             this.trackingManager = new TrackingManager(this);
-            this.coolingManager = new CoolingManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -149,6 +148,7 @@ namespace SonOfRobin
             this.HintEngine = new HintEngine(world: this);
             this.plantSpritesQueue = new List<Sprite>();
             this.nonPlantSpritesQueue = new List<Sprite>();
+            this.heatQueue = new Dictionary<string, BoardPiece>();
             this.plantCellsQueue = new List<Cell>();
             this.ProcessedNonPlantsCount = 0;
             this.ProcessedPlantsCount = 0;
@@ -605,6 +605,7 @@ namespace SonOfRobin
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
+                    if (newBoardPiece.HeatLevel > 0) this.AddPieceToHeatQueue(newBoardPiece);
 
                     if (PieceInfo.IsPlayer(templateName))
                     {
@@ -626,13 +627,6 @@ namespace SonOfRobin
 
                 var eventDataList = (List<Object>)saveGameDataDict["events"];
                 this.worldEventManager.Deserialize(eventDataList);
-
-                if (this.HasBeenRemoved) return; // to avoid processing if cancelled
-
-                // deserializing cooling data
-
-                var coolingData = (Dictionary<string, Object>)saveGameDataDict["cooling"];
-                this.coolingManager.Deserialize(coolingData);
 
                 if (this.HasBeenRemoved) return; // to avoid processing if cancelled
 
@@ -960,7 +954,8 @@ namespace SonOfRobin
             {
                 this.trackingManager.ProcessQueue();
                 this.worldEventManager.ProcessQueue();
-                this.coolingManager.Update();
+                this.ProcessHeatQueue();
+
                 if (!this.BuildMode) this.UpdateAllAnims();
 
                 if (this.Player != null)
@@ -1056,6 +1051,27 @@ namespace SonOfRobin
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                     return;
                 }
+            }
+        }
+
+        public void AddPieceToHeatQueue(BoardPiece boardPiece)
+        {
+            this.heatQueue[boardPiece.id] = boardPiece;
+        }
+
+        public void RemovePieceFromHeatQueue(BoardPiece boardPiece)
+        {
+            try
+            { this.heatQueue.Remove(boardPiece.id); }
+            catch (KeyNotFoundException)
+            { }
+        }
+
+        private void ProcessHeatQueue()
+        {
+            foreach (BoardPiece boardPiece in this.heatQueue.Values.ToList())
+            {
+                boardPiece.ProcessHeat();
             }
         }
 

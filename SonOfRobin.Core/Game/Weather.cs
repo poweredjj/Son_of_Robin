@@ -246,7 +246,7 @@ namespace SonOfRobin
                             {
                                 if (nearbyPiece.createdByPlayer) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
                             }
-                            piece.BurnLevel += 1;
+                            piece.HeatLevel += 1;
                             break;
                         }
                     }

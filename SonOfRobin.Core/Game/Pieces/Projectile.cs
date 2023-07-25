@@ -166,7 +166,7 @@ namespace SonOfRobin
                     this.soundPack.Play(PieceSoundPack.Action.IsDropped);
                     if (this.sprite.IsOnLava)
                     {
-                        this.BurnLevel = 1;
+                        this.HeatLevel = 1;
                         new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 120, destroyPiece: true);
                     }
                 }
@@ -200,7 +200,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in piecesToHeat)
             {
-                piece.BurnLevel += this.baseHitPower * 12;
+                piece.HeatLevel += this.baseHitPower * 12;
             }
         }
 

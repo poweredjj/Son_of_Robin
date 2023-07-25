@@ -15,7 +15,6 @@ namespace SonOfRobin
         public const string hintsName = "hints.json";
         public const string trackingName = "tracking.json";
         public const string eventsName = "events.json";
-        public const string coolingName = "cooling.json";
         public const string weatherName = "weather.json";
         public const string gridName = "grid.json";
         public const string piecesPrefix = "pieces_";
@@ -45,7 +44,6 @@ namespace SonOfRobin
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
         private List<Object> eventsData;
-        private Dictionary<string, Object> coolingData;
         private readonly ConcurrentBag<Object> piecesData;
         private string currentStepName;
         private int processedSteps;
@@ -108,7 +106,6 @@ namespace SonOfRobin
                     { "pieces", this.piecesData },
                     { "tracking", this.trackingData },
                     { "events", this.eventsData },
-                    { "cooling", this.coolingData },
             };
             }
         }
@@ -137,7 +134,7 @@ namespace SonOfRobin
             this.gridTemplateFound = false;
             this.currentPiecePackageNo = 0;
             this.piecesData = new ConcurrentBag<object> { };
-            this.allSteps = this.saveMode ? 8 + this.piecePackagesToSave.Count : 7 + this.PiecesFilesCount;
+            this.allSteps = this.saveMode ? 7 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
         }
@@ -408,17 +405,6 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
             }
 
-            // saving cooling data
-            {
-                this.processedSteps++;
-                this.currentStepName = "cooling";
-
-                var coolingData = this.world.coolingManager.Serialize();
-
-                string coolingPath = Path.Combine(this.saveTempPath, coolingName);
-                FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
-            }
-
             if (this.HasBeenRemoved) // in case of cancelled save
             {
                 Directory.Delete(path: this.saveTempPath, recursive: true);
@@ -542,17 +528,6 @@ namespace SonOfRobin
                 if (!FileReaderWriter.PathExists(eventPath)) throw new ArgumentException($"Error while reading events for slot {saveSlotName}.");
 
                 this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
-            }
-
-            // loading cooling data
-            {
-                this.processedSteps++;
-                this.currentStepName = "cooling";
-
-                string coolingPath = Path.Combine(this.savePath, coolingName);
-                if (!FileReaderWriter.PathExists(coolingPath)) throw new ArgumentException($"Error while reading cooling data for slot {saveSlotName}.");
-
-                this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
             }
 
             // loading pieces

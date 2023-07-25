@@ -222,10 +222,10 @@ namespace SonOfRobin
                 var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
-                    if (!ignoredTypesList.Contains(piece.GetType())) piece.BurnLevel += 2;
+                    if (!ignoredTypesList.Contains(piece.GetType())) piece.HeatLevel += 2;
                 }
 
-                this.BurnLevel = 0;
+                this.HeatLevel = 0;
                 this.sprite.color = Color.Yellow;
                 this.sprite.opacity = 1f;
 
