@@ -237,6 +237,8 @@ namespace SonOfRobin
             { return this.heatLevel; }
             set
             {
+                float previousHeatLevel = this.heatLevel;
+
                 float valDiff = value - this.heatLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
@@ -261,6 +263,15 @@ namespace SonOfRobin
                     }
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
+
+                    if (previousHeatLevel == 0)
+                    {
+                        int delay = this.world.random.Next(60, 15 * 60);
+                        if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
+
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
+                        new WorldEvent(eventName: WorldEvent.EventName.Cool, world: this.world, delay: delay, boardPiece: this);
+                    }
                 }
                 else
                 {
@@ -788,7 +799,7 @@ namespace SonOfRobin
 
             bool isRaining = this.world.weather.IsRaining;
 
-            this.HeatLevel -= isRaining ? 0.02f : 0.0035f;
+            this.HeatLevel -= isRaining ? 0.015f : 0.0035f;
             if (this.sprite.IsInWater)
             {
                 if (this.IsBurning) this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
@@ -850,11 +861,10 @@ namespace SonOfRobin
             // warming up nearby pieces
 
             float baseBurnVal = Math.Max(this.heatLevel / 70f, 0.05f);
-            if (isRaining) baseBurnVal /= 4;
             float baseHitPointsVal = (float)baseBurnVal / 180f;
 
             Rectangle heatRect = this.sprite.GfxRect;
-            heatRect.Inflate(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+            heatRect.Inflate(this.sprite.GfxRect.Width * 0.8f, this.sprite.GfxRect.Height * 0.8f);
 
             IEnumerable<BoardPiece> piecesToHeat;
             try
@@ -869,7 +879,7 @@ namespace SonOfRobin
             {
                 if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
 
-                heatedPiece.HeatLevel += baseBurnVal * 0.4f;
+                heatedPiece.HeatLevel += baseBurnVal * 0.28f;
 
                 if (heatedPiece.IsAnimalOrPlayer)
                 {
@@ -903,7 +913,7 @@ namespace SonOfRobin
 
             // creating and updating flameLight
 
-            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
+            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 4)
             {
                 this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 
@@ -914,7 +924,7 @@ namespace SonOfRobin
                 new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: this.sprite);
 
                 this.flameLight.sprite.opacity = 0f;
-                new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 80);
+                new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);
             }
 
             if (this.flameLight != null)

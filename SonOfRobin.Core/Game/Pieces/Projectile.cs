@@ -137,6 +137,12 @@ namespace SonOfRobin
                     }
                 }
 
+                if (this.isBurning)
+                {
+                    this.Destroy();
+                    return false;
+                }
+
                 this.shootMode = false;
 
                 if (attachedToTarget || (this.canBeStuck && this.world.random.Next(0, 2) == 1))
