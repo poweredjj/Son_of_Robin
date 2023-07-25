@@ -869,15 +869,13 @@ namespace SonOfRobin
             {
                 if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
 
-                float distanceMultiplier = 0.4f;
-
-                heatedPiece.HeatLevel += baseBurnVal * distanceMultiplier;
+                heatedPiece.HeatLevel += baseBurnVal * 0.4f;
 
                 if (heatedPiece.IsAnimalOrPlayer)
                 {
                     if (!heatedPiece.IsBurning) // getting damage before burning
                     {
-                        float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
+                        float hitPointsToSubtract = baseHitPointsVal * 0.4f;
                         heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
 
                         if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
@@ -905,7 +903,7 @@ namespace SonOfRobin
 
             // creating and updating flameLight
 
-            if (this.flameLight == null && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
+            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
             {
                 this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 
@@ -921,7 +919,7 @@ namespace SonOfRobin
 
             if (this.flameLight != null)
             {
-                int minSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+                int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
                 int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
 
                 this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
