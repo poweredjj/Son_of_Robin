@@ -184,19 +184,14 @@ namespace SonOfRobin
             Rectangle explosionRect = new Rectangle(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
             explosionRect.Inflate(50, 50);
 
-            var ignoredTypesList = new List<Type> { typeof(Player), typeof(Debris), typeof(Flame) };
-
-            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
-
             IEnumerable<BoardPiece> piecesToHeat;
             try
             {
-                piecesToHeat = nearbyPieces.Where(piece => !ignoredTypesList.Contains(piece.GetType()) && explosionRect.Intersects(piece.sprite.ColRect));
+                piecesToHeat = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150)
+                    .Where(piece => piece.pieceInfo.fireAffinity > 0 && piece.GetType() != typeof(Player) && explosionRect.Intersects(piece.sprite.ColRect));
             }
-            catch (NullReferenceException)
-            { return; }
-            catch (InvalidOperationException)
-            { return; }
+            catch (NullReferenceException) { return; }
+            catch (InvalidOperationException) { return; }
 
             foreach (BoardPiece piece in piecesToHeat)
             {

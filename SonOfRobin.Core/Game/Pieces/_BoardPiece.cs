@@ -91,7 +91,6 @@ namespace SonOfRobin
         public float maxHitPoints;
         public readonly PieceInfo.Info pieceInfo;
         private float heatLevel;
-        private BoardPiece flameLight;
         public virtual PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
@@ -99,6 +98,7 @@ namespace SonOfRobin
         protected Vector2 passiveMovement;
         public bool rotatesWhenDropped;
         public BoardPiece visualAid;
+        private BoardPiece flameLight;
         public string readableName;
         public string description;
         public bool canBeHit;
@@ -813,10 +813,13 @@ namespace SonOfRobin
 
             float hitPointsToTake = this.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.maxHitPoints / 700f);
             this.HitPoints -= hitPointsToTake;
-            if (this.pieceInfo.blocksMovement)
+            if (this.pieceInfo.blocksMovement) this.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+
+            int particleFrameDivider = this.pieceInfo.blocksMovement ? 1 : (int)(6f / this.HeatLevel);
+
+            if (this.world.CurrentUpdate % particleFrameDivider == 0)
             {
-                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 10, particlesToEmit: (int)(this.HeatLevel * 2));
-                this.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
             }
 
             if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
@@ -846,17 +849,27 @@ namespace SonOfRobin
 
             // warming up nearby pieces
 
-            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 30), 25), 125);
-            float baseBurnVal = Math.Max(this.heatLevel / 80f, 0.05f);
+            float baseBurnVal = Math.Max(this.heatLevel / 70f, 0.05f);
             if (isRaining) baseBurnVal /= 4;
             float baseHitPointsVal = (float)baseBurnVal / 180f;
 
-            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
-            foreach (BoardPiece heatedPiece in piecesWithinRange)
+            Rectangle heatRect = this.sprite.GfxRect;
+            heatRect.Inflate(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+
+            IEnumerable<BoardPiece> piecesToHeat;
+            try
+            {
+                piecesToHeat = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150)
+                    .Where(piece => piece.pieceInfo.fireAffinity > 0 && heatRect.Intersects(piece.sprite.ColRect));
+            }
+            catch (NullReferenceException) { piecesToHeat = new List<BoardPiece>(); }
+            catch (InvalidOperationException) { piecesToHeat = new List<BoardPiece>(); }
+
+            foreach (BoardPiece heatedPiece in piecesToHeat)
             {
                 if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
 
-                float distanceMultiplier = 1f - (Vector2.Distance(this.sprite.position, heatedPiece.sprite.position) / (float)affectedDistance);
+                float distanceMultiplier = 0.4f;
 
                 heatedPiece.HeatLevel += baseBurnVal * distanceMultiplier;
 
@@ -906,7 +919,13 @@ namespace SonOfRobin
                 new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 80);
             }
 
-            if (this.flameLight != null) this.flameLight.sprite.lightEngine.Size = Math.Max(affectedDistance * 5, 50);
+            if (this.flameLight != null)
+            {
+                int minSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+                int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
+
+                this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
+            }
         }
 
         public void AddPassiveMovement(Vector2 movement, bool force = false)
