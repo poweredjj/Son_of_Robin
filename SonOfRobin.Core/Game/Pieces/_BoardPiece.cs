@@ -148,7 +148,7 @@ namespace SonOfRobin
         }
 
         public bool HasPassiveMovement
-        { get { return this.passiveMovement != Vector2.Zero; } }
+        { get { return this.passiveMovement != Vector2.Zero || this.passiveRotation != 0; } }
 
         public virtual bool ShowStatBars
         { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
@@ -236,6 +236,8 @@ namespace SonOfRobin
             { return this.burnLevel; }
             set
             {
+                bool wasBurning = this.IsBurning;
+
                 float valDiff = value - this.burnLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
@@ -257,36 +259,9 @@ namespace SonOfRobin
                         animal.aiData.Reset();
                     }
 
-                    var collidingSprites = this.sprite.GetCollidingSprites(cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
+                    this.AddToStateMachines(); // to enable processing of the burning
 
-                    bool flameFound = false;
-                    foreach (Sprite collidingSprite in collidingSprites)
-                    {
-                        BoardPiece collidingPiece = collidingSprite.boardPiece;
-
-                        if (collidingPiece.name == PieceTemplate.Name.BurningFlame && ((Flame)collidingPiece).BurningPiece == this)
-                        {
-                            flameFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!flameFound)
-                    {
-                        BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
-
-                        MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} creating flame for {this.readableName}");
-
-                        int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.GfxRect.Bottom - flame.sprite.GfxRect.Bottom + 2;
-
-                        new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
-
-                        if (this.GetType() == typeof(Player))
-                        {
-                            flame.sprite.opacityFade.Finish();
-                            Sound.QuickPlay(name: SoundData.Name.StartFireBig);
-                        }
-                    }
+                    if (!wasBurning) this.soundPack.Play(action: PieceSoundPack.Action.BurnStart);
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
                 }
@@ -597,6 +572,8 @@ namespace SonOfRobin
 
             this.lastFrameSMProcessed = this.world.CurrentUpdate;
 
+            if (this.BurnLevel > 0) this.ProcessBurning();
+
             if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
 
             if (!this.world.stateMachineTypesManager.CanBeProcessed(this)) return;
@@ -785,12 +762,21 @@ namespace SonOfRobin
 
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
-                        this.RemoveFromStateMachines();
+                        if (this.BurnLevel == 0) this.RemoveFromStateMachines();
                         return;
                     }
                 default:
                     { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
+        }
+
+        public void ProcessBurning()
+        {
+
+
+
+
+
         }
 
         public void AddPassiveMovement(Vector2 movement, bool force = false)
@@ -824,7 +810,7 @@ namespace SonOfRobin
 
         public virtual bool ProcessPassiveMovement()
         {
-            if (this.passiveMovement == Vector2.Zero && this.passiveRotation == 0) return false;
+            if (!this.HasPassiveMovement) return false;
 
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} processing passive movement for {this.readableName}.");
 
@@ -959,6 +945,7 @@ namespace SonOfRobin
 
         public virtual void SM_ScarePredatorsAway()
         { throw new DivideByZeroException("This method should not be executed."); }
+
         public virtual void SM_EmitParticles()
         { throw new DivideByZeroException("This method should not be executed."); }
 
