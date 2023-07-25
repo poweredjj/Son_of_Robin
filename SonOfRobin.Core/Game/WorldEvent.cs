@@ -202,7 +202,7 @@ namespace SonOfRobin
                 case EventName.StopBurning:
                     {
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.boardPiece.readableName} cooling.", color: Color.LightCyan);
-                        this.boardPiece.HeatLevel = Math.Max(BoardPiece.minBurnVal - 0.1f, 0);
+                        this.boardPiece.HeatLevel = Math.Min(this.boardPiece.HeatLevel, BoardPiece.minBurnVal - 0.1f);
 
                         return;
                     }

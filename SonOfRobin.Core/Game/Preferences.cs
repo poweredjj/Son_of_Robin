@@ -140,6 +140,7 @@ namespace SonOfRobin
         public static bool showParticles = true;
         public static bool useMultipleThreads = true;
         private static int darknessResolution = 1;
+        public static int maxFlameLightsPerCell = 3;
 
         public static int DarknessResolution
         {
@@ -592,8 +593,9 @@ namespace SonOfRobin
             prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
-            prefsData["showParticles"] = showParticles;
             prefsData["rumbleEnabled"] = rumbleEnabled;
+            prefsData["showParticles"] = showParticles;
+            prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -666,6 +668,7 @@ namespace SonOfRobin
                     debugMode = (bool)prefsData["debugMode"];
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
                     showParticles = (bool)prefsData["showParticles"];
+                    maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
 
                     prefsLoaded = true;
                 }

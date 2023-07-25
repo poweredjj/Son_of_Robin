@@ -101,6 +101,7 @@ namespace SonOfRobin
 
         public void ReassignSprite(Sprite sprite)
         {
+            if (this.sprite != null) this.sprite.particleEngine = null;
             this.sprite = sprite;
             sprite.particleEngine = this;
         }
