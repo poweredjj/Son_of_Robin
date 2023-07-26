@@ -665,7 +665,7 @@ namespace SonOfRobin
                         Parameters = new ParticleReleaseParameters
                         {
                             Speed = new Range<float>(120f, 1000f),
-                            Scale = new Range<float>(0.1f, 0.35f),
+                            Scale = new Range<float>(0.3f, 0.6f),
                             Rotation = new Range<float>(-2f, 2f),
                             Mass = new Range<float>(1f, 2.5f),
                         },

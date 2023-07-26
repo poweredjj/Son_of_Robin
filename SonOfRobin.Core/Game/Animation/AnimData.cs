@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000005f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000006f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -266,27 +266,27 @@ namespace SonOfRobin
             TigerYellow,
             TigerBlack,
 
-            DebrisPlant,
-            DebrisStone,
-            DebrisWood,
-            DebrisCrystal,
-            DebrisCeramic1,
-            DebrisCeramic2,
-            DebrisLeaf1,
-            DebrisLeaf2,
-            DebrisLeaf3,
-            BloodDrop1,
-            BloodDrop2,
-            BloodDrop3,
-            DebrisStar1,
-            DebrisStar2,
-            DebrisStar3,
-            DebrisHeart1,
-            DebrisHeart2,
-            DebrisHeart3,
-            DebrisSoot1,
-            DebrisSoot2,
-            DebrisSoot3,
+            DebrisPlantObsolete, // kept for compatibility with old saves
+            DebrisStoneObsolete, // kept for compatibility with old saves
+            DebrisWoodObsolete, // kept for compatibility with old saves
+            DebrisCrystalObsolete, // kept for compatibility with old saves
+            DebrisCeramic1Obsolete, // kept for compatibility with old saves
+            DebrisCeramic2Obsolete, // kept for compatibility with old saves
+            DebrisLeaf1Obsolete, // kept for compatibility with old saves
+            DebrisLeaf2Obsolete, // kept for compatibility with old saves
+            DebrisLeaf3Obsolete, // kept for compatibility with old saves
+            BloodDrop1Obsolete, // kept for compatibility with old saves
+            BloodDrop2Obsolete, // kept for compatibility with old saves
+            BloodDrop3Obsolete, // kept for compatibility with old saves
+            Star,
+            DebrisStar2Obsolete, // kept for compatibility with old saves
+            DebrisStar3Obsolete, // kept for compatibility with old saves
+            DebrisHeart1Obsolete, // kept for compatibility with old saves
+            DebrisHeart2Obsolete, // kept for compatibility with old saves
+            DebrisHeart3Obsolete, // kept for compatibility with old saves
+            DebrisSoot1Obsolete, // kept for compatibility with old saves
+            DebrisSoot2Obsolete, // kept for compatibility with old saves
+            DebrisSoot3Obsolete, // kept for compatibility with old saves
 
             TentSmall,
             TentMedium,
@@ -651,10 +651,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BloodSplatter2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 320, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.BloodSplatter3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
 
-            AddFrameList(animPackage: PkgName.BloodDrop1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 451, y: 290, width: 7, height: 8));
-            AddFrameList(animPackage: PkgName.BloodDrop2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 456, y: 326, width: 8, height: 5));
-            AddFrameList(animPackage: PkgName.BloodDrop3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 467, y: 336, width: 7, height: 6));
-
             AddFrameList(animPackage: PkgName.WoodPlank, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 32, y: 0, width: 32, height: 32, scale: 0.8f));
             AddFrameList(animPackage: PkgName.Stick1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 26, y: 73, width: 25, height: 21));
             AddFrameList(animPackage: PkgName.Stick2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 100, y: 73, width: 25, height: 22));
@@ -683,10 +679,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.CrystalDepositSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_small", layer: 1));
             AddFrameList(animPackage: PkgName.CrystalDepositBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_big", layer: 1));
             AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
-            AddFrameList(animPackage: PkgName.DebrisCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crystal_shard", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.DebrisLeaf1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_1", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.DebrisLeaf2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_2", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.DebrisLeaf3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_3", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.Burger, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "burger", layer: 0, scale: 0.07f));
             AddFrameList(animPackage: PkgName.PotionBlack, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionDarkViolet, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
@@ -728,12 +720,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Fog7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Fog8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Empty, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
-            AddFrameList(animPackage: PkgName.DebrisStar1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.DebrisStar2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.12f));
-            AddFrameList(animPackage: PkgName.DebrisStar3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.05f));
-            AddFrameList(animPackage: PkgName.DebrisHeart1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2, scale: 0.8f)); // layer 2 to appear above everything
-            AddFrameList(animPackage: PkgName.DebrisHeart2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2, scale: 0.9f)); // layer 2 to appear above everything
-            AddFrameList(animPackage: PkgName.DebrisHeart3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2, scale: 1.0f)); // layer 2 to appear above everything
+            AddFrameList(animPackage: PkgName.Star, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
             AddFrameList(animPackage: PkgName.AnimalIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
             AddFrameList(animPackage: PkgName.Bed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bed", layer: 2));
@@ -747,8 +734,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.ArrowStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_stone", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.ArrowIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_iron", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.ArrowCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "stone_small", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.DebrisPlant, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.KnifeSimple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "knife_simple", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
@@ -789,11 +774,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.TreeStump, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tree_stump", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.Carrot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "carrot", layer: 0, scale: 0.08f));
-            AddFrameList(animPackage: PkgName.DebrisCeramic1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_ceramic_1", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.DebrisCeramic2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_ceramic_2", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.DebrisSoot1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_1", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.DebrisSoot2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_2", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.DebrisSoot3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_3", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.MusicNoteSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
             AddFrameList(animPackage: PkgName.WhiteSpotLayerMinus1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: -1, scale: 1f));
@@ -1098,9 +1078,6 @@ namespace SonOfRobin
 
             AddFrameList(animPackage: PkgName.PickaxeCrystal, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 384, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            AddFrameList(animPackage: PkgName.DebrisWood, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "debris_wood", layer: 0, scale: 0.3f));
 
             AddFrameList(animPackage: PkgName.IronDeposit, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 96, y: 96, width: 48, height: 48, scale: 1f));

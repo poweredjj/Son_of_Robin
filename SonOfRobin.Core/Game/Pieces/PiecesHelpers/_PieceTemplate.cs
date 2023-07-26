@@ -99,7 +99,7 @@ namespace SonOfRobin
             Anvil,
             HotPlate,
             CookingPot,
-            UpgradeBenchObsolete,
+            UpgradeBenchObsolete, // kept for compatibility with old saves
 
             Stick,
             WoodLogRegular,
@@ -148,7 +148,7 @@ namespace SonOfRobin
 
             RainDrop,
             Explosion,
-            BurningFlameObsolete,
+            BurningFlameObsolete, // kept for compatibility with old saves
 
             CookingTrigger,
             UpgradeTrigger,
@@ -189,16 +189,16 @@ namespace SonOfRobin
             ArrowCrystal,
             ArrowBurning,
 
-            DebrisPlant,
-            DebrisStone,
-            DebrisWood,
-            DebrisLeaf,
-            DebrisCrystal,
-            DebrisCeramic,
-            DebrisStar,
-            DebrisSoot,
-            DebrisHeart,
-            BloodDrop,
+            DebrisPlantObsolete, // kept for compatibility with old saves
+            DebrisStoneObsolete, // kept for compatibility with old saves
+            DebrisWoodObsolete, // kept for compatibility with old saves
+            DebrisLeafObsolete, // kept for compatibility with old saves
+            DebrisCrystalObsolete, // kept for compatibility with old saves
+            DebrisCeramicObsolete, // kept for compatibility with old saves
+            DebrisStarObsolete, // kept for compatibility with old saves
+            DebrisSootObsolete, // kept for compatibility with old saves
+            DebrisHeartObsolete, // kept for compatibility with old saves
+            DebrisBloodDropObsolete, // kept for compatibility with old saves
 
             TentSmall,
             TentMedium,
@@ -2241,100 +2241,85 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.DebrisStone:
+                case Name.DebrisStoneObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisStone, allowedTerrain: allowedTerrain, readableName: "stone debris", description: "Floats around after hitting stone things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "stone debris", description: "Floats around after hitting stone things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisPlant:
+                case Name.DebrisPlantObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisPlant, allowedTerrain: allowedTerrain, readableName: "plant debris", description: "Floats around after hitting plant things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "plant debris", description: "Floats around after hitting plant things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisWood:
+                case Name.DebrisWoodObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisWood, allowedTerrain: allowedTerrain, readableName: "wood debris", description: "Floats around after hitting wood things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "wood debris", description: "Floats around after hitting wood things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisLeaf:
+                case Name.DebrisLeafObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisLeaf1, AnimData.PkgName.DebrisLeaf2, AnimData.PkgName.DebrisLeaf3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "leaf", description: "Floats around after hitting plant things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "leaf", description: "Floats around after hitting plant things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisCrystal:
+                case Name.DebrisCrystalObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DebrisCrystal, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "crystal shard", description: "Floats around after hitting crystal things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "crystal shard", description: "Floats around after hitting crystal things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisCeramic:
+                case Name.DebrisCeramicObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisCeramic1, AnimData.PkgName.DebrisCeramic2 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisSoot:
+                case Name.DebrisSootObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisSoot1, AnimData.PkgName.DebrisSoot2, AnimData.PkgName.DebrisSoot3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
 
                         return boardPiece;
                     }
 
-                case Name.DebrisHeart:
+                case Name.DebrisHeartObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisHeart1, AnimData.PkgName.DebrisHeart2, AnimData.PkgName.DebrisHeart3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
+                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
 
                         heartDebris.sprite.opacity = 0.7f;
 
                         return heartDebris;
                     }
 
-                case Name.DebrisStar:
+                case Name.DebrisStarObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisStar1, AnimData.PkgName.DebrisStar2, AnimData.PkgName.DebrisStar3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
+                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
 
                         var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
                         Color color = colors[random.Next(0, colors.Count)];
@@ -2343,14 +2328,11 @@ namespace SonOfRobin
                         return starDebris;
                     }
 
-                case Name.BloodDrop:
+                case Name.DebrisBloodDropObsolete:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.BloodDrop1, AnimData.PkgName.BloodDrop2, AnimData.PkgName.BloodDrop3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.");
+                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.");
 
                         return boardPiece;
                     }
@@ -2622,7 +2604,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
 
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "flame (obsolete)", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "flame (obsolete)", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
 
                         return flame;
                     }

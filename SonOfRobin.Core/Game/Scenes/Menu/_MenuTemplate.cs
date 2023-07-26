@@ -72,7 +72,7 @@ namespace SonOfRobin
 
                             new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
                             { "text", $"| Testers |\n\nFaye\nGlonfindel\nHellwoman\nKolowskyyy\nRetro Marek\nShaobell" },
-                            { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar), PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar) } },
+                            { "imageList", new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Star].texture, AnimData.framesForPkgs[AnimData.PkgName.Star].texture } },
                             { "bgColor", new List<Byte> { 85, 189, 113 } }
                             }, storeForLaterUse: true)
                         };
@@ -476,7 +476,7 @@ namespace SonOfRobin
                             {
                                 textLines.Add($"| Resourceful crafter |");
                                 imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
-                                imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.DebrisStar1].texture);
+                                imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
                             }
 
                             textLines.Add($"| Cooking level: {player.CookLevel}");

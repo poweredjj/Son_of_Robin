@@ -1895,7 +1895,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
-                    case PieceTemplate.Name.DebrisPlant:
+                    case PieceTemplate.Name.DebrisPlantObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
@@ -1905,7 +1905,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisStone:
+                    case PieceTemplate.Name.DebrisStoneObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
@@ -1915,7 +1915,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisWood:
+                    case PieceTemplate.Name.DebrisWoodObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 60;
@@ -1925,7 +1925,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisLeaf:
+                    case PieceTemplate.Name.DebrisLeafObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
@@ -1935,7 +1935,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisCrystal:
+                    case PieceTemplate.Name.DebrisCrystalObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
@@ -1945,7 +1945,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisCeramic:
+                    case PieceTemplate.Name.DebrisCeramicObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
@@ -1955,7 +1955,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisStar:
+                    case PieceTemplate.Name.DebrisStarObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 90;
@@ -1965,7 +1965,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisSoot:
+                    case PieceTemplate.Name.DebrisSootObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;
@@ -1975,7 +1975,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.DebrisHeart:
+                    case PieceTemplate.Name.DebrisHeartObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 110;
@@ -1985,7 +1985,7 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
-                    case PieceTemplate.Name.BloodDrop:
+                    case PieceTemplate.Name.DebrisBloodDropObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.destructionDelay = 230;

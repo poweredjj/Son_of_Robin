@@ -1367,7 +1367,7 @@ namespace SonOfRobin
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
                 var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture };
-                if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+                if (levelMaster) imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
 
                 new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
@@ -1412,7 +1412,7 @@ namespace SonOfRobin
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
                 var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture };
-                if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+                if (levelMaster) imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
 
                 new TextWindow(text: $"| Alchemy level up!\n       Level {this.BrewLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
