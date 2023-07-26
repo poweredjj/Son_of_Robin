@@ -843,32 +843,39 @@ namespace SonOfRobin
 
                 case Preset.DebrisSoot:
                     {
-                        defaultParticlesToEmit = this.sprite.BlocksMovement ? this.sprite.ColRect.Width * this.sprite.ColRect.Height / 3 : 8;
+                        int gfxArea = this.sprite.GfxRect.Width * this.sprite.GfxRect.Height;
+                        defaultParticlesToEmit = gfxArea / 10;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(2.0f),
+                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(1.8f),
                             profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
                                 Speed = new Range<float>(120f, 850f),
-                                Scale = new Range<float>(0.2f, 0.75f),
                                 Rotation = new Range<float>(-2f, 2f),
-                                Mass = new Range<float>(1f, 2.6f),
+                                Mass = new Range<float>(1.5f, 2.6f),
                             },
 
                             Modifiers =
                             {
-                            new VelocityModifier()
-                            {
-                                Interpolators =
-                                {
-                                    new OpacityInterpolator
-                                    { StartValue = 0f, EndValue = 1f }
-                                },
-                                VelocityThreshold = 2f
-                            },
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
+                             new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(this.sprite.BlocksMovement ? 0.9f : 0.6f),
+                                            EndValue = new Vector2(0.05f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.9f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
                           }
                         };
                         break;
@@ -984,6 +991,14 @@ namespace SonOfRobin
 
                 case Preset.MudWalk:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;
+
+                case Preset.BurnFlame:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.DebrisSoot:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 default:
