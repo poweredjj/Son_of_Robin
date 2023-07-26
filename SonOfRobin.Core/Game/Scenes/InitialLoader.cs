@@ -54,7 +54,7 @@ namespace SonOfRobin
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
-            this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 11 : 0;
+            this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }

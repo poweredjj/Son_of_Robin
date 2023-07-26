@@ -231,6 +231,8 @@ namespace SonOfRobin
                 case Type.BrokenItem:
                     {
                         // no Disable(), because this hint should be shown every time
+                        this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisStone }, particlesToEmit: 7);
+
                         Sound.QuickPlay(SoundData.Name.DestroyWood);
                         ShowMessageDuringPause(new HintMessage(text: $"My | {text} has fallen apart.", imageList: new List<Texture2D> { texture }, blockInput: true));
 

@@ -84,9 +84,7 @@ namespace SonOfRobin
         public void DropDebris(BoardPiece piece, List<ParticleEngine.Preset> debrisTypeListOverride = null, int particlesToEmit = 0)
         {
             if (!piece.sprite.IsInCameraRect) return;
-
             var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
-            if (!debrisTypeListToUse.Any()) return; // to speed up
 
             foreach (ParticleEngine.Preset debrisType in debrisTypeListToUse)
             {

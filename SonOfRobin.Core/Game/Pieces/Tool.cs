@@ -52,11 +52,7 @@ namespace SonOfRobin
             if (!this.pieceInfo.toolIndestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
-                if (this.HitPoints == 0)
-                {
-                    this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisSoot });
-                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
-                }
+                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -205,12 +201,7 @@ namespace SonOfRobin
 
                     if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
 
-                    if (this.HitPoints == 0)
-                    {
-                        player.pieceInfo.Yield.DropDebris(piece: player, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisStone, ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisSoot });
-
-                        this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
-                    }
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
                 }
             }
         }

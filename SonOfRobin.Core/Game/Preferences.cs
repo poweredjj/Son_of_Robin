@@ -96,7 +96,7 @@ namespace SonOfRobin
 
         private static bool fullScreenMode = false;
         private static bool vSync = true;
-        private static bool frameSkip = true;
+        private static bool frameSkip = false;
         private static bool halfFramerate = false;
         public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
