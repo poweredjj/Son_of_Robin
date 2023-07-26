@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Scheduler
     {
         public enum TaskName
-        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPiecesToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollect, DestroyAndDropDebris, MakePlayerJumpOverThisPiece, InventoryApplyPotion }
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPiecesToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave, GCCollectIfWorldNotRemoved, DestroyAndDropDebris, MakePlayerJumpOverThisPiece, InventoryApplyPotion }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
@@ -1619,9 +1619,24 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.GCCollect:
+                    case TaskName.GCCollectIfWorldNotRemoved:
                         {
-                            GC.Collect();
+                            if (World.DestroyedNotReleasedWorldCount == 0) return;
+
+                            int triesLeft = (int)this.ExecuteHelper;
+
+                            if (triesLeft > 0)
+                            {
+                                triesLeft--;
+                                new Task(taskName: TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: triesLeft);
+                            }
+                            else
+                            {
+                                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", color: new Color(255, 180, 66));
+                                GC.Collect();
+                                RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
+                            }
+
                             return;
                         }
 

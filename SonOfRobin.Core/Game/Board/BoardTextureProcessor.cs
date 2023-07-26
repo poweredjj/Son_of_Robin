@@ -26,12 +26,6 @@ namespace SonOfRobin
 
             public void Process()
             {
-                if (this.cell.grid.world.HasBeenRemoved)
-                {
-                    GC.Collect();
-                    return;
-                }
-
                 if (!this.IsTimedOut && this.cell.boardGraphics.Texture == null && SonOfRobinGame.fps.FPS >= 25) this.cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
             }
         }
@@ -131,11 +125,7 @@ namespace SonOfRobin
 
             foreach (ProcessingTask task in tasksByDistance)
             {
-                if (task.cell.grid.world.HasBeenRemoved)
-                {
-                    GC.Collect();
-                    return;
-                }
+                if (task.cell.grid.world.HasBeenRemoved) return;
             }
 
             if (tasksByDistance.Count() >= 8)

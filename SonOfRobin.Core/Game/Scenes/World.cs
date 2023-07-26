@@ -10,6 +10,8 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
+        public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
+
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -185,13 +187,14 @@ namespace SonOfRobin
             Sound.StopAll();
             RumbleManager.StopAll();
             base.Remove();
-            new Scheduler.Task(taskName: Scheduler.TaskName.GCCollect, delay: 60 * 5); // needed to properly release memory after removing world
-            new Scheduler.Task(taskName: Scheduler.TaskName.GCCollect, delay: 60 * 25); // to account for longer processing (or something)
+            DestroyedNotReleasedWorldCount++;
+            new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", color: new Color(255, 180, 66));
         }
 
         ~World()
         {
+            DestroyedNotReleasedWorldCount--;
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", color: new Color(120, 255, 174));
         }
 
@@ -514,8 +517,6 @@ namespace SonOfRobin
             this.CreateNewDarknessMask();
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
-
-            GC.Collect();
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
         }
