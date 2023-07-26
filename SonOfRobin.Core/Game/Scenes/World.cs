@@ -1231,7 +1231,7 @@ namespace SonOfRobin
 
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 
-            Yield debrisYield = new Yield(debrisType: plantMode ? Yield.DebrisType.Leaf : Yield.DebrisType.Star);
+            Yield debrisYield = new Yield(debrisType: plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStar);
 
             if (plantMode)
             {

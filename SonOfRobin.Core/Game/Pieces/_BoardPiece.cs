@@ -852,9 +852,9 @@ namespace SonOfRobin
                 bool isAnimal = this.GetType() == typeof(Animal);
 
                 if (isAnimal) this.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
+                ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
 
-                this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
+                this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
                 this.Destroy();
                 return;
             }

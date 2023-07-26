@@ -126,7 +126,7 @@ namespace SonOfRobin
 
                     foreach (BoardPiece piece in visiblePieces)
                     {
-                        piece.pieceInfo.Yield?.DropDebris(piece: piece, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Soot });
+                        piece.pieceInfo.Yield?.DropDebris(piece: piece, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisSoot });
                     }
                 }
 

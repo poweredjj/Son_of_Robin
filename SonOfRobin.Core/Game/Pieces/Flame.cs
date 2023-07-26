@@ -163,9 +163,9 @@ namespace SonOfRobin
                     bool isAnimal = this.BurningPiece.GetType() == typeof(Animal);
 
                     if (isAnimal) this.BurningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                    Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
+                    ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
 
-                    this.BurningPiece.pieceInfo.Yield?.DropDebris(piece: this.BurningPiece, debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
+                    this.BurningPiece.pieceInfo.Yield?.DropDebris(piece: this.BurningPiece, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
                     this.BurningPiece.Destroy();
                     this.BurningPiece = null;
                 }

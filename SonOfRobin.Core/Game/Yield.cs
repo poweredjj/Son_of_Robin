@@ -7,9 +7,6 @@ namespace SonOfRobin
 {
     public class Yield
     {
-        public enum DebrisType
-        { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic, Star, Soot, Heart }
-
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
 
         public struct DroppedPiece
@@ -28,35 +25,35 @@ namespace SonOfRobin
             }
         }
 
-        public List<DebrisType> DebrisTypeList
+        public List<ParticleEngine.Preset> DebrisTypeList
         { get { return this.debrisTypeList; } }
 
-        private readonly List<DebrisType> debrisTypeList;
+        private readonly List<ParticleEngine.Preset> debrisTypeList;
         private readonly List<DroppedPiece> firstDroppedPieces; // during hitting the piece
         private readonly List<DroppedPiece> finalDroppedPieces; // after destroying the piece
 
-        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, List<DebrisType> debrisTypeList)
+        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, List<ParticleEngine.Preset> debrisTypeList)
         {
             this.firstDroppedPieces = firstDroppedPieces;
             this.finalDroppedPieces = finalDroppedPieces;
-            this.debrisTypeList = debrisTypeList == null ? new List<DebrisType>() : debrisTypeList;
+            this.debrisTypeList = debrisTypeList == null ? new List<ParticleEngine.Preset>() : debrisTypeList;
         }
 
-        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, DebrisType debrisType)
+        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, ParticleEngine.Preset debrisType)
         {
             this.firstDroppedPieces = firstDroppedPieces;
             this.finalDroppedPieces = finalDroppedPieces;
-            this.debrisTypeList = new List<DebrisType> { debrisType };
+            this.debrisTypeList = new List<ParticleEngine.Preset> { debrisType };
         }
 
-        public Yield(DebrisType debrisType)
+        public Yield(ParticleEngine.Preset debrisType)
         {
             // for dropping debris only
 
-            this.debrisTypeList = new List<DebrisType> { debrisType };
+            this.debrisTypeList = new List<ParticleEngine.Preset> { debrisType };
         }
 
-        public Yield(List<DebrisType> debrisTypeList)
+        public Yield(List<ParticleEngine.Preset> debrisTypeList)
         {
             // for dropping debris only
 
@@ -70,10 +67,10 @@ namespace SonOfRobin
             return droppedPiecesCount;
         }
 
-        public int DropFinalPieces(BoardPiece piece, float hitPower = 1f)
+        public int DropFinalPieces(BoardPiece piece)
         {
-            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces, hitPower: hitPower);
-            this.DropDebris(piece: piece, hitPower: hitPower);
+            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            this.DropDebris(piece: piece);
             return droppedPiecesCount;
         }
 
@@ -84,73 +81,42 @@ namespace SonOfRobin
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(BoardPiece piece, List<DebrisType> debrisTypeListOverride = null, float hitPower = 1f)
+        public void DropDebris(BoardPiece piece, List<ParticleEngine.Preset> debrisTypeListOverride = null, int particlesToEmit = 0)
         {
             if (!piece.sprite.IsInCameraRect) return;
 
             var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
             if (!debrisTypeListToUse.Any()) return; // to speed up
 
-            var debrisList = new List<DroppedPiece> { };
-
-            foreach (DebrisType debrisType in debrisTypeListToUse)
+            foreach (ParticleEngine.Preset debrisType in debrisTypeListToUse)
             {
                 switch (debrisType)
                 {
-                    case DebrisType.Stone:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisStone, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Wood:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisWood, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Leaf:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisLeaf, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Plant:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisGrass, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Crystal:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisCrystal, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Ceramic:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisCeramic, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Blood:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisBlood, duration: 3, update: true);
-                        break;
-
-                    case DebrisType.Star:
+                    case ParticleEngine.Preset.DebrisStar:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStar, duration: 6, update: true);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStar, duration: 6, update: true, particlesToEmit: particlesToEmit);
                             break;
                         }
 
-                    case DebrisType.Soot:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true);
+                    case ParticleEngine.Preset.DebrisSoot:
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true, particlesToEmit: particlesToEmit);
                         break;
 
-                    case DebrisType.Heart:
+                    case ParticleEngine.Preset.DebrisHeart:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true, particlesToEmit: particlesToEmit);
                             break;
                         }
 
                     default:
-                        throw new ArgumentException($"Unsupported debris type - {debrisType}.");
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: debrisType, duration: 3, update: true, particlesToEmit: particlesToEmit);
+                        break;
                 }
             }
-
-            this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: debrisList, hitPower: hitPower);
         }
 
         private List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
@@ -193,7 +159,7 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList, float hitPower = 1f)
+        private int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
         {
             int droppedPiecesCount = 0;
             var piecesToDrop = this.GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
@@ -220,7 +186,7 @@ namespace SonOfRobin
 
                         Vector2 posDiff = Helpers.VectorAbsMax(vector: piece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
                         posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation
-                        yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80) * hitPower);
+                        yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80));
                         break;
                     }
                 }

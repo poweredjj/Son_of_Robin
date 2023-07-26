@@ -125,40 +125,40 @@ namespace SonOfRobin
                 }
 
                 BoardPiece.Category category = PieceInfo.GetInfo(pieceToCreate).category;
-                List<Yield.DebrisType> debrisTypeList;
+                List<ParticleEngine.Preset> debrisTypeList;
 
                 switch (category)
                 {
                     case BoardPiece.Category.Wood:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
                         break;
 
                     case BoardPiece.Category.Stone:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Stone };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone };
                         break;
 
                     case BoardPiece.Category.Metal:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
                         break;
 
                     case BoardPiece.Category.SmallPlant:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Plant };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass };
                         break;
 
                     case BoardPiece.Category.Flesh:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Blood };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisBlood };
                         break;
 
                     case BoardPiece.Category.Leather:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
                         break;
 
                     case BoardPiece.Category.Crystal:
-                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Crystal };
+                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCrystal };
                         break;
 
                     case BoardPiece.Category.Indestructible:
-                        debrisTypeList = new List<Yield.DebrisType>();
+                        debrisTypeList = new List<ParticleEngine.Preset>();
                         break;
 
                     default:

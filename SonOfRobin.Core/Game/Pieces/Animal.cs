@@ -638,7 +638,7 @@ namespace SonOfRobin
 
                 if (this.target.GetType() == typeof(Plant))
                 {
-                    if (this.world.random.Next(30) == 0) this.target.pieceInfo.Yield.DropDebris(piece: this.target, hitPower: 0.5f);
+                    if (this.world.random.Next(30) == 0) this.target.pieceInfo.Yield.DropDebris(piece: this.target, particlesToEmit: 1);
 
                     this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
                 }
@@ -672,8 +672,8 @@ namespace SonOfRobin
                 return;
             }
 
-            this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
-            animalMate.pieceInfo.Yield?.DropDebris(piece: animalMate, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisHeart });
+            animalMate.pieceInfo.Yield?.DropDebris(piece: animalMate, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisHeart });
 
             Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0

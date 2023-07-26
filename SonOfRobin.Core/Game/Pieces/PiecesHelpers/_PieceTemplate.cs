@@ -1029,7 +1029,7 @@ namespace SonOfRobin
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: terrainBeachToVolcano, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
-                        var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
+                        var chestContentsYield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
@@ -1070,7 +1070,7 @@ namespace SonOfRobin
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: terrainBeachToVolcano, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed", soundPack: soundPack);
 
                         // this yield is used to randomize chest contents every time
-                        var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
+                        var chestContentsYield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
