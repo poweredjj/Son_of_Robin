@@ -297,7 +297,7 @@ namespace SonOfRobin
             {
                 // duplicated in Yield
                 boardPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece, ignoreProcessingTime: true);
+                if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece);
 
                 // adding opacityFade
                 if (boardPiece.sprite.IsInCameraRect && boardPiece.pieceInfo.inOpacityFadeDuration > 0)
@@ -2806,7 +2806,7 @@ namespace SonOfRobin
 
                 case Name.ParticleEmitter:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayer0, allowedTerrain: terrainCanGoAnywhere, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: terrainCanGoAnywhere, readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
 
                         visualEffect.sprite.opacity = 0f;
 

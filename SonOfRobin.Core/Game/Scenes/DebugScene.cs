@@ -68,9 +68,11 @@ namespace SonOfRobin
                 string weatherText = "";
                 foreach (var kvp in world.weather.GetIntensityForAllWeatherTypes())
                 {
-                    weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
+                    if (kvp.Value > 0) weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
                 }
-                debugLines.Add($"heat {world.HeatQueueSize} weather {weatherText}");
+                if (weatherText.Length > 0) weatherText = $"weather {weatherText}";
+
+                debugLines.Add($"heat {world.HeatQueueSize} {weatherText}");
                 debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
                 debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
                 debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
@@ -110,18 +112,22 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    // particleEmitter example code
+                    var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement, compareWithCameraRect: true);
 
-                    BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer2);
-                    ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.CookingFinish, duration: 8, update: true);
+                    foreach (BoardPiece piece in visiblePieces)
+                    {
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true);
+                    }
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
+                    var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement, compareWithCameraRect: true);
 
-                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: piece.sprite, offsetX: 0, offsetY: 0, followSlowDown: 8);
+                    foreach (BoardPiece piece in visiblePieces)
+                    {
+                        piece.pieceInfo.Yield?.DropDebris(piece: piece, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Soot });
+                    }
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D3))

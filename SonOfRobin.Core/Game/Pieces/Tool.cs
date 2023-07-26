@@ -54,7 +54,7 @@ namespace SonOfRobin
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
                 if (this.HitPoints == 0)
                 {
-                    this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f, ignoreProcessingTime: true);
+                    this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f);
                     this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
                 }
             }
@@ -207,7 +207,7 @@ namespace SonOfRobin
 
                     if (this.HitPoints == 0)
                     {
-                        player.pieceInfo.Yield.DropDebris(piece: player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f, ignoreProcessingTime: true);
+                        player.pieceInfo.Yield.DropDebris(piece: player, debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Stone, Yield.DebrisType.Wood, Yield.DebrisType.Soot }, hitPower: 1f);
 
                         this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
                     }
@@ -252,7 +252,7 @@ namespace SonOfRobin
                     if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
                     {
                         BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                        particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayer0);
+                        particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
                         ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
                     }
 

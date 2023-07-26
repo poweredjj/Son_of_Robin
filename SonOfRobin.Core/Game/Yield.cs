@@ -84,16 +84,12 @@ namespace SonOfRobin
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(BoardPiece piece, bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null, float hitPower = 1f)
+        public void DropDebris(BoardPiece piece, List<DebrisType> debrisTypeListOverride = null, float hitPower = 1f)
         {
+            if (!piece.sprite.IsInCameraRect) return;
+
             var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
-
             if (!debrisTypeListToUse.Any()) return; // to speed up
-
-            // debris should be created on screen, when there is available CPU time
-            if (!Preferences.showDebris ||
-                !piece.world.camera.viewRect.Contains(piece.sprite.position) ||
-                (!ignoreProcessingTime && !piece.world.CanProcessMoreNonPlantsNow)) return;
 
             var debrisList = new List<DroppedPiece> { };
 
@@ -102,44 +98,52 @@ namespace SonOfRobin
                 switch (debrisType)
                 {
                     case DebrisType.Stone:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisStone, chanceToDrop: 100, minNumberToDrop: 30, maxNumberToDrop: 60));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisStone, duration: 3, update: true);
                         break;
 
                     case DebrisType.Wood:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisWood, chanceToDrop: 100, minNumberToDrop: 15, maxNumberToDrop: 30));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisWood, duration: 3, update: true);
                         break;
 
                     case DebrisType.Leaf:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisLeaf, chanceToDrop: 100, minNumberToDrop: 15, maxNumberToDrop: 30));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisLeaf, duration: 3, update: true);
                         break;
 
                     case DebrisType.Plant:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisPlant, chanceToDrop: 100, minNumberToDrop: 10, maxNumberToDrop: 20));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisGrass, duration: 3, update: true);
                         break;
 
                     case DebrisType.Crystal:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisCrystal, chanceToDrop: 100, minNumberToDrop: 10, maxNumberToDrop: 20));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisCrystal, duration: 3, update: true);
                         break;
 
                     case DebrisType.Ceramic:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisCeramic, chanceToDrop: 100, minNumberToDrop: 10, maxNumberToDrop: 20));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisCeramic, duration: 3, update: true);
                         break;
 
                     case DebrisType.Blood:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.BloodDrop, chanceToDrop: 100, minNumberToDrop: 15, maxNumberToDrop: 35));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisBlood, duration: 3, update: true);
                         break;
 
                     case DebrisType.Star:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisStar, chanceToDrop: 100, minNumberToDrop: 40, maxNumberToDrop: 70));
-                        break;
+                        {
+                            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStar, duration: 6, update: true);
+                            break;
+                        }
 
                     case DebrisType.Soot:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisSoot, chanceToDrop: 100, minNumberToDrop: 8, maxNumberToDrop: 30));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true);
                         break;
 
                     case DebrisType.Heart:
-                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisHeart, chanceToDrop: 100, minNumberToDrop: 6, maxNumberToDrop: 6));
-                        break;
+                        {
+                            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true);
+                            break;
+                        }
 
                     default:
                         throw new ArgumentException($"Unsupported debris type - {debrisType}.");
@@ -208,7 +212,7 @@ namespace SonOfRobin
 
                         // duplicated in PieceTemplate
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                        if (yieldPiece.pieceInfo.appearDebris != null) yieldPiece.pieceInfo.appearDebris.DropDebris(piece: piece, ignoreProcessingTime: true);
+                        if (yieldPiece.pieceInfo.appearDebris != null) yieldPiece.pieceInfo.appearDebris.DropDebris(piece: piece);
 
                         // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");
 

@@ -466,16 +466,40 @@ namespace SonOfRobin
         {
             if (this.particleEngine != null)
             {
-                if (this.IsOnBoard && this.particleEngine.HasAnyParticles)
-                {
-                    // creating particleEmitter, that will finish particle animation of this destroyed sprite
-
-                    ParticleEngine.TurnOffAll(this); // every "infinite" preset should end
-                    BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                    this.particleEngine.ReassignSprite(particleEmitter.sprite);
-                }
+                // creating particleEmitter, that will finish particle animation of this destroyed sprite
+                if (this.IsOnBoard && this.particleEngine.HasAnyParticles) this.ReplaceWithParticleEmitter();
                 else this.particleEngine?.Dispose();
             }
+        }
+
+        private void ReplaceWithParticleEmitter()
+        {
+            ParticleEngine.TurnOffAll(this); // every "infinite" preset should end
+            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+
+            switch (this.AnimFrame.layer)
+            {
+                case -1:
+                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerMinus1);
+                    break;
+
+                case 0:
+                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                    break;
+
+                case 1:
+                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerOne);
+                    break;
+
+                case 2:
+                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerTwo);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported layer - {this.AnimFrame.layer}.");
+            }
+
+            this.particleEngine.ReassignSprite(particleEmitter.sprite);
         }
 
         private List<Cell.Group> GetGridGroups()

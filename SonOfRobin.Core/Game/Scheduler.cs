@@ -1644,7 +1644,7 @@ namespace SonOfRobin
                         {
                             BoardPiece piece = (BoardPiece)this.ExecuteHelper;
 
-                            piece.pieceInfo.Yield?.DropDebris(piece: piece, ignoreProcessingTime: true);
+                            piece.pieceInfo.Yield?.DropDebris(piece: piece);
                             piece.Destroy();
 
                             return;

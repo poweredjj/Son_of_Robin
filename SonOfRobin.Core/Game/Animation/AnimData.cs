@@ -346,7 +346,7 @@ namespace SonOfRobin
 
             Hole,
 
-            WhiteSpotLayer1,
+            WhiteSpotLayerOne,
             NewIcon,
             MapEdges,
             SmallWhiteCircle,
@@ -384,8 +384,9 @@ namespace SonOfRobin
             HerbsBrown,
             HerbsDarkViolet,
             HerbsDarkGreen,
-            WhiteSpotLayer0,
-            WhiteSpotLayer2,
+            WhiteSpotLayerZero,
+            WhiteSpotLayerTwo,
+            WhiteSpotLayerMinus1,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -795,9 +796,10 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.DebrisSoot3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_3", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.MusicNoteSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayer0, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayer1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayer2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayerMinus1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: -1, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayerZero, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayerOne, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayerTwo, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.SmallWhiteCircle, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "small_white_circle", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
@@ -1098,7 +1100,7 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 384, y: 384, width: 48, height: 48, scale: 0.7f));
 
             AddFrameList(animPackage: PkgName.DebrisWood, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "sticks2", layer: 0, x: 100, y: 70, width: 25, height: 25, scale: 0.3f));
+                frameList: ConvertImageToFrameList(atlasName: "debris_wood", layer: 0, scale: 0.3f));
 
             AddFrameList(animPackage: PkgName.IronDeposit, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 96, y: 96, width: 48, height: 48, scale: 1f));

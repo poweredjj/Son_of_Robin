@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot }
 
         public class PresetData
         {
@@ -99,11 +99,11 @@ namespace SonOfRobin
             this.particleEffect.Emitters = new List<ParticleEmitter>();
         }
 
-        public void ReassignSprite(Sprite sprite)
+        public void ReassignSprite(Sprite newSprite)
         {
             if (this.sprite != null) this.sprite.particleEngine = null;
-            this.sprite = sprite;
-            sprite.particleEngine = this;
+            this.sprite = newSprite;
+            newSprite.particleEngine = this;
         }
 
         public void AddPreset(Preset preset)
@@ -120,9 +120,19 @@ namespace SonOfRobin
                 { Preset.Excavated, "circle_16x16_sharp" },
                 { Preset.MudWalk, "circle_16x16_soft" },
                 { Preset.LavaFlame, "circle_16x16_sharp" },
+                { Preset.DebrisWood, "debris_wood" },
+                { Preset.DebrisLeaf, "debris_leaf" },
+                { Preset.DebrisGrass, "debris_grass" },
+                { Preset.DebrisStone, "debris_stone" },
+                { Preset.DebrisCrystal, "debris_crystal" },
+                { Preset.DebrisCeramic, "debris_ceramic" },
+                { Preset.DebrisBlood, "debris_blood" },
+                { Preset.DebrisStar, "debris_star" },
+                { Preset.DebrisHeart, "debris_heart" },
+                { Preset.DebrisSoot, "debris_soot" },
             };
 
-            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
+            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture($"particles/{textureNameDict[preset]}"));
 
             int defaultParticlesToEmit;
             int particlesToEmitMaxVariation = 0;
@@ -165,32 +175,32 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
                     };
-
                     break;
 
                 case Preset.BurnFlame:
-                    float shortEdge = Math.Min(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
-                    float longEdge = Math.Max(this.sprite.ColRect.Width, this.sprite.ColRect.Height);
-
-                    bool longRectangle = longEdge / shortEdge > 1.6f;
-                    float sizeMultiplier = longRectangle ? 2f : 1f;
-
-                    defaultParticlesToEmit = longRectangle ? 2 : 1;
-
-                    Profile profile = longRectangle ?
-                        Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height) :
-                        Profile.Circle(radius: this.sprite.ColRect.Width / 3, radiate: Profile.CircleRadiation.Out);
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(1.0), profile: profile)
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Yellow),
-                            Speed = new Range<float>(5f, 20f),
-                            Quantity = 0,
-                        },
+                        float shortEdge = Math.Min(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+                        float longEdge = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
 
-                        Modifiers =
+                        bool longRectangle = longEdge / shortEdge > 1.6f;
+                        float sizeMultiplier = longRectangle ? 2f : 1f;
+
+                        defaultParticlesToEmit = longRectangle ? 2 : 1;
+
+                        Profile profile = longRectangle ?
+                            Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height) :
+                            Profile.Circle(radius: this.sprite.GfxRect.Width / 3, radiate: Profile.CircleRadiation.Out);
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(1.0), profile: profile)
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Yellow),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -211,9 +221,9 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 150f},
                             }
-                    };
-
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.Cooking:
                     defaultParticlesToEmit = 1;
@@ -248,7 +258,6 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
                     };
-
                     break;
 
                 case Preset.Brewing:
@@ -286,7 +295,6 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
                     };
-
                     break;
 
                 case Preset.WaterWalk:
@@ -323,7 +331,6 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
                             }
                     };
-
                     break;
 
                 case Preset.WaterWave:
@@ -365,7 +372,6 @@ namespace SonOfRobin
                                 },
                             }
                     };
-
                     break;
 
                 case Preset.CookingFinish:
@@ -404,7 +410,6 @@ namespace SonOfRobin
                                 },
                             }
                     };
-
                     break;
 
                 case Preset.BrewingFinish:
@@ -444,7 +449,6 @@ namespace SonOfRobin
                                 },
                             }
                     };
-
                     break;
 
                 case Preset.Excavated:
@@ -483,7 +487,6 @@ namespace SonOfRobin
                                 },
                             }
                     };
-
                     break;
 
                 case Preset.MudWalk:
@@ -520,7 +523,6 @@ namespace SonOfRobin
                                 new DragModifier { Density = 2.2f, DragCoefficient = 1.6f },
                             }
                     };
-
                     break;
 
                 case Preset.LavaFlame:
@@ -557,8 +559,320 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 7f},
                             }
                     };
-
                     break;
+
+                case Preset.DebrisWood:
+                    defaultParticlesToEmit = 10;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 1200f),
+                            Scale = new Range<float>(0.2f, 0.5f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = 3.0f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisLeaf:
+                    defaultParticlesToEmit = 4;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 1200f),
+                            Scale = new Range<float>(0.3f, 0.6f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = -3.0f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisGrass:
+                    defaultParticlesToEmit = 7;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(100f, 750f),
+                            Scale = new Range<float>(0.15f, 0.4f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = 0.8f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 5f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisStone:
+                    defaultParticlesToEmit = 16;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 1000f),
+                            Scale = new Range<float>(0.1f, 0.35f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2.5f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = 3.0f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisCrystal:
+                    defaultParticlesToEmit = 6;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 1000f),
+                            Scale = new Range<float>(0.4f, 0.7f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = 1.0f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisCeramic:
+                    defaultParticlesToEmit = 6;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.0f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 900f),
+                            Scale = new Range<float>(0.3f, 1.4f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2.8f),
+                        },
+
+                        Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = 1.0f },
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisBlood:
+                    defaultParticlesToEmit = 12;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(4.0f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 900f),
+                            Scale = new Range<float>(0.3f, 1.0f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2.8f),
+                        },
+
+                        Modifiers =
+                        {
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 4.0f, EndValue = 0f },
+                                }
+                            },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisStar:
+                    defaultParticlesToEmit = 8;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 950f),
+                            Scale = new Range<float>(0.1f, 0.6f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2.2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 4.0f, EndValue = 0f },
+                                },
+                            },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisHeart:
+                    defaultParticlesToEmit = 3;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Speed = new Range<float>(120f, 700f),
+                            Scale = new Range<float>(0.6f, 1.0f),
+                            Rotation = new Range<float>(-2f, 2f),
+                            Mass = new Range<float>(1f, 2.2f),
+                        },
+
+                        Modifiers =
+                        {
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 4.0f, EndValue = 0f },
+                                },
+                            },
+                          }
+                    };
+                    break;
+
+                case Preset.DebrisSoot:
+                    {
+                        defaultParticlesToEmit = this.sprite.BlocksMovement ? this.sprite.ColRect.Width * this.sprite.ColRect.Height / 3 : 8;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(2.0f),
+                            profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 850f),
+                                Scale = new Range<float>(0.2f, 0.75f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.6f),
+                            },
+
+                            Modifiers =
+                            {
+                            new VelocityModifier()
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 0f, EndValue = 1f }
+                                },
+                                VelocityThreshold = 2f
+                            },
+                            new DragModifier
+                            { Density = 0.2f, DragCoefficient = 40f },
+                          }
+                        };
+                        break;
+                    }
 
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");

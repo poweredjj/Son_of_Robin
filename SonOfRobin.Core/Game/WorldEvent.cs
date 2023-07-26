@@ -394,7 +394,7 @@ namespace SonOfRobin
                         Yield yield = (Yield)eventHelperDict["yield"];
                         BoardPiece piece = (BoardPiece)eventHelperDict["piece"];
 
-                        yield.DropDebris(piece: piece, ignoreProcessingTime: true);
+                        yield.DropDebris(piece: piece);
 
                         return;
                     }
