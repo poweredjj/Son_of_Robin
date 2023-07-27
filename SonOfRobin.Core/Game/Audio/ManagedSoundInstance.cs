@@ -16,6 +16,7 @@ namespace SonOfRobin
         private DateTime lastPlayed;
 
         private string currentSoundID;
+        private static int nextFrameInstanceStoppingPossible = 0;
 
         public ManagedSoundInstance(SoundData.Name soundName)
         {
@@ -68,6 +69,9 @@ namespace SonOfRobin
             }
             catch (InstancePlayLimitException)
             {
+                if (SonOfRobinGame.CurrentUpdate < nextFrameInstanceStoppingPossible) return false;
+                nextFrameInstanceStoppingPossible = SonOfRobinGame.CurrentUpdate + (60 * 2);
+
                 bool instanceStopped = StopOldestPlayingInstance();
                 if (instanceStopped)
                 {
