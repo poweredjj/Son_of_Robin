@@ -210,7 +210,7 @@ namespace SonOfRobin
                 this.placeMaxDistance = 100;
                 this.ignoresCollisions = false;
                 this.floatsOnWater = false;
-                this.isAffectedByWind = true;
+                this.isAffectedByWind = false;
                 this.allowedDensity = null;
                 this.staysAfterDeath = 0;
                 this.Yield = null;
@@ -250,7 +250,6 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
-                        this.isAffectedByWind = false;
                         this.Yield = CreatePlayerYield();
                         break;
 
@@ -260,7 +259,6 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
-                        this.isAffectedByWind = false;
                         this.Yield = CreatePlayerYield();
                         break;
 
@@ -269,7 +267,6 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
-                        this.isAffectedByWind = false;
                         this.Yield = CreatePlayerYield();
                         break;
 
@@ -279,7 +276,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 65535;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -292,6 +288,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 80;
                         this.allowedDensity = new AllowedDensity(radius: 75, maxNoOfPiecesSameName: 8);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -309,6 +306,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 350, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -325,6 +323,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 60;
                         this.allowedDensity = new AllowedDensity(radius: 75, maxNoOfPiecesTotal: 0);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -343,6 +342,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 30;
                         this.placeMaxDistance = 90;
                         this.allowedDensity = new AllowedDensity(radius: 70, maxNoOfPiecesTotal: 4);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -364,6 +364,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 120;
                         this.allowedDensity = new AllowedDensity(radius: 120, maxNoOfPiecesTotal: 40);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -380,6 +381,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 80;
                         this.floatsOnWater = true;
                         this.allowedDensity = new AllowedDensity(radius: 82, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -396,6 +398,7 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -412,6 +415,7 @@ namespace SonOfRobin
                         this.plantDropSeedChance = 20;
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -429,6 +433,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.placeMaxDistance = 250;
                         this.allowedDensity = new AllowedDensity(radius: 240, maxNoOfPiecesSameName: 0);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -447,6 +452,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -465,6 +471,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -483,6 +490,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -501,6 +509,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 600;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -523,6 +532,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 300;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -547,6 +557,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -573,6 +584,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -598,6 +610,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -623,6 +636,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -647,6 +661,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -672,6 +687,7 @@ namespace SonOfRobin
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -842,7 +858,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 5000;
                         this.animalMassBurnedMultiplier = 1f;
@@ -871,7 +886,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 1.3f;
@@ -900,7 +914,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 0.5f;
@@ -928,7 +941,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.isAffectedByWind = false;
                         this.staysAfterDeath = 40 * 60;
                         this.animalMaxMass = 1200;
                         this.animalMassBurnedMultiplier = 1;
@@ -952,7 +964,6 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -967,7 +978,6 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -983,7 +993,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1000,7 +1009,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1018,6 +1026,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1040,6 +1049,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1051,6 +1061,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1068,6 +1079,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1088,6 +1100,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.ChestStone:
@@ -1097,6 +1110,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.ChestIron:
@@ -1105,6 +1119,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
@@ -1113,6 +1128,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
@@ -1121,6 +1137,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1139,6 +1156,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
+                        this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1164,6 +1182,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopBasic:
@@ -1172,6 +1191,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopAdvanced:
@@ -1180,6 +1200,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopMaster:
@@ -1188,6 +1209,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherBasic:
@@ -1196,6 +1218,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.WorkshopLeatherAdvanced:
@@ -1204,6 +1227,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabStandard:
@@ -1212,6 +1236,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
@@ -1220,6 +1245,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.Furnace:
@@ -1248,6 +1274,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.UpgradeBenchObsolete:
@@ -1256,6 +1283,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.Stick:
@@ -1341,7 +1369,6 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1354,7 +1381,6 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1366,7 +1392,6 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1381,7 +1406,6 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1396,7 +1420,6 @@ namespace SonOfRobin
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1410,7 +1433,6 @@ namespace SonOfRobin
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1423,7 +1445,6 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1442,7 +1463,6 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCrystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1455,7 +1475,6 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Crystal;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCrystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1544,7 +1563,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 3;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Miss:
@@ -1554,7 +1572,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Zzz:
@@ -1563,7 +1580,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         this.inOpacityFadeDuration = 30;
                         break;
 
@@ -1574,7 +1590,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 2;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
@@ -1583,7 +1598,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
@@ -1592,7 +1606,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
@@ -1601,7 +1614,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
@@ -1610,7 +1622,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         this.inOpacityFadeDuration = 30;
                         break;
 
@@ -1620,7 +1631,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
@@ -1629,7 +1639,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.RainDrop:
@@ -1638,7 +1647,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Explosion:
@@ -1648,7 +1656,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.BurningFlameObsolete:
@@ -1659,7 +1666,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         this.inOpacityFadeDuration = 30;
                         break;
 
@@ -1902,7 +1908,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStoneObsolete:
@@ -1912,7 +1917,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisWoodObsolete:
@@ -1922,7 +1926,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisLeafObsolete:
@@ -1932,7 +1935,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCrystalObsolete:
@@ -1942,7 +1944,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisCeramicObsolete:
@@ -1952,7 +1953,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisStarObsolete:
@@ -1962,7 +1962,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisSootObsolete:
@@ -1972,7 +1971,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisHeartObsolete:
@@ -1982,7 +1980,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.DebrisBloodDropObsolete:
@@ -1992,7 +1989,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -2152,7 +2148,6 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.isAffectedByWind = false;
                         this.hasFlatShadow = true;
                         break;
 
@@ -2290,7 +2285,6 @@ namespace SonOfRobin
                         this.destructionDelay = 60 * 30;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.isAffectedByWind = false;
                         this.hasFlatShadow = true;
                         break;
 
@@ -2300,7 +2294,6 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
-                        this.isAffectedByWind = false;
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2385,7 +2378,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.floatsOnWater = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:
@@ -2393,7 +2385,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.EmptyVisualEffect:
@@ -2401,7 +2392,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.FertileGroundSmall:
@@ -2409,7 +2399,6 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameClass: 0);
-                        this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.4f;
 
@@ -2424,7 +2413,6 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radius: 180, maxNoOfPiecesSameClass: 0);
-                        this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.7f;
 
@@ -2439,7 +2427,6 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radius: 245, maxNoOfPiecesSameClass: 0);
-                        this.isAffectedByWind = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 2.2f;
 
