@@ -2317,6 +2317,13 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 180;
                         break;
 
+                    case PieceTemplate.Name.SwampGeyser:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.allowedDensity = new AllowedDensity(radius: 320, maxNoOfPiecesSameName: 1);
+                        break;
+
                     case PieceTemplate.Name.LavaGas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;

@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot, SwampGas }
 
         public class PresetData
         {
@@ -138,6 +138,8 @@ namespace SonOfRobin
                 { Preset.DebrisStar, "debris_star" },
                 { Preset.DebrisHeart, "debris_heart" },
                 { Preset.DebrisSoot, "debris_soot" },
+                { Preset.SwampGas, "circle_16x16_sharp" },
+
             };
 
             TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture($"particles/{textureNameDict[preset]}"));
@@ -888,6 +890,46 @@ namespace SonOfRobin
                         };
                         break;
                     }
+
+                case Preset.SwampGas:
+                    defaultParticlesToEmit = 1;
+                    maxDelay = 30;
+                    particlesToEmitMaxVariation = 4;
+
+                    particleEmitter = new ParticleEmitter(textureRegion, SonOfRobinGame.random.Next(30, 200), TimeSpan.FromSeconds(4.5f), Profile.Spray(new Vector2(0, -1.5f), 1.0f))
+                    {
+                        Parameters = new ParticleReleaseParameters
+                        {
+                            Color = HslColor.FromRgb(new Color(71, 49, 9)),
+                            Speed = new Range<float>(20f, 55f),
+                        },
+
+                        Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.6f),
+                                            EndValue = new Vector2(3.4f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.25f,
+                                            EndValue = 0.0f
+                                        },
+                                    }
+                                },
+                                new DragModifier
+                                {
+                                    Density = 1f, DragCoefficient = 0.13f
+                                },
+                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f }
+                            }
+                    };
+                    break;
 
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");

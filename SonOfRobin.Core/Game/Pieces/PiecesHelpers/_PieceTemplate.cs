@@ -272,6 +272,7 @@ namespace SonOfRobin
             HerbsDarkGreen,
 
             EmptyVisualEffect,
+            SwampGeyser,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2635,6 +2636,22 @@ namespace SonOfRobin
 
                         visualEffect.sprite.color = Color.LimeGreen;
                         visualEffect.sprite.opacity = 0.4f;
+
+                        return visualEffect;
+                    }
+
+                case Name.SwampGeyser:
+                    {
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Biome, new AllowedRange(min: 190, max: 255) }},
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "A geyser.", activeState: BoardPiece.State.Empty, visible: true);
+
+                        visualEffect.sprite.opacity = 0;
+
+                        ParticleEngine.TurnOn(sprite: visualEffect.sprite, preset: ParticleEngine.Preset.SwampGas, particlesToEmit: 1);
 
                         return visualEffect;
                     }
