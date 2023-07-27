@@ -498,7 +498,9 @@ namespace SonOfRobin
                             Rectangle targetingRect = player.sprite.ColRect;
                             targetingRect.X += centerOffset.X;
                             targetingRect.Y += centerOffset.Y;
-                            targetingRect.Inflate(activeTool.range, activeTool.range);
+
+                            int inflateVal = Math.Max(activeTool.range, 2);
+                            targetingRect.Inflate(inflateVal, inflateVal);
 
                             var targets = world.Grid
                                 .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: targetingRect, padding: 1)
