@@ -1185,33 +1185,31 @@ namespace SonOfRobin
 
         private Point GetCenterOffset()
         {
-            int offsetX = 0;
-            int offsetY = 0;
-            int offset = 20;
+            Point centerOffset = new(0, 0);
 
             switch (this.sprite.orientation)
             {
                 case Sprite.Orientation.left:
-                    offsetX -= offset;
+                    centerOffset.X -= this.sprite.ColRect.Width;
                     break;
 
                 case Sprite.Orientation.right:
-                    offsetX += offset;
+                    centerOffset.X += this.sprite.ColRect.Width;
                     break;
 
                 case Sprite.Orientation.up:
-                    offsetY -= offset;
+                    centerOffset.Y -= this.sprite.ColRect.Height;
                     break;
 
                 case Sprite.Orientation.down:
-                    offsetY += offset;
+                    centerOffset.Y += this.sprite.ColRect.Height;
                     break;
 
                 default:
                     throw new ArgumentException($"Unsupported sprite orientation - {this.sprite.orientation}.");
             }
 
-            return new Point(offsetX, offsetY);
+            return centerOffset;
         }
 
         private void PickUpClosestPiece(BoardPiece closestPiece)
