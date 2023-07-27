@@ -167,13 +167,14 @@ namespace SonOfRobin
 
                 case EventName.Destruction:
                     {
+                        if (!this.boardPiece.sprite.IsOnBoard) return;
+
                         if (this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.sprite.IsOnBoard && this.boardPiece.sprite.IsInCameraRect)
                         {
                             PieceTemplate.CreateAndPlaceOnBoard(world: this.boardPiece.world, position: this.boardPiece.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
                             this.boardPiece.pieceInfo.Yield.DropDebris(piece: this.boardPiece);
                         }
-
                         this.boardPiece.Destroy();
                         return;
                     }

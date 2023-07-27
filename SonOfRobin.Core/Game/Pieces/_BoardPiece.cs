@@ -199,9 +199,6 @@ namespace SonOfRobin
             }
         }
 
-        public bool CanBePickedUp
-        { get { return this.pieceInfo.canBePickedUpAlways || (this.pieceInfo.canBePickedUpIfDead && !this.alive); } }
-
         public bool IsAnimalOrPlayer
         { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
 

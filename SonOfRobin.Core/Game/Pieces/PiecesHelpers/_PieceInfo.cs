@@ -66,9 +66,7 @@ namespace SonOfRobin
             public readonly int plantDropSeedChance;
             public readonly bool toolIndestructible;
             public readonly bool canShrink;
-            public readonly bool canBePickedUpAlways;
-            public readonly bool canBePickedUpIfDead;
-            public bool CanBePickedUpAtAll { get { return this.canBePickedUpAlways || this.canBePickedUpIfDead; } }
+            public readonly bool canBePickedUp;
             public readonly byte stackSize;
             public readonly int destructionDelay;
             public readonly Scheduler.TaskName toolbarTask;
@@ -201,8 +199,7 @@ namespace SonOfRobin
                 this.plantDropSeedChance = 0;
                 this.toolIndestructible = false;
                 this.canShrink = false;
-                this.canBePickedUpAlways = false;
-                this.canBePickedUpIfDead = false;
+                this.canBePickedUp = false;
                 this.stackSize = 1;
                 this.destructionDelay = 0;
                 this.boardTask = Scheduler.TaskName.Empty;
@@ -706,7 +703,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 50;
                         this.fireAffinity = 0.6f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         this.placeMaxDistance = 1000;
@@ -716,7 +713,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 5;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         break;
 
@@ -724,7 +721,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 5;
                         this.fireAffinity = 0.6f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         this.placeMaxDistance = 1000;
@@ -732,7 +729,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.CoffeeRoasted:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         break;
 
@@ -740,7 +737,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 60;
                         this.fireAffinity = 0.15f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -750,7 +747,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 80;
                         this.fireAffinity = 0.15f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -760,7 +757,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 30;
                         this.fireAffinity = 0.15f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 16;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -771,7 +768,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.15f;
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -781,7 +778,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 50;
                         this.fireAffinity = 0.15f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -791,7 +788,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 100;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -801,7 +798,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 250;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -811,7 +808,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 250;
                         this.fireAffinity = 0.6f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -821,7 +818,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 50;
                         this.fireAffinity = 0.6f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.placeMaxDistance = 1000;
                         break;
@@ -830,7 +827,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 100;
                         this.fireAffinity = 0.7f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 4;
                         this.placeMaxDistance = 1000;
                         break;
@@ -839,7 +836,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 560;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
@@ -849,7 +846,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         break;
 
@@ -870,7 +867,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.1f;
                         this.animalSightRange = 400;
-                        this.canBePickedUpIfDead = true;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -899,7 +896,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 6;
                         this.animalRetaliateChance = 0.6f;
                         this.animalSightRange = 500;
-                        this.canBePickedUpIfDead = true;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -928,7 +925,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 5;
                         this.animalRetaliateChance = 1f;
                         this.animalSightRange = 700;
-                        this.canBePickedUpIfDead = true;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -956,7 +953,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.05f;
                         this.animalSightRange = 250;
-                        this.canBePickedUpIfDead = true;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1296,7 +1293,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Stick:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
                         break;
@@ -1304,7 +1301,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WoodLogRegular:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
@@ -1314,7 +1311,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WoodLogHard:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.9f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
@@ -1324,7 +1321,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.WoodPlank:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
@@ -1332,7 +1329,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Stone:
                         this.category = BoardPiece.Category.Stone;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
                         this.hasFlatShadow = true;
@@ -1340,7 +1337,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Granite:
                         this.category = BoardPiece.Category.Stone;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
@@ -1350,7 +1347,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Clay:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
@@ -1360,7 +1357,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Rope:
                         this.category = BoardPiece.Category.Leather;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         break;
 
@@ -1368,7 +1365,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 50;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         break;
 
@@ -1494,19 +1491,19 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Coal:
                         this.category = BoardPiece.Category.Stone;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 8;
                         break;
 
                     case PieceTemplate.Name.IronOre:
                         this.category = BoardPiece.Category.Metal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 8;
                         break;
 
                     case PieceTemplate.Name.IronBar:
                         this.category = BoardPiece.Category.Metal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
@@ -1514,32 +1511,32 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.IronRod:
                         this.category = BoardPiece.Category.Metal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 18;
                         break;
 
                     case PieceTemplate.Name.IronNail:
                         this.category = BoardPiece.Category.Metal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 50;
                         break;
 
                     case PieceTemplate.Name.IronPlate:
                         this.category = BoardPiece.Category.Metal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 18;
                         break;
 
                     case PieceTemplate.Name.GlassSand:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 8;
                         this.placeMaxDistance = 1000;
                         break;
 
                     case PieceTemplate.Name.Crystal:
                         this.category = BoardPiece.Category.Crystal;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
@@ -1678,40 +1675,40 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.CookingTrigger:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.UpgradeTrigger:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.BrewTrigger:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.FireplaceTriggerOn:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.FireplaceTriggerOff:
                         this.category = BoardPiece.Category.Indestructible;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.KnifeSimple:
                         this.category = BoardPiece.Category.Wood;
                         this.toolIndestructible = true;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         break;
 
                     case PieceTemplate.Name.AxeWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1719,7 +1716,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.AxeStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1727,7 +1724,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.AxeIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1735,7 +1732,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.AxeCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1743,7 +1740,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.PickaxeWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1751,7 +1748,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.PickaxeStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1759,7 +1756,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.PickaxeIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1767,7 +1764,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.PickaxeCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1775,7 +1772,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SpearWood:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1783,7 +1780,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SpearStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1791,7 +1788,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SpearIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1799,7 +1796,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SpearCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1807,7 +1804,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ScytheStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1815,7 +1812,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ScytheIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1823,7 +1820,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ScytheCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1831,7 +1828,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ShovelStone:
                         this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.4f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1839,7 +1836,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ShovelIron:
                         this.category = BoardPiece.Category.Metal;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1847,7 +1844,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ShovelCrystal:
                         this.category = BoardPiece.Category.Crystal;
                         this.fireAffinity = 0.1f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1855,7 +1852,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BowBasic:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1863,7 +1860,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BowAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         break;
@@ -1871,7 +1868,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ArrowWood:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
                         break;
@@ -1879,7 +1876,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ArrowStone:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
                         break;
@@ -1887,7 +1884,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ArrowIron:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
                         break;
@@ -1895,7 +1892,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ArrowCrystal:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
                         break;
@@ -1903,7 +1900,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ArrowBurning:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
                         break;
@@ -2026,7 +2023,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         break;
@@ -2035,7 +2032,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 500;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         break;
@@ -2044,7 +2041,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 700;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
                         break;
@@ -2053,7 +2050,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 200;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2061,7 +2058,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 300;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2069,7 +2066,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 400;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         this.hasFlatShadow = true;
                         break;
@@ -2078,7 +2075,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2086,7 +2083,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 150;
                         this.fireAffinity = 0.5f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2094,7 +2091,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 100;
                         this.fireAffinity = 0.8f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2102,7 +2099,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 500;
                         this.fireAffinity = 0.3f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         break;
 
@@ -2110,7 +2107,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.startingMass = 100;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         break;
@@ -2119,7 +2116,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.startingMass = 180;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         break;
@@ -2127,7 +2124,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.LanternFull:
                         this.category = BoardPiece.Category.Metal;
                         this.startingMass = 350;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
@@ -2136,7 +2133,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.LanternEmpty:
                         this.category = BoardPiece.Category.Metal;
                         this.startingMass = 300;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
                         break;
@@ -2144,7 +2141,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Candle:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.hasFlatShadow = true;
                         break;
@@ -2171,7 +2168,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2180,7 +2177,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2189,7 +2186,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2198,7 +2195,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2207,7 +2204,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2216,7 +2213,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2225,7 +2222,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2234,7 +2231,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2243,7 +2240,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2252,7 +2249,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.SmallPlant;
                         this.startingMass = 30;
                         this.fireAffinity = 0.2f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
                         break;
@@ -2260,7 +2257,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.EmptyBottle:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 100;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.placeMaxDistance = 1000;
                         break;
@@ -2268,14 +2265,14 @@ namespace SonOfRobin
                     case PieceTemplate.Name.PotionGeneric:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
                     case PieceTemplate.Name.PotionCoffeeObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
@@ -2283,7 +2280,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
                         this.fireAffinity = 1.0f;
-                        this.canBePickedUpAlways = true;
+                        this.canBePickedUp = true;
                         break;
 
                     case PieceTemplate.Name.Hole:
