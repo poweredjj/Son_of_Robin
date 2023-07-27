@@ -830,7 +830,7 @@ namespace SonOfRobin
             DateTime creationStarted = DateTime.Now;
             int createdDecorationsCount = 0;
 
-            foreach (Cell cell in this.Grid.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true)
+            foreach (Cell cell in this.Grid.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true)
                 .Where(cell => !cell.temporaryDecorationsCreated)
                 .OrderBy(x => this.random.Next()))
             {
@@ -1282,20 +1282,12 @@ namespace SonOfRobin
             this.BuildMode = false;
         }
 
-        public void OpenPauseMenu()
+        public void OpenMenu(MenuTemplate.Name templateName, object executeHelper = null)
         {
             ManagedSoundInstance.PauseAll();
             RumbleManager.StopAll();
             this.soundPaused = true;
-            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
-        }
-
-        public void OpenStatsMenu()
-        {
-            ManagedSoundInstance.PauseAll();
-            RumbleManager.StopAll();
-            this.soundPaused = true;
-            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
+            MenuTemplate.CreateMenuFromTemplate(templateName: templateName, executeHelper: executeHelper);
         }
 
         public void FlashRedOverlay()

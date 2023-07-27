@@ -2175,7 +2175,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 12f } };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80);
+                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 60);
 
                         return boardPiece;
                     }

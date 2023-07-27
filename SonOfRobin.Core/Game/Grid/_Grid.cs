@@ -809,15 +809,15 @@ namespace SonOfRobin
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
-        public IEnumerable<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding)
+        public IEnumerable<Cell> GetCellsInsideRect(Rectangle rectangle, bool addPadding)
         {
             // addPadding: +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
             int padding = addPadding ? 1 : 0;
 
-            int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Left, cellLength: this.cellWidth) - padding, 0);
-            int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Right, cellLength: this.cellWidth) + padding, this.noOfCellsX - 1);
-            int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Top, cellLength: this.cellHeight) - padding, 0);
-            int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
+            int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Left, cellLength: this.cellWidth) - padding, 0);
+            int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Right, cellLength: this.cellWidth) + padding, this.noOfCellsX - 1);
+            int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Top, cellLength: this.cellHeight) - padding, 0);
+            int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
 
             List<Cell> cellsInsideRect = new();
 
@@ -910,7 +910,7 @@ namespace SonOfRobin
 
             Rectangle rect = new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
 
-            var cellsInsideRect = this.GetCellsInsideRect(viewRect: rect, addPadding: true);
+            var cellsInsideRect = this.GetCellsInsideRect(rectangle: rect, addPadding: true);
 
             var spritesInsideTriangle = new List<Sprite>();
             foreach (Cell cell in cellsInsideRect)
@@ -926,7 +926,7 @@ namespace SonOfRobin
         public IEnumerable<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
             Camera camera = this.world.camera;
-            var visibleCells = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
+            var visibleCells = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
             var spritesInCameraView = new List<Sprite>();
 
             if (compareWithCameraRect)
@@ -979,7 +979,7 @@ namespace SonOfRobin
 
         public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false)
         {
-            var cells = this.GetCellsInsideRect(viewRect: rectangle, addPadding: true);
+            var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: true);
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
 
             var allSprites = new ConcurrentBag<Sprite> { };
@@ -988,7 +988,7 @@ namespace SonOfRobin
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
                 {
-                    allSprites.Add(sprite);
+                    if (sprite.GfxRect.Intersects(rectangle)) allSprites.Add(sprite);
                 }
             });
 
@@ -1013,7 +1013,7 @@ namespace SonOfRobin
             bool updateFog = false;
             Rectangle cameraRect = camera.viewRect;
 
-            foreach (Cell cell in this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: false))
+            foreach (Cell cell in this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: false))
             {
                 cell.DrawBackground();
 
@@ -1093,7 +1093,7 @@ namespace SonOfRobin
         {
             if (!drawCellData && !drawPieceData) return;
 
-            var visibleCells = this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: false);
+            var visibleCells = this.GetCellsInsideRect(rectangle: this.world.camera.viewRect, addPadding: false);
 
             foreach (Cell cell in visibleCells)
             {
@@ -1241,7 +1241,7 @@ namespace SonOfRobin
         {
             if (SonOfRobinGame.LastUpdateDelay > 20 || SonOfRobinGame.fps.FPS < 20) return;
 
-            var cellsInCameraViewWithNoTexturesSearch = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
+            var cellsInCameraViewWithNoTexturesSearch = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
             if (visitedByPlayerOnly) cellsInCameraViewWithNoTexturesSearch = cellsInCameraViewWithNoTexturesSearch.Where(cell => cell.VisitedByPlayer);
 
             var cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTexturesSearch.ToList();
@@ -1280,7 +1280,7 @@ namespace SonOfRobin
                 if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
             }
 
-            var cellsInCameraView = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
+            var cellsInCameraView = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null);
 
             foreach (Cell cell in cellsToUnload)

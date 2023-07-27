@@ -130,8 +130,6 @@ namespace SonOfRobin
 
             public void Execute()
             {
-                World world;
-
                 switch (taskName)
                 {
                     case TaskName.Empty:
@@ -278,7 +276,7 @@ namespace SonOfRobin
 
                     case TaskName.CreateNewPiece:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world != null)
                             {
                                 var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -292,7 +290,7 @@ namespace SonOfRobin
 
                     case TaskName.CreateDebugPieces:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null)
                             {
                                 MessageLog.AddMessage(msgType: MsgType.User, message: "Could not create selected item, because no world was found.");
@@ -419,7 +417,7 @@ namespace SonOfRobin
                             // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false } };
 
                             var saveParams = (Dictionary<string, Object>)this.ExecuteHelper;
-                            world = (World)saveParams["world"];
+                            World world = (World)saveParams["world"];
                             string saveSlotName = (string)saveParams["saveSlotName"];
                             bool showMessage = false;
                             if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
@@ -462,7 +460,7 @@ namespace SonOfRobin
                             BoardPiece container = (BoardPiece)this.ExecuteHelper;
                             if (!container.sprite.IsOnBoard) return;
 
-                            world = container.world;
+                            World world = container.world;
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.FieldStorage, player: world.Player, fieldStorage: container);
                         }
 
@@ -487,10 +485,9 @@ namespace SonOfRobin
                             Player player = (Player)executeData["player"];
                             Tool activeTool = (Tool)executeData["toolbarPiece"];
                             int shootingPower = (int)executeData["shootingPower"];
-                            int offsetX = (int)executeData["offsetX"];
-                            int offsetY = (int)executeData["offsetY"];
+                            Point centerOffset = (Point)executeData["centerOffset"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
-                            world = player.world;
+                            World world = player.world;
 
                             if (activeTool.shootsProjectile)
                             {
@@ -498,53 +495,35 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            var targets = new List<BoardPiece> { };
+                            Rectangle targetingRect = player.sprite.ColRect;
+                            targetingRect.X += centerOffset.X;
+                            targetingRect.Y += centerOffset.Y;
+                            targetingRect.Inflate(activeTool.range, activeTool.range);
 
-                            var nearbyPieces = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: activeTool.range == 0 ? (ushort)60 : (ushort)activeTool.range, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
-
-                            nearbyPieces = nearbyPieces.Where(piece => piece.pieceInfo.Yield != null && piece.exists).ToList();
+                            var targets = world.Grid
+                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: targetingRect)
+                                .Select(s => s.boardPiece)
+                                .Where(piece => piece.pieceInfo.Yield != null && piece.exists && piece != player);
 
                             if (activeTool.range == 0)
                             {
-                                var animals = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal)).ToList();
-                                if (animals.Count > 0) nearbyPieces = animals;
+                                var animals = targets.Where(piece => piece.GetType() == typeof(Animal));
+                                if (animals.Any()) targets = animals;
 
-                                BoardPiece targetPiece = BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: nearbyPieces, offsetX: offsetX, offsetY: offsetY);
-                                if (targetPiece == null) return;
-                                targets.Add(targetPiece);
-                            }
-                            else
-                            {
-                                Rectangle areaRect = new(x: 0, y: 0, width: world.width, height: world.height);
+                                Vector2 targetingRectCenter = new Vector2(targetingRect.Center.X, targetingRect.Center.Y);
 
-                                switch (player.sprite.orientation)
+                                try
                                 {
-                                    case Sprite.Orientation.left:
-                                        areaRect.Width = player.sprite.GfxRect.Left;
-                                        break;
-
-                                    case Sprite.Orientation.right:
-                                        areaRect.X = player.sprite.GfxRect.Center.X;
-                                        areaRect.Width = world.width - player.sprite.GfxRect.Center.X;
-                                        break;
-
-                                    case Sprite.Orientation.up:
-                                        areaRect.Height = player.sprite.GfxRect.Center.Y;
-                                        break;
-
-                                    case Sprite.Orientation.down:
-                                        areaRect.Y = player.sprite.GfxRect.Center.Y;
-                                        areaRect.Height = world.height - player.sprite.GfxRect.Center.Y;
-                                        break;
-
-                                    default:
-                                        throw new ArgumentException($"Unsupported orientation - {player.sprite.orientation}.");
+                                    BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(targetingRectCenter, piece.sprite.position)).First();
+                                    targets = new List<BoardPiece> { firstTarget };
                                 }
-
-                                targets = nearbyPieces.Where(piece => areaRect.Contains(piece.sprite.position)).ToList();
+                                catch (NullReferenceException)
+                                { return; }
+                                catch (InvalidOperationException)
+                                { return; }
                             }
 
-                            activeTool.Use(shootingPower: shootingPower, targets: targets, highlightOnly: highlightOnly);
+                            activeTool.Use(shootingPower: shootingPower, targets: targets.ToList(), highlightOnly: highlightOnly);
 
                             return;
                         }
@@ -577,7 +556,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
 
                             player.soundPack.Play(action: PieceSoundPack.Action.Eat, ignore3D: true);
 
@@ -636,7 +615,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
 
                             Sound.QuickPlay(SoundData.Name.Drink);
 
@@ -775,7 +754,7 @@ namespace SonOfRobin
 
                             if (fruitDropped)
                             {
-                                world = fruitPlant.world;
+                                World world = fruitPlant.world;
 
                                 float rotationChange = 0.1f;
                                 if ((fruitPlant.sprite.position - world.Player.sprite.position).X > 0) rotationChange *= -1;
@@ -805,7 +784,7 @@ namespace SonOfRobin
 
                     case TaskName.AddWorldEvent:
                         {
-                            world = (World)Scene.GetTopSceneOfType(typeof(World));
+                            World world = (World)Scene.GetTopSceneOfType(typeof(World));
                             if (world == null) return;
 
                             var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -914,8 +893,9 @@ namespace SonOfRobin
 
                     case TaskName.OpenShelterMenu:
                         {
-                            // executeHelper will go through menu - to "SleepInsideShelter" case
-                            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
+                            BoardPiece shelterPiece = (BoardPiece)this.ExecuteHelper;
+                            shelterPiece.world.OpenMenu(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
+
                             return;
                         }
 
@@ -944,7 +924,7 @@ namespace SonOfRobin
 
                     case TaskName.TempoStop:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
                             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
@@ -961,7 +941,7 @@ namespace SonOfRobin
 
                     case TaskName.TempoPlay:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
                             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
@@ -976,7 +956,7 @@ namespace SonOfRobin
 
                     case TaskName.TempoFastForward:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             SonOfRobinGame.Game.IsFixedTimeStep = false;
@@ -991,7 +971,7 @@ namespace SonOfRobin
 
                     case TaskName.CameraTrackPiece:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             BoardPiece piece = (BoardPiece)this.ExecuteHelper;
@@ -1002,7 +982,7 @@ namespace SonOfRobin
 
                     case TaskName.CameraTrackCoords:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper);
@@ -1015,7 +995,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var zoomData = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }, { "setInstantly", false } };
 
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -1046,7 +1026,7 @@ namespace SonOfRobin
 
                     case TaskName.RestoreHints:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
                             world.HintEngine.RestoreAllHints();
 
@@ -1101,7 +1081,7 @@ namespace SonOfRobin
 
                     case TaskName.CheckForPieceHints:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             // example executeHelper for this task
@@ -1119,7 +1099,7 @@ namespace SonOfRobin
 
                     case TaskName.ShowHint:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             var hintType = (HintEngine.Type)this.ExecuteHelper;
@@ -1193,7 +1173,7 @@ namespace SonOfRobin
 
                     case TaskName.SetCineMode:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
                             world.CineMode = (bool)this.ExecuteHelper;
@@ -1216,7 +1196,7 @@ namespace SonOfRobin
 
                     case TaskName.SolidColorAddOverlay:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
                             // example executeHelper for this task
@@ -1249,7 +1229,7 @@ namespace SonOfRobin
 
                     case TaskName.SkipCinematics:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Skipping cinematics", color: Color.White);
@@ -1268,7 +1248,7 @@ namespace SonOfRobin
 
                     case TaskName.SetSpectatorMode:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             world.SpectatorMode = (bool)this.ExecuteHelper;
@@ -1278,7 +1258,7 @@ namespace SonOfRobin
 
                     case TaskName.CheckForIncorrectPieces:
                         {
-                            world = World.GetTopWorld();
+                            World world = World.GetTopWorld();
                             if (world == null) return;
 
                             // counting incorrect pieces
@@ -1570,7 +1550,7 @@ namespace SonOfRobin
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Player player = (Player)executeData["player"];
-                            world = player.world;
+                            World world = player.world;
                             Seed seeds = (Seed)executeData["toolbarPiece"];
                             PieceTemplate.Name plantName = seeds.PlantToGrow;
                             bool highlightOnly = (bool)executeData["highlightOnly"];

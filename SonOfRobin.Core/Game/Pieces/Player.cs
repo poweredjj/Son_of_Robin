@@ -287,8 +287,7 @@ namespace SonOfRobin
 
                 Point centerOffset = this.GetCenterOffset();
 
-                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true);
-                interestingPieces = interestingPieces.Where(piece => piece.pieceInfo.canBePickedUp);
+                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true).Where(piece => piece.pieceInfo.canBePickedUp);
                 if (!interestingPieces.Any()) return null;
 
                 BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: centerOffset.X, offsetY: centerOffset.Y);
@@ -662,7 +661,7 @@ namespace SonOfRobin
         {
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
-                this.world.OpenPauseMenu();
+                this.world.OpenMenu(templateName: MenuTemplate.Name.Pause);
                 return;
             }
 
@@ -689,7 +688,7 @@ namespace SonOfRobin
         {
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
-                this.world.OpenPauseMenu();
+                this.world.OpenMenu(templateName: MenuTemplate.Name.Pause);
                 return;
             }
 
@@ -1324,14 +1323,13 @@ namespace SonOfRobin
             Point centerOffset = this.GetCenterOffset();
 
             var executeHelper = new Dictionary<string, Object> {
-                    {"player", this},
-                    {"slot", this.ActiveSlot},
-                    {"toolbarPiece", activeToolbarPiece},
-                    {"shootingPower", this.shootingPower},
-                    {"offsetX", centerOffset.X},
-                    {"offsetY", centerOffset.Y},
-                    {"buttonHeld", buttonHeld},
-                    {"highlightOnly", highlightOnly},
+                    { "player", this },
+                    { "slot", this.ActiveSlot },
+                    { "toolbarPiece", activeToolbarPiece },
+                    { "shootingPower", this.shootingPower },
+                    { "centerOffset", centerOffset },
+                    { "buttonHeld", buttonHeld },
+                    { "highlightOnly", highlightOnly },
                 };
 
             new Scheduler.Task(taskName: activeToolbarPiece.pieceInfo.toolbarTask, delay: 0, executeHelper: executeHelper);

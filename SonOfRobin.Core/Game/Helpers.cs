@@ -299,6 +299,32 @@ namespace SonOfRobin
             return d == 0 || (d < 0) == (s + t <= 0);
         }
 
+        public static bool DoRectangleAndCircleOverlap(Vector2 circleCenter, float circleRadius, Rectangle rect)
+        {
+            // Get the rectangle half width and height
+            float rW = rect.Width / 2;
+            float rH = rect.Height / 2;
+
+            // Get the positive distance. This exploits the symmetry so that we now are
+            // just solving for one corner of the rectangle (memory tell me it fabs for
+            // floats but I could be wrong and its abs)
+            float distX = Math.Abs(circleCenter.X - (rect.Left + rW));
+            float distY = Math.Abs(circleCenter.Y - (rect.Top + rH));
+
+            if (distX >= circleRadius + rW || distY >= circleRadius + rH) return false;
+            if (distX < rW || distY < rH) return true;
+
+            // Now only circles C and D left to test
+            // get the distance to the corner
+            distX -= rW;
+            distY -= rH;
+
+            // Find distance to corner and compare to circle radius
+            // (squared and the sqrt root is not needed)
+            if (distX * distX + distY * distY < circleRadius * circleRadius) return true;
+            return false;
+        }
+
         public static List<object> GetDuplicates(List<object> objectList)
         {
             return objectList.GroupBy(x => x).Where(g => g.Count() > 1).Select(y => y.Key).ToList();

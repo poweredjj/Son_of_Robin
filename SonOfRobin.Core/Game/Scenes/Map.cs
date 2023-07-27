@@ -405,7 +405,7 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
-                cellsToDraw = this.world.Grid.GetCellsInsideRect(viewRect: this.camera.viewRect, addPadding: false);
+                cellsToDraw = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, addPadding: false);
                 if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer);
 
                 foreach (Cell cell in cellsToDraw)
