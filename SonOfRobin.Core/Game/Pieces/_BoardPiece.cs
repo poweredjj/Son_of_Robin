@@ -827,34 +827,39 @@ namespace SonOfRobin
             this.HitPoints -= hitPointsToTake;
             if (this.pieceInfo.blocksMovement) this.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
 
-            int particleFrameDivider = this.pieceInfo.blocksMovement ? 1 : (int)(6f / this.HeatLevel);
-
-            if (this.world.CurrentUpdate % particleFrameDivider == 0)
+            bool isInCameraRect = this.sprite.IsInCameraRect;
+            if (isInCameraRect)
             {
-                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
-            }
-
-            if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
-                this.soundPack.Play(PieceSoundPack.Action.Cry);
-
-            if (this.GetType() == typeof(Player))
-            {
-                if (!this.world.solidColorManager.AnySolidColorPresent)
+                int particleFrameDivider = this.pieceInfo.blocksMovement ? 1 : (int)(6f / this.HeatLevel);
+                if (this.world.CurrentUpdate % particleFrameDivider == 0)
                 {
-                    this.world.camera.AddRandomShake();
-                    this.world.FlashRedOverlay();
-                    new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.4f);
+                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
+                }
+
+                if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry)) this.soundPack.Play(PieceSoundPack.Action.Cry);
+
+                if (this.GetType() == typeof(Player))
+                {
+                    if (!this.world.solidColorManager.AnySolidColorPresent)
+                    {
+                        this.world.camera.AddRandomShake();
+                        this.world.FlashRedOverlay();
+                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.4f);
+                    }
                 }
             }
 
             if (this.HitPoints < 1)
             {
-                bool isAnimal = this.GetType() == typeof(Animal);
+                if (isInCameraRect)
+                {
+                    bool isAnimal = this.GetType() == typeof(Animal);
+                    if (isAnimal) this.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
 
-                if (isAnimal) this.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
+                    ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
+                    this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
+                }
 
-                this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
                 this.Destroy();
                 return;
             }
@@ -891,7 +896,7 @@ namespace SonOfRobin
 
                         if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
                         {
-                            heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+                            if (heatedPiece.sprite.IsInCameraRect) heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
                             if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
                             {
@@ -914,26 +919,29 @@ namespace SonOfRobin
 
             // creating and updating flameLight
 
-            if (this.flameLight == null && this.sprite.IsInCameraRect && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < Preferences.maxFlameLightsPerCell && SonOfRobinGame.fps.FPS >= 45)
+            if (isInCameraRect)
             {
-                this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
+                if (this.flameLight == null && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < Preferences.maxFlameLightsPerCell && SonOfRobinGame.fps.FPS >= 45)
+                {
+                    this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 
-                this.flameLight.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0, width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height);
-                this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
-                this.flameLight.sprite.lightEngine.Activate();
+                    this.flameLight.sprite.lightEngine = new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false, addedGfxRectMultiplier: 0, width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height);
+                    this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
+                    this.flameLight.sprite.lightEngine.Activate();
 
-                new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flameLight.sprite);
+                    new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flameLight.sprite);
 
-                this.flameLight.sprite.opacity = 0f;
-                new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);
-            }
+                    this.flameLight.sprite.opacity = 0f;
+                    new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);
+                }
 
-            if (this.flameLight != null)
-            {
-                int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
-                int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
+                if (this.flameLight != null)
+                {
+                    int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
+                    int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
 
-                this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
+                    this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
+                }
             }
         }
 
