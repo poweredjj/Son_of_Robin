@@ -54,6 +54,7 @@ namespace SonOfRobin
             base.Kill(addDestroyEvent);
 
             if (!this.readableName.Contains("dead")) this.readableName = $"dead {this.readableName}";
+            this.HitPoints = this.maxHitPoints; // to prevent from being removed from inventory (as "broken" piece)
         }
 
         private float FedPercentage // float 0-1
