@@ -53,7 +53,7 @@ namespace SonOfRobin
 
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
 
-            int mainPieceOwnedCount = PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp ?
+            int mainPieceOwnedCount = PieceInfo.GetInfo(recipe.pieceToCreate).CanBePickedUpAtAll ?
                 PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: recipe.pieceToCreate) :
                 this.storageList[0].world.pieceCountByName[recipe.pieceToCreate];
 

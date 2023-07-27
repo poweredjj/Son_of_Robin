@@ -16,17 +16,10 @@ namespace SonOfRobin
             this.eventQueue = new Dictionary<int, List<WorldEvent>>();
         }
 
-        public void AddToQueue(WorldEvent worldEvent, bool addFadeOut = true)
+        public void AddToQueue(WorldEvent worldEvent)
         {
             if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new List<WorldEvent>();
             this.eventQueue[worldEvent.startUpdateNo].Add(worldEvent);
-
-            if (addFadeOut && worldEvent.eventName == WorldEvent.EventName.Destruction)
-            {
-                int fadeDuration = worldEvent.boardPiece.GetType() == typeof(Animal) ? worldEvent.delay - 1 : OpacityFade.defaultDuration;
-
-                new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
-            }
         }
 
         public void RemovePieceFromQueue(BoardPiece pieceToRemove)
@@ -71,7 +64,7 @@ namespace SonOfRobin
             foreach (Dictionary<string, Object> eventData in eventDataList)
             {
                 WorldEvent worldEvent = WorldEvent.Deserialize(world: this.world, eventData: eventData);
-                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent, addFadeOut: false);
+                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent);
             }
         }
     }
@@ -101,7 +94,7 @@ namespace SonOfRobin
             this.delay = Math.Max(delay, 0);
             this.startUpdateNo = world.CurrentUpdate + this.delay;
 
-            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this, addFadeOut: true);
+            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this);
         }
 
         public Dictionary<string, Object> Serialize()
@@ -174,6 +167,13 @@ namespace SonOfRobin
 
                 case EventName.Destruction:
                     {
+                        if (this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.sprite.IsOnBoard && this.boardPiece.sprite.IsInCameraRect)
+                        {
+                            PieceTemplate.CreateAndPlaceOnBoard(world: this.boardPiece.world, position: this.boardPiece.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+
+                            this.boardPiece.pieceInfo.Yield.DropDebris(piece: this.boardPiece);
+                        }
+
                         this.boardPiece.Destroy();
                         return;
                     }

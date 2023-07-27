@@ -90,7 +90,7 @@ namespace SonOfRobin
 
         public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
         {
-            if (this.locked || (piece.pieceInfo != null && !piece.pieceInfo.canBePickedUp)) return false;
+            if (this.locked || (piece.pieceInfo != null && !piece.CanBePickedUp)) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
 
 
@@ -102,7 +102,7 @@ namespace SonOfRobin
         {
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
-            if (this.locked || !pieceInfo.canBePickedUp) return 0;
+            if (this.locked || !pieceInfo.CanBePickedUpAtAll) return 0;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(pieceName)) return 0;
             if (this.IsEmpty) return Math.Min(pieceInfo.stackSize, this.stackLimit);
             if (pieceName == this.PieceName) return Math.Min(this.pieceList[0].StackSize, this.stackLimit) - this.pieceList.Count;

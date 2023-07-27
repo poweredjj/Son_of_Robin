@@ -47,11 +47,11 @@ namespace SonOfRobin
 
                 if (maxLevel == -1)
                 {
-                    maxLevel = pieceInfo.canBePickedUp ? 4 : 2;
+                    maxLevel = pieceInfo.CanBePickedUpAtAll ? 4 : 2;
                     if (isEquip) maxLevel = 1;
                 }
                 this.maxLevel = maxLevel;
-                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquip ? 3 : 1;
+                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.CanBePickedUpAtAll && !isEquip ? 3 : 1;
                 this.craftCountToLevelUp = craftCountToLevelUp;
 
                 this.masterLevelFatigueMultiplier = fatigueMultiplier;
@@ -197,7 +197,7 @@ namespace SonOfRobin
                 }
 
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
-                bool canBePickedUp = pieceInfo.canBePickedUp;
+                bool canBePickedUp = pieceInfo.CanBePickedUpAtAll;
 
                 if (canBePickedUp && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToPutInto, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                 {
@@ -335,7 +335,7 @@ namespace SonOfRobin
 
                 var taskChain = new List<Object>();
 
-                SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
+                SoundData.Name soundName = !pieceInfo.CanBePickedUpAtAll && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
 
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
@@ -440,14 +440,14 @@ namespace SonOfRobin
                     taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
-                if (!pieceInfo.canBePickedUp)
+                if (!pieceInfo.CanBePickedUpAtAll)
                 {
                     taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
                 }
 
                 var executeHelper = new Dictionary<string, Object>();
-                if (pieceInfo.canBePickedUp) executeHelper["newOwnedPiece"] = this.pieceToCreate;
+                if (pieceInfo.CanBePickedUpAtAll) executeHelper["newOwnedPiece"] = this.pieceToCreate;
                 else executeHelper["fieldPiece"] = this.pieceToCreate;
 
                 if (!tutorialAdded && craftLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.GeneralCraftLevels))
@@ -589,7 +589,7 @@ namespace SonOfRobin
             {
                 foreach (Recipe recipe in recipeList)
                 {
-                    if (!PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp && recipe.amountToCreate > 1) throw new ArgumentException($"Cannot create multiple pieces in the field - {recipe.pieceToCreate}.");
+                    if (!PieceInfo.GetInfo(recipe.pieceToCreate).CanBePickedUpAtAll && recipe.amountToCreate > 1) throw new ArgumentException($"Cannot create multiple pieces in the field - {recipe.pieceToCreate}.");
 
                     if (recipe.amountToCreate > 1 && recipe.isReversible) throw new ArgumentException($"Found recipe for amount > 1, that can be reversed - {recipe.pieceToCreate}."); // this could lead to item duplication exploit
                 }
