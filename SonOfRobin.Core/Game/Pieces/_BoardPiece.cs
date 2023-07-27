@@ -267,7 +267,7 @@ namespace SonOfRobin
 
                     if (previousHeatLevel == 0)
                     {
-                        int delay = this.world.random.Next(60, 15 * 60);
+                        int delay = this.world.random.Next(60 * 2, 25 * 60);
                         if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
 
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
@@ -800,7 +800,7 @@ namespace SonOfRobin
 
             bool isRaining = this.world.weather.IsRaining;
 
-            this.HeatLevel -= isRaining ? 0.015f : 0.0035f;
+            this.HeatLevel -= isRaining ? 0.012f : 0.0028f;
             if (this.sprite.IsInWater)
             {
                 if (this.IsBurning) this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
@@ -821,9 +821,9 @@ namespace SonOfRobin
 
             // affecting this piece
 
-            this.HeatLevel += isRaining ? 0.005f : 0.01f;
+            this.HeatLevel += isRaining ? 0.0025f : 0.005f;
 
-            float hitPointsToTake = this.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.maxHitPoints / 700f);
+            float hitPointsToTake = this.GetType() == typeof(Player) ? 0.6f : Math.Max(0.035f, this.maxHitPoints / 900f);
             this.HitPoints -= hitPointsToTake;
             if (this.pieceInfo.blocksMovement) this.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
 
@@ -866,7 +866,7 @@ namespace SonOfRobin
 
             // warming up nearby pieces
 
-            float baseBurnVal = Math.Max(this.heatLevel / 70f, 0.05f);
+            float baseBurnVal = Math.Max(this.heatLevel / 100f, 0.035f);
             float baseHitPointsVal = (float)baseBurnVal / 180f;
 
             Rectangle heatRect = this.sprite.GfxRect;
@@ -885,7 +885,7 @@ namespace SonOfRobin
             {
                 if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
 
-                heatedPiece.HeatLevel += baseBurnVal * 0.28f;
+                heatedPiece.HeatLevel += baseBurnVal * 0.27f;
 
                 if (heatedPiece.IsAnimalOrPlayer)
                 {
