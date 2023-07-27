@@ -495,7 +495,7 @@ namespace SonOfRobin
             if (this.IsAnimalOrPlayer)
             {
                 this.rotatesWhenDropped = true; // so it can be tossed around with rotation
-                this.sprite.rotation = (float)(Random.NextDouble() * Math.PI);
+                this.sprite.rotation = (float)(Random.NextSingle() * Math.PI);
             }
             if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;

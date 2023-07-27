@@ -13,7 +13,7 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot, SwampGas }
+        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot, SwampGas, Lightning }
 
         public class PresetData
         {
@@ -139,6 +139,7 @@ namespace SonOfRobin
                 { Preset.DebrisHeart, "debris_heart" },
                 { Preset.DebrisSoot, "debris_soot" },
                 { Preset.SwampGas, "circle_16x16_sharp" },
+                { Preset.Lightning, "circle_16x16_sharp" },
 
             };
 
@@ -152,18 +153,19 @@ namespace SonOfRobin
             switch (preset)
             {
                 case Preset.Fireplace:
-                    defaultParticlesToEmit = 1;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Yellow),
-                            Speed = new Range<float>(5f, 20f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 1;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Yellow),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -184,8 +186,9 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.BurnFlame:
                     {
@@ -236,18 +239,19 @@ namespace SonOfRobin
                     }
 
                 case Preset.Cooking:
-                    defaultParticlesToEmit = 1;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.White),
-                            Speed = new Range<float>(5f, 20f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 1;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -267,23 +271,25 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.Brewing:
-                    defaultParticlesToEmit = 1;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height))
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Red),
-                            Speed = new Range<float>(6f, 25f),
-                            Quantity = 0,
-                            Rotation = 0,
-                        },
+                        defaultParticlesToEmit = 1;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Red),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                                Rotation = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -304,23 +310,25 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.WaterWalk:
-                    defaultParticlesToEmit = 3;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Scale = new Range<float>(0.1f, 0.4f),
-                            Color = HslColor.FromRgb(Color.Cyan),
-                            Speed = new Range<float>(6f, 25f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 3;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = new Range<float>(0.1f, 0.4f),
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -340,25 +348,27 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.WaterWave:
-                    defaultParticlesToEmit = 3;
-
-                    float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
-                    float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 700, TimeSpan.FromSeconds(1.1f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Cyan),
-                            Speed = new Range<float>(10f, 45f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 3;
 
-                        Modifiers =
+                        float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
+                        float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 700, TimeSpan.FromSeconds(1.1f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(10f, 45f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -381,22 +391,24 @@ namespace SonOfRobin
                                     Density = 0.7f, DragCoefficient = 1f
                                 },
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.CookingFinish:
-                    defaultParticlesToEmit = 8;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.White),
-                            Speed = new Range<float>(10f, 120f),
-                            Quantity = 1,
-                        },
+                        defaultParticlesToEmit = 8;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(10f, 120f),
+                                Quantity = 1,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -419,22 +431,24 @@ namespace SonOfRobin
                                     Density = 1f, DragCoefficient = 1f
                                 },
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.BrewingFinish:
-                    defaultParticlesToEmit = 10;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(0.8f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Red),
-                            Speed = new Range<float>(40f, 180f),
-                            Quantity = 1,
-                        },
+                        defaultParticlesToEmit = 10;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(0.8f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Red),
+                                Speed = new Range<float>(40f, 180f),
+                                Quantity = 1,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -458,22 +472,24 @@ namespace SonOfRobin
                                     Density = 1.2f, DragCoefficient = 1.2f
                                 },
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.Excavated:
-                    defaultParticlesToEmit = 10;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(new Color(128, 106, 50)),
-                            Speed = new Range<float>(15f, 140f),
-                            Quantity = 1,
-                        },
+                        defaultParticlesToEmit = 10;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(128, 106, 50)),
+                                Speed = new Range<float>(15f, 140f),
+                                Quantity = 1,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -496,22 +512,24 @@ namespace SonOfRobin
                                     Density = 1f, DragCoefficient = 1f
                                 },
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.MudWalk:
-                    defaultParticlesToEmit = 3;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 11, radiate: Profile.CircleRadiation.Out))
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(new Color(29, 51, 4)),
-                            Speed = new Range<float>(10f, 45f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 3;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 11, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(29, 51, 4)),
+                                Speed = new Range<float>(10f, 45f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -532,23 +550,25 @@ namespace SonOfRobin
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 8f},
                                 new DragModifier { Density = 2.2f, DragCoefficient = 1.6f },
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.LavaFlame:
-                    defaultParticlesToEmit = 1;
-                    maxDelay = 130;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(3.5), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(Color.Yellow),
-                            Speed = new Range<float>(2f, 7f),
-                            Quantity = 0,
-                        },
+                        defaultParticlesToEmit = 1;
+                        maxDelay = 130;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(3.5), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Yellow),
+                                Speed = new Range<float>(2f, 7f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -568,23 +588,25 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 7f},
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisWood:
-                    defaultParticlesToEmit = 10;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(100f, 900f),
-                            Scale = new Range<float>(0.2f, 0.5f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.4f),
-                        },
+                        defaultParticlesToEmit = 10;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(100f, 900f),
+                                Scale = new Range<float>(0.2f, 0.5f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.4f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = 3.0f },
@@ -600,23 +622,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisLeaf:
-                    defaultParticlesToEmit = 4;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(100f, 1000f),
-                            Scale = new Range<float>(0.3f, 0.6f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.3f),
-                        },
+                        defaultParticlesToEmit = 4;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(100f, 1000f),
+                                Scale = new Range<float>(0.3f, 0.6f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.3f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = -3.0f },
@@ -632,23 +656,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisGrass:
-                    defaultParticlesToEmit = 7;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(100f, 750f),
-                            Scale = new Range<float>(0.15f, 0.4f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2f),
-                        },
+                        defaultParticlesToEmit = 7;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(100f, 750f),
+                                Scale = new Range<float>(0.15f, 0.4f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = 0.8f },
@@ -664,23 +690,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisStone:
-                    defaultParticlesToEmit = 16;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 1000f),
-                            Scale = new Range<float>(0.3f, 0.6f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.5f),
-                        },
+                        defaultParticlesToEmit = 16;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 1000f),
+                                Scale = new Range<float>(0.3f, 0.6f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.5f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = 3.0f },
@@ -696,23 +724,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisCrystal:
-                    defaultParticlesToEmit = 6;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 1000f),
-                            Scale = new Range<float>(0.4f, 0.7f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2f),
-                        },
+                        defaultParticlesToEmit = 6;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.5f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 1000f),
+                                Scale = new Range<float>(0.4f, 0.7f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = 1.0f },
@@ -728,23 +758,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisCeramic:
-                    defaultParticlesToEmit = 6;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.0f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 900f),
-                            Scale = new Range<float>(0.3f, 1.4f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.8f),
-                        },
+                        defaultParticlesToEmit = 6;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.0f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 900f),
+                                Scale = new Range<float>(0.3f, 1.4f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.8f),
+                            },
+
+                            Modifiers =
                         {
                             new RotationModifier
                             { RotationRate = 1.0f },
@@ -760,23 +792,25 @@ namespace SonOfRobin
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisBlood:
-                    defaultParticlesToEmit = 12;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(4.0f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 900f),
-                            Scale = new Range<float>(0.3f, 1.0f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.8f),
-                        },
+                        defaultParticlesToEmit = 12;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(4.0f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 900f),
+                                Scale = new Range<float>(0.3f, 1.0f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.8f),
+                            },
+
+                            Modifiers =
                         {
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
@@ -790,23 +824,25 @@ namespace SonOfRobin
                                 }
                             },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisStar:
-                    defaultParticlesToEmit = 8;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 950f),
-                            Scale = new Range<float>(0.1f, 0.6f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.2f),
-                        },
+                        defaultParticlesToEmit = 8;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 950f),
+                                Scale = new Range<float>(0.1f, 0.6f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.2f),
+                            },
+
+                            Modifiers =
                         {
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
@@ -819,23 +855,25 @@ namespace SonOfRobin
                                 },
                             },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisHeart:
-                    defaultParticlesToEmit = 3;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Speed = new Range<float>(120f, 700f),
-                            Scale = new Range<float>(0.6f, 1.0f),
-                            Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2.2f),
-                        },
+                        defaultParticlesToEmit = 3;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(120f, 700f),
+                                Scale = new Range<float>(0.6f, 1.0f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.2f),
+                            },
+
+                            Modifiers =
                         {
                             new DragModifier
                             { Density = 0.2f, DragCoefficient = 40f },
@@ -848,8 +886,9 @@ namespace SonOfRobin
                                 },
                             },
                           }
-                    };
-                    break;
+                        };
+                        break;
+                    }
 
                 case Preset.DebrisSoot:
                     {
@@ -892,19 +931,20 @@ namespace SonOfRobin
                     }
 
                 case Preset.SwampGas:
-                    defaultParticlesToEmit = 1;
-                    maxDelay = 30;
-                    particlesToEmitMaxVariation = 4;
-
-                    particleEmitter = new ParticleEmitter(textureRegion, SonOfRobinGame.random.Next(30, 200), TimeSpan.FromSeconds(4.5f), Profile.Spray(new Vector2(0, -1.5f), 1.0f))
                     {
-                        Parameters = new ParticleReleaseParameters
-                        {
-                            Color = HslColor.FromRgb(new Color(71, 49, 9)),
-                            Speed = new Range<float>(20f, 55f),
-                        },
+                        defaultParticlesToEmit = 1;
+                        maxDelay = 30;
+                        particlesToEmitMaxVariation = 4;
 
-                        Modifiers =
+                        particleEmitter = new ParticleEmitter(textureRegion, SonOfRobinGame.random.Next(30, 200), TimeSpan.FromSeconds(4.5f), Profile.Spray(new Vector2(0, -1.5f), 1.0f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(71, 49, 9)),
+                                Speed = new Range<float>(20f, 55f),
+                            },
+
+                            Modifiers =
                             {
                                 new AgeModifier
                                 {
@@ -928,8 +968,43 @@ namespace SonOfRobin
                                 },
                                 new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f }
                             }
-                    };
-                    break;
+                        };
+                        break;
+                    }
+
+                case Preset.Lightning:
+                    {
+                        int viewRectHeight = this.sprite.world.camera.viewRect.Height;
+
+                        defaultParticlesToEmit = viewRectHeight * 3; // partially outside viewRect, to allow scrolling
+                        float lineVectorX = (SonOfRobinGame.random.NextSingle() * 0.2f) - 0.1f;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, defaultParticlesToEmit, TimeSpan.FromSeconds(1.5f), Profile.Line(axis: new Vector2(lineVectorX, 1), length: viewRectHeight))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(2f, 4f),
+                                Scale = 0.17f,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1.0f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                            },
+                        };
+                        break;
+                    }
 
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
@@ -1049,6 +1124,10 @@ namespace SonOfRobin
 
                 case Preset.DebrisSoot:
                     this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.Lightning:
+                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2));
                     break;
 
                 default:

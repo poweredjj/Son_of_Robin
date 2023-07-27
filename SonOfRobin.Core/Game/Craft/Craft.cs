@@ -260,7 +260,7 @@ namespace SonOfRobin
                         PieceTemplate.Name randomNameToReduce = multipleIngredientNames.ElementAt(world.random.Next(0, multipleIngredientNames.Count));
                         byte quantity = ingredientsCopy[randomNameToReduce];
 
-                        float reduceMultiplier = (float)(0.2 + (world.random.NextDouble() * 0.3)); // 0.2 - 0.5
+                        float reduceMultiplier = (float)(0.2 + (world.random.NextSingle() * 0.3)); // 0.2 - 0.5
                         byte amountToReduce = Math.Max((byte)(quantity * reduceMultiplier), (byte)1);
                         ingredientsCopy[randomNameToReduce] -= amountToReduce;
                         world.craftStats.AddSmartCraftingReducedAmount(ingredientName: randomNameToReduce, reducedAmount: amountToReduce);

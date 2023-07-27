@@ -247,7 +247,7 @@ namespace SonOfRobin
                     int maxDuration = cookLevel * 60 * 60;
                     int duration = this.world.random.Next(30 * 60, maxDuration);
 
-                    float valueMultiplier = (float)((1 + this.world.random.NextDouble()) * (cookLevel * 0.5f));
+                    float valueMultiplier = (float)((1 + this.world.random.NextSingle()) * (cookLevel * 0.5f));
 
                     switch (buffType)
                     {

@@ -563,7 +563,7 @@ namespace SonOfRobin
                     playerTarget.Fatigue += 15f;
 
                     Vector2 screenShake = movement * 0.02f;
-                    float durationSecs = (float)(this.world.random.NextDouble() * 0.09f) + 0.12f;
+                    float durationSecs = (float)(this.world.random.NextSingle() * 0.09f) + 0.12f;
                     this.world.camera.AddShake(movement: screenShake, durationSecs: durationSecs);
 
                     if (this.target.HitPoints > 0) // red screen flash if player is still alive
@@ -631,7 +631,7 @@ namespace SonOfRobin
 
             if (this.sprite.IsInCameraRect)
             {
-                float targetRotation = (float)(this.world.random.NextDouble() * 0.2f) + 0.05f;
+                float targetRotation = (float)(this.world.random.NextSingle() * 0.2f) + 0.05f;
                 float finalRotation = (sprite.position - this.target.sprite.position).X > 0 ? targetRotation : -targetRotation;
 
                 this.world.swayManager.AddSwayEvent(targetSprite: this.sprite, sourceSprite: null, targetRotation: finalRotation * 0.8f, playSound: true, rotationSlowdown: 2);

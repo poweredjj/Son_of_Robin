@@ -2647,7 +2647,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 190, max: 255) }},
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "A geyser.", activeState: BoardPiece.State.Empty, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "Swamp geyser.", activeState: BoardPiece.State.Empty, visible: true);
 
                         visualEffect.sprite.opacity = 0;
 

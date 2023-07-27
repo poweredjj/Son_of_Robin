@@ -251,12 +251,12 @@ namespace SonOfRobin
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: (float)(Random.NextDouble() * 2) - 1, duration: this.world.random.Next(6, 15), delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: (float)(Random.NextSingle() * 2) - 1, duration: this.world.random.Next(6, 15), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: (float)(Random.NextDouble() * 0.3) + 0.2f, duration: this.world.random.Next(4, 20), delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: (float)(Random.NextSingle() * 0.3) + 0.2f, duration: this.world.random.Next(4, 20), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);

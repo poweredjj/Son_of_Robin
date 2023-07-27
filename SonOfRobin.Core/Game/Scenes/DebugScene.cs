@@ -363,7 +363,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.SwampGas, particlesToEmit: 1, duration: 10 * 60);
+                ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.Lightning, duration: 1);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
@@ -406,7 +406,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.5f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(2f)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(2), transitionLength: TimeSpan.FromMinutes(0.3f)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3))

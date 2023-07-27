@@ -194,8 +194,8 @@ namespace SonOfRobin
             {
                 // setting a random camera corner
 
-                float x = (float)this.world.random.NextDouble();
-                float y = (float)this.world.random.NextDouble();
+                float x = (float)this.world.random.NextSingle();
+                float y = (float)this.world.random.NextSingle();
 
                 if (this.world.random.Next(2) == 0) x = (int)x;
                 else y = (int)y;
@@ -247,6 +247,8 @@ namespace SonOfRobin
                                 if (nearbyPiece.createdByPlayer) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
                             }
                             piece.HeatLevel += 1;
+                            ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.Lightning, duration: 1);
+
                             break;
                         }
                     }
@@ -318,7 +320,7 @@ namespace SonOfRobin
             if (this.WindOriginX == -1 || this.WindOriginY == -1)
             {
                 this.WindOriginX = this.world.random.Next(0, 2);
-                this.WindOriginY = (float)this.world.random.NextDouble();
+                this.WindOriginY = (float)this.world.random.NextSingle();
             }
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(1 - (this.WindPercentage * 1));
@@ -524,7 +526,7 @@ namespace SonOfRobin
 
                 float intensity = randomizeIntensity ? Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity) : maxIntensity;
 
-                bool add = addChanceFactor == 0 || world.random.NextDouble() >= addChanceFactor;
+                bool add = addChanceFactor == 0 || world.random.NextSingle() >= addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
                 timeCursor += duration;

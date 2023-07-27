@@ -363,7 +363,7 @@ namespace SonOfRobin
 
         public static float GetRandomFloatForRange(Random random, float minVal, float maxVal)
         {
-            return (float)(random.NextDouble() * (maxVal - minVal) + minVal);
+            return (float)(random.NextSingle() * (maxVal - minVal) + minVal);
         }
 
         public static Dictionary<DateTime, TimeSpan> GetTimeOfDayOccurrences(DateTime startTime, DateTime endTime, TimeSpan checkTimeStart, TimeSpan checkTimeEnd)

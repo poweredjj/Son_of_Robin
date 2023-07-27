@@ -242,7 +242,7 @@ namespace SonOfRobin
         public void AddRandomShake()
         {
             Vector2 movement = new Vector2(this.world.random.Next(-20, 20), this.world.random.Next(-20, 20));
-            float durationSecs = (float)(this.world.random.NextDouble() * 0.09f) + 0.12f;
+            float durationSecs = (float)(this.world.random.NextSingle() * 0.09f) + 0.12f;
 
             this.AddShake(movement: movement, durationSecs: durationSecs);
         }

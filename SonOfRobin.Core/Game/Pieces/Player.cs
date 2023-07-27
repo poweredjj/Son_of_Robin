@@ -863,8 +863,8 @@ namespace SonOfRobin
                 {
                     this.Stamina--;
 
-                    float randomAddedForce = (float)this.world.random.NextDouble() * 0.16f;
-                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    float randomAddedForce = (float)this.world.random.NextSingle() * 0.16f;
+                    float randomAddedDelay = (float)this.world.random.NextSingle() * 0.21f;
                     new RumbleEvent(force: 0.04f + randomAddedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: 0.18f + randomAddedDelay);
                 }
             }
@@ -896,13 +896,13 @@ namespace SonOfRobin
                 {
                     float addedForce = this.world.weather.RainPercentage * 0.1f;
                     float delaySeconds = 1f - (this.world.weather.RainPercentage * 0.8f);
-                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    float randomAddedDelay = (float)this.world.random.NextSingle() * 0.21f;
                     new RumbleEvent(force: 0.14f + addedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.08f, minSecondsSinceLastRumbleSmallMotor: delaySeconds + randomAddedDelay);
                 }
                 {
                     float addedForce = this.world.weather.RainPercentage * 0.1f;
                     float delaySeconds = 1f - (this.world.weather.RainPercentage * 0.4f);
-                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    float randomAddedDelay = (float)this.world.random.NextSingle() * 0.21f;
                     new RumbleEvent(force: 0.11f + addedForce, bigMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.08f, minSecondsSinceLastRumbleBigMotor: delaySeconds + randomAddedDelay);
                 }
             }

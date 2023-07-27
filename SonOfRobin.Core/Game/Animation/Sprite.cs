@@ -317,7 +317,7 @@ namespace SonOfRobin
             {
                 for (int tryCounter = 0; tryCounter < iterationStepsMultiplier * currentDistance; tryCounter++)
                 {
-                    double angle = this.world.random.NextDouble() * Math.PI * 2;
+                    double angle = this.world.random.NextSingle() * Math.PI * 2;
 
                     double offsetX = Math.Round(currentDistance * Math.Cos(angle));
                     double offsetY = Math.Round(currentDistance * Math.Sin(angle));

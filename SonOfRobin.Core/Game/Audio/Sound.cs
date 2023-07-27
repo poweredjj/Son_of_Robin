@@ -148,7 +148,7 @@ namespace SonOfRobin
             float pitch = this.pitchChange;
             if (this.maxPitchVariation > 0)
             {
-                double pitchChange = ((SonOfRobinGame.random.NextDouble() * 2d) - 1d) * this.maxPitchVariation;
+                double pitchChange = ((SonOfRobinGame.random.NextSingle() * 2d) - 1d) * this.maxPitchVariation;
                 pitch += (float)pitchChange;
                 pitch = Math.Max(Math.Min(pitch, 1), -1);
             }

@@ -151,8 +151,8 @@ namespace SonOfRobin
                 {
                     this.soundPack.Play(PieceSoundPack.Action.IsDropped);
                     this.passiveMovement *= -0.5f;
-                    this.passiveMovement.X += (float)((this.world.random.NextDouble() - 0.5f) * 500f);
-                    this.passiveMovement.Y += (float)((this.world.random.NextDouble() - 0.5f) * 500f);
+                    this.passiveMovement.X += (float)((this.world.random.NextSingle() - 0.5f) * 500f);
+                    this.passiveMovement.Y += (float)((this.world.random.NextSingle() - 0.5f) * 500f);
                     this.passiveRotation = this.world.random.Next(-70, 70);
                 }
             }
