@@ -576,10 +576,10 @@ namespace SonOfRobin
                     {
                         Parameters = new ParticleReleaseParameters
                         {
-                            Speed = new Range<float>(120f, 1200f),
+                            Speed = new Range<float>(100f, 900f),
                             Scale = new Range<float>(0.2f, 0.5f),
                             Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2f),
+                            Mass = new Range<float>(1f, 2.4f),
                         },
 
                         Modifiers =
@@ -608,10 +608,10 @@ namespace SonOfRobin
                     {
                         Parameters = new ParticleReleaseParameters
                         {
-                            Speed = new Range<float>(120f, 1200f),
+                            Speed = new Range<float>(100f, 1000f),
                             Scale = new Range<float>(0.3f, 0.6f),
                             Rotation = new Range<float>(-2f, 2f),
-                            Mass = new Range<float>(1f, 2f),
+                            Mass = new Range<float>(1f, 2.3f),
                         },
 
                         Modifiers =
