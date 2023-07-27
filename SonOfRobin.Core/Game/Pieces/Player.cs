@@ -266,7 +266,11 @@ namespace SonOfRobin
 
                 try
                 {
-                    return nearbyPieces.Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && interactRect.Intersects(piece.sprite.ColRect)).OrderBy(piece => Vector2.Distance(interactRectCenter, piece.sprite.position)).First();
+                    return nearbyPieces
+                        .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty &&
+                        interactRect.Intersects(piece.sprite.ColRect) && !piece.IsBurning)
+                        .OrderBy(piece => Vector2.Distance(interactRectCenter, piece.sprite.position))
+                        .First();
                 }
                 catch (NullReferenceException)
                 { return null; }
