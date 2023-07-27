@@ -499,7 +499,7 @@ namespace SonOfRobin
                             targetingRect.X += centerOffset.X;
                             targetingRect.Y += centerOffset.Y;
 
-                            int inflateVal = Math.Max(activeTool.range, 2);
+                            int inflateVal = Math.Max(activeTool.range, 4);
                             targetingRect.Inflate(inflateVal, inflateVal);
 
                             var targets = world.Grid
