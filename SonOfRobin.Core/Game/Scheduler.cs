@@ -501,7 +501,7 @@ namespace SonOfRobin
                             targetingRect.Inflate(activeTool.range, activeTool.range);
 
                             var targets = world.Grid
-                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: targetingRect)
+                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: targetingRect, padding: 1)
                                 .Select(s => s.boardPiece)
                                 .Where(piece => piece.pieceInfo.Yield != null && piece.exists && piece != player);
 

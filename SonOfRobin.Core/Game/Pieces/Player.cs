@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace SonOfRobin
 {
     public class Player : BoardPiece
@@ -262,13 +263,12 @@ namespace SonOfRobin
                 interactRect.Y += centerOffset.Y;
                 Vector2 interactRectCenter = new Vector2(interactRect.Center.X, interactRect.Center.Y);
 
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 150);
-
                 try
                 {
-                    return nearbyPieces
-                        .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty &&
-                        interactRect.Intersects(piece.sprite.ColRect) && !piece.IsBurning)
+                    return world.Grid
+                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: interactRect, padding: 1)
+                        .Select(s => s.boardPiece)
+                        .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && !piece.IsBurning && piece != this)
                         .OrderBy(piece => Vector2.Distance(interactRectCenter, piece.sprite.position))
                         .First();
                 }
