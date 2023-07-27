@@ -60,8 +60,16 @@ namespace SonOfRobin
 
                 if (this.delayFramesLeft == 0)
                 {
-                    int variation = this.particleToEmitMaxVariation > 0 ? SonOfRobinGame.random.Next(this.particleToEmitMaxVariation + 1) : 0;
-                    this.particleEmitter.Parameters.Quantity = this.currentParticlesToEmit + variation;
+                    int particlesToEmit = this.currentParticlesToEmit;
+
+                    if (SonOfRobinGame.fps.FPS >= 40)
+                    {
+                        int variation = this.particleToEmitMaxVariation > 0 ? SonOfRobinGame.random.Next(this.particleToEmitMaxVariation + 1) : 0;
+                        particlesToEmit += variation;
+                    }
+                    else particlesToEmit = Math.Min(particlesToEmit, 1);
+
+                    this.particleEmitter.Parameters.Quantity = particlesToEmit;
                 }
 
                 if (moveCounters && this.framesLeft > 0)
