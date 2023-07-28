@@ -29,7 +29,6 @@ namespace SonOfRobin
         public int BrewLevel { get; private set; }
         public int HarvestLevel { get; private set; }
 
-        public Dictionary<PieceTemplate.Name, int> harvestedAnimalCountByName;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -64,7 +63,6 @@ namespace SonOfRobin
             this.CookLevel = cookLevel;
             this.BrewLevel = brewLevel;
             this.HarvestLevel = harvestLevel;
-            this.harvestedAnimalCountByName = new Dictionary<PieceTemplate.Name, int>();
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
@@ -464,9 +462,7 @@ namespace SonOfRobin
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_globalChestStorage"] = this.GlobalChestStorage.Serialize();
             pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
-            // serialized as <int, int>, otherwise enums are serialized as strings
             pieceData["player_harvestLevel"] = this.HarvestLevel;
-            pieceData["player_harvestedAnimalCountByName"] = this.harvestedAnimalCountByName.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value);
 
             return pieceData;
         }
@@ -490,10 +486,6 @@ namespace SonOfRobin
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
             if (pieceData.ContainsKey("player_harvestLevel")) this.HarvestLevel = (int)(Int64)pieceData["player_harvestLevel"]; // for compatibility with old saves
-            if (pieceData.ContainsKey("player_harvestedAnimalCountByName")) // for compatibility with old saves
-            {
-                this.harvestedAnimalCountByName = ((Dictionary<int, int>)pieceData["player_harvestedAnimalCountByName"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
-            }
 
             this.RefreshAllowedPiecesForStorages();
         }
@@ -1443,8 +1435,8 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                // { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 1 }} }, // for testing
-                { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 5 }} },
+                 { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 1 }} }, // for testing
+                //{ 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 5 }} },
                 { 3, new Dictionary<string, int> { { "minAnimalNames", 2 }, { "minTotalCount", 15 }} },
                 { 4, new Dictionary<string, int> { { "minAnimalNames", 3 }, { "minTotalCount", 50 }} },
                 { 5, new Dictionary<string, int> { { "minAnimalNames", 4 }, { "minTotalCount", 250 }} }
@@ -1458,11 +1450,9 @@ namespace SonOfRobin
             int minAnimalNames = levelDict["minAnimalNames"];
             int minTotalCount = levelDict["minTotalCount"];
 
-            Player player = this.world.Player;
-
             bool levelUp =
-                player.harvestedAnimalCountByName.Count >= minAnimalNames &&
-                player.harvestedAnimalCountByName.Values.Sum() >= minTotalCount;
+                this.world.meatHarvestStats.TotalHarvestCount >= minAnimalNames &&
+                this.world.meatHarvestStats.AnimalSpeciesHarvested >= minTotalCount;
 
             if (levelUp)
             {

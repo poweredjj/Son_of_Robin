@@ -156,12 +156,6 @@ namespace SonOfRobin
             {
                 if (typesToCheckOnly != null && !typesToCheckOnly.Contains(hint.type)) continue;
 
-                if (newOwnedPieceNameToCheck == PieceTemplate.Name.MeatRawRegular && hint.type == Type.PoisonousMeat)
-                {
-
-                    var a = 1;
-                }
-
                 if (hint.CheckIfConditionsAreMet(player: player, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck))
                 {
                     hint.Show(world: player.world);

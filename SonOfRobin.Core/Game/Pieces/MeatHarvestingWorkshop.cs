@@ -131,12 +131,10 @@ namespace SonOfRobin
 
             // starting harvesting
 
-            player.Fatigue += 120f;
-            this.world.islandClock.Advance(60 * 60 * 1);
+            player.Fatigue += 80f;
+            this.world.islandClock.Advance(60 * 30);
 
             BoardPiece animalPiece = animalSlot.GetAllPieces(remove: true)[0];
-            if (!player.harvestedAnimalCountByName.ContainsKey(animalPiece.name)) player.harvestedAnimalCountByName[animalPiece.name] = 0;
-            player.harvestedAnimalCountByName[animalPiece.name]++;
 
             this.world.HintEngine.Disable(PieceHint.Type.HarvestingWorkshop);
             this.world.HintEngine.Disable(Tutorials.Type.HarvestMeat);
@@ -146,16 +144,16 @@ namespace SonOfRobin
             new WorldEvent(eventName: WorldEvent.EventName.TurnOffHarvestingWorkshop, delay: 30 * 60, boardPiece: this, world: this.world);
             Sound.QuickPlay(SoundData.Name.KnifeSharpen);
 
-            var meatPieces = animalPiece.pieceInfo.Yield.GetAllPieces(piece: animalPiece);
+            var basePieces = animalPiece.pieceInfo.Yield.GetAllPieces(piece: animalPiece);
+            var bonusPieces = new List<BoardPiece>();
+            var totalObtainedPieces = new List<BoardPiece>();
 
-            if (meatPieces.Any())
+            if (basePieces.Any())
             {
                 // processing bonus pieces
 
-                var bonusPieces = new List<BoardPiece>();
-
                 var bonusChanceByLevelDict = new Dictionary<int, int> {
-                    { 1, 40 }, // 1, 40
+                    { 1, 1 }, // 1, 40
                     { 2, 30 },
                     { 3, 20 },
                     { 4, 10 },
@@ -164,7 +162,7 @@ namespace SonOfRobin
 
                 int bonusChance = bonusChanceByLevelDict[this.world.Player.HarvestLevel];
 
-                foreach (BoardPiece meatPiece in meatPieces)
+                foreach (BoardPiece meatPiece in basePieces)
                 {
                     if (this.world.random.Next(bonusChance) == 0) bonusPieces.Add(PieceTemplate.Create(world: world, templateName: meatPiece.name));
                 }
@@ -187,21 +185,22 @@ namespace SonOfRobin
                     }
 
                     new TextWindow(text: String.Join("\n", textLines), imageList: imageList, textColor: Color.White, bgColor: Color.Green, startingSound: SoundData.Name.Ding1);
-                    meatPieces.AddRange(bonusPieces);
+                    totalObtainedPieces.AddRange(basePieces);
+                    totalObtainedPieces.AddRange(bonusPieces);
                 }
 
                 // placing pieces inside storage
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.HitFlesh1);
 
-                if (meatPieces.Count >= 2)
+                if (totalObtainedPieces.Count >= 2)
                 {
                     new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 20, executeHelper: SoundData.Name.DestroyFlesh2);
                     new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 30, executeHelper: SoundData.Name.DropMeat3);
                 }
 
                 this.EnableMeatSlots();
-                foreach (BoardPiece meatPiece in meatPieces)
+                foreach (BoardPiece meatPiece in totalObtainedPieces)
                 {
                     this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
                     if (!bonusPieces.Any()) this.world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
@@ -213,6 +212,9 @@ namespace SonOfRobin
                 new TextWindow(text: "Could not harvest anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
             }
 
+            // registering stats and checking level up
+
+            this.world.meatHarvestStats.RegisterMeatHarvest(animalPiece: animalPiece, obtainedPieces: basePieces, obtainedBonusPieces: bonusPieces);
             player.CheckForMeatHarvestingLevelUp();
         }
 

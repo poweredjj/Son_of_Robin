@@ -1270,7 +1270,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.KnifeSharpen, ignore3DAlways: true));
 
-                        var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "meat harvesting workshop", description: "For animal processing.", soundPack: soundPack);
+                        var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "meat workshop", description: "For animal processing.", soundPack: soundPack);
 
                         meatHarvestingWorkshop.sprite.AssignNewName("off");
                         return meatHarvestingWorkshop;

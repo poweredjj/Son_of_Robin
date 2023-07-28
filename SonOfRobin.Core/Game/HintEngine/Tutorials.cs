@@ -223,7 +223,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.MeatHarvestLevels, name: "meat harvesting levels", title: "Meat harvesting levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture }, boxType: messageTextType),
-                    new HintMessage(text: "With each level, you get a better chance to get | | bonus items.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture, AnimData.framesForPkgs[AnimData.PkgName.Fat].texture }, boxType: messageTextType),
+                    new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture, AnimData.framesForPkgs[AnimData.PkgName.Fat].texture, AnimData.framesForPkgs[AnimData.PkgName.Leather].texture }, boxType: messageTextType),
 
     });
 

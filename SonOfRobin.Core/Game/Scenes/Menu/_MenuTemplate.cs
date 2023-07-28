@@ -641,20 +641,38 @@ namespace SonOfRobin
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
-                            textLines.Add("| Meat harvesting stats\n");
+                            textLines.Add("| Meat harvesting stats");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
 
-                            foreach (var kvp in world.Player.harvestedAnimalCountByName)
+                            textLines.Add("\nProcessed:");
+                            foreach (var kvp in world.meatHarvestStats.HarvestedAnimalCountByName)
                             {
                                 PieceTemplate.Name animalName = kvp.Key;
                                 int harvestCount = kvp.Value;
                                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(animalName);
 
-                                textLines.Add($"| {Helpers.FirstCharToUpperCase(pieceInfo.readableName)}: {harvestCount}");
+                                textLines.Add($"|  x{harvestCount} {pieceInfo.readableName}");
                                 imageList.Add(pieceInfo.texture);
                             }
 
-                            textLines.Add($"\nTotal: {world.Player.harvestedAnimalCountByName.Values.Sum()}");
+                            textLines.Add("\nObtained:");
+                            var obtainedBonusPieceCountByName = world.meatHarvestStats.ObtainedBonusPieceCountByName;
+                            foreach (var kvp in world.meatHarvestStats.ObtainedPieceCountByName)
+                            {
+                                PieceTemplate.Name animalName = kvp.Key;
+                                int harvestCount = kvp.Value;
+                                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(animalName);
+
+                                int bonusCount = obtainedBonusPieceCountByName.ContainsKey(animalName) ? obtainedBonusPieceCountByName[animalName] : 0;
+
+                                string basePlusBonusText = obtainedBonusPieceCountByName.ContainsKey(animalName) ? $" ({harvestCount}+{bonusCount}) " : "";
+
+                                textLines.Add($"|  x{harvestCount + bonusCount}{basePlusBonusText} {pieceInfo.readableName}");
+                                imageList.Add(pieceInfo.texture);
+                            }
+
+                            textLines.Add($"\nTotal animals processed: {world.meatHarvestStats.TotalHarvestCount}");
+                            textLines.Add($"Total items obtained: {world.meatHarvestStats.ObtainedTotalPieceCount} ({world.meatHarvestStats.ObtainedBasePieceCount}+{world.meatHarvestStats.ObtainedBonusPieceCount})");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
