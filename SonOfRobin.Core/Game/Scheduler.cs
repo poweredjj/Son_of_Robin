@@ -1607,19 +1607,9 @@ namespace SonOfRobin
                         {
                             if (World.DestroyedNotReleasedWorldCount == 0) return;
 
-                            int triesLeft = (int)this.ExecuteHelper;
-
-                            if (triesLeft > 0)
-                            {
-                                triesLeft--;
-                                new Task(taskName: TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: triesLeft);
-                            }
-                            else
-                            {
-                                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", color: new Color(255, 180, 66));
-                                GC.Collect();
-                                RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
-                            }
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", color: new Color(255, 180, 66));
+                            GC.Collect();
+                            RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
 
                             return;
                         }
