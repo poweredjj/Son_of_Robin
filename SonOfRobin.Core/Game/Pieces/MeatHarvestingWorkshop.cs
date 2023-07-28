@@ -155,7 +155,7 @@ namespace SonOfRobin
                 var bonusPieces = new List<BoardPiece>();
 
                 var bonusChanceByLevelDict = new Dictionary<int, int> {
-                    { 1, 40 }, // 1, 40
+                    { 1, 1 }, // 1, 40
                     { 2, 30 },
                     { 3, 20 },
                     { 4, 10 },
@@ -171,18 +171,22 @@ namespace SonOfRobin
 
                 if (bonusPieces.Any())
                 {
-                    string bonusText = "Acquired bonus items:\n\n";
+                    var bonusPiecesDict = bonusPieces.GroupBy(piece => piece.name).ToDictionary(piece => piece.Key, piece => piece.Count());
+
+                    var textLines = new List<string> { "Got bonus items:\n" };
                     var imageList = new List<Texture2D>();
 
-                    foreach (BoardPiece bonusPiece in meatPieces)
+                    foreach (var kvp in bonusPiecesDict)
                     {
-                        bonusText += $"| {bonusPiece.readableName}";
-                        imageList.Add(bonusPiece.sprite.AnimFrame.texture);
+                        PieceInfo.Info pieceInfo = PieceInfo.GetInfo(kvp.Key);
+                        int count = kvp.Value;
+
+                        if (count == 1) textLines.Add($"| {pieceInfo.readableName}");
+                        else textLines.Add($"| {pieceInfo.readableName} x{count}");
+                        imageList.Add(pieceInfo.texture);
                     }
 
-                    new HintMessage(text: bonusText, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                    imageList: imageList, startingSound: SoundData.Name.Ding1);
-
+                    new TextWindow(text: String.Join("\n", textLines), imageList: imageList, textColor: Color.White, bgColor: Color.Green, startingSound: SoundData.Name.Ding1);
                     meatPieces.AddRange(bonusPieces);
                 }
 
@@ -200,7 +204,7 @@ namespace SonOfRobin
                 foreach (BoardPiece meatPiece in meatPieces)
                 {
                     this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
-                    this.world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
+                    if (!bonusPieces.Any()) this.world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
                 }
                 this.DisableMeatSlots();
             }
