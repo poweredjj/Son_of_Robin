@@ -51,7 +51,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.1f),
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 35),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 35),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 14),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 22),
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
 
