@@ -27,6 +27,9 @@ namespace SonOfRobin
         public int CraftLevel { get; private set; }
         public int CookLevel { get; private set; }
         public int BrewLevel { get; private set; }
+        public int HarvestLevel { get; private set; }
+
+        public Dictionary<PieceTemplate.Name, int> harvestedAnimalCountByName;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -47,7 +50,7 @@ namespace SonOfRobin
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
-            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
+            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1, int harvestLevel = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: activeState, soundPack: soundPack)
         {
@@ -60,6 +63,8 @@ namespace SonOfRobin
             this.CraftLevel = craftLevel;
             this.CookLevel = cookLevel;
             this.BrewLevel = brewLevel;
+            this.HarvestLevel = harvestLevel;
+            this.harvestedAnimalCountByName = new Dictionary<PieceTemplate.Name, int>();
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
@@ -459,6 +464,9 @@ namespace SonOfRobin
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_globalChestStorage"] = this.GlobalChestStorage.Serialize();
             pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
+            // serialized as <int, int>, otherwise enums are serialized as strings
+            pieceData["player_harvestLevel"] = this.HarvestLevel;
+            pieceData["player_harvestedAnimalCountByName"] = this.harvestedAnimalCountByName.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value);
 
             return pieceData;
         }
@@ -481,6 +489,12 @@ namespace SonOfRobin
             this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_globalChestStorage"], storagePiece: this);
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
+            if (pieceData.ContainsKey("player_harvestLevel")) this.HarvestLevel = (int)(Int64)pieceData["player_harvestLevel"]; // for compatibility with old saves
+            if (pieceData.ContainsKey("player_harvestedAnimalCountByName")) // for compatibility with old saves
+            {
+                this.harvestedAnimalCountByName = ((Dictionary<int, int>)pieceData["player_harvestedAnimalCountByName"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+            }
+
             this.RefreshAllowedPiecesForStorages();
         }
 
@@ -1420,6 +1434,51 @@ namespace SonOfRobin
                 this.BrewLevel = nextLevel;
 
                 Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.BrewLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
+            }
+
+            return levelUp;
+        }
+
+        public bool CheckForMeatHarvestingLevelUp()
+        {
+            var levelUpData = new Dictionary<int, Dictionary<string, int>>
+            {
+                // { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 1 }} }, // for testing
+                { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 5 }} },
+                { 3, new Dictionary<string, int> { { "minAnimalNames", 2 }, { "minTotalCount", 15 }} },
+                { 4, new Dictionary<string, int> { { "minAnimalNames", 3 }, { "minTotalCount", 50 }} },
+                { 5, new Dictionary<string, int> { { "minAnimalNames", 4 }, { "minTotalCount", 250 }} }
+            };
+
+            int nextLevel = this.HarvestLevel + 1;
+            if (!levelUpData.ContainsKey(nextLevel)) return false;
+
+            var levelDict = levelUpData[nextLevel];
+
+            int minAnimalNames = levelDict["minAnimalNames"];
+            int minTotalCount = levelDict["minTotalCount"];
+
+            Player player = this.world.Player;
+
+            bool levelUp =
+                player.harvestedAnimalCountByName.Count >= minAnimalNames &&
+                player.harvestedAnimalCountByName.Values.Sum() >= minTotalCount;
+
+            if (levelUp)
+            {
+                bool levelMaster = nextLevel == levelUpData.Keys.Max();
+                // levelMaster = true; // for testing
+
+                string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
+
+                var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture };
+                if (levelMaster) imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
+
+                new TextWindow(text: $"| Meat harvesting level up!\n       Level {this.HarvestLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
+
+                this.HarvestLevel = nextLevel;
+
+                // Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.BrewLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true); // TODO make tutorial for harvest levels
             }
 
             return levelUp;

@@ -485,6 +485,9 @@ namespace SonOfRobin
                             textLines.Add($"| Brewing level: {player.BrewLevel}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
 
+                            textLines.Add($"| Meat harvesting level: {player.HarvestLevel}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
+
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
                             var positiveBuffTextLines = new List<string>();
@@ -629,6 +632,34 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(102, 212, 157);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
+                        }
+
+                        // harvesting stats
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("| Meat harvesting stats\n");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
+
+                            foreach (var kvp in world.Player.harvestedAnimalCountByName)
+                            {
+                                PieceTemplate.Name animalName = kvp.Key;
+                                int harvestCount = kvp.Value;
+                                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(animalName);
+
+                                textLines.Add($"| {Helpers.FirstCharToUpperCase(pieceInfo.readableName)}: {harvestCount}");
+                                imageList.Add(pieceInfo.texture);
+                            }
+
+                            textLines.Add($"\nTotal: {world.Player.harvestedAnimalCountByName.Values.Sum()}");
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            Invoker invoker = new(menu: menu, name: "meat harvesting stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(245, 140, 245);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
