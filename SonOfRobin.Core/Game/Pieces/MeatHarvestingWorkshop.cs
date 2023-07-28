@@ -85,6 +85,7 @@ namespace SonOfRobin
 
         public void HarvestMeat()
         {
+            Player player = this.world.Player;
             StorageSlot animalSlot = this.AnimalSlot;
 
             if (animalSlot.IsEmpty)
@@ -103,6 +104,30 @@ namespace SonOfRobin
                     return;
                 }
             }
+
+            if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+            {
+                new TextWindow(text: "I can't harvest meat with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+
+                return;
+            }
+
+            if (!player.CanSeeAnything)
+            {
+                new HintMessage(text: "It is too dark to harvest meat.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+
+                return;
+            }
+
+            if (player.IsVeryTired)
+            {
+                new HintMessage(text: "I'm too tired to harvest meat...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+
+                return;
+            }
+
+            player.Fatigue += 120f;
+            this.world.islandClock.Advance(60 * 60 * 1);
 
             BoardPiece animalPiece = animalSlot.GetAllPieces(remove: true)[0];
 
@@ -127,6 +152,7 @@ namespace SonOfRobin
                 foreach (BoardPiece meatPiece in meatPieces)
                 {
                     this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
+                    this.world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
                 }
                 this.DisableMeatSlots();
             }

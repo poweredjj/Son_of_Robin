@@ -65,7 +65,7 @@ namespace SonOfRobin
         }
 
         public static TimeSpan ConvertUpdatesCountToTimeSpan(int updatesCount)
-        { return TimeSpan.FromSeconds(updatesCount * 1.5); } // * 1.5
+        { return TimeSpan.FromSeconds(updatesCount * 1.5); }
 
         public TimeSpan IslandTimeElapsed
         { get { return ConvertUpdatesCountToTimeSpan(this.ElapsedUpdates) + startTimeOffset; } }

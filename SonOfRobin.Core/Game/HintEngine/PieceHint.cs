@@ -9,7 +9,7 @@ namespace SonOfRobin
     public struct PieceHint
     {
         public enum Type
-        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositiveFat, MakeOilNegative, CineLookForSurvivors1, CineLookForSurvivors2, CineLookForSurvivors3, CineDay2, CineDay3, CineDay4, MakeOilPositiveSeeds, PlantingNegative, PlantingPositive, WoodenFenceNegative, WoodenFencePositive }
+        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositiveFat, MakeOilNegative, CineLookForSurvivors1, CineLookForSurvivors2, CineLookForSurvivors3, CineDay2, CineDay3, CineDay4, MakeOilPositiveSeeds, PlantingNegative, PlantingPositive, WoodenFenceNegative, WoodenFencePositive, DeadAnimal }
 
         public enum Comparison
         { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
@@ -156,6 +156,12 @@ namespace SonOfRobin
             {
                 if (typesToCheckOnly != null && !typesToCheckOnly.Contains(hint.type)) continue;
 
+                if (newOwnedPieceNameToCheck == PieceTemplate.Name.MeatRawRegular && hint.type == Type.PoisonousMeat)
+                {
+
+                    var a = 1;
+                }
+
                 if (hint.CheckIfConditionsAreMet(player: player, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck))
                 {
                     hint.Show(world: player.world);
@@ -204,7 +210,7 @@ namespace SonOfRobin
 
             // player - owns single piece
 
-            if (this.playerOwnsAnyOfThesePieces != null)
+            if (this.playerOwnsAnyOfThesePieces != null && newOwnedPieceNameToCheck == PieceTemplate.Name.Empty)
             {
                 bool playerOwnsSinglePiece = false;
 
@@ -222,7 +228,7 @@ namespace SonOfRobin
 
             // player - owns all pieces
 
-            if (this.playerOwnsAllOfThesePieces != null)
+            if (this.playerOwnsAllOfThesePieces != null && newOwnedPieceNameToCheck == PieceTemplate.Name.Empty)
             {
                 foreach (PieceTemplate.Name name in this.playerOwnsAllOfThesePieces)
                 {
