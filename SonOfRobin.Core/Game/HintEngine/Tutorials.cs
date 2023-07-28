@@ -224,20 +224,19 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture }, boxType: messageTextType),
                     new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture, AnimData.framesForPkgs[AnimData.PkgName.Fat].texture, AnimData.framesForPkgs[AnimData.PkgName.Leather].texture }, boxType: messageTextType),
-
-    });
+                });
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "When | | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Tiger), PieceInfo.GetTexture(PieceTemplate.Name.Fox), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopAdvanced), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
 
                     new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
-                   });
+                });
 
             new Tutorial(type: Type.BuildWorkshop, name: "building a workshop", title: "Building a workshop.",
              messages: new List<HintMessage>  {
                 new HintMessage(text: "To build a | workshop,\nenter craft menu and select | 'essential workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular)}, boxType: messageTextType)
-            });
+                });
 
             HintMessage shootingMessage;
             if (Preferences.ShowTouchTips) shootingMessage = new HintMessage(text: "3. Tilt right analog stick in desired direction.", boxType: messageTextType);

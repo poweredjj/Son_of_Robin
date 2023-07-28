@@ -1435,8 +1435,8 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                 { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 1 }} }, // for testing
-                //{ 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 5 }} },
+                // { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 1 }} }, // for testing
+                { 2, new Dictionary<string, int> { { "minAnimalNames", 1 }, { "minTotalCount", 5 }} },
                 { 3, new Dictionary<string, int> { { "minAnimalNames", 2 }, { "minTotalCount", 15 }} },
                 { 4, new Dictionary<string, int> { { "minAnimalNames", 3 }, { "minTotalCount", 50 }} },
                 { 5, new Dictionary<string, int> { { "minAnimalNames", 4 }, { "minTotalCount", 250 }} }

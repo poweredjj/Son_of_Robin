@@ -1040,6 +1040,8 @@ namespace SonOfRobin
                             // making a copy of the original taskChain, to avoid modifying it - needed for menus
                             List<Object> taskChain = new((List<Object>)this.ExecuteHelper);
 
+                            if (!taskChain.Any()) return;
+
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
 

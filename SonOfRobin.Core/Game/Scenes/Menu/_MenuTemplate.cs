@@ -657,7 +657,7 @@ namespace SonOfRobin
 
                             textLines.Add("\nObtained:");
                             var obtainedBonusPieceCountByName = world.meatHarvestStats.ObtainedBonusPieceCountByName;
-                            foreach (var kvp in world.meatHarvestStats.ObtainedPieceCountByName)
+                            foreach (var kvp in world.meatHarvestStats.ObtainedBasePieceCountByName)
                             {
                                 PieceTemplate.Name animalName = kvp.Key;
                                 int harvestCount = kvp.Value;
