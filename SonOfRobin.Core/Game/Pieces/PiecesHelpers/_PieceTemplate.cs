@@ -1268,7 +1268,7 @@ namespace SonOfRobin
                 case Name.WorkshopMeatHarvesting:
                     {
                         var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.KnifeSharpen, ignore3DAlways: true));
 
                         var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "meat harvesting workshop", description: "For animal processing.", soundPack: soundPack);
 

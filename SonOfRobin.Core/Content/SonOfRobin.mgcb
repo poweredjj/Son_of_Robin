@@ -8007,12 +8007,6 @@
 /processorParam:Quality=Best
 /build:sound/485076__inspectorj__heartbeat-regular-single-01-01-loop.ogg
 
-#begin sound/485436__nobarknoonan__door-slam.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/485436__nobarknoonan__door-slam.ogg
-
 #begin sound/486628__nanisia__japanese-summer-cicadas.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -8630,6 +8624,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves.ogg
+
+#begin sound/69480__aboe__knifesha4.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/69480__aboe__knifesha4.ogg
 
 #begin sound/79560__robinhood76__01259-wet-sand-digging-1.ogg
 /importer:OggImporter

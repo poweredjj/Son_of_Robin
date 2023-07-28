@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing, StopBurning }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing, StopBurning, TurnOffHarvestingWorkshop }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
         private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris };
@@ -190,6 +190,13 @@ namespace SonOfRobin
                     {
                         Workshop workshop = (Workshop)this.boardPiece;
                         workshop.TurnOff();
+                        return;
+                    }
+
+                case EventName.TurnOffHarvestingWorkshop:
+                    {
+                        MeatHarvestingWorkshop harvestingWorkshop = (MeatHarvestingWorkshop)this.boardPiece;
+                        harvestingWorkshop.TurnOff();
                         return;
                     }
 

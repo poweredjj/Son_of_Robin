@@ -122,8 +122,6 @@ namespace SonOfRobin
                 boosterSlot.DestroyPieceAndReplaceWithAnother(emptyContainter);
             }
             else boosterSlot.GetAllPieces(remove: true);
-
-            Sound.QuickPlay(SoundData.Name.ItemUpgrade);
         }
 
         public void TurnOn()

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -13,7 +14,6 @@ namespace SonOfRobin
         { get { return this.PieceStorage.GetSlot(0, 0); } }
 
         private List<StorageSlot> meatSlots;
-
 
         public MeatHarvestingWorkshop(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
@@ -106,17 +106,34 @@ namespace SonOfRobin
 
             BoardPiece animalPiece = animalSlot.GetAllPieces(remove: true)[0];
 
+            this.TurnOn();
+            this.world.worldEventManager.RemovePieceFromQueue(this); // clearing possible previous "turn off" instances
+            new WorldEvent(eventName: WorldEvent.EventName.TurnOffHarvestingWorkshop, delay: 30 * 60, boardPiece: this, world: this.world);
+            Sound.QuickPlay(SoundData.Name.KnifeSharpen);
+
             var meatPieces = animalPiece.pieceInfo.Yield.GetAllPieces(piece: animalPiece);
-            this.EnableMeatSlots();
 
-            foreach (BoardPiece meatPiece in meatPieces)
+            if (meatPieces.Any())
             {
-                this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
+                new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.HitFlesh1);
+
+                if (meatPieces.Count >= 2)
+                {
+                    new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 20, executeHelper: SoundData.Name.DestroyFlesh2);
+                    new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 30, executeHelper: SoundData.Name.DropMeat3);
+                }
+
+                this.EnableMeatSlots();
+                foreach (BoardPiece meatPiece in meatPieces)
+                {
+                    this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
+                }
+                this.DisableMeatSlots();
             }
-
-            this.DisableMeatSlots();
-
-            Sound.QuickPlay(SoundData.Name.ItemUpgrade); // TODO set proper sound
+            else
+            {
+                new TextWindow(text: "Could not harvest anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+            }
         }
 
         public void TurnOn()
