@@ -16,10 +16,17 @@ namespace SonOfRobin
             this.eventQueue = new Dictionary<int, List<WorldEvent>>();
         }
 
-        public void AddToQueue(WorldEvent worldEvent)
+        public void AddToQueue(WorldEvent worldEvent, bool addFadeOut = true)
         {
             if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new List<WorldEvent>();
             this.eventQueue[worldEvent.startUpdateNo].Add(worldEvent);
+
+            if (addFadeOut && worldEvent.eventName == WorldEvent.EventName.Destruction)
+            {
+                int fadeDuration = worldEvent.boardPiece.GetType() == typeof(Animal) ? worldEvent.delay - 1 : OpacityFade.defaultDuration;
+
+                new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
+            }
         }
 
         public void RemovePieceFromQueue(BoardPiece pieceToRemove)
@@ -64,7 +71,7 @@ namespace SonOfRobin
             foreach (Dictionary<string, Object> eventData in eventDataList)
             {
                 WorldEvent worldEvent = WorldEvent.Deserialize(world: this.world, eventData: eventData);
-                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent);
+                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent, addFadeOut: false);
             }
         }
     }
@@ -94,7 +101,7 @@ namespace SonOfRobin
             this.delay = Math.Max(delay, 0);
             this.startUpdateNo = world.CurrentUpdate + this.delay;
 
-            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this);
+            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this, addFadeOut: true);
         }
 
         public Dictionary<string, Object> Serialize()
