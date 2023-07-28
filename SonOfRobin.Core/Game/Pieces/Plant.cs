@@ -109,8 +109,8 @@ namespace SonOfRobin
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                if (showMessage) new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
-
+                if (showMessage) MessageLog.AddMessage(msgType: MsgType.User, message: $"There is nothing left to shake off from {this.readableName}.", avoidDuplicates: true);
+                
                 return false;
             }
 

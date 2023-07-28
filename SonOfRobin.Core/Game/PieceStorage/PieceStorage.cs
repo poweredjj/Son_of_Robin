@@ -321,10 +321,10 @@ namespace SonOfRobin
 
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
-            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
+            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Dropping {piece.readableName}...", color: Color.White);
 
-            // the piece should fall naturally to places, where player can go to
-            piece.sprite.allowedTerrain.CopyTerrainFromTemplate(this.storagePiece.sprite.allowedTerrain);
+            // the piece should naturally fall anywhere
+            piece.sprite.allowedTerrain.CopyTerrainFromTemplate(new AllowedTerrain());
 
             piece.PlaceOnBoard(randomPlacement: false, position: this.storagePiece.sprite.position, closestFreeSpot: true, addPlannedDestruction: false);
 
