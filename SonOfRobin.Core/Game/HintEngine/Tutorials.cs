@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant, HarvestMeat }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -266,6 +266,13 @@ namespace SonOfRobin
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    });
+
+            new Tutorial(type: Type.HarvestMeat, name: "harvesting meat", title: "Harvesting meat from animals.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text:"1. Stand next to the | meat harvesting workshop and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
+                    new HintMessage(text:"2. Place an animal | on the table.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Rabbit)}, boxType: messageTextType),
+                    new HintMessage(text: "3. Use the | knife to harvest meat.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatHarvestTrigger)}, boxType: messageTextType),
                     });
 
             new Tutorial(type: Type.PotionBrew, name: "brewing potions", title: "How to make potions.",

@@ -289,6 +289,12 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Cook}),
 
                 new PieceHint(
+                    type: PieceHint.Type.HarvestingWorkshop, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMeatHarvesting},
+                    message: "| Now I can harvest meat from | animals!",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.HarvestMeat}),
+
+                new PieceHint(
                     type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     message: "| I can start brewing\n| potions now!",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture },
@@ -433,7 +439,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.DeadAnimal,
-                    message: $"I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName }\nto process this animal.",
+                    message: $"I need to use | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName }\nto process this animal.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Rabbit, PieceTemplate.Name.Frog, PieceTemplate.Name.Fox, PieceTemplate.Name.Tiger }),
 

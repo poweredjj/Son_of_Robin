@@ -131,6 +131,9 @@ namespace SonOfRobin
 
             BoardPiece animalPiece = animalSlot.GetAllPieces(remove: true)[0];
 
+            this.world.HintEngine.Disable(PieceHint.Type.HarvestingWorkshop);
+            this.world.HintEngine.Disable(Tutorials.Type.HarvestMeat);
+
             this.TurnOn();
             this.world.worldEventManager.RemovePieceFromQueue(this); // clearing possible previous "turn off" instances
             new WorldEvent(eventName: WorldEvent.EventName.TurnOffHarvestingWorkshop, delay: 30 * 60, boardPiece: this, world: this.world);
