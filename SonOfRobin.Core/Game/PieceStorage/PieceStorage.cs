@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class PieceStorage
     {
         public enum StorageType
-        { Virtual, Inventory, Cooking, Upgrade, Fireplace, Chest, Tools, Equip, Fruits, Lab }
+        { Virtual, Inventory, Cooking, Processing, Fireplace, Chest, Tools, Equip, Fruits, Lab }
 
         public readonly World world;
         public readonly StorageType storageType;
@@ -220,10 +220,10 @@ namespace SonOfRobin
         public StorageSlot FindCorrectSlot(BoardPiece piece)
         {
             // trying to find existing stack
-            foreach (StorageSlot slot in AllSlots)
-            { if (!slot.IsEmpty && slot.PieceName == piece.name && slot.CanFitThisPiece(piece)) return slot; }
+            foreach (StorageSlot slot in this.OccupiedSlots)
+            { if (slot.PieceName == piece.name && slot.CanFitThisPiece(piece)) return slot; }
 
-            foreach (StorageSlot slot in AllSlots)
+            foreach (StorageSlot slot in this.EmptySlots)
             { if (slot.CanFitThisPiece(piece)) return slot; }
 
             return null;

@@ -1290,6 +1290,15 @@ namespace SonOfRobin
                         this.isAffectedByWind = true;
                         break;
 
+                    case PieceTemplate.Name.WorkshopMeatHarvesting:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 0.8f;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
+                        break;
+
                     case PieceTemplate.Name.Stick:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
@@ -1679,6 +1688,11 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.UpgradeTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
+                    case PieceTemplate.Name.MeatHarvestTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         break;

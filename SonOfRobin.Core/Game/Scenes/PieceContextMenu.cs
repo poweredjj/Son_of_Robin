@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class PieceContextMenu : Scene
     {
         protected enum ContextAction
-        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade, Brew }
+        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Brew, Harvest }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
         private const float marginPercent = 0.03f;
@@ -120,12 +120,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addUpgrade);
+            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -137,7 +137,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false)
+        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -151,7 +151,7 @@ namespace SonOfRobin
             if (addBrew) contextActionList.Add(ContextAction.Brew);
             if (addIgnite) contextActionList.Add(ContextAction.Ignite);
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
-            if (addUpgrade) contextActionList.Add(ContextAction.Upgrade);
+            if (addHarvest) contextActionList.Add(ContextAction.Harvest);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
@@ -422,10 +422,10 @@ namespace SonOfRobin
                         return;
                     }
 
-                case ContextAction.Upgrade:
+                case ContextAction.Harvest:
                     {
-                        UpgradeBench upgradeBench = (UpgradeBench)this.storage.storagePiece;
-                        upgradeBench.Upgrade();
+                        MeatHarvestingWorkshop workshop = (MeatHarvestingWorkshop)this.storage.storagePiece;
+                        workshop.HarvestMeat();
 
                         return;
                     }

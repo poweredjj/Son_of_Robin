@@ -7293,6 +7293,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/workshop_master.png
 
+#begin gfx/workshop_meat_harvesting_off.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/workshop_meat_harvesting_off.png
+
+#begin gfx/workshop_meat_harvesting_on.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/workshop_meat_harvesting_on.png
+
 #begin gfx/zzz.png
 /importer:TextureImporter
 /processor:TextureProcessor

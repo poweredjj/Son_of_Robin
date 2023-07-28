@@ -29,7 +29,7 @@ namespace SonOfRobin
         {
             this.CreateAllowedNames();
 
-            this.PieceStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
+            this.PieceStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Processing);
 
             StorageSlot upgradeTriggerSlot = this.UpgradeTriggerSlot;
             BoardPiece upgradeTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);
