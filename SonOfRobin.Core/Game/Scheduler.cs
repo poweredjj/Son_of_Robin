@@ -485,7 +485,6 @@ namespace SonOfRobin
                             Player player = (Player)executeData["player"];
                             Tool activeTool = (Tool)executeData["toolbarPiece"];
                             int shootingPower = (int)executeData["shootingPower"];
-                            Point centerOffset = (Point)executeData["centerOffset"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
                             World world = player.world;
 
@@ -495,15 +494,12 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Rectangle targetingRect = player.sprite.ColRect;
-                            targetingRect.X += centerOffset.X;
-                            targetingRect.Y += centerOffset.Y;
-
-                            int inflateVal = Math.Max(activeTool.range, 4);
-                            targetingRect.Inflate(inflateVal, inflateVal);
+                            int inflateVal = Math.Max(activeTool.range, 6);
+                            Rectangle focusRect = player.GetFocusRect(distance: inflateVal / 2);
+                            focusRect.Inflate(inflateVal, inflateVal);
 
                             var targets = world.Grid
-                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: targetingRect, padding: 1)
+                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
                                 .Select(s => s.boardPiece)
                                 .Where(piece => piece.pieceInfo.Yield != null && piece.alive && piece != player);
 
@@ -512,11 +508,11 @@ namespace SonOfRobin
                                 var animals = targets.Where(piece => piece.GetType() == typeof(Animal));
                                 if (animals.Any()) targets = animals;
 
-                                Vector2 targetingRectCenter = new Vector2(targetingRect.Center.X, targetingRect.Center.Y);
+                                Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
 
                                 try
                                 {
-                                    BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(targetingRectCenter, piece.sprite.position)).First();
+                                    BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position)).First();
                                     targets = new List<BoardPiece> { firstTarget };
                                 }
                                 catch (NullReferenceException)

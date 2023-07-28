@@ -22,6 +22,7 @@ namespace SonOfRobin
 
         public Vector2 position;
         public Orientation orientation;
+        public float OrientationAngle { get; private set; }
         public float rotation;
         public Vector2 rotationOriginOverride; // used for custom rotation origin, different from the default
 
@@ -57,6 +58,7 @@ namespace SonOfRobin
             this.rotation = 0f;
             this.rotationOriginOverride = Vector2.Zero;
             this.orientation = Orientation.right;
+            this.OrientationAngle = 0f;
             this.AnimPackage = animPackage;
             this.AnimSize = animSize;
             this.AnimName = animName;
@@ -415,6 +417,8 @@ namespace SonOfRobin
 
         public void SetOrientationByMovement(Vector2 movement)
         {
+            if (movement != Vector2.Zero) this.OrientationAngle = Helpers.GetAngleBetweenTwoPoints(start: this.position, end: this.position + movement);
+
             if (Math.Abs(movement.X) > Math.Abs(movement.Y))
             { this.orientation = (movement.X < 0) ? Orientation.left : Orientation.right; }
             else
@@ -422,20 +426,6 @@ namespace SonOfRobin
 
             if (this.AnimName.Contains("walk-")) this.CharacterWalk();
             if (this.AnimName.Contains("stand-")) this.CharacterStand();
-        }
-
-        public float GetAngleFromOrientation()
-        {
-            var degrees = this.orientation switch
-            {
-                Orientation.left => 180,
-                Orientation.right => 0,
-                Orientation.up => -90,
-                Orientation.down => 90,
-                _ => throw new ArgumentException($"Unsupported orientation - {this.orientation}."),
-            };
-            float radians = (float)(degrees * Helpers.Deg2Rad);
-            return radians;
         }
 
         public Sprite FindClosestSprite(List<Sprite> spriteList)
@@ -802,6 +792,11 @@ namespace SonOfRobin
             }
 
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.GfxRect, this.GfxRect, Color.White * 0.35f);
+            if (Preferences.debugShowFocusRect && this.boardPiece.GetType() == typeof(Player))
+            {
+                Rectangle focusRect = this.world.Player.GetFocusRect();
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, focusRect, SonOfRobinGame.WhiteRectangle.Bounds, Color.Yellow * 0.35f);
+            }
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
             if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge: calculateSubmerge);

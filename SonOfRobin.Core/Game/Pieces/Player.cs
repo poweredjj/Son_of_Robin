@@ -259,20 +259,17 @@ namespace SonOfRobin
         {
             get
             {
-                Point centerOffset = this.GetCenterOffset();
-
-                Rectangle interactRect = this.sprite.ColRect;
-                interactRect.X += centerOffset.X;
-                interactRect.Y += centerOffset.Y;
-                Vector2 interactRectCenter = new Vector2(interactRect.Center.X, interactRect.Center.Y);
+                Rectangle focusRect = this.GetFocusRect(distance: 8);
+                focusRect.Inflate(4,4);
+                Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
 
                 try
                 {
                     return world.Grid
-                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: interactRect, padding: 1)
+                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
                         .Select(s => s.boardPiece)
                         .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && !piece.IsBurning && piece != this)
-                        .OrderBy(piece => Vector2.Distance(interactRectCenter, piece.sprite.position))
+                        .OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position))
                         .First();
                 }
                 catch (NullReferenceException)
@@ -288,13 +285,22 @@ namespace SonOfRobin
             {
                 if (!this.CanSeeAnything) return null;
 
-                Point centerOffset = this.GetCenterOffset();
+                Rectangle focusRect = this.GetFocusRect(distance: 6);
+                focusRect.Inflate(3,3);
 
-                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true).Where(piece => piece.pieceInfo.canBePickedUp && (piece.GetType() != typeof(Animal) || !piece.alive));
-                if (!interestingPieces.Any()) return null;
-
-                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: centerOffset.X, offsetY: centerOffset.Y);
-                return closestPiece;
+                try
+                {
+                    return world.Grid
+                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
+                        .Select(s => s.boardPiece)
+                        .Where(piece => piece.pieceInfo.canBePickedUp && !piece.IsBurning && (piece.GetType() != typeof(Animal) || !piece.alive))
+                        .OrderBy(piece => Vector2.Distance(this.sprite.position, piece.sprite.position))
+                        .First();
+                }
+                catch (NullReferenceException)
+                { return null; }
+                catch (InvalidOperationException)
+                { return null; }
             }
         }
 
@@ -992,7 +998,7 @@ namespace SonOfRobin
             this.Walk(setOrientation: false);
 
             // shooting angle should be set once at the start
-            if (this.ShootingAngle == -100) this.ShootingAngle = this.sprite.GetAngleFromOrientation();
+            if (this.ShootingAngle == -100) this.ShootingAngle = this.sprite.OrientationAngle;
 
             Vector2 moving = this.world.analogMovementLeftStick;
             Vector2 shooting = this.world.analogMovementRightStick;
@@ -1189,33 +1195,17 @@ namespace SonOfRobin
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
 
-        private Point GetCenterOffset()
+        public Rectangle GetFocusRect(int distance = 0)
         {
-            Point centerOffset = new(0, 0);
+            Point focusCenterOffset = new Point(
+                (int)Math.Round((this.sprite.ColRect.Width + distance) * Math.Cos(this.sprite.OrientationAngle)),
+                (int)Math.Round((this.sprite.ColRect.Height + distance) * Math.Sin(this.sprite.OrientationAngle)));
 
-            switch (this.sprite.orientation)
-            {
-                case Sprite.Orientation.left:
-                    centerOffset.X -= this.sprite.ColRect.Width;
-                    break;
+            Rectangle focusRect = this.sprite.ColRect;
+            focusRect.X += focusCenterOffset.X;
+            focusRect.Y += focusCenterOffset.Y;
 
-                case Sprite.Orientation.right:
-                    centerOffset.X += this.sprite.ColRect.Width;
-                    break;
-
-                case Sprite.Orientation.up:
-                    centerOffset.Y -= this.sprite.ColRect.Height;
-                    break;
-
-                case Sprite.Orientation.down:
-                    centerOffset.Y += this.sprite.ColRect.Height;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported sprite orientation - {this.sprite.orientation}.");
-            }
-
-            return centerOffset;
+            return focusRect;
         }
 
         private void PickUpClosestPiece(BoardPiece closestPiece)
@@ -1325,14 +1315,11 @@ namespace SonOfRobin
                 }
             }
 
-            Point centerOffset = this.GetCenterOffset();
-
             var executeHelper = new Dictionary<string, Object> {
                     { "player", this },
                     { "slot", this.ActiveSlot },
                     { "toolbarPiece", activeToolbarPiece },
                     { "shootingPower", this.shootingPower },
-                    { "centerOffset", centerOffset },
                     { "buttonHeld", buttonHeld },
                     { "highlightOnly", highlightOnly },
                 };
