@@ -1478,7 +1478,7 @@ namespace SonOfRobin
 
                 this.HarvestLevel = nextLevel;
 
-                // Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.BrewLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true); // TODO make tutorial for harvest levels
+                Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.MeatHarvestLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
 
             return levelUp;

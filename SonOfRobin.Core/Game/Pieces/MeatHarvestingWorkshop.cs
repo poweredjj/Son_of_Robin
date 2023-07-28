@@ -155,7 +155,7 @@ namespace SonOfRobin
                 var bonusPieces = new List<BoardPiece>();
 
                 var bonusChanceByLevelDict = new Dictionary<int, int> {
-                    { 1, 1 }, // 1, 40
+                    { 1, 40 }, // 1, 40
                     { 2, 30 },
                     { 3, 20 },
                     { 4, 10 },

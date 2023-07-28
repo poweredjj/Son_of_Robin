@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant, HarvestMeat }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant, HarvestMeat, MeatHarvestLevels }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -219,6 +219,13 @@ namespace SonOfRobin
                     new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture, TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/hourglass") }, boxType: messageTextType),
                     new HintMessage(text: "Try using unique | | ingredients\nand | | boosters, to level up faster.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetTexture(PieceTemplate.Name.HerbsCyan), PieceInfo.GetTexture(PieceTemplate.Name.HerbsGreen) }, boxType: messageTextType),
                 });
+
+            new Tutorial(type: Type.MeatHarvestLevels, name: "meat harvesting levels", title: "Meat harvesting levels.",
+                messages: new List<HintMessage> {
+                    new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture }, boxType: messageTextType),
+                    new HintMessage(text: "With each level, you get a better chance to get | | bonus items.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture, AnimData.framesForPkgs[AnimData.PkgName.Fat].texture }, boxType: messageTextType),
+
+    });
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
                 messages: new List<HintMessage> {
