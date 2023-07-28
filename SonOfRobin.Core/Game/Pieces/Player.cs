@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace SonOfRobin
 {
     public class Player : BoardPiece
@@ -259,8 +258,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle focusRect = this.GetFocusRect(distance: 8);
-                focusRect.Inflate(4,4);
+                Rectangle focusRect = this.GetFocusRect();
                 Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
 
                 try
@@ -285,8 +283,7 @@ namespace SonOfRobin
             {
                 if (!this.CanSeeAnything) return null;
 
-                Rectangle focusRect = this.GetFocusRect(distance: 6);
-                focusRect.Inflate(3,3);
+                Rectangle focusRect = this.GetFocusRect();
 
                 try
                 {
@@ -1195,13 +1192,15 @@ namespace SonOfRobin
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
 
-        public Rectangle GetFocusRect(int distance = 0)
+        public Rectangle GetFocusRect(int inflateX = 0, int inflateY = 0)
         {
-            Point focusCenterOffset = new Point(
-                (int)Math.Round((this.sprite.ColRect.Width + distance) * Math.Cos(this.sprite.OrientationAngle)),
-                (int)Math.Round((this.sprite.ColRect.Height + distance) * Math.Sin(this.sprite.OrientationAngle)));
+            Rectangle focusRect = new Rectangle(x: (int)(this.sprite.position.X - 1), y: (int)(this.sprite.position.Y - 1), width: 1, height: 1);
+            focusRect.Inflate(24 + inflateX, 24 + inflateY);
 
-            Rectangle focusRect = this.sprite.ColRect;
+            Point focusCenterOffset = new Point(
+                (int)Math.Round(((focusRect.Width / 2) + (inflateX / 2)) * Math.Cos(this.sprite.OrientationAngle)),
+                (int)Math.Round(((focusRect.Height / 2) + (inflateY / 2)) * Math.Sin(this.sprite.OrientationAngle)));
+
             focusRect.X += focusCenterOffset.X;
             focusRect.Y += focusCenterOffset.Y;
 

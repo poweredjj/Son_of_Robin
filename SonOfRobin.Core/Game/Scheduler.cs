@@ -494,9 +494,8 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            int inflateVal = Math.Max(activeTool.range, 6);
-                            Rectangle focusRect = player.GetFocusRect(distance: inflateVal / 2);
-                            focusRect.Inflate(inflateVal, inflateVal);
+                            int inflateVal = Math.Max(activeTool.range, 3);
+                            Rectangle focusRect = player.GetFocusRect(inflateX: inflateVal, inflateY: inflateVal);
 
                             var targets = world.Grid
                                 .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
