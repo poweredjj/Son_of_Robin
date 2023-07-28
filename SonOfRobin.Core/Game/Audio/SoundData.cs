@@ -161,7 +161,7 @@ namespace SonOfRobin
             ArrowHit,
             ClothRustle1,
             ClothRustle2,
-            ItemUpgrade,
+            KnifeSharpen,
             LeatherMove,
             SplashMud,
 
@@ -486,7 +486,7 @@ namespace SonOfRobin
             { Name.PaperMove2, "517732__zovipoland__book-page-change-1-2" },
             { Name.ClothRustle1, "427865__leonelmail__clothing-rustle-nylon_1" },
             { Name.ClothRustle2, "427865__leonelmail__clothing-rustle-nylon_2" },
-            { Name.ItemUpgrade, "485436__nobarknoonan__door-slam" },
+            { Name.KnifeSharpen, "69480__aboe__knifesha4" },
             { Name.LeatherMove, "536087__eminyildirim__leather-movement" },
             { Name.DropRope, "459440__coral-island-studios__13-cardboard-box-stacking" },
             { Name.Error, "141334__lluiset7__error-2" },

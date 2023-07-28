@@ -14,7 +14,7 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetFieldRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic, PieceTemplate.Name.HotPlate }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic, PieceTemplate.Name.HotPlate, PieceTemplate.Name.WorkshopMeatHarvesting }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.WorkshopLeatherBasic }),
 
@@ -25,6 +25,8 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AlchemyLabStandard, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 4 }, { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Clay, 1 }, { PieceTemplate.Name.IronPlate, 1 }, { PieceTemplate.Name.EmptyBottle, 1 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabAdvanced } ),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AlchemyLabAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 4 }, { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Clay, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.Crystal, 1 },  { PieceTemplate.Name.EmptyBottle, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopMeatHarvesting, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Granite, 3 },  { PieceTemplate.Name.AxeStone, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.Leather, 1 }, { PieceTemplate.Name.Clay, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true ),
 

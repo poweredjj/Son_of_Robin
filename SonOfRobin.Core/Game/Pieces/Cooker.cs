@@ -71,9 +71,7 @@ namespace SonOfRobin
 
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
-            flameTriggerSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger };
             if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.Create(templateName: PieceTemplate.Name.CookingTrigger, world: this.world));
-
             flameTriggerSlot.locked = true;
 
             StorageSlot mealSlot = this.MealSlot;

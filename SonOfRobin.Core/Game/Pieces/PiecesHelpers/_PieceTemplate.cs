@@ -273,6 +273,8 @@ namespace SonOfRobin
 
             EmptyVisualEffect,
             SwampGeyser,
+            WorkshopMeatHarvesting,
+            MeatHarvestTrigger,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -920,6 +922,15 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.MeatHarvestTrigger:
+                    {
+                        var allowedTerrain = terrainCanGoAnywhere;
+
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: allowedTerrain, readableName: "harvest", description: "Harvests meat from the animal.", activeState: BoardPiece.State.Empty);
+
+                        return boardPiece;
+                    }
+
                 case Name.FireplaceTriggerOn:
                     {
                         var allowedTerrain = terrainCanGoAnywhere;
@@ -1252,6 +1263,17 @@ namespace SonOfRobin
 
                         combineWorkshop.sprite.AssignNewName("off");
                         return combineWorkshop;
+                    }
+
+                case Name.WorkshopMeatHarvesting:
+                    {
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.KnifeSharpen, ignore3DAlways: true));
+
+                        var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "meat harvesting workshop", description: "For animal processing.", soundPack: soundPack);
+
+                        meatHarvestingWorkshop.sprite.AssignNewName("off");
+                        return meatHarvestingWorkshop;
                     }
 
                 case Name.Clam:

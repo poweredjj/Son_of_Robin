@@ -215,6 +215,8 @@ namespace SonOfRobin
 
         public void RemoveFromBoard()
         {
+            if (this.particleEngine != null && this.particleEngine.HasAnyParticles) this.ReplaceWithParticleEmitter();
+
             Grid.RemoveSprite(this);
             this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
             this.IsOnBoard = false;
@@ -467,7 +469,7 @@ namespace SonOfRobin
             if (this.particleEngine != null)
             {
                 // creating particleEmitter, that will finish particle animation of this destroyed sprite
-                if (this.IsOnBoard && this.particleEngine.HasAnyParticles) this.ReplaceWithParticleEmitter();
+                if (this.IsOnBoard && this.particleEngine != null && this.particleEngine.HasAnyParticles) this.ReplaceWithParticleEmitter();
                 else this.particleEngine?.Dispose();
             }
         }

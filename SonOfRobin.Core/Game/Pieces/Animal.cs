@@ -49,6 +49,14 @@ namespace SonOfRobin
             this.strength = strength;
         }
 
+        public override void Kill(bool addDestroyEvent = true)
+        {
+            base.Kill(addDestroyEvent);
+
+            if (!this.readableName.Contains("dead")) this.readableName = $"dead {this.readableName}";
+            this.HitPoints = this.maxHitPoints; // to prevent from being removed from inventory (as "broken" piece)
+        }
+
         private float FedPercentage // float 0-1
         { get { return (float)this.fedLevel / (float)maxFedLevel; } }
 

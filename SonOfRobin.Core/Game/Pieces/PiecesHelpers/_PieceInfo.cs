@@ -858,7 +858,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 40 * 60;
+                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 5000;
                         this.animalMassBurnedMultiplier = 1f;
                         this.animalAwareness = 200;
@@ -867,6 +867,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.1f;
                         this.animalSightRange = 400;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -886,7 +887,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 40 * 60;
+                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 1.3f;
                         this.animalAwareness = 80;
@@ -895,6 +896,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 6;
                         this.animalRetaliateChance = 0.6f;
                         this.animalSightRange = 500;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -914,7 +916,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 40 * 60;
+                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 0.5f;
                         this.animalAwareness = 50;
@@ -923,6 +925,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 5;
                         this.animalRetaliateChance = 1f;
                         this.animalSightRange = 700;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -941,7 +944,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 40 * 60;
+                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 1200;
                         this.animalMassBurnedMultiplier = 1;
                         this.animalAwareness = 100;
@@ -950,6 +953,7 @@ namespace SonOfRobin
                         this.animalMaxChildren = 8;
                         this.animalRetaliateChance = 0.05f;
                         this.animalSightRange = 250;
+                        this.canBePickedUp = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1278,6 +1282,15 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.UpgradeBenchObsolete:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 0.8f;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
+                        break;
+
+                    case PieceTemplate.Name.WorkshopMeatHarvesting:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
@@ -1675,6 +1688,11 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.UpgradeTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
+                    case PieceTemplate.Name.MeatHarvestTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         break;

@@ -287,7 +287,7 @@ namespace SonOfRobin
 
                 Point centerOffset = this.GetCenterOffset();
 
-                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true).Where(piece => piece.pieceInfo.canBePickedUp);
+                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: centerOffset.X, offsetY: centerOffset.Y, compareWithBottom: true).Where(piece => piece.pieceInfo.canBePickedUp && (piece.GetType() != typeof(Animal) || !piece.alive));
                 if (!interestingPieces.Any()) return null;
 
                 BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: centerOffset.X, offsetY: centerOffset.Y);
@@ -1226,6 +1226,7 @@ namespace SonOfRobin
 
                 closestPiece.sprite.rotation = 0f;
                 closestPiece.HeatLevel = 0f;
+
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.HintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
             }

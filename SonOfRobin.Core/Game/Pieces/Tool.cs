@@ -231,23 +231,31 @@ namespace SonOfRobin
             }
 
             if (target.pieceInfo.Yield != null && !target.IsBurning) target.pieceInfo.Yield.DropFirstPieces(piece: target, hitPower: hitPower);
-            if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+            if (target.GetType() == typeof(Animal) && world.random.Next(2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
             if (target.HitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
             {
-                Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
-                if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
+                if (target.GetType() == typeof(Animal))
                 {
-                    int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target);
-
-                    if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
+                    PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                    target.pieceInfo.Yield.DropDebris(piece: target, particlesToEmit: 100);
+                }
+                else
+                {
+                    Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
+                    if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                     {
-                        BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
-                        particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                        ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
-                    }
+                        int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target);
 
-                    world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
+                        if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
+                        {
+                            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
+                        }
+
+                        world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
+                    }
                 }
 
                 if (target.GetType() == typeof(Plant))
@@ -260,7 +268,7 @@ namespace SonOfRobin
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
 
-                target.Destroy();
+                if (target.GetType() != typeof(Animal)) target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
                 if (target.pieceInfo.category == Category.SmallPlant) numberOfExplosions = 0;

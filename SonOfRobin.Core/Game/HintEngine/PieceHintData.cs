@@ -432,10 +432,16 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.CombineItems }),
 
                 new PieceHint(
+                    type: PieceHint.Type.DeadAnimal,
+                    message: $"I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName }\nto process this animal.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Rabbit, PieceTemplate.Name.Frog, PieceTemplate.Name.Fox, PieceTemplate.Name.Tiger }),
+
+                new PieceHint(
                     type: PieceHint.Type.PoisonousMeat,
                     message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.MeatRawRegular).readableName } looks poisonous.\nI should | cook it before eating.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRawRegular), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRawRegular}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime }),
 
                 new PieceHint(
                     type: PieceHint.Type.MakeOilNegative,
