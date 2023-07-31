@@ -80,7 +80,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (targets.Count == 0 || this.world.CurrentUpdate < this.hitCooldown || player.Stamina < 80) return;
+            if (targets.Count == 0 || this.world.CurrentUpdate < this.hitCooldown) return;
 
             bool anyTargetHit = false;
             bool fieldTipShown = false;
@@ -192,8 +192,7 @@ namespace SonOfRobin
 
             if (anyTargetHit)
             {
-                player.Stamina -= 50;
-                this.hitCooldown = this.world.CurrentUpdate + 30;
+                this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
                 {
                     this.HitPoints -= 1;

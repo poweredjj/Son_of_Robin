@@ -384,6 +384,12 @@ namespace SonOfRobin
                 else extInfoTextList.Add($"| {Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}");
             }
 
+            if (selectedPiece.GetType() == typeof(Tool) && !((Tool)selectedPiece).shootsProjectile)
+            {
+                extInfoTextList.Add($"| {Math.Round(60f / (float)pieceInfo.toolHitCooldown, 1)}/s");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/speed"));
+            }
+
             if (pieceInfo.toolRange > 0)
             {
                 extInfoTextList.Add($"| {pieceInfo.toolRange}");

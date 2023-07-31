@@ -1778,7 +1778,7 @@ namespace SonOfRobin
                             if (hasJumped)
                             {
                                 player.soundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);
-                                player.Stamina -= 100;
+                                player.Fatigue += 10;
                             }
                             else Sound.QuickPlay(SoundData.Name.Error);
 
