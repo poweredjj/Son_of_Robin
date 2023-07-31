@@ -236,7 +236,7 @@ namespace SonOfRobin
                 int maxBuffsToAdd = (cookLevel + 1) / 2;
                 int buffsToAddCount = this.world.random.Next(1, maxBuffsToAdd);
 
-                var possibleBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.MaxHP, BuffEngine.BuffType.MaxStamina, BuffEngine.BuffType.Fatigue, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
+                var possibleBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.MaxHP, BuffEngine.BuffType.Fatigue, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
 
                 for (int i = 0; i < buffsToAddCount; i++)
                 {
@@ -251,10 +251,6 @@ namespace SonOfRobin
                     {
                         case BuffEngine.BuffType.MaxHP:
                             buffList.Add(new Buff(type: buffType, value: Math.Round(80f * valueMultiplier), autoRemoveDelay: duration));
-                            break;
-
-                        case BuffEngine.BuffType.MaxStamina:
-                            buffList.Add(new Buff(type: buffType, value: Math.Round(50f * valueMultiplier), autoRemoveDelay: duration));
                             break;
 
                         case BuffEngine.BuffType.Fatigue:

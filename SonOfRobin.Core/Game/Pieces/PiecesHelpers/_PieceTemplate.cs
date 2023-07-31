@@ -1607,7 +1607,6 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-350, isPermanent: true),
-                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 50f, autoRemoveDelay: 60 * 60 * 1),
                         };
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", buffList: buffList);
@@ -1742,7 +1741,7 @@ namespace SonOfRobin
                 case Name.HerbsBlue:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: -100f, isPermanent: true)}; // TODO replace with other (unique) buff type
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -2364,8 +2363,7 @@ namespace SonOfRobin
                 case Name.TentSmall:
                     {
                         var wakeUpBuffs = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
-                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: -50f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false, waitingAfterSleepPossible: false, wakeUpBuffs: wakeUpBuffs);
 
@@ -2511,7 +2509,7 @@ namespace SonOfRobin
                         var buffList = new List<Buff>
                         {
                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f),
-                           new Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f),
+                           new Buff(type: BuffEngine.BuffType.MaxFatigue, value: 400f),
                         };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, equipType: Equipment.EquipType.Chest,
