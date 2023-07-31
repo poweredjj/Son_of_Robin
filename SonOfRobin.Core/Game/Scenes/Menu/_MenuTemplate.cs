@@ -488,11 +488,11 @@ namespace SonOfRobin
                             textLines.Add($"| Speed: {Math.Round(player.speed)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture);
 
-                            textLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
-
                             textLines.Add($"| HP: {Math.Round(player.HitPoints)} / {Math.Round(player.maxHitPoints)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+
+                            textLines.Add($"| Fatigue: {Math.Round(player.Fatigue)} / {Math.Round(player.maxFatigue)}");
+                            imageList.Add(TextureBank.GetTexture("bed"));
 
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
@@ -522,7 +522,7 @@ namespace SonOfRobin
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
 
                             textLines.Add($"| Meat harvesting level: {player.HarvestLevel}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 

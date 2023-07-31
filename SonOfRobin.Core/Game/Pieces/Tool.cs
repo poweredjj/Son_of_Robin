@@ -9,19 +9,19 @@ namespace SonOfRobin
     {
         public readonly bool shootsProjectile;
         private readonly int hitPower;
-        public readonly int range;
-        public int hitCooldown;
         public readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
+        public int hitCooldown;
+
+
         public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
+            byte animSize = 0, string animName = "default", bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
         {
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
-            this.range = range;
             this.shootsProjectile = shootsProjectile;
             this.multiplierByCategory = multiplierByCategory;
             this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
@@ -80,7 +80,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (targets.Count == 0 || this.world.CurrentUpdate < this.hitCooldown || player.Stamina < 80) return;
+            if (targets.Count == 0 || this.world.CurrentUpdate < this.hitCooldown) return;
 
             bool anyTargetHit = false;
             bool fieldTipShown = false;
@@ -192,8 +192,7 @@ namespace SonOfRobin
 
             if (anyTargetHit)
             {
-                player.Stamina -= 50;
-                this.hitCooldown = this.world.CurrentUpdate + 30;
+                this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
                 {
                     this.HitPoints -= 1;

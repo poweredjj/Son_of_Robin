@@ -24,8 +24,6 @@ namespace SonOfRobin
 
         public int maxFedLevel;
         public int fedLevel;
-        public float maxStamina;
-        public float stamina;
         public float maxFatigue;
         private float fatigue;
         public int CraftLevel { get; private set; }
@@ -59,8 +57,6 @@ namespace SonOfRobin
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
-            this.maxStamina = maxStamina;
-            this.stamina = maxStamina;
             this.maxFatigue = maxFatigue;
             this.fatigue = 0;
             this.CraftLevel = craftLevel;
@@ -339,19 +335,6 @@ namespace SonOfRobin
             }
         }
 
-        public float Stamina
-        {
-            get { return this.stamina; }
-            set
-            {
-                float oldVal = this.stamina;
-                this.stamina = Math.Min(Math.Max(value, 0), this.maxStamina);
-
-                float staminaDifference = this.stamina - oldVal;
-                if (staminaDifference < 0) this.Fatigue -= staminaDifference / 10f;
-            }
-        }
-
         public float FedPercent
         {
             get
@@ -458,8 +441,6 @@ namespace SonOfRobin
             Dictionary<string, Object> pieceData = base.Serialize();
             pieceData["player_fedLevel"] = this.fedLevel;
             pieceData["player_maxFedLevel"] = this.maxFedLevel;
-            pieceData["player_stamina"] = this.stamina;
-            pieceData["player_maxStamina"] = this.maxStamina;
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
             pieceData["player_craftLevel"] = this.CraftLevel;
@@ -480,8 +461,6 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.fedLevel = (int)(Int64)pieceData["player_fedLevel"];
             this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
-            this.stamina = (float)(double)pieceData["player_stamina"];
-            this.maxStamina = (float)(double)pieceData["player_maxStamina"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
             this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"];
@@ -560,7 +539,6 @@ namespace SonOfRobin
         public void AcquireEnergy(float energyAmount)
         {
             this.fedLevel = Math.Min(this.fedLevel + this.ConvertEnergyAmountToFedLevel(energyAmount), this.maxFedLevel);
-            this.Stamina = this.maxStamina;
 
             if (this.FedPercent > 0.8f) this.world.HintEngine.Enable(HintEngine.Type.Hungry);
             if (this.FedPercent > 0.4f) this.world.HintEngine.Enable(HintEngine.Type.VeryHungry);
@@ -734,7 +712,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
-            if (!this.Walk()) this.Stamina++;
+            this.Walk();
 
             this.CheckGround();
             this.CheckLowHP();
@@ -865,8 +843,6 @@ namespace SonOfRobin
 
                 if (this.sprite.IsInWater && slowDownInWater)
                 {
-                    this.Stamina--;
-
                     float submergePower = (float)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 0, newMax: 0.45, oldVal: Terrain.waterLevelMax - this.sprite.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
 
                     new RumbleEvent(force: submergePower, smallMotor: true, fadeInSeconds: 0.16f, durationSeconds: 0f, fadeOutSeconds: 0.16f, minSecondsSinceLastRumbleSmallMotor: 0.52f);
@@ -875,8 +851,6 @@ namespace SonOfRobin
 
                 if (this.sprite.IsOnRocks && slowDownOnRocks)
                 {
-                    this.Stamina--;
-
                     float randomAddedForce = (float)this.world.random.NextSingle() * 0.16f;
                     float randomAddedDelay = (float)this.world.random.NextSingle() * 0.21f;
                     new RumbleEvent(force: 0.04f + randomAddedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: 0.18f + randomAddedDelay);
@@ -992,8 +966,6 @@ namespace SonOfRobin
 
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
             if (this.shootingPower < maxShootingPower) new RumbleEvent(force: (float)this.shootingPower / maxShootingPower * 0.1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
-
-            this.Stamina--;
 
             if (this.visualAid == null) this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Crosshair);
 

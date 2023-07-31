@@ -6657,6 +6657,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/simple_icons/sleep.png
 
+#begin gfx/simple_icons/speed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/simple_icons/speed.png
+
 #begin gfx/simple_icons/stack.png
 /importer:TextureImporter
 /processor:TextureProcessor

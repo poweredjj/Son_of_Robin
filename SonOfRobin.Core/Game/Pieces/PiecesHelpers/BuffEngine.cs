@@ -17,9 +17,8 @@ namespace SonOfRobin
             Strength = 5,
             HP = 6,
             MaxHP = 7,
-            MaxStamina = 8,
+            MaxFatigue = 8,
             EnableMap = 9,
-            NotUsedKeptForCompatibility1 = 10,
             RegenPoison = 11,
             Haste = 12,
             Fatigue = 13,
@@ -32,6 +31,11 @@ namespace SonOfRobin
             HeatProtection = 20,
             SwampProtection = 21,
             Wet = 22,
+
+            // obsolete below (kept for compatibility with old saves)
+
+            NotUsedKeptForCompatibility1 = 10,
+
         };
 
         private readonly Dictionary<string, Buff> buffDict;
@@ -278,7 +282,7 @@ namespace SonOfRobin
                         return true;
                     }
 
-                case BuffType.MaxStamina:
+                case BuffType.MaxFatigue:
                     {
                         if (!this.CheckIfPieceIsPlayer(buff)) return false;
                         Player player = (Player)this.piece;
@@ -286,14 +290,13 @@ namespace SonOfRobin
                         float buffVal = (float)buff.value;
                         if (!add) buffVal *= -1;
 
-                        float correctedBuffVal = Math.Max(buffVal + player.maxStamina, 10f) - player.maxStamina;
+                        float correctedBuffVal = Math.Max(buffVal + player.maxFatigue, 10f) - player.maxFatigue;
                         if (add && correctedBuffVal == 0) return false;
 
                         if (correctedBuffVal != buffVal) buff.value = add ? correctedBuffVal : -correctedBuffVal;
-                        player.maxStamina += correctedBuffVal;
+                        player.maxFatigue += correctedBuffVal;
 
-                        if (buffVal > 0) player.stamina = player.maxStamina;
-                        else player.stamina = Math.Min(player.stamina, player.maxStamina);
+                        player.Fatigue = Math.Min(player.Fatigue, player.maxFatigue);
 
                         return true;
                     }
@@ -579,7 +582,7 @@ namespace SonOfRobin
                     value = (float)buff1.value + (float)buff2.value;
                     break;
 
-                case BuffType.MaxStamina:
+                case BuffType.MaxFatigue:
                     value = (float)buff1.value + (float)buff2.value;
                     break;
 

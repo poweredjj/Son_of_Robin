@@ -83,7 +83,7 @@ namespace SonOfRobin
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
-                case BuffEngine.BuffType.MaxStamina:
+                case BuffEngine.BuffType.MaxFatigue:
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
@@ -148,8 +148,8 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.MaxHP:
                     return (float)this.value >= 0;
 
-                case BuffEngine.BuffType.MaxStamina:
-                    return (float)this.value >= 0;
+                case BuffEngine.BuffType.MaxFatigue:
+                    return (float)this.value > 0;
 
                 case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
                     return (int)this.value >= 0;
@@ -241,8 +241,8 @@ namespace SonOfRobin
                     description = $"Max health {sign}{this.value}{duration}.";
                     break;
 
-                case BuffEngine.BuffType.MaxStamina:
-                    description = $"Max stamina {sign}{this.value}{duration}.";
+                case BuffEngine.BuffType.MaxFatigue:
+                    description = $"Max fatigue {sign}{this.value}{duration}.";
                     break;
 
                 case BuffEngine.BuffType.EnableMap:
@@ -328,8 +328,8 @@ namespace SonOfRobin
                     case BuffEngine.BuffType.MaxHP:
                         return "max health";
 
-                    case BuffEngine.BuffType.MaxStamina:
-                        return "stamina";
+                    case BuffEngine.BuffType.MaxFatigue:
+                        return "fatigue";
 
                     case BuffEngine.BuffType.HeatProtection:
                         return "heat protection";
@@ -391,8 +391,8 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.MaxHP:
                     return $"MAX HP\n{sign}{this.value}";
 
-                case BuffEngine.BuffType.MaxStamina:
-                    return $"STAMINA\n{sign}{this.value}";
+                case BuffEngine.BuffType.MaxFatigue:
+                    return $"MAX FATIGUE\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Tired:
                     return "TIRED";

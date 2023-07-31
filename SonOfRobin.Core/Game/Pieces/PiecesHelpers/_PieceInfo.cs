@@ -65,6 +65,7 @@ namespace SonOfRobin
             public readonly int plantMaxExistingNumber;
             public readonly int plantDropSeedChance;
             public readonly bool toolIndestructible;
+            public readonly int toolHitCooldown;
             public readonly bool canShrink;
             public readonly bool canBePickedUp;
             public readonly byte stackSize;
@@ -144,13 +145,11 @@ namespace SonOfRobin
                 }
 
                 this.shootsProjectile = false;
-                this.toolRange = 0;
                 if (this.type == typeof(Tool))
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
                     this.strengthMultiplierByCategory = tool.multiplierByCategory;
-                    this.toolRange = tool.range;
                 }
 
                 if (this.type == typeof(Shelter))
@@ -198,6 +197,8 @@ namespace SonOfRobin
                 this.plantMaxExistingNumber = 0;
                 this.plantDropSeedChance = 0;
                 this.toolIndestructible = false;
+                this.toolHitCooldown = 30;
+                this.toolRange = 0;
                 this.canShrink = false;
                 this.canBePickedUp = false;
                 this.stackSize = 1;
@@ -1717,6 +1718,7 @@ namespace SonOfRobin
                         this.toolIndestructible = true;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.toolHitCooldown = 50;
                         break;
 
                     case PieceTemplate.Name.AxeWood:
@@ -1725,6 +1727,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 40;
                         break;
 
                     case PieceTemplate.Name.AxeStone:
@@ -1733,6 +1736,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 30;
                         break;
 
                     case PieceTemplate.Name.AxeIron:
@@ -1741,6 +1745,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 25;
                         break;
 
                     case PieceTemplate.Name.AxeCrystal:
@@ -1749,6 +1754,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 20;
                         break;
 
                     case PieceTemplate.Name.PickaxeWood:
@@ -1757,6 +1763,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 40;
                         break;
 
                     case PieceTemplate.Name.PickaxeStone:
@@ -1765,6 +1772,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 30;
                         break;
 
                     case PieceTemplate.Name.PickaxeIron:
@@ -1773,6 +1781,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 25;
                         break;
 
                     case PieceTemplate.Name.PickaxeCrystal:
@@ -1781,6 +1790,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 20;
                         break;
 
                     case PieceTemplate.Name.SpearWood:
@@ -1789,6 +1799,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 40;
                         break;
 
                     case PieceTemplate.Name.SpearStone:
@@ -1797,6 +1808,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 30;
                         break;
 
                     case PieceTemplate.Name.SpearIron:
@@ -1805,6 +1817,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 25;
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
@@ -1813,6 +1826,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 20;
                         break;
 
                     case PieceTemplate.Name.ScytheStone:
@@ -1821,6 +1835,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 35;
                         break;
 
                     case PieceTemplate.Name.ScytheIron:
@@ -1829,6 +1844,8 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 30;
+                        this.toolRange = 10;
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
@@ -1837,6 +1854,8 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 25;
+                        this.toolRange = 23;
                         break;
 
                     case PieceTemplate.Name.ShovelStone:
@@ -1845,6 +1864,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 40;
                         break;
 
                     case PieceTemplate.Name.ShovelIron:
@@ -1853,6 +1873,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 30;
                         break;
 
                     case PieceTemplate.Name.ShovelCrystal:
@@ -1861,6 +1882,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolHitCooldown = 25;
                         break;
 
                     case PieceTemplate.Name.BowBasic:
