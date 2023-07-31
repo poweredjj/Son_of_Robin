@@ -321,7 +321,6 @@ namespace SonOfRobin
             MusicNoteSmall = 275,
             MusicNoteBig = 276,
             Biceps = 277,
-            Bed = 278,
             Miss = 279,
             Attack = 280,
             MapMarker = 281,
@@ -388,6 +387,7 @@ namespace SonOfRobin
             CrabLightBlue = 166,
             CrabRed = 167,
             CrabYellow = 168,
+            Bed = 278,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -702,7 +702,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Star, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
             AddFrameList(animPackage: PkgName.AnimalIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
-            AddFrameList(animPackage: PkgName.Bed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bed", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
             AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
             AddFrameList(animPackage: PkgName.ScytheIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));

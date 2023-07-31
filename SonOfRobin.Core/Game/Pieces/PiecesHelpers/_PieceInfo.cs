@@ -1718,6 +1718,7 @@ namespace SonOfRobin
                         this.toolIndestructible = true;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
+                        this.toolHitCooldown = 50;
                         break;
 
                     case PieceTemplate.Name.AxeWood:

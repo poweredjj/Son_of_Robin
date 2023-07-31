@@ -491,6 +491,9 @@ namespace SonOfRobin
                             textLines.Add($"| HP: {Math.Round(player.HitPoints)} / {Math.Round(player.maxHitPoints)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
+                            textLines.Add($"| Fatigue: {Math.Round(player.Fatigue)} / {Math.Round(player.maxFatigue)}");
+                            imageList.Add(TextureBank.GetTexture("bed"));
+
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
 
