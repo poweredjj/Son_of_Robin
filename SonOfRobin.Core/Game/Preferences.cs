@@ -7,8 +7,14 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public enum WorldSize
-        { small, medium, large, gigantic } // lower case, for proper display in menu
+        public enum WorldSize : byte
+        {
+            // lower case, for proper display in menu
+            small = 0,
+            medium = 1,
+            large = 2,
+            gigantic = 3,
+        }
 
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 12, "low" }, { 8, "medium" }, { 5, "high" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };

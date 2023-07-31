@@ -6,34 +6,34 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    public enum VButName
+    public enum VButName : byte
     {
-        Confirm,
-        Interact,
-        UseTool,
-        Shoot,
-        PickUp,
-        Inventory,
-        FieldCraft,
-        Map,
-        Sprint,
-        ZoomOut,
-        PauseMenu,
-        Return,
+        Confirm = 0,
+        Interact = 1,
+        UseTool = 2,
+        Shoot = 3,
+        PickUp = 4,
+        Inventory = 5,
+        FieldCraft = 6,
+        Map = 7,
+        Sprint = 8,
+        ZoomOut = 9,
+        PauseMenu = 10,
+        Return = 11,
 
-        InvDragSingle,
-        InvSort,
+        InvDragSingle = 12,
+        InvSort = 13,
 
-        MapToggleMarker,
-        MapCenterPlayer,
+        MapToggleMarker = 14,
+        MapCenterPlayer = 15,
 
-        DebugPause,
-        DebugPlay,
-        DebugFastForward,
-        DebugClear,
-        DebugBreakAll,
-        DebugBreakVisible,
-        DebugClockAdvance,
+        DebugPause = 16,
+        DebugPlay = 17,
+        DebugFastForward = 18,
+        DebugClear = 19,
+        DebugBreakAll = 20,
+        DebugBreakVisible = 21,
+        DebugClockAdvance = 22,
     }
 
     public class VirtButton

@@ -14,8 +14,21 @@ namespace SonOfRobin
 {
     public class Grid
     {
-        public enum Stage
-        { LoadTerrain, GenerateTerrain, SaveTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage }
+        public enum Stage : byte
+        {
+            LoadTerrain = 0,
+            GenerateTerrain = 1,
+            SaveTerrain = 2,
+            CheckExtData = 3,
+            SetExtDataSea = 4,
+            SetExtDataBeach = 5,
+            SetExtDataBiomes = 6,
+            SetExtDataBiomesConstrains = 7,
+            SetExtDataPropertiesGrid = 8,
+            SetExtDataFinish = 9,
+            FillAllowedNames = 10,
+            MakeEntireMapImage = 11,
+        }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 

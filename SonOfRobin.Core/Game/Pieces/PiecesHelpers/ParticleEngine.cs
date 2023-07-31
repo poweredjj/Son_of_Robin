@@ -13,7 +13,32 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
-        public enum Preset { Fireplace, BurnFlame, Cooking, Brewing, WaterWalk, WaterWave, CookingFinish, BrewingFinish, Excavated, MudWalk, LavaFlame, DebrisWood, DebrisLeaf, DebrisGrass, DebrisStone, DebrisCrystal, DebrisCeramic, DebrisBlood, DebrisStar, DebrisHeart, DebrisSoot, SwampGas, Lightning }
+        public enum Preset
+        {
+            Fireplace = 0,
+            BurnFlame = 1,
+            Cooking = 2,
+            Brewing = 3,
+            WaterWalk = 4,
+            WaterWave = 5,
+            CookingFinish = 6,
+            BrewingFinish = 7,
+            Excavated = 8,
+            MudWalk = 9,
+            LavaFlame = 10,
+            DebrisWood = 11,
+            DebrisLeaf = 12,
+            DebrisGrass = 13,
+            DebrisStone = 14,
+            DebrisCrystal = 15,
+            DebrisCeramic = 16,
+            DebrisBlood = 17,
+            DebrisStar = 18,
+            DebrisHeart = 19,
+            DebrisSoot = 20,
+            SwampGas = 21,
+            Lightning = 22,
+        }
 
         public class PresetData
         {

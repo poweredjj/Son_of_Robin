@@ -9,7 +9,20 @@ namespace SonOfRobin
     public class PieceContextMenu : Scene
     {
         protected enum ContextAction
-        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Brew, Harvest }
+        {
+            Drop = 0,
+            DropAll = 1,
+            Move = 2,
+            Eat = 3,
+            Drink = 4,
+            Plant = 5,
+            Cook = 6,
+            Switch = 7,
+            Ignite = 8,
+            Extinguish = 9,
+            Brew = 10,
+            Harvest = 11,
+        }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
         private const float marginPercent = 0.03f;

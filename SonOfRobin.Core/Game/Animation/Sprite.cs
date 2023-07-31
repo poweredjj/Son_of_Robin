@@ -8,12 +8,16 @@ namespace SonOfRobin
 {
     public class Sprite
     {
-        public enum Orientation
+        public enum Orientation : byte
         {
-            left, right, up, down // must be lowercase, to match animName
+            // must be lowercase, to match animName
+            left = 0,
+            right = 1,
+            up = 2,
+            down = 3,
         }
 
-        public enum AdditionalMoveType
+        public enum AdditionalMoveType : byte
         { None, Minimal, Half }
 
         public readonly string id;

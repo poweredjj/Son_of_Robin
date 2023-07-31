@@ -62,8 +62,14 @@ namespace SonOfRobin
 
     public class Weather
     {
-        public enum WeatherType
-        { Wind, Clouds, Rain, Lightning, Fog }
+        public enum WeatherType : byte
+        {
+            Wind = 0,
+            Clouds = 1,
+            Rain = 2,
+            Lightning = 3,
+            Fog = 4,
+        }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
         private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);

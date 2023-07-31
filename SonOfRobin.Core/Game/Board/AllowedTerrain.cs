@@ -7,8 +7,19 @@ namespace SonOfRobin
 {
     public class AllowedTerrain
     {
-        public enum RangeName
-        { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoBiome, Biome };
+        public enum RangeName : byte
+        {
+            All = 0,
+            WaterAll = 1,
+            WaterShallow = 2,
+            WaterMedium = 3,
+            WaterDeep = 4,
+            GroundSand = 5,
+            GroundAll = 6,
+            Volcano = 7,
+            NoBiome = 8,
+            Biome = 9,
+        };
 
         private readonly Dictionary<Terrain.Name, AllowedRange> rangesByTerrainName;
         private readonly Dictionary<ExtBoardProps.Name, bool> extPropertiesDict;

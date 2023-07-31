@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public enum MsgType
+    public enum MsgType : byte
     {
-        Debug,
-        User
+        Debug = 0,
+        User = 1,
     }
 
     public class MessageLog : Scene

@@ -5,11 +5,11 @@ namespace SonOfRobin
 {
     public class DecisionEngine
     {
-        public enum Action
+        public enum Action : byte
         {
-            Eat,
-            Mate,
-            Flee
+            Eat = 0,
+            Mate = 1,
+            Flee = 2,
         }
 
         public class Choice

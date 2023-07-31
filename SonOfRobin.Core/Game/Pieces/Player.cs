@@ -9,8 +9,13 @@ namespace SonOfRobin
 {
     public class Player : BoardPiece
     {
-        public enum SleepMode
-        { Awake, Sleep, WaitMorning, WaitIndefinitely };
+        public enum SleepMode : byte
+        {
+            Awake = 0,
+            Sleep = 1,
+            WaitMorning = 2,
+            WaitIndefinitely = 3,
+        };
 
         private const int maxShootingPower = 90;
         public const int maxLastStepsCount = 100;

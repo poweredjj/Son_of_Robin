@@ -4,8 +4,14 @@ namespace SonOfRobin
 {
     public struct CountComparison
     {
-        public enum Comparison
-        { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
+        public enum Comparison : byte
+        {
+            Greater = 0,
+            GreaterOrEqual = 1,
+            Equal = 2,
+            LessOrEqual = 3,
+            Less = 4,
+        }
 
         public readonly PieceTemplate.Name name;
         private readonly int count;

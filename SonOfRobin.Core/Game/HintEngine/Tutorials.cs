@@ -7,8 +7,41 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels, Plant, HarvestMeat, MeatHarvestLevels }
+        public enum Type : byte
+        {
+            BreakThing = 0,
+            Equip = 1,
+            BuildWorkshop = 2,
+            GetWood = 3,
+            Mine = 4,
+            Interact = 5,
+            PickUp = 6,
+            Hit = 7,
+            Craft = 8,
+            KeepingAnimalsAway = 9,
+            ShootProjectile = 10,
+            Cook = 11,
+            ShakeFruit = 12,
+            AnimalAttacking = 13,
+            Torch = 14,
+            Fireplace = 15,
+            TooDarkToReadMap = 16,
+            TooDarkToSeeAnything = 17,
+            Heat = 18,
+            CraftRecipeLevels = 19,
+            SwampPoison = 20,
+            SmartCrafting = 21,
+            HowToSave = 22,
+            CombineItems = 23,
+            ResourcefulCrafting = 24,
+            PotionBrew = 25,
+            CookLevels = 26,
+            BrewLevels = 27,
+            GeneralCraftLevels = 28,
+            Plant = 29,
+            HarvestMeat = 30,
+            MeatHarvestLevels = 31,
+        }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;

@@ -6,8 +6,14 @@ namespace SonOfRobin
 {
     public class IslandClock
     {
-        public enum PartOfDay
-        { Morning, Noon, Afternoon, Evening, Night }
+        public enum PartOfDay : byte
+        {
+            Morning = 0,
+            Noon = 1,
+            Afternoon = 2,
+            Evening = 3,
+            Night = 4,
+        }
 
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;

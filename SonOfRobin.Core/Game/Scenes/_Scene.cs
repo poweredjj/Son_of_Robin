@@ -8,18 +8,18 @@ namespace SonOfRobin
 {
     public abstract class Scene
     {
-        public enum InputTypes
+        public enum InputTypes : byte
         {
-            None,
-            Always,
-            Normal
+            None = 0,
+            Always = 1,
+            Normal = 2,
         }
 
-        public enum ProcessingModes
+        public enum ProcessingModes : byte
         {
-            Update,
-            RenderToTarget,
-            Draw
+            Update = 0,
+            RenderToTarget = 1,
+            Draw = 2,
         }
 
         public static List<Scene> sceneStack = new() { };

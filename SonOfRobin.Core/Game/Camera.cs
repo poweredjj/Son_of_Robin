@@ -128,11 +128,11 @@ namespace SonOfRobin
             }
         }
 
-        private enum TrackingMode
+        private enum TrackingMode : byte
         {
-            Undefined,
-            Sprite,
-            Position,
+            Undefined = 0,
+            Sprite = 1,
+            Position = 2,
         }
 
         public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)

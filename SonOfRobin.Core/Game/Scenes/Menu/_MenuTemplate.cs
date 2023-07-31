@@ -10,8 +10,44 @@ namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name
-        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced, ExportSave, ImportSave }
+        public enum Name : byte
+        {
+            Main = 0,
+            Options = 1,
+            Sound = 2,
+            Graphics = 3,
+            Controls = 4,
+            Gamepad = 5,
+            Keyboard = 6,
+            Scale = 7,
+            OtherOptions = 8,
+            CreateNewIsland = 9,
+            SetSeed = 10,
+            OpenIslandTemplate = 11,
+            Pause = 12,
+            Stats = 13,
+            Load = 14,
+            Save = 15,
+            Tutorials = 16,
+            GameOver = 17,
+            Debug = 18,
+            SoundTest = 19,
+            GfxListTest = 20,
+            Shelter = 21,
+            CreateAnyPiece = 22,
+            GenericConfirm = 23,
+            CraftField = 24,
+            CraftEssential = 25,
+            CraftBasic = 26,
+            CraftAdvanced = 27,
+            CraftMaster = 28,
+            CraftFurnace = 29,
+            CraftAnvil = 30,
+            CraftLeatherBasic = 31,
+            CraftLeatherAdvanced = 32,
+            ExportSave = 33,
+            ImportSave = 34,
+        }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {

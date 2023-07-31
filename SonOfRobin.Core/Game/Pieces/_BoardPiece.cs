@@ -8,50 +8,61 @@ namespace SonOfRobin
 {
     public abstract class BoardPiece
     {
-        public enum State
+        public enum State : byte
         {
-            Empty,
-            PlayerWaitForBuilding,
+            Empty = 0,
+            PlayerWaitForBuilding = 1,
 
-            PlayerControlledWalking,
-            PlayerControlledShooting,
-            PlayerControlledSleep,
-            PlayerControlledBuilding,
-            PlayerControlledGhosting,
-            PlayerControlledByCinematic,
+            PlayerControlledWalking = 2,
+            PlayerControlledShooting = 3,
+            PlayerControlledSleep = 4,
+            PlayerControlledBuilding = 5,
+            PlayerControlledGhosting = 6,
+            PlayerControlledByCinematic = 7,
 
-            PlantGrowthAndReproduction,
+            PlantGrowthAndReproduction = 8,
 
-            AnimalWalkAround,
-            AnimalAssessSituation,
-            AnimalRest,
-            AnimalChaseTarget,
-            AnimalAttack,
-            AnimalEat,
-            AnimalMate,
-            AnimalGiveBirth,
-            AnimalFlee,
+            AnimalWalkAround = 9,
+            AnimalAssessSituation = 10,
+            AnimalRest = 11,
+            AnimalChaseTarget = 12,
+            AnimalAttack = 13,
+            AnimalEat = 14,
+            AnimalMate = 15,
+            AnimalGiveBirth = 16,
+            AnimalFlee = 17,
 
-            FireplaceBurn,
+            FireplaceBurn = 18,
 
-            ScareAnimalsAway,
-            PlayAmbientSound,
-            MapMarkerShowAndCheck,
-            FogMoveRandomly,
-            RainInitialize,
-            RainFall,
-            FlameBurn,
+            ScareAnimalsAway = 19,
+            PlayAmbientSound = 20,
+            MapMarkerShowAndCheck = 21,
+            FogMoveRandomly = 22,
+            RainInitialize = 23,
+            RainFall = 24,
+            FlameBurn = 25,
 
-            AnimalRunForClosestWater,
-            AnimalCallForHelp,
-            SeaWaveMove,
-            EmitParticles,
+            AnimalRunForClosestWater = 26,
+            AnimalCallForHelp = 27,
+            SeaWaveMove = 28,
+            EmitParticles = 29,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
         public enum Category
-        { NotSet, Wood, Stone, Metal, SmallPlant, Flesh, Leather, Dirt, Crystal, Indestructible }
+        {
+            NotSet = 0,
+            Wood = 1,
+            Stone = 2,
+            Metal = 3,
+            SmallPlant = 4,
+            Flesh = 5,
+            Leather = 6,
+            Dirt = 7,
+            Crystal = 8,
+            Indestructible = 9,
+        }
 
         public static Texture2D GetTextureForCategory(Category category)
         {

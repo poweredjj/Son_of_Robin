@@ -40,15 +40,15 @@ namespace SonOfRobin
 
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
 
-        public enum Group
+        public enum Group : byte
         {
-            All,
-            ColMovement,
-            ColPlantGrowth,
-            Visible,
-            LightSource,
-            StateMachinesNonPlants,
-            StateMachinesPlants
+            All = 0,
+            ColMovement = 1,
+            ColPlantGrowth = 2,
+            Visible = 3,
+            LightSource = 4,
+            StateMachinesNonPlants = 5,
+            StateMachinesPlants = 6,
         }
 
         public Cell(Grid grid, int cellNoX, int cellNoY, int cellWidth, int cellHeight)

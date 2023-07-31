@@ -7,8 +7,30 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type
-        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantUseToolsInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning, TooDarkToUseTools, BadSleep };
+        public enum Type : byte
+        {
+            Empty = 0,
+            Hungry = 1,
+            VeryHungry = 2,
+            Starving = 3,
+            Tired = 4,
+            VeryTired = 5,
+            CantUseToolsInWater = 6,
+            SmallInventory = 7,
+            MapNegative = 8,
+            Lava = 9,
+            BreakingItem = 10,
+            BrokenItem = 11,
+            BurntOutTorch = 12,
+            CineIntroduction = 13,
+            CineSmallBase = 14,
+            AnimalScaredOfFire = 15,
+            AnimalCounters = 16,
+            ZoomOutLocked = 17,
+            Lightning = 18,
+            TooDarkToUseTools = 19,
+            BadSleep = 20,
+        };
 
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;

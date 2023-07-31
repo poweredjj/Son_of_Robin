@@ -7,8 +7,32 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType
-        { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, NotUsedKeptForCompatibility1, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, SwampProtection, Wet };
+        public enum BuffType : byte
+        {
+            InvWidth = 0,
+            InvHeight = 1,
+            ToolbarWidth = 2,
+            ToolbarHeight = 3,
+            Speed = 4,
+            Strength = 5,
+            HP = 6,
+            MaxHP = 7,
+            MaxStamina = 8,
+            EnableMap = 9,
+            NotUsedKeptForCompatibility1 = 10,
+            RegenPoison = 11,
+            Haste = 12,
+            Fatigue = 13,
+            Sprint = 14,
+            SprintCooldown = 15,
+            LowHP = 16,
+            Tired = 17,
+            Hungry = 18,
+            Heat = 19,
+            HeatProtection = 20,
+            SwampProtection = 21,
+            Wet = 22,
+        };
 
         private readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;

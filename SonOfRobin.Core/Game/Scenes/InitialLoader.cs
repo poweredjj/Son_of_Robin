@@ -8,8 +8,28 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step
-        { Initial, MobileWait, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish1, WaitForBackgroundTasksToFinish2, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        public enum Step : byte
+        {
+            Initial = 0,
+            MobileWait = 1,
+            StartBgTasks = 2,
+            CreateSeamless = 3,
+            LoadAnimsJson = 4,
+            LoadAnimsPlants = 5,
+            LoadAnimsChars = 6,
+            LoadAnimsMisc1 = 7,
+            LoadAnimsMisc2 = 8,
+            SaveAnimsJson = 9,
+            LoadKeysGfx = 10,
+            MakeItemsInfo = 11,
+            MakeCraftRecipes = 12,
+            CreateScenes = 13,
+            WaitForBackgroundTasksToFinish1 = 14,
+            WaitForBackgroundTasksToFinish2 = 15,
+            MakeDemoWorld = 16,
+            SetControlTips = 17,
+            OpenMainMenu = 18,
+        }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 

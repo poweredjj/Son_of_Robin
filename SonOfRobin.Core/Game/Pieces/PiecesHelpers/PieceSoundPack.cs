@@ -6,8 +6,44 @@ namespace SonOfRobin
 {
     public class PieceSoundPack
     {
-        public enum Action
-        { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, StepMud, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient, PlayerJump, Burning, BurnEnd }
+        public enum Action : byte
+        {
+            IsDestroyed = 0,
+            IsHit = 1,
+            IsOn = 2,
+            IsDropped = 3,
+            Cry = 4,
+            Die = 5,
+            Eat = 6,
+            Open = 7,
+            Close = 8,
+            StepGrass = 9,
+            StepWater = 10,
+            StepSand = 11,
+            StepRock = 12,
+            StepLava = 13,
+            StepMud = 14,
+            SwimShallow = 15,
+            SwimDeep = 16,
+            HasAppeared = 17,
+            ArrowFly = 18,
+            ArrowHit = 19,
+            PlayerBowDraw = 20,
+            TurnOn = 21,
+            TurnOff = 22,
+            PlayerBowRelease = 23,
+            PlayerPulse = 24,
+            PlayerSnore = 25,
+            PlayerYawn = 26,
+            PlayerStomachGrowl = 27,
+            PlayerSprint = 28,
+            PlayerPant = 29,
+            PlayerSpeak = 30,
+            Ambient = 31,
+            PlayerJump = 32,
+            Burning = 33,
+            BurnEnd = 34,
+        }
 
         private readonly Dictionary<Action, Sound> soundDict;
         private BoardPiece boardPiece;

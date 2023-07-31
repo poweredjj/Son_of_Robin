@@ -6,18 +6,18 @@ using System.Linq;
 namespace SonOfRobin
 
 {
-    public enum XAlign
+    public enum XAlign : byte
     {
-        Center,
-        Left,
-        Right
+        Center = 0,
+        Left = 1,
+        Right = 2,
     }
 
-    public enum YAlign
+    public enum YAlign : byte
     {
-        Center,
-        Top,
-        Bottom
+        Center = 0,
+        Top = 1,
+        Bottom = 2,
     }
 
     public class TrackingManager

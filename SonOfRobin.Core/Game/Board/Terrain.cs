@@ -7,11 +7,11 @@ namespace SonOfRobin
 {
     public class Terrain
     {
-        public enum Name
+        public enum Name : byte
         {
-            Height,
-            Humidity,
-            Biome
+            Height = 0,
+            Humidity = 1,
+            Biome = 2,
         }
 
         public static readonly Name[] allTerrains = (Name[])Enum.GetValues(typeof(Name));

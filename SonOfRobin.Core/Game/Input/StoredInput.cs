@@ -6,8 +6,12 @@ namespace SonOfRobin
 {
     public class StoredInput
     {
-        public enum Type
-        { Key, Button, Analog }
+        public enum Type : byte
+        {
+            Key = 0,
+            Button = 1,
+            Analog = 2,
+        }
 
         public readonly Type type;
         private readonly Keys key;

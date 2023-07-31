@@ -23,8 +23,12 @@ namespace SonOfRobin
 
     public class ExtBoardProps
     {
-        public enum Name
-        { Sea, OuterBeach, BiomeSwamp }; // each biome name must start with "biome"
+        public enum Name : byte
+        {
+            Sea = 0,
+            OuterBeach = 1,
+            BiomeSwamp = 2, // each biome name must start with "biome"
+        };
 
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
         public static readonly List<Name> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
@@ -175,7 +179,7 @@ namespace SonOfRobin
             foreach (Name name in allExtPropNames)
             {
                 // creating dictionary entries (will get corrupted sometimes if created in parallel)
-                this.extDataByProperty[name] = null; 
+                this.extDataByProperty[name] = null;
                 this.containsPropertiesTrueGridCell[name] = null;
                 this.containsPropertiesFalseGridCell[name] = null;
             }
@@ -197,7 +201,7 @@ namespace SonOfRobin
                 this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
             });
 
-           
+
             foreach (Name name in allExtPropNames)
             {
                 if (this.containsPropertiesTrueGridCell[name] == null) return false;

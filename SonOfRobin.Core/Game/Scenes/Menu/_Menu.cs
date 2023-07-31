@@ -9,8 +9,12 @@ namespace SonOfRobin
 {
     public class Menu : Scene
     {
-        public enum Layout
-        { Middle, Left, Right }
+        public enum Layout : byte
+        {
+            Middle = 0,
+            Left = 1,
+            Right = 2,
+        }
 
         public static bool nextMenuNoStartTransition = false;
         private const float baseScrollSpeed = 20f;

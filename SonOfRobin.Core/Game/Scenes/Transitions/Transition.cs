@@ -4,8 +4,12 @@ namespace SonOfRobin
 {
     public class Transition
     {
-        public enum Transform
-        { Linear, Sinus, Cosinus }
+        public enum Transform : byte
+        {
+            Linear = 0,
+            Sinus = 1,
+            Cosinus = 2,
+        }
 
         private readonly TransManager transManager;
         private readonly Scene scene;

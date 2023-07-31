@@ -78,8 +78,28 @@ namespace SonOfRobin
 
     public class WorldEvent
     {
-        public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing, StopBurning, TurnOffHarvestingWorkshop }
+        public enum EventName : byte
+        {
+            Birth = 0,
+            Death = 1,
+            Destruction = 2,
+            TurnOffWorkshop = 3,
+            FinishCooking = 4,
+            RestorePieceCreation = 5,
+            FadeOutSprite = 6,
+            RestoreHint = 7,
+            RemoveBuff = 8,
+            BurnOutLightSource = 9,
+            RegenPoison = 10,
+            ChangeActiveState = 11,
+            FinishBuilding = 12,
+            PlaySoundByName = 13,
+            YieldDropDebris = 14,
+            AnimalCallForHelp = 15,
+            FinishBrewing = 16,
+            StopBurning = 17,
+            TurnOffHarvestingWorkshop = 18,
+        }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
         private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris };

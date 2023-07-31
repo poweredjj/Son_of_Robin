@@ -5,8 +5,14 @@ namespace SonOfRobin
 {
     public class ButtonScheme
     {
-        public enum Type
-        { Xbox360, XboxSeries, DualShock4, DualSense, SwitchProController }
+        public enum Type : byte
+        {
+            Xbox360 = 0,
+            XboxSeries = 1,
+            DualShock4 = 2,
+            DualSense = 3,
+            SwitchProController = 4,
+        }
 
         private static Type currentType;
 

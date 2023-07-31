@@ -36,6 +36,7 @@ namespace SonOfRobin
             "At noon, you will get tired much faster.",
             "You can get rid of poison by eating food.",
             "You are immune to heat, while being wet.",
+            "You have to use meat workshop to get meat from an animal.",
         };
 
         private static List<string> tipsToDisplay = new List<string>();

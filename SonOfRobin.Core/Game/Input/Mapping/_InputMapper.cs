@@ -8,57 +8,73 @@ namespace SonOfRobin
 {
     public class InputMapper
     {
-        public enum Action
+        public enum Action : byte
         {
-            GlobalConfirm,
-            GlobalCancelReturnSkip,
-            GlobalLeft,
-            GlobalRight,
-            GlobalUp,
-            GlobalDown,
-            GlobalScrollUp,
-            GlobalScrollDown,
+            GlobalConfirm = 0,
+            GlobalCancelReturnSkip = 1,
+            GlobalLeft = 2,
+            GlobalRight = 3,
+            GlobalUp = 4,
+            GlobalDown = 5,
+            GlobalScrollUp = 6,
+            GlobalScrollDown = 7,
 
-            WorldWalk,
-            WorldCameraMove,
-            WorldCameraZoomOut,
-            WorldSprintToggle,
-            WorldInteract,
-            WorldPickUp,
-            WorldUseToolbarPiece,
-            WorldInventory,
-            WorldFieldCraft,
-            WorldMapToggle,
-            WorldPauseMenu,
+            WorldWalk = 8,
+            WorldCameraMove = 9,
+            WorldCameraZoomOut = 10,
+            WorldSprintToggle = 11,
+            WorldInteract = 12,
+            WorldPickUp = 13,
+            WorldUseToolbarPiece = 14,
+            WorldInventory = 15,
+            WorldFieldCraft = 16,
+            WorldMapToggle = 17,
+            WorldPauseMenu = 18,
 
-            InvSwitch,
-            InvSort,
-            InvPickOne,
-            InvPickStack,
-            InvRelease,
+            InvSwitch = 19,
+            InvSort = 20,
+            InvPickOne = 21,
+            InvPickStack = 22,
+            InvRelease = 23,
 
-            ToolbarPrev,
-            ToolbarNext,
+            ToolbarPrev = 24,
+            ToolbarNext = 25,
 
-            MapToggleMarker,
-            MapMove,
-            MapCenterPlayer,
-            MapZoomIn,
-            MapZoomOut,
+            MapToggleMarker = 26,
+            MapMove = 27,
+            MapCenterPlayer = 28,
+            MapZoomIn = 29,
+            MapZoomOut = 30,
 
-            MapSwitch,
+            MapSwitch = 31,
 
-            SecretLicenceBypass
+            SecretLicenceBypass = 32,
         }
 
         public const int defaultRepeatThreshold = 35;
         public const int defaultRepeatFrames = 6;
 
-        public enum AnalogType
-        { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
+        public enum AnalogType : byte
+        {
+            Empty = 0,
+            PadLeft = 1,
+            PadRight = 2,
+            VirtLeft = 3,
+            VirtRight = 4,
+            FromKeys = 5,
+        }
 
-        public enum MouseAction
-        { LeftButton, LeftButtonVisOnly, MiddleButton, MiddleButtonVisOnly, RightButton, RightButtonVisOnly, ScrollUp, ScrollDown }
+        public enum MouseAction : byte
+        {
+            LeftButton = 0,
+            LeftButtonVisOnly = 1,
+            MiddleButton = 2,
+            MiddleButtonVisOnly = 3,
+            RightButton = 4,
+            RightButtonVisOnly = 5,
+            ScrollUp = 6,
+            ScrollDown = 7,
+        }
 
         protected static readonly Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 

@@ -8,8 +8,18 @@ namespace SonOfRobin
 {
     public class FieldTip
     {
-        public enum Alignment
-        { Center, TopOut, TopIn, BottomOut, BottomIn, LeftIn, RightIn, LeftOut, RightOut };
+        public enum Alignment : byte
+        {
+            Center = 0,
+            TopOut = 1,
+            TopIn = 2,
+            BottomOut = 3,
+            BottomIn = 4,
+            LeftIn = 5,
+            RightIn = 6,
+            LeftOut = 7,
+            RightOut = 8,
+        };
 
         private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
         private const int maxInactiveDuration = 10;

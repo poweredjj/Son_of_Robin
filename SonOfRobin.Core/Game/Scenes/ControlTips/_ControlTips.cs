@@ -23,9 +23,25 @@ namespace SonOfRobin
             }
         }
 
-        public enum TipsLayout
+        public enum TipsLayout : byte
         {
-            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, WorldBuild, WorldSpectator, QuitLoading
+            Uninitialized = 0,
+            Empty = 1,
+            Menu = 2,
+            MenuWithoutClosing = 3,
+            Map = 4,
+            InventorySelect = 5,
+            InventoryDrag = 6,
+            PieceContext = 7,
+            TextWindowOk = 8,
+            TextWindowCancel = 9,
+            TextWindowOkCancel = 10,
+            WorldMain = 11,
+            WorldShoot = 12,
+            WorldSleep = 13,
+            WorldBuild = 14,
+            WorldSpectator = 15,
+            QuitLoading = 16,
         }
 
         public const int tipMargin = 12;

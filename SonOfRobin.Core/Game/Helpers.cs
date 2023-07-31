@@ -15,11 +15,19 @@ namespace SonOfRobin
         public const double Rad2Deg = 180.0 / Math.PI;
         public const double Deg2Rad = Math.PI / 180.0;
 
-        public enum AlignX
-        { Left, Center, Right };
+        public enum AlignX : byte
+        {
+            Left = 0,
+            Center = 1,
+            Right = 2,
+        };
 
-        public enum AlignY
-        { Top, Center, Bottom };
+        public enum AlignY : byte
+        {
+            Top = 0,
+            Center = 1,
+            Bottom = 2,
+        };
 
         private static int hashCounter = 0;
 

@@ -8,11 +8,11 @@ namespace SonOfRobin
 {
     public class Map : Scene
     {
-        public enum MapMode
+        public enum MapMode : byte
         {
-            Mini,
-            Full,
-            Off
+            Mini = 0,
+            Full = 1,
+            Off = 2,
         }
 
         private readonly World world;

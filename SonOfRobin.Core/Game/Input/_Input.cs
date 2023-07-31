@@ -5,8 +5,12 @@ namespace SonOfRobin
 {
     public class Input
     {
-        public enum ControlType
-        { Gamepad, KeyboardAndMouse, Touch }
+        public enum ControlType : byte
+        {
+            Gamepad = 0,
+            KeyboardAndMouse = 1,
+            Touch = 2,
+        }
 
         private static bool localInputActive = true;
         private static bool globalInputActive = true;

@@ -7,8 +7,14 @@ namespace SonOfRobin
 {
     public class Projectile : BoardPiece
     {
-        public enum TargetCategory
-        { Wood, Stone, Metal, SmallPlant, Animal }
+        public enum TargetCategory : byte
+        {
+            Wood = 0,
+            Stone = 1,
+            Metal = 2,
+            SmallPlant = 3,
+            Animal = 4,
+        }
 
         public readonly int baseHitPower;
         private int realHitPower;
