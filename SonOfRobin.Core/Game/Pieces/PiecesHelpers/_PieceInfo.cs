@@ -145,13 +145,11 @@ namespace SonOfRobin
                 }
 
                 this.shootsProjectile = false;
-                this.toolRange = 0;
                 if (this.type == typeof(Tool))
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
                     this.strengthMultiplierByCategory = tool.multiplierByCategory;
-                    this.toolRange = tool.range;
                 }
 
                 if (this.type == typeof(Shelter))
@@ -200,6 +198,7 @@ namespace SonOfRobin
                 this.plantDropSeedChance = 0;
                 this.toolIndestructible = false;
                 this.toolHitCooldown = 30;
+                this.toolRange = 0;
                 this.canShrink = false;
                 this.canBePickedUp = false;
                 this.stackSize = 1;
@@ -1845,6 +1844,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.toolRange = 10;
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
@@ -1854,6 +1854,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.toolRange = 23;
                         break;
 
                     case PieceTemplate.Name.ShovelStone:

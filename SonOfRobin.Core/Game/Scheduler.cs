@@ -581,7 +581,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            int inflateVal = Math.Max(activeTool.range, 3);
+                            int inflateVal = Math.Max(activeTool.pieceInfo.toolRange, 3);
                             Rectangle focusRect = player.GetFocusRect(inflateX: inflateVal, inflateY: inflateVal);
 
                             var targets = world.Grid
@@ -589,7 +589,7 @@ namespace SonOfRobin
                                 .Select(s => s.boardPiece)
                                 .Where(piece => piece.pieceInfo.Yield != null && piece.alive && piece != player);
 
-                            if (activeTool.range == 0)
+                            if (activeTool.pieceInfo.toolRange == 0)
                             {
                                 var animals = targets.Where(piece => piece.GetType() == typeof(Animal));
                                 if (animals.Any()) targets = animals;
