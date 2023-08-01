@@ -39,7 +39,7 @@ namespace SonOfRobin
             if (!Preferences.highQualityWater) return;
 
             bool waterFound = false;
-            foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, padding: 0))
+            foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
             {
                 if (cell.HasWater)
                 {

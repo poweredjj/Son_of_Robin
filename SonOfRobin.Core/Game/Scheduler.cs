@@ -585,7 +585,7 @@ namespace SonOfRobin
                             Rectangle focusRect = player.GetFocusRect(inflateX: inflateVal, inflateY: inflateVal);
 
                             var targets = world.Grid
-                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
+                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
                                 .Select(s => s.boardPiece)
                                 .Where(piece => piece.pieceInfo.Yield != null && piece.alive && piece != player);
 

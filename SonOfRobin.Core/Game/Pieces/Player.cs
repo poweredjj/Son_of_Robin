@@ -265,7 +265,7 @@ namespace SonOfRobin
                 try
                 {
                     return world.Grid
-                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
+                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
                         .Select(s => s.boardPiece)
                         .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && !piece.IsBurning && piece != this)
                         .OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position))
@@ -289,7 +289,7 @@ namespace SonOfRobin
                 try
                 {
                     return world.Grid
-                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, padding: 1)
+                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
                         .Select(s => s.boardPiece)
                         .Where(piece => piece.pieceInfo.canBePickedUp && !piece.IsBurning && (piece.GetType() != typeof(Animal) || !piece.alive))
                         .OrderBy(piece => Vector2.Distance(this.sprite.position, piece.sprite.position))

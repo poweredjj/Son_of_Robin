@@ -405,7 +405,7 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
-                cellsToDraw = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, padding: 0);
+                cellsToDraw = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, addPadding: false);
                 if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer);
 
                 foreach (Cell cell in cellsToDraw)
@@ -499,7 +499,7 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
             else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
 
-            var spritesBag = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, padding: 0);
+            var spritesBag = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(UpgradeBench), typeof(Fireplace) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
