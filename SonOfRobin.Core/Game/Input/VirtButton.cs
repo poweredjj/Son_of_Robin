@@ -97,8 +97,8 @@ namespace SonOfRobin
             this.bgColorReleased = bgColorReleased;
             this.textColor = textColor;
 
-            this.textureReleased = TextureBank.GetTexture("virtual_button");
-            this.texturePressed = TextureBank.GetTexture("virtual_button_pressed");
+            this.textureReleased = TextureBank.GetTexture(TextureBank.TextureName.VirtButtonBGReleased);
+            this.texturePressed = TextureBank.GetTexture(TextureBank.TextureName.VirtButtonBGPressed);
 
             this.hidden = hidden;
 

@@ -27,7 +27,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.5f;
-        public static readonly DateTime lastChanged = new(2023, 07, 31);
+        public static readonly DateTime lastChanged = new(2023, 08, 01);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -115,7 +115,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow
@@ -239,7 +239,7 @@ namespace SonOfRobin
 
         public static void LoadInitialTextures()
         {
-            lightSphere = TextureBank.GetTexture("light_white");
+            lightSphere = TextureBank.GetTexture(TextureBank.TextureName.LightSphereWhite);
             tempShadowMaskList = new List<RenderTarget2D> { };
         }
 

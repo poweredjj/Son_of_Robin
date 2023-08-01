@@ -29,7 +29,7 @@ namespace SonOfRobin
         {
             this.TurnOff(force: true);
 
-            this.loadingWheel = TextureBank.GetTexture("loading_wheel");
+            this.loadingWheel = TextureBank.GetTexture(TextureBank.TextureName.LoadingWheel);
             this.loadingWheelRotation = 0;
         }
 

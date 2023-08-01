@@ -170,7 +170,7 @@ namespace SonOfRobin
                     int rectOffset = (int)(rectSize * 0.2f);
 
                     Rectangle newRect = new Rectangle(x: outerEntryRect.X - rectOffset, y: outerEntryRect.Y - rectOffset, width: (int)(outerEntryRect.Height * 0.6f), height: (int)(outerEntryRect.Height * 0.6f));
-                    Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
+                    Texture2D newIconTexture = TextureBank.GetTexture(TextureBank.TextureName.New);
 
                     Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * this.menu.viewParams.Opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
                 }
@@ -205,12 +205,12 @@ namespace SonOfRobin
             var durabilityTypeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(pieceInfo.type))
             {
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart));
 
                 if (pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
-                    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
+                    extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleInfinity));
                 }
                 else extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
             }
@@ -218,37 +218,37 @@ namespace SonOfRobin
             if (pieceInfo.toolRange > 0)
             {
                 extInfoTextList.Add($"| {pieceInfo.toolRange}");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/area"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArea));
             }
 
             if (pieceInfo.cookerFoodMassMultiplier > 0)
             {
                 extInfoTextList.Add($"| x{pieceInfo.cookerFoodMassMultiplier}");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleBurger));
             }
 
             if (pieceInfo.fertileGroundSoilWealthMultiplier > 0)
             {
                 extInfoTextList.Add($"| x{pieceInfo.fertileGroundSoilWealthMultiplier}");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sapling"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSapling));
             }
 
             int fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
             if (world.Player.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigue *= Player.heatFatigueMultiplier; // applied in Player.Fatigue, must be taken into account
 
             extInfoTextList.Add($"| {fatigue}%");
-            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));
+            extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
 
             TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(craftStats: world.craftStats, player: world.Player));
             bool endsAtNight = duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night);
             string durationString = string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
             if (endsAtNight) durationString = $"{durationString} | |";
             extInfoTextList.Add(durationString);
-            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/hourglass"));
+            extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass));
             if (endsAtNight)
             {
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/arrow_right"));
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/moon"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
             }
 
             entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));

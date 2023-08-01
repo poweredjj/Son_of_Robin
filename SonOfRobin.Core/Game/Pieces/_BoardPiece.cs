@@ -72,12 +72,12 @@ namespace SonOfRobin
                 Category.Stone => AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall3].texture,
                 Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
                 Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
-                Category.Flesh => AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture,
+                Category.Flesh => TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal),
                 Category.Leather => AnimData.framesForPkgs[AnimData.PkgName.Leather].texture,
                 Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
                 Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
                 _ => AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture,
-            };
+            }; ;
         }
 
         protected const float passiveMovementMultiplier = 100f;

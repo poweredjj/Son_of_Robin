@@ -107,7 +107,7 @@ namespace SonOfRobin
                             }, storeForLaterUse: true),
 
                             new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"| Testers |\n\nFaye\nGlonfindel\nHellwoman\nKolowskyyy\nRetro Marek\nShaobell" },
+                            { "text", $"| Testers |\n\nFaye\nHellwoman\nGlonfindel\nRetro Marek" },
                             { "imageList", new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Star].texture, AnimData.framesForPkgs[AnimData.PkgName.Star].texture } },
                             { "bgColor", new List<Byte> { 85, 189, 113 } }
                             }, storeForLaterUse: true)
@@ -486,13 +486,13 @@ namespace SonOfRobin
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
 
                             textLines.Add($"| Speed: {Math.Round(player.speed)}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture);
+                            imageList.Add(TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal));
 
                             textLines.Add($"| HP: {Math.Round(player.HitPoints)} / {Math.Round(player.maxHitPoints)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
                             textLines.Add($"| Fatigue: {Math.Round(player.Fatigue)} / {Math.Round(player.maxFatigue)}");
-                            imageList.Add(TextureBank.GetTexture("bed"));
+                            imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Bed));
 
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);

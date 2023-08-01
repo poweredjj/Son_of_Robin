@@ -368,18 +368,18 @@ namespace SonOfRobin
             {
                 float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 1);
                 extInfoTextList.Add($"| +{fedPercent}%");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleBurger));
             }
 
             var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(selectedPiece.GetType()))
             {
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart));
 
                 if (selectedPiece.pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
-                    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
+                    extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleInfinity));
                 }
                 else extInfoTextList.Add($"| {Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}");
             }
@@ -387,19 +387,19 @@ namespace SonOfRobin
             if (selectedPiece.GetType() == typeof(Tool) && !((Tool)selectedPiece).shootsProjectile)
             {
                 extInfoTextList.Add($"| {Math.Round(60f / (float)pieceInfo.toolHitCooldown, 1)}/s");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/speed"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSpeed));
             }
 
             if (pieceInfo.toolRange > 0)
             {
                 extInfoTextList.Add($"| {pieceInfo.toolRange}");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/area"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArea));
             }
 
             if (selectedPiece.StackSize > 1 && !slot.locked)
             {
                 extInfoTextList.Add($"| {selectedPiece.StackSize}");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
+                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleStack));
             }
 
             if (extInfoTextList.Any())
@@ -1292,7 +1292,7 @@ namespace SonOfRobin
         {
             if (this.CursorX == -1 || this.CursorY == -1 || !this.inputActive || (this.draggedPieces.Count == 0 && Input.currentControlType == Input.ControlType.Touch)) return;
 
-            Texture2D cursorTexture = TextureBank.GetTexture("cursor");
+            Texture2D cursorTexture = TextureBank.GetTexture(TextureBank.TextureName.Cursor);
             int tileSize = this.TileSize;
             Vector2 slotPos = this.GetSlotPos(posX: this.CursorX, posY: this.CursorY, tileSize: this.TileSize, margin: this.Margin);
 

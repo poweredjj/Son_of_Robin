@@ -120,8 +120,6 @@ namespace SonOfRobin
             AlchemyLabStandard = 84,
             AlchemyLabAdvanced = 85,
 
-            UpgradeBench = 88,
-
             Furnace = 89,
             Anvil = 90,
             HotPlate = 91,
@@ -272,8 +270,8 @@ namespace SonOfRobin
             Dungarees = 235,
 
             LanternFrame = 236,
-            Lantern = 237,
             Candle = 238,
+            Lantern = 237,
 
             SmallTorch = 239,
             BigTorch = 240,
@@ -312,11 +310,7 @@ namespace SonOfRobin
             HumanSkeleton = 266,
             Hole = 267,
 
-            NewIcon = 269,
-            MapEdges = 270,
-            SmallWhiteCircle = 271,
             Explosion = 272,
-            AnimalIcon = 273,
             SkullAndBones = 274,
             MusicNoteSmall = 275,
             MusicNoteBig = 276,
@@ -388,6 +382,11 @@ namespace SonOfRobin
             CrabRed = 167,
             CrabYellow = 168,
             Bed = 278,
+            AnimalIcon = 273,
+            NewIcon = 269,
+            MapEdges = 270,
+            UpgradeBench = 88,
+            SmallWhiteCircle = 271,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -682,7 +681,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
-            AddFrameList(animPackage: PkgName.MapEdges, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment_edges", layer: 0, scale: 0.03f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.BackpackMediumOutline, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium_outline", layer: 1, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BackpackSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BackpackMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
@@ -701,7 +699,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Empty, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
             AddFrameList(animPackage: PkgName.Star, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
-            AddFrameList(animPackage: PkgName.AnimalIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
             AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
             AddFrameList(animPackage: PkgName.ScytheIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));
@@ -758,8 +755,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.WhiteSpotLayerZero, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.WhiteSpotLayerOne, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.WhiteSpotLayerTwo, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
-            AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.SmallWhiteCircle, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "small_white_circle", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Rope, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.MapMarker, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));

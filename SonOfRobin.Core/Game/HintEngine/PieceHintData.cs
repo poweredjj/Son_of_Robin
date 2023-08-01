@@ -291,7 +291,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.HarvestingWorkshop, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMeatHarvesting},
                     message: "| Now I can harvest meat from | animals!",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture},
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal) },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.HarvestMeat}),
 
                 new PieceHint(

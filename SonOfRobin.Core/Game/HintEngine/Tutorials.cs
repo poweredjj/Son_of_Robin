@@ -229,7 +229,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.GeneralCraftLevels, name: "general crafting levels", title: "General crafting skill levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | crafting skills will slowly get better.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your general crafting level will make crafting:\n- | faster\n- | less tiresome\n - | make stronger items sometimes", imageList: new List<Texture2D>{ TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/sleep"), TextureBank.GetTexture("simple_icons/arrow_up") }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your general crafting level will make crafting:\n- | faster\n- | less tiresome\n - | make stronger items sometimes", imageList: new List<Texture2D>{ TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass), TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp) }, boxType: messageTextType),
                  });
 
             new Tutorial(type: Type.CraftRecipeLevels, name: "craft recipe levels", title: "Craft recipe skill levels.",
@@ -242,14 +242,14 @@ namespace SonOfRobin
             new Tutorial(type: Type.CookLevels, name: "cooking levels", title: "Cooking skill levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | cooking skills get better over time.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot) }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your cooking level will make your | meals:\n- | prepared faster\n- | have more nutritious value\n- | have beneficial effects more often", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Meal), TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/burger"), TextureBank.GetTexture("simple_icons/arrow_up") }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your cooking level will make your | meals:\n- | prepared faster\n- | have more nutritious value\n- | have beneficial effects more often", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Meal), TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass), TextureBank.GetTexture(TextureBank.TextureName.SimpleBurger), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp) }, boxType: messageTextType),
                     new HintMessage(text: "Try using | | | unique ingredients, to level up faster.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetTexture(PieceTemplate.Name.Carrot), PieceInfo.GetTexture(PieceTemplate.Name.Acorn) }, boxType: messageTextType),
                 });
 
             new Tutorial(type: Type.BrewLevels, name: "brewing levels", title: "Brewing skill levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | brewing skills get better over time.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture, TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/hourglass") }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass) }, boxType: messageTextType),
                     new HintMessage(text: "Try using unique | | ingredients\nand | | boosters, to level up faster.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetTexture(PieceTemplate.Name.HerbsCyan), PieceInfo.GetTexture(PieceTemplate.Name.HerbsGreen) }, boxType: messageTextType),
                 });
 

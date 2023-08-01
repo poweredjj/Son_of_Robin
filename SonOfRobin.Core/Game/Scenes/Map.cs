@@ -466,6 +466,10 @@ namespace SonOfRobin
 
             int totalSteps = this.world.Player.LastSteps.Count;
             int stepNo = 0;
+
+            Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
+            Rectangle stepTextureRect = new Rectangle(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
+
             foreach (Vector2 stepPos in this.world.Player.LastSteps)
             {
                 if (this.camera.viewRect.Contains(stepPos))
@@ -483,7 +487,7 @@ namespace SonOfRobin
                     Rectangle blackRect = new Rectangle(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
                     blackRect.Inflate(blackRect.Width * spriteSize, blackRect.Height * spriteSize);
 
-                    AnimData.framesForPkgs[AnimData.PkgName.SmallWhiteCircle].Draw(blackRect, color: stepDotColor, opacity: opacity);
+                    SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
                 }
                 stepNo++;
             }
@@ -570,7 +574,7 @@ namespace SonOfRobin
 
             // drawing map edges over everything
 
-            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(TextureBank.GetTexture(TextureBank.TextureName.MapEdges), extendedMapRect, Color.White);
 
             // drawing crosshair
 

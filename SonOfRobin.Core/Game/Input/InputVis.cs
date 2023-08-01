@@ -153,28 +153,28 @@ namespace SonOfRobin
             switch (mouseAction)
             {
                 case InputMapper.MouseAction.LeftButton:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Left_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonLeft);
 
                 case InputMapper.MouseAction.LeftButtonVisOnly:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Left_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonLeft);
 
                 case InputMapper.MouseAction.MiddleButton:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Middle_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonMiddle);
 
                 case InputMapper.MouseAction.MiddleButtonVisOnly:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Middle_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonMiddle);
 
                 case InputMapper.MouseAction.RightButton:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Right_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonRight);
 
                 case InputMapper.MouseAction.RightButtonVisOnly:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Right_Key_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseButtonRight);
 
                 case InputMapper.MouseAction.ScrollUp:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Scroll_Up_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseScrollUp);
 
                 case InputMapper.MouseAction.ScrollDown:
-                    return TextureBank.GetTexture("input/Mouse/Mouse_Scroll_Down_Light");
+                    return TextureBank.GetTexture(TextureBank.TextureName.InputMouseScrollDown);
 
                 default:
                     throw new ArgumentException($"Unsupported mouseAction - '{mouseAction}'.");
