@@ -10,6 +10,8 @@ namespace SonOfRobin
         {
             // predefined names for easier texture loading
 
+            Empty = 42,
+
             LoadingWheel = 12,
             LightSphereWhite = 13,
             Cursor = 21,
@@ -56,6 +58,7 @@ namespace SonOfRobin
             VirtButtonLighter = 38,
             VirtButtonPlant = 39,
             VirtButtonDropFruit = 40,
+            VirtButtonOpenContainer = 41,
         }
 
         private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
@@ -106,6 +109,7 @@ namespace SonOfRobin
             { TextureName.VirtButtonLighter, "input/VirtButton/lighter" },
             { TextureName.VirtButtonPlant, "input/VirtButton/plant" },
             { TextureName.VirtButtonDropFruit, "input/VirtButton/drop_fruit" },
+            { TextureName.VirtButtonOpenContainer, "input/VirtButton/open_container" },
         };
 
         private const string gfxFolderName = "gfx";

@@ -4065,6 +4065,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/map.png
 
+#begin gfx/input/VirtButton/open_container.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/open_container.png
+
 #begin gfx/input/VirtButton/pause_menu.png
 /importer:TextureImporter
 /processor:TextureProcessor

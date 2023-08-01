@@ -105,6 +105,7 @@ namespace SonOfRobin
             public readonly float projectileHitMultiplier;
             public readonly bool projectileCanBeStuck;
             public readonly bool projectileCanExplode;
+            public readonly TextureBank.TextureName interactVirtButtonName;
 
 
             public bool CanHurtAnimals
@@ -231,6 +232,7 @@ namespace SonOfRobin
                 this.projectileHitMultiplier = 0f;
                 this.projectileCanBeStuck = false;
                 this.projectileCanExplode = false;
+                this.interactVirtButtonName = TextureBank.TextureName.Empty;
 
                 // setting values for names
 
@@ -446,6 +448,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
@@ -465,6 +468,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
@@ -484,6 +488,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
                         this.plantDropSeedChance = 8;
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksPlantGrowth = true;
                         this.placeMinDistance = 20;
                         this.placeMaxDistance = 200;
@@ -578,6 +583,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.plantDropSeedChance = 20;
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
@@ -604,6 +610,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
@@ -630,6 +637,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
@@ -681,6 +689,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         this.boardTask = Scheduler.TaskName.DropFruit;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
@@ -1100,6 +1109,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1110,6 +1120,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1119,6 +1130,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1128,6 +1140,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1137,6 +1150,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
@@ -1156,6 +1170,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;

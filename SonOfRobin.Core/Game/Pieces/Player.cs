@@ -726,16 +726,11 @@ namespace SonOfRobin
             {
                 if (this.world.inputActive)
                 {
-                    var textureNameDict = new Dictionary<Scheduler.TaskName, TextureBank.TextureName> {
-                        { Scheduler.TaskName.DropFruit, TextureBank.TextureName.VirtButtonDropFruit },
-                    };
-
                     Texture2D interactTexture = InputMapper.GetTexture(InputMapper.Action.WorldInteract);
 
-                    if (textureNameDict.ContainsKey(pieceToInteract.pieceInfo.boardTask))
+                    if (pieceToInteract.pieceInfo.interactVirtButtonName != TextureBank.TextureName.Empty)
                     {
-                        interactTexture = TextureBank.GetTexture(textureNameDict[pieceToInteract.pieceInfo.boardTask]);
-
+                        interactTexture = TextureBank.GetTexture(pieceToInteract.pieceInfo.interactVirtButtonName);
                         VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.Interact, texture: interactTexture);
                     }
 
