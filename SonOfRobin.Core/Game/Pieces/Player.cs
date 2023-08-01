@@ -964,6 +964,8 @@ namespace SonOfRobin
             this.CheckGround();
             this.CheckLowHP();
 
+            VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonBow));
+
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
             if (this.shootingPower < maxShootingPower) new RumbleEvent(force: (float)this.shootingPower / maxShootingPower * 0.1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
 
@@ -1281,6 +1283,8 @@ namespace SonOfRobin
                 Tool activeTool = (Tool)activeToolbarPiece;
                 if (activeTool.pieceInfo.toolShootsProjectile && !isInShootingMode)
                 {
+                    VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonBow));
+
                     if (highlightOnly && activeTool.CheckForAmmo(removePiece: false) != null)
                     {
                         VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);

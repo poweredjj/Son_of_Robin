@@ -70,6 +70,8 @@ namespace SonOfRobin
 
         private readonly string label;
         private readonly Texture2D labelTexture;
+        private Texture2D temporaryTexture;
+        private int temporaryTextureFramesLeft;
 
         private readonly Color bgColorPressed;
         private readonly Color bgColorReleased;
@@ -210,6 +212,12 @@ namespace SonOfRobin
             buttonsByName[buttonName].highlighter.SetOnForNextRead();
         }
 
+        public static void ButtonChangeTextureOnNextFrame(VButName buttonName, Texture2D texture)
+        {
+            if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return;
+            buttonsByName[buttonName].AssingTemporaryTexture(texture: texture);
+        }
+
         public static void UpdateAll()
         {
             foreach (VirtButton button in buttonsByName.Values)
@@ -221,6 +229,12 @@ namespace SonOfRobin
         public static void RemoveAll()
         {
             buttonsByName.Clear();
+        }
+
+        public void AssingTemporaryTexture(Texture2D texture, int duration = 1)
+        {
+            this.temporaryTexture = texture;
+            this.temporaryTextureFramesLeft = duration;
         }
 
         private bool UpdateFromCoupledVar()
@@ -340,7 +354,17 @@ namespace SonOfRobin
             }
             else // labelTexture, instead of label text
             {
-                Helpers.DrawTextureInsideRect(texture: this.labelTexture, rectangle: wholeLabelRect, color: Color.White * opacityMultiplier);
+                Texture2D textureToDraw = this.labelTexture;
+
+                if (this.temporaryTexture != null)
+                {
+                    textureToDraw = this.temporaryTexture;
+
+                    this.temporaryTextureFramesLeft--;
+                    if (this.temporaryTextureFramesLeft <= 0) this.temporaryTexture = null;
+                }
+
+                Helpers.DrawTextureInsideRect(texture: textureToDraw, rectangle: wholeLabelRect, color: Color.White * opacityMultiplier);
             }
         }
     }

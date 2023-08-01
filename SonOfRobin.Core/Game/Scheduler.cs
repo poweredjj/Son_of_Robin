@@ -620,6 +620,8 @@ namespace SonOfRobin
                             bool highlightOnly = false;
                             if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
 
+                            if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonEat));
+
                             if (executeData.ContainsKey("buttonHeld"))
                             {
                                 bool buttonHeld = (bool)executeData["buttonHeld"];
@@ -685,6 +687,8 @@ namespace SonOfRobin
                             StorageSlot slot = (StorageSlot)executeData["slot"];
                             bool highlightOnly = false;
                             if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
+
+                            if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonDrink));
 
                             if (executeData.ContainsKey("buttonHeld"))
                             {

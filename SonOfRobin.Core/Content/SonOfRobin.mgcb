@@ -3909,6 +3909,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_Y.png
 
+#begin gfx/input/VirtButton/bow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/bow.png
+
 #begin gfx/input/VirtButton/check_mark.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3956,6 +3968,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/drag_single.png
+
+#begin gfx/input/VirtButton/drink.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/drink.png
+
+#begin gfx/input/VirtButton/eat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/eat.png
 
 #begin gfx/input/VirtButton/go_to_player.png
 /importer:TextureImporter
