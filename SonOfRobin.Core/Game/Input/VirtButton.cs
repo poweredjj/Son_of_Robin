@@ -70,8 +70,8 @@ namespace SonOfRobin
 
         private readonly string label;
         private readonly Texture2D labelTexture;
-        private Texture2D temporaryTexture;
-        private int temporaryTextureFramesLeft;
+        private Texture2D temporaryLabelTexture;
+        private int temporaryLabelTextureFramesLeft;
 
         private readonly Color bgColorPressed;
         private readonly Color bgColorReleased;
@@ -215,7 +215,7 @@ namespace SonOfRobin
         public static void ButtonChangeTextureOnNextFrame(VButName buttonName, Texture2D texture)
         {
             if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return;
-            buttonsByName[buttonName].AssingTemporaryTexture(texture: texture);
+            buttonsByName[buttonName].AssingTemporaryLabelTexture(texture: texture);
         }
 
         public static void UpdateAll()
@@ -231,10 +231,10 @@ namespace SonOfRobin
             buttonsByName.Clear();
         }
 
-        public void AssingTemporaryTexture(Texture2D texture, int duration = 1)
+        public void AssingTemporaryLabelTexture(Texture2D texture, int duration = 1)
         {
-            this.temporaryTexture = texture;
-            this.temporaryTextureFramesLeft = duration;
+            this.temporaryLabelTexture = texture;
+            this.temporaryLabelTextureFramesLeft = duration;
         }
 
         private bool UpdateFromCoupledVar()
@@ -356,12 +356,12 @@ namespace SonOfRobin
             {
                 Texture2D textureToDraw = this.labelTexture;
 
-                if (this.temporaryTexture != null)
+                if (this.temporaryLabelTexture != null)
                 {
-                    textureToDraw = this.temporaryTexture;
+                    textureToDraw = this.temporaryLabelTexture;
 
-                    this.temporaryTextureFramesLeft--;
-                    if (this.temporaryTextureFramesLeft <= 0) this.temporaryTexture = null;
+                    this.temporaryLabelTextureFramesLeft--;
+                    if (this.temporaryLabelTextureFramesLeft <= 0) this.temporaryLabelTexture = null;
                 }
 
                 Helpers.DrawTextureInsideRect(texture: textureToDraw, rectangle: wholeLabelRect, color: Color.White * opacityMultiplier);
