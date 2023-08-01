@@ -1045,15 +1045,15 @@ namespace SonOfRobin
                         var chestContentsYield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 2, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 2, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
                             });
 
                         while (true)
@@ -1086,14 +1086,14 @@ namespace SonOfRobin
                         var chestContentsYield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 4, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: Name.AxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.PickaxeIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.SpearIron, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 4, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
                             });
 
                         while (true)
@@ -2015,216 +2015,172 @@ namespace SonOfRobin
 
                 case Name.KnifeSimple:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 1.0f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
+                              hitPower: 1, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
 
                         return boardPiece;
                     }
 
                 case Name.AxeWood:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 1f }, { BoardPiece.Category.Wood, 5f }, { BoardPiece.Category.Flesh, 3f }, { BoardPiece.Category.Leather, 5f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
+                              hitPower: 1, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
 
                         return boardPiece;
                     }
 
                 case Name.AxeStone:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 2f }, { BoardPiece.Category.Wood, 8f }, { BoardPiece.Category.Flesh, 5f }, { BoardPiece.Category.Leather, 8f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
+                              hitPower: 1, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
 
                         return boardPiece;
                     }
 
                 case Name.AxeIron:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 3f }, { BoardPiece.Category.Wood, 15 }, { BoardPiece.Category.Flesh, 8f }, { BoardPiece.Category.Leather, 15f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
+                              hitPower: 1, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
 
                         return boardPiece;
                     }
 
                 case Name.AxeCrystal:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 6f }, { BoardPiece.Category.Wood, 40 }, { BoardPiece.Category.Flesh, 10f }, { BoardPiece.Category.Leather, 40f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
+                              hitPower: 1, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
 
                         return boardPiece;
                     }
 
                 case Name.ShovelStone:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 1.5f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
+                              hitPower: 3, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
 
                         return boardPiece;
                     }
 
                 case Name.ShovelIron:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 5f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
+                              hitPower: 3, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
 
                         return boardPiece;
                     }
 
                 case Name.ShovelCrystal:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 15f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
+                              hitPower: 3, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
 
                         return boardPiece;
                     }
 
                 case Name.SpearWood:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 7f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
+                              hitPower: 3, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.SpearStone:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 5, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
+                              hitPower: 5, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.SpearIron:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 10, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
+                              hitPower: 10, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.SpearCrystal:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 14f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 10, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
+                              hitPower: 10, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.PickaxeWood:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 5f }, { BoardPiece.Category.Wood, 1f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
+                              hitPower: 1, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
 
                         return boardPiece;
                     }
 
                 case Name.PickaxeStone:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 8f }, { BoardPiece.Category.Wood, 2f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
+                              hitPower: 1, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
 
                         return boardPiece;
                     }
 
                 case Name.PickaxeIron:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
+                              hitPower: 1, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
 
                         return boardPiece;
                     }
 
                 case Name.PickaxeCrystal:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 30f }, { BoardPiece.Category.Wood, 6f }, { BoardPiece.Category.Crystal, 6f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
+                              hitPower: 1, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
 
                         return boardPiece;
                     }
 
                 case Name.ScytheStone:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 4f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.");
+                              hitPower: 1, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.");
 
                         return boardPiece;
                     }
 
                 case Name.ScytheIron:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.");
+                              hitPower: 1, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.");
 
                         return boardPiece;
                     }
 
                 case Name.ScytheCrystal:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 12f } };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.");
+                              hitPower: 1, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.");
 
                         return boardPiece;
                     }
 
                 case Name.BowBasic:
                     {
-                        int hitPower = 3;
-
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
-                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
+                        var compatibleAmmo = new List<Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: hitPower, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
+                              hitPower: 3, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.BowAdvanced:
                     {
-                        int hitPower = 6;
-
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
-                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
+                        var compatibleAmmo = new List<Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: hitPower, multiplierByCategory: multiplierByCategory, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
+                              hitPower: 6, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }

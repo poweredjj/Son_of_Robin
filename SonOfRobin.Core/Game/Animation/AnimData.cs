@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000006f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000007f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();

@@ -9,13 +9,11 @@ namespace SonOfRobin
     {
         public readonly bool shootsProjectile;
         private readonly int hitPower;
-        public readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public int hitCooldown;
 
-
-        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
+        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, int maxHitPoints, string readableName, string description,
             byte animSize = 0, string animName = "default", bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
@@ -23,7 +21,6 @@ namespace SonOfRobin
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
             this.shootsProjectile = shootsProjectile;
-            this.multiplierByCategory = multiplierByCategory;
             this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
         }
 
@@ -85,7 +82,7 @@ namespace SonOfRobin
             bool anyTargetHit = false;
             bool fieldTipShown = false;
 
-            var targetsForCurrentTool = targets.Where(target => this.multiplierByCategory.ContainsKey(target.pieceInfo.category));
+            var targetsForCurrentTool = targets.Where(target => this.pieceInfo.toolMultiplierByCategory.ContainsKey(target.pieceInfo.category));
             var targetsThatCanBeHit = targetsForCurrentTool.Where(target => target.canBeHit).ToList();
             var targetsThatCannotBeHit = targetsForCurrentTool.Where(target => !target.canBeHit).ToList();
 
@@ -120,7 +117,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece currentTarget in targetsThatCanBeHit)
             {
-                float currentMultiplier = this.multiplierByCategory.ContainsKey(currentTarget.pieceInfo.category) ? this.multiplierByCategory[currentTarget.pieceInfo.category] : 0;
+                float currentMultiplier = this.pieceInfo.toolMultiplierByCategory.ContainsKey(currentTarget.pieceInfo.category) ? this.pieceInfo.toolMultiplierByCategory[currentTarget.pieceInfo.category] : 0;
                 if (isVeryTired) currentMultiplier /= 2;
                 if (currentMultiplier == 0) continue;
 

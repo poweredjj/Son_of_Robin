@@ -33,7 +33,6 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly float massTakenMultiplier;
             public readonly float maxHitPoints;
-            public readonly int toolRange;
             public readonly float startHitPoints;
             public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
@@ -47,7 +46,6 @@ namespace SonOfRobin
             public readonly int animSize;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
-            public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
             public readonly float cookerFoodMassMultiplier;
 
             // "template" data not present in BoardPiece (set directly in PieceInfo)
@@ -64,8 +62,6 @@ namespace SonOfRobin
             public readonly Dictionary<Terrain.Name, byte> plantBestEnvironment;
             public readonly int plantMaxExistingNumber;
             public readonly int plantDropSeedChance;
-            public readonly bool toolIndestructible;
-            public readonly int toolHitCooldown;
             public readonly bool canShrink;
             public readonly bool canBePickedUp;
             public readonly byte stackSize;
@@ -101,15 +97,19 @@ namespace SonOfRobin
             public readonly bool hasFlatShadow;
             public readonly float fertileGroundSoilWealthMultiplier;
             public readonly int inOpacityFadeDuration;
+            public readonly int toolRange;
+            public readonly bool toolIndestructible;
+            public readonly int toolHitCooldown;
+            public Dictionary<BoardPiece.Category, float> toolMultiplierByCategory;
 
             public bool CanHurtAnimals
             {
                 get
                 {
                     return
-                        this.strengthMultiplierByCategory != null &&
-                        this.strengthMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
-                        this.strengthMultiplierByCategory[BoardPiece.Category.Flesh] > 0f;
+                        this.toolMultiplierByCategory != null &&
+                        this.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
+                        this.toolMultiplierByCategory[BoardPiece.Category.Flesh] > 0f;
                 }
             }
 
@@ -149,7 +149,6 @@ namespace SonOfRobin
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
-                    this.strengthMultiplierByCategory = tool.multiplierByCategory;
                 }
 
                 if (this.type == typeof(Shelter))
@@ -162,7 +161,7 @@ namespace SonOfRobin
                 if (this.type == typeof(Projectile))
                 {
                     // "emulating" tool multiplier list
-                    this.strengthMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower / 4 } };
+                    this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower / 4 } };
                 }
 
                 this.isEatenBy = new List<PieceTemplate.Name> { };
@@ -234,6 +233,7 @@ namespace SonOfRobin
                 this.hasFlatShadow = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
                 this.inOpacityFadeDuration = 0;
+                this.toolMultiplierByCategory = null;
 
                 // setting values for names
 
@@ -1719,6 +1719,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.toolHitCooldown = 50;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 1.0f } };
                         break;
 
                     case PieceTemplate.Name.AxeWood:
@@ -1728,6 +1729,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 1f }, { BoardPiece.Category.Wood, 5f }, { BoardPiece.Category.Flesh, 3f }, { BoardPiece.Category.Leather, 5f } };
                         break;
 
                     case PieceTemplate.Name.AxeStone:
@@ -1737,6 +1739,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 2f }, { BoardPiece.Category.Wood, 8f }, { BoardPiece.Category.Flesh, 5f }, { BoardPiece.Category.Leather, 8f } };
                         break;
 
                     case PieceTemplate.Name.AxeIron:
@@ -1746,6 +1749,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 3f }, { BoardPiece.Category.Wood, 15 }, { BoardPiece.Category.Flesh, 8f }, { BoardPiece.Category.Leather, 15f } };
                         break;
 
                     case PieceTemplate.Name.AxeCrystal:
@@ -1755,6 +1759,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 6f }, { BoardPiece.Category.Wood, 40 }, { BoardPiece.Category.Flesh, 10f }, { BoardPiece.Category.Leather, 40f } };
                         break;
 
                     case PieceTemplate.Name.PickaxeWood:
@@ -1764,6 +1769,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 5f }, { BoardPiece.Category.Wood, 1f } };
                         break;
 
                     case PieceTemplate.Name.PickaxeStone:
@@ -1773,6 +1779,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 8f }, { BoardPiece.Category.Wood, 2f } };
                         break;
 
                     case PieceTemplate.Name.PickaxeIron:
@@ -1782,6 +1789,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
                         break;
 
                     case PieceTemplate.Name.PickaxeCrystal:
@@ -1791,6 +1799,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 30f }, { BoardPiece.Category.Wood, 6f }, { BoardPiece.Category.Crystal, 6f } };
                         break;
 
                     case PieceTemplate.Name.SpearWood:
@@ -1800,6 +1809,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 7f } };
                         break;
 
                     case PieceTemplate.Name.SpearStone:
@@ -1809,6 +1819,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
                         break;
 
                     case PieceTemplate.Name.SpearIron:
@@ -1818,6 +1829,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
@@ -1827,6 +1839,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 14f } };
                         break;
 
                     case PieceTemplate.Name.ScytheStone:
@@ -1836,6 +1849,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 35;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 4f } };
                         break;
 
                     case PieceTemplate.Name.ScytheIron:
@@ -1846,6 +1860,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
                         this.toolRange = 10;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
                         break;
 
                     case PieceTemplate.Name.ScytheCrystal:
@@ -1856,6 +1871,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
                         this.toolRange = 23;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 12f } };
                         break;
 
                     case PieceTemplate.Name.ShovelStone:
@@ -1865,6 +1881,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 1.5f } };
                         break;
 
                     case PieceTemplate.Name.ShovelIron:
@@ -1874,6 +1891,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 5f } };
                         break;
 
                     case PieceTemplate.Name.ShovelCrystal:
@@ -1883,6 +1901,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 15f } };
                         break;
 
                     case PieceTemplate.Name.BowBasic:
@@ -1891,6 +1910,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 3 } };
                         break;
 
                     case PieceTemplate.Name.BowAdvanced:
@@ -1899,6 +1919,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 6 } };
                         break;
 
                     case PieceTemplate.Name.ArrowWood:
@@ -2702,7 +2723,7 @@ namespace SonOfRobin
         {
             var entryList = new List<InfoWindow.TextEntry>();
 
-            var multiplierByCategory = info[pieceName].strengthMultiplierByCategory;
+            var multiplierByCategory = info[pieceName].toolMultiplierByCategory;
             if (multiplierByCategory == null) return entryList;
 
             string text = "|     ";
