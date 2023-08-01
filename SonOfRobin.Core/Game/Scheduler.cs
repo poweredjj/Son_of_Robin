@@ -728,6 +728,7 @@ namespace SonOfRobin
 
                             if (highlightOnly)
                             {
+                                VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonLighter));
                                 VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                                 ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                                 return;
@@ -1645,6 +1646,8 @@ namespace SonOfRobin
                             PieceTemplate.Name plantName = seeds.PlantToGrow;
                             bool highlightOnly = (bool)executeData["highlightOnly"];
 
+                            if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonPlant));
+
                             if (!player.CanSeeAnything)
                             {
                                 if (!highlightOnly) new TextWindow(text: $"It is too dark to plant | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
@@ -1668,11 +1671,7 @@ namespace SonOfRobin
 
                             if (highlightOnly)
                             {
-                                var simulatedPlantTemp = PieceTemplate.CreateAndPlaceOnBoard(templateName: seeds.PlantToGrow, world: world, position: player.sprite.position, ignoreCollisions: true);
-                                bool canPlantHere = simulatedPlantTemp.sprite.SetNewPosition(newPos: player.sprite.position + new Vector2(0, -player.sprite.ColRect.Height), ignoreDensity: true);
-                                simulatedPlantTemp.Destroy();
-
-                                if (canPlantHere)
+                                if (Plant.GetFertileGround(world.Player) != null)
                                 {
                                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");

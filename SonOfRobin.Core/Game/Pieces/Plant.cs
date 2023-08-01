@@ -110,7 +110,7 @@ namespace SonOfRobin
             if (occupiedSlots.Count == 0)
             {
                 if (showMessage) MessageLog.AddMessage(msgType: MsgType.User, message: $"There is nothing left to shake off from {this.readableName}.", avoidDuplicates: true);
-                
+
                 return false;
             }
 
@@ -129,11 +129,11 @@ namespace SonOfRobin
             return true;
         }
 
-        public static FertileGround GetFertileGround(BoardPiece plantPiece)
+        public static FertileGround GetFertileGround(BoardPiece pieceToCompare)
         {
-            Vector2 plantPieceCenter = plantPiece.sprite.position;
+            Vector2 plantPieceCenter = pieceToCompare.sprite.position;
 
-            foreach (Sprite sprite in plantPiece.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }))
+            foreach (Sprite sprite in pieceToCompare.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }))
             {
                 if (sprite.boardPiece.GetType() == typeof(FertileGround) && sprite.ColRect.Contains(plantPieceCenter)) return (FertileGround)sprite.boardPiece;
             }

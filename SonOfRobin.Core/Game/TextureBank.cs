@@ -51,8 +51,10 @@ namespace SonOfRobin
             VirtButtonBGPressed = 29,
 
             VirtButtonEat = 35,
-            VirtButtonDrink = 37,
-            VirtButtonBow = 36,
+            VirtButtonDrink = 36,
+            VirtButtonBow = 37,
+            VirtButtonLighter = 38,
+            VirtButtonPlant = 39,
         }
 
         private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
@@ -100,7 +102,8 @@ namespace SonOfRobin
             { TextureName.VirtButtonEat, "input/VirtButton/eat" },
             { TextureName.VirtButtonDrink, "input/VirtButton/drink" },
             { TextureName.VirtButtonBow, "input/VirtButton/bow" },
-
+            { TextureName.VirtButtonLighter, "input/VirtButton/lighter" },
+            { TextureName.VirtButtonPlant, "input/VirtButton/plant" },
         };
 
         private const string gfxFolderName = "gfx";
