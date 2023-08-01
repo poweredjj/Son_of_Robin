@@ -726,11 +726,24 @@ namespace SonOfRobin
             {
                 if (this.world.inputActive)
                 {
+                    var textureNameDict = new Dictionary<Scheduler.TaskName, TextureBank.TextureName> {
+                        { Scheduler.TaskName.DropFruit, TextureBank.TextureName.VirtButtonDropFruit },
+                    };
+
+                    Texture2D interactTexture = InputMapper.GetTexture(InputMapper.Action.WorldInteract);
+
+                    if (textureNameDict.ContainsKey(pieceToInteract.pieceInfo.boardTask))
+                    {
+                        interactTexture = TextureBank.GetTexture(textureNameDict[pieceToInteract.pieceInfo.boardTask]);
+
+                        VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.Interact, texture: interactTexture);
+                    }
+
+                    FieldTip.AddUpdateTip(world: this.world, texture: interactTexture, targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
                     pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green));
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Interact, world: this.world);
                     VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
-                    FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldInteract), targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
                 }
             }
 
