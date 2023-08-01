@@ -55,7 +55,7 @@ namespace SonOfRobin
 
             Sprite playerSprite = this.world.Player.sprite;
             Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimFrame.colWidth * 1.5f, offset.Y * playerSprite.AnimFrame.colHeight * 1.5f);
-            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.pieceInfo.toolMultiplierByCategory[Category.Flesh] + this.world.Player.strength, shootingPower: shootingPower);
+            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: (this.pieceInfo.toolMultiplierByCategory[Category.Flesh] * 3f) + this.world.Player.strength, shootingPower: shootingPower);
         }
 
         public void Use(List<BoardPiece> targets, int shootingPower = 0, bool highlightOnly = false)

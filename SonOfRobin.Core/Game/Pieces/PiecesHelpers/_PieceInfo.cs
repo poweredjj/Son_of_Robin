@@ -1929,7 +1929,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
-                        this.projectileHitMultiplier = 7;
+                        this.projectileHitMultiplier = 2;
                         this.projectileCanBeStuck = true;
                         break;
 
@@ -1939,7 +1939,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
-                        this.projectileHitMultiplier = 10f;
+                        this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
                         break;
 
@@ -1949,7 +1949,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
-                        this.projectileHitMultiplier = 13f;
+                        this.projectileHitMultiplier = 4f;
                         this.projectileCanBeStuck = true;
                         break;
 
@@ -1959,7 +1959,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
-                        this.projectileHitMultiplier = 22f;
+                        this.projectileHitMultiplier = 7f;
                         this.projectileCanBeStuck = true;
                         break;
 
@@ -1969,7 +1969,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 15;
                         this.floatsOnWater = true;
-                        this.projectileHitMultiplier = 10f;
+                        this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
                         this.projectileCanExplode = true;
                         break;
