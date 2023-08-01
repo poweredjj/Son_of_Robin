@@ -199,7 +199,7 @@ namespace SonOfRobin
             ArrowStone = 140,
             ArrowIron = 141,
             ArrowCrystal = 142,
-            ArrowBurning = 143,
+            ArrowExploding = 143,
 
             TentSmall = 154,
             TentMedium = 155,
@@ -2016,7 +2016,7 @@ namespace SonOfRobin
                 case Name.KnifeSimple:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
+                              maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
 
                         return boardPiece;
                     }
@@ -2024,7 +2024,7 @@ namespace SonOfRobin
                 case Name.AxeWood:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
+                              maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
 
                         return boardPiece;
                     }
@@ -2032,7 +2032,7 @@ namespace SonOfRobin
                 case Name.AxeStone:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
+                              maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
 
                         return boardPiece;
                     }
@@ -2040,7 +2040,7 @@ namespace SonOfRobin
                 case Name.AxeIron:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
+                              maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
 
                         return boardPiece;
                     }
@@ -2048,7 +2048,7 @@ namespace SonOfRobin
                 case Name.AxeCrystal:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
+                              maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
 
                         return boardPiece;
                     }
@@ -2056,7 +2056,7 @@ namespace SonOfRobin
                 case Name.ShovelStone:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
+                              maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
 
                         return boardPiece;
                     }
@@ -2064,7 +2064,7 @@ namespace SonOfRobin
                 case Name.ShovelIron:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
+                              maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
 
                         return boardPiece;
                     }
@@ -2072,7 +2072,7 @@ namespace SonOfRobin
                 case Name.ShovelCrystal:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
+                              maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
 
                         return boardPiece;
                     }
@@ -2080,7 +2080,7 @@ namespace SonOfRobin
                 case Name.SpearWood:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
+                              maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
 
                         return boardPiece;
                     }
@@ -2088,7 +2088,7 @@ namespace SonOfRobin
                 case Name.SpearStone:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 5, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
+                              maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
 
                         return boardPiece;
                     }
@@ -2096,7 +2096,7 @@ namespace SonOfRobin
                 case Name.SpearIron:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 10, maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
+                              maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
 
                         return boardPiece;
                     }
@@ -2104,7 +2104,7 @@ namespace SonOfRobin
                 case Name.SpearCrystal:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 10, maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
+                              maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
 
                         return boardPiece;
                     }
@@ -2112,7 +2112,7 @@ namespace SonOfRobin
                 case Name.PickaxeWood:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
+                              maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
 
                         return boardPiece;
                     }
@@ -2120,7 +2120,7 @@ namespace SonOfRobin
                 case Name.PickaxeStone:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
+                              maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
 
                         return boardPiece;
                     }
@@ -2128,7 +2128,7 @@ namespace SonOfRobin
                 case Name.PickaxeIron:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
+                              maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
 
                         return boardPiece;
                     }
@@ -2136,7 +2136,7 @@ namespace SonOfRobin
                 case Name.PickaxeCrystal:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
+                              maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
 
                         return boardPiece;
                     }
@@ -2144,7 +2144,7 @@ namespace SonOfRobin
                 case Name.ScytheStone:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.");
+                              maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.");
 
                         return boardPiece;
                     }
@@ -2152,7 +2152,7 @@ namespace SonOfRobin
                 case Name.ScytheIron:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.");
+                              maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.");
 
                         return boardPiece;
                     }
@@ -2160,62 +2160,58 @@ namespace SonOfRobin
                 case Name.ScytheCrystal:
                     {
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 1, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.");
+                              maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.");
 
                         return boardPiece;
                     }
 
                 case Name.BowBasic:
                     {
-                        var compatibleAmmo = new List<Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 3, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.");
+                              maxHitPoints: 150, readableName: "basic bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.BowAdvanced:
                     {
-                        var compatibleAmmo = new List<Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
-
                         BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: terrainShallowWaterToVolcano,
-                              hitPower: 6, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.");
+                              maxHitPoints: 300, readableName: "advanced bow", description: "Projectile weapon.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowWood:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: terrainCanGoAnywhere, baseHitPower: 8, maxHitPoints: 15, canBeStuck: true, readableName: "wooden arrow", description: "Very weak arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: terrainCanGoAnywhere, maxHitPoints: 15, readableName: "wooden arrow", description: "Very weak arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowStone:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: terrainCanGoAnywhere, baseHitPower: 12, maxHitPoints: 25, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: terrainCanGoAnywhere, maxHitPoints: 25, readableName: "stone arrow", description: "Basic arrow.");
 
                         return boardPiece;
                     }
 
                 case Name.ArrowIron:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: terrainCanGoAnywhere, baseHitPower: 20, maxHitPoints: 40, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: terrainCanGoAnywhere, maxHitPoints: 40, readableName: "iron arrow", description: "Strong arrow.");
 
                         return boardPiece;
                     }
 
-                case Name.ArrowBurning:
+                case Name.ArrowExploding:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: terrainCanGoAnywhere, baseHitPower: 10, maxHitPoints: 1, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowExploding, allowedTerrain: terrainCanGoAnywhere, maxHitPoints: 1, readableName: "exploding arrow", description: "Will start a fire.", lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
 
                         return boardPiece;
                     }
 
                 case Name.ArrowCrystal:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: terrainCanGoAnywhere, baseHitPower: 40, maxHitPoints: 50, canBeStuck: true, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
+                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: terrainCanGoAnywhere, maxHitPoints: 50, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
 
                         return boardPiece;
                     }

@@ -18,6 +18,7 @@ namespace SonOfRobin
             New = 31,
             MapEdges = 32,
             WhiteCircleSmall = 33,
+            Biceps = 34,
 
             SimpleArrowUp = 0,
             SimpleArrowRight = 1,
@@ -60,6 +61,7 @@ namespace SonOfRobin
             { TextureName.New, "new" },
             { TextureName.MapEdges, "parchment_edges" },
             { TextureName.WhiteCircleSmall, "small_white_circle" },
+            { TextureName.Biceps, "biceps" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },

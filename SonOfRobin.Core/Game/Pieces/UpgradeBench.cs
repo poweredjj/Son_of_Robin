@@ -53,7 +53,7 @@ namespace SonOfRobin
             var typeList = new List<System.Type> { typeof(Tool), typeof(Projectile) };
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
-                if (typeList.Contains(info.type) && !info.shootsProjectile) mainNames.Add(info.name);
+                if (typeList.Contains(info.type) && !info.toolShootsProjectile) mainNames.Add(info.name);
             }
         }
 

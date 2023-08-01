@@ -249,7 +249,7 @@ namespace SonOfRobin
                 if (piece.GetType() != typeof(Tool)) return false;
 
                 Tool activeTool = (Tool)piece;
-                if (!activeTool.shootsProjectile) return false;
+                if (!activeTool.pieceInfo.toolShootsProjectile) return false;
 
                 return activeTool.CheckForAmmo(removePiece: false) != null;
             }
@@ -1225,7 +1225,7 @@ namespace SonOfRobin
             if (activeToolbarPiece?.GetType() != typeof(Tool)) return false;
 
             Tool activeTool = (Tool)activeToolbarPiece;
-            if (activeTool.shootsProjectile)
+            if (activeTool.pieceInfo.toolShootsProjectile)
             {
                 if (this.sprite.CanDrownHere)
                 {
@@ -1279,7 +1279,7 @@ namespace SonOfRobin
             if (activeToolbarPiece?.GetType() == typeof(Tool))
             {
                 Tool activeTool = (Tool)activeToolbarPiece;
-                if (activeTool.shootsProjectile && !isInShootingMode)
+                if (activeTool.pieceInfo.toolShootsProjectile && !isInShootingMode)
                 {
                     if (highlightOnly && activeTool.CheckForAmmo(removePiece: false) != null)
                     {

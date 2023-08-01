@@ -124,9 +124,9 @@ namespace SonOfRobin
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronPlate, 2 }}, fatigue: fatigueItemMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelCrystal }, craftCountToUnlock: 2),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowBurning}, craftCountToUnlock: 3),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowExploding}, craftCountToUnlock: 3),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowBurning, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowExploding, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.LanternEmpty, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.IronNail, 25 }, { PieceTemplate.Name.EmptyBottle, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
 

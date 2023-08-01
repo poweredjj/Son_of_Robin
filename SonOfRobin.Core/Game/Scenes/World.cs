@@ -694,7 +694,7 @@ namespace SonOfRobin
 
                             for (int i = 0; i < 50; i++)
                             {
-                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowBurning);
+                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowExploding);
                                 this.Player.ToolStorage.AddPiece(piece);
                             }
 

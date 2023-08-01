@@ -7,21 +7,14 @@ namespace SonOfRobin
 {
     public class Tool : BoardPiece
     {
-        public readonly bool shootsProjectile;
-        private readonly int hitPower;
-        private readonly List<PieceTemplate.Name> compatibleAmmo;
-
         public int hitCooldown;
 
-        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int hitPower, int maxHitPoints, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, List<Buff> buffList = null) :
+        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
+            byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
         {
-            this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
-            this.shootsProjectile = shootsProjectile;
-            this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
         }
 
         public Projectile CheckForAmmo(bool removePiece)
@@ -31,7 +24,7 @@ namespace SonOfRobin
 
             foreach (PieceStorage ammoStorage in ammoStorages)
             {
-                foreach (PieceTemplate.Name projectileName in this.compatibleAmmo)
+                foreach (PieceTemplate.Name projectileName in this.pieceInfo.toolCompatibleAmmo)
                 {
                     BoardPiece projectilePiece = ammoStorage.GetFirstPieceOfName(name: projectileName, removePiece: removePiece);
                     if (projectilePiece != null) return (Projectile)projectilePiece;
@@ -62,7 +55,7 @@ namespace SonOfRobin
 
             Sprite playerSprite = this.world.Player.sprite;
             Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimFrame.colWidth * 1.5f, offset.Y * playerSprite.AnimFrame.colHeight * 1.5f);
-            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.Player.strength, shootingPower: shootingPower);
+            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.pieceInfo.toolMultiplierByCategory[Category.Flesh] + this.world.Player.strength, shootingPower: shootingPower);
         }
 
         public void Use(List<BoardPiece> targets, int shootingPower = 0, bool highlightOnly = false)
@@ -70,7 +63,7 @@ namespace SonOfRobin
             Player player = this.world.Player;
             bool isVeryTired = player.IsVeryTired;
 
-            if (this.shootsProjectile)
+            if (this.pieceInfo.toolShootsProjectile)
             {
                 if (isVeryTired) shootingPower /= 2;
                 this.ShootProjectile(shootingPower);
@@ -182,7 +175,7 @@ namespace SonOfRobin
                 }
                 this.world.HintEngine.Disable(Tutorials.Type.Hit);
 
-                int currentHitPower = (int)Math.Max((this.hitPower + this.world.Player.strength) * currentMultiplier, 1);
+                int currentHitPower = (int)Math.Max(this.world.Player.strength * currentMultiplier, 1);
                 HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
                 anyTargetHit = true;
             } // target iteration end

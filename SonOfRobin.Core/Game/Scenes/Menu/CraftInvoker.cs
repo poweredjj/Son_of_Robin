@@ -256,6 +256,11 @@ namespace SonOfRobin
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: smallScale);
             entryList.AddRange(affinityEntries);
 
+            if (pieceInfo.type == typeof(Projectile))
+            {
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {pieceInfo.projectileHitMultiplier}", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
+            }
+
             if (!canBeCrafted)
             {
                 var missingPiecesDict = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: this.recipe.ingredients);

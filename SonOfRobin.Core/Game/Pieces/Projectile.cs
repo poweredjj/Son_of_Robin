@@ -16,20 +16,14 @@ namespace SonOfRobin
             Animal = 4,
         }
 
-        public readonly int baseHitPower;
         private int realHitPower;
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
-        private readonly bool canBeStuck;
-        private readonly bool isBurning;
 
-        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int baseHitPower, int maxHitPoints, bool canBeStuck, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, bool isBurning = false, LightEngine lightEngine = null) :
+        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
+            byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
         {
-            this.canBeStuck = canBeStuck;
-            this.isBurning = isBurning;
-            this.baseHitPower = baseHitPower;
             this.realHitPower = 0; // calculated each shooting time
             this.shootMode = false;
 
@@ -41,13 +35,13 @@ namespace SonOfRobin
         public override void Destroy()
         {
             if (!this.exists) return;
-            if (this.isBurning) this.Explode();
+            if (this.pieceInfo.projectileCanExplode) this.Explode();
             base.Destroy();
         }
 
         public void GetThrown(Vector2 startPosition, Vector2 movement, float hitPowerMultiplier, int shootingPower)
         {
-            this.realHitPower = (int)(this.baseHitPower * hitPowerMultiplier);
+            this.realHitPower = (int)(this.pieceInfo.projectileHitMultiplier * hitPowerMultiplier);
             this.shootMode = true;
 
             bool shotPossible = this.PlaceOnBoard(randomPlacement: false, position: startPosition, precisePlacement: true, addPlannedDestruction: true);
@@ -66,7 +60,7 @@ namespace SonOfRobin
             float distanceMultiplier = Math.Max(shootingPower / 50f, 0.4f);
             movement *= distanceMultiplier;
             this.AddPassiveMovement(movement: movement);
-            if (this.isBurning)
+            if (this.pieceInfo.projectileCanExplode)
             {
                 this.sprite.AssignNewName("burning");
                 if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
@@ -95,7 +89,7 @@ namespace SonOfRobin
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
                 var collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece);
 
-                var collidingAnimals = collidingPiecesList.Where(piece => piece.GetType() == typeof(Animal)).ToList();
+                var collidingAnimals = collidingPiecesList.Where(piece => piece.GetType() == typeof(Animal) && piece.alive).ToList();
                 BoardPiece closestAnimal = FindClosestPiece(sprite: this.sprite, pieceList: collidingAnimals, offsetX: 0, offsetY: 0);
 
                 if (closestAnimal != null)
@@ -114,7 +108,7 @@ namespace SonOfRobin
                         }
                     }
 
-                    if (!this.isBurning && this.canBeStuck && this.exists)
+                    if (!this.pieceInfo.projectileCanExplode && this.pieceInfo.projectileCanBeStuck && this.exists)
                     {
                         Tracking tracking = new Tracking(world: this.world, targetSprite: animal.sprite, followingSprite: this.sprite, turnOffDelay: this.world.random.Next(200, 2000), bounceWhenRemoved: true);
                         if (tracking.isCorrect)
@@ -139,7 +133,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (this.isBurning)
+                if (this.pieceInfo.projectileCanExplode)
                 {
                     this.Destroy();
                     return false;
@@ -147,7 +141,7 @@ namespace SonOfRobin
 
                 this.shootMode = false;
 
-                if (attachedToTarget || (this.canBeStuck && this.world.random.Next(0, 2) == 1))
+                if (attachedToTarget || (this.pieceInfo.projectileCanBeStuck && this.world.random.Next(0, 2) == 1))
                 {
                     this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;
@@ -168,7 +162,7 @@ namespace SonOfRobin
                 this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
                 this.shootMode = false;
                 this.passiveMovement = Vector2.Zero;
-                if (this.sprite.IsInWater || this.isBurning) this.Destroy();
+                if (this.sprite.IsInWater || this.pieceInfo.projectileCanExplode) this.Destroy();
                 else
                 {
                     this.soundPack.Play(PieceSoundPack.Action.IsDropped);
@@ -203,7 +197,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in piecesToHeat)
             {
-                piece.HeatLevel += this.baseHitPower * 12;
+                piece.HeatLevel = 1;
             }
         }
 

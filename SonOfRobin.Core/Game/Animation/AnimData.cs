@@ -191,7 +191,7 @@ namespace SonOfRobin
             ArrowStone = 141,
             ArrowIron = 142,
             ArrowCrystal = 143,
-            ArrowBurning = 144,
+            ArrowExploding = 144,
 
             CoalDeposit = 145,
             IronDeposit = 146,
@@ -314,7 +314,6 @@ namespace SonOfRobin
             SkullAndBones = 274,
             MusicNoteSmall = 275,
             MusicNoteBig = 276,
-            Biceps = 277,
             Miss = 279,
             Attack = 280,
             MapMarker = 281,
@@ -387,6 +386,7 @@ namespace SonOfRobin
             MapEdges = 270,
             UpgradeBench = 88,
             SmallWhiteCircle = 271,
+            Biceps = 277,
         }
 
         public static void AddFrameList(PkgName animPackage, int animSize, List<AnimFrame> frameList, string animName = "default")
@@ -698,7 +698,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Fog8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Empty, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
             AddFrameList(animPackage: PkgName.Star, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
             AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
             AddFrameList(animPackage: PkgName.ScytheIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));
@@ -1027,8 +1026,8 @@ namespace SonOfRobin
                     ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
                 });
 
-            AddFrameList(animPackage: PkgName.ArrowBurning, animName: "default", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.ArrowBurning, animName: "burning", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.ArrowExploding, animName: "default", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.ArrowExploding, animName: "burning", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
 
             AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
 

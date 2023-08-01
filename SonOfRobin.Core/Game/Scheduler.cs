@@ -575,7 +575,7 @@ namespace SonOfRobin
                             bool highlightOnly = (bool)executeData["highlightOnly"];
                             World world = player.world;
 
-                            if (activeTool.shootsProjectile)
+                            if (activeTool.pieceInfo.toolShootsProjectile)
                             {
                                 activeTool.Use(shootingPower: shootingPower, targets: null);
                                 return;

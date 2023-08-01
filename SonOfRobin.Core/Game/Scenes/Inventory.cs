@@ -384,7 +384,7 @@ namespace SonOfRobin
                 else extInfoTextList.Add($"| {Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}");
             }
 
-            if (selectedPiece.GetType() == typeof(Tool) && !((Tool)selectedPiece).shootsProjectile)
+            if (selectedPiece.pieceInfo.toolShootsProjectile)
             {
                 extInfoTextList.Add($"| {Math.Round(60f / (float)pieceInfo.toolHitCooldown, 1)}/s");
                 extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSpeed));
@@ -412,6 +412,11 @@ namespace SonOfRobin
                 Seed seeds = (Seed)selectedPiece;
 
                 entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: smallScale, color: new Color(208, 255, 199)));
+            }
+
+            if (selectedPiece.GetType() == typeof(Projectile))
+            {
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {selectedPiece.pieceInfo.projectileHitMultiplier}", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);

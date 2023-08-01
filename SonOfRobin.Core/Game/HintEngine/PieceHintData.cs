@@ -420,10 +420,10 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
-                    message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowBurning).readableName} there.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowBurning), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
+                    message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
-                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowBurning }),
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowExploding }),
 
                 new PieceHint(
                     type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.JarTreasure },
