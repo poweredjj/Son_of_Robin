@@ -1189,6 +1189,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Campfire:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseCampfire;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -1197,6 +1198,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1206,6 +1208,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1215,6 +1218,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1224,6 +1228,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1233,6 +1238,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1242,6 +1248,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1251,6 +1258,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.3f;
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonBrew;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1259,6 +1267,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.AlchemyLabAdvanced:
                         this.category = BoardPiece.Category.Wood;
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonBrew;
                         this.fireAffinity = 0.3f;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
@@ -1275,6 +1284,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseAnvil;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -1282,6 +1292,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.HotPlate:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -1289,6 +1300,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CookingPot:
                         this.category = BoardPiece.Category.Metal;
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -1307,6 +1319,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonHarvestMeat;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
@@ -2083,6 +2096,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -2091,6 +2105,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -2099,6 +2114,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.6f;
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         break;
@@ -2535,6 +2551,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonJump;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.hasFlatShadow = true;
@@ -2544,6 +2561,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonJump;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.hasFlatShadow = true;
@@ -2553,6 +2571,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonJump;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.hasFlatShadow = true;
@@ -2562,6 +2581,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
                         this.boardTask = Scheduler.TaskName.MakePlayerJumpOverThisPiece;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonJump;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.hasFlatShadow = true;
