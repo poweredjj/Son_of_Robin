@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.Scene;
 
 namespace SonOfRobin
 {
@@ -1117,7 +1118,7 @@ namespace SonOfRobin
         {
             if (checkIfSleepIsPossible && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
             {
-                new TextWindow(text: sleepEngine.minFatiguePercentPossibleToGet == 0f ? "You are not tired." : "You are not tired enough to sleep here.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true);
+                new TextWindow(text: sleepEngine.minFatiguePercentPossibleToGet == 0f || this.FatiguePercent < 0.05f ? "I'm not tired." : "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
                 return;
             }
 
