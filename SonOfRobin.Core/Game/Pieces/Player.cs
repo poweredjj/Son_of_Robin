@@ -735,7 +735,7 @@ namespace SonOfRobin
                         VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.Interact, texture: interactTexture);
                     }
 
-                    FieldTip.AddUpdateTip(world: this.world, texture: interactTexture, targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
+                    FieldTip.AddUpdateTip(world: this.world, texture: interactTexture, targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.Center);
                     pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green));
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Interact, world: this.world);
                     VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
