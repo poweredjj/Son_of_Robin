@@ -297,7 +297,6 @@ namespace SonOfRobin
                     { "realDateTime", DateTime.Now },
                     { "doNotCreatePiecesList", this.world.doNotCreatePiecesList },
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
-                    { "stateMachineTypesManager", this.world.stateMachineTypesManager.Serialize() },
                     { "craftStats", this.world.craftStats.Serialize() },
                     { "cookStats", this.world.cookStats.Serialize() },
                     { "brewStats", this.world.brewStats.Serialize() },

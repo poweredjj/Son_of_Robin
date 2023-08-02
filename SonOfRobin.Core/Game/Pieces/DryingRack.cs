@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,66 +6,101 @@ namespace SonOfRobin
 {
     public class MeatDryingRack : BoardPiece
     {
+        private class MeatDrying
+        {
+            public readonly BoardPiece meat;
+            private readonly int finishFrame;
+
+            public int FramesLeft { get { return Math.Max(this.finishFrame - this.meat.world.CurrentUpdate, 0); } }
+            public bool HasFinished { get { return this.FramesLeft == 0; } }
+
+            public MeatDrying(BoardPiece meat)
+            {
+                this.meat = meat;
+                this.finishFrame = (int)(meat.Mass * 100) + meat.world.CurrentUpdate;
+            }
+        }
+
         private static readonly List<PieceTemplate.Name> rawMeatNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime };
 
-        private int dryingStartFrame;
-        private int dryingDoneFrame;
-        public bool IsOn { get; private set; }
+        private static readonly Dictionary<int, string> animNameDict = new Dictionary<int, string>
+            {
+                { 0, "off" },
+                { 1, "on_1" },
+                { 2, "on_2" },
+                { 3, "on_3" },
+                { 4, "on_4" },
+            };
 
-        private TimeSpan TimeToFinishDrying
-        { get { return TimeSpan.FromSeconds((int)Math.Ceiling((float)(this.dryingDoneFrame - (float)this.world.CurrentUpdate) / 60f)); } }
+        private Dictionary<int, MeatDrying> dryingForSlotNo;
+
+        private bool isOn;
 
         public MeatDryingRack(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.DryMeat, soundPack: soundPack)
         {
+            this.isOn = false;
             this.PieceStorage = new PieceStorage(width: 2, height: 2, storagePiece: this, storageType: PieceStorage.StorageType.Drying);
+            this.dryingForSlotNo = new Dictionary<int, MeatDrying>();
             this.ConfigureStorage();
         }
 
         private void ConfigureStorage()
         {
+            int slotNo = 0;
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
                 slot.allowedPieceNames = rawMeatNames.ToList();
                 slot.allowedPieceNames.Add(PieceTemplate.Name.MeatDried);
                 slot.stackLimit = 1;
+                this.dryingForSlotNo[slotNo] = null;
+                slotNo++;
             }
         }
 
-        public void StartDrying()
+        public override void SM_DryMeat()
         {
-            // TODO add code
-        }
+            List<BoardPiece> meatList = this.PieceStorage.GetAllPieces();
 
-        public void ShowDryingProgress()
-        {
-            new TextWindow(text: $"Drying will be done in {TimeSpanToString(this.TimeToFinishDrying)}.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
-        }
+            int meatCount = meatList.Count;
+            this.sprite.AssignNewName(newAnimName: animNameDict[meatCount]);
 
-        public void TurnOn()
-        {
-            this.sprite.AssignNewName(newAnimName: "on");
-            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
-            this.soundPack.Play(PieceSoundPack.Action.IsOn);
-            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BloodDripping, duration: 3 * 60);
-        }
+            this.isOn = meatCount > 0;
+            if (!this.isOn) return;
 
-        public void TurnOff()
-        {
-            this.sprite.AssignNewName(newAnimName: "off");
-            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-            this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+            int slotNo = 0;
+            foreach (StorageSlot slot in this.PieceStorage.AllSlots)
+            {
+                if (slot.IsEmpty)
+                {
+                    this.dryingForSlotNo[slotNo] = null;
+                }
+                else
+                {
+                    BoardPiece meat = slot.GetAllPieces(remove: false)[0];
+                    if (this.dryingForSlotNo[slotNo] != null && this.dryingForSlotNo[slotNo].meat != meat)
+                    {
+                        this.dryingForSlotNo[slotNo] = new MeatDrying(meat: meat);
+                    }
+
+                    // TODO add drying code
+
+                }
+
+                slotNo++;
+            }
         }
 
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            pieceData["dryingRack_dryingStartFrame"] = this.dryingStartFrame;
-            pieceData["dryingRack_dryingDoneFrame"] = this.dryingDoneFrame;
-            pieceData["dryingRack_IsOn"] = this.IsOn;
+            // pieceData["dryingRack_dryFinishFrameForSlotNo"] = this.dryFinishFrameForSlotNo;
+            // TODO add dryingForSlotNo serialization
+
+            pieceData["dryingRack_isOn"] = this.isOn;
 
             return pieceData;
         }
@@ -74,20 +108,11 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.dryingStartFrame = (int)(Int64)pieceData["dryingRack_dryingStartFrame"];
-            this.dryingDoneFrame = (int)(Int64)pieceData["dryingRack_dryingDoneFrame"];
-            this.IsOn = (bool)pieceData["dryingRack_IsOn"];
+            // this.dryFinishFrameForSlotNo = (Dictionary<int, int>)pieceData["dryingRack_dryFinishFrameForSlotNo"];
+            // TODO add dryingForSlotNo deserialization
+
+            this.isOn = (bool)pieceData["dryingRack_isOn"];
             this.ConfigureStorage();
-        }
-
-        private static string TimeSpanToString(TimeSpan timeSpan)
-        {
-            string timeLeftString;
-
-            if (timeSpan < TimeSpan.FromMinutes(1)) timeLeftString = $"{timeSpan.TotalSeconds} s";
-            else timeLeftString = timeSpan.ToString("mm\\:ss");
-
-            return timeLeftString;
         }
     }
 }

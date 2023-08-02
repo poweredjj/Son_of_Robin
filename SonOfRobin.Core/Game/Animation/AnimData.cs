@@ -858,7 +858,10 @@ namespace SonOfRobin
             {
                 PkgName packageName = PkgName.MeatDryingRack;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_off", layer: 1, depthPercent: 0.15f));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on_1", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on_1", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on_2", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on_2", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on_3", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on_3", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on_4", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on_4", layer: 1, depthPercent: 0.15f));
             }
             {
                 PkgName packageName = PkgName.AlchemyLabStandard;

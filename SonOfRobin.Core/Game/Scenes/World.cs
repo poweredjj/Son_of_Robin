@@ -568,7 +568,6 @@ namespace SonOfRobin
                 this.maxAnimalsPerName = (int)(Int64)headerData["maxAnimalsPerName"];
                 this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
-                this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
                 this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]);
                 this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
@@ -1096,7 +1095,8 @@ namespace SonOfRobin
 
             if (this.nonPlantSpritesQueue.Count == 0)
             {
-                this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
+                this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
+                    .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
                 return;
             }
 

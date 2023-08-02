@@ -33,6 +33,8 @@ namespace SonOfRobin
             AnimalFlee = 17,
 
             FireplaceBurn = 18,
+            DryMeat = 30,
+            FlameBurn = 25,
 
             ScareAnimalsAway = 19,
             PlayAmbientSound = 20,
@@ -40,7 +42,6 @@ namespace SonOfRobin
             FogMoveRandomly = 22,
             RainInitialize = 23,
             RainFall = 24,
-            FlameBurn = 25,
 
             AnimalRunForClosestWater = 26,
             AnimalCallForHelp = 27,
@@ -784,6 +785,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.DryMeat:
+                    {
+                        this.SM_DryMeat();
+                        return;
+                    }
+
                 case State.EmitParticles:
                     {
                         this.SM_EmitParticles();
@@ -1141,6 +1148,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FlameBurn()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_DryMeat()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_MapMarkerShowAndCheck()
