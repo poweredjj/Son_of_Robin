@@ -1116,9 +1116,9 @@ namespace SonOfRobin
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, bool checkIfSleepIsPossible)
         {
-            if (checkIfSleepIsPossible && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
+            if (checkIfSleepIsPossible && sleepEngine.minFatiguePercentPossibleToGet > 0 && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
             {
-                new TextWindow(text: sleepEngine.minFatiguePercentPossibleToGet == 0f || this.FatiguePercent < 0.05f ? "I'm not tired." : "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
+                new TextWindow(text: "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
                 return;
             }
 
