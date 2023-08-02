@@ -6,15 +6,11 @@ namespace SonOfRobin
 {
     public class Container : BoardPiece
     {
-        public readonly bool pieceStorageIsGlobal;
-
         public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description,
-            byte animSize = 0, string animName = "open", int maxHitPoints = 1, PieceSoundPack soundPack = null, bool pieceStorageIsGlobal = false) :
+            byte animSize = 0, string animName = "open", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
         {
-            this.pieceStorageIsGlobal = pieceStorageIsGlobal;
-
             this.soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ChestOpen));
             this.soundPack.AddAction(action: PieceSoundPack.Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
 
@@ -25,8 +21,12 @@ namespace SonOfRobin
         {
             get
             {
-                // "alive" check is needed when destroying chest (also during crafting, when destroying Player.simulatedPieceToBuild)
-                if (this.pieceStorageIsGlobal && this.world?.Player?.GlobalChestStorage != null && this.alive) return this.world.Player.GlobalChestStorage;
+                if (this.pieceInfo != null &&
+                    this.pieceInfo.containerStorageIsGlobal &&
+                    this.world?.Player?.GlobalChestStorage != null
+                    && this.alive) // "alive" check is needed when destroying chest (also during crafting, when destroying Player.simulatedPieceToBuild)
+                    return this.world.Player.GlobalChestStorage;
+
                 return base.PieceStorage;
             }
         }
@@ -57,7 +57,7 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
 
-            if (pieceStorageIsGlobal)
+            if (this.pieceInfo.containerStorageIsGlobal)
             {
                 // serialization of global content is unwanted (cloned items that will fall out when destroying a global chest) and replacing deserialized contents is needed
                 base.PieceStorage.DestroyAllPieces();

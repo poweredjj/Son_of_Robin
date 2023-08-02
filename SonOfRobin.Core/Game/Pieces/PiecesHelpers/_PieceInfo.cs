@@ -46,6 +46,7 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public readonly float cookerFoodMassMultiplier;
+            public readonly bool containerStorageIsGlobal;
 
             // "template" data not present in BoardPiece (set directly in PieceInfo)
             public readonly bool serialize;
@@ -142,6 +143,7 @@ namespace SonOfRobin
                 if (this.type == typeof(Animal)) this.eats = ((Animal)piece).Eats;
                 this.equipType = this.type == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = this.type == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
+                this.containerStorageIsGlobal = false;
 
                 this.convertsWhenUsed = false;
                 if (this.type == typeof(Potion))
@@ -1144,6 +1146,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        this.containerStorageIsGlobal = true;
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
