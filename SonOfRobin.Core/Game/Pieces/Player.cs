@@ -1048,7 +1048,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.sleepMode == SleepMode.Sleep && this.Fatigue == 0)
+            if (this.sleepMode == SleepMode.Sleep && this.FatiguePercent <= this.sleepEngine.minFatiguePercentPossibleToGet)
             {
                 this.sleepMode = SleepMode.WaitIndefinitely;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
@@ -1075,7 +1075,7 @@ namespace SonOfRobin
                 {
                     this.WakeUp();
 
-                    new TextWindow(text: "You are fully rested.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true);
+                    new TextWindow(text: this.sleepEngine.minFatiguePercentPossibleToGet == 0 ? "You are fully rested." : "You wake up, unable to sleep any longer.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true);
                 }
 
                 return;
@@ -1113,8 +1113,14 @@ namespace SonOfRobin
             }
         }
 
-        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos)
+        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, bool checkIfSleepIsPossible)
         {
+            if (checkIfSleepIsPossible && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
+            {
+                new TextWindow(text: sleepEngine.minFatiguePercentPossibleToGet == 0f ? "You are not tired." : "You are not tired enough to sleep here.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true);
+                return;
+            }
+
             this.SleepStarted = this.world.islandClock.IslandDateTime;
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
@@ -1153,8 +1159,8 @@ namespace SonOfRobin
             bool showBadSleepHint = false;
             foreach (Buff buff in this.sleepEngine.wakeUpBuffs)
             {
-                if (!buff.isPositive &&
-                    !this.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.BadSleep) &&
+                if (!this.sleepEngine.canBeAttacked &&
+                    !buff.isPositive &&
                     buff.HadEnoughSleepForBuff(this.world)) showBadSleepHint = true;
 
                 this.buffEngine.AddBuff(buff: buff, world: this.world);
