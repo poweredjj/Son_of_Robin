@@ -271,7 +271,7 @@ namespace SonOfRobin
 
                 case EventName.RestoreHint:
                     {
-                        var hintType = (HintEngine.Type)Helpers.CastObjectToInt(this.eventHelper);
+                        var hintType = (HintEngine.Type)Helpers.CastObjectToByte(this.eventHelper);
                         world.HintEngine.Enable(hintType);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
@@ -416,7 +416,7 @@ namespace SonOfRobin
 
                 case EventName.PlaySoundByName:
                     {
-                        Sound.QuickPlay((SoundData.Name)Helpers.CastObjectToInt(this.eventHelper));
+                        Sound.QuickPlay((SoundData.Name)Helpers.CastObjectToByte(this.eventHelper));
                         return;
                     }
 
