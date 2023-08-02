@@ -193,6 +193,9 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.SprintCooldown:
                     return false;
 
+                case BuffEngine.BuffType.HeatLevelLocked:
+                    return false;
+
                 default:
                     throw new ArgumentException($"Unsupported buff type - {this.type}.");
             }
@@ -299,6 +302,10 @@ namespace SonOfRobin
 
                 case BuffEngine.BuffType.SprintCooldown:
                     description = $"Cannot sprint{duration}.";
+                    break;
+
+                case BuffEngine.BuffType.HeatLevelLocked:
+                    description = $"Heat level locked{duration}.";
                     break;
 
                 default:
@@ -432,6 +439,9 @@ namespace SonOfRobin
 
                 case BuffEngine.BuffType.SprintCooldown:
                     return "CANNOT\nSPRINT";
+
+                case BuffEngine.BuffType.HeatLevelLocked:
+                    return "HEAT\nLOCKED";
 
                 default:
                     throw new ArgumentException($"Unsupported buff type - {this.type}.");

@@ -244,15 +244,16 @@ namespace SonOfRobin
                     var blockingSpritesShuffled = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement).OrderBy(item => this.world.random.Next());
                     foreach (BoardPiece piece in blockingSpritesShuffled)
                     {
-                        if (piece.GetType() == typeof(Plant))
+                        if (piece.GetType() == typeof(Plant) && piece.Mass > 500)
                         {
-                            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: 800, compareWithBottom: true);
+                            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: piece.sprite, distance: 800, compareWithBottom: true);
 
                             foreach (BoardPiece nearbyPiece in nearbyPieces)
                             {
                                 if (nearbyPiece.createdByPlayer) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
                             }
                             piece.HeatLevel += 1;
+                            piece.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.HeatLevelLocked, autoRemoveDelay: 60 * 60 * 3, value: null), world: this.world);
                             ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.Lightning, duration: 1);
 
                             break;

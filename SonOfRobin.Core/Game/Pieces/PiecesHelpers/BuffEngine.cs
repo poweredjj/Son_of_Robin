@@ -31,6 +31,7 @@ namespace SonOfRobin
             HeatProtection = 20,
             SwampProtection = 21,
             Wet = 22,
+            HeatLevelLocked = 23,
 
             // obsolete below (kept for compatibility with old saves)
 
@@ -463,6 +464,12 @@ namespace SonOfRobin
                         return true;
                     }
 
+                case BuffType.HeatLevelLocked:
+                    {
+                        // this buff exists only to prevent changes to heat level 
+                        return true;
+                    }
+
                 default:
                     throw new ArgumentException($"Unsupported buff type - {buff.type}.");
             }
@@ -631,6 +638,10 @@ namespace SonOfRobin
                     break;
 
                 case BuffType.SprintCooldown:
+                    value = null;
+                    break;
+
+                case BuffType.HeatLevelLocked:
                     value = null;
                     break;
 

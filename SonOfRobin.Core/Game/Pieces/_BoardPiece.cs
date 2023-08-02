@@ -249,6 +249,8 @@ namespace SonOfRobin
             { return this.heatLevel; }
             set
             {
+                if (this.buffEngine.HasBuff(BuffEngine.BuffType.HeatLevelLocked)) return;
+
                 float previousHeatLevel = this.heatLevel;
 
                 float valDiff = value - this.heatLevel;

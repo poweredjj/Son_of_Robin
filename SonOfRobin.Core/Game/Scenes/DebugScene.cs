@@ -473,16 +473,30 @@ namespace SonOfRobin
             //    new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F5))
+            if (Keyboard.HasBeenPressed(Keys.F5) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {
-                new TextWindow(text: "Test 1", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+                if (world == null) return;
 
-                new TextWindow(text: "Test 2.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+                for (int i = 0; i < 1000; i++)
+                {
+                    world.islandClock.Advance(amount: 60 * 60 * 5, ignorePause: true);
+                    world.weather.Update();
+                    if (world.weather.RainPercentage > 0.7f) return;
+                }
 
-                //new TextWindow(text: "Text window 1", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.Tick);
-                //new TextWindow(text: "Text window 2", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestOpen);
-                //new TextWindow(text: "Text window 3", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestClose);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "Weather checking timed out.");
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F5))
+            //{
+            //new TextWindow(text: "Test 1", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+
+            //new TextWindow(text: "Test 2.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+
+            //new TextWindow(text: "Text window 1", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.Tick);
+            //new TextWindow(text: "Text window 2", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestOpen);
+            //new TextWindow(text: "Text window 3", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestClose);
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F6))
             {
