@@ -117,6 +117,8 @@ namespace SonOfRobin
             WorkshopLeatherBasic = 86,
             WorkshopLeatherAdvanced = 87,
 
+            MeatDryingRack = 307,
+
             AlchemyLabStandard = 84,
             AlchemyLabAdvanced = 85,
 
@@ -852,6 +854,11 @@ namespace SonOfRobin
                 PkgName packageName = PkgName.WorkshopMeatHarvesting;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_off", layer: 1, scale: 0.5f));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_on", layer: 1, scale: 0.5f));
+            }
+            {
+                PkgName packageName = PkgName.MeatDryingRack;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_off", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_on", layer: 1, depthPercent: 0.15f));
             }
             {
                 PkgName packageName = PkgName.AlchemyLabStandard;

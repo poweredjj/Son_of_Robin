@@ -13,6 +13,7 @@ namespace SonOfRobin
             Inventory = 1,
             Cooking = 2,
             Processing = 3,
+            Drying = 10,
             Fireplace = 4,
             Chest = 5,
             Tools = 6,

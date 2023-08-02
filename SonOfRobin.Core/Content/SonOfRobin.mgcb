@@ -3945,18 +3945,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/campfire.png
 
-#begin gfx/input/VirtButton/campfire.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/VirtButton/campfire.png
-
 #begin gfx/input/VirtButton/check_mark.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5408,6 +5396,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/meat_dried.png
+
+#begin gfx/meat_drying_rack_off.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/meat_drying_rack_off.png
+
+#begin gfx/meat_drying_rack_on.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/meat_drying_rack_on.png
 
 #begin gfx/meat_raw_prime.png
 /importer:TextureImporter

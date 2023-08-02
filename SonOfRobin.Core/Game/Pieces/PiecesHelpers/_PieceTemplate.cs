@@ -95,6 +95,7 @@ namespace SonOfRobin
             WorkshopMaster = 62,
 
             WorkshopMeatHarvesting = 211,
+            MeatDryingRack = 213,
             WorkshopLeatherBasic = 63,
             WorkshopLeatherAdvanced = 64,
 
@@ -1275,6 +1276,17 @@ namespace SonOfRobin
 
                         meatHarvestingWorkshop.sprite.AssignNewName("off");
                         return meatHarvestingWorkshop;
+                    }
+
+                case Name.MeatDryingRack:
+                    {
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
+
+                        var meatDryingRack = new MeatDryingRack(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRack, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "meat drying rack", description: "For meat drying.", soundPack: soundPack);
+
+                        meatDryingRack.sprite.AssignNewName("off");
+                        return meatDryingRack;
                     }
 
                 case Name.Clam:

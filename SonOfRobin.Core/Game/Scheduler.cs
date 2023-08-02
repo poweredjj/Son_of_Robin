@@ -52,6 +52,7 @@ namespace SonOfRobin
             CameraSetZoom = 35,
             ShowCookingProgress = 36,
             ShowBrewingProgress = 37,
+            ShowDryingProgress = 87,
             RestoreHints = 38,
             OpenMainMenuIfSpecialKeysArePressed = 39,
             CheckForPieceHints = 40,
@@ -89,6 +90,7 @@ namespace SonOfRobin
             AddFadeInAnim = 72,
             InteractWithCooker = 73,
             InteractWithLab = 74,
+            InteractWithDryingRack = 86,
             InventoryCombineItems = 75,
             InventoryReleaseHeldPieces = 76,
             RemoveBuffs = 78,
@@ -1114,6 +1116,14 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.ShowDryingProgress:
+                        {
+                            MeatDryingRack dryingRack = (MeatDryingRack)this.ExecuteHelper;
+                            dryingRack.ShowDryingProgress();
+
+                            return;
+                        }
+
                     case TaskName.RestoreHints:
                         {
                             World world = World.GetTopWorld();
@@ -1580,6 +1590,14 @@ namespace SonOfRobin
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
                             TaskName taskName = alchemyLab.IsOn ? TaskName.ShowBrewingProgress : TaskName.OpenContainer;
+                            new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+                            return;
+                        }
+
+                    case TaskName.InteractWithDryingRack:
+                        {
+                            MeatDryingRack dryingRack = (MeatDryingRack)this.ExecuteHelper;
+                            TaskName taskName = dryingRack.IsOn ? TaskName.ShowDryingProgress : TaskName.OpenContainer;
                             new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
                             return;
                         }
