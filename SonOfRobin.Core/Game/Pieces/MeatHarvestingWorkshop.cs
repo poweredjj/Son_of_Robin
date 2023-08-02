@@ -228,6 +228,7 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "on");
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BloodDripping, duration: 3 * 60);
         }
 
         public void TurnOff()

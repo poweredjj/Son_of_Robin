@@ -38,6 +38,7 @@ namespace SonOfRobin
             DebrisSoot = 20,
             SwampGas = 21,
             Lightning = 22,
+            BloodDripping = 23,
         }
 
         public class PresetData
@@ -165,6 +166,7 @@ namespace SonOfRobin
                 { Preset.DebrisSoot, "debris_soot" },
                 { Preset.SwampGas, "circle_16x16_sharp" },
                 { Preset.Lightning, "circle_16x16_sharp" },
+                { Preset.BloodDripping, "circle_16x16_sharp" },
 
             };
 
@@ -1031,6 +1033,48 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Preset.BloodDripping:
+                    {
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(5.5f),
+                            Profile.BoxFill(width: (int)(this.sprite.GfxRect.Width * 0.8f), height: this.sprite.GfxRect.Height / 2))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.DarkRed),
+                                Speed = 0,
+                                Quantity = 1,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.0f),
+                                            EndValue = new Vector2(0.7f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1.0f,
+                                            EndValue = 0.0f
+                                        },
+                                    }
+                                },
+                                new DragModifier
+                                {
+                                    Density = 2.4f, DragCoefficient = 2.4f
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 35f},
+                            }
+                        };
+                        break;
+                    }
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -1149,6 +1193,10 @@ namespace SonOfRobin
 
                 case Preset.DebrisSoot:
                     this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.BloodDripping:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 5));
                     break;
 
                 case Preset.Lightning:
