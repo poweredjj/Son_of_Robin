@@ -1152,40 +1152,22 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ChestTreasureNormal:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
-                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.boardTask = Scheduler.TaskName.OpenAndDestroyTreasureChest;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
-
-                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 5),
-                                });
-
                         this.appearDebris = new Yield(debrisType: ParticleEngine.Preset.DebrisStar);
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
                         this.category = BoardPiece.Category.Metal;
                         this.movesWhenDropped = false;
-                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.boardTask = Scheduler.TaskName.OpenAndDestroyTreasureChest;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
-
-                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 4),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 10),
-                                });
-
                         this.appearDebris = new Yield(debrisType: ParticleEngine.Preset.DebrisStar);
                         break;
 

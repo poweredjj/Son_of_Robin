@@ -98,6 +98,7 @@ namespace SonOfRobin
             DestroyAndDropDebris = 82,
             MakePlayerJumpOverThisPiece = 83,
             InventoryApplyPotion = 84,
+            OpenAndDestroyTreasureChest = 85,
         }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
@@ -1705,6 +1706,17 @@ namespace SonOfRobin
 
                             piece.pieceInfo.Yield?.DropDebris(piece: piece);
                             piece.Destroy();
+
+                            return;
+                        }
+
+                    case TaskName.OpenAndDestroyTreasureChest:
+                        {
+                            Container treasureChest = (Container)this.ExecuteHelper;
+                            treasureChest.Open();
+                            treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
+
+                            new WorldEvent(eventName: WorldEvent.EventName.Destruction, delay: 60 * 2, world: treasureChest.world, boardPiece: treasureChest, eventHelper: 30);
 
                             return;
                         }
