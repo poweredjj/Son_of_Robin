@@ -28,9 +28,13 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopMeatHarvesting, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Granite, 3 },  { PieceTemplate.Name.AxeStone, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.Leather, 1 }, { PieceTemplate.Name.Clay, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true ),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.Leather, 1 }, { PieceTemplate.Name.Clay, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatDryingRackRegular }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 6 },  { PieceTemplate.Name.WoodLogHard, 3 }, { PieceTemplate.Name.Leather, 4 }, { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.IronRod, 3 }, }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true ),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.MeatDryingRackRegular, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 8 }, { PieceTemplate.Name.Rope, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatDryingRackWide }, craftCountToUnlock: 2, craftCountToLevelUp: 2, maxLevel: 3),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.MeatDryingRackWide, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 12 }, { PieceTemplate.Name.Rope, 3 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Campfire, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 }}, fatigue: fatigueStructureSmall, isReversible: true),
 

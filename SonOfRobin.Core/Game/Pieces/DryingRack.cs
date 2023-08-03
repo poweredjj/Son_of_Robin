@@ -60,7 +60,10 @@ namespace SonOfRobin
 
                 this.Meat = meat;
                 this.StartFrame = this.world.CurrentUpdate;
-                this.FinishFrame = (int)(meat.Mass * 10) + this.world.CurrentUpdate; // * 200
+                int duration = (int)(meat.Mass * 180);
+                this.FinishFrame = this.world.CurrentUpdate + duration;
+
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} {this.Meat.readableName} will be dried in {Math.Round((float)duration / 60f / 60f, 1)} minutes.");
             }
 
             private void RemoveMeat()
@@ -160,7 +163,7 @@ namespace SonOfRobin
                     int dryingDuration = slotExtension.FinishFrame - slotExtension.StartFrame;
                     int dryingCurrentFrame = this.world.CurrentUpdate - slotExtension.StartFrame;
 
-                    new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(0, 141, 166), colorMax: new Color(0, 210, 247), posX: this.sprite.GfxRect.Center.X - 1, posY: this.sprite.GfxRect.Center.Y + 4, ignoreIfAtMax: true, height: 4, width: (int)(this.sprite.GfxRect.Width * 0.8f));
+                    new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(214, 145, 124), colorMax: new Color(156, 109, 95), posX: this.sprite.GfxRect.Center.X - 1, posY: this.sprite.GfxRect.Center.Y + 4, ignoreIfAtMax: true, height: 4, width: (int)(this.sprite.GfxRect.Width * 0.8f));
                 }
             }
 
