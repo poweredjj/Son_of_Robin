@@ -219,6 +219,7 @@ namespace SonOfRobin
             Dungarees = 164,
             HatSimple = 165,
             BootsProtective = 166,
+            BootsMountain = 215,
 
             TorchSmall = 167,
             TorchBig = 168,
@@ -2475,7 +2476,20 @@ namespace SonOfRobin
                         };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, equipType: Equipment.EquipType.Legs,
-                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow safe walking over swamp area.");
+
+                        return boardPiece;
+                    }
+
+                case Name.BootsMountain:
+                    {
+                        var buffList = new List<Buff>
+                        {
+                           new Buff(type: BuffEngine.BuffType.FastMountainWalking, value: null)
+                        };
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsMountain, equipType: Equipment.EquipType.Legs,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "mountain boots", description: "Allow fast walking in the mountains.");
 
                         return boardPiece;
                     }

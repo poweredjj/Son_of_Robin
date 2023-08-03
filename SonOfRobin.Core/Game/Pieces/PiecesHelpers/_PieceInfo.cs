@@ -2208,6 +2208,14 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         break;
 
+                    case PieceTemplate.Name.BootsMountain:
+                        this.category = BoardPiece.Category.Leather;
+                        this.startingMass = 500;
+                        this.fireAffinity = 0.3f;
+                        this.canBePickedUp = true;
+                        this.placeMaxDistance = 500;
+                        break;
+
                     case PieceTemplate.Name.TorchSmall:
                         this.category = BoardPiece.Category.Wood;
                         this.startingMass = 100;

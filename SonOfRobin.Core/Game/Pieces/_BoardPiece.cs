@@ -1043,7 +1043,7 @@ namespace SonOfRobin
             float realSpeed = walkSpeed;
             bool isInWater = this.sprite.IsInWater;
             if (slowDownInWater && isInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
-            if (slowDownOnRocks && this.sprite.IsOnRocks) realSpeed = Math.Max(1, walkSpeed * 0.45f);
+            if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed = Math.Max(1, walkSpeed * 0.45f);
 
             Vector2 positionDifference = goalPosition - this.sprite.position;
             if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);

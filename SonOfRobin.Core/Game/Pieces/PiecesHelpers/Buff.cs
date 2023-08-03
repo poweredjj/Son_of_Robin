@@ -87,10 +87,6 @@ namespace SonOfRobin
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
-                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
-                    value = Helpers.CastObjectToInt(value);
-                    break;
-
                 case BuffEngine.BuffType.RegenPoison:
                     value = Helpers.CastObjectToInt(value);
                     break;
@@ -151,9 +147,6 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.MaxFatigue:
                     return (float)this.value > 0;
 
-                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
-                    return (int)this.value >= 0;
-
                 case BuffEngine.BuffType.RegenPoison:
                     return (int)this.value >= 0;
 
@@ -182,6 +175,9 @@ namespace SonOfRobin
                     return true;
 
                 case BuffEngine.BuffType.SwampProtection:
+                    return true;
+
+                case BuffEngine.BuffType.FastMountainWalking:
                     return true;
 
                 case BuffEngine.BuffType.Wet:
@@ -276,12 +272,12 @@ namespace SonOfRobin
                     description = "Swamp poison protection.";
                     break;
 
-                case BuffEngine.BuffType.Wet:
-                    description = "Wet.";
+                case BuffEngine.BuffType.FastMountainWalking:
+                    description = "Fast mountain walking.";
                     break;
 
-                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
-                    description = $"Light source {sign}{this.value}.";
+                case BuffEngine.BuffType.Wet:
+                    description = "Wet.";
                     break;
 
                 case BuffEngine.BuffType.RegenPoison:
@@ -344,10 +340,10 @@ namespace SonOfRobin
                     case BuffEngine.BuffType.SwampProtection:
                         return "swamp protection";
 
-                    case BuffEngine.BuffType.Wet:
-                        return null;
+                    case BuffEngine.BuffType.FastMountainWalking:
+                        return "fast mountain walking";
 
-                    case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
+                    case BuffEngine.BuffType.Wet:
                         return null;
 
                     case BuffEngine.BuffType.RegenPoison:
@@ -387,19 +383,19 @@ namespace SonOfRobin
                     return null;
 
                 case BuffEngine.BuffType.Speed:
-                    return $"SPD\n{sign}{this.value}";
+                    return this.isPermanent ? null : $"SPD\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Strength:
-                    return $"STR\n{sign}{this.value}";
+                    return this.isPermanent ? null : $"STR\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.HP:
                     return $"HP\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxHP:
-                    return $"MAX HP\n{sign}{this.value}";
+                    return this.isPermanent ? null : $"MAX HP\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxFatigue:
-                    return $"MAX FATIGUE\n{sign}{this.value}";
+                    return this.isPermanent ? null : $"MAX FATIGUE\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Tired:
                     return "TIRED";
@@ -414,22 +410,19 @@ namespace SonOfRobin
                     return "HEAT";
 
                 case BuffEngine.BuffType.HeatProtection:
-                    return "HEAT\nPROTECT";
+                    return null;
 
                 case BuffEngine.BuffType.SwampProtection:
-                    return "SWAMP\nPROTECT";
+                    return null;
 
                 case BuffEngine.BuffType.Wet:
                     return "WET";
-
-                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
-                    return $"LIGHT\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.RegenPoison:
                     return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Haste:
-                    return $"HASTE\n{sign}{this.value}";
+                    return this.isPermanent ? null : $"HASTE\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Fatigue:
                     return $"FATIGUE\n{sign}{this.value}";
@@ -441,7 +434,10 @@ namespace SonOfRobin
                     return "CANNOT\nSPRINT";
 
                 case BuffEngine.BuffType.HeatLevelLocked:
-                    return "HEAT\nLOCKED";
+                    return null;
+
+                case BuffEngine.BuffType.FastMountainWalking:
+                    return null;
 
                 default:
                     throw new ArgumentException($"Unsupported buff type - {this.type}.");

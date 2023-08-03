@@ -32,11 +32,7 @@ namespace SonOfRobin
             SwampProtection = 21,
             Wet = 22,
             HeatLevelLocked = 23,
-
-            // obsolete below (kept for compatibility with old saves)
-
-            NotUsedKeptForCompatibility1 = 10,
-
+            FastMountainWalking = 10,
         };
 
         private readonly Dictionary<string, Buff> buffDict;
@@ -343,7 +339,13 @@ namespace SonOfRobin
 
                 case BuffType.SwampProtection:
                     {
-                        // this buff exists only to show status icon and prevent from getting swamp poison
+                        // this buff exists only prevent from getting swamp poison
+                        return true;
+                    }
+
+                case BuffType.FastMountainWalking:
+                    {
+                        // this buff exists only to allow for fast mountain walking
                         return true;
                     }
 
@@ -626,6 +628,10 @@ namespace SonOfRobin
                     break;
 
                 case BuffType.SwampProtection:
+                    value = null;
+                    break;
+
+                case BuffType.FastMountainWalking:
                     value = null;
                     break;
 
