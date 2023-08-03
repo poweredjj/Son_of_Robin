@@ -1314,7 +1314,8 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.blocksMovement = true;
+                        this.blocksMovement = false;
+                        this.allowedDensity = new AllowedDensity(radius: 200, maxNoOfPiecesSameName: 0);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         this.hasFlatShadow = true;

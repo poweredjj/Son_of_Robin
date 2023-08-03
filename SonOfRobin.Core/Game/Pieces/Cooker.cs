@@ -149,7 +149,6 @@ namespace SonOfRobin
             }
 
             base.DrawStatBar();
-            StatBar.FinishThisBatch();
         }
 
         public void Cook()
