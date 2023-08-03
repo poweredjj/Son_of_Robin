@@ -1310,15 +1310,24 @@ namespace SonOfRobin
                         this.isAffectedByWind = true;
                         break;
 
-                    case PieceTemplate.Name.MeatDryingRack:
+                    case PieceTemplate.Name.MeatDryingRackRegular:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 200, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 250, maxNoOfPiecesSameClass: 0);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
-                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.MeatDryingRackWide:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 0.8f;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.blocksMovement = false;
+                        this.allowedDensity = new AllowedDensity(radius: 250, maxNoOfPiecesSameClass: 0);
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
                         break;
 
                     case PieceTemplate.Name.Stick:

@@ -39,7 +39,7 @@ namespace SonOfRobin
                     {
                         this.slot.GetAllPieces(remove: true);
 
-                        BoardPiece driedMeat = PieceTemplate.Create(templateName: PieceTemplate.Name.MeatDried, world: this.world);
+                        BoardPiece driedMeat = PieceTemplate.Create(templateName: driedMeatName, world: this.world);
                         driedMeat.Mass = meat.Mass;
 
                         this.slot.DestroyPieceAndReplaceWithAnother(driedMeat);
@@ -91,15 +91,16 @@ namespace SonOfRobin
         }
 
         private static readonly List<PieceTemplate.Name> rawMeatNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime };
+        private static readonly PieceTemplate.Name driedMeatName = PieceTemplate.Name.MeatDried;
 
         private List<SlotExtensionDrying> slotExtensionList; // slots extended with drying data
 
-        public MeatDryingRack(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
+        public MeatDryingRack(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, byte storageWidth, byte storageHeight,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.DryMeat, soundPack: soundPack)
         {
-            this.PieceStorage = new PieceStorage(width: 2, height: 2, storagePiece: this, storageType: PieceStorage.StorageType.Drying);
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Drying);
             this.slotExtensionList = new List<SlotExtensionDrying>();
             this.ConfigureStorage();
         }
@@ -112,7 +113,7 @@ namespace SonOfRobin
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
                 slot.allowedPieceNames = rawMeatNames.ToList();
-                slot.allowedPieceNames.Add(PieceTemplate.Name.MeatDried);
+                slot.allowedPieceNames.Add(driedMeatName);
                 slot.stackLimit = 1;
                 this.slotExtensionList.Add(new SlotExtensionDrying(slot));
                 slotNo++;
@@ -124,16 +125,29 @@ namespace SonOfRobin
             List<BoardPiece> meatList = this.PieceStorage.GetAllPieces();
 
             int meatCount = meatList.Count;
-            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off", checkForCollision: false); // collision check must be turned off, to work if player is nearby
+            // collision check must be turned off, to work if player is nearby
+            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off", checkForCollision: false);
 
-            if (meatCount == 0) return;
-
-            if (this.world.CurrentUpdate % 30 == 0) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MeatDrying, duration: 1);
             this.showStatBarsTillFrame = this.world.CurrentUpdate + 1000;
 
             foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
             {
                 slotExtension.Update();
+            }
+
+            if (this.world.CurrentUpdate % 30 == 0 && this.DryingInProgress) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MeatDrying, duration: 1);
+        }
+
+        private bool DryingInProgress
+        {
+            get
+            {
+                foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
+                {
+                    if (slotExtension.CanBeDried && !slotExtension.HasFinished) return true;
+                }
+
+                return false;
             }
         }
 
