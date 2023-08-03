@@ -445,8 +445,8 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.PoisonousMeat,
-                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.MeatRawRegular).readableName } looks poisonous.\nI should | cook it before eating.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRawRegular), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.MeatRawRegular).readableName } looks poisonous.\nI should | cook or | dry it before eating.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRawRegular), PieceInfo.GetTexture(PieceTemplate.Name.MeatDryingRackRegular), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime }),
 
                 new PieceHint(

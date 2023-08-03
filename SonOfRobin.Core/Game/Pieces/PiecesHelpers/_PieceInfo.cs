@@ -1317,7 +1317,7 @@ namespace SonOfRobin
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radius: 90, maxNoOfPiecesSameClass: 0);
                         this.destroysPlantsWhenBuilt = true;
-                        this.isAffectedByWind = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.MeatDryingRackWide:
@@ -1327,7 +1327,7 @@ namespace SonOfRobin
                         this.blocksMovement = false;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameClass: 0);
                         this.destroysPlantsWhenBuilt = true;
-                        this.isAffectedByWind = true;
+                        this.isAffectedByWind = false;
                         break;
 
                     case PieceTemplate.Name.Stick:
