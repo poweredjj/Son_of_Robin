@@ -42,6 +42,34 @@ namespace SonOfRobin
             MeatDrying = 24,
         }
 
+        private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
+                { Preset.Fireplace, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.BurnFlame, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
+                { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterWave, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
+                { Preset.Excavated, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.MudWalk, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.LavaFlame, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.DebrisWood, TextureBank.TextureName.ParticleDebrisWood },
+                { Preset.DebrisLeaf, TextureBank.TextureName.ParticleDebrisLeaf },
+                { Preset.DebrisGrass, TextureBank.TextureName.ParticleDebrisGrass },
+                { Preset.DebrisStone, TextureBank.TextureName.ParticleDebrisStone },
+                { Preset.DebrisCrystal, TextureBank.TextureName.ParticleDebrisCrystal },
+                { Preset.DebrisCeramic, TextureBank.TextureName.ParticleDebrisCeramic },
+                { Preset.DebrisBlood, TextureBank.TextureName.ParticleDebrisBlood },
+                { Preset.DebrisStar, TextureBank.TextureName.ParticleDebrisStar },
+                { Preset.DebrisHeart, TextureBank.TextureName.ParticleDebrisHeart },
+                { Preset.DebrisSoot, TextureBank.TextureName.ParticleDebrisSoot },
+                { Preset.SwampGas, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.Lightning, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.BloodDripping, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.MeatDrying, TextureBank.TextureName.ParticleCircleSoft },
+            };
+
         public class PresetData
         {
             private readonly ParticleEmitter particleEmitter;
@@ -143,36 +171,7 @@ namespace SonOfRobin
 
         public void AddPreset(Preset preset)
         {
-            var textureNameDict = new Dictionary<Preset, string> {
-                { Preset.Fireplace, "circle_16x16_sharp" },
-                { Preset.BurnFlame, "circle_16x16_soft" },
-                { Preset.Cooking, "circle_16x16_sharp" },
-                { Preset.Brewing, "bubble_16x16" },
-                { Preset.WaterWalk, "circle_16x16_sharp" },
-                { Preset.WaterWave, "circle_16x16_soft" },
-                { Preset.CookingFinish, "circle_16x16_soft" },
-                { Preset.BrewingFinish, "bubble_16x16" },
-                { Preset.Excavated, "circle_16x16_sharp" },
-                { Preset.MudWalk, "circle_16x16_soft" },
-                { Preset.LavaFlame, "circle_16x16_sharp" },
-                { Preset.DebrisWood, "debris_wood" },
-                { Preset.DebrisLeaf, "debris_leaf" },
-                { Preset.DebrisGrass, "debris_grass" },
-                { Preset.DebrisStone, "debris_stone" },
-                { Preset.DebrisCrystal, "debris_crystal" },
-                { Preset.DebrisCeramic, "debris_ceramic" },
-                { Preset.DebrisBlood, "debris_blood" },
-                { Preset.DebrisStar, "debris_star" },
-                { Preset.DebrisHeart, "debris_heart" },
-                { Preset.DebrisSoot, "debris_soot" },
-                { Preset.SwampGas, "circle_16x16_sharp" },
-                { Preset.Lightning, "circle_16x16_sharp" },
-                { Preset.BloodDripping, "circle_16x16_sharp" },
-                { Preset.MeatDrying, "circle_16x16_soft" },
-
-            };
-
-            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture($"particles/{textureNameDict[preset]}"));
+            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
 
             int defaultParticlesToEmit;
             int particlesToEmitMaxVariation = 0;

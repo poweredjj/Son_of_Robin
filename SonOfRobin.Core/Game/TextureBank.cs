@@ -67,6 +67,20 @@ namespace SonOfRobin
             VirtButtonHarvestMeat = 48,
             VirtButtonUseAnvil = 49,
             VirtButtonJump = 50,
+
+            ParticleCircleSharp = 51,
+            ParticleCircleSoft = 52,
+            ParticleBubble = 53,
+            ParticleDebrisWood = 54,
+            ParticleDebrisLeaf = 55,
+            ParticleDebrisGrass = 56,
+            ParticleDebrisStone = 57,
+            ParticleDebrisCrystal = 58,
+            ParticleDebrisCeramic = 59,
+            ParticleDebrisBlood = 60,
+            ParticleDebrisStar = 61,
+            ParticleDebrisHeart = 62,
+            ParticleDebrisSoot = 63,
         }
 
         private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
@@ -126,6 +140,20 @@ namespace SonOfRobin
             { TextureName.VirtButtonHarvestMeat, "input/VirtButton/harvest_meat" },
             { TextureName.VirtButtonUseAnvil, "input/VirtButton/use_anvil" },
             { TextureName.VirtButtonJump, "input/VirtButton/jump" },
+
+            { TextureName.ParticleCircleSharp, "particles/circle_16x16_sharp" },
+            { TextureName.ParticleCircleSoft, "particles/circle_16x16_soft" },
+            { TextureName.ParticleBubble, "particles/bubble_16x16" },
+            { TextureName.ParticleDebrisWood, "particles/debris_wood" },
+            { TextureName.ParticleDebrisLeaf, "particles/debris_leaf" },
+            { TextureName.ParticleDebrisGrass, "particles/debris_grass" },
+            { TextureName.ParticleDebrisStone, "particles/debris_stone" },
+            { TextureName.ParticleDebrisCrystal, "particles/debris_crystal" },
+            { TextureName.ParticleDebrisCeramic, "particles/debris_ceramic" },
+            { TextureName.ParticleDebrisBlood, "particles/debris_blood" },
+            { TextureName.ParticleDebrisStar, "particles/debris_star" },
+            { TextureName.ParticleDebrisHeart, "particles/debris_heart" },
+            { TextureName.ParticleDebrisSoot, "particles/debris_soot" },
         };
 
         private const string gfxFolderName = "gfx";
