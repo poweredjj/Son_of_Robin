@@ -14,7 +14,7 @@ namespace SonOfRobin
             public BoardPiece Meat { get; private set; }
             public int StartFrame { get; private set; }
             public int FinishFrame { get; private set; }
-            public int FramesLeft { get { return Math.Max(this.FinishFrame - this.Meat.world.CurrentUpdate, 0); } }
+            public int FramesLeft { get { return Math.Max(this.FinishFrame - this.world.CurrentUpdate, 0); } }
             public bool HasFinished { get { return this.Meat != null && this.FramesLeft == 0; } }
             public bool CanBeDried { get { return this.Meat != null && rawMeatNames.Contains(this.Meat.name); } }
 
@@ -59,8 +59,8 @@ namespace SonOfRobin
                 }
 
                 this.Meat = meat;
-                this.StartFrame = world.CurrentUpdate;
-                this.FinishFrame = (int)(meat.Mass * 100) + this.world.CurrentUpdate;
+                this.StartFrame = this.world.CurrentUpdate;
+                this.FinishFrame = (int)(meat.Mass * 10) + this.world.CurrentUpdate; // * 200
             }
 
             private void RemoveMeat()
@@ -128,6 +128,7 @@ namespace SonOfRobin
 
             if (meatCount == 0) return;
 
+            if (this.world.CurrentUpdate % 30 == 0) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MeatDrying, duration: 1);
             this.showStatBarsTillFrame = this.world.CurrentUpdate + 1000;
 
             foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
@@ -145,7 +146,7 @@ namespace SonOfRobin
                     int dryingDuration = slotExtension.FinishFrame - slotExtension.StartFrame;
                     int dryingCurrentFrame = this.world.CurrentUpdate - slotExtension.StartFrame;
 
-                    new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.MeatDried].texture);
+                    new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(0, 141, 166), colorMax: new Color(0, 210, 247), posX: this.sprite.GfxRect.Center.X - 1, posY: this.sprite.GfxRect.Center.Y + 4, ignoreIfAtMax: true, height: 4, width: (int)(this.sprite.GfxRect.Width * 0.8f));
                 }
             }
 
@@ -157,9 +158,10 @@ namespace SonOfRobin
             Dictionary<string, Object> pieceData = base.Serialize();
 
             var slotExtensionDataList = new List<object>();
-            foreach (SlotExtensionDrying meatDrying in this.slotExtensionList)
+            foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
             {
-                slotExtensionDataList.Add(meatDrying.Serialize());
+                slotExtension.Update();
+                slotExtensionDataList.Add(slotExtension.Serialize());
             }
 
             pieceData["dryingRack_slotExtensionDataList"] = slotExtensionDataList;

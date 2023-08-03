@@ -39,6 +39,7 @@ namespace SonOfRobin
             SwampGas = 21,
             Lightning = 22,
             BloodDripping = 23,
+            MeatDrying = 24,
         }
 
         public class PresetData
@@ -167,6 +168,7 @@ namespace SonOfRobin
                 { Preset.SwampGas, "circle_16x16_sharp" },
                 { Preset.Lightning, "circle_16x16_sharp" },
                 { Preset.BloodDripping, "circle_16x16_sharp" },
+                { Preset.MeatDrying, "circle_16x16_soft" },
 
             };
 
@@ -1075,6 +1077,44 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Preset.MeatDrying:
+                    {
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(3.5),
+                            Profile.BoxFill(width: (int)(this.sprite.GfxRect.Width * 0.7f), height: this.sprite.GfxRect.Height / 4))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = 0,
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.00f),
+                                            EndValue = new Vector2(3.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.7f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier { Direction = -Vector2.UnitY, Strength = 7f },
+                            }
+                        };
+                        break;
+                    }
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -1201,6 +1241,10 @@ namespace SonOfRobin
 
                 case Preset.Lightning:
                     this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2));
+                    break;
+
+                case Preset.MeatDrying:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6));
                     break;
 
                 default:
