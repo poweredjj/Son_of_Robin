@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +16,7 @@ namespace SonOfRobin
             public int FinishFrame { get; private set; }
             public int FramesLeft { get { return Math.Max(this.FinishFrame - this.Meat.world.CurrentUpdate, 0); } }
             public bool HasFinished { get { return this.Meat != null && this.FramesLeft == 0; } }
+            public bool CanBeDried { get { return this.Meat != null && rawMeatNames.Contains(this.Meat.name); } }
 
             public SlotExtensionDrying(StorageSlot slot)
             {
@@ -22,7 +24,32 @@ namespace SonOfRobin
                 this.world = this.slot.storage.world;
             }
 
-            public void ReassignMeat()
+            public void Update()
+            {
+                if (this.slot.IsEmpty)
+                {
+                    if (this.Meat != null) this.RemoveMeat();
+                }
+                else
+                {
+                    BoardPiece meat = this.slot.TopPiece;
+                    if (meat != this.Meat) this.ReassignMeat();
+
+                    if (this.HasFinished)
+                    {
+                        this.slot.GetAllPieces(remove: true);
+
+                        BoardPiece driedMeat = PieceTemplate.Create(templateName: PieceTemplate.Name.MeatDried, world: this.world);
+                        driedMeat.Mass = meat.Mass;
+
+                        this.slot.DestroyPieceAndReplaceWithAnother(driedMeat);
+
+                        this.ReassignMeat();
+                    }
+                }
+            }
+
+            private void ReassignMeat()
             {
                 BoardPiece meat = slot.TopPiece;
                 if (meat == null)
@@ -36,7 +63,7 @@ namespace SonOfRobin
                 this.FinishFrame = (int)(meat.Mass * 100) + this.world.CurrentUpdate;
             }
 
-            public void RemoveMeat()
+            private void RemoveMeat()
             {
                 this.Meat = null;
                 this.StartFrame = 0;
@@ -97,62 +124,32 @@ namespace SonOfRobin
             List<BoardPiece> meatList = this.PieceStorage.GetAllPieces();
 
             int meatCount = meatList.Count;
-            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off");
+            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off", checkForCollision: false); // collision check must be turned off, to work if player is nearby
 
             if (meatCount == 0) return;
 
-            //foreach (BoardPiece meat in meatList)
-            //{
-            //    if (!this.dryingForSlots.ContainsKey(meat.id)) { }
-            //}
+            this.showStatBarsTillFrame = this.world.CurrentUpdate + 1000;
 
-            //int slotNo = 0;
-            //foreach (StorageSlot slot in this.PieceStorage.AllSlots)
-            //{
-            //    if (slot.IsEmpty) this.dryingForSlots[slotNo] = null;
-            //    else
-            //    {
-            //        BoardPiece meat = slot.GetAllPieces(remove: false)[0];
-            //        if (this.dryingForSlots[slotNo] != null && this.dryingForSlots[slotNo].Meat != meat && rawMeatNames.Contains(meat.name))
-            //        {
-            //            this.dryingForSlots[slotNo] = new MeatDrying(meat: meat);
-            //        }
-
-            //        if (this.dryingForSlots[slotNo] != null && this.dryingForSlots[slotNo].HasFinished)
-            //        {
-            //            slot.GetAllPieces(remove: true);
-
-            //            BoardPiece driedMeat = PieceTemplate.Create(templateName: PieceTemplate.Name.MeatDried, world: this.world);
-            //            driedMeat.Mass = meat.Mass;
-
-            //            slot.DestroyPieceAndReplaceWithAnother(driedMeat);
-            //        }
-            //    }
-
-            //    slotNo++;
-            //}
+            foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
+            {
+                slotExtension.Update();
+            }
         }
 
         public override void DrawStatBar()
         {
-            //int dryingStartFrame = 0;
-            //int dryingFinishFrame = 0;
+            foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
+            {
+                if (slotExtension.CanBeDried)
+                {
+                    int dryingDuration = slotExtension.FinishFrame - slotExtension.StartFrame;
+                    int dryingCurrentFrame = this.world.CurrentUpdate - slotExtension.StartFrame;
 
-            //foreach (SlotExtensionDrying meatDrying in dryingForSlots.Values)
-            //{
-            //    if (meatDrying != null && meatDrying.FinishFrame > dryingFinishFrame)
-            //    {
-            //        dryingStartFrame = meatDrying.StartFrame;
-            //        dryingFinishFrame = meatDrying.FinishFrame;
-            //    }
-            //}
+                    new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.MeatDried].texture);
+                }
+            }
 
-            //int dryingDuration = dryingFinishFrame - dryingStartFrame;
-            //int dryingCurrentFrame = this.world.CurrentUpdate - dryingStartFrame;
-
-            //new StatBar(label: "", value: dryingCurrentFrame, valueMax: dryingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.MeatDried].texture);
-
-            //base.DrawStatBar();
+            base.DrawStatBar();
         }
 
         public override Dictionary<string, Object> Serialize()

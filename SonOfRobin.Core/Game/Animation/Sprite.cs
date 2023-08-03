@@ -682,7 +682,7 @@ namespace SonOfRobin
             }
         }
 
-        public void AssignNewSize(byte newAnimSize, bool setEvenIfMissing = true)
+        public void AssignNewSize(byte newAnimSize, bool setEvenIfMissing = true, bool checkForCollision = true)
         {
             if (this.AnimSize == newAnimSize) return;
 
@@ -691,12 +691,12 @@ namespace SonOfRobin
             if (setEvenIfMissing || CheckIfAnimSizeExists(newAnimSize))
             {
                 this.AnimSize = newAnimSize;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
                 if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
             }
         }
 
-        public void AssignNewName(string newAnimName, bool setEvenIfMissing = true)
+        public void AssignNewName(string newAnimName, bool setEvenIfMissing = true, bool checkForCollision = true)
         {
             if (this.AnimName == newAnimName) return;
 
@@ -705,7 +705,7 @@ namespace SonOfRobin
             if (setEvenIfMissing || this.CheckIfAnimNameExists(newAnimName))
             {
                 this.AnimName = newAnimName;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
                 if (!frameAssignedCorrectly) this.AnimName = oldAnimName;
             }
         }
