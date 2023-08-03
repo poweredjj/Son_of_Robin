@@ -531,7 +531,10 @@ namespace SonOfRobin
 
                             foreach (Buff buff in player.buffEngine.BuffList)
                             {
-                                if (buff.description != null)
+
+                                // TODO add buff stat menu description
+
+                                if (buff.iconText != null) // only buffs with visible iconText should be shown
                                 {
                                     if (buff.isPositive) positiveBuffTextLines.Add(buff.description);
                                     else negativeBuffTextLines.Add(buff.description);

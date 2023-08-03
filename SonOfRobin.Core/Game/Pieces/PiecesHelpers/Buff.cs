@@ -383,19 +383,19 @@ namespace SonOfRobin
                     return null;
 
                 case BuffEngine.BuffType.Speed:
-                    return this.isPermanent ? null : $"SPD\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"SPD\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Strength:
-                    return this.isPermanent ? null : $"STR\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"STR\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.HP:
                     return $"HP\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxHP:
-                    return this.isPermanent ? null : $"MAX HP\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"MAX HP\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxFatigue:
-                    return this.isPermanent ? null : $"MAX FATIGUE\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"MAX FATIGUE\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Tired:
                     return "TIRED";
@@ -422,7 +422,7 @@ namespace SonOfRobin
                     return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Haste:
-                    return this.isPermanent ? null : $"HASTE\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"HASTE\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Fatigue:
                     return $"FATIGUE\n{sign}{this.value}";
