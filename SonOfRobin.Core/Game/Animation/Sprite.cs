@@ -725,6 +725,8 @@ namespace SonOfRobin
                 this.AnimFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
             }
 
+            if (!this.IsOnBoard) return true;
+
             this.UpdateRects();
 
             // in case of collision - reverting to a previous, non-colliding animFrame
