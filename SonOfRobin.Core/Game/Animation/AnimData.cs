@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000008f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000011f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -762,7 +762,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Rope, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.MapMarker, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Candle, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.Candle, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Dungarees, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dungarees", layer: 0, scale: 1f));
         }
 
@@ -1002,12 +1002,15 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
             }
-            AddFrameList(animPackage: PkgName.LanternFrame, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "lantern_frame", layer: 0, scale: 1f));
             {
+                float scale = 0.075f;
+
+                AddFrameList(animPackage: PkgName.LanternFrame, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "lantern_frame", layer: 0, scale: scale));
+
                 PkgName packageName = PkgName.Lantern;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: 0, scale: 1f));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: 1f));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: 1f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: 0, scale: scale));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
             }
             {
                 PkgName packageName = PkgName.Campfire;
