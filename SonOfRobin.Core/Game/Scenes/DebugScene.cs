@@ -409,11 +409,19 @@ namespace SonOfRobin
                 world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(2), transitionLength: TimeSpan.FromMinutes(0.3f)));
             }
 
+            //if (Keyboard.HasBeenPressed(Keys.F3))
+            //{
+            //    if (world == null) return;
+
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
+            //} 
+            
+            
             if (Keyboard.HasBeenPressed(Keys.F3))
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
+                new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

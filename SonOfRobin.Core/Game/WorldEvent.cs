@@ -261,7 +261,7 @@ namespace SonOfRobin
 
                 case EventName.RestorePieceCreation:
                     {
-                        var pieceName = (PieceTemplate.Name)Helpers.CastObjectToInt(this.eventHelper);
+                        var pieceName = (PieceTemplate.Name)Helpers.CastObjectToUshort(this.eventHelper);
                         world.doNotCreatePiecesList.Remove(pieceName);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{pieceName}' creation restored.");

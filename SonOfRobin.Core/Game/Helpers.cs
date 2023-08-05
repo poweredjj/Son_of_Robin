@@ -435,6 +435,17 @@ namespace SonOfRobin
             return convertedObj;
         }
 
+        public static ushort CastObjectToUshort(object obj) // for json deserialization, because it doesn't store types properly
+        {
+            ushort convertedObj;
+            try
+            { convertedObj = (ushort)(Int64)obj; }
+            catch (Exception)
+            { convertedObj = Convert.ToUInt16(obj); }
+
+            return convertedObj;
+        }
+
         public static byte CastObjectToByte(object obj) // for json deserialization, because it doesn't store types properly
         {
             byte convertedObj;
