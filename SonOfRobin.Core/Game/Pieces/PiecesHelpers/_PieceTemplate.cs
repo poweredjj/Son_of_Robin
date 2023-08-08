@@ -2010,7 +2010,7 @@ namespace SonOfRobin
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f,
-                         maxHitPoints: 1600, maxAge: 50000, maxStamina: 1300, eats: eats, strength: 140, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
+                         maxHitPoints: 2400, maxAge: 50000, maxStamina: 1300, eats: eats, strength: 140, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack);
 
                         return boardPiece;
                     }
