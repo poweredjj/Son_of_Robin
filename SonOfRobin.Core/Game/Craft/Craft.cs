@@ -417,7 +417,7 @@ namespace SonOfRobin
                     taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
-                if (unlockedPieces.Count > 0)
+                if (unlockedPieces.Any())
                 {
                     Menu.RebuildAllMenus();
 
@@ -591,6 +591,49 @@ namespace SonOfRobin
             }
 
             CheckIfRecipesAreCorrect();
+        }
+
+        public static void UnlockRecipesAddedInGameUpdate(World world)
+        {
+            // to unlock recipes, that were added in game update
+
+            var unlockedPieces = new List<PieceTemplate.Name>();
+
+            foreach (Recipe recipe in AllRecipes)
+            {
+                foreach (PieceTemplate.Name newUnlockedPiece in recipe.unlocksWhenCrafted)
+                {
+                    if (!world.discoveredRecipesForPieces.Contains(newUnlockedPiece))
+                    {
+                        if (world.craftStats.HowManyTimesHasBeenCrafted(recipe) >= recipe.craftCountToUnlock)
+                        {
+                            unlockedPieces.Add(newUnlockedPiece);
+                            world.discoveredRecipesForPieces.Add(newUnlockedPiece);
+                        }
+                    }
+                }
+            }
+
+            if (unlockedPieces.Any())
+            {
+                Menu.RebuildAllMenus();
+
+                string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked (game update)" : "New recipes unlocked (game update):\n";
+                var imageList = new List<Texture2D>();
+
+                foreach (PieceTemplate.Name name in unlockedPieces)
+                {
+                    PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
+                    unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
+                    imageList.Add(unlockedPieceInfo.texture);
+                }
+
+                var taskChain = new List<Object>();
+
+                taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
+            }
         }
 
         private static void CheckIfRecipesAreCorrect()

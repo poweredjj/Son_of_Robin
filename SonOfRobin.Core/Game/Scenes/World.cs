@@ -521,6 +521,7 @@ namespace SonOfRobin
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+            else Craft.UnlockRecipesAddedInGameUpdate(world: this);
         }
 
         private void ProcessAllPopulatingSteps()
