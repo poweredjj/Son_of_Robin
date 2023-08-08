@@ -10,6 +10,7 @@ namespace SonOfRobin
         public readonly BuffEngine.BuffType type;
         public readonly bool isPositive;
         public readonly string description;
+        public readonly string statMenuText;
         public readonly string iconText;
         public object value;
         public readonly bool canKill;
@@ -35,6 +36,7 @@ namespace SonOfRobin
             this.sleepMinutesNeededForActivation = sleepMinutesNeededForActivation;
             this.isPositive = this.GetIsPositive();
             this.description = this.GetDescription();
+            this.statMenuText = this.GetStatMenuText();
             this.iconText = this.GetIconText();
 
             this.endFrame = 0; // to be assigned during activation
@@ -311,6 +313,90 @@ namespace SonOfRobin
             if (this.sleepMinutesNeededForActivation > 0) description = $"After sleeping for {Math.Round((float)((float)this.sleepMinutesNeededForActivation / 60), 1)} hours: {Helpers.FirstCharToLowerCase(description)}";
 
             return description;
+        }
+
+        private string GetStatMenuText()
+        {
+            string sign = this.SignString;
+            string duration = this.autoRemoveDelay == 0 ? "" : $" for {Math.Round(this.autoRemoveDelay / 60f)}s";
+
+            switch (this.type)
+            {
+                case BuffEngine.BuffType.InvWidth:
+                    return null;
+
+                case BuffEngine.BuffType.InvHeight:
+                    return null;
+
+                case BuffEngine.BuffType.ToolbarWidth:
+                    return null;
+
+                case BuffEngine.BuffType.ToolbarHeight:
+                    return null;
+
+                case BuffEngine.BuffType.Speed:
+                    return $"Speed {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.Strength:
+                    return $"Strength {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.HP:
+                    return $"Health {sign}{this.value}.";
+
+                case BuffEngine.BuffType.MaxHP:
+                    return $"Max health {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.MaxFatigue:
+                    return $"Max fatigue {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.EnableMap:
+                    return "Map enabled.";
+
+                case BuffEngine.BuffType.Tired:
+                    return "Tired.";
+
+                case BuffEngine.BuffType.LowHP:
+                    return "Low HP.";
+
+                case BuffEngine.BuffType.Hungry:
+                    return "Hungry.";
+
+                case BuffEngine.BuffType.Heat:
+                    return "Heat.";
+
+                case BuffEngine.BuffType.HeatProtection:
+                    return "Heat protection.";
+
+                case BuffEngine.BuffType.SwampProtection:
+                    return "Swamp poison protection.";
+
+                case BuffEngine.BuffType.FastMountainWalking:
+                    return "Fast mountain walking.";
+
+                case BuffEngine.BuffType.Wet:
+                    return "Wet.";
+
+                case BuffEngine.BuffType.RegenPoison:
+                    return this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.Haste:
+                    return $"Haste {sign}{this.value}{duration}.";
+
+                case BuffEngine.BuffType.Fatigue:
+                    return null;
+
+                case BuffEngine.BuffType.Sprint:
+                    return null;
+
+                case BuffEngine.BuffType.SprintCooldown:
+                    return "Cannot sprint for a while.";
+
+                case BuffEngine.BuffType.HeatLevelLocked:
+                    return null;
+
+                default:
+                    throw new ArgumentException($"Unsupported buff type - {this.type}.");
+            }
         }
 
         public string PotionText
