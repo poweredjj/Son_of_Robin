@@ -722,7 +722,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BootsProtective, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_protective", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsMountain, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsSpeed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_speed", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.GlovesStrength, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.GlovesStrength, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.HerbsGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlack, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlue, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_blue", layer: 0));
