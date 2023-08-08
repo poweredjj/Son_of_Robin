@@ -51,8 +51,8 @@ namespace SonOfRobin
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
-            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1, int harvestLevel = 1) :
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxHitPoints, float maxFatigue, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
+            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: activeState, soundPack: soundPack)
         {
@@ -60,10 +60,10 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxFatigue = maxFatigue;
             this.fatigue = 0;
-            this.CraftLevel = craftLevel;
-            this.CookLevel = cookLevel;
-            this.BrewLevel = brewLevel;
-            this.HarvestLevel = harvestLevel;
+            this.CraftLevel = 1;
+            this.CookLevel = 1;
+            this.BrewLevel = 1;
+            this.HarvestLevel = 1;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later

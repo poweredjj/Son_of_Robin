@@ -1051,57 +1051,6 @@ namespace SonOfRobin
 
         private static void CreateCharacterSelection(Menu menu)
         {
-            // description should match stats updated in World.CreateAndPlacePlayer()
-
-            Color rectColor, textColor;
-
-            List<string> descriptionTextList = new();
-
-            if (!Preferences.EnableTestCharacters && Preferences.newWorldPlayerName == PieceTemplate.Name.PlayerTestDemoness)
-            {
-                // to avoid showing wrong description at the start
-                Preferences.newWorldPlayerName = PieceTemplate.Name.PlayerBoy;
-            }
-
-            switch (Preferences.newWorldPlayerName)
-            {
-                case PieceTemplate.Name.PlayerBoy:
-                    rectColor = Color.LightBlue;
-                    textColor = Color.Black;
-
-                    descriptionTextList.Add("Stronger, faster. More health, more stamina.");
-                    descriptionTextList.Add("Gets tired more slowly.");
-
-                    break;
-
-                case PieceTemplate.Name.PlayerGirl:
-                    rectColor = Color.Pink;
-                    textColor = Color.Black;
-
-                    descriptionTextList.Add("Smart crafting, better cooking.");
-                    descriptionTextList.Add("Bigger inventory and toolbar.");
-
-                    break;
-
-                case PieceTemplate.Name.PlayerTestDemoness:
-                    rectColor = Color.Violet;
-                    textColor = Color.Black;
-
-                    descriptionTextList.Add("Makes earth tremble, shatters the heavens.");
-                    descriptionTextList.Add("Is a demigod, will ruin your game.");
-
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported newWorldPlayerName - {Preferences.newWorldPlayerName}.");
-            }
-
-            var infoTextList = new List<InfoWindow.TextEntry>();
-            foreach (string text in descriptionTextList)
-            {
-                infoTextList.Add(new InfoWindow.TextEntry(text: text, color: Color.White, scale: 1f));
-            }
-
             var selectorValueDict = new Dictionary<object, object>();
 
             List<PieceTemplate.Name> playerNames = PieceInfo.GetPlayerNames();
@@ -1112,15 +1061,7 @@ namespace SonOfRobin
                 selectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
             }
 
-            new Selector(menu: menu, name: "character", infoTextList: infoTextList, valueDict: selectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
-
-            if (Input.currentControlType == Input.ControlType.Touch) // mobile users will not see InfoWindow, using separators instead
-            {
-                foreach (string text in descriptionTextList)
-                {
-                    new Separator(menu: menu, name: text, rectColor: rectColor, textColor: textColor);
-                }
-            }
+            new Selector(menu: menu, name: "character", valueDict: selectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)
