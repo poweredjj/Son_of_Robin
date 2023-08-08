@@ -220,6 +220,8 @@ namespace SonOfRobin
             HatSimple = 165,
             BootsProtective = 166,
             BootsMountain = 215,
+            BootsSpeed = 216,
+            GlovesStrength = 217,
 
             TorchSmall = 167,
             TorchBig = 168,
@@ -2483,13 +2485,30 @@ namespace SonOfRobin
 
                 case Name.BootsMountain:
                     {
-                        var buffList = new List<Buff>
-                        {
-                           new Buff(type: BuffEngine.BuffType.FastMountainWalking, value: null)
-                        };
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.FastMountainWalking, value: null) };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsMountain, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "mountain boots", description: "Allow fast walking in the mountains.");
+
+                        return boardPiece;
+                    }
+
+                case Name.BootsSpeed:
+                    {
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.Speed, value: 1f) };
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsSpeed, equipType: Equipment.EquipType.Legs,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "boots of speed", description: "Increase speed.");
+
+                        return boardPiece;
+                    }
+
+                case Name.GlovesStrength:
+                    {
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.Strength, value: 1) };
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlovesStrength, equipType: Equipment.EquipType.Accessory,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "gloves of strength", description: "Increase strength.");
 
                         return boardPiece;
                     }
