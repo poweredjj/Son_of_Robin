@@ -1859,7 +1859,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
-                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 80f } };
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 60f } };
                         break;
 
                     case PieceTemplate.Name.SpearCrystal:
@@ -1869,7 +1869,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
-                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 140 } };
+                        this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 85 } };
                         break;
 
                     case PieceTemplate.Name.ScytheStone:

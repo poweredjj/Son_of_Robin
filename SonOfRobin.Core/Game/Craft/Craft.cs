@@ -595,8 +595,6 @@ namespace SonOfRobin
 
         public static void UnlockRecipesAddedInGameUpdate(World world)
         {
-            // to unlock recipes, that were added in game update
-
             var unlockedPieces = new List<PieceTemplate.Name>();
 
             foreach (Recipe recipe in AllRecipes)
