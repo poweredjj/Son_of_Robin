@@ -373,18 +373,18 @@ namespace SonOfRobin
         { get { return UpdateTimeElapsed + LastDrawDuration; } }
 
         public bool CanProcessMoreCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 15 * (this.currentSubUpdate + 1); } }
+        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
 
         public bool CanProcessMoreNonPlantsNow
         { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && (this.WorldElapsedUpdateTime.Milliseconds <= this.NonPlantMaxDuration * (this.currentSubUpdate + 1)); } }
 
-        private int NonPlantMaxDuration { get { return this.currentSubUpdate == 0 ? 12 : 15; } }
+        private int NonPlantMaxDuration { get { return this.currentSubUpdate == 0 ? 12 : 14; } }
 
         public bool CanProcessMorePlantsNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 15 * (this.currentSubUpdate + 1); } }
+        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
 
         public bool CanFindFreeSpotForNewBoardPieceNow
-        { get { return !this.plantsProcessing || this.WorldElapsedUpdateTime.Milliseconds <= 15 * (this.currentSubUpdate + 1); } }
+        { get { return !this.plantsProcessing || this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
 
         public float PieceCount
         {
