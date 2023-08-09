@@ -41,7 +41,7 @@ namespace SonOfRobin
             {
                 this.valueDict = new Dictionary<object, object> { };
                 foreach (var value in valueList)
-                { this.valueDict[value] = value; }
+                { this.valueDict[value] = value.ToString(); }
             }
             if (valueDict != null) this.valueDict = valueDict;
 
