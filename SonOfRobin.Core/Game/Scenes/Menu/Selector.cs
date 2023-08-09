@@ -29,34 +29,21 @@ namespace SonOfRobin
         public override string DisplayedText
         { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
+        public Selector(Menu menu, string name, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty, List<Object> valueList = null, Dictionary<object, object> valueDict = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
 
-            this.valueDict = new Dictionary<object, object> { };
-            foreach (var value in valueList)
-            { valueDict[value] = value; }
+            if (valueList == null && valueDict == null) throw new ArgumentException("Both valueList and valueDict are null.");
+            if (valueList != null && valueDict != null) throw new ArgumentException("Both valueList and valueDict are not null.");
 
-            this.captureInput = captureInput;
-            this.captureButtons = captureButtons;
-            this.captureKeys = captureKeys;
-            if (this.captureInput && !this.captureButtons && !this.captureKeys) throw new ArgumentException("No input could be captured.");
-            this.captureModeActive = false;
-
-            this.soundSelect = sound == SoundData.Name.Empty ? this.menu.soundSelect : new Sound(sound);
-
-            this.CompleteCreation();
-        }
-
-        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty) :
-
-            base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, rebuildsAllMenus: rebuildsAllMenus, infoTextList: infoTextList)
-        {
-            this.targetObj = targetObj;
-            this.propertyName = propertyName;
-
-            this.valueDict = valueDict;
+            if (valueList != null)
+            {
+                this.valueDict = new Dictionary<object, object> { };
+                foreach (var value in valueList)
+                { this.valueDict[value] = value; }
+            }
+            if (valueDict != null) this.valueDict = valueDict;
 
             this.captureInput = captureInput;
             this.captureButtons = captureButtons;
