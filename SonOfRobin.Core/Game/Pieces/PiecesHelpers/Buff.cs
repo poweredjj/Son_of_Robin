@@ -182,6 +182,9 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.FastMountainWalking:
                     return true;
 
+                case BuffEngine.BuffType.CanSeeThroughFog:
+                    return true;
+
                 case BuffEngine.BuffType.Wet:
                     return true;
 
@@ -276,6 +279,10 @@ namespace SonOfRobin
 
                 case BuffEngine.BuffType.FastMountainWalking:
                     description = "Fast mountain walking.";
+                    break;
+
+                case BuffEngine.BuffType.CanSeeThroughFog:
+                    description = "Makes the fog invisible.";
                     break;
 
                 case BuffEngine.BuffType.Wet:
@@ -373,6 +380,9 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.FastMountainWalking:
                     return "Fast mountain walking.";
 
+                case BuffEngine.BuffType.CanSeeThroughFog:
+                    return "Can see through fog.";
+
                 case BuffEngine.BuffType.Wet:
                     return "Wet.";
 
@@ -428,6 +438,9 @@ namespace SonOfRobin
 
                     case BuffEngine.BuffType.FastMountainWalking:
                         return "fast mountain walking";
+
+                    case BuffEngine.BuffType.CanSeeThroughFog:
+                        return "seeing through fog";
 
                     case BuffEngine.BuffType.Wet:
                         return null;
@@ -523,6 +536,9 @@ namespace SonOfRobin
                     return null;
 
                 case BuffEngine.BuffType.FastMountainWalking:
+                    return null;
+
+                case BuffEngine.BuffType.CanSeeThroughFog:
                     return null;
 
                 default:

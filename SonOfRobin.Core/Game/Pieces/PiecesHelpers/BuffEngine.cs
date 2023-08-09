@@ -33,6 +33,7 @@ namespace SonOfRobin
             Wet = 22,
             HeatLevelLocked = 23,
             FastMountainWalking = 10,
+            CanSeeThroughFog = 24,
         };
 
         private readonly Dictionary<string, Buff> buffDict;
@@ -346,6 +347,12 @@ namespace SonOfRobin
                 case BuffType.FastMountainWalking:
                     {
                         // this buff exists only to allow for fast mountain walking
+                        return true;
+                    }
+
+                case BuffType.CanSeeThroughFog:
+                    {
+                        // this buff exists only to disable fog drawing
                         return true;
                     }
 

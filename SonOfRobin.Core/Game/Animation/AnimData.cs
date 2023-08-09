@@ -273,6 +273,7 @@ namespace SonOfRobin
             BootsMountain = 309,
             BootsSpeed = 310,
             GlovesStrength = 311,
+            GlassesBlue = 312,
             Dungarees = 235,
 
             LanternFrame = 236,
@@ -723,6 +724,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BootsMountain, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsSpeed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_speed", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.GlovesStrength, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
+            AddFrameList(animPackage: PkgName.GlassesBlue, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "glasses_blue", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.HerbsGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlack, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlue, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_blue", layer: 0));

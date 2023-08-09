@@ -1701,6 +1701,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png
 
+#begin gfx/glasses_blue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/glasses_blue.png
+
 #begin gfx/gloves_strength.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -222,6 +222,7 @@ namespace SonOfRobin
             BootsMountain = 215,
             BootsSpeed = 216,
             GlovesStrength = 217,
+            GlassesBlue = 218,
 
             TorchSmall = 167,
             TorchBig = 168,
@@ -2509,6 +2510,16 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlovesStrength, equipType: Equipment.EquipType.Accessory,
                             allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "gloves of strength", description: "Increase strength.");
+
+                        return boardPiece;
+                    }
+
+                case Name.GlassesBlue:
+                    {
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.CanSeeThroughFog, value: null) };
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassesBlue, equipType: Equipment.EquipType.Accessory,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "blue glasses", description: "Pair of mysterious glasses.");
 
                         return boardPiece;
                     }

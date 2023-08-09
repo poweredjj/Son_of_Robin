@@ -1643,7 +1643,10 @@ namespace SonOfRobin
 
                 // drawing fog
 
-                if (fogPercentage > 0) this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
+                if (fogPercentage > 0 && !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog))
+                {
+                    this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
+                }
 
                 // drawing lightning
 
