@@ -525,7 +525,7 @@ namespace SonOfRobin
 
         private static void AddCategory(Category category, List<Recipe> recipeList)
         {
-            recipesByCategory[category] = recipeList.OrderBy(r => r.pieceToCreate).ToList();
+            recipesByCategory[category] = recipeList.ToList();
         }
 
         public static void PopulateAllCategories()

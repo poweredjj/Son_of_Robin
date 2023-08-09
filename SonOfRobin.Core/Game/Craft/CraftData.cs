@@ -48,9 +48,9 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FenceHorizontalShort, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.WoodPlank, 12 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.FenceHorizontalLong }, craftCountToUnlock: 3),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FenceVerticalShort, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.WoodPlank, 12 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.FenceVerticalLong }, craftCountToUnlock: 3),
-
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FenceHorizontalLong, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.WoodPlank, 20 }}, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 3),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FenceVerticalShort, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.WoodPlank, 12 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 5, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.FenceVerticalLong }, craftCountToUnlock: 3),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FenceVerticalLong, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.WoodPlank, 20 }}, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, craftCountToLevelUp: 2, maxLevel: 3),
 
