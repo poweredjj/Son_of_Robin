@@ -355,6 +355,8 @@ namespace SonOfRobin
         public bool IsPlantMadeByPlayer
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
+        protected int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
+
         public static Random Random
         {
             get
@@ -603,9 +605,13 @@ namespace SonOfRobin
 
             // processing state machine
 
-            this.lastFrameSMProcessed = this.world.CurrentUpdate;
+            bool passiveMovementOccured = this.ProcessPassiveMovement();
 
-            if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
+            if (passiveMovementOccured) // passive movement blocks the state machine until the movement stops
+            {
+                this.lastFrameSMProcessed = this.world.CurrentUpdate; // has to be updated here, to prevent from processing passive movement multiple times
+                return;
+            }
 
             if (!this.world.stateMachineTypesManager.CanBeProcessed(this)) return;
 
@@ -618,193 +624,136 @@ namespace SonOfRobin
             switch (this.activeState)
             {
                 case State.PlayerControlledWalking:
-                    {
-                        this.SM_PlayerControlledWalking();
-                        return;
-                    }
+                    this.SM_PlayerControlledWalking();
+                    break;
+
 
                 case State.PlayerControlledShooting:
-                    {
-                        this.SM_PlayerControlledShooting();
-                        return;
-                    }
+                    this.SM_PlayerControlledShooting();
+                    break;
 
                 case State.PlayerControlledSleep:
-                    {
-                        this.SM_PlayerControlledSleep();
-                        return;
-                    }
+                    this.SM_PlayerControlledSleep();
+                    break;
 
                 case State.PlantGrowthAndReproduction:
-                    {
-                        this.SM_GrowthAndReproduction();
-                        return;
-                    }
+                    this.SM_GrowthAndReproduction();
+                    break;
 
                 case State.AnimalWalkAround:
-                    {
-                        this.SM_AnimalWalkAround();
-                        return;
-                    }
+                    this.SM_AnimalWalkAround();
+                    break;
 
                 case State.AnimalAssessSituation:
-                    {
-                        this.SM_AnimalAssessSituation();
-                        return;
-                    }
+                    this.SM_AnimalAssessSituation();
+                    break;
 
                 case State.AnimalRest:
-                    {
-                        this.SM_AnimalRest();
-                        return;
-                    }
+                    this.SM_AnimalRest();
+                    break;
 
                 case State.AnimalChaseTarget:
-                    {
-                        this.SM_AnimalChaseTarget();
-                        return;
-                    }
+                    this.SM_AnimalChaseTarget();
+                    break;
 
                 case State.AnimalAttack:
-                    {
-                        this.SM_AnimalAttack();
-                        return;
-                    }
+                    this.SM_AnimalAttack();
+                    break;
 
                 case State.AnimalEat:
-                    {
-                        this.SM_AnimalEat();
-                        return;
-                    }
+                    this.SM_AnimalEat();
+                    break;
 
                 case State.AnimalMate:
-                    {
-                        this.SM_AnimalMate();
-                        return;
-                    }
+                    this.SM_AnimalMate();
+                    break;
 
                 case State.AnimalGiveBirth:
-                    {
-                        this.SM_AnimalGiveBirth();
-                        return;
-                    }
+                    this.SM_AnimalGiveBirth();
+                    break;
 
                 case State.AnimalFlee:
-                    {
-                        this.SM_AnimalFlee();
-                        return;
-                    }
+                    this.SM_AnimalFlee();
+                    break;
 
                 case State.AnimalRunForClosestWater:
-                    {
-                        this.SM_AnimalRunForClosestWater();
-                        return;
-                    }
+                    this.SM_AnimalRunForClosestWater();
+                    break;
 
                 case State.AnimalCallForHelp:
-                    {
-                        this.SM_AnimalCallForHelp();
-                        return;
-                    }
+                    this.SM_AnimalCallForHelp();
+                    break;
 
                 case State.SeaWaveMove:
-                    {
-                        this.SM_SeaWaveMove();
-                        return;
-                    }
+                    this.SM_SeaWaveMove();
+                    break;
 
                 case State.PlayerControlledBuilding:
-                    {
-                        this.SM_PlayerControlledBuilding();
-                        return;
-                    }
+                    this.SM_PlayerControlledBuilding();
+                    break;
 
                 case State.PlayerWaitForBuilding:
-                    {
-                        this.SM_PlayerWaitForBuilding();
-                        return;
-                    }
+                    this.SM_PlayerWaitForBuilding();
+                    break;
 
                 case State.PlayerControlledGhosting:
-                    {
-                        this.SM_PlayerControlledGhosting();
-                        return;
-                    }
+                    this.SM_PlayerControlledGhosting();
+                    break;
 
                 case State.PlayerControlledByCinematic:
-                    {
-                        this.SM_PlayerControlledByCinematic();
-                        return;
-                    }
+                    this.SM_PlayerControlledByCinematic();
+                    break;
 
                 case State.FireplaceBurn:
-                    {
-                        this.SM_FireplaceBurn();
-                        return;
-                    }
+                    this.SM_FireplaceBurn();
+                    break;
 
                 case State.ScareAnimalsAway:
-                    {
-                        this.SM_ScarePredatorsAway();
-                        return;
-                    }
+
+                    this.SM_ScarePredatorsAway();
+                    break;
 
                 case State.PlayAmbientSound:
-                    {
-                        this.SM_PlayAmbientSound();
-                        return;
-                    }
+                    this.SM_PlayAmbientSound();
+                    break;
 
                 case State.MapMarkerShowAndCheck:
-                    {
-                        this.SM_MapMarkerShowAndCheck();
-                        return;
-                    }
+                    this.SM_MapMarkerShowAndCheck();
+                    break;
 
                 case State.FogMoveRandomly:
-                    {
-                        this.SM_FogMoveRandomly();
-                        return;
-                    }
+                    this.SM_FogMoveRandomly();
+                    break;
 
                 case State.RainInitialize:
-                    {
-                        this.SM_RainInitialize();
-                        return;
-                    }
+                    this.SM_RainInitialize();
+                    break;
 
                 case State.RainFall:
-                    {
-                        this.SM_RainFall();
-                        return;
-                    }
+                    this.SM_RainFall();
+                    break;
 
                 case State.FlameBurn:
-                    {
-                        this.SM_FlameBurn();
-                        return;
-                    }
+                    this.SM_FlameBurn();
+                    break;
 
                 case State.DryMeat:
-                    {
-                        this.SM_DryMeat();
-                        return;
-                    }
+                    this.SM_DryMeat();
+                    break;
 
                 case State.EmitParticles:
-                    {
-                        this.SM_EmitParticles();
-                        return;
-                    }
+                    this.SM_EmitParticles();
+                    break;
 
                 case State.Empty: // this state should be removed from execution (for performance reasons)
-                    {
-                        this.RemoveFromStateMachines();
-                        return;
-                    }
+                    this.RemoveFromStateMachines();
+                    break;
+
                 default:
                     { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
+
+            this.lastFrameSMProcessed = this.world.CurrentUpdate; // updated after SM processing, to allow for proper time delta calculation
         }
 
         public void ProcessHeat()

@@ -23,7 +23,6 @@ namespace SonOfRobin
         public float massTakenMultiplier;
         private float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
-        private int lastFrameProcessed; // for time delta calculation
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
@@ -31,7 +30,6 @@ namespace SonOfRobin
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {
-            this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.massTakenMultiplier = massTakenMultiplier;
             this.occupiedFieldWealth = -1f;
             this.fruitEngine = fruitEngine;
@@ -85,7 +83,7 @@ namespace SonOfRobin
 
         public void SimulateUnprocessedGrowth() // for plants that are placed during world creation
         {
-            this.lastFrameProcessed -= 60 * 60 * this.world.random.Next(10, 30);
+            this.lastFrameSMProcessed -= 60 * 60 * this.world.random.Next(10, 30);
         }
 
         public void DropSeeds()
@@ -149,8 +147,7 @@ namespace SonOfRobin
             //if (this.sprite.color == Color.White) this.sprite.color = Color.Blue; // for testing
             //else this.sprite.color = Color.White; // for testing
 
-            int timeDelta = Math.Max((this.world.CurrentUpdate - this.lastFrameProcessed) / growthSlowdown, 1); // timeDelta must be slowed down, for reasonable growth rate
-            this.lastFrameProcessed = this.world.CurrentUpdate;
+            int timeDelta = Math.Max(this.FramesSinceLastProcessed / growthSlowdown, 1); // timeDelta must be slowed down, for reasonable growth rate
 
             float massTaken = this.OccupiedFieldWealth * this.massTakenMultiplier * this.efficiency * 25 * timeDelta;
             if (this.fruitEngine != null)
