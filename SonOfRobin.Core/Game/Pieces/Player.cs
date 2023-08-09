@@ -775,8 +775,8 @@ namespace SonOfRobin
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
-            bool pickUp = InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
-                (Preferences.PointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.GfxRect.Contains(this.pointWalkTarget));
+            bool pickUp = pieceToPickUp != null && (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
+                (Preferences.PointToInteract && pieceToPickUp.sprite.GfxRect.Contains(this.pointWalkTarget)));
 
             if (pickUp)
             {
@@ -785,17 +785,17 @@ namespace SonOfRobin
                 return;
             }
 
-            bool interact = !pickUp && (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract) ||
-                (Preferences.PointToInteract && pieceToInteract != null && pieceToInteract.sprite.GfxRect.Contains(this.pointWalkTarget)));
+            bool interact = !pickUp && pieceToInteract != null &&
+                (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract) ||
+                (Preferences.PointToInteract &&
+                !TouchInput.IsBeingTouchedInAnyWay && // to avoid activating multiple times while holding touch
+                pieceToInteract.sprite.GfxRect.Intersects(new Rectangle(x: (int)this.pointWalkTarget.X - 1, y: (int)this.pointWalkTarget.Y - 1, width: 2, height: 2))));
 
             if (interact)
             {
-                if (pieceToInteract != null)
-                {
-                    this.pointWalkTarget = Vector2.Zero; // to avoid interacting indefinitely
-                    this.world.HintEngine.Disable(Tutorials.Type.Interact);
-                    new Scheduler.Task(taskName: pieceToInteract.pieceInfo.boardTask, delay: 0, executeHelper: pieceToInteract);
-                }
+                this.pointWalkTarget = Vector2.Zero; // to avoid interacting indefinitely
+                this.world.HintEngine.Disable(Tutorials.Type.Interact);
+                new Scheduler.Task(taskName: pieceToInteract.pieceInfo.boardTask, delay: 0, executeHelper: pieceToInteract);
             }
         }
 
@@ -810,7 +810,7 @@ namespace SonOfRobin
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
-                    if (touch.State == TouchLocationState.Pressed && !TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
+                    if (!TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
                     {
                         Vector2 worldTouchPos = this.world.TranslateScreenToWorldPos(touch.Position);
                         //  var crosshair = PieceTemplate.CreateOnBoard(world: world, position: worldTouchPos, templateName: PieceTemplate.Name.Crosshair); // for testing
