@@ -658,12 +658,10 @@ namespace SonOfRobin
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
-                    if (playerName != PieceTemplate.Name.PlayerTestDemoness)
-                    {
-                        BoardPiece startingItem = PieceTemplate.Create(world: this, templateName: Preferences.newWorldStartingItem);
-                        this.Player.EquipStorage.AddPiece(startingItem);
-                    }
-                    else
+                    BoardPiece startingItem = PieceTemplate.Create(world: this, templateName: Preferences.newWorldStartingItem);
+                    this.Player.PieceStorage.AddPiece(startingItem); // should not equip the item automatically
+
+                    if (playerName == PieceTemplate.Name.PlayerTestDemoness)
                     {
                         var pieceNamesToEquip = new List<PieceTemplate.Name> {
                                 PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple, PieceTemplate.Name.Dungarees

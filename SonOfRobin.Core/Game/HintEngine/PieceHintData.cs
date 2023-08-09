@@ -102,7 +102,6 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.LeatherPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: $"I can use this | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName } to make a | map.\nBut I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName } to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
