@@ -436,7 +436,7 @@ namespace SonOfRobin
 
                         CreateCharacterSelection(menu);
 
-                        new Invoker(menu: menu, name: "confirm restart", taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
+                        new Invoker(menu: menu, name: "restart now", taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
