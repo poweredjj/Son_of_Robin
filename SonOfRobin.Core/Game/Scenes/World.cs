@@ -658,98 +658,87 @@ namespace SonOfRobin
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
-                    switch (playerName)
+                    if (playerName != PieceTemplate.Name.PlayerTestDemoness)
                     {
-                        // adding character bonuses, that would not be possible to add in PieceTemplate.Create()
-
-                        case PieceTemplate.Name.PlayerBoy:
-                            // bonuses creation placeholder
-                            break;
-
-                        case PieceTemplate.Name.PlayerGirl:
-                            // bonuses creation placeholder
-                            break;
-
-                        case PieceTemplate.Name.PlayerTestDemoness:
-                            var pieceNamesToEquip = new List<PieceTemplate.Name> {
+                        BoardPiece startingItem = PieceTemplate.Create(world: this, templateName: Preferences.newWorldStartingItem);
+                        this.Player.EquipStorage.AddPiece(startingItem);
+                    }
+                    else
+                    {
+                        var pieceNamesToEquip = new List<PieceTemplate.Name> {
                                 PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple, PieceTemplate.Name.Dungarees
                             };
 
-                            foreach (PieceTemplate.Name name in pieceNamesToEquip)
-                            {
-                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
-                                this.Player.EquipStorage.AddPiece(piece);
-                            }
+                        foreach (PieceTemplate.Name name in pieceNamesToEquip)
+                        {
+                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                            this.Player.EquipStorage.AddPiece(piece);
+                        }
 
-                            this.map.TurnOff();
+                        this.map.TurnOff();
 
-                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal,  PieceTemplate.Name.BowAdvanced
+                        var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal,  PieceTemplate.Name.BowAdvanced
                             };
 
-                            foreach (PieceTemplate.Name name in pieceNamesForToolbar)
-                            {
-                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
-                                this.Player.ToolStorage.AddPiece(piece);
-                            }
+                        foreach (PieceTemplate.Name name in pieceNamesForToolbar)
+                        {
+                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                            this.Player.ToolStorage.AddPiece(piece);
+                        }
 
-                            for (int i = 0; i < 50; i++)
-                            {
-                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowExploding);
-                                this.Player.ToolStorage.AddPiece(piece);
-                            }
+                        for (int i = 0; i < 50; i++)
+                        {
+                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowExploding);
+                            this.Player.ToolStorage.AddPiece(piece);
+                        }
 
-                            foreach (Cell cell in this.Grid.allCells)
-                            {
-                                cell.SetAsVisited();
-                            }
+                        foreach (Cell cell in this.Grid.allCells)
+                        {
+                            cell.SetAsVisited();
+                        }
 
-                            var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
+                        var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
 
-                            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                        foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                        {
+                            Craft.Recipe recipe = Craft.GetRecipe(name);
+                            if (recipe != null)
                             {
-                                Craft.Recipe recipe = Craft.GetRecipe(name);
-                                if (recipe != null)
+                                foreach (var kvp in recipe.ingredients)
                                 {
-                                    foreach (var kvp in recipe.ingredients)
-                                    {
-                                        PieceTemplate.Name ingredientName = kvp.Key;
-                                        int ingredientCount = kvp.Value;
+                                    PieceTemplate.Name ingredientName = kvp.Key;
+                                    int ingredientCount = kvp.Value;
 
-                                        if (!piecesForInventoryWithCount.ContainsKey(ingredientName) || piecesForInventoryWithCount[ingredientName] < ingredientCount)
-                                        {
-                                            piecesForInventoryWithCount[ingredientName] = ingredientCount;
-                                        }
+                                    if (!piecesForInventoryWithCount.ContainsKey(ingredientName) || piecesForInventoryWithCount[ingredientName] < ingredientCount)
+                                    {
+                                        piecesForInventoryWithCount[ingredientName] = ingredientCount;
                                     }
                                 }
                             }
+                        }
 
-                            foreach (var kvp in piecesForInventoryWithCount)
+                        foreach (var kvp in piecesForInventoryWithCount)
+                        {
+                            PieceTemplate.Name name = kvp.Key;
+                            int count = kvp.Value;
+
+                            bool pieceAdded = false;
+                            for (int i = 0; i < count; i++)
                             {
-                                PieceTemplate.Name name = kvp.Key;
-                                int count = kvp.Value;
-
-                                bool pieceAdded = false;
-                                for (int i = 0; i < count; i++)
-                                {
-                                    BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
-                                    pieceAdded = this.Player.PieceStorage.AddPiece(piece);
-                                    if (!pieceAdded) break;
-                                }
+                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                pieceAdded = this.Player.PieceStorage.AddPiece(piece);
                                 if (!pieceAdded) break;
                             }
+                            if (!pieceAdded) break;
+                        }
 
-                            foreach (PieceStorage storage in this.Player.CraftStoragesToPutInto)
+                        foreach (PieceStorage storage in this.Player.CraftStoragesToPutInto)
+                        {
+                            foreach (BoardPiece piece in storage.GetAllPieces())
                             {
-                                foreach (BoardPiece piece in storage.GetAllPieces())
-                                {
-                                    if (!this.identifiedPieces.Contains(piece.name)) this.identifiedPieces.Add(piece.name);
-                                }
+                                if (!this.identifiedPieces.Contains(piece.name)) this.identifiedPieces.Add(piece.name);
                             }
-
-                            break;
-
-                        default:
-                            break;
+                        }
                     }
 
                     return;

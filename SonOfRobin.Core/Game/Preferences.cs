@@ -25,6 +25,7 @@ namespace SonOfRobin
 
         public static int newWorldResDivider;
         public static PieceTemplate.Name newWorldPlayerName;
+        public static PieceTemplate.Name newWorldStartingItem;
 
         public static bool randomSeed;
         public static char seedDigit1 = '0';
@@ -485,6 +486,7 @@ namespace SonOfRobin
         public static void ResetNewWorldSettings()
         {
             newWorldPlayerName = PieceTemplate.Name.PlayerBoy;
+            newWorldStartingItem = PieceTemplate.Name.BeltSmall;
             SelectedWorldSize = WorldSize.medium;
             CustomizeWorld = false;
         }
@@ -554,6 +556,7 @@ namespace SonOfRobin
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldSize"] = newWorldSize;
             prefsData["newWorldPlayerName"] = newWorldPlayerName;
+            prefsData["newWorldStartingItem"] = newWorldStartingItem;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -601,6 +604,7 @@ namespace SonOfRobin
             prefsData["rumbleEnabled"] = rumbleEnabled;
             prefsData["showParticles"] = showParticles;
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
+            prefsData["newWorldStartingItem"] = newWorldStartingItem;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 

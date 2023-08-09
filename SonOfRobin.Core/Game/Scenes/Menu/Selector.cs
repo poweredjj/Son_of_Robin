@@ -26,9 +26,6 @@ namespace SonOfRobin
         private Object ActiveValue
         { get { return valueDict.Keys.ElementAt(activeIndex); } }
 
-        private bool ActiveNameIsTexture
-        { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
-
         public override string DisplayedText
         { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
@@ -156,14 +153,23 @@ namespace SonOfRobin
 
             if (active) this.UpdateHintWindow();
 
-            if (this.ActiveNameIsTexture)
-            {
-                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: new List<Texture2D> { (Texture2D)this.ActiveName });
-                return;
-            }
-            else
+            var activeNameType = this.ActiveName.GetType();
+            if (activeNameType == typeof(string))
             {
                 base.Draw(active: active, textOverride: textOverride);
+            }
+            else if (activeNameType == typeof(Texture2D))
+            {
+                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: new List<Texture2D> { (Texture2D)this.ActiveName });
+            }
+            else if (activeNameType == typeof(List<object>))
+            {
+                var objectList = (List<object>)this.ActiveName;
+
+                string text = (string)objectList[0];
+                Texture2D texture = (Texture2D)objectList[1];
+
+                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<Texture2D> { texture });
                 return;
             }
         }

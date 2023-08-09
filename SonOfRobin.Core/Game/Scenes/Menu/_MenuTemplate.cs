@@ -421,7 +421,7 @@ namespace SonOfRobin
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerName", Preferences.newWorldPlayerName } }, sound: SoundData.Name.NewGameStart);
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerName", Preferences.newWorldPlayerName }, { "startingItem", Preferences.newWorldStartingItem } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -531,7 +531,6 @@ namespace SonOfRobin
 
                             foreach (Buff buff in player.buffEngine.BuffList)
                             {
-
                                 if (buff.statMenuText != null)
                                 {
                                     if (buff.isPositive) positiveBuffTextLines.Add(buff.statMenuText);
@@ -1051,17 +1050,28 @@ namespace SonOfRobin
 
         private static void CreateCharacterSelection(Menu menu)
         {
-            var selectorValueDict = new Dictionary<object, object>();
+            var playerSelectorValueDict = new Dictionary<object, object>();
 
             List<PieceTemplate.Name> playerNames = PieceInfo.GetPlayerNames();
             if (!Preferences.EnableTestCharacters) playerNames.Remove(PieceTemplate.Name.PlayerTestDemoness); // add every test character here
 
             foreach (PieceTemplate.Name playerName in playerNames)
             {
-                selectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
+                playerSelectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
             }
 
-            new Selector(menu: menu, name: "character", valueDict: selectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
+            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
+
+            var startingItemNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
+
+            var startingItemSelectorValueDict = new Dictionary<object, object>();
+            foreach (PieceTemplate.Name itemName in startingItemNames)
+            {
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(itemName);
+                startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.texture };
+            }
+
+            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: new Preferences(), propertyName: "newWorldStartingItem", rebuildsAllMenus: true);
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)
