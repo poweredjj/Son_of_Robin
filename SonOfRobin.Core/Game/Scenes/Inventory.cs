@@ -1156,24 +1156,17 @@ namespace SonOfRobin
 
         private void SwapDraggedAndSlotPieces(StorageSlot slot)
         {
+            if (!slot.CanFitThisPiece(piece: this.draggedPieces[0], pieceCount: this.draggedPieces.Count, treatSlotAsEmpty: true)) return;
+
             var slotPieces = this.storage.RemoveAllPiecesFromSlot(slot: slot);
 
-            bool swapPossible = slot.CanFitThisPiece(piece: this.draggedPieces[0], pieceCount: this.draggedPieces.Count);
-            if (swapPossible)
-            {
-                foreach (BoardPiece piece in this.draggedPieces)
-                { slot.AddPiece(piece); }
+            foreach (BoardPiece piece in this.draggedPieces)
+            { slot.AddPiece(piece); }
 
-                this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
-                new RumbleEvent(force: 0.12f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.035f, fadeOutSeconds: 0.035f);
+            this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+            new RumbleEvent(force: 0.12f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.035f, fadeOutSeconds: 0.035f);
 
-                this.draggedPieces = slotPieces;
-            }
-            else
-            {
-                foreach (BoardPiece piece in slotPieces)
-                { slot.AddPiece(piece); }
-            }
+            this.draggedPieces = slotPieces;
         }
 
         public static Inventory GetTopInventory()

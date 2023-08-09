@@ -88,13 +88,12 @@ namespace SonOfRobin
             }
         }
 
-        public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
+        public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1, bool treatSlotAsEmpty = false)
         {
             if (this.locked || (piece.pieceInfo != null && !piece.pieceInfo.canBePickedUp)) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
 
-
-            if (this.IsEmpty) return pieceCount <= Math.Min(piece.StackSize, this.stackLimit);
+            if (this.IsEmpty || treatSlotAsEmpty) return pieceCount <= Math.Min(piece.StackSize, this.stackLimit);
             else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].StackSize, this.stackLimit);
         }
 
