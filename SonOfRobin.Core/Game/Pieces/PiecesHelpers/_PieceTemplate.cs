@@ -83,7 +83,8 @@ namespace SonOfRobin
             ChestTreasureNormal = 56,
             ChestTreasureBig = 57,
 
-            Campfire = 58,
+            CampfireSmall = 58,
+            CampfireMedium = 219,
 
             FertileGroundSmall = 199,
             FertileGroundMedium = 200,
@@ -2596,7 +2597,7 @@ namespace SonOfRobin
                         return decoration;
                     }
 
-                case Name.Campfire:
+                case Name.CampfireSmall:
                     {
                         ushort range = 150;
 
@@ -2605,7 +2606,22 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
-                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Campfire, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
+                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireSmall, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 1, maxHitPoints: 30, readableName: "small campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
+
+                        fireplace.sprite.AssignNewName("off");
+                        return fireplace;
+                    }
+
+                case Name.CampfireMedium:
+                    {
+                        ushort range = 210;
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.volcanoEdgeMin) },
+                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
+                        });
+
+                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireMedium, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "medium campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
                         fireplace.sprite.AssignNewName("off");
                         return fireplace;

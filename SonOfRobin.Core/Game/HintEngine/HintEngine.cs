@@ -274,7 +274,7 @@ namespace SonOfRobin
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
                             new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.AnimFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
-                            new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire)}, blockInput: true)
+                            new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)}, blockInput: true)
                         });
                         break;
                     }

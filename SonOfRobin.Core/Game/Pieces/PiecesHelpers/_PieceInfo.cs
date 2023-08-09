@@ -1172,7 +1172,15 @@ namespace SonOfRobin
                         this.appearDebris = new Yield(debrisType: ParticleEngine.Preset.DebrisStar);
                         break;
 
-                    case PieceTemplate.Name.Campfire:
+                    case PieceTemplate.Name.CampfireSmall:
+                        this.category = BoardPiece.Category.Stone;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseCampfire;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        break;
+
+                    case PieceTemplate.Name.CampfireMedium:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseCampfire;

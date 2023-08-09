@@ -315,16 +315,16 @@ namespace SonOfRobin
                     type: PieceHint.Type.TorchNegative,
                     messageList: new List<HintMessage> {
                         new HintMessage("It's getting dark.", blockInput: true),
-                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), PieceInfo.GetTexture(PieceTemplate.Name.Campfire)  }, blockInput: true)},
+                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)  }, blockInput: true)},
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall},
                     partsOfDay: new List<IslandClock.PartOfDay> {IslandClock.PartOfDay.Evening, IslandClock.PartOfDay.Night}),
 
                 new PieceHint(
                     type: PieceHint.Type.Fireplace,
                     message: "This | bonfire looks ok.\nAll I need now is some | | wood...\nOr | coal?",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Campfire), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal)},
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal)},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
-                    fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
+                    fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.CampfireSmall}),
 
                 new PieceHint(
                     type: PieceHint.Type.SharedChest,

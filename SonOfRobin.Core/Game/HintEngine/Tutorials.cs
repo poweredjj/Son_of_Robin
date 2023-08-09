@@ -168,7 +168,7 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.Fireplace, name: "using fireplace", title: "Using fireplace.",
                 messages: new List<HintMessage> {
-                new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
+                new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                 new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
                 new HintMessage(text: "3. Use | to start the fire.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
                 new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, boxType: messageTextType),
@@ -263,7 +263,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                     new HintMessage(text: "When | | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Tiger), PieceInfo.GetTexture(PieceTemplate.Name.Fox), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopAdvanced), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
 
-                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
+                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
                 });
 
             new Tutorial(type: Type.BuildWorkshop, name: "building a workshop", title: "Building a workshop.",

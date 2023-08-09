@@ -282,7 +282,8 @@ namespace SonOfRobin
 
             SmallTorch = 239,
             BigTorch = 240,
-            Campfire = 241,
+            CampfireSmall = 241,
+            CampfireMedium = 313,
 
             HerbsBlack = 242,
             HerbsCyan = 243,
@@ -1019,7 +1020,7 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
             }
             {
-                PkgName packageName = PkgName.Campfire;
+                PkgName packageName = PkgName.CampfireSmall;
                 var frameList = new List<AnimFrame>
                 {
                     ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
@@ -1028,6 +1029,20 @@ namespace SonOfRobin
                 };
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: frameList);
                 frameList = ConvertImageToFrameList(atlasName: "flames", layer: 1, x: 288, y: 96, width: 48, height: 48, crop: false);
+                AddFrameList(animPackage: packageName, animSize: 0, frameList);
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: frameList);
+            }
+
+            {
+                PkgName packageName = PkgName.CampfireMedium;
+                var frameList = new List<AnimFrame>
+                {
+                    ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: 1, duration: 6, crop: false),
+                    ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: 1, duration: 6, crop: false),
+                    ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: 1, duration: 6, crop: false)
+                };
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: frameList);
+                frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
                 AddFrameList(animPackage: packageName, animSize: 0, frameList);
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: frameList);
             }
