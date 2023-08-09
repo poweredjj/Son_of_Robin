@@ -222,7 +222,7 @@ namespace SonOfRobin
             BootsMountain = 215,
             BootsSpeed = 216,
             GlovesStrength = 217,
-            GlassesBlue = 218,
+            GlassesVelvet = 218,
 
             TorchSmall = 167,
             TorchBig = 168,
@@ -2514,12 +2514,15 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.GlassesBlue:
+                case Name.GlassesVelvet:
                     {
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.PlasticDrop, cooldown: 15, maxPitchVariation: 0.1f));
+
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.CanSeeThroughFog, value: null) };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassesBlue, equipType: Equipment.EquipType.Accessory,
-                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "blue glasses", description: "Pair of mysterious glasses.");
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "velvet glasses", description: "Pair of mysterious glasses.", soundPack: soundPack);
 
                         return boardPiece;
                     }

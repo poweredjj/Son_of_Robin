@@ -7845,6 +7845,12 @@
 /processorParam:Quality=Best
 /build:sound/210100__bowlingballout__pot-lid.ogg
 
+#begin sound/211171__sdlx__plastic-lid-snap.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/211171__sdlx__plastic-lid-snap.ogg
+
 #begin sound/211659__taira-komori__angel-chorus2.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

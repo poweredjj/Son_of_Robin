@@ -1103,7 +1103,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 5, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassesBlue, chanceToDrop: 5, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassesVelvet, chanceToDrop: 5, maxNumberToDrop: 1),
                                 });
                         break;
 
@@ -2233,8 +2233,8 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         break;
 
-                    case PieceTemplate.Name.GlassesBlue:
-                        this.category = BoardPiece.Category.Crystal;
+                    case PieceTemplate.Name.GlassesVelvet:
+                        this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 500;
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
