@@ -355,7 +355,7 @@ namespace SonOfRobin
         public bool IsPlantMadeByPlayer
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
-        protected int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
+        public int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed - 1; } } // TODO remove -1 and find out why animals are processed every second frame
 
         public static Random Random
         {
@@ -626,7 +626,6 @@ namespace SonOfRobin
                 case State.PlayerControlledWalking:
                     this.SM_PlayerControlledWalking();
                     break;
-
 
                 case State.PlayerControlledShooting:
                     this.SM_PlayerControlledShooting();

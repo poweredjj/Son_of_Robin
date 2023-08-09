@@ -1113,12 +1113,14 @@ namespace SonOfRobin
 
         private void ProcessOneNonPlant(BoardPiece piece)
         {
-            if (piece.maxAge > 0) piece.GrowOlder(timeDelta: 1);
+            int timeDelta = piece.FramesSinceLastProcessed;
+
+            if (piece.maxAge > 0) piece.GrowOlder(timeDelta: timeDelta);
 
             if (piece.GetType() == typeof(Animal))
             {
                 Animal nonPlant = (Animal)piece;
-                if (nonPlant.isPregnant && nonPlant.alive) nonPlant.pregnancyFramesLeft = Math.Max(nonPlant.pregnancyFramesLeft - 1, 0);
+                if (nonPlant.isPregnant && nonPlant.alive) nonPlant.pregnancyFramesLeft = Math.Max(nonPlant.pregnancyFramesLeft - timeDelta, 0);
                 if (this.CurrentUpdate % 10 == 0) nonPlant.ExpendEnergy(1);
 
                 if (nonPlant.alive && (nonPlant.HitPoints <= 0 || nonPlant.efficiency == 0 || nonPlant.currentAge >= nonPlant.maxAge))

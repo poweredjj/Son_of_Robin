@@ -192,8 +192,6 @@ namespace SonOfRobin
             this.target = null;
             this.sprite.CharacterStand();
 
-            if (this.world.random.Next(0, 5) != 0) return; // to avoid processing this (very heavy) state every frame
-
             if (this.isPregnant && this.pregnancyFramesLeft <= 0)
             {
                 this.activeState = State.AnimalGiveBirth;
@@ -391,8 +389,12 @@ namespace SonOfRobin
                 }
             }
 
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed / 2, 1), slowDownOnRocks: false);
-            this.ExpendEnergy(Math.Max(this.RealSpeed / 6, 1));
+            // if (this.FramesSinceLastProcessed > 1) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} {this.FramesSinceLastProcessed}");
+
+            int speedMultiplier = Math.Min(this.lastFrameSMProcessed, 3);
+
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * speedMultiplier / 2, 1), slowDownOnRocks: false);
+            this.ExpendEnergy(Math.Max(this.RealSpeed * speedMultiplier / 6, 1));
 
             if (successfullWalking && Vector2.Distance(this.sprite.position, this.aiData.TargetPos) < 10)
             {
@@ -427,7 +429,7 @@ namespace SonOfRobin
             this.target = null;
             this.sprite.CharacterStand();
 
-            this.stamina = Math.Min(this.stamina + 3, this.maxStamina);
+            this.stamina = Math.Min(this.stamina + (3 * this.FramesSinceLastProcessed), this.maxStamina);
             if (this.stamina == this.maxStamina || this.world.random.Next(0, this.pieceInfo.animalAwareness * 10) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
