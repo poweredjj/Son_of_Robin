@@ -110,20 +110,24 @@ namespace SonOfRobin
                     message: $"I should equip this { PieceInfo.GetInfo(PieceTemplate.Name.Map).readableName } | to use it.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Map) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Map },
+                    playerEquipmentDoesNotContainThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Map },
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
 
                 new PieceHint(
                     type: PieceHint.Type.BackpackPositive,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "This backpack | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
-                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall },
+                    playerEquipmentDoesNotContainThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }
+                    ),
 
                 new PieceHint(
                     type: PieceHint.Type.BeltPositive,
                     message: "I should equip my | belt now.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltSmall },
+                    playerEquipmentDoesNotContainThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltSmall },
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
 
                 new PieceHint(

@@ -101,6 +101,7 @@ namespace SonOfRobin
         private readonly int islandTimeElapsedHours;
         private readonly bool fieldPieceHasNotEmptyStorage; // can be used for checking for fruits, etc.
         private readonly List<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
+        private readonly List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces;
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
         private readonly List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces;
         private readonly List<IslandClock.PartOfDay> partsOfDay;
@@ -111,7 +112,7 @@ namespace SonOfRobin
         private readonly bool menuOnly;
         private readonly bool ignoreHintSetting;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -119,6 +120,7 @@ namespace SonOfRobin
             this.fieldPiecesNearby = fieldPiecesNearby;
             this.fieldPieceHasNotEmptyStorage = fieldPieceHasNotEmptyStorage;
             this.playerOwnsAnyOfThesePieces = playerOwnsAnyOfThesePieces;
+            this.playerEquipmentDoesNotContainThesePieces = playerEquipmentDoesNotContainThesePieces;
             this.playerOwnsAllOfThesePieces = playerOwnsAllOfThesePieces;
             this.playerDoesNotOwnAnyOfThesePieces = playerDoesNotOwnAnyOfThesePieces;
             this.partsOfDay = partsOfDay;
@@ -296,6 +298,15 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name name in this.playerOwnsAllOfThesePieces)
                 {
                     if (!CheckIfPlayerOwnsPiece(player: player, name: name)) return false;
+                }
+            }
+
+            // player - has none of these items equipped
+            if (this.playerEquipmentDoesNotContainThesePieces != null)
+            {
+                foreach (PieceTemplate.Name name in this.playerEquipmentDoesNotContainThesePieces)
+                {
+                    if (player.EquipStorage.GetFirstPieceOfName(name: name, removePiece: false) != null) return false;
                 }
             }
 
