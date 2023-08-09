@@ -74,7 +74,7 @@ namespace SonOfRobin
             RebuildMenu = 57,
             RebuildAllMenus = 58,
             CheckForIncorrectPieces = 59,
-            RestartWorld = 60,
+            RestartIsland = 60,
             ResetNewWorldSettings = 61,
             PlaySound = 62,
             PlaySoundByName = 63,
@@ -343,14 +343,13 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.RestartWorld:
+                    case TaskName.RestartIsland:
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
                             World oldWorld = (World)this.ExecuteHelper;
-                            PieceTemplate.Name playerName = oldWorld.initialPlayerName;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: playerName);
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName);
                             oldWorld.Remove();
 
                             return;

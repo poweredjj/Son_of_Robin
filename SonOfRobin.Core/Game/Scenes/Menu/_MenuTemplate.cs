@@ -22,6 +22,7 @@ namespace SonOfRobin
             Scale = 7,
             OtherOptions = 8,
             CreateNewIsland = 9,
+            RestartIsland = 35,
             SetSeed = 10,
             OpenIslandTemplate = 11,
             Pause = 12,
@@ -429,6 +430,19 @@ namespace SonOfRobin
                         return menu;
                     }
 
+                case Name.RestartIsland:
+                    {
+                        Menu menu = new(templateName: templateName, name: "RESTART ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+
+                        CreateCharacterSelection(menu);
+
+                        new Invoker(menu: menu, name: "confirm restart", taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+                        return menu;
+                    }
+
                 case Name.Pause:
                     {
                         World world = World.GetTopWorld();
@@ -447,8 +461,7 @@ namespace SonOfRobin
 
                         if (world.HintEngine.shownTutorials.Count > 0) new Invoker(menu: menu, name: "tutorials", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Tutorials } });
 
-                        var restartConfirmationData = new Dictionary<string, Object> { { "question", "Restart this island?" }, { "taskName", Scheduler.TaskName.RestartWorld }, { "executeHelper", World.GetTopWorld() } };
-                        new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: restartConfirmationData);
+                        new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.RestartIsland } });
 
                         var returnConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } };
                         new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: returnConfirmationData);
@@ -726,7 +739,7 @@ namespace SonOfRobin
                         Menu menu = new(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper);
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
                         new Invoker(menu: menu, name: "enter spectator mode", closesMenu: true, taskName: Scheduler.TaskName.SetSpectatorMode, executeHelper: true);
-                        new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartWorld, executeHelper: World.GetTopWorld());
+                        new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
                         new Invoker(menu: menu, name: "return to main menu", closesMenu: true, taskName: Scheduler.TaskName.ReturnToMainMenu);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
