@@ -82,7 +82,7 @@ namespace SonOfRobin
             Vector2 movement = this.passiveMovement / passiveMovementMultiplier;
             bool attachedToTarget = false;
 
-            if (!this.sprite.Move(movement: movement, additionalMoveType: Sprite.AdditionalMoveType.Half))
+            if (!this.sprite.Move(movement: movement))
             {
                 this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
 

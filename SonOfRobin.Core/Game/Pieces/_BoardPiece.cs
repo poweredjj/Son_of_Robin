@@ -983,7 +983,7 @@ namespace SonOfRobin
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
             float targetDistance = Vector2.Distance(this.sprite.position, goalPosition);
-            if (targetDistance <= 1)
+            if (targetDistance <= 1f)
             {
                 this.sprite.CharacterStand();
                 return false;
@@ -991,8 +991,8 @@ namespace SonOfRobin
 
             float realSpeed = walkSpeed;
             bool isInWater = this.sprite.IsInWater;
-            if (slowDownInWater && isInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
-            if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed = Math.Max(1, walkSpeed * 0.45f);
+            if (slowDownInWater && isInWater) realSpeed = Math.Max(1f, walkSpeed * 0.75f);
+            if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed = Math.Max(1f, walkSpeed * 0.45f);
 
             float movementAngle = runFrom ?
                 Helpers.GetAngleBetweenTwoPoints(start: goalPosition, end: this.sprite.position) :

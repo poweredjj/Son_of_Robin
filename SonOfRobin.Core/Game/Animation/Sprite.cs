@@ -512,26 +512,13 @@ namespace SonOfRobin
             return groupNames;
         }
 
-        public bool Move(Vector2 movement, AdditionalMoveType additionalMoveType = AdditionalMoveType.Minimal)
+        public bool Move(Vector2 movement)
         {
             List<Vector2> movesToTest = new() { movement };
 
-            switch (additionalMoveType)
-            {
-                case AdditionalMoveType.Minimal:
-                    movesToTest.Add(new Vector2(Math.Max(Math.Min(movement.X, 1), -1), Math.Max(Math.Min(movement.Y, 1), -1)));
-                    break;
-
-                case AdditionalMoveType.Half:
-                    movesToTest.Add(new Vector2(movement.X / 2, movement.Y / 2));
-                    break;
-
-                case AdditionalMoveType.None:
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported additionalMoveType - {additionalMoveType}.");
-            }
+            float moveDelta = Vector2.Distance(movement, Vector2.Zero);
+            movesToTest.Add(new Vector2(movement.X / 2, movement.Y / 2));
+            if (moveDelta > 1) movesToTest.Add(new Vector2(Math.Max(Math.Min(movement.X, 1), -1), Math.Max(Math.Min(movement.Y, 1), -1)));
 
             foreach (Vector2 testMove in movesToTest)
             {

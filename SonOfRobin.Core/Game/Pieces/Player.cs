@@ -831,26 +831,33 @@ namespace SonOfRobin
                 return false;
             }
 
-            var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
-            crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
+            // var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
+            // crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
+            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
             Vector2 goalPosition = this.sprite.position;
             if (analogWalk != Vector2.Zero)
             {
-                float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero), 1f);
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower}");
+                float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero) * 1.3f, 1f);
                 currentSpeed *= analogWalkTiltPower;
-                goalPosition += analogWalk * 40f;
+                goalPosition += analogWalk * 300f; // should always be out of reach
+
+                if (currentSpeed < 1f)
+                {
+                    // movement slower than speed == 1 cannot be processed, so speed == 1 will be "flickered" instead
+                    if (this.world.CurrentUpdate % (int)(11 - (currentSpeed * 10)) == 0) currentSpeed = 1.5f;
+                    else return false;
+                }
+
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
             }
             else goalPosition = this.pointWalkTarget;
 
-
-            var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
-            crosshairForGoal.sprite.color = Color.Violet; // for testing
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
+            // var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
+            // crosshairForGoal.sprite.color = Color.Violet; // for testing
+            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
 
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
 
