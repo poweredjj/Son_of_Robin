@@ -316,7 +316,7 @@ namespace SonOfRobin
                     animalTarget.UpdateRegenCooldown(); // animal will not heal for a while
 
                     var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
-                    animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
+                    animalTarget.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: movement, maxVal: 400f));
                 }
                 else // not animal
                 {

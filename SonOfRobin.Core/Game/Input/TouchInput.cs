@@ -52,7 +52,6 @@ namespace SonOfRobin
         public static bool ShowLeftStick { get; private set; }
         public static bool ShowRightStick { get; private set; }
 
-        private static bool sticksReadingActive = false;
         public static DualStick dualStick;
 
         private static Vector2 leftStick = Vector2.Zero;

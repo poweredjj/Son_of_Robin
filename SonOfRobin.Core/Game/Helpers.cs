@@ -284,15 +284,18 @@ namespace SonOfRobin
             return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
         }
 
-        public static Vector2 VectorAbsMax(Vector2 vector, float maxVal)
+        public static Vector2 VectorKeepBelowSetValue(Vector2 vector, float maxVal)
         {
-            if (vector.X > 0) vector.X = Math.Min(vector.X, maxVal);
-            else vector.X = Math.Max(-maxVal, vector.X);
+            bool isXNegative = vector.X < 0;
+            bool isYNegative = vector.Y < 0;
 
-            if (vector.Y > 0) vector.Y = Math.Min(vector.Y, maxVal);
-            else vector.Y = Math.Max(-maxVal, vector.Y);
+            float newXComponent = Math.Min(Math.Abs(vector.X), maxVal);
+            float newYComponent = Math.Min(Math.Abs(vector.Y), maxVal);
 
-            return vector;
+            if (isXNegative) newXComponent = -newXComponent;
+            if (isYNegative) newYComponent = -newYComponent;
+
+            return new Vector2(newXComponent, newYComponent);
         }
 
         public static bool IsPointInsideTriangle(Point point, Point triangleA, Point triangleB, Point triangleC)

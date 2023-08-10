@@ -841,15 +841,8 @@ namespace SonOfRobin
             if (analogWalk != Vector2.Zero)
             {
                 float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero) * 1.3f, 1f);
-                currentSpeed = Math.Max(currentSpeed, 1f) * analogWalkTiltPower;
+                currentSpeed *= analogWalkTiltPower;
                 goalPosition += analogWalk * 250f; // should always be out of reach
-
-                if (currentSpeed < 1f)
-                {
-                    // movement slower than speed == 1 cannot be processed, so speed == 1 will be "flickered" instead
-                    if (this.world.CurrentUpdate % (int)(11 - (currentSpeed * 10)) == 0) currentSpeed = 1.5f;
-                    else return false;
-                }
 
                 // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
             }

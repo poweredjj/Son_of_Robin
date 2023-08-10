@@ -195,7 +195,7 @@ namespace SonOfRobin
 
                         Vector2 pushMovement = new Vector2((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));
 
-                        collidingPiece.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: pushMovement, maxVal: 400f));
+                        collidingPiece.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: pushMovement, maxVal: 400f));
 
                         ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 7);
 

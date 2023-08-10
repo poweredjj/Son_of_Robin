@@ -572,7 +572,7 @@ namespace SonOfRobin
                 if (this.target.HitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
 
                 Vector2 movement = (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength;
-                this.target.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
+                this.target.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: movement, maxVal: 400f));
 
                 if (this.target.GetType() == typeof(Player))
                 {

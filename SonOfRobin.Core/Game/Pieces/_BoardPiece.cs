@@ -355,7 +355,8 @@ namespace SonOfRobin
         public bool IsPlantMadeByPlayer
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
-        public int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
+        public int FramesSinceLastProcessed
+        { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
 
         public static Random Random
         {
@@ -991,17 +992,30 @@ namespace SonOfRobin
 
             float realSpeed = walkSpeed;
             bool isInWater = this.sprite.IsInWater;
-            if (slowDownInWater && isInWater) realSpeed = Math.Max(1f, walkSpeed * 0.75f);
-            if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed = Math.Max(1f, walkSpeed * 0.45f);
+            if (slowDownInWater && isInWater) realSpeed = walkSpeed * 0.75f;
+            if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed *= 0.45f;
 
-            float movementAngle = runFrom ?
+            double movementAngle = runFrom ?
                 Helpers.GetAngleBetweenTwoPoints(start: goalPosition, end: this.sprite.position) :
                 Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
 
             realSpeed = Math.Min(realSpeed, targetDistance); // to avoid overshooting the goal
 
-            // Math.Round() is needed to keep values at least at 1 (<1 == no move), (int) will not work correctly here
-            Vector2 movement = new((float)Math.Round(realSpeed * Math.Cos(movementAngle)), (float)Math.Round(realSpeed * Math.Sin(movementAngle)));
+            if (realSpeed < 1f)
+            {
+                // movement slower than realSpeed == 1 cannot be processed, so realSpeed == 1 will be "flickered" instead
+                if (this.world.CurrentUpdate % (int)(11 - (realSpeed * 10)) == 0) realSpeed = 1f;
+                else return true; // "flicker" movement should still count as movement
+            }
+
+            Vector2 movement = new((float)(realSpeed * Math.Cos(movementAngle)), (float)(realSpeed * Math.Sin(movementAngle)));
+
+            // magnifying small values to 1, while keeping false values (rounding errors bleeding to other axis) at zero
+            if (Math.Abs(movement.X) < 0.5f) movement.X = 0;
+            else if (Math.Abs(movement.X) > 0.5f && Math.Abs(movement.X) < 1f) movement.X = movement.X < 0 ? -1 : 1;
+            
+            if (Math.Abs(movement.Y) < 0.5f) movement.Y = 0;
+            else  if (Math.Abs(movement.Y) > 0.5f && Math.Abs(movement.Y) < 1f) movement.Y = movement.Y < 0 ? -1 : 1;       
 
             if (setOrientation) this.sprite.SetOrientationByMovement(movement);
             bool hasBeenMoved = this.sprite.Move(movement);

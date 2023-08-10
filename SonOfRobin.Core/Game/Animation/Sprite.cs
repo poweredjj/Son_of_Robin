@@ -542,7 +542,7 @@ namespace SonOfRobin
 
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
-            this.position = new Vector2((int)newPos.X, (int)newPos.Y); // to ensure integer values
+            this.position = new Vector2(Convert.ToInt32(newPos.X), Convert.ToInt32(newPos.Y)); // to ensure integer values
             this.position = this.world.KeepVector2InWorldBounds(this.position);
 
             this.UpdateRects();

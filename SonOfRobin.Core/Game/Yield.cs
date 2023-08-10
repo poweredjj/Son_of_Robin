@@ -182,7 +182,7 @@ namespace SonOfRobin
 
                         yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
 
-                        Vector2 posDiff = Helpers.VectorAbsMax(vector: piece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
+                        Vector2 posDiff = Helpers.VectorKeepBelowSetValue(vector: piece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
                         posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation
                         yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80));
                         break;
