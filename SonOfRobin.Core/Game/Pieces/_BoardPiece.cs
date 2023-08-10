@@ -133,7 +133,7 @@ namespace SonOfRobin
             this.soundPack.Activate(this);
 
             this.activeState = activeState;
-            this.lastFrameSMProcessed = 0;
+            this.lastFrameSMProcessed = this.world != null ? this.world.CurrentUpdate : 0;
             this.maxHitPoints = maxHitPoints;
             this.HitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
@@ -355,7 +355,7 @@ namespace SonOfRobin
         public bool IsPlantMadeByPlayer
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
-        public int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed - 1; } } // TODO remove -1 and find out why animals are processed every second frame
+        public int FramesSinceLastProcessed { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
 
         public static Random Random
         {

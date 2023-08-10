@@ -363,7 +363,9 @@ namespace SonOfRobin
                 return;
             }
 
-            this.aiData.timeLeft--;
+            int timeDelta = this.FramesSinceLastProcessed;
+
+            this.aiData.timeLeft -= timeDelta;
 
             if (this.stamina < 20)
             {
@@ -389,9 +391,7 @@ namespace SonOfRobin
                 }
             }
 
-            // if (this.FramesSinceLastProcessed > 1) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} {this.FramesSinceLastProcessed}");
-
-            int speedMultiplier = Math.Min(this.lastFrameSMProcessed, 3);
+            int speedMultiplier = Math.Min(this.FramesSinceLastProcessed, 4);
 
             bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * speedMultiplier / 2, 1), slowDownOnRocks: false);
             this.ExpendEnergy(Math.Max(this.RealSpeed * speedMultiplier / 6, 1));

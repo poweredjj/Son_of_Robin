@@ -1092,9 +1092,15 @@ namespace SonOfRobin
 
             if (this.nonPlantSpritesQueue.Count == 0)
             {
+                // var startTime = DateTime.Now; // for testing
+
                 this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
                     .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
-                return;
+
+                // var duration = DateTime.Now - startTime; // for testing
+                //  MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue - duration {duration.Milliseconds}ms"); // for testing
+
+                if (!this.CanProcessMoreNonPlantsNow) return;
             }
 
             while (true)
@@ -1119,13 +1125,13 @@ namespace SonOfRobin
 
             if (piece.GetType() == typeof(Animal))
             {
-                Animal nonPlant = (Animal)piece;
-                if (nonPlant.isPregnant && nonPlant.alive) nonPlant.pregnancyFramesLeft = Math.Max(nonPlant.pregnancyFramesLeft - timeDelta, 0);
-                if (this.CurrentUpdate % 10 == 0) nonPlant.ExpendEnergy(1);
+                Animal animal = (Animal)piece;
+                if (animal.isPregnant && animal.alive) animal.pregnancyFramesLeft = Math.Max(animal.pregnancyFramesLeft - timeDelta, 0);
+                animal.ExpendEnergy(0.1f * timeDelta);
 
-                if (nonPlant.alive && (nonPlant.HitPoints <= 0 || nonPlant.efficiency == 0 || nonPlant.currentAge >= nonPlant.maxAge))
+                if (animal.alive && (animal.HitPoints <= 0 || animal.efficiency == 0 || animal.currentAge >= animal.maxAge))
                 {
-                    nonPlant.Kill();
+                    animal.Kill();
                     return;
                 }
             }
