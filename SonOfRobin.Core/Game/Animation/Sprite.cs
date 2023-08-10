@@ -181,7 +181,7 @@ namespace SonOfRobin
                 if (!this.IsOnBoard) return false;
 
                 BoardPiece trackedPiece = this.world.camera.TrackedPiece;
-                if (trackedPiece == null) return false;
+                if (trackedPiece == null || !trackedPiece.sprite.visible) return false;
 
                 if (!this.BlocksMovement || this.position.Y < trackedPiece.sprite.position.Y || this.boardPiece.id == trackedPiece.id) return false;
                 return this.GfxRect.Contains(trackedPiece.sprite.position);
