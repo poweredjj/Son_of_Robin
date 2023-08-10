@@ -64,7 +64,14 @@ namespace SonOfRobin
         { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
 
         private float RealSpeedMultipliedByTimeDelta
-        { get { return this.RealSpeed * Math.Min(this.FramesSinceLastProcessed, 4); } }
+        {
+            get
+            {
+                float realSpeedMultipliedByTimeDelta = this.RealSpeed * this.FramesSinceLastProcessed;
+                int shortEdge = Math.Min(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height);
+                return Math.Min(realSpeedMultipliedByTimeDelta, shortEdge); // speed should not exceed colRect size
+            }
+        }
 
         public float MaxMassPercentage
         { get { return this.Mass / this.pieceInfo.animalMaxMass; } }
