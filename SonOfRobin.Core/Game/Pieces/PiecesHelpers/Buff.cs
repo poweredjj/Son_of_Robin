@@ -282,7 +282,7 @@ namespace SonOfRobin
                     break;
 
                 case BuffEngine.BuffType.CanSeeThroughFog:
-                    description = "Make the fog invisible.";
+                    description = "Make fog invisible.";
                     break;
 
                 case BuffEngine.BuffType.Wet:

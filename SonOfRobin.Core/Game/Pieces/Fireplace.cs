@@ -28,7 +28,7 @@ namespace SonOfRobin
         public Fireplace(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description, ushort scareRange,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,   maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
@@ -157,7 +157,9 @@ namespace SonOfRobin
 
         public override void SM_FireplaceBurn()
         {
-            this.currentCycleBurningFramesLeft--;
+            int timeDelta = this.FramesSinceLastProcessed;
+
+            this.currentCycleBurningFramesLeft -= timeDelta;
 
             bool stopBurning = this.world.weather.IsRaining || (this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false));
             if (stopBurning)

@@ -84,6 +84,8 @@ namespace SonOfRobin
 
         public override void SM_RainFall()
         {
+            int timeDelta = this.FramesSinceLastProcessed;
+
             Vector2 currentStep = this.rainStep;
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
@@ -98,9 +100,9 @@ namespace SonOfRobin
                 if (Math.Abs(this.sprite.rotation) < Math.Abs(targetRotation)) this.sprite.rotation = targetRotation;
             }
 
-            this.sprite.Move(currentStep);
+            this.sprite.Move(currentStep * timeDelta);
 
-            this.rainStepsLeft--;
+            this.rainStepsLeft -= timeDelta;
             if (this.rainStepsLeft <= 0 || this.world.weather.RainPercentage == 0)
             {
                 new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 20, destroyPiece: true);
@@ -176,7 +178,7 @@ namespace SonOfRobin
 
             // pushing player / animals
 
-            if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 2) == 0)
+            if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
             {
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
 
