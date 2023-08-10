@@ -20,7 +20,6 @@ namespace SonOfRobin
         public int ElapsedUpdates { get; private set; }
         private bool isPaused;
         private bool initComplete;
-        public int multiplier;
 
         public IslandClock(int elapsedUpdates = -1)
         {
@@ -36,7 +35,6 @@ namespace SonOfRobin
                 this.initComplete = true;
             }
 
-            this.multiplier = 1;
             this.isPaused = false;
         }
 
@@ -66,7 +64,7 @@ namespace SonOfRobin
             if (ignorePause || !this.isPaused)
             {
                 if (ignoreMultiplier) this.ElapsedUpdates += amount;
-                else this.ElapsedUpdates += amount * this.multiplier;
+                else this.ElapsedUpdates += amount;
             }
         }
 

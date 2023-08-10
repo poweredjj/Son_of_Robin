@@ -1063,7 +1063,6 @@ namespace SonOfRobin
             {
                 this.sleepMode = SleepMode.WaitIndefinitely;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
-                this.world.islandClock.multiplier *= 3; // to speed up waiting
 
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -1136,7 +1135,6 @@ namespace SonOfRobin
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
-            this.world.islandClock.multiplier = this.sleepEngine.islandClockMultiplier;
 
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
@@ -1152,7 +1150,7 @@ namespace SonOfRobin
             this.activeState = State.PlayerControlledSleep;
             this.soundPack.Play(PieceSoundPack.Action.PlayerSnore);
 
-            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: 8);
+            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: this.sleepEngine.updateMultiplier);
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -1180,7 +1178,6 @@ namespace SonOfRobin
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = null;
 
-            this.world.islandClock.multiplier = 1;
             this.activeState = State.PlayerControlledWalking;
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
