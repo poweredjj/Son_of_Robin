@@ -394,7 +394,7 @@ namespace SonOfRobin
                 }
             }
 
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1), slowDownOnRocks: false);
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, walkSpeed: Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1), slowDownOnRocks: false);
             this.ExpendEnergy(Math.Max(this.RealSpeedMultipliedByTimeDelta / 6, 1));
 
             if (successfullWalking && Vector2.Distance(this.sprite.position, this.aiData.TargetPos) < 10)
@@ -470,7 +470,7 @@ namespace SonOfRobin
                 return;
             }
 
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: this.RealSpeedMultipliedByTimeDelta, slowDownOnRocks: false);
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, walkSpeed: this.RealSpeedMultipliedByTimeDelta, slowDownOnRocks: false);
             if (successfullWalking)
             {
                 this.ExpendEnergy(Convert.ToInt32(Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1)));
@@ -787,7 +787,7 @@ namespace SonOfRobin
             int fleeMultiplier = Math.Min(this.FramesSinceLastProcessed, 4);
 
             // adrenaline raises maximum speed without using more energy than normal
-            bool successfullRunningAway = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: Math.Max(this.speed * fleeMultiplier * 1.2f, 1), runFrom: true, slowDownOnRocks: false);
+            bool successfullRunningAway = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, walkSpeed: Math.Max(this.speed * fleeMultiplier * 1.2f, 1), runFrom: true, slowDownOnRocks: false);
 
             if (successfullRunningAway)
             {
@@ -852,7 +852,7 @@ namespace SonOfRobin
             // ExpendEnergy is not used, because it is a desperate life-saving measure for an animal
 
             float runSpeed = Math.Min(Math.Max(this.speed * 1.7f, 1), 2.5f); // should not exceed these bounds
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: runSpeed, slowDownOnRocks: false);
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, walkSpeed: runSpeed, slowDownOnRocks: false);
             if (!successfullWalking) this.aiData.Reset();
         }
 

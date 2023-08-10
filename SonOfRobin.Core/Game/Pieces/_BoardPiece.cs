@@ -980,9 +980,10 @@ namespace SonOfRobin
             else this.soundPack.Play(PieceSoundPack.Action.IsDropped);
         }
 
-        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
+        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
-            if (this.sprite.position == goalPosition)
+            float targetDistance = Vector2.Distance(this.sprite.position, goalPosition);
+            if (targetDistance < 2)
             {
                 this.sprite.CharacterStand();
                 return false;
@@ -993,24 +994,17 @@ namespace SonOfRobin
             if (slowDownInWater && isInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
             if (slowDownOnRocks && this.sprite.IsOnRocks && !this.buffEngine.HasBuff(BuffEngine.BuffType.FastMountainWalking)) realSpeed = Math.Max(1, walkSpeed * 0.45f);
 
-            Vector2 positionDifference = goalPosition - this.sprite.position;
-            if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);
+            float movementAngle = runFrom ?
+                Helpers.GetAngleBetweenTwoPoints(start: goalPosition, end: this.sprite.position) :
+                Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
 
-            // calculating "raw" direction (not taking speed into account)
-            Vector2 movement = new(
-                Math.Max(Math.Min(positionDifference.X, 1), -1),
-                Math.Max(Math.Min(positionDifference.Y, 1), -1));
-
-            movement = new Vector2(movement.X * realSpeed, movement.Y * realSpeed);
-
-            // trying not to "overshoot" the goal
-            if (Math.Abs(positionDifference.X) < Math.Abs(movement.X)) movement.X = positionDifference.X;
-            if (Math.Abs(positionDifference.Y) < Math.Abs(movement.Y)) movement.Y = positionDifference.Y;
+            realSpeed = Math.Min(realSpeed, targetDistance); // to avoid overshooting the goal
+            Vector2 movement = new(realSpeed * (float)Math.Cos(movementAngle), realSpeed * (float)Math.Sin(movementAngle));
 
             if (setOrientation) this.sprite.SetOrientationByMovement(movement);
             bool hasBeenMoved = this.sprite.Move(movement);
 
-            if (!hasBeenMoved && splitXY && movement != Vector2.Zero)
+            if (!hasBeenMoved && movement != Vector2.Zero)
             {
                 Vector2[] splitMoves = { new Vector2(0, movement.Y), new Vector2(movement.X, 0) };
                 foreach (Vector2 splitMove in splitMoves)

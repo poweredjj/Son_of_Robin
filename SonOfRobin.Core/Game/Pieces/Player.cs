@@ -665,7 +665,7 @@ namespace SonOfRobin
         {
             if (this.pointWalkTarget != Vector2.Zero)
             {
-                this.GoOneStepTowardsGoal(this.pointWalkTarget, splitXY: true, walkSpeed: this.speed, slowDownInWater: true, slowDownOnRocks: true);
+                this.GoOneStepTowardsGoal(this.pointWalkTarget, walkSpeed: this.speed, slowDownInWater: true, slowDownOnRocks: true);
                 if (this.PointWalkTargetReached)
                 {
                     this.sprite.CharacterStand();
@@ -813,8 +813,8 @@ namespace SonOfRobin
                     if (!TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
                     {
                         Vector2 worldTouchPos = this.world.TranslateScreenToWorldPos(touch.Position);
-                        //  var crosshair = PieceTemplate.CreateOnBoard(world: world, position: worldTouchPos, templateName: PieceTemplate.Name.Crosshair); // for testing
-                        //  new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 60, boardPiece: crosshair); // for testing
+                        // var crosshair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: worldTouchPos, templateName: PieceTemplate.Name.Crosshair); // for testing
+                        // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 5, boardPiece: crosshair); // for testing
 
                         this.pointWalkTarget = worldTouchPos;
                         break;
@@ -845,7 +845,7 @@ namespace SonOfRobin
             movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
-            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
+            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
 
             if (hasBeenMoved)
             {
