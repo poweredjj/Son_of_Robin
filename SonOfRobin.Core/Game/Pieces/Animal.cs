@@ -63,6 +63,9 @@ namespace SonOfRobin
         private float RealSpeed
         { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
 
+        private float RealSpeedMultipliedByTimeDelta
+        { get { return this.RealSpeed * Math.Min(this.FramesSinceLastProcessed, 4); } }
+
         public float MaxMassPercentage
         { get { return this.Mass / this.pieceInfo.animalMaxMass; } }
 
@@ -391,10 +394,8 @@ namespace SonOfRobin
                 }
             }
 
-            int speedMultiplier = Math.Min(this.FramesSinceLastProcessed, 4);
-
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * speedMultiplier / 2, 1), slowDownOnRocks: false);
-            this.ExpendEnergy(Math.Max(this.RealSpeed * speedMultiplier / 6, 1));
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1), slowDownOnRocks: false);
+            this.ExpendEnergy(Math.Max(this.RealSpeedMultipliedByTimeDelta / 6, 1));
 
             if (successfullWalking && Vector2.Distance(this.sprite.position, this.aiData.TargetPos) < 10)
             {
@@ -405,7 +406,7 @@ namespace SonOfRobin
 
             // after some walking, it would be a good idea to stop and look around
 
-            if (!successfullWalking || !this.aiData.dontStop && (this.world.random.Next(0, this.pieceInfo.animalAwareness * 2) == 0))
+            if (!successfullWalking || !this.aiData.dontStop && (this.world.random.Next(this.pieceInfo.animalAwareness * 2) == 0))
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -417,7 +418,7 @@ namespace SonOfRobin
         {
             if (this.visualAid == null || this.visualAid.name != PieceTemplate.Name.Zzz)
             {
-                if (this.visualAid != null) this.visualAid.Destroy();
+                this.visualAid?.Destroy();
 
                 if (this.sprite.IsInCameraRect)
                 {
@@ -430,7 +431,7 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
 
             this.stamina = Math.Min(this.stamina + (3 * this.FramesSinceLastProcessed), this.maxStamina);
-            if (this.stamina == this.maxStamina || this.world.random.Next(0, this.pieceInfo.animalAwareness * 10) == 0)
+            if (this.stamina == this.maxStamina || this.world.random.Next(this.pieceInfo.animalAwareness * 10) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -462,18 +463,17 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.random.Next(0, this.pieceInfo.animalAwareness) == 0) // once in a while it is good to look around and assess situation
+            if (this.world.random.Next(this.pieceInfo.animalAwareness) == 0) // once in a while it is good to look around and assess situation
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
                 return;
             }
 
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: this.RealSpeed, slowDownOnRocks: false);
-
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: this.RealSpeedMultipliedByTimeDelta, slowDownOnRocks: false);
             if (successfullWalking)
             {
-                this.ExpendEnergy(Convert.ToInt32(Math.Max(this.RealSpeed / 2, 1)));
+                this.ExpendEnergy(Convert.ToInt32(Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1)));
                 if (this.stamina <= 0)
                 {
                     this.activeState = State.AnimalRest;
@@ -533,7 +533,7 @@ namespace SonOfRobin
 
                 if (playerTarget.activeState == State.PlayerControlledSleep)
                 {
-                    playerTarget.Fatigue = Math.Min(playerTarget.Fatigue, playerTarget.maxFatigue * 0.8f); // to avoid hit-sleep loop
+                    if (playerTarget.Fatigue > playerTarget.maxFatigue * 0.8f) playerTarget.Fatigue = playerTarget.maxFatigue * 0.8f;  // to avoid hit-sleep loop
                     playerTarget.WakeUp(force: true);
                     HintEngine.ShowPieceDuringPause(world: world, pieceToShow: this,
                         messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue, blockInput: true) });
@@ -553,7 +553,7 @@ namespace SonOfRobin
 
                 if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-                if (this.target.pieceInfo.Yield != null) this.target.pieceInfo.Yield.DropDebris(piece: this.target);
+                this.target.pieceInfo.Yield?.DropDebris(piece: this.target);
 
                 this.soundPack.Play(PieceSoundPack.Action.Cry);
 
@@ -617,16 +617,20 @@ namespace SonOfRobin
 
             bool eatingPlantOrFruit = this.target.IsPlantOrFruit;  // meat is more nutricious than plants
 
-            float bittenMass = Math.Min(1, this.target.Mass);
+            int timeDelta = this.FramesSinceLastProcessed;
+
+            float bittenMass = Math.Min(timeDelta, this.target.Mass);
             this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
 
             this.target.Mass = Math.Max(this.target.Mass - bittenMass, 0);
 
             this.sprite.SetOrientationByMovement(this.target.sprite.position - this.sprite.position);
 
+            bool isInCameraRect = this.sprite.IsInCameraRect;
+
             if (this.target.Mass <= 0)
             {
-                if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null)
+                if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && isInCameraRect)
                 {
                     target.soundPack.Play(PieceSoundPack.Action.IsHit);
 
@@ -639,7 +643,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.sprite.IsInCameraRect)
+            if (isInCameraRect)
             {
                 float targetRotation = (float)(this.world.random.NextSingle() * 0.2f) + 0.05f;
                 float finalRotation = (sprite.position - this.target.sprite.position).X > 0 ? targetRotation : -targetRotation;
@@ -654,7 +658,7 @@ namespace SonOfRobin
                 }
             }
 
-            if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.pieceInfo.animalAwareness) == 0)
+            if ((this.Mass >= this.pieceInfo.animalMaxMass && this.pregnancyMass == 0) || this.world.random.Next(this.pieceInfo.animalAwareness) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
@@ -780,12 +784,14 @@ namespace SonOfRobin
                 return;
             }
 
+            int fleeMultiplier = Math.Min(this.FramesSinceLastProcessed, 4);
+
             // adrenaline raises maximum speed without using more energy than normal
-            bool successfullRunningAway = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: Math.Max(this.speed * 1.2f, 1), runFrom: true, slowDownOnRocks: false);
+            bool successfullRunningAway = this.GoOneStepTowardsGoal(goalPosition: this.target.sprite.position, splitXY: false, walkSpeed: Math.Max(this.speed * fleeMultiplier * 1.2f, 1), runFrom: true, slowDownOnRocks: false);
 
             if (successfullRunningAway)
             {
-                this.ExpendEnergy((int)Math.Max(this.RealSpeed / 2, 1));
+                this.ExpendEnergy((int)Math.Max(this.RealSpeedMultipliedByTimeDelta / 2, 1));
                 if (Vector2.Distance(this.sprite.position, this.target.sprite.position) > 400)
                 {
                     this.activeState = State.AnimalAssessSituation;
