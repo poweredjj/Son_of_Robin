@@ -1004,9 +1004,9 @@ namespace SonOfRobin
             }
 
             int aidDistance = (int)(SonOfRobinGame.VirtualWidth * 0.08f);
-            int aidOffsetX = (int)Math.Round(aidDistance * Math.Cos(this.ShootingAngle));
-            int aidOffsetY = (int)Math.Round(aidDistance * Math.Sin(this.ShootingAngle));
-            Vector2 aidPos = this.sprite.position + new Vector2(aidOffsetX, aidOffsetY);
+
+            Vector2 aidOffset = new Vector2(aidDistance * (float)Math.Cos(this.ShootingAngle), aidDistance * (float)Math.Sin(this.ShootingAngle));
+            Vector2 aidPos = this.sprite.position + aidOffset;
             this.visualAid.sprite.SetNewPosition(aidPos);
 
             if (VirtButton.HasButtonBeenPressed(VButName.Shoot) || // virtual button has to be checked separately here
