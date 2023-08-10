@@ -422,9 +422,10 @@ namespace SonOfRobin
             return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
         }
 
-        public void SetOrientationByMovement(Vector2 movement)
+        public void SetOrientationByMovement(Vector2 movement, float orientationAngleOverride = -100f)
         {
-            if (movement != Vector2.Zero) this.OrientationAngle = Helpers.GetAngleBetweenTwoPoints(start: this.position, end: this.position + movement);
+            if (orientationAngleOverride != -100f) this.OrientationAngle = orientationAngleOverride;
+            else if (movement != Vector2.Zero) this.OrientationAngle = Helpers.GetAngleBetweenTwoPoints(start: this.position, end: this.position + movement);
 
             Orientation newOrientation;
 

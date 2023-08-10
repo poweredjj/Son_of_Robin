@@ -1017,8 +1017,8 @@ namespace SonOfRobin
             if (Math.Abs(movement.Y) < 0.5f) movement.Y = 0;
             else  if (Math.Abs(movement.Y) > 0.5f && Math.Abs(movement.Y) < 1f) movement.Y = movement.Y < 0 ? -1 : 1;       
 
-            if (setOrientation) this.sprite.SetOrientationByMovement(movement);
             bool hasBeenMoved = this.sprite.Move(movement);
+            if (setOrientation) this.sprite.SetOrientationByMovement(movement: movement, orientationAngleOverride: (float)movementAngle);
 
             if (!hasBeenMoved && movement != Vector2.Zero)
             {

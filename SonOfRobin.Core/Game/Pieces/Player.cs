@@ -1008,7 +1008,7 @@ namespace SonOfRobin
 
             if (directionVector != Vector2.Zero)
             {
-                this.sprite.SetOrientationByMovement(directionVector);
+                this.sprite.SetOrientationByMovement(movement: directionVector, orientationAngleOverride: this.ShootingAngle);
                 Vector2 goalPosition = this.sprite.position + directionVector; // used to calculate shooting angle
                 this.ShootingAngle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
             }
