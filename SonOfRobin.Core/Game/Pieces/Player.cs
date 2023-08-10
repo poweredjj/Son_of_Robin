@@ -51,14 +51,14 @@ namespace SonOfRobin
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxHitPoints, float maxFatigue, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: activeState, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState, soundPack: soundPack)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
-            this.maxFatigue = maxFatigue;
+            this.maxFatigue = 2000f;
             this.fatigue = 0;
             this.CraftLevel = 1;
             this.CookLevel = 1;
@@ -100,8 +100,8 @@ namespace SonOfRobin
             }
             else allowedToolbarPieces.Add(PieceTemplate.Name.KnifeSimple);
 
-            this.PieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
+            this.PieceStorage = new PieceStorage(width: 4, height: 2, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.ToolStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.GlobalChestStorage = new PieceStorage(width: 8, height: 6, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
             this.ConfigureEquip();
@@ -841,7 +841,7 @@ namespace SonOfRobin
             if (analogWalk != Vector2.Zero)
             {
                 float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero) * 1.3f, 1f);
-                currentSpeed *= analogWalkTiltPower;
+                currentSpeed = Math.Max(currentSpeed, 1f) * analogWalkTiltPower;
                 goalPosition += analogWalk * 300f; // should always be out of reach
 
                 if (currentSpeed < 1f)
@@ -851,7 +851,7 @@ namespace SonOfRobin
                     else return false;
                 }
 
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
             }
             else goalPosition = this.pointWalkTarget;
 

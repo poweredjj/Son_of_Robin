@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             foreach (int frameNo in framesToProcess)
             {
-                foreach (WorldEvent currentEvent in this.eventQueue[frameNo])
+                foreach (WorldEvent currentEvent in this.eventQueue[frameNo].ToList())
                 { currentEvent.Execute(this.world); }
 
                 this.eventQueue.Remove(frameNo);
