@@ -52,12 +52,13 @@ namespace SonOfRobin
         public static bool ShowLeftStick { get; private set; }
         public static bool ShowRightStick { get; private set; }
 
+        private static bool sticksReadingActive = false;
         public static DualStick dualStick;
 
-        private static Vector2 leftStick = new Vector2(0, 0);
-        private static Vector2 rightStick = new Vector2(0, 0);
+        private static Vector2 leftStick = Vector2.Zero;
+        private static Vector2 rightStick = Vector2.Zero;
 
-        private static Vector2 emptyStick = new Vector2(0, 0);
+        private static Vector2 emptyStick = Vector2.Zero;
 
         public static Vector2 LeftStick
         { get { return Input.InputActive && Preferences.enableTouchJoysticks ? leftStick : emptyStick; } }
@@ -229,7 +230,6 @@ namespace SonOfRobin
             Refresh();
 
             dualStick.Update(SonOfRobinGame.CurrentGameTime);
-
             leftStick = dualStick.LeftStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
             rightStick = dualStick.RightStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
 

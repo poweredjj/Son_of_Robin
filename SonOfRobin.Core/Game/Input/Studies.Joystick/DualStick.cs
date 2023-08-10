@@ -59,12 +59,18 @@ namespace Studies.Joystick.Input
         public Stick RightStick { get; set; }
         public Stick LeftStick { get; set; }
 
+
+        public void ResetSticks(GameTime gameTime)
+        {
+            LeftStick.Update(state: new TouchCollection(), continueLocation: null, dt: (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+            RightStick.Update(state: new TouchCollection(), continueLocation: null, dt: (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
         public void Update(GameTime gameTime)
         {
             var dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             totalTime += dt;
 
-            //var state = TouchPanel.GetState();
             var state = TouchInput.TouchPanelState;
             TouchLocation? leftTouch = null, rightTouch = null;
 
@@ -187,8 +193,8 @@ namespace Studies.Joystick.Input
             float backgroundSize = aliveZoneSize / scale * 2;
             float stickSize = aliveZoneSize * 0.6f / scale;
 
-            Rectangle leftRect = new Rectangle();
-            Rectangle rightRect = new Rectangle();
+            Rectangle leftRect = new();
+            Rectangle rightRect = new();
 
             if (drawLeftStick) leftRect = DrawTextureCentered(texture: backgroundTx, position: LeftStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
             if (drawRightStick) rightRect = DrawTextureCentered(texture: backgroundTx, position: RightStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
