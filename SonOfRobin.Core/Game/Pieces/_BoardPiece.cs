@@ -983,7 +983,7 @@ namespace SonOfRobin
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
             float targetDistance = Vector2.Distance(this.sprite.position, goalPosition);
-            if (targetDistance < 2)
+            if (targetDistance <= 1)
             {
                 this.sprite.CharacterStand();
                 return false;

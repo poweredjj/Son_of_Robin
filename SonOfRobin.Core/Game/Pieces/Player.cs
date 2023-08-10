@@ -68,6 +68,7 @@ namespace SonOfRobin
             this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
+            this.pointWalkTarget = Vector2.Zero;
 
             var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
@@ -128,10 +129,11 @@ namespace SonOfRobin
         {
             get
             {
-                return
-                    InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) ||
-                    (TouchInput.IsBeingTouchedInAnyWay && (Math.Abs(this.world.analogCameraCorrection.X) > 0.05f ||
-                    Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f));
+                if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece)) return true;
+                if (!TouchInput.IsBeingTouchedInAnyWay) return false;
+
+                float cameraCorrectionTiltPower = Vector2.Distance(InputMapper.Analog(InputMapper.Action.WorldCameraMove), Vector2.Zero);
+                return cameraCorrectionTiltPower > 0.05f;
             }
         }
 
@@ -587,9 +589,10 @@ namespace SonOfRobin
         {
             this.RemovePassiveMovement(); // to ensure that player will not move
 
-            Vector2 newPos = this.simulatedPieceToBuild.sprite.position + this.world.analogMovementLeftStick;
+            Vector2 analogMovementLeftStick = InputMapper.Analog(InputMapper.Action.WorldWalk);
+            Vector2 newPos = this.simulatedPieceToBuild.sprite.position;
 
-            if (this.world.analogMovementLeftStick != Vector2.Zero) newPos += this.world.analogMovementLeftStick;
+            if (analogMovementLeftStick != Vector2.Zero) newPos += analogMovementLeftStick;
             else
             {
                 if (Preferences.PointToWalk)
@@ -727,7 +730,6 @@ namespace SonOfRobin
             {
                 if (this.world.inputActive)
                 {
-
                     Texture2D interactTexture = InputMapper.GetTexture(InputMapper.Action.WorldInteract);
 
                     if (Input.currentControlType == Input.ControlType.Touch && pieceToInteract.pieceInfo.interactVirtButtonName != TextureBank.TextureName.Empty)
@@ -801,50 +803,55 @@ namespace SonOfRobin
 
         private bool Walk(bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
-            Vector2 movement = this.world.analogMovementLeftStick;
-            if (movement != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
+            Vector2 analogWalk = InputMapper.Analog(InputMapper.Action.WorldWalk);
+            if (analogWalk != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
 
             bool layoutChangedRecently = TouchInput.FramesSinceLayoutChanged < 5;
 
-            if (movement == Vector2.Zero && Preferences.PointToWalk && !layoutChangedRecently)
+            if (Preferences.PointToWalk && analogWalk == Vector2.Zero && !layoutChangedRecently)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
-                    if (!TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
+                    if (!TouchInput.IsPointActivatingAnyTouchInterface(touch.Position) &&
+                        (this.activeState != State.PlayerControlledShooting || touch.State == TouchLocationState.Released))
                     {
                         Vector2 worldTouchPos = this.world.TranslateScreenToWorldPos(touch.Position);
-                        // var crosshair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: worldTouchPos, templateName: PieceTemplate.Name.Crosshair); // for testing
-                        // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 5, boardPiece: crosshair); // for testing
 
                         this.pointWalkTarget = worldTouchPos;
                         break;
                     }
                 }
 
-                if (!this.PointWalkTargetReached)
-                {
-                    movement = this.pointWalkTarget - this.sprite.position;
-
-                    if (Math.Abs(movement.X) < 4) movement.X = 0; // to avoid animation flickering
-                    if (Math.Abs(movement.Y) < 4) movement.Y = 0; // to avoid animation flickering
-
-                    if (movement.X == 0 && movement.Y == 0) this.pointWalkTarget = Vector2.Zero;
-                }
-                else this.pointWalkTarget = Vector2.Zero;
+                if (this.PointWalkTargetReached) this.pointWalkTarget = Vector2.Zero;
             }
-            else this.pointWalkTarget = Vector2.Zero;
 
-            if (movement == Vector2.Zero)
+            if (analogWalk == Vector2.Zero && this.pointWalkTarget == Vector2.Zero)
             {
                 this.sprite.CharacterStand();
                 return false;
             }
 
+            var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
+            crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
+
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
-            movement *= currentSpeed;
+            Vector2 goalPosition = this.sprite.position;
+            if (analogWalk != Vector2.Zero)
+            {
+                float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero), 1f);
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower}");
+                currentSpeed *= analogWalkTiltPower;
+                goalPosition += analogWalk * 40f;
+            }
+            else goalPosition = this.pointWalkTarget;
 
-            Vector2 goalPosition = this.sprite.position + movement;
+
+            var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
+            crosshairForGoal.sprite.color = Color.Violet; // for testing
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
+
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
 
             if (hasBeenMoved)
@@ -986,8 +993,8 @@ namespace SonOfRobin
             // shooting angle should be set once at the start
             if (this.ShootingAngle == -100) this.ShootingAngle = this.sprite.OrientationAngle;
 
-            Vector2 moving = this.world.analogMovementLeftStick;
-            Vector2 shooting = this.world.analogMovementRightStick;
+            Vector2 moving = InputMapper.Analog(InputMapper.Action.WorldWalk);
+            Vector2 shooting = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
 
             // right mouse button will be released when shooting and should be taken into account, to set the angle correctly
             if (Mouse.RightIsDown || Mouse.RightHasBeenReleased) shooting = (this.world.TranslateScreenToWorldPos(Mouse.Position) - this.sprite.position) / 20;

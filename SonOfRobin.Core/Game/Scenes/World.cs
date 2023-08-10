@@ -11,10 +11,6 @@ namespace SonOfRobin
     public class World : Scene
     {
         public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
-
-        public Vector2 analogMovementLeftStick;
-        public Vector2 analogMovementRightStick;
-        public Vector2 analogCameraCorrection;
         public bool WorldCreationInProgress { get; private set; }
 
         private bool plantsProcessing;
@@ -901,7 +897,15 @@ namespace SonOfRobin
 
         public void UpdateViewParams()
         {
-            this.camera.Update(cameraCorrection: this.analogCameraCorrection);
+            Vector2 analogCameraCorrection = Vector2.Zero;
+
+            if (this.Player.activeState != BoardPiece.State.PlayerControlledSleep)
+            {
+                analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
+                analogCameraCorrection *= 10;
+            }
+
+            this.camera.Update(cameraCorrection: analogCameraCorrection);
             this.camera.SetViewParams(this);
 
             // width and height are set once in constructor
@@ -979,21 +983,6 @@ namespace SonOfRobin
         private void ProcessInput()
         {
             if (this.demoMode || this.CineMode) return;
-
-            // analog movement (left stick)
-            this.analogMovementLeftStick = InputMapper.Analog(InputMapper.Action.WorldWalk);
-            this.analogMovementLeftStick *= 4;
-
-            // analog movement (right stick)
-            this.analogMovementRightStick = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
-            this.analogMovementRightStick *= 4;
-
-            // analog camera control
-            if (this.Player.activeState != BoardPiece.State.PlayerControlledSleep)
-            {
-                this.analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
-                this.analogCameraCorrection *= 10;
-            }
 
             float zoomOutForce = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
 
