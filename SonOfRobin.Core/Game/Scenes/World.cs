@@ -70,7 +70,6 @@ namespace SonOfRobin
         public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
-        private int currentSubUpdate;
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
@@ -118,7 +117,6 @@ namespace SonOfRobin
             this.resDivider = resDivider;
             this.CurrentFrame = 0;
             this.CurrentUpdate = 0;
-            this.currentSubUpdate = 0;
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
@@ -373,18 +371,16 @@ namespace SonOfRobin
         { get { return UpdateTimeElapsed + LastDrawDuration; } }
 
         public bool CanProcessMoreCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
+        { get { return this.WorldElapsedUpdateTime.Milliseconds <= 14; } }
 
         public bool CanProcessMoreNonPlantsNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && (this.WorldElapsedUpdateTime.Milliseconds <= this.NonPlantMaxDuration * (this.currentSubUpdate + 1)); } }
-
-        private int NonPlantMaxDuration { get { return this.currentSubUpdate == 0 ? 12 : 14; } }
+        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && (this.WorldElapsedUpdateTime.Milliseconds <= (this.updateMultiplier > 1 ? 14 : 11)); } }
 
         public bool CanProcessMorePlantsNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
+        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= 14; } }
 
         public bool CanFindFreeSpotForNewBoardPieceNow
-        { get { return !this.plantsProcessing || this.WorldElapsedUpdateTime.Milliseconds <= 14 * (this.currentSubUpdate + 1); } }
+        { get { return !this.plantsProcessing || this.WorldElapsedUpdateTime.Milliseconds <= 14; } }
 
         public float PieceCount
         {
@@ -948,40 +944,36 @@ namespace SonOfRobin
                 this.CreateTemporaryDecorations(ignoreDuration: false);
             }
 
-            for (this.currentSubUpdate = 0; this.currentSubUpdate < this.updateMultiplier; this.currentSubUpdate++)
+            this.trackingManager.ProcessQueue();
+            this.worldEventManager.ProcessQueue();
+            this.ProcessHeatQueue();
+
+            if (!this.BuildMode) this.UpdateAllAnims();
+
+            if (this.Player != null)
             {
-                this.trackingManager.ProcessQueue();
-                this.worldEventManager.ProcessQueue();
-                this.ProcessHeatQueue();
-
-                if (!this.BuildMode) this.UpdateAllAnims();
-
-                if (this.Player != null)
-                {
-                    this.ProcessOneNonPlant(this.Player);
-                    this.Player.UpdateDistanceWalked();
-                    this.Player.UpdateLastSteps();
-                }
-                if (this.map.MapMarker != null && this.map.MapMarker.sprite.IsOnBoard) this.ProcessOneNonPlant(this.map.MapMarker);
-
-                this.StateMachinesProcessCameraView();
-
-                if (!createMissingPieces && (!Preferences.HalfFramerate || this.CurrentFrame % 2 == 0))
-                {
-                    this.StateMachinesProcessNonPlantQueue();
-
-                    if (this.currentSubUpdate == 0)
-                    {
-                        // plants should be calculated only once per frame (because they take timeDelta into account)
-                        this.plantsProcessing = true;
-                        this.StateMachinesProcessPlantQueue();
-                        this.plantsProcessing = false;
-                    }
-                }
-
-                this.CurrentUpdate++;
-                this.islandClock.Advance();
+                this.ProcessOneNonPlant(this.Player);
+                this.Player.UpdateDistanceWalked();
+                this.Player.UpdateLastSteps();
             }
+            if (this.map.MapMarker != null && this.map.MapMarker.sprite.IsOnBoard) this.ProcessOneNonPlant(this.map.MapMarker);
+
+            this.StateMachinesProcessCameraView();
+
+            if (!createMissingPieces)
+            {
+                if (this.updateMultiplier == 1 || SonOfRobinGame.CurrentUpdate % 2 != 0) this.StateMachinesProcessNonPlantQueue();
+
+                if (this.updateMultiplier == 1 || SonOfRobinGame.CurrentUpdate % 2 == 0)
+                {
+                    this.plantsProcessing = true;
+                    this.StateMachinesProcessPlantQueue();
+                    this.plantsProcessing = false;
+                }
+            }
+
+            this.CurrentUpdate += this.updateMultiplier;
+            this.islandClock.Advance(this.updateMultiplier);
         }
 
         private void ProcessInput()
