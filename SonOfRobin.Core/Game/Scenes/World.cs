@@ -899,7 +899,7 @@ namespace SonOfRobin
         {
             Vector2 analogCameraCorrection = Vector2.Zero;
 
-            if (this.Player.activeState != BoardPiece.State.PlayerControlledSleep)
+            if (!this.demoMode && this.Player.activeState != BoardPiece.State.PlayerControlledSleep)
             {
                 analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
                 analogCameraCorrection *= 10;
