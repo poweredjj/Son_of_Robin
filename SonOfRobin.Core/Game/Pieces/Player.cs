@@ -842,7 +842,7 @@ namespace SonOfRobin
             {
                 float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero) * 1.3f, 1f);
                 currentSpeed = Math.Max(currentSpeed, 1f) * analogWalkTiltPower;
-                goalPosition += analogWalk * 300f; // should always be out of reach
+                goalPosition += analogWalk * 250f; // should always be out of reach
 
                 if (currentSpeed < 1f)
                 {
@@ -851,7 +851,7 @@ namespace SonOfRobin
                     else return false;
                 }
 
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
             }
             else goalPosition = this.pointWalkTarget;
 
@@ -860,7 +860,6 @@ namespace SonOfRobin
             // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
 
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
-
             if (hasBeenMoved)
             {
                 this.ExpendEnergy(energyAmount: 0.2f, addFatigue: true);
@@ -879,6 +878,10 @@ namespace SonOfRobin
                     float randomAddedDelay = (float)this.world.random.NextSingle() * 0.21f;
                     new RumbleEvent(force: 0.04f + randomAddedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: 0.18f + randomAddedDelay);
                 }
+            }
+            else
+            {
+                this.pointWalkTarget = Vector2.Zero;
             }
 
             return hasBeenMoved;

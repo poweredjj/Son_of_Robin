@@ -12,6 +12,7 @@ namespace SonOfRobin
         {
             // must be lowercase, to match animName
             left = 0,
+
             right = 1,
             up = 2,
             down = 3,
@@ -26,6 +27,7 @@ namespace SonOfRobin
 
         public Vector2 position;
         public Orientation orientation;
+        private int lastOrientationChangeFrame; // to avoid flickering when two directions are close during movement
         public float OrientationAngle { get; private set; }
         public float rotation;
         public Vector2 rotationOriginOverride; // used for custom rotation origin, different from the default
@@ -62,6 +64,7 @@ namespace SonOfRobin
             this.rotation = 0f;
             this.rotationOriginOverride = Vector2.Zero;
             this.orientation = Orientation.right;
+            this.lastOrientationChangeFrame = 0;
             this.OrientationAngle = 0f;
             this.AnimPackage = animPackage;
             this.AnimSize = animSize;
@@ -423,10 +426,18 @@ namespace SonOfRobin
         {
             if (movement != Vector2.Zero) this.OrientationAngle = Helpers.GetAngleBetweenTwoPoints(start: this.position, end: this.position + movement);
 
-            if (Math.Abs(movement.X) > Math.Abs(movement.Y))
-            { this.orientation = (movement.X < 0) ? Orientation.left : Orientation.right; }
-            else
-            { this.orientation = (movement.Y < 0) ? Orientation.up : Orientation.down; }
+            Orientation newOrientation;
+
+            if (Math.Abs(movement.X) > Math.Abs(movement.Y)) newOrientation = (movement.X < 0) ? Orientation.left : Orientation.right;
+            else newOrientation = (movement.Y < 0) ? Orientation.up : Orientation.down;
+
+            if (this.orientation != newOrientation)
+            {
+                // to avoid flickering
+                if (this.world.CurrentUpdate < this.lastOrientationChangeFrame + 12) return;
+                this.lastOrientationChangeFrame = this.world.CurrentUpdate;
+                this.orientation = newOrientation;
+            }
 
             if (this.AnimName.Contains("walk-")) this.CharacterWalk();
             if (this.AnimName.Contains("stand-")) this.CharacterStand();
@@ -435,9 +446,7 @@ namespace SonOfRobin
         public Sprite FindClosestSprite(List<Sprite> spriteList)
         {
             try
-            {
-                return spriteList.OrderBy(s => Vector2.Distance(this.position, s.position)).First();
-            }
+            { return spriteList.OrderBy(s => Vector2.Distance(this.position, s.position)).First(); }
             catch (ArgumentOutOfRangeException)
             { }
 

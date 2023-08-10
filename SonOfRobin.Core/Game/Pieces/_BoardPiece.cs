@@ -999,7 +999,9 @@ namespace SonOfRobin
                 Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
 
             realSpeed = Math.Min(realSpeed, targetDistance); // to avoid overshooting the goal
-            Vector2 movement = new(realSpeed * (float)Math.Cos(movementAngle), realSpeed * (float)Math.Sin(movementAngle));
+
+            // Math.Round() is needed to keep values at least at 1 (<1 == no move), (int) will not work correctly here
+            Vector2 movement = new((float)Math.Round(realSpeed * Math.Cos(movementAngle)), (float)Math.Round(realSpeed * Math.Sin(movementAngle)));
 
             if (setOrientation) this.sprite.SetOrientationByMovement(movement);
             bool hasBeenMoved = this.sprite.Move(movement);
