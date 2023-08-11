@@ -110,6 +110,7 @@ namespace SonOfRobin
         private static bool pointToWalk = true;
         public static bool swapMouseButtons = false;
         public static bool rumbleEnabled = true;
+        public static int stateMachinesMaxProcessingDurationMs = 14;
 
         public static bool PointToWalk
         {
@@ -605,6 +606,8 @@ namespace SonOfRobin
             prefsData["showParticles"] = showParticles;
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
             prefsData["newWorldStartingItem"] = newWorldStartingItem;
+            prefsData["stateMachinesMaxProcessingDurationMs"] = stateMachinesMaxProcessingDurationMs;
+
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -677,6 +680,7 @@ namespace SonOfRobin
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
                     showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
+                    stateMachinesMaxProcessingDurationMs = (int)(Int64)prefsData["stateMachinesMaxProcessingDurationMs"];
 
                     prefsLoaded = true;
                 }

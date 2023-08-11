@@ -197,7 +197,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / Math.Max(this.rotationSlowdown / world.updateMultiplier, 1); // movement smoothing
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / Math.Max(this.rotationSlowdown, 1); // movement smoothing
         }
 
         public void Finish()

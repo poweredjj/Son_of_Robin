@@ -1096,30 +1096,28 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.CurrentUpdate % 10 == 0)
+
+            switch (this.sleepMode)
             {
-                switch (this.sleepMode)
-                {
-                    case SleepMode.Sleep:
-                        SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText, addTransition: false, addNumbers: false);
-                        break;
+                case SleepMode.Sleep:
+                    SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText, addTransition: false, addNumbers: false);
+                    break;
 
-                    case SleepMode.WaitMorning:
-                        TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
-                        TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
+                case SleepMode.WaitMorning:
+                    TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
+                    TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
 
-                        SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(maxWaitingTime.TotalMinutes - timeUntilMorning.TotalMinutes), maxVal: (int)maxWaitingTime.TotalMinutes, text: sleepModeText, addNumbers: false);
+                    SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(maxWaitingTime.TotalMinutes - timeUntilMorning.TotalMinutes), maxVal: (int)maxWaitingTime.TotalMinutes, text: sleepModeText, addNumbers: false);
 
-                        break;
+                    break;
 
-                    case SleepMode.WaitIndefinitely:
-                        SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: false,
-                            entryList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "Waiting...", color: Color.White) });
-                        break;
+                case SleepMode.WaitIndefinitely:
+                    SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: false,
+                        entryList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "Waiting...", color: Color.White) });
+                    break;
 
-                    default:
-                        throw new ArgumentException($"Unsupported sleepMode - {this.sleepMode}.");
-                }
+                default:
+                    throw new ArgumentException($"Unsupported sleepMode - {this.sleepMode}.");
             }
         }
 

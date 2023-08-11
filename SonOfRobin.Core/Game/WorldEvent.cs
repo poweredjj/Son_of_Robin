@@ -35,7 +35,8 @@ namespace SonOfRobin
 
             foreach (int frame in this.eventQueue.Keys.ToList())
             {
-                List<WorldEvent> eventlist = this.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove).ToList();
+                List<WorldEvent> eventlist = this.eventQueue[frame]
+                    .Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove).ToList();
                 this.eventQueue[frame] = eventlist;
             }
         }

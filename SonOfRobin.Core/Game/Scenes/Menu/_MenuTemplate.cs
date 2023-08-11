@@ -184,6 +184,8 @@ namespace SonOfRobin
 
                         if (SonOfRobinGame.os != OS.Windows) new Selector(menu: menu, name: "max map textures to load", valueDict: new Dictionary<object, object> { { 1000, "1000" }, { 2000, "2000" }, { 4000, "4000" }, { 8000, "8000" }, { 2147483647, "no limit" } }, targetObj: preferences, propertyName: "maxTexturesToLoad");
 
+                        new Selector(menu: menu, name: "plants / animals processing time", valueDict: new Dictionary<object, object> { { 8, "short (8ms)" }, { 12, "medium (12ms)" }, { 14, "long (14ms)" }, { 15, "max (15ms)" } }, targetObj: preferences, propertyName: "stateMachinesMaxProcessingDurationMs", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "max time used to process\nanimals and plants for each frame", color: Color.White, scale: 1f) });
+
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
                         new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteIncompatibleSaves);
 
