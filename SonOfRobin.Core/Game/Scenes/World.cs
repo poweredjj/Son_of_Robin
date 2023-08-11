@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -451,9 +450,6 @@ namespace SonOfRobin
 
             if (newGameStarted)
             {
-                this.CurrentFrame = 0;
-                this.CurrentUpdate = 0;
-
                 if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: false);
                 else
                 {
@@ -966,6 +962,7 @@ namespace SonOfRobin
 
             this.CurrentUpdate += this.updateMultiplier;
             this.islandClock.Advance(this.updateMultiplier);
+            this.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
         }
 
         private void ProcessInput()
@@ -1089,8 +1086,6 @@ namespace SonOfRobin
         {
             int timeDelta = piece.FramesSinceLastProcessed;
 
-            if (piece.maxAge > 0) piece.GrowOlder(timeDelta: timeDelta);
-
             if (piece.GetType() == typeof(Animal))
             {
                 Animal animal = (Animal)piece;
@@ -1114,6 +1109,7 @@ namespace SonOfRobin
             }
 
             piece.StateMachineWork();
+            if (piece.maxAge > 0 && piece.alive) piece.GrowOlder(timeDelta: Math.Min(timeDelta, 200)); // limiting aging to reasonable amount
         }
 
         private void StateMachinesProcessPlantQueue()
@@ -1146,7 +1142,7 @@ namespace SonOfRobin
                     if (!plantCellsQueue.Any() || !this.CanProcessMoreOffCameraRectPiecesNow) break;
                 }
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return; 
+                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             while (true)
@@ -1392,8 +1388,15 @@ namespace SonOfRobin
             Vector2 darknessMaskScale = this.DarknessMaskScale;
             Rectangle darknessViewRect = this.camera.DarknessViewRect;
 
-            if (this.darknessMask != null) this.darknessMask.Dispose();
-            this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, (int)(darknessViewRect.Width / darknessMaskScale.X), (int)(darknessViewRect.Height / darknessMaskScale.Y));
+            int darknessMaskWidth = (int)(darknessViewRect.Width / darknessMaskScale.X);
+            int darknessMaskHeight = (int)(darknessViewRect.Height / darknessMaskScale.Y);
+
+            if (this.darknessMask != null)
+            {
+                if (this.darknessMask.Width == darknessMaskWidth && this.darknessMask.Height == darknessMaskHeight) return;
+                this.darknessMask.Dispose();
+            }
+            this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, darknessMaskWidth, darknessMaskHeight);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
         }

@@ -133,7 +133,7 @@ namespace SonOfRobin
             this.soundPack.Activate(this);
 
             this.activeState = activeState;
-            this.lastFrameSMProcessed = this.world != null ? this.world.CurrentUpdate : 0;
+            this.lastFrameSMProcessed = this.world != null ? this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) : 0;
             this.maxHitPoints = maxHitPoints;
             this.HitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
@@ -356,7 +356,7 @@ namespace SonOfRobin
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
         public int FramesSinceLastProcessed
-        { get { return Math.Max(this.world.CurrentUpdate - this.lastFrameSMProcessed, 0); } }
+        { get { return Math.Max(this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) - this.lastFrameSMProcessed, 0); } }
 
         public static Random Random
         {
@@ -610,7 +610,7 @@ namespace SonOfRobin
 
             if (passiveMovementOccured) // passive movement blocks the state machine until the movement stops
             {
-                this.lastFrameSMProcessed = this.world.CurrentUpdate; // has to be updated here, to prevent from processing passive movement multiple times
+                this.lastFrameSMProcessed = this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // has to be updated here, to prevent from processing passive movement multiple times
                 return;
             }
 
@@ -753,7 +753,7 @@ namespace SonOfRobin
                     { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
 
-            this.lastFrameSMProcessed = this.world.CurrentUpdate; // updated after SM processing, to allow for proper time delta calculation
+            this.lastFrameSMProcessed = this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // updated after SM processing, to allow for proper time delta calculation
         }
 
         public void ProcessHeat()
@@ -1013,9 +1013,9 @@ namespace SonOfRobin
             // magnifying small values to 1, while keeping false values (rounding errors bleeding to other axis) at zero
             if (Math.Abs(movement.X) < 0.5f) movement.X = 0;
             else if (Math.Abs(movement.X) > 0.5f && Math.Abs(movement.X) < 1f) movement.X = movement.X < 0 ? -1 : 1;
-            
+
             if (Math.Abs(movement.Y) < 0.5f) movement.Y = 0;
-            else  if (Math.Abs(movement.Y) > 0.5f && Math.Abs(movement.Y) < 1f) movement.Y = movement.Y < 0 ? -1 : 1;       
+            else if (Math.Abs(movement.Y) > 0.5f && Math.Abs(movement.Y) < 1f) movement.Y = movement.Y < 0 ? -1 : 1;
 
             bool hasBeenMoved = this.sprite.Move(movement);
             if (setOrientation) this.sprite.SetOrientationByMovement(movement: movement, orientationAngleOverride: (float)movementAngle);

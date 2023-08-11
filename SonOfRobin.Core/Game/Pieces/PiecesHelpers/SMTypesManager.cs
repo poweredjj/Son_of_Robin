@@ -11,15 +11,21 @@ namespace SonOfRobin
         private List<Type> enabledTypesEveryFrame;
         private List<Type> enabledTypesNthFrame;
         private int nthFrameMultiplier;
+        private readonly Dictionary<Type, int> deltaCountersForTypes;
 
         public SMTypesManager(World world)
         {
             this.world = world;
             this.allTypes = new List<Type>();
+            this.deltaCountersForTypes = new Dictionary<Type, int>();
 
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
-                if (!this.allTypes.Contains(info.type)) this.allTypes.Add(info.type);
+                if (!this.allTypes.Contains(info.type))
+                {
+                    this.allTypes.Add(info.type);
+                    this.deltaCountersForTypes[info.type] = 0;
+                }
             }
 
             this.enabledTypesEveryFrame = new List<Type>();
@@ -28,6 +34,24 @@ namespace SonOfRobin
             this.nthFrameMultiplier = 0; // 0 == disabled
 
             this.EnableAllTypes(everyFrame: true, nthFrame: true);
+        }
+
+        public void IncreaseDeltaCounters(int increaseVal)
+        {
+            foreach (Type type in allTypes)
+            {
+                if (this.enabledTypesEveryFrame.Contains(type)) this.deltaCountersForTypes[type] += increaseVal;
+                else if (this.enabledTypesNthFrame.Contains(type))
+                {
+                    if (this.nthFrameMultiplier == 0) this.deltaCountersForTypes[type] += increaseVal;
+                    else if (this.world.CurrentUpdate % this.nthFrameMultiplier == 0) this.deltaCountersForTypes[type] += increaseVal;
+                }
+            }
+        }
+
+        public int GetDeltaCounterForType(Type type)
+        {
+            return this.deltaCountersForTypes[type];
         }
 
         private List<int> ConvertTypeListToIntList(List<Type> typeList)
