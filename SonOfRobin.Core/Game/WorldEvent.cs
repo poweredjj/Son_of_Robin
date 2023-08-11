@@ -43,12 +43,16 @@ namespace SonOfRobin
 
         public void ProcessQueue()
         {
-            var framesToProcess = this.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
-            if (framesToProcess.Count == 0) return;
+            var framesToProcess = this.eventQueue.Keys
+                .Where(frameNo => world.CurrentUpdate >= frameNo)
+                .OrderBy(frameNo => frameNo)
+                .ToList();
+
+            if (!framesToProcess.Any()) return;
 
             foreach (int frameNo in framesToProcess)
             {
-                foreach (WorldEvent currentEvent in this.eventQueue[frameNo].ToList())
+                foreach (WorldEvent currentEvent in this.eventQueue[frameNo])
                 { currentEvent.Execute(this.world); }
 
                 this.eventQueue.Remove(frameNo);
@@ -119,7 +123,7 @@ namespace SonOfRobin
             this.eventName = eventName;
             this.eventHelper = eventHelper;
             this.boardPiece = boardPiece;
-            this.delay = Math.Max(delay, 0);
+            this.delay = Math.Max(delay, 1); // to prevent from modifying current frame queue
             this.startUpdateNo = world.CurrentUpdate + this.delay;
 
             if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this, addFadeOut: true);
