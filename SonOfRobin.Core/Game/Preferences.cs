@@ -119,7 +119,6 @@ namespace SonOfRobin
             {
                 stateMachinesDurationFramePercent = value;
                 stateMachinesDurationFrameMS = (int)(1d / (double)60 * 1000d * stateMachinesDurationFramePercent);
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{stateMachinesDurationFramePercent * 100}% -> {stateMachinesDurationFrameMS}ms");
             }
         }
 
