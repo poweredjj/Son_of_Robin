@@ -1066,7 +1066,7 @@ namespace SonOfRobin
                     .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
 
                 // var duration = DateTime.Now - startTime; // for testing
-                //  MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue - duration {duration.Milliseconds}ms"); // for testing
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue ({this.nonPlantSpritesQueue.Count}) - duration {duration.Milliseconds}ms"); // for testing
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
