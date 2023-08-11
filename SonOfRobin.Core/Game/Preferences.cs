@@ -109,8 +109,19 @@ namespace SonOfRobin
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
         public static bool swapMouseButtons = false;
-        public static bool rumbleEnabled = true;
-        public static int stateMachinesMaxProcessingDurationMs = 14;
+        public static bool rumbleEnabled = true;     
+        public static int stateMachinesDurationFrameMS { get; private set; }
+        private static float stateMachinesDurationFramePercent = 0.90f;
+        public static float StateMachinesDurationFramePercent
+        {
+            get { return stateMachinesDurationFramePercent; }
+            set
+            {
+                stateMachinesDurationFramePercent = value;
+                stateMachinesDurationFrameMS = (int)(1d / (double)60 * 1000d * stateMachinesDurationFramePercent);
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{stateMachinesDurationFramePercent * 100}% -> {stateMachinesDurationFrameMS}ms");
+            }
+        }
 
         public static bool PointToWalk
         {
@@ -419,16 +430,6 @@ namespace SonOfRobin
             }
         }
 
-        public static bool VSync
-        {
-            get { return vSync; }
-            set
-            {
-                vSync = value;
-                ShowAppliedAfterRestartMessage("Vertical sync");
-            }
-        }
-
         public static bool HalfFramerate
         {
             get { return halfFramerate; }
@@ -447,6 +448,16 @@ namespace SonOfRobin
             {
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = halfFramerate ? PresentInterval.Two : PresentInterval.One;
             };
+        }
+
+        public static bool VSync
+        {
+            get { return vSync; }
+            set
+            {
+                vSync = value;
+                ShowAppliedAfterRestartMessage("Vertical sync");
+            }
         }
 
         public static List<Object> AvailableScreenModes
@@ -481,6 +492,7 @@ namespace SonOfRobin
             {
                 frameSkip = value;
                 SonOfRobinGame.Game.IsFixedTimeStep = value;
+                SonOfRobinGame.Game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
             }
         }
 
@@ -545,6 +557,7 @@ namespace SonOfRobin
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
             MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation
+            StateMachinesDurationFramePercent = StateMachinesDurationFramePercent; // to refresh miliseconds variable
         }
 
         public static void Save()
@@ -606,8 +619,7 @@ namespace SonOfRobin
             prefsData["showParticles"] = showParticles;
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
             prefsData["newWorldStartingItem"] = newWorldStartingItem;
-            prefsData["stateMachinesMaxProcessingDurationMs"] = stateMachinesMaxProcessingDurationMs;
-
+            prefsData["StateMachinesDurationFramePercent"] = StateMachinesDurationFramePercent;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -680,7 +692,7 @@ namespace SonOfRobin
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
                     showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
-                    stateMachinesMaxProcessingDurationMs = (int)(Int64)prefsData["stateMachinesMaxProcessingDurationMs"];
+                    StateMachinesDurationFramePercent = (int)(Int64)prefsData["StateMachinesDurationFramePercent"];
 
                     prefsLoaded = true;
                 }

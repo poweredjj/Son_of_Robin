@@ -366,10 +366,10 @@ namespace SonOfRobin
         { get { return UpdateTimeElapsed + LastDrawDuration; } }
 
         public bool CanProcessMoreCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.stateMachinesMaxProcessingDurationMs; } }
+        { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.stateMachinesDurationFrameMS; } }
 
         public bool CanProcessMoreOffCameraRectPiecesNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= Preferences.stateMachinesMaxProcessingDurationMs; } }
+        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= Preferences.stateMachinesDurationFrameMS; } }
 
         public float PieceCount
         {
