@@ -1232,17 +1232,25 @@ namespace SonOfRobin
             int frameMaxWidth = 0;
             int frameMaxHeight = 0;
 
-            foreach (var frameList in AnimData.frameListById)
+            foreach (var kvp in AnimData.frameListById)
             {
-                foreach (AnimFrame frame in frameList.Value)
+                foreach (AnimFrame frame in kvp.Value)
                 {
                     if (frame.ignoreWhenCalculatingMaxSize) continue;
 
                     int scaledWidth = (int)(frame.gfxWidth * frame.scale);
                     int scaledHeight = (int)(frame.gfxHeight * frame.scale);
 
-                    if (scaledWidth > frameMaxWidth) frameMaxWidth = scaledWidth;
-                    if (scaledHeight > frameMaxHeight) frameMaxHeight = scaledHeight;
+                    if (scaledWidth > frameMaxWidth)
+                    {
+                        frameMaxWidth = scaledWidth;
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
+                    }
+                    if (scaledHeight > frameMaxHeight)
+                    {
+                        frameMaxHeight = scaledHeight;
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
+                    }
                 }
             }
 
