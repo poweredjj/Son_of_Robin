@@ -44,7 +44,7 @@ namespace SonOfRobin
         public byte AnimSize { get; private set; }
         public string AnimName { get; private set; }
         private byte currentFrameIndex;
-        private ushort currentFrameTimeLeft; // measured in game frames
+        private short currentFrameTimeLeft; // measured in game frames
         public Rectangle GfxRect { get; private set; }
         public Rectangle ColRect { get; private set; }
 
@@ -720,6 +720,8 @@ namespace SonOfRobin
                 this.AnimFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
             }
 
+            this.currentFrameTimeLeft = this.AnimFrame.duration;
+
             if (!this.IsOnBoard) return true;
 
             this.UpdateRects();
@@ -732,8 +734,6 @@ namespace SonOfRobin
                 this.AnimFrame = oldAnimFrame;
                 this.UpdateRects();
             }
-
-            this.currentFrameTimeLeft = this.AnimFrame.duration;
 
             return !collisionDetected;
         }

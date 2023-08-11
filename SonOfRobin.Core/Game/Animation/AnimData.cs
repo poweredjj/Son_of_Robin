@@ -797,14 +797,14 @@ namespace SonOfRobin
                 var openingFrameList = new List<AnimFrame>();
                 for (int i = 2; i <= 6; i++)
                 {
-                    openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (ushort)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+                    openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
                 }
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: openingFrameList);
 
                 var closingFrameList = new List<AnimFrame>();
                 for (int i = 5; i >= 1; i--)
                 {
-                    closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (ushort)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+                    closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
                 }
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: closingFrameList);
 
@@ -1164,7 +1164,7 @@ namespace SonOfRobin
             return frameList;
         }
 
-        public static AnimFrame ConvertImageToFrame(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, ushort duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame ConvertImageToFrame(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, short duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             Texture2D atlasTexture = TextureBank.GetTexture(atlasName);
             if (width == 0) width = atlasTexture.Width;
