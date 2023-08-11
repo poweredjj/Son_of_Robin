@@ -356,7 +356,7 @@ namespace SonOfRobin
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
         public int FramesSinceLastProcessed
-        { get { return this.world.CurrentUpdate - this.lastFrameSMProcessed; } }
+        { get { return Math.Max(this.world.CurrentUpdate - this.lastFrameSMProcessed, 0); } }
 
         public static Random Random
         {
@@ -597,7 +597,7 @@ namespace SonOfRobin
         {
             // checking if state machine can be processed
 
-            if (this.lastFrameSMProcessed == this.world.CurrentUpdate) return; // to avoid processing the same state machine multiple times in one frame
+            if (this.FramesSinceLastProcessed == 0) return; // to avoid processing the same state machine multiple times in one frame
             if (!this.exists || !this.sprite.IsOnBoard)
             {
                 this.RemoveFromStateMachines();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1061,6 +1062,7 @@ namespace SonOfRobin
                 // var startTime = DateTime.Now; // for testing
 
                 this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
+                    .Where(sprite => sprite.boardPiece.FramesSinceLastProcessed > 0)
                     .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
 
                 // var duration = DateTime.Now - startTime; // for testing
