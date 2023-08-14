@@ -844,6 +844,7 @@ namespace SonOfRobin
                             if (fruitDropped)
                             {
                                 World world = fruitPlant.world;
+                                world.HintEngine.Disable(Tutorials.Type.ShakeFruit);
 
                                 float rotationChange = 0.1f;
                                 if ((fruitPlant.sprite.position - world.Player.sprite.position).X > 0) rotationChange *= -1;
