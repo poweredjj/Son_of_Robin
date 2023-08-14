@@ -173,6 +173,8 @@ namespace SonOfRobin
             set { this.hitPoints = Math.Min(Math.Max(value, 0), this.maxHitPoints); }
         }
 
+        public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow || Math.Abs(this.sprite.rotation) > 0.3f; } }
+
         public bool AreEnemiesNearby
         {
             get

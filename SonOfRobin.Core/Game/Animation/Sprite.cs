@@ -926,7 +926,7 @@ namespace SonOfRobin
             float distance = Vector2.Distance(lightPos, shadowSprite.position);
             AnimFrame frame = shadowSprite.AnimFrame;
 
-            if (shadowSprite.boardPiece.pieceInfo.hasFlatShadow)
+            if (shadowSprite.boardPiece.HasFlatShadow)
             {
                 float xDiff = shadowSprite.position.X - lightPos.X;
                 float yDiff = shadowSprite.position.Y - lightPos.Y;
