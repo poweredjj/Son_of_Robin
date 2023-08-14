@@ -2551,7 +2551,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.4f;
 
@@ -2565,7 +2565,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 80, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.7f;
 
@@ -2579,7 +2579,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 245, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 2.2f;
 
