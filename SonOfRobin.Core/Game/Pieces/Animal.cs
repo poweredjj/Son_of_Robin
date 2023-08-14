@@ -103,6 +103,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("animal_pregnancyMass")) this.pregnancyMass = (int)(Int64)pieceData["animal_pregnancyMass"];
             if (pieceData.ContainsKey("animal_pregnancyFramesLeft")) this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
             this.activeState = State.AnimalAssessSituation; // to avoid using (non-serialized) aiData
+            if (!this.alive) this.rotatesWhenDropped = true;
         }
 
         public override void DrawStatBar()

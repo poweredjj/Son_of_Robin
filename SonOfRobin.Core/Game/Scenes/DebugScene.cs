@@ -415,8 +415,8 @@ namespace SonOfRobin
 
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
             //} 
-            
-            
+
+
             if (Keyboard.HasBeenPressed(Keys.F3))
             {
                 if (world == null) return;
@@ -432,16 +432,15 @@ namespace SonOfRobin
 
             //    Vector2 windOriginLocation = world.Player.sprite.position;
 
-            //    var plantSpriteList = new List<Sprite>();
-            //    world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+            //    var plantSpriteList = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColPlantGrowth, rectangle: world.camera.viewRect);
 
             //    foreach (Sprite sprite in plantSpriteList)
             //    {
-            //        if (!sprite.boardPiece.canBePickedUp)
+            //        if (!sprite.boardPiece.pieceInfo.canBePickedUp)
             //        {
             //            float distance = Vector2.Distance(windOriginLocation, sprite.position);
 
-            //            world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
+            //            world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
             //        }
             //    }
             //}
