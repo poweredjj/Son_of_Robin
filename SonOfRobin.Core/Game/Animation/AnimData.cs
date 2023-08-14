@@ -688,7 +688,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BubbleCraftGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
-            AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
+            AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f, crop: false));
             AddFrameList(animPackage: PkgName.BackpackMediumOutline, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium_outline", layer: 1, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BackpackSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BackpackMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
