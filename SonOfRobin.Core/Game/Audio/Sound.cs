@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -200,7 +201,7 @@ namespace SonOfRobin
 
         public static void UpdateAll()
         {
-            foreach (Sound sound in currentlyPlaying.Values)
+            foreach (Sound sound in currentlyPlaying.Values.ToList())
             {
                 sound.Update();
             }
