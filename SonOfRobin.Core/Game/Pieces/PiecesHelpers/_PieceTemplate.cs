@@ -488,7 +488,7 @@ namespace SonOfRobin
                 case Name.WaterLily:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.WaterLily1, AnimData.PkgName.WaterLily2, AnimData.PkgName.WaterLily3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>{
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 12), max: (byte)(Terrain.waterLevelMax - 1)) },
@@ -506,7 +506,7 @@ namespace SonOfRobin
                 case Name.FlowersPlain:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.FlowersYellow1, AnimData.PkgName.FlowersWhite };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
@@ -550,7 +550,7 @@ namespace SonOfRobin
                 case Name.TreeSmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.TreeSmall1, AnimData.PkgName.TreeSmall2 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
@@ -742,7 +742,7 @@ namespace SonOfRobin
                 case Name.MineralsSmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsMossySmall4 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
@@ -758,7 +758,7 @@ namespace SonOfRobin
                 case Name.MineralsMossySmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossySmall1, AnimData.PkgName.MineralsMossySmall2, AnimData.PkgName.MineralsMossySmall3, AnimData.PkgName.MineralsMossySmall4 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
@@ -774,7 +774,7 @@ namespace SonOfRobin
                 case Name.MineralsBig:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig2, AnimData.PkgName.MineralsBig3, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsBig5, AnimData.PkgName.MineralsBig6, AnimData.PkgName.MineralsBig7, AnimData.PkgName.MineralsBig8, AnimData.PkgName.MineralsBig9, AnimData.PkgName.MineralsBig10, AnimData.PkgName.MineralsBig11, AnimData.PkgName.MineralsBig12, AnimData.PkgName.MineralsBig13, AnimData.PkgName.MineralsBig14 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
@@ -789,7 +789,7 @@ namespace SonOfRobin
                 case Name.MineralsMossyBig:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossyBig1, AnimData.PkgName.MineralsMossyBig2, AnimData.PkgName.MineralsMossyBig3, AnimData.PkgName.MineralsMossyBig4, AnimData.PkgName.MineralsMossyBig5, AnimData.PkgName.MineralsMossyBig6, AnimData.PkgName.MineralsMossyBig7, AnimData.PkgName.MineralsMossyBig8, AnimData.PkgName.MineralsMossyBig9, AnimData.PkgName.MineralsMossyBig10, AnimData.PkgName.MineralsMossyBig11, AnimData.PkgName.MineralsMossyBig12 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
@@ -815,7 +815,7 @@ namespace SonOfRobin
                         var allowedTerrain = terrainCanGoAnywhere;
 
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.BloodSplatter1, AnimData.PkgName.BloodSplatter2, AnimData.PkgName.BloodSplatter3 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
                         BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                              readableName: "bloodSplatter", description: "A pool of blood.", activeState: BoardPiece.State.Empty);
 
@@ -1329,7 +1329,7 @@ namespace SonOfRobin
                 case Name.Stick:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Stick1, AnimData.PkgName.Stick2, AnimData.PkgName.Stick3, AnimData.PkgName.Stick4, AnimData.PkgName.Stick5, AnimData.PkgName.Stick6, AnimData.PkgName.Stick7 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f));
@@ -1964,8 +1964,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitLightGray, AnimData.PkgName.RabbitBeige, AnimData.PkgName.RabbitWhite };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
 
@@ -1985,8 +1985,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxWhite, AnimData.PkgName.FoxGray, AnimData.PkgName.FoxYellow };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
@@ -2008,8 +2008,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerWhite, AnimData.PkgName.TigerYellow };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
@@ -2035,8 +2035,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog2, AnimData.PkgName.Frog8 };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
@@ -2336,7 +2336,7 @@ namespace SonOfRobin
                         Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
 
                         var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
-                        Color color = colors[random.Next(0, colors.Count)];
+                        Color color = colors[random.Next(colors.Count)];
                         starDebris.sprite.color = color;
 
                         return starDebris;
@@ -2697,7 +2697,7 @@ namespace SonOfRobin
                 case Name.SwampGas:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
@@ -2729,7 +2729,7 @@ namespace SonOfRobin
                 case Name.LavaGas:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
@@ -2765,7 +2765,7 @@ namespace SonOfRobin
                 case Name.SeaWave:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.SeaWave };
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var animPkg = packageNames[random.Next(packageNames.Count)];
 
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });

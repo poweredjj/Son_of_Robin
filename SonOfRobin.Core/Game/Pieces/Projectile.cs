@@ -122,7 +122,7 @@ namespace SonOfRobin
                 {
                     if (!this.pieceInfo.toolIndestructible)
                     {
-                        this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(0, 15));
+                        this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(15));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
                         if (this.HitPoints == 0)
                         {
@@ -141,7 +141,7 @@ namespace SonOfRobin
 
                 this.shootMode = false;
 
-                if (attachedToTarget || (this.pieceInfo.projectileCanBeStuck && this.world.random.Next(0, 2) == 1))
+                if (attachedToTarget || (this.pieceInfo.projectileCanBeStuck && this.world.random.Next(2) == 1))
                 {
                     this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;

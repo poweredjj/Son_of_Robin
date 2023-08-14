@@ -42,7 +42,7 @@ namespace SonOfRobin
                 if (randomSeed)
                 {
                     Random oneTimeRandom = new Random();
-                    return oneTimeRandom.Next(0, 9999);
+                    return oneTimeRandom.Next(9999);
                 }
 
                 return Convert.ToInt32($"{seedDigit1}{seedDigit2}{seedDigit3}{seedDigit4}");

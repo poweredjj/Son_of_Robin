@@ -206,7 +206,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(0, world.width), BoardPiece.Random.Next(0, world.height)));
+                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(world.width), BoardPiece.Random.Next(world.height)));
                     if (hasBeenMoved) break;
                 }
             }
@@ -600,7 +600,7 @@ namespace SonOfRobin
 
                 if (!allSprites.Any()) return;
 
-                var index = BoardPiece.Random.Next(0, allSprites.Count);
+                var index = BoardPiece.Random.Next(allSprites.Count);
                 world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, moveInstantly: true);
             }
 
@@ -615,7 +615,7 @@ namespace SonOfRobin
                 while (true)
                 {
                     var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
-                    var packageName = packageNames[BoardPiece.Random.Next(0, packageNames.Count)];
+                    var packageName = packageNames[BoardPiece.Random.Next(packageNames.Count)];
                     if (packageName != currentPackageName)
                     {
                         world.Player.sprite.AssignNewPackage(newAnimPackage: packageName, setEvenIfMissing: false);

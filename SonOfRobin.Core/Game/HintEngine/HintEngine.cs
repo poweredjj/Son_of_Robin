@@ -110,7 +110,7 @@ namespace SonOfRobin
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
-                        var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
+                        var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
                         break;
@@ -125,7 +125,7 @@ namespace SonOfRobin
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
-                        var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
+                        var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
                         break;
@@ -141,7 +141,7 @@ namespace SonOfRobin
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
-                        var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
+                        var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
                         break;
@@ -157,7 +157,7 @@ namespace SonOfRobin
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
 
-                        var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
+                        var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
                         break;
@@ -174,7 +174,7 @@ namespace SonOfRobin
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
 
-                        var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
+                        var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
                         break;

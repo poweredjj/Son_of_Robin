@@ -326,7 +326,7 @@ namespace SonOfRobin
 
             if (this.WindOriginX == -1 || this.WindOriginY == -1)
             {
-                this.WindOriginX = this.world.random.Next(0, 2);
+                this.WindOriginX = this.world.random.Next(2);
                 this.WindOriginY = (float)this.world.random.NextSingle();
             }
 
@@ -448,7 +448,7 @@ namespace SonOfRobin
             float maxVal = 0.8f;
             float addChanceFactor = 0.2f; // minimum value in 0 - 1 range, that will generate a single event
 
-            if (this.world.random.Next(0, 6) == 0)
+            if (this.world.random.Next(6) == 0)
             {
                 // bad weather happens from time to time
                 minVal += Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.0f, maxVal: 0.5f);

@@ -312,7 +312,7 @@ namespace SonOfRobin
                         "I was trying to escape this island, not this life.\nDamn..."
                         };
 
-                        text = textList[this.random.Next(0, textList.Count)];
+                        text = textList[this.random.Next(textList.Count)];
                     }
 
                     new TextWindow(text: text, textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 6, priority: 1, animSound: this.DialogueSound);
@@ -1134,7 +1134,7 @@ namespace SonOfRobin
             {
                 while (true)
                 {
-                    int randomCellNo = random.Next(0, plantCellsQueue.Count);
+                    int randomCellNo = random.Next(plantCellsQueue.Count);
                     Cell cell = this.plantCellsQueue[randomCellNo];
                     this.plantCellsQueue.RemoveAt(randomCellNo);
                     this.plantSpritesQueue.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants].Values); // not shuffled to save cpu time

@@ -54,7 +54,7 @@ namespace SonOfRobin
 
             if (tipsToDisplay.Count == 0) tipsToDisplay = allTips.ToList();
 
-            int randomTipNo = SonOfRobinGame.random.Next(0, tipsToDisplay.Count);
+            int randomTipNo = SonOfRobinGame.random.Next(tipsToDisplay.Count);
 
             currentTip = tipsToDisplay[randomTipNo];
             tipsToDisplay.RemoveAt(randomTipNo);

@@ -143,7 +143,7 @@ namespace SonOfRobin
 
             if (this.boardPiece != null && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
 
-            SoundData.Name soundName = this.SoundNameList.Count == 1 ? this.SoundNameList[0] : this.SoundNameList[SonOfRobinGame.random.Next(0, this.SoundNameList.Count)];
+            SoundData.Name soundName = this.SoundNameList.Count == 1 ? this.SoundNameList[0] : this.SoundNameList[SonOfRobinGame.random.Next(this.SoundNameList.Count)];
             ManagedSoundInstance managedSoundInstance = ManagedSoundInstance.GetNewOrStoppedInstance(soundName: soundName);
 
             float pitch = this.pitchChange;

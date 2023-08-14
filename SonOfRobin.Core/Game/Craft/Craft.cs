@@ -261,13 +261,13 @@ namespace SonOfRobin
                 if (recipeLevel > 0 || recipeLevel < this.maxLevel) smartCraftChance /= 2;
                 if (recipeLevel == this.maxLevel) smartCraftChance /= 3;
 
-                if (world.random.Next(0, smartCraftChance) == 0)
+                if (world.random.Next(smartCraftChance) == 0)
                 {
                     var multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys;
 
                     if (multipleIngredientNames.Any())
                     {
-                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames.ElementAt(world.random.Next(0, multipleIngredientNames.Count));
+                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames.ElementAt(world.random.Next(multipleIngredientNames.Count));
                         byte quantity = ingredientsCopy[randomNameToReduce];
 
                         float reduceMultiplier = (float)(0.2 + (world.random.NextSingle() * 0.3)); // 0.2 - 0.5

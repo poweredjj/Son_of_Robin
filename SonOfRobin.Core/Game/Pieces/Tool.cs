@@ -263,7 +263,7 @@ namespace SonOfRobin
                 if (target.pieceInfo.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
-                    Vector2 posOffset = new(world.random.Next(0, target.sprite.AnimFrame.gfxWidth), world.random.Next(0, target.sprite.AnimFrame.gfxHeight));
+                    Vector2 posOffset = new(world.random.Next(target.sprite.AnimFrame.gfxWidth), world.random.Next(target.sprite.AnimFrame.gfxHeight));
                     posOffset += target.sprite.AnimFrame.gfxOffset;
 
                     var attack = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position + posOffset, templateName: PieceTemplate.Name.Attack);
@@ -279,7 +279,7 @@ namespace SonOfRobin
 
                 if (target.GetType() == typeof(Animal))
                 {
-                    if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+                    if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
 
                     Animal animalTarget = (Animal)target;
 

@@ -37,7 +37,7 @@ namespace SonOfRobin
         {
             this.blocksDrawsBelow = true;
 
-            if (!this.isActive && textureName == null) textureName = loadingGfxNames[SonOfRobinGame.random.Next(0, loadingGfxNames.Count)];
+            if (!this.isActive && textureName == null) textureName = loadingGfxNames[SonOfRobinGame.random.Next(loadingGfxNames.Count)];
             if (textureName != null) this.UpdateTexture(textureName);
 
             if (percentage != -1f)

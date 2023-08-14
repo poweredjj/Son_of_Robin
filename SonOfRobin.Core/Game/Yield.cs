@@ -143,7 +143,7 @@ namespace SonOfRobin
 
             foreach (DroppedPiece droppedPiece in droppedPieceList)
             {
-                if (random.Next(0, 100) <= droppedPiece.chanceToDrop * multiplier)
+                if (random.Next(100) <= droppedPiece.chanceToDrop * multiplier)
                 {
                     int numberToDrop = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
 

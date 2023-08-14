@@ -239,7 +239,7 @@ namespace SonOfRobin
 
                 for (int i = 0; i < buffsToAddCount; i++)
                 {
-                    BuffEngine.BuffType buffType = possibleBuffTypes[this.world.random.Next(0, possibleBuffTypes.Count)];
+                    BuffEngine.BuffType buffType = possibleBuffTypes[this.world.random.Next(possibleBuffTypes.Count)];
 
                     int maxDuration = cookLevel * 60 * 60;
                     int duration = this.world.random.Next(30 * 60, maxDuration);

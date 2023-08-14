@@ -90,7 +90,7 @@ namespace SonOfRobin
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
             {
-                int windModifier = (int)(windPercentage * 10) + world.random.Next(0, 2);
+                int windModifier = (int)(windPercentage * 10) + world.random.Next(2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += Math.Min(windModifier, currentStep.Y);
 
@@ -142,7 +142,7 @@ namespace SonOfRobin
                     if (this.world.Grid.GetFieldValue(position: beachPos, terrainName: Terrain.Name.Height) > Terrain.waterLevelMax) break;
                 }
 
-                float delay = this.world.random.Next(0, 15);
+                float delay = this.world.random.Next(15);
                 float duration = this.world.random.Next(4, 8);
 
                 this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: beachPos, duration: duration, delay: delay)

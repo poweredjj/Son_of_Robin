@@ -742,7 +742,7 @@ namespace SonOfRobin
                 return this.allCells[0]; // to properly return a (useless) cell
             }
 
-            return cellList[this.world.random.Next(0, cellList.Count)];
+            return cellList[this.world.random.Next(cellList.Count)];
         }
 
         private void PrepareNextStage(bool incrementCurrentStage)

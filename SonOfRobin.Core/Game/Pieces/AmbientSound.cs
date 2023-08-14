@@ -21,7 +21,7 @@ namespace SonOfRobin
 
             this.waitUntilFrame = 0;
 
-            this.checkDelay = 100 + Random.Next(0, 60); // to avoid playing all ambient sound in the same frame
+            this.checkDelay = 100 + Random.Next(60); // to avoid playing all ambient sound in the same frame
             if (this.sprite.Visible) this.sprite.opacity = visMinOpacity;
         }
 
@@ -70,7 +70,7 @@ namespace SonOfRobin
             if (this.pieceInfo.ambsoundPlayDelay > 0 || this.pieceInfo.ambsoundPlayDelayMaxVariation > 0)
             {
                 this.currentDelay = this.pieceInfo.ambsoundPlayDelay;
-                if (this.pieceInfo.ambsoundPlayDelayMaxVariation > 0) this.currentDelay += Random.Next(0, this.pieceInfo.ambsoundPlayDelayMaxVariation);
+                if (this.pieceInfo.ambsoundPlayDelayMaxVariation > 0) this.currentDelay += Random.Next(this.pieceInfo.ambsoundPlayDelayMaxVariation);
                 this.waitUntilFrame = this.world.CurrentUpdate + this.currentDelay;
                 this.showStatBarsTillFrame = this.waitUntilFrame;
             }

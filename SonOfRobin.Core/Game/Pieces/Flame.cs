@@ -107,7 +107,7 @@ namespace SonOfRobin
                         float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
                         heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
 
-                        if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
+                        if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(4) == 0)
                         {
                             heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 

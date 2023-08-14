@@ -408,7 +408,7 @@ namespace SonOfRobin
                             return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there
                         }
 
-                        int cellNo = this.world.random.Next(0, cellList.Count);
+                        int cellNo = this.world.random.Next(cellList.Count);
 
                         cell = cellList[cellNo];
                         cellList.RemoveAt(cellNo);
