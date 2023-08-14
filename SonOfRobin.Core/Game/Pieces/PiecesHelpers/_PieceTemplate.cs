@@ -1902,8 +1902,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime,
-                            allowedTerrain: terrainBeachToVolcano, buffList: buffList,
-                             rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
+                            allowedTerrain: terrainBeachToVolcano, buffList: buffList, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack);
 
                         return boardPiece;
                     }
@@ -1913,8 +1912,10 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, allowedTerrain: terrainBeachToVolcano,
-                             rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack);
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)20, autoRemoveDelay: 60 * 60, increaseIDAtEveryUse: true)};
+
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, allowedTerrain: terrainBeachToVolcano, buffList: buffList, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack);
 
                         return boardPiece;
                     }
