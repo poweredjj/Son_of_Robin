@@ -1168,6 +1168,7 @@ namespace SonOfRobin
 
             this.BuildMode = true;
 
+            Inventory.SetLayout(Inventory.LayoutType.None, player: this.Player);
             this.touchLayout = TouchLayout.WorldBuild;
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
             this.Player.activeState = BoardPiece.State.PlayerControlledBuilding;
@@ -1228,6 +1229,7 @@ namespace SonOfRobin
         {
             if (!this.BuildMode) throw new ArgumentException("Is not in build mode.");
 
+            Inventory.SetLayout(Inventory.LayoutType.Toolbar, player: this.Player);
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.Player.activeState = BoardPiece.State.PlayerControlledWalking;

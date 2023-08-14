@@ -2565,7 +2565,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Dirt;
                         this.blocksPlantGrowth = false;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 180, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 80, maxNoOfPiecesSameClass: 0);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.7f;
 

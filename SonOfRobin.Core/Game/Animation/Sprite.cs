@@ -604,7 +604,7 @@ namespace SonOfRobin
             if (plantingMode)
             {
                 AllowedDensity plantingDensity = this.BlocksMovement ?
-                    new AllowedDensity(radius: 50, maxNoOfPiecesBlocking: 0) :
+                    new AllowedDensity(radius: 50, maxNoOfPiecesBlocking: 1) :
                     new AllowedDensity(radius: 30, maxNoOfPiecesSameName: 0);
 
                 if (!plantingDensity.CanBePlacedHere(this.boardPiece)) return true;
