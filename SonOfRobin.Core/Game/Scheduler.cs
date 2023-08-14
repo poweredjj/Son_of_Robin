@@ -349,7 +349,7 @@ namespace SonOfRobin
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
                             World oldWorld = (World)this.ExecuteHelper;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName);
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
                             oldWorld.Remove();
 
                             return;

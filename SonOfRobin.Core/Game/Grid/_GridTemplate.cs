@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,15 @@ namespace SonOfRobin
         private const float currentVersion = 1.26f;
         private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
+        private static Point properCellSize = new(1, 1);
+        private static Point ProperCellSize
+        {
+            get
+            {
+                if (properCellSize.X == 1 && properCellSize.Y == 1) properCellSize = CalculateCellSize();
+                return properCellSize;
+            }
+        }
 
         public readonly int seed;
         public readonly int width;
@@ -43,11 +53,14 @@ namespace SonOfRobin
         public bool IsObsolete
         { get { return this.version != currentVersion; } }
 
+        public bool HasCorrectCellSize
+        { get { return this.cellWidth != currentVersion; } }
+
         public static bool CorrectTemplatesExist
         { get { return CorrectTemplates.Any(); } }
 
-        public static bool CorrectNonDemoTemplatesExist
-        { get { return CorrectNonDemoTemplates.Any(); } }
+        public static bool CorrectNonDemoTemplatesOfProperSizeExist
+        { get { return CorrectNonDemoTemplatesOfProperSize.Any(); } }
 
         public static List<GridTemplate> CorrectTemplates
         {
@@ -67,9 +80,13 @@ namespace SonOfRobin
             }
         }
 
-        public static List<GridTemplate> CorrectNonDemoTemplates
+        public static List<GridTemplate> CorrectNonDemoTemplatesOfProperSize
         {
-            get { return CorrectTemplates.Where(template => template.seed != demoWorldSeed).ToList(); }
+            get
+            {
+                Point cellSize = ProperCellSize;
+                return CorrectTemplates.Where(template => template.seed != demoWorldSeed && cellSize.X == template.cellWidth && cellSize.Y == template.cellHeight).ToList();
+            }
         }
 
         private bool Equals(GridTemplate gridToCompare)
@@ -175,6 +192,48 @@ namespace SonOfRobin
             {
                 Directory.Delete(path: templatePathToDelete, recursive: true);
             }
+        }
+
+        public static Point CalculateCellSize()
+        {
+            Vector2 maxFrameSize = CalculateMaxFrameSize();
+            int cellWidth = (int)(maxFrameSize.X * 1.1);
+            int cellHeight = (int)(maxFrameSize.Y * 1.1);
+
+            cellWidth = (int)Math.Ceiling(cellWidth / 2d) * 2;
+            cellHeight = (int)Math.Ceiling(cellHeight / 2d) * 2;
+
+            return new Point(cellWidth, cellHeight);
+        }
+
+        private static Vector2 CalculateMaxFrameSize()
+        {
+            int frameMaxWidth = 0;
+            int frameMaxHeight = 0;
+
+            foreach (var kvp in AnimData.frameListById)
+            {
+                foreach (AnimFrame frame in kvp.Value)
+                {
+                    if (frame.ignoreWhenCalculatingMaxSize) continue;
+
+                    int scaledWidth = (int)(frame.gfxWidth * frame.scale);
+                    int scaledHeight = (int)(frame.gfxHeight * frame.scale);
+
+                    if (scaledWidth > frameMaxWidth)
+                    {
+                        frameMaxWidth = scaledWidth;
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
+                    }
+                    if (scaledHeight > frameMaxHeight)
+                    {
+                        frameMaxHeight = scaledHeight;
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
+                    }
+                }
+            }
+
+            return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
         public Dictionary<string, Object> Serialize()

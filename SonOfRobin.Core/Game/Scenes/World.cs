@@ -84,7 +84,7 @@ namespace SonOfRobin
         public readonly DateTime createdTime; // for calculating time spent in game
         private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
 
-        public World(int width, int height, int seed, int resDivider, PieceTemplate.Name playerName, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, PieceTemplate.Name playerName, Object saveGameData = null, bool demoMode = false, int cellWidthOverride = 0, int cellHeightOverride = 0) :
             base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.seed = seed;
@@ -160,7 +160,7 @@ namespace SonOfRobin
             this.playerPanel = new PlayerPanel(world: this);
             this.initialPlayerName = playerName;
             this.debugText = "";
-            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
+            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride);
             else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.map);
