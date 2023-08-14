@@ -14,22 +14,24 @@ namespace SonOfRobin
 
         public class Choice
         {
-            public Action action;
-            public float priority;
-            public BoardPiece piece;
+            public Action Action { get; private set; }
+            public float Priority { get; private set; }
+            public BoardPiece Piece { get; private set; }
 
             public Choice(float priority, BoardPiece piece, Action action)
             {
-                this.priority = priority;
-                this.piece = piece;
-                this.action = action;
+                this.Priority = priority;
+                this.Piece = piece;
+                this.Action = action;
             }
         }
 
         private List<Choice> allChoices;
 
         public DecisionEngine()
-        { this.allChoices = new List<Choice> { }; }
+        {
+            this.allChoices = new List<Choice> { };
+        }
 
         public void AddChoice(float priority, BoardPiece piece, Action action)
         {
@@ -38,9 +40,11 @@ namespace SonOfRobin
 
         public Choice GetBestChoice()
         {
-            var possibleChoices = this.allChoices.Where(choice => choice.priority > 0 && choice.piece != null).OrderByDescending(choice => choice.priority);
-            if (possibleChoices.Any()) return possibleChoices.First();
-            else return null;
+            var possibleChoices = this.allChoices
+                .Where(choice => choice.Priority > 0 && choice.Piece != null)
+                .OrderByDescending(choice => choice.Priority);
+
+            return possibleChoices.Any() ? possibleChoices.First() : null;
         }
     }
 }

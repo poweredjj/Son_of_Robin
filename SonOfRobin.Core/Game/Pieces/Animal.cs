@@ -214,7 +214,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.world.random.Next(0, 30) == 0) // to avoid getting blocked
+            if (this.world.random.Next(30) == 0) // to avoid getting blocked
             {
                 this.activeState = State.AnimalWalkAround;
                 this.aiData.Reset();
@@ -249,15 +249,18 @@ namespace SonOfRobin
 
             // looking for food
 
-            var foodList = seenPieces.Where(piece => this.Eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position));
+            var foodList = seenPieces.Where(piece =>
+            (this.Eats.Contains(piece.name) || !piece.alive && this.pieceInfo.isCarnivorous && piece.name == this.name) &&
+            piece.Mass > 0 &&
+            this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
 
             BoardPiece foodPiece = null;
 
             if (foodList.Any())
             {
-                var deadFoodList = foodList.Where(piece => !piece.alive);
+                var deadFoodList = foodList.Where(piece => !piece.alive).ToList();
                 if (deadFoodList.Any()) foodList = deadFoodList;
-                foodPiece = this.world.random.Next(0, 8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList.ElementAt(world.random.Next(0, foodList.Count()));
+                foodPiece = this.world.random.Next(8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList.ElementAt(world.random.Next(foodList.Count()));
             }
 
             // looking for mating partner
@@ -272,16 +275,16 @@ namespace SonOfRobin
                 var matingPartners = this.AssessAsMatingPartners(seenPieces);
                 if (matingPartners.Any())
                 {
-                    if (this.world.random.Next(0, 8) != 0)
+                    if (this.world.random.Next(8) != 0)
                     { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
                     else
-                    { matingPartner = matingPartners.ElementAt(world.random.Next(0, matingPartners.Count())); }
+                    { matingPartner = matingPartners.ElementAt(world.random.Next(matingPartners.Count())); }
                 }
             }
 
             // choosing what to do
 
-            DecisionEngine decisionEngine = new DecisionEngine();
+            DecisionEngine decisionEngine = new();
             decisionEngine.AddChoice(action: DecisionEngine.Action.Flee, piece: enemyPiece, priority: 1.2f - ((float)enemyDistance / this.pieceInfo.animalSightRange));
             decisionEngine.AddChoice(action: DecisionEngine.Action.Eat, piece: foodPiece, priority: this.HitPointsPercent > 0.3f ? 1.2f - this.FedPercentage : 1.5f);
             decisionEngine.AddChoice(action: DecisionEngine.Action.Mate, piece: matingPartner, priority: 1f);
@@ -297,7 +300,7 @@ namespace SonOfRobin
             }
 
             this.aiData.Reset();
-            this.target = bestChoice.piece;
+            this.target = bestChoice.Piece;
 
             if (Preferences.debugShowAnimalTargets)
             {
@@ -309,7 +312,7 @@ namespace SonOfRobin
                 new OpacityFade(sprite: crossHair.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
                 new OpacityFade(sprite: backlight.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
 
-                switch (bestChoice.action)
+                switch (bestChoice.Action)
                 {
                     case DecisionEngine.Action.Eat:
                         crossHair.sprite.color = backlight.sprite.color = Color.Red;
@@ -328,17 +331,17 @@ namespace SonOfRobin
                 }
             }
 
-            switch (bestChoice.action)
+            switch (bestChoice.Action)
             {
                 case DecisionEngine.Action.Flee:
                     this.activeState = State.AnimalFlee;
                     break;
 
                 case DecisionEngine.Action.Eat:
-                    if (this.target.GetType() == typeof(Animal)) // target animal has a chance to flee early
+                    if (this.target.GetType() == typeof(Animal) && this.target.alive) // target animal has a chance to flee early
                     {
                         Animal animalTarget = (Animal)this.target;
-                        if (this.world.random.Next(0, (int)(animalTarget.pieceInfo.animalAwareness / 3)) == 0)
+                        if (this.world.random.Next((int)(animalTarget.pieceInfo.animalAwareness / 3)) == 0)
                         {
                             animalTarget.target = this;
                             animalTarget.aiData.Reset();
@@ -365,7 +368,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported choice action - {bestChoice.action}.");
+                    throw new ArgumentException($"Unsupported choice action - {bestChoice.Action}.");
             }
         }
 
@@ -461,7 +464,7 @@ namespace SonOfRobin
 
             if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
-                if (this.name == target.name && this.AssessAsMatingPartners(new List<BoardPiece> { this.target }) != null)
+                if (this.name == target.name && this.AssessAsMatingPartners(new List<BoardPiece> { this.target }).Any())
                 {
                     this.activeState = State.AnimalMate;
                     this.aiData.Reset();
@@ -552,25 +555,25 @@ namespace SonOfRobin
                 }
 
                 targetSpeed = playerTarget.speed;
-                this.attackCooldown += this.world.random.Next(0, 40); // additional cooldown after attacking player
+                this.attackCooldown += this.world.random.Next(40); // additional cooldown after attacking player
             }
             else throw new ArgumentException($"Unsupported target class - '{this.target.GetType()}'.");
 
             int attackChance = (int)Math.Max(Math.Min((float)targetSpeed / (float)this.RealSpeed, 30), 1); // 1 == guaranteed hit, higher values == lower chance
 
-            if (this.world.random.Next(0, attackChance) == 0)
+            if (this.world.random.Next(attackChance) == 0)
             {
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
-                if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                if (this.world.random.Next(2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
                 this.target.pieceInfo.Yield?.DropDebris(piece: this.target);
 
                 this.soundPack.Play(PieceSoundPack.Action.Cry);
 
                 target.soundPack.Play(PieceSoundPack.Action.IsHit);
-                if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+                if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
 
                 int attackStrength = Convert.ToInt32(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
                 this.target.HitPoints = Math.Max(0, this.target.HitPoints - attackStrength);
@@ -618,7 +621,7 @@ namespace SonOfRobin
 
             this.soundPack.Play(PieceSoundPack.Action.Eat);
 
-            if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && this.world.random.Next(0, 25) == 0)
+            if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && this.world.random.Next(25) == 0)
             {
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
@@ -848,9 +851,9 @@ namespace SonOfRobin
                     {
                         Cell targetCell;
 
-                        if (this.world.random.Next(0, 3) == 0 || !canGoToWater) // sometimes a random cell is chosen
+                        if (this.world.random.Next(3) == 0 || !canGoToWater) // sometimes a random cell is chosen
                         {
-                            int randomCellNo = this.world.random.Next(0, cellsWithinDistance.Count());
+                            int randomCellNo = this.world.random.Next(cellsWithinDistance.Count());
                             targetCell = cellsWithinDistance.ElementAt(randomCellNo);
                         }
                         else targetCell = cellsWithinDistance.First();
