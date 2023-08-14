@@ -626,11 +626,8 @@ namespace SonOfRobin
                     imageList.Add(unlockedPieceInfo.texture);
                 }
 
-                var taskChain = new List<Object>();
-
-                taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
-
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
+                Sound.QuickPlay(SoundData.Name.Notification1);
+                HintEngine.ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, blockInput: true, useTransition: true, imageList: imageList, boxType: HintMessage.BoxType.GreenBox) });
             }
         }
 
