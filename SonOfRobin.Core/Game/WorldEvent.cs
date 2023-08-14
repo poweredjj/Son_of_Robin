@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class WorldEventManager
     {
         public readonly World world;
-        private Dictionary<int, List<WorldEvent>> eventQueue;
+        private readonly Dictionary<int, List<WorldEvent>> eventQueue;
 
         public WorldEventManager(World world)
         {
@@ -21,17 +21,24 @@ namespace SonOfRobin
             if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new List<WorldEvent>();
             this.eventQueue[worldEvent.startUpdateNo].Add(worldEvent);
 
-            if (addFadeOut && worldEvent.eventName == WorldEvent.EventName.Destruction)
+            if (worldEvent.eventName == WorldEvent.EventName.Destruction && addFadeOut)
             {
-                int fadeDuration = worldEvent.boardPiece.GetType() == typeof(Animal) ? worldEvent.delay - 1 : OpacityFade.defaultDuration;
-
-                new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
+                if (worldEvent.boardPiece.GetType() == typeof(Animal))
+                {
+                    // dead animal should explode instead of fading out
+                    new WorldEvent(eventName: WorldEvent.EventName.DropDebris, delay: worldEvent.delay - 1, world: world, boardPiece: worldEvent.boardPiece);
+                }
+                else
+                {
+                    int fadeDuration = OpacityFade.defaultDuration;
+                    new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
+                }
             }
         }
 
         public void RemovePieceFromQueue(BoardPiece pieceToRemove)
         {
-            // Pieces removed from the board should not be removed from the queue (cpu intensive) - will be ignored when run.
+            // Pieces removed from the board should not be removed from the queue (CPU intensive) - will be ignored when run.
 
             foreach (int frame in this.eventQueue.Keys.ToList())
             {
@@ -104,6 +111,7 @@ namespace SonOfRobin
             FinishBrewing = 16,
             StopBurning = 17,
             TurnOffHarvestingWorkshop = 18,
+            DropDebris = 19
         }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
@@ -222,6 +230,12 @@ namespace SonOfRobin
                     {
                         MeatHarvestingWorkshop harvestingWorkshop = (MeatHarvestingWorkshop)this.boardPiece;
                         harvestingWorkshop.TurnOff();
+                        return;
+                    }
+
+                case EventName.DropDebris:
+                    {
+                        this.boardPiece.pieceInfo?.Yield.DropDebris(piece: this.boardPiece, particlesToEmit: 50);
                         return;
                     }
 

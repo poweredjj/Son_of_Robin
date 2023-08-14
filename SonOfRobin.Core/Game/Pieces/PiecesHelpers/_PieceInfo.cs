@@ -209,7 +209,7 @@ namespace SonOfRobin
                 this.floatsOnWater = false;
                 this.isAffectedByWind = false;
                 this.allowedDensity = null;
-                this.staysAfterDeath = 0;
+                this.staysAfterDeath = this.type == typeof(Animal) ? 30 * 60 : 0;
                 this.Yield = null;
                 this.appearDebris = null; // yield that is used to make debris when placing this piece
                 this.animalMaxMass = 0;
@@ -867,7 +867,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 5000;
                         this.animalMassBurnedMultiplier = 1f;
                         this.animalAwareness = 200;
@@ -896,7 +895,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 1.3f;
                         this.animalAwareness = 80;
@@ -925,7 +923,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 15000;
                         this.animalMassBurnedMultiplier = 0.5f;
                         this.animalAwareness = 50;
@@ -953,7 +950,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
-                        this.staysAfterDeath = 2 * 60 * 60;
                         this.animalMaxMass = 1200;
                         this.animalMassBurnedMultiplier = 1;
                         this.animalAwareness = 100;
