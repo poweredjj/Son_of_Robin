@@ -40,7 +40,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CampfireMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 16 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FertileGroundSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Clay, 2 }, { PieceTemplate.Name.ShovelStone, 1 }}, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.FertileGroundMedium }, craftCountToUnlock: 3, craftCountToLevelUp: 2, maxLevel: 5),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FertileGroundSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Clay, 2 }, { PieceTemplate.Name.ShovelStone, 1 }}, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.FertileGroundMedium }, craftCountToUnlock: 1, craftCountToLevelUp: 2, maxLevel: 5),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FertileGroundMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Clay, 4 }, { PieceTemplate.Name.ShovelStone, 1 }}, fatigue: fatigueStructureMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.FertileGroundLarge }, craftCountToUnlock: 2, craftCountToLevelUp: 2, maxLevel: 5),
 
