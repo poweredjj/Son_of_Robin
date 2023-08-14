@@ -75,7 +75,7 @@ namespace SonOfRobin
 
             this.isActive = false;
 
-            LoadingTips.GetNextTip();
+            LoadingTips.ChangeTip();
         }
 
         private void UpdateTexture(string textureName)

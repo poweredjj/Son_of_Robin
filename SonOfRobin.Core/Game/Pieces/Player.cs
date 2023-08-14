@@ -1096,6 +1096,8 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitMorning) sleepModeText = "Waiting until morning...";
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
+            sleepModeText += $"\n{LoadingTips.GetTip()}";
+
             this.sleepEngine.Execute(player: this);
 
             switch (this.sleepMode)
@@ -1134,6 +1136,7 @@ namespace SonOfRobin
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
+            LoadingTips.ChangeTip();
 
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);

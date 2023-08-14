@@ -32,7 +32,7 @@ namespace SonOfRobin
             {
                 this.progressBarMode = progressCurrentVal > -1 && progressMaxVal > -1;
 
-                if (this.progressBarMode) text = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                if (this.progressBarMode) text = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
                 this.textWithImages = new TextWithImages(font: font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame);
 

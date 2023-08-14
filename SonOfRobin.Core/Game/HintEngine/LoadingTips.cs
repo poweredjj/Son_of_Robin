@@ -8,9 +8,9 @@ namespace SonOfRobin
     {
         private static readonly TimeSpan singleTipMaxDuration = TimeSpan.FromSeconds(30);
         private static string currentTip;
-        private static DateTime lastTipGenerated = new DateTime(1900, 1, 1);
+        private static DateTime lastTipGenerated = new(1900, 1, 1);
 
-        private static readonly List<string> allTips = new List<string>
+        private static readonly List<string> allTips = new()
         {
             "Some food types must be cooked before eating.",
             "Crates washed ashore contain valuable items.",
@@ -39,11 +39,12 @@ namespace SonOfRobin
             "You can get rid of poison by eating food.",
             "You are immune to heat, while being wet.",
             "You have to use meat workshop to get meat from an animal.",
+            "Old equipment can be ripped apart to recover materials.",
         };
 
-        private static List<string> tipsToDisplay = new List<string>();
+        private static List<string> tipsToDisplay = new();
 
-        public static void GetNextTip()
+        public static void ChangeTip()
         {
             lastTipGenerated = new DateTime(1900, 1, 1); // this will force getting next tip at GetTip()
         }
@@ -52,7 +53,7 @@ namespace SonOfRobin
         {
             if (DateTime.Now - lastTipGenerated < singleTipMaxDuration) return currentTip;
 
-            if (tipsToDisplay.Count == 0) tipsToDisplay = allTips.ToList();
+            if (!tipsToDisplay.Any()) tipsToDisplay = allTips.ToList();
 
             int randomTipNo = SonOfRobinGame.random.Next(tipsToDisplay.Count);
 
