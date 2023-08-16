@@ -152,6 +152,9 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.RegenPoison:
                     return (int)this.value >= 0;
 
+                case BuffEngine.BuffType.RemovePoison:
+                    return true;
+
                 case BuffEngine.BuffType.Haste:
                     return (int)this.value >= 0;
 
@@ -293,6 +296,10 @@ namespace SonOfRobin
                     description = this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
                     break;
 
+                case BuffEngine.BuffType.RemovePoison:
+                    description = "Heals poison.";
+                    break;
+
                 case BuffEngine.BuffType.Haste:
                     description = $"Haste {sign}{this.value}{duration}.";
                     break;
@@ -389,6 +396,9 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.RegenPoison:
                     return this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
 
+                case BuffEngine.BuffType.RemovePoison:
+                    return null;
+
                 case BuffEngine.BuffType.Haste:
                     return $"Haste {sign}{this.value}{duration}.";
 
@@ -447,6 +457,9 @@ namespace SonOfRobin
 
                     case BuffEngine.BuffType.RegenPoison:
                         return this.isPositive ? "regen" : "poison";
+
+                    case BuffEngine.BuffType.RemovePoison:
+                        return "antidote";
 
                     case BuffEngine.BuffType.Haste:
                         return "haste";
@@ -519,6 +532,9 @@ namespace SonOfRobin
 
                 case BuffEngine.BuffType.RegenPoison:
                     return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
+
+                case BuffEngine.BuffType.RemovePoison:
+                    return null;
 
                 case BuffEngine.BuffType.Haste:
                     return this.autoRemoveDelay == 0 ? null : $"HASTE\n{sign}{this.value}";

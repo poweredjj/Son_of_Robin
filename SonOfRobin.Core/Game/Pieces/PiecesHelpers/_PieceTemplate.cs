@@ -1780,7 +1780,7 @@ namespace SonOfRobin
                 case Name.HerbsBlue:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Fatigue, value: -100f, isPermanent: true)}; // TODO replace with other (unique) buff type
+                             new Buff(type: BuffEngine.BuffType.RemovePoison, value: null, isPermanent: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));

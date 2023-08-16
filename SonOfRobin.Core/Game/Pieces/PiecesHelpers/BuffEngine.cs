@@ -34,6 +34,7 @@ namespace SonOfRobin
             HeatLevelLocked = 23,
             FastMountainWalking = 10,
             CanSeeThroughFog = 24,
+            RemovePoison = 25,
         };
 
         private readonly Dictionary<string, Buff> buffDict;
@@ -44,6 +45,19 @@ namespace SonOfRobin
 
         public bool HasAnyBuff
         { get { return this.buffDict.Any(); } }
+
+        public bool HasPoisonBuff
+        {
+            get
+            {
+                foreach (Buff regenPoisonBuff in this.FindBuffsOfType(BuffType.RegenPoison))
+                {
+                    if ((int)regenPoisonBuff.value < 0) return true;
+                }
+
+                return false;
+            }
+        }
 
         public BuffEngine(BoardPiece piece)
         {
@@ -379,6 +393,8 @@ namespace SonOfRobin
                     {
                         if (add)
                         {
+                            if ((int)buff.value > 0 && this.HasPoisonBuff) return false; // regen cannot replace poison
+
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
 
                             int delay = 60 * 5;
@@ -395,17 +411,17 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            bool hasPoisonBuff = false;
-                            foreach (Buff regenPoisonBuff in this.FindBuffsOfType(buff.type))
-                            {
-                                if ((int)regenPoisonBuff.value < 0)
-                                {
-                                    hasPoisonBuff = true;
-                                    break;
-                                }
-                            }
+                            if (!this.HasPoisonBuff) this.piece.sprite.color = Color.White;
+                        }
 
-                            if (!hasPoisonBuff) this.piece.sprite.color = Color.White;
+                        return true;
+                    }
+
+                case BuffType.RemovePoison:
+                    {
+                        foreach (var buffId in buffDict.Keys.ToList())
+                        {
+                            if (this.buffDict[buffId].type == BuffType.RegenPoison && (int)this.buffDict[buffId].value < 0) this.RemoveBuff(buffId);
                         }
 
                         return true;
@@ -475,7 +491,7 @@ namespace SonOfRobin
 
                 case BuffType.HeatLevelLocked:
                     {
-                        // this buff exists only to prevent changes to heat level 
+                        // this buff exists only to prevent changes to heat level
                         return true;
                     }
 

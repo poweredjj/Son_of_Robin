@@ -340,7 +340,7 @@ namespace SonOfRobin
                     new HintMessage(text: "Ouch!.\nMy feet burn!", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                     new HintMessage(text: "Swamp areas are poisonous.", boxType: messageTextType),
                     new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType),
-                    new HintMessage(text: "To get rid of the poison, you can eat | | | something.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    new HintMessage(text: "To get rid of the poison, you need to wait or drink an | antidote potion.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PotionBlue].texture }, boxType: messageTextType),
                     });
 
             new Tutorial(type: Type.SmartCrafting, name: "smart crafting", title: "Smart crafting.",
