@@ -96,7 +96,7 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
-            this.namedLocations = new NamedLocations();
+            this.namedLocations = new NamedLocations(world: this.world);
 
             this.width = this.world.width;
             this.height = this.world.height;
@@ -394,7 +394,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateNamedLocations:
-                    this.namedLocations.GenerateLocations();
+                    this.namedLocations.GenerateLocations(seed: this.world.seed);
 
                     break;
 
