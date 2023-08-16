@@ -458,17 +458,17 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             // drawing last steps (without effects)
 
             float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int totalSteps = this.world.Player.LastSteps.Count;
             int stepNo = 0;
 
             Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
-            Rectangle stepTextureRect = new Rectangle(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
+            Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
 
             foreach (Vector2 stepPos in this.world.Player.LastSteps)
             {
@@ -484,7 +484,7 @@ namespace SonOfRobin
                     }
 
                     int rectSize = 8;
-                    Rectangle blackRect = new Rectangle(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
+                    Rectangle blackRect = new(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
                     blackRect.Inflate(blackRect.Width * spriteSize, blackRect.Height * spriteSize);
 
                     SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
@@ -569,6 +569,20 @@ namespace SonOfRobin
 
                     if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
                     sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
+                }
+            }
+
+            // drawing named locations (without effects)
+
+            Texture2D namedLocationBg = TextureBank.GetTexture(TextureBank.TextureName.NamedLocationBg);
+
+            foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
+            {
+                if (location.areaRect.Intersects(this.camera.viewRect))
+                {
+                    SonOfRobinGame.SpriteBatch.Draw(namedLocationBg, location.areaRect, Color.White * 0.3f);
+
+                    Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontTommy40, text: location.name, rectangle: location.textRect, color: Color.White * 0.6f);
                 }
             }
 

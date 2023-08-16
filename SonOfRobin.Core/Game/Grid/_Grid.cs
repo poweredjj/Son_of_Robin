@@ -26,8 +26,9 @@ namespace SonOfRobin
             SetExtDataBiomesConstrains = 7,
             SetExtDataPropertiesGrid = 8,
             SetExtDataFinish = 9,
-            FillAllowedNames = 10,
-            MakeEntireMapImage = 11,
+            GenerateNamedLocations = 10,
+            FillAllowedNames = 11,
+            MakeEntireMapImage = 12,
         }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
@@ -44,6 +45,7 @@ namespace SonOfRobin
             { Stage.SetExtDataBiomesConstrains, "setting extended data (constrains)" },
             { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
+            { Stage.GenerateNamedLocations, "generating named locations" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.MakeEntireMapImage, "making entire map image" },
         };
@@ -73,6 +75,7 @@ namespace SonOfRobin
 
         private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         private ExtBoardProps extBoardProps;
+        public readonly NamedLocations namedLocations;
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -93,6 +96,7 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
+            this.namedLocations = new NamedLocations();
 
             this.width = this.world.width;
             this.height = this.world.height;
@@ -182,6 +186,7 @@ namespace SonOfRobin
             {
                 { "cellWidth", this.cellWidth },
                 { "cellHeight", this.cellHeight },
+                { "namedLocations", this.namedLocations.Serialize() },
                 { "cellData", cellData },
             };
 
@@ -197,6 +202,7 @@ namespace SonOfRobin
             var cellData = (List<Object>)gridData["cellData"];
 
             Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
+            if (gridData.ContainsKey("namedLocations")) grid.namedLocations.Deserialize(gridData["namedLocations"]); // for compatibility with old saves
 
             for (int i = 0; i < grid.allCells.Count; i++)
             {
@@ -387,6 +393,11 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.GenerateNamedLocations:
+                    this.namedLocations.GenerateLocations();
+
+                    break;
+
                 case Stage.FillAllowedNames:
                     Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
@@ -469,7 +480,7 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
                  terrainName: Terrain.Name.Height,
-                 minVal: 0, maxVal: (byte)(Terrain.waterLevelMax),
+                 minVal: 0, maxVal: (byte)Terrain.waterLevelMax,
                  nameToSetIfInRange: ExtBoardProps.Name.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach
