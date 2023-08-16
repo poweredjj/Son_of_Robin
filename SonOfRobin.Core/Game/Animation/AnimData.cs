@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000017f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000018f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -272,6 +272,7 @@ namespace SonOfRobin
             BootsProtective = 234,
             BootsMountain = 309,
             BootsSpeed = 310,
+            BootsAllTerrain = 314,
             GlovesStrength = 311,
             GlassesBlue = 312,
             Dungarees = 235,
@@ -724,6 +725,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BootsProtective, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_protective", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsMountain, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsSpeed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_speed", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.BootsAllTerrain, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_all_terrain", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.GlovesStrength, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.GlassesBlue, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "glasses_blue", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.HerbsGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
