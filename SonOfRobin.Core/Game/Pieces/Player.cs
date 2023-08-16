@@ -841,7 +841,7 @@ namespace SonOfRobin
             Vector2 goalPosition = this.sprite.position;
             if (analogWalk != Vector2.Zero)
             {
-                float analogWalkTiltPower = Math.Min(Vector2.Distance(analogWalk, Vector2.Zero), 1f);
+                float analogWalkTiltPower = Preferences.alwaysRun ? 1f : Math.Min(Vector2.Distance(analogWalk, Vector2.Zero), 1f);
                 currentSpeed *= analogWalkTiltPower;
                 goalPosition += analogWalk * 250f; // should always be out of reach
 

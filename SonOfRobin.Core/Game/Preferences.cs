@@ -109,7 +109,8 @@ namespace SonOfRobin
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
         public static bool swapMouseButtons = false;
-        public static bool rumbleEnabled = true;     
+        public static bool rumbleEnabled = true;
+        public static bool alwaysRun = false;
         public static int stateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
         public static float StateMachinesDurationFramePercent
@@ -619,6 +620,7 @@ namespace SonOfRobin
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
             prefsData["newWorldStartingItem"] = newWorldStartingItem;
             prefsData["StateMachinesDurationFramePercent"] = StateMachinesDurationFramePercent;
+            prefsData["alwaysRun"] = alwaysRun;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -692,6 +694,7 @@ namespace SonOfRobin
                     showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
                     StateMachinesDurationFramePercent = (int)(Int64)prefsData["StateMachinesDurationFramePercent"];
+                    alwaysRun = (bool)prefsData["alwaysRun"];
 
                     prefsLoaded = true;
                 }
