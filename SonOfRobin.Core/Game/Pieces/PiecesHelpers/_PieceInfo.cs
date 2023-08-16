@@ -1320,7 +1320,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 90, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         break;
@@ -1330,7 +1330,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = false;
-                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameClass: 0);
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         break;

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000013f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000017f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -867,22 +867,24 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.MeatDryingRackRegular;
+                float depthPercent = 0.6f;
 
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_regular_off", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
 
                 for (int i = 1; i <= 4; i++)
                 {
-                    AddFrameList(animPackage: packageName, animSize: 0, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: 0.15f));
+                    AddFrameList(animPackage: packageName, animSize: 0, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
                 }
             }
             {
                 PkgName packageName = PkgName.MeatDryingRackWide;
+                float depthPercent = 0.6f;
 
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_wide_off", layer: 1, depthPercent: 0.15f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
 
                 for (int i = 1; i <= 6; i++)
                 {
-                    AddFrameList(animPackage: packageName, animSize: 0, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: 0.15f));
+                    AddFrameList(animPackage: packageName, animSize: 0, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
                 }
             }
             {
@@ -1157,7 +1159,7 @@ namespace SonOfRobin
 
         public static List<AnimFrame> ConvertImageToFrameList(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
-            List<AnimFrame> frameList = new List<AnimFrame>
+            List<AnimFrame> frameList = new()
             {
                 ConvertImageToFrame(atlasName: atlasName, layer: layer, x: x, y: y, width: width, height: height, crop: crop, duration: 0, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize)
             };
