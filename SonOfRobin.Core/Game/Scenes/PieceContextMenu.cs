@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -22,6 +23,7 @@ namespace SonOfRobin
             Extinguish = 9,
             Brew = 10,
             Harvest = 11,
+            Equip = 12,
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
@@ -133,12 +135,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest);
+            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -150,10 +152,11 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false)
+        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false)
         {
             var contextActionList = new List<ContextAction> { };
 
+            if (addEquip) contextActionList.Add(ContextAction.Equip);
             if (addMove) contextActionList.Add(ContextAction.Move);
             if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
             if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
@@ -288,15 +291,55 @@ namespace SonOfRobin
                         return;
                     }
 
+                case ContextAction.Equip:
+                    {
+                        var invScene = GetSecondTopSceneOfType(typeof(Inventory));
+                        if (invScene == null) return;
+
+                        PieceStorage equipStorage = ((Inventory)invScene).storage;
+                        if (equipStorage.storageType != PieceStorage.StorageType.Equip) return;
+
+                        BoardPiece equipPiece = this.slot.RemoveTopPiece();
+
+                        bool pieceMoved = equipStorage.AddPiece(equipPiece); // trying to place item in a free slot
+                        if (!pieceMoved)
+                        {
+                            // trying to switch with other equipped item
+                            foreach (StorageSlot currentSlot in equipStorage.OccupiedSlots)
+                            {
+                                if (currentSlot.CanFitThisPiece(piece: equipPiece, treatSlotAsEmpty: true))
+                                {
+                                    BoardPiece previouslyEquippedPiece = currentSlot.RemoveTopPiece();
+                                    this.storage.AddPiece(previouslyEquippedPiece);
+                                    currentSlot.AddPiece(equipPiece);
+
+                                    pieceMoved = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!pieceMoved) // this shouldn't happen in any normal circumstances
+                        {
+                            this.slot.AddPiece(equipPiece);
+                            return;
+                        }
+
+                        equipPiece.soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+                        new RumbleEvent(force: 0.20f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);
+
+                        return;
+                    }
+
                 case ContextAction.Move:
                     {
-                        var invScene = Scene.GetSecondTopSceneOfType(typeof(Inventory));
+                        var invScene = GetSecondTopSceneOfType(typeof(Inventory));
                         if (invScene == null) return;
                         Inventory secondInventory = (Inventory)invScene;
 
                         List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
 
-                        if (piecesToMove.Count == 0) return;
+                        if (!piecesToMove.Any()) return;
 
                         piecesToMove[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
                         new RumbleEvent(force: 0.20f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);
@@ -304,7 +347,7 @@ namespace SonOfRobin
                         foreach (BoardPiece piece in piecesToMove)
                         {
                             bool pieceMoved = secondInventory.storage.AddPiece(piece);
-                            if (!pieceMoved) this.storage.AddPiece(piece);
+                            if (!pieceMoved) this.storage.AddPiece(this.piece);
                         }
 
                         return;

@@ -801,9 +801,10 @@ namespace SonOfRobin
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
             slotPos.X += this.Margin + this.TileSize;
-            Vector2 percentPos = new Vector2(slotPos.X / SonOfRobinGame.VirtualWidth, slotPos.Y / SonOfRobinGame.VirtualHeight);
+            Vector2 percentPos = new(slotPos.X / SonOfRobinGame.VirtualWidth, slotPos.Y / SonOfRobinGame.VirtualHeight);
 
-            bool addMove = this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
+            bool addEquip = this.type != Type.SingleCenter && piece.GetType() == typeof(Equipment) && !slot.locked && this.otherInventory.storage.storageType == PieceStorage.StorageType.Equip;
+            bool addMove = !addEquip && this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
             bool addDrop = !slot.locked;
             bool addCook = piece.name == PieceTemplate.Name.CookingTrigger;
             bool addBrew = piece.name == PieceTemplate.Name.BrewTrigger;
@@ -811,7 +812,7 @@ namespace SonOfRobin
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
             bool addProcess = piece.name == PieceTemplate.Name.MeatHarvestTrigger;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addProcess);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addProcess);
             return;
         }
 
