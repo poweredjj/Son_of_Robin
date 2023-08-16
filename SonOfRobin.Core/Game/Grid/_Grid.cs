@@ -96,7 +96,7 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
-            this.namedLocations = new NamedLocations(world: this.world);
+            this.namedLocations = new NamedLocations(grid: this);
 
             this.width = this.world.width;
             this.height = this.world.height;

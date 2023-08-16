@@ -32,26 +32,17 @@ namespace SonOfRobin
             }
         }
 
-        private readonly World world;
+        private readonly Grid grid;
         private readonly List<Location> locationList;
         private Location currentLocation;
+        private List<int> discoveredLocationsToDeserialize;
         public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.HasBeenDiscovered); } }
-        public IEnumerable UndiscoveredLocations { get { return this.locationList.Where(location => !location.HasBeenDiscovered); } }
 
-        public NamedLocations(World world)
+        public NamedLocations(Grid grid)
         {
-            this.world = world;
+            this.grid = grid;
             this.locationList = new List<Location>();
             this.currentLocation = null;
-        }
-
-        public void GenerateLocations(int seed)
-        {
-            Random random = new(seed);
-
-            // TODO add code
-
-            this.locationList.Add(new Location(name: "test location", areaRect: new Rectangle(1000, 1000, 500, 500)));
         }
 
         public Location UpdateCurrentLocation(Vector2 playerPos)
@@ -86,12 +77,62 @@ namespace SonOfRobin
 
         public void Deserialize(Object locationData)
         {
-            this.GenerateLocations(seed: this.world.seed);
+            this.discoveredLocationsToDeserialize = (List<int>)locationData;
+        }
 
-            foreach (int locationNo in (List<int>)locationData)
+        public void GenerateLocations(int seed)
+        {
+            Random random = new(seed);
+
+            this.locationList.Add(new Location(name: "test location", areaRect: new Rectangle(1000, 1000, 500, 500)));
+            this.locationList.Last().SetAsDiscovered();
+
+            var randomHillCell = this.FindRandomCellThatMeetsCriteria(random: random, checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
+            if (randomHillCell != null)
             {
-                this.locationList[locationNo].SetAsDiscovered();
+                this.locationList.Add(new Location(name: "testy hills", areaRect: randomHillCell.rect));
+                this.locationList.Last().SetAsDiscovered();
             }
+
+            if (this.discoveredLocationsToDeserialize != null)
+            {
+                foreach (int locationNo in (List<int>)this.discoveredLocationsToDeserialize)
+                {
+                    this.locationList[locationNo].SetAsDiscovered();
+                }
+                this.discoveredLocationsToDeserialize = null;
+            }
+        }
+
+        private Cell FindRandomCellThatMeetsCriteria(Random random, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal)
+        {
+            if (!checkTerrain && !checkExpProps) throw new ArgumentException("No search criteria.");
+
+            int randomColumn = random.Next(this.grid.noOfCellsX);
+
+            var foundCellsForColumn = new ConcurrentBag<Point>();
+
+            Parallel.For(0, this.grid.noOfCellsY, y =>
+            {
+                for (int x = 0; x < this.grid.noOfCellsX; x++)
+                {
+                    Point currentCell = new(x, y);
+
+                    bool isWithinRange = (!checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, coordinates: currentCell)) &&
+                        (!checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: extPropsName, value: expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
+
+                    if (isWithinRange) foundCellsForColumn.Add(currentCell);
+                }
+            });
+
+            var foundCellsList = foundCellsForColumn.ToList();
+            if (foundCellsList.Any())
+            {
+                var randomPoint = foundCellsList[random.Next(foundCellsList.Count)];
+                return this.grid.cellGrid[randomPoint.X, randomPoint.Y];
+            }
+
+            return null;
         }
 
         private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal)
@@ -106,11 +147,11 @@ namespace SonOfRobin
                 new Point(0, 1),
             };
 
-            Grid grid = this.world.Grid;
+            Grid grid = this.grid;
             int noOfCellsX = grid.noOfCellsX;
             int noOfCellsY = grid.noOfCellsY;
 
-            bool[,] gridToFill = new bool[noOfCellsX, noOfCellsY];
+            bool[,] processedCells = new bool[noOfCellsX, noOfCellsY];
 
             var nextCells = new ConcurrentBag<Point>(startingCells);
             var cellsInsideRange = new ConcurrentBag<Point>();
@@ -124,21 +165,8 @@ namespace SonOfRobin
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    bool isWithinRange = false;
-
-                    if (checkTerrain)
-                    {
-                        byte currentCellMinVal = grid.GetMinValueForCell(terrainName: terrainName, cellNoX: currentCell.X, cellNoY: currentCell.Y);
-                        byte currentCellMaxVal = grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: currentCell.X, cellNoY: currentCell.Y);
-
-                        if (currentCellMinVal >= terrainMinVal && currentCellMaxVal <= terrainMaxVal) isWithinRange = true;
-                    }
-                    if (checkExpProps && isWithinRange)
-                    {
-                        bool currentCellExtPropsVal = grid.CheckIfContainsExtPropertyForCell(name: extPropsName, value: expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y);
-
-                        if (expPropsVal == currentCellExtPropsVal) isWithinRange = true;
-                    }
+                    bool isWithinRange = (!checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, coordinates: currentCell)) &&
+                    (!checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: extPropsName, value: expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
 
                     if (isWithinRange)
                     {
@@ -150,20 +178,26 @@ namespace SonOfRobin
 
                             if (nextPoint.X >= 0 && nextPoint.X < noOfCellsX &&
                                 nextPoint.Y >= 0 && nextPoint.Y < noOfCellsY &&
-                                !gridToFill[nextPoint.X, nextPoint.Y])
+                                !processedCells[nextPoint.X, nextPoint.Y])
                             {
                                 nextCells.Add(nextPoint);
                             }
                         }
                     }
 
-                    gridToFill[currentCell.X, currentCell.Y] = true;
+                    processedCells[currentCell.X, currentCell.Y] = true;
                 });
 
                 if (!nextCells.Any()) break;
             }
 
             return cellsInsideRange; // cell coords
+        }
+
+        private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, Point coordinates)
+        {
+            return this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: coordinates.X, cellNoY: coordinates.Y) >= terrainMinVal &&
+                   this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: coordinates.X, cellNoY: coordinates.Y) <= terrainMaxVal;
         }
     }
 }
