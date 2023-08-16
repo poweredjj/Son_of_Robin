@@ -197,7 +197,9 @@ namespace SonOfRobin
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
                  messages: new List<HintMessage> {
                      new HintMessage(text: "1. Press | to enter 'inventory' menu.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldInventory)}, boxType: messageTextType),
-                     new HintMessage(text: "2. Place the item in its slot (chest, legs, etc).", boxType: messageTextType) });
+                     new HintMessage(text: "2. Place the item in its slot (chest, legs, etc).", boxType: messageTextType),
+                     new HintMessage(text: "You can also use the 'equip' contextual option for faster equipping.", boxType: messageTextType)
+                 });
 
             new Tutorial(type: Type.Interact, name: "interacting", title: "Interacting with field objects.",
                 messages: new List<HintMessage> {
