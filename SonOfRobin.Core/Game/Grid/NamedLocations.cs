@@ -31,12 +31,14 @@ namespace SonOfRobin
         }
 
         private readonly List<Location> locationList;
-
+        private Location currentLocation;
         public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.HasBeenDiscovered); } }
+        public IEnumerable UndiscoveredLocations { get { return this.locationList.Where(location => !location.HasBeenDiscovered); } }
 
         public NamedLocations()
         {
             this.locationList = new List<Location>();
+            this.currentLocation = null;
         }
 
         public void GenerateLocations()
@@ -44,7 +46,22 @@ namespace SonOfRobin
             // TODO add code
 
             this.locationList.Add(new Location(name: "test location", areaRect: new Rectangle(1000, 1000, 500, 500)));
-            this.locationList[0].SetAsDiscovered();
+        }
+
+        public Location UpdateCurrentLocation(Vector2 playerPos)
+        {
+            foreach (Location location in this.locationList)
+            {
+                if (location.areaRect.Contains(playerPos))
+                {
+                    if (location == currentLocation) return null;
+                    currentLocation = location;
+                    return location;
+                }
+            }
+
+            currentLocation = null;
+            return currentLocation;
         }
 
         public Object Serialize()
