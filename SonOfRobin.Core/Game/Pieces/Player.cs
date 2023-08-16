@@ -74,7 +74,7 @@ namespace SonOfRobin
 
             if (PieceInfo.HasBeenInitialized)
             {
-                List<Type> typeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile), typeof(Seed) };
+                var typeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile), typeof(Seed) };
 
                 foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                 {
@@ -87,7 +87,7 @@ namespace SonOfRobin
                         bool poisonFound = false;
                         foreach (Buff buff in pieceInfo.buffList)
                         {
-                            if (!buff.isPositive && buff.type == BuffEngine.BuffType.RegenPoison)
+                            if (buff.type == BuffEngine.BuffType.RegenPoison && !buff.isPositive)
                             {
                                 poisonFound = true;
                                 break;
@@ -930,7 +930,7 @@ namespace SonOfRobin
                         {
                             Sound.QuickPlay(name: SoundData.Name.SplashMud, volume: 1f);
 
-                            this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: -70, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
+                            this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: -35, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
                         }
                     }
                 }
