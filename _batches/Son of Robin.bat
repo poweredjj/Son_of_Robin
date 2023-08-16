@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+if not exist logs mkdir logs
+
 rem Set the folder where the app.exe is located
 set "appFolder=Son_of_Robin"
 
@@ -23,7 +25,7 @@ if %day% LSS 10 set "day=0%day%"
 if %hours% LSS 10 set "hours=0%hours%"
 
 rem Create the filename based on the date and time
-set "outputFilename=..\son_of_robin_output_%year%-%month%-%day%__%hours%-%minutes%-%seconds%.txt"
+set "outputFilename=..\logs\son_of_robin_output_%year%-%month%-%day%__%hours%-%minutes%-%seconds%.txt"
 
 rem Temporary filenames for stdout and stderr
 set "stdoutTempFile=stdout_temp.txt"
