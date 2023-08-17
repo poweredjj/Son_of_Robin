@@ -969,9 +969,9 @@ namespace SonOfRobin
                 NamedLocations.Location newLocation = this.world.Grid.namedLocations.UpdateCurrentLocation(this.sprite.position);
                 if (newLocation != null)
                 {
-                    if (!newLocation.HasBeenDiscovered)
+                    if (!newLocation.hasBeenDiscovered)
                     {
-                        newLocation.SetAsDiscovered();
+                        newLocation.hasBeenDiscovered = true;
                         MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered {newLocation.name}!"); // TODO add player dialogue (with multiple phrases)
                     }
                     else MessageLog.AddMessage(msgType: MsgType.User, message: $"Entering {newLocation.name}.", avoidDuplicates: true);

@@ -261,13 +261,16 @@ namespace SonOfRobin
 
             // copying whole island texture
 
-            if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
+            this.WholeIslandPreviewTexture?.Dispose();
 
             this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
 
             Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
             templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
             this.WholeIslandPreviewTexture.SetData(pixelData);
+
+            // copying named locations
+            this.namedLocations.CopyLocations(templateGrid.namedLocations);
 
             // copying cell data
 
@@ -394,7 +397,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateNamedLocations:
-                    this.namedLocations.GenerateLocations(seed: this.world.seed);
+                    this.namedLocations.GenerateLocations();
 
                     break;
 

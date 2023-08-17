@@ -15,7 +15,7 @@ namespace SonOfRobin
             public readonly string name;
             public readonly Rectangle areaRect;
             public readonly Rectangle textRect;
-            public bool HasBeenDiscovered { get; private set; }
+            public bool hasBeenDiscovered;
 
             public Location(string name, Rectangle areaRect)
             {
@@ -23,26 +23,48 @@ namespace SonOfRobin
                 this.areaRect = areaRect;
                 this.textRect = areaRect;
                 this.textRect.Inflate(-areaRect.Width / 6, -areaRect.Height / 6);
-                this.HasBeenDiscovered = false;
+                this.hasBeenDiscovered = false;
             }
 
-            public void SetAsDiscovered()
+            public Object Serialize()
             {
-                this.HasBeenDiscovered = true;
+                var locationData = new Dictionary<string, object>
+            {
+                { "name", this.name },
+                { "areaRect", this.areaRect },
+                { "hasBeenDiscovered", this.hasBeenDiscovered },
+            };
+
+                return locationData;
+            }
+
+            public static Location Deserialize(Object locationData)
+            {
+                var locationDict = (Dictionary<string, object>)locationData;
+
+                string name = (string)locationDict["name"];
+                Rectangle areaRect = (Rectangle)locationDict["areaRect"];
+                bool hasBeenDiscovered = (bool)locationDict["hasBeenDiscovered"];
+
+                Location location = new(name: name, areaRect: areaRect);
+                location.hasBeenDiscovered = hasBeenDiscovered;
+
+                return location;
             }
         }
 
         private readonly Grid grid;
         private readonly List<Location> locationList;
         private Location currentLocation;
-        private List<int> discoveredLocationsToDeserialize;
-        public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.HasBeenDiscovered); } }
+        private bool locationsCreated;
+        public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered); } }
 
         public NamedLocations(Grid grid)
         {
             this.grid = grid;
             this.locationList = new List<Location>();
             this.currentLocation = null;
+            this.locationsCreated = false;
         }
 
         public Location UpdateCurrentLocation(Vector2 playerPos)
@@ -63,13 +85,11 @@ namespace SonOfRobin
 
         public Object Serialize()
         {
-            var locationData = new List<int>();
+            var locationData = new List<object>();
 
-            int locationNo = 0;
             foreach (Location location in this.locationList)
             {
-                if (location.HasBeenDiscovered) locationData.Add(locationNo);
-                locationNo++;
+                locationData.Add(location.Serialize());
             }
 
             return locationData;
@@ -77,30 +97,44 @@ namespace SonOfRobin
 
         public void Deserialize(Object locationData)
         {
-            this.discoveredLocationsToDeserialize = (List<int>)locationData;
+            this.locationList.Clear();
+
+            foreach (object singleLocationData in (List<object>)locationData)
+            {
+                this.locationList.Add(Location.Deserialize(singleLocationData));
+            }
+            this.locationsCreated |= true;
         }
 
-        public void GenerateLocations(int seed)
+        public void GenerateLocations()
         {
-            Random random = new(seed);
+            if (this.locationsCreated) return;
+
+            Random random = new(this.grid.world.seed);
 
             this.locationList.Add(new Location(name: "test location", areaRect: new Rectangle(1000, 1000, 500, 500)));
-            this.locationList.Last().SetAsDiscovered();
 
             var randomHillCell = this.FindRandomCellThatMeetsCriteria(random: random, checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
             if (randomHillCell != null)
             {
                 this.locationList.Add(new Location(name: "testy hills", areaRect: randomHillCell.rect));
-                this.locationList.Last().SetAsDiscovered();
             }
 
-            if (this.discoveredLocationsToDeserialize != null)
+            foreach (Location location in this.locationList)
             {
-                foreach (int locationNo in (List<int>)this.discoveredLocationsToDeserialize)
-                {
-                    this.locationList[locationNo].SetAsDiscovered();
-                }
-                this.discoveredLocationsToDeserialize = null;
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}");
+            }
+
+            this.locationsCreated = true;
+        }
+
+        public void CopyLocations(NamedLocations templateLocations)
+        {
+            this.locationList.Clear();
+            foreach (Location location in templateLocations.locationList)
+            {
+                location.hasBeenDiscovered = false;
+                this.locationList.Add(location);
             }
         }
 
