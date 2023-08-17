@@ -148,25 +148,33 @@ namespace SonOfRobin
 
             Random random = new(this.grid.world.seed);
 
-            var cellCoordsBag = this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false));
-
-            var cellCoordsByRegion = this.SplitCellBagIntoRegions(cellCoordsBag);
-
-            foreach (var kvp in cellCoordsByRegion)
             {
-                int regionNo = kvp.Key;
-                List<Point> cellCoords = kvp.Value;
-                Rectangle areaRect = this.GetLocationRect(cellCoords);
-                this.locationList.Add(new Location(name: $"testy hills {regionNo}", areaRect: areaRect));
-                this.locationList.Last().hasBeenDiscovered = true; // for testing
+                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false)));
+
+                int regionNo = 0;
+                foreach (List<Point> coordsList in cellCoordsByRegion)
+                {
+                    if (coordsList.Count < 10 || coordsList.Count > 120 || random.Next(2) == 0) continue;
+
+                    regionNo++;
+                    this.locationList.Add(new Location(name: $"testy hills {regionNo}", areaRect: this.GetLocationRect(coordsList)));
+                    this.locationList.Last().hasBeenDiscovered = true; // for testing
+                }
             }
 
-            //Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, searchCriteria: new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false), maxCells: 120);
-            //if (areaRect.Width != 1 && areaRect.Height != 1)
-            //{
-            //    this.locationList.Add(new Location(name: "testy hills", areaRect: areaRect));
-            //    this.locationList.Last().hasBeenDiscovered = true; // for testing
-            //}
+            {
+                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: true, terrainName: Terrain.Name.Height, terrainMinVal: 0, terrainMaxVal: Terrain.waterLevelMax, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false)));
+
+                int regionNo = 0;
+                foreach (List<Point> coordsList in cellCoordsByRegion)
+                {
+                    if (coordsList.Count < 10 || coordsList.Count > 120 || random.Next(2) == 0) continue;
+
+                    regionNo++;
+                    this.locationList.Add(new Location(name: $"testy lake {regionNo}", areaRect: this.GetLocationRect(coordsList)));
+                    this.locationList.Last().hasBeenDiscovered = true; // for testing
+                }
+            }
 
             foreach (Location location in this.locationList)
             {
@@ -191,7 +199,7 @@ namespace SonOfRobin
             return cellCoordsBag;
         }
 
-        private Dictionary<int, List<Point>> SplitCellBagIntoRegions(ConcurrentBag<Point> cellCoordsBag)
+        private List<List<Point>> SplitCellBagIntoRegions(ConcurrentBag<Point> cellCoordsBag)
         {
             // preparing data
 
@@ -223,7 +231,7 @@ namespace SonOfRobin
             });
 
             int currentRegion = 0;
-            var cellCoordsByRegion = new Dictionary<int, List<Point>>();
+            var cellCoordsByRegion = new List<List<Point>>();
             var cellCoordsLeftToProcess = cellCoordsBag.Distinct().ToList();
 
             // filling regions
@@ -265,112 +273,21 @@ namespace SonOfRobin
                 }
 
                 cellCoordsLeftToProcess = cellCoordsLeftToProcess.Where(coords => !thisRegionCoords.Contains(coords)).ToList();
-                cellCoordsByRegion[currentRegion] = thisRegionCoords.Distinct().ToList();
+                cellCoordsByRegion.Add(thisRegionCoords.Distinct().ToList());
                 currentRegion++;
 
                 if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
             }
         }
 
-        private Rectangle FindRandomRectThatMeetsCriteria(Random random, SearchCriteria searchCriteria, int maxCells = 0)
-        {
-            int randomColumn = random.Next(this.grid.noOfCellsX);
-            var foundCellCoords = new ConcurrentBag<Point>();
-            Parallel.For(0, this.grid.noOfCellsY, y =>
-            {
-                int currentColumn = randomColumn;
-
-                for (int i = 0; i < 30; i++)
-                {
-                    currentColumn++;
-                    if (currentColumn >= this.grid.noOfCellsX) currentColumn = 0;
-
-                    Point currentCell = new(currentColumn, y);
-
-                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: currentCell.X, cellNoY: currentCell.Y)) &&
-                        (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
-
-                    if (isWithinRange) foundCellCoords.Add(currentCell);
-                }
-            });
-
-            var foundCellsList = foundCellCoords.ToList();
-            if (foundCellsList.Any())
-            {
-                var randomPoint = foundCellsList[random.Next(foundCellsList.Count)];
-
-                var pointsBagForFilledArea = this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, searchCriteria: searchCriteria, maxCells: maxCells);
-                return this.GetLocationRect(pointsBagForFilledArea.ToList());
-            }
-
-            return new Rectangle(0, 0, 0, 0);
-        }
-
-        private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, SearchCriteria searchCriteria, int maxCells = 0)
-        {
-            List<Point> offsetList = new()
-            {
-                new Point(-1, 0),
-                new Point(1, 0),
-                new Point(0, -1),
-                new Point(0, 1),
-            };
-
-            Grid grid = this.grid;
-            int noOfCellsX = grid.noOfCellsX;
-            int noOfCellsY = grid.noOfCellsY;
-
-            bool[,] processedCellCoords = new bool[noOfCellsX, noOfCellsY];
-
-            var nextCellCoords = new ConcurrentBag<Point>(startingCells);
-            var cellCoordsInsideRange = new ConcurrentBag<Point>();
-
-            while (true)
-            {
-                List<Point> currentCellCoords = nextCellCoords.Distinct().ToList(); // using Distinct() to filter out duplicates
-                nextCellCoords = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
-
-                Parallel.ForEach(currentCellCoords, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentCoords =>
-                {
-                    // array can be written to using parallel, if every thread accesses its own indices
-
-                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: currentCoords.X, cellNoY: currentCoords.Y)) &&
-                    (!searchCriteria.checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCoords.X, cellNoY: currentCoords.Y));
-
-                    if (isWithinRange)
-                    {
-                        cellCoordsInsideRange.Add(currentCoords);
-
-                        foreach (Point currentOffset in offsetList)
-                        {
-                            Point nextPoint = new(currentCoords.X + currentOffset.X, currentCoords.Y + currentOffset.Y);
-
-                            if (nextPoint.X >= 0 && nextPoint.X < noOfCellsX &&
-                                nextPoint.Y >= 0 && nextPoint.Y < noOfCellsY &&
-                                !processedCellCoords[nextPoint.X, nextPoint.Y])
-                            {
-                                nextCellCoords.Add(nextPoint);
-                            }
-                        }
-                    }
-
-                    processedCellCoords[currentCoords.X, currentCoords.Y] = true;
-                });
-
-                if (!nextCellCoords.Any() || (maxCells != 0 && cellCoordsInsideRange.Count > maxCells)) break;
-            }
-
-            return cellCoordsInsideRange;
-        }
-
-        private Rectangle GetLocationRect(List<Point> pointList)
+        private Rectangle GetLocationRect(List<Point> coordsList)
         {
             int xMin = Int32.MaxValue;
             int xMax = 0;
             int yMin = Int32.MaxValue;
             int yMax = 0;
 
-            foreach (Point point in pointList)
+            foreach (Point point in coordsList)
             {
                 Cell cell = this.grid.cellGrid[point.X, point.Y];
                 Rectangle cellRect = cell.rect;
