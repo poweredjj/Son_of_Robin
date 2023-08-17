@@ -99,6 +99,7 @@ namespace SonOfRobin
             MakePlayerJumpOverThisPiece = 83,
             InventoryApplyPotion = 84,
             OpenAndDestroyTreasureChest = 85,
+            SetAllNamedLocationsAsDiscovered = 86,
         }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
@@ -1717,6 +1718,14 @@ namespace SonOfRobin
                             treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
                             new WorldEvent(eventName: WorldEvent.EventName.Destruction, delay: 60 * 2, world: treasureChest.world, boardPiece: treasureChest, eventHelper: 30);
+
+                            return;
+                        }
+
+                    case TaskName.SetAllNamedLocationsAsDiscovered:
+                        {
+                            World world = (World)this.ExecuteHelper;
+                            world.Grid.namedLocations.SetAllLocationsAsDiscovered();
 
                             return;
                         }

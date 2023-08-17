@@ -18,10 +18,10 @@ namespace SonOfRobin
 
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
-        private static readonly List<string> openingList = new List<string> { "Unending", "The grand", "Dawn's first", "Almost like a", "Ungodly", "Barren" };
+        private static readonly List<string> openingList = new List<string> { "Unending", "The grand", "Dawn's first", "Ungodly", "Barren" };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious" } },
+            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Lover's" } },
             { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Shallow", "Silent" } },
             };
 
@@ -132,6 +132,14 @@ namespace SonOfRobin
             return currentLocation;
         }
 
+        public void SetAllLocationsAsDiscovered()
+        {
+            foreach (Location location in this.locationList)
+            {
+                location.hasBeenDiscovered = true;
+            }
+        }
+
         public Object Serialize()
         {
             var locationData = new List<object>();
@@ -177,7 +185,7 @@ namespace SonOfRobin
             foreach (Location location in this.locationList)
             {
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
-                location.hasBeenDiscovered = true; // for testing
+                // location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
@@ -188,6 +196,7 @@ namespace SonOfRobin
             SearchCriteria searchCriteria;
             int minCells;
             int maxCells;
+            int density; // low number == high density, high number == low density
 
             switch (category)
             {
@@ -195,6 +204,7 @@ namespace SonOfRobin
                     searchCriteria = new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
                     minCells = 10;
                     maxCells = 120;
+                    density = 2; // 2
 
                     break;
 
@@ -202,6 +212,7 @@ namespace SonOfRobin
                     searchCriteria = new(checkTerrain: true, checkExpProps: true, terrainName: Terrain.Name.Height, terrainMinVal: 0, terrainMaxVal: Terrain.waterLevelMax, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
                     minCells = 10;
                     maxCells = 100;
+                    density = 1;
 
                     break;
 
@@ -214,10 +225,23 @@ namespace SonOfRobin
             int regionNo = 0;
             foreach (List<Point> coordsList in cellCoordsByRegion)
             {
-                if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(2) == 0) continue;
+                if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
+
+                Rectangle areaRect = this.GetLocationRect(coordsList);
+
+                bool collidesWithAnotherLocation = false;
+                foreach (Location location in this.locationList)
+                {
+                    if (location.areaRect.Intersects(areaRect))
+                    {
+                        collidesWithAnotherLocation = true;
+                        break;
+                    }
+                }
+                if (collidesWithAnotherLocation) continue;
 
                 regionNo++;
-                this.locationList.Add(new Location(name: this.GetRegionName(category), category: category, areaRect: this.GetLocationRect(coordsList)));
+                this.locationList.Add(new Location(name: this.GetRegionName(category), category: category, areaRect: areaRect));
             }
         }
 

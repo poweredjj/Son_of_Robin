@@ -575,14 +575,15 @@ namespace SonOfRobin
             // drawing named locations (without effects)
 
             Texture2D namedLocationBg = TextureBank.GetTexture(TextureBank.TextureName.NamedLocationBg);
+            float locationTextScale = Math.Min(spriteSize, 4f);
 
             foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
             {
                 if (location.areaRect.Intersects(this.camera.viewRect))
                 {
-                    SonOfRobinGame.SpriteBatch.Draw(namedLocationBg, location.areaRect, Color.White * 0.3f);
+                    if (Preferences.debugShowNamedLocationAreas) SonOfRobinGame.SpriteBatch.Draw(namedLocationBg, location.areaRect, Color.White * 0.3f);
 
-                    Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontTommy40, text: location.name, rectangle: location.textRect, color: Color.White * 0.6f);
+                    Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy40, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: Color.Black, outlineSize: 2, centered: true, scale: locationTextScale);
                 }
             }
 
@@ -597,7 +598,7 @@ namespace SonOfRobin
                 int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
                 int crosshairHalfSize = crossHairSize / 2;
 
-                Rectangle crosshairRect = new Rectangle(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
+                Rectangle crosshairRect = new(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
                 AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }

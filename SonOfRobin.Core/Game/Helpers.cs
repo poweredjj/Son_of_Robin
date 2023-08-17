@@ -38,20 +38,28 @@ namespace SonOfRobin
             return $"{Math.Abs(DateTime.Now.GetHashCode())}_{hashCounter}";
         }
 
-        public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1)
+        public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1, bool centered = false, float scale = 1f)
         {
+            if (centered)
+            {
+                Vector2 textSize = font.MeasureString(text) * scale;
+                pos.X -= textSize.X / 2;
+                pos.Y -= textSize.Y / 2;
+            }
+
             if (outlineSize > 0)
             {
                 for (int x = -outlineSize; x <= outlineSize; x++)
                 {
                     for (int y = -outlineSize; y <= outlineSize; y++)
                     {
-                        SonOfRobinGame.SpriteBatch.DrawString(font, text, pos + new Vector2(x, y), outlineColor);
+                        SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos + new Vector2(x, y), color: outlineColor, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
+
                     }
                 }
             }
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, text, pos, color);
+            SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos, color: color, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
