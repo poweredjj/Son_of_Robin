@@ -15,6 +15,38 @@ namespace SonOfRobin
             Lake = 1,
         }
 
+        public class NameRandomizer
+        {
+            // keeps count of randomly chosen words and tries to balance them
+
+            private readonly Dictionary<string, int> nameCounters;
+            private readonly Random random;
+
+            public NameRandomizer(Random random)
+            {
+                this.random = random;
+                this.nameCounters = new Dictionary<string, int>();
+            }
+
+            public string RandomizeFromList(List<string> nameList)
+            {
+                foreach (string name in nameList)
+                {
+                    if (!this.nameCounters.ContainsKey(name)) this.nameCounters[name] = 0;
+                }
+
+                int minCounterVal = this.nameCounters.Values.Min();
+                var stringsWithLowestCounterVal = this.nameCounters.Where(kv => kv.Value == minCounterVal).Select(kv => kv.Key).ToList();
+
+                return stringsWithLowestCounterVal[this.random.Next(stringsWithLowestCounterVal.Count)];
+            }
+
+            public void IncreaseCounterForVal(string name)
+            {
+                this.nameCounters[name]++;
+            }
+        }
+
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
         private static readonly List<string> openingList = new List<string> { "Unending", "Grand", "Barren", "Solitary", "Echoing", "Whispering" };
@@ -108,6 +140,7 @@ namespace SonOfRobin
         private Location currentLocation;
         private bool locationsCreated;
         private readonly Random random;
+        private readonly NameRandomizer nameRandomizer;
         public List<Location> DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
         public int DiscoveredLocationsCount { get { return this.DiscoveredLocations.Count; } }
         public int AllLocationsCount { get { return this.locationList.Count; } }
@@ -119,6 +152,7 @@ namespace SonOfRobin
             this.currentLocation = null;
             this.locationsCreated = false;
             this.random = new(this.grid.world.seed);
+            this.nameRandomizer = new(random: this.random);
         }
 
         public Location UpdateCurrentLocation(Vector2 playerPos)
@@ -270,11 +304,12 @@ namespace SonOfRobin
 
             for (int currentTry = 0; currentTry < maxTryCount; currentTry++)
             {
-                string opening = this.random.Next(8) == 0 ? openingList[this.random.Next(openingList.Count)] + " " : "";
-                string adjective = adjectiveListByCategory[category][this.random.Next(adjectiveListByCategory[category].Count)];
-                string noun = nounListByCategory[category][this.random.Next(nounListByCategory[category].Count)];
+                string opening = this.random.Next(8) == 0 ? this.nameRandomizer.RandomizeFromList(openingList) : "";
+                string adjective = this.nameRandomizer.RandomizeFromList(adjectiveListByCategory[category]);
+                string noun = this.nameRandomizer.RandomizeFromList(nounListByCategory[category]);
 
-                string regionName = $"{opening}{adjective} {noun}";
+                string regionName = $"{adjective} {noun}";
+                if (opening.Length > 0) regionName = $"{opening} {regionName}";
 
                 bool nameAlreadyExists = false;
                 foreach (Location location in this.locationList)
@@ -286,7 +321,15 @@ namespace SonOfRobin
                     }
                 }
 
-                if (!nameAlreadyExists || currentTry == maxTryCount - 1) return regionName;
+                if (!nameAlreadyExists || currentTry == maxTryCount - 1)
+                {
+                    // all counters of used names must be increased
+                    if (opening.Length > 0) this.nameRandomizer.IncreaseCounterForVal(opening);
+                    this.nameRandomizer.IncreaseCounterForVal(adjective);
+                    this.nameRandomizer.IncreaseCounterForVal(noun);
+
+                    return regionName;
+                }
             }
 
             return "";
