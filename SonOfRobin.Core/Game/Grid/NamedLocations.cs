@@ -18,20 +18,34 @@ namespace SonOfRobin
 
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
+        private static readonly List<string> openingList = new List<string> { "Unending", "The grand", "Dawn's first", "Almost like a", "Ungodly", "Barren" };
+
+        private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
+            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious" } },
+            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Shallow", "Silent" } },
+            };
+
+        private static readonly Dictionary<Category, List<string>> nounListByCategory = new Dictionary<Category, List<string>> {
+            { Category.Hills, new List<string>{ "Hills", "Mountain", "Plateau" } },
+            { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters" } },
+            };
+
         public class Location
         {
             public readonly string name;
+            public readonly Category category;
             public readonly Rectangle areaRect;
             public readonly Rectangle textRect;
             public bool hasBeenDiscovered;
 
-            public Location(string name, Rectangle areaRect)
+            public Location(string name, Category category, Rectangle areaRect, bool hasBeenDiscovered = false)
             {
                 this.name = name;
+                this.category = category;
                 this.areaRect = areaRect;
                 this.textRect = areaRect;
                 this.textRect.Inflate(-areaRect.Width / 6, -areaRect.Height / 6);
-                this.hasBeenDiscovered = false;
+                this.hasBeenDiscovered = hasBeenDiscovered;
             }
 
             public Object Serialize()
@@ -39,6 +53,7 @@ namespace SonOfRobin
                 var locationData = new Dictionary<string, object>
             {
                 { "name", this.name },
+                { "category", this.category },
                 { "areaRect", this.areaRect },
                 { "hasBeenDiscovered", this.hasBeenDiscovered },
             };
@@ -51,13 +66,11 @@ namespace SonOfRobin
                 var locationDict = (Dictionary<string, object>)locationData;
 
                 string name = (string)locationDict["name"];
+                Category category = (Category)(Int64)locationDict["category"];
                 Rectangle areaRect = (Rectangle)locationDict["areaRect"];
                 bool hasBeenDiscovered = (bool)locationDict["hasBeenDiscovered"];
 
-                return new(name: name, areaRect: areaRect)
-                {
-                    hasBeenDiscovered = hasBeenDiscovered
-                };
+                return new(name: name, category: category, areaRect: areaRect, hasBeenDiscovered: hasBeenDiscovered);
             }
         }
 
@@ -204,29 +217,36 @@ namespace SonOfRobin
                 if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(2) == 0) continue;
 
                 regionNo++;
-                this.locationList.Add(new Location(name: this.GetRegionName(category), areaRect: this.GetLocationRect(coordsList)));
+                this.locationList.Add(new Location(name: this.GetRegionName(category), category: category, areaRect: this.GetLocationRect(coordsList)));
             }
         }
 
         private string GetRegionName(Category category)
         {
-            string name;
+            int maxTryCount = 15;
 
-            switch (category)
+            for (int currentTry = 0; currentTry < maxTryCount; currentTry++)
             {
-                case Category.Hills:
-                    name = "testy hills";
-                    break;
+                string opening = this.random.Next(5) == 0 ? openingList[this.random.Next(openingList.Count)] + " " : "";
+                string adjective = adjectiveListByCategory[category][this.random.Next(adjectiveListByCategory[category].Count)];
+                string noun = nounListByCategory[category][this.random.Next(nounListByCategory[category].Count)];
 
-                case Category.Lake:
-                    name = "testy lake";
-                    break;
+                string regionName = $"{opening}{adjective} {noun}";
 
-                default:
-                    throw new ArgumentException($"Unsupported category - {category}.");
+                bool nameAlreadyExists = false;
+                foreach (Location location in this.locationList)
+                {
+                    if (location.name == regionName)
+                    {
+                        nameAlreadyExists = true;
+                        break;
+                    }
+                }
+
+                if (!nameAlreadyExists || currentTry == maxTryCount - 1) return regionName;
             }
 
-            return name;
+            return "";
         }
 
         private ConcurrentBag<Point> FindAllCellCoordsThatMeetCriteria(SearchCriteria searchCriteria)

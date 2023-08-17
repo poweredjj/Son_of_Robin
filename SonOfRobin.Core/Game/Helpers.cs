@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -237,6 +238,12 @@ namespace SonOfRobin
         {
             if (string.IsNullOrEmpty(str) || char.IsUpper(str[0])) return str;
             return char.ToUpper(str[0]) + str.Substring(1);
+        }
+
+        public static string CapitalizeFirstLetterOfWords(string input)
+        {
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            return textInfo.ToTitleCase(input);
         }
 
         public static void SetProperty(Object targetObj, string propertyName, Object newValue)
