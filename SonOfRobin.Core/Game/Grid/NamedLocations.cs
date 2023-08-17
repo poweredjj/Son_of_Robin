@@ -10,6 +10,14 @@ namespace SonOfRobin
 {
     public class NamedLocations
     {
+        public enum Category
+        {
+            Hills = 0,
+            Lake = 1,
+        }
+
+        private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
+
         public class Location
         {
             public readonly string name;
@@ -83,6 +91,7 @@ namespace SonOfRobin
         private readonly List<Location> locationList;
         private Location currentLocation;
         private bool locationsCreated;
+        private readonly Random random;
         public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered); } }
 
         public NamedLocations(Grid grid)
@@ -91,6 +100,7 @@ namespace SonOfRobin
             this.locationList = new List<Location>();
             this.currentLocation = null;
             this.locationsCreated = false;
+            this.random = new(this.grid.world.seed);
         }
 
         public Location UpdateCurrentLocation(Vector2 playerPos)
@@ -146,42 +156,77 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            Random random = new(this.grid.world.seed);
-
+            foreach (Category category in allCategories)
             {
-                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false)));
-
-                int regionNo = 0;
-                foreach (List<Point> coordsList in cellCoordsByRegion)
-                {
-                    if (coordsList.Count < 10 || coordsList.Count > 120 || random.Next(2) == 0) continue;
-
-                    regionNo++;
-                    this.locationList.Add(new Location(name: $"testy hills {regionNo}", areaRect: this.GetLocationRect(coordsList)));
-                    this.locationList.Last().hasBeenDiscovered = true; // for testing
-                }
-            }
-
-            {
-                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: true, terrainName: Terrain.Name.Height, terrainMinVal: 0, terrainMaxVal: Terrain.waterLevelMax, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false)));
-
-                int regionNo = 0;
-                foreach (List<Point> coordsList in cellCoordsByRegion)
-                {
-                    if (coordsList.Count < 10 || coordsList.Count > 120 || random.Next(2) == 0) continue;
-
-                    regionNo++;
-                    this.locationList.Add(new Location(name: $"testy lake {regionNo}", areaRect: this.GetLocationRect(coordsList)));
-                    this.locationList.Last().hasBeenDiscovered = true; // for testing
-                }
+                this.CreateLocationsForCategory(category);
             }
 
             foreach (Location location in this.locationList)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}");
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
+                location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
+        }
+
+        private void CreateLocationsForCategory(Category category)
+        {
+            SearchCriteria searchCriteria;
+            int minCells;
+            int maxCells;
+
+            switch (category)
+            {
+                case Category.Hills:
+                    searchCriteria = new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
+                    minCells = 10;
+                    maxCells = 120;
+
+                    break;
+
+                case Category.Lake:
+                    searchCriteria = new(checkTerrain: true, checkExpProps: true, terrainName: Terrain.Name.Height, terrainMinVal: 0, terrainMaxVal: Terrain.waterLevelMax, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
+                    minCells = 10;
+                    maxCells = 100;
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported category - {category}.");
+            }
+
+            var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(searchCriteria));
+
+            int regionNo = 0;
+            foreach (List<Point> coordsList in cellCoordsByRegion)
+            {
+                if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(2) == 0) continue;
+
+                regionNo++;
+                this.locationList.Add(new Location(name: this.GetRegionName(category), areaRect: this.GetLocationRect(coordsList)));
+            }
+        }
+
+        private string GetRegionName(Category category)
+        {
+            string name;
+
+            switch (category)
+            {
+                case Category.Hills:
+                    name = "testy hills";
+                    break;
+
+                case Category.Lake:
+                    name = "testy lake";
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported category - {category}.");
+            }
+
+            return name;
         }
 
         private ConcurrentBag<Point> FindAllCellCoordsThatMeetCriteria(SearchCriteria searchCriteria)
