@@ -576,6 +576,7 @@ namespace SonOfRobin
 
             Texture2D namedLocationBg = TextureBank.GetTexture(TextureBank.TextureName.NamedLocationBg);
             float locationTextScale = Math.Min(spriteSize, 4f);
+            int outlineSize = Math.Max((int)(4 * locationTextScale), 3);
 
             foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
             {
@@ -583,7 +584,7 @@ namespace SonOfRobin
                 {
                     if (Preferences.debugShowNamedLocationAreas) SonOfRobinGame.SpriteBatch.Draw(namedLocationBg, location.areaRect, Color.White * 0.3f);
 
-                    Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy40, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: Color.Black, outlineSize: 2, centered: true, scale: locationTextScale);
+                    Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy40, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: Color.Black, outlineSize: outlineSize, centered: true, scale: locationTextScale);
                 }
             }
 

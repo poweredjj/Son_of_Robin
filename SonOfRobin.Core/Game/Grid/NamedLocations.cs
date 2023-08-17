@@ -18,16 +18,16 @@ namespace SonOfRobin
 
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
-        private static readonly List<string> openingList = new List<string> { "Unending", "The grand", "Dawn's first", "Ungodly", "Barren" };
+        private static readonly List<string> openingList = new List<string> { "Unending", "Grand", "Barren", "Solitary", "Echoing", "Whispering" };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Lover's" } },
-            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Shallow", "Silent" } },
+            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Lover's", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Serene", "Tranquil", "Misty", "Mystical", "Verdant", "Timeless" } },
+            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magicians" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Hills", "Mountain", "Plateau" } },
-            { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters" } },
+            { Category.Hills, new List<string>{ "Hills", "Mountain", "Plateau", "Highlands", "Summit", "Ridge", "Crest", "Uplands", "Slopes", "Overlook", "Mesa", "Peaks" } },
+            { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters", "Lagoon", "Cove", "Mirage", "Abyss", "Expanse", "Mirage", "Mirage", "Reservoir", "Mirage" } },
             };
 
         public class Location
@@ -85,7 +85,7 @@ namespace SonOfRobin
             public readonly ExtBoardProps.Name extPropsName;
             public readonly bool expPropsVal;
 
-            public SearchCriteria(bool checkTerrain = false, bool checkExpProps = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 0, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = false)
+            public SearchCriteria(bool checkTerrain = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 255, bool checkExpProps = false, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = true)
             {
                 if (!checkTerrain && !checkExpProps) throw new ArgumentException("Invalid search criteria.");
 
@@ -185,7 +185,7 @@ namespace SonOfRobin
             foreach (Location location in this.locationList)
             {
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
-                // location.hasBeenDiscovered = true; // for testing
+                location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
@@ -194,24 +194,37 @@ namespace SonOfRobin
         private void CreateLocationsForCategory(Category category)
         {
             SearchCriteria searchCriteria;
-            int minCells;
-            int maxCells;
-            int density; // low number == high density, high number == low density
+            int minCells, maxCells, density; // density: low number == high density, high number == low density
 
             switch (category)
             {
                 case Category.Hills:
-                    searchCriteria = new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
+                    searchCriteria = new(
+                        checkTerrain: true,
+                        terrainName: Terrain.Name.Height,
+                        terrainMinVal: Terrain.rocksLevelMin + 30,
+                        terrainMaxVal: 255
+                        );
+
                     minCells = 10;
-                    maxCells = 120;
-                    density = 2; // 2
+                    maxCells = 100;
+                    density = 2;
 
                     break;
 
                 case Category.Lake:
-                    searchCriteria = new(checkTerrain: true, checkExpProps: true, terrainName: Terrain.Name.Height, terrainMinVal: 0, terrainMaxVal: Terrain.waterLevelMax, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
+                    searchCriteria = new(
+                        checkTerrain: true,
+                        terrainName: Terrain.Name.Height,
+                        terrainMinVal: 0,
+                        terrainMaxVal: Terrain.waterLevelMax - 10,
+                        checkExpProps: true,
+                        extPropsName: ExtBoardProps.Name.Sea,
+                        expPropsVal: false
+                        );
+
                     minCells = 10;
-                    maxCells = 100;
+                    maxCells = 80;
                     density = 1;
 
                     break;
@@ -251,7 +264,7 @@ namespace SonOfRobin
 
             for (int currentTry = 0; currentTry < maxTryCount; currentTry++)
             {
-                string opening = this.random.Next(5) == 0 ? openingList[this.random.Next(openingList.Count)] + " " : "";
+                string opening = this.random.Next(8) == 0 ? openingList[this.random.Next(openingList.Count)] + " " : "";
                 string adjective = adjectiveListByCategory[category][this.random.Next(adjectiveListByCategory[category].Count)];
                 string noun = nounListByCategory[category][this.random.Next(nounListByCategory[category].Count)];
 
@@ -380,6 +393,7 @@ namespace SonOfRobin
             {
                 Cell cell = this.grid.cellGrid[point.X, point.Y];
                 Rectangle cellRect = cell.rect;
+
                 xMin = Math.Min(xMin, cellRect.Left);
                 xMax = Math.Max(xMax, cellRect.Right);
                 yMin = Math.Min(yMin, cellRect.Top);
@@ -391,8 +405,8 @@ namespace SonOfRobin
 
         private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, int cellNoX, int cellNoY)
         {
-            return this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= terrainMinVal &&
-                   this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= terrainMaxVal;
+            return this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= terrainMinVal &&
+                   this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= terrainMaxVal;
         }
     }
 }
