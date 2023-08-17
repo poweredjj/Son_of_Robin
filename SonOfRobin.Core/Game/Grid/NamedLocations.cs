@@ -148,12 +148,25 @@ namespace SonOfRobin
 
             Random random = new(this.grid.world.seed);
 
-            Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, searchCriteria: new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false), maxCells: 120);
-            if (areaRect.Width != 1 && areaRect.Height != 1)
+            var cellCoordsBag = this.FindAllCellCoordsThatMeetCriteria(new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false));
+
+            var cellCoordsByRegion = this.SplitCellBagIntoRegions(cellCoordsBag);
+
+            foreach (var kvp in cellCoordsByRegion)
             {
-                this.locationList.Add(new Location(name: "testy hills", areaRect: areaRect));
+                int regionNo = kvp.Key;
+                List<Point> cellCoords = kvp.Value;
+                Rectangle areaRect = this.GetLocationRect(cellCoords);
+                this.locationList.Add(new Location(name: $"testy hills {regionNo}", areaRect: areaRect));
                 this.locationList.Last().hasBeenDiscovered = true; // for testing
             }
+
+            //Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, searchCriteria: new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false), maxCells: 120);
+            //if (areaRect.Width != 1 && areaRect.Height != 1)
+            //{
+            //    this.locationList.Add(new Location(name: "testy hills", areaRect: areaRect));
+            //    this.locationList.Last().hasBeenDiscovered = true; // for testing
+            //}
 
             foreach (Location location in this.locationList)
             {
@@ -163,44 +176,99 @@ namespace SonOfRobin
             this.locationsCreated = true;
         }
 
-        private ConcurrentBag<Cell> FindAllCellsThatMeetCriteria(SearchCriteria searchCriteria)
+        private ConcurrentBag<Point> FindAllCellCoordsThatMeetCriteria(SearchCriteria searchCriteria)
         {
-            var cellBag = new ConcurrentBag<Cell>();
+            var cellCoordsBag = new ConcurrentBag<Point>();
 
             Parallel.ForEach(this.grid.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
             {
                 bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY)) &&
                 (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY));
 
-                if (isWithinRange) cellBag.Add(cell);
+                if (isWithinRange) cellCoordsBag.Add(new Point(cell.cellNoX, cell.cellNoY));
             });
 
-            return cellBag;
+            return cellCoordsBag;
         }
 
-        private void SplitCellBagIntoConnectedRegions(ConcurrentBag<Cell> cellBag)
+        private Dictionary<int, List<Point>> SplitCellBagIntoRegions(ConcurrentBag<Point> cellCoordsBag)
         {
-            var cellGrid = new Cell[this.grid.noOfCellsX, this.grid.noOfCellsY];
-            var processedCells = new bool[this.grid.noOfCellsX, this.grid.noOfCellsY];
-            var assignedRegions = new int[this.grid.noOfCellsX, this.grid.noOfCellsY];
+            // preparing data
 
-            Parallel.ForEach(cellBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
+            List<Point> offsetList = new()
             {
-                cellGrid[cell.cellNoX, cell.cellNoY] = cell;
+                new Point(-1, 0),
+                new Point(1, 0),
+                new Point(0, -1),
+                new Point(0, 1),
+            };
+
+            int noOfCellsX = this.grid.noOfCellsX;
+            int noOfCellsY = this.grid.noOfCellsY;
+
+            var gridCellExists = new bool[noOfCellsX, noOfCellsY];
+            var gridCellIsProcessed = new bool[noOfCellsX, noOfCellsY];
+
+            Parallel.ForEach(cellCoordsBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cellCoords =>
+            {
+                gridCellExists[cellCoords.X, cellCoords.Y] = true;
             });
 
-            Parallel.For(0, this.grid.noOfCellsY, y =>
+            Parallel.For(0, noOfCellsY, y =>
             {
-                for (int x = 0; x < this.grid.noOfCellsX; x++)
+                for (int x = 0; x < noOfCellsX; x++)
                 {
-                    processedCells[x, y] = cellGrid[x, y] == null;
-                    assignedRegions[x, y] = -1;
+                    gridCellIsProcessed[x, y] = !gridCellExists[x, y];
                 }
             });
 
+            int currentRegion = 0;
+            var cellCoordsByRegion = new Dictionary<int, List<Point>>();
+            var cellCoordsLeftToProcess = cellCoordsBag.Distinct().ToList();
+
+            // filling regions
+
             while (true)
             {
-                break;
+                var nextCoords = new ConcurrentBag<Point> { cellCoordsLeftToProcess.First() };
+                var thisRegionCoords = new ConcurrentBag<Point>();
+
+                while (true)
+                {
+                    List<Point> currentCellCoords = nextCoords.Distinct().ToList(); // using Distinct() to filter out duplicates
+                    nextCoords = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
+
+                    Parallel.ForEach(currentCellCoords, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentCell =>
+                    {
+                        // array can be written to using parallel, if every thread accesses its own indices
+
+                        if (gridCellExists[currentCell.X, currentCell.Y])
+                        {
+                            thisRegionCoords.Add(currentCell);
+                            foreach (Point currentOffset in offsetList)
+                            {
+                                Point nextPoint = new(currentCell.X + currentOffset.X, currentCell.Y + currentOffset.Y);
+
+                                if (nextPoint.X >= 0 && nextPoint.X < noOfCellsX &&
+                                    nextPoint.Y >= 0 && nextPoint.Y < noOfCellsY &&
+                                    !gridCellIsProcessed[nextPoint.X, nextPoint.Y])
+                                {
+                                    nextCoords.Add(nextPoint);
+                                }
+                            }
+                        }
+
+                        gridCellIsProcessed[currentCell.X, currentCell.Y] = true;
+                    });
+
+                    if (!nextCoords.Any()) break;
+                }
+
+                cellCoordsLeftToProcess = cellCoordsLeftToProcess.Where(coords => !thisRegionCoords.Contains(coords)).ToList();
+                cellCoordsByRegion[currentRegion] = thisRegionCoords.Distinct().ToList();
+                currentRegion++;
+
+                if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
             }
         }
 
@@ -219,7 +287,7 @@ namespace SonOfRobin
 
                     Point currentCell = new(currentColumn, y);
 
-                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, coordinates: currentCell)) &&
+                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: currentCell.X, cellNoY: currentCell.Y)) &&
                         (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
 
                     if (isWithinRange) foundCellCoords.Add(currentCell);
@@ -232,7 +300,7 @@ namespace SonOfRobin
                 var randomPoint = foundCellsList[random.Next(foundCellsList.Count)];
 
                 var pointsBagForFilledArea = this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, searchCriteria: searchCriteria, maxCells: maxCells);
-                return this.GetLocationRect(pointsBagForFilledArea);
+                return this.GetLocationRect(pointsBagForFilledArea.ToList());
             }
 
             return new Rectangle(0, 0, 0, 0);
@@ -252,57 +320,57 @@ namespace SonOfRobin
             int noOfCellsX = grid.noOfCellsX;
             int noOfCellsY = grid.noOfCellsY;
 
-            bool[,] processedCells = new bool[noOfCellsX, noOfCellsY];
+            bool[,] processedCellCoords = new bool[noOfCellsX, noOfCellsY];
 
-            var nextCells = new ConcurrentBag<Point>(startingCells);
-            var cellsInsideRange = new ConcurrentBag<Point>();
+            var nextCellCoords = new ConcurrentBag<Point>(startingCells);
+            var cellCoordsInsideRange = new ConcurrentBag<Point>();
 
             while (true)
             {
-                List<Point> currentCells = nextCells.Distinct().ToList(); // using Distinct() to filter out duplicates
-                nextCells = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
+                List<Point> currentCellCoords = nextCellCoords.Distinct().ToList(); // using Distinct() to filter out duplicates
+                nextCellCoords = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                Parallel.ForEach(currentCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentCell =>
+                Parallel.ForEach(currentCellCoords, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentCoords =>
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, coordinates: currentCell)) &&
-                    (!searchCriteria.checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
+                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: currentCoords.X, cellNoY: currentCoords.Y)) &&
+                    (!searchCriteria.checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCoords.X, cellNoY: currentCoords.Y));
 
                     if (isWithinRange)
                     {
-                        cellsInsideRange.Add(currentCell);
+                        cellCoordsInsideRange.Add(currentCoords);
 
                         foreach (Point currentOffset in offsetList)
                         {
-                            Point nextPoint = new(currentCell.X + currentOffset.X, currentCell.Y + currentOffset.Y);
+                            Point nextPoint = new(currentCoords.X + currentOffset.X, currentCoords.Y + currentOffset.Y);
 
                             if (nextPoint.X >= 0 && nextPoint.X < noOfCellsX &&
                                 nextPoint.Y >= 0 && nextPoint.Y < noOfCellsY &&
-                                !processedCells[nextPoint.X, nextPoint.Y])
+                                !processedCellCoords[nextPoint.X, nextPoint.Y])
                             {
-                                nextCells.Add(nextPoint);
+                                nextCellCoords.Add(nextPoint);
                             }
                         }
                     }
 
-                    processedCells[currentCell.X, currentCell.Y] = true;
+                    processedCellCoords[currentCoords.X, currentCoords.Y] = true;
                 });
 
-                if (!nextCells.Any() || (maxCells != 0 && cellsInsideRange.Count > maxCells)) break;
+                if (!nextCellCoords.Any() || (maxCells != 0 && cellCoordsInsideRange.Count > maxCells)) break;
             }
 
-            return cellsInsideRange; // cell coords
+            return cellCoordsInsideRange;
         }
 
-        private Rectangle GetLocationRect(ConcurrentBag<Point> pointsBag)
+        private Rectangle GetLocationRect(List<Point> pointList)
         {
             int xMin = Int32.MaxValue;
             int xMax = 0;
             int yMin = Int32.MaxValue;
             int yMax = 0;
 
-            foreach (Point point in pointsBag)
+            foreach (Point point in pointList)
             {
                 Cell cell = this.grid.cellGrid[point.X, point.Y];
                 Rectangle cellRect = cell.rect;
