@@ -53,6 +53,32 @@ namespace SonOfRobin
             }
         }
 
+        public readonly struct SearchCriteria
+        {
+            public readonly bool checkTerrain;
+            public readonly Terrain.Name terrainName;
+            public readonly byte terrainMinVal;
+            public readonly byte terrainMaxVal;
+
+            public readonly bool checkExpProps;
+            public readonly ExtBoardProps.Name extPropsName;
+            public readonly bool expPropsVal;
+
+            public SearchCriteria(bool checkTerrain = false, bool checkExpProps = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 0, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = false)
+            {
+                if (!checkTerrain && !checkExpProps) throw new ArgumentException("Invalid search criteria.");
+
+                this.checkTerrain = checkTerrain;
+                this.terrainName = terrainName;
+                this.terrainMinVal = terrainMinVal;
+                this.terrainMaxVal = terrainMaxVal;
+
+                this.checkExpProps = checkExpProps;
+                this.extPropsName = extPropsName;
+                this.expPropsVal = expPropsVal;
+            }
+        }
+
         private readonly Grid grid;
         private readonly List<Location> locationList;
         private Location currentLocation;
@@ -122,7 +148,7 @@ namespace SonOfRobin
 
             Random random = new(this.grid.world.seed);
 
-            Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false, maxCells: 150);
+            Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, searchCriteria: new(checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false), maxCells: 120);
             if (areaRect.Width != 1 && areaRect.Height != 1)
             {
                 this.locationList.Add(new Location(name: "testy hills", areaRect: areaRect));
@@ -137,14 +163,51 @@ namespace SonOfRobin
             this.locationsCreated = true;
         }
 
-        private Rectangle FindRandomRectThatMeetsCriteria(Random random, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal, int maxCells = 0)
+        private ConcurrentBag<Cell> FindAllCellsThatMeetCriteria(SearchCriteria searchCriteria)
         {
-            if (!checkTerrain && !checkExpProps) throw new ArgumentException("No search criteria.");
+            var cellBag = new ConcurrentBag<Cell>();
 
+            Parallel.ForEach(this.grid.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
+            {
+                bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY)) &&
+                (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY));
+
+                if (isWithinRange) cellBag.Add(cell);
+            });
+
+            return cellBag;
+        }
+
+        private void SplitCellBagIntoConnectedRegions(ConcurrentBag<Cell> cellBag)
+        {
+            var cellGrid = new Cell[this.grid.noOfCellsX, this.grid.noOfCellsY];
+            var processedCells = new bool[this.grid.noOfCellsX, this.grid.noOfCellsY];
+            var assignedRegions = new int[this.grid.noOfCellsX, this.grid.noOfCellsY];
+
+            Parallel.ForEach(cellBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
+            {
+                cellGrid[cell.cellNoX, cell.cellNoY] = cell;
+            });
+
+            Parallel.For(0, this.grid.noOfCellsY, y =>
+            {
+                for (int x = 0; x < this.grid.noOfCellsX; x++)
+                {
+                    processedCells[x, y] = cellGrid[x, y] == null;
+                    assignedRegions[x, y] = -1;
+                }
+            });
+
+            while (true)
+            {
+                break;
+            }
+        }
+
+        private Rectangle FindRandomRectThatMeetsCriteria(Random random, SearchCriteria searchCriteria, int maxCells = 0)
+        {
             int randomColumn = random.Next(this.grid.noOfCellsX);
-
-            var foundCellsForColumn = new ConcurrentBag<Point>();
-
+            var foundCellCoords = new ConcurrentBag<Point>();
             Parallel.For(0, this.grid.noOfCellsY, y =>
             {
                 int currentColumn = randomColumn;
@@ -156,30 +219,27 @@ namespace SonOfRobin
 
                     Point currentCell = new(currentColumn, y);
 
-                    bool isWithinRange = (!checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, coordinates: currentCell)) &&
-                        (!checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: extPropsName, value: expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
+                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, coordinates: currentCell)) &&
+                        (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
 
-                    if (isWithinRange) foundCellsForColumn.Add(currentCell);
+                    if (isWithinRange) foundCellCoords.Add(currentCell);
                 }
             });
 
-            var foundCellsList = foundCellsForColumn.ToList();
+            var foundCellsList = foundCellCoords.ToList();
             if (foundCellsList.Any())
             {
                 var randomPoint = foundCellsList[random.Next(foundCellsList.Count)];
 
-                var pointsBagForFilledArea = this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, checkTerrain: checkTerrain, checkExpProps: checkExpProps, terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, extPropsName: extPropsName, expPropsVal: expPropsVal, maxCells: maxCells);
-
+                var pointsBagForFilledArea = this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, searchCriteria: searchCriteria, maxCells: maxCells);
                 return this.GetLocationRect(pointsBagForFilledArea);
             }
 
             return new Rectangle(0, 0, 0, 0);
         }
 
-        private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal, int maxCells = 0)
+        private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, SearchCriteria searchCriteria, int maxCells = 0)
         {
-            if (!checkTerrain && !checkExpProps) throw new ArgumentException("No search criteria.");
-
             List<Point> offsetList = new()
             {
                 new Point(-1, 0),
@@ -206,8 +266,8 @@ namespace SonOfRobin
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    bool isWithinRange = (!checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, coordinates: currentCell)) &&
-                    (!checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: extPropsName, value: expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
+                    bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, coordinates: currentCell)) &&
+                    (!searchCriteria.checkExpProps || grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: currentCell.X, cellNoY: currentCell.Y));
 
                     if (isWithinRange)
                     {
@@ -255,10 +315,10 @@ namespace SonOfRobin
             return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
         }
 
-        private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, Point coordinates)
+        private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, int cellNoX, int cellNoY)
         {
-            return this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: coordinates.X, cellNoY: coordinates.Y) >= terrainMinVal &&
-                   this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: coordinates.X, cellNoY: coordinates.Y) <= terrainMaxVal;
+            return this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= terrainMinVal &&
+                   this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= terrainMaxVal;
         }
     }
 }
