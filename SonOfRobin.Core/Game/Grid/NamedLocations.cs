@@ -35,8 +35,10 @@ namespace SonOfRobin
                     if (!this.nameCounters.ContainsKey(name)) this.nameCounters[name] = 0;
                 }
 
-                int minCounterVal = this.nameCounters.Values.Min();
-                var stringsWithLowestCounterVal = this.nameCounters.Where(kv => kv.Value == minCounterVal).Select(kv => kv.Key).ToList();
+                var filteredNameList = this.nameCounters.Where(kv => nameList.Contains(kv.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
+
+                int minCounterVal = filteredNameList.Values.Min();
+                var stringsWithLowestCounterVal = filteredNameList.Where(kv => kv.Value == minCounterVal).Select(kv => kv.Key).ToList();
 
                 return stringsWithLowestCounterVal[this.random.Next(stringsWithLowestCounterVal.Count)];
             }
@@ -52,8 +54,8 @@ namespace SonOfRobin
         private static readonly List<string> openingList = new List<string> { "Unending", "Grand", "Barren", "Solitary", "Echoing", "Whispering" };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Lover's", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Serene", "Tranquil", "Misty", "Mystical", "Verdant", "Timeless" } },
-            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magicians" } },
+            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Serene", "Tranquil", "Misty", "Mystical", "Verdant", "Timeless" } },
+            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magicians" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new Dictionary<Category, List<string>> {
