@@ -55,7 +55,7 @@ namespace SonOfRobin
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
             { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Serene", "Tranquil", "Misty", "Mystical", "Verdant", "Timeless" } },
-            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magicians" } },
+            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magician's" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new Dictionary<Category, List<string>> {
@@ -400,6 +400,8 @@ namespace SonOfRobin
             var cellCoordsLeftToProcess = cellCoordsBag.Distinct().ToList();
 
             // filling regions
+
+            if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
 
             while (true)
             {

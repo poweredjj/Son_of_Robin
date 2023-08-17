@@ -575,7 +575,7 @@ namespace SonOfRobin
             // drawing named locations (without effects)
 
             Texture2D namedLocationBg = TextureBank.GetTexture(TextureBank.TextureName.NamedLocationBg);
-            float locationTextScale = Math.Min(spriteSize, 6f) * 2;
+            float locationTextScale = Math.Min(spriteSize, 3f) * 4;
             int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
             Color outlineColor = new(74, 52, 0);
 
