@@ -49,12 +49,13 @@ namespace SonOfRobin
 
             if (outlineSize > 0)
             {
-                for (int x = -outlineSize; x <= outlineSize; x++)
+                int step = Math.Max(outlineSize / 2, 1);
+
+                for (int x = -outlineSize; x <= outlineSize; x += step)
                 {
-                    for (int y = -outlineSize; y <= outlineSize; y++)
+                    for (int y = -outlineSize; y <= outlineSize; y += step)
                     {
                         SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos + new Vector2(x, y), color: outlineColor, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
-
                     }
                 }
             }
@@ -68,9 +69,11 @@ namespace SonOfRobin
 
             if (outlineSize > 0)
             {
-                for (int x = -outlineSize; x <= outlineSize; x++)
+                int step = Math.Max(outlineSize / 2, 1);
+
+                for (int x = -outlineSize; x <= outlineSize; x += step)
                 {
-                    for (int y = -outlineSize; y <= outlineSize; y++)
+                    for (int y = -outlineSize; y <= outlineSize; y += step)
                     {
                         if (x == 0 && y == 0) continue;
 

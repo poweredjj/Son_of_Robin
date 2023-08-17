@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,24 +76,28 @@ namespace SonOfRobin
         public readonly struct SearchCriteria
         {
             public readonly bool checkTerrain;
+            public readonly bool terrainStrictSearch;
             public readonly Terrain.Name terrainName;
             public readonly byte terrainMinVal;
             public readonly byte terrainMaxVal;
 
             public readonly bool checkExpProps;
+            public readonly bool expPropsStrictSearch;
             public readonly ExtBoardProps.Name extPropsName;
             public readonly bool expPropsVal;
 
-            public SearchCriteria(bool checkTerrain = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 255, bool checkExpProps = false, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = true)
+            public SearchCriteria(bool checkTerrain = false, bool terrainStrictSearch = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 255, bool checkExpProps = false, bool expPropsStrictSearch = false, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = true)
             {
                 if (!checkTerrain && !checkExpProps) throw new ArgumentException("Invalid search criteria.");
 
                 this.checkTerrain = checkTerrain;
+                this.terrainStrictSearch = terrainStrictSearch;
                 this.terrainName = terrainName;
                 this.terrainMinVal = terrainMinVal;
                 this.terrainMaxVal = terrainMaxVal;
 
                 this.checkExpProps = checkExpProps;
+                this.expPropsStrictSearch = expPropsStrictSearch;
                 this.extPropsName = extPropsName;
                 this.expPropsVal = expPropsVal;
             }
@@ -105,7 +108,9 @@ namespace SonOfRobin
         private Location currentLocation;
         private bool locationsCreated;
         private readonly Random random;
-        public IEnumerable DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered); } }
+        public List<Location> DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
+        public int DiscoveredLocationsCount { get { return this.DiscoveredLocations.Count; } }
+        public int AllLocationsCount { get { return this.locationList.Count; } }
 
         public NamedLocations(Grid grid)
         {
@@ -185,7 +190,7 @@ namespace SonOfRobin
             foreach (Location location in this.locationList)
             {
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
-                location.hasBeenDiscovered = true; // for testing
+                // location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
@@ -202,13 +207,13 @@ namespace SonOfRobin
                     searchCriteria = new(
                         checkTerrain: true,
                         terrainName: Terrain.Name.Height,
-                        terrainMinVal: Terrain.rocksLevelMin + 30,
+                        terrainMinVal: Terrain.rocksLevelMin + 15,
                         terrainMaxVal: 255
                         );
 
                     minCells = 10;
                     maxCells = 100;
-                    density = 2;
+                    density = 2; // 2
 
                     break;
 
@@ -217,8 +222,9 @@ namespace SonOfRobin
                         checkTerrain: true,
                         terrainName: Terrain.Name.Height,
                         terrainMinVal: 0,
-                        terrainMaxVal: Terrain.waterLevelMax - 10,
+                        terrainMaxVal: Terrain.waterLevelMax,
                         checkExpProps: true,
+                        expPropsStrictSearch: true,
                         extPropsName: ExtBoardProps.Name.Sea,
                         expPropsVal: false
                         );
@@ -292,8 +298,20 @@ namespace SonOfRobin
 
             Parallel.ForEach(this.grid.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
             {
-                bool isWithinRange = (!searchCriteria.checkTerrain || this.CheckIfCellTerrainIsInRange(terrainName: searchCriteria.terrainName, terrainMinVal: searchCriteria.terrainMinVal, terrainMaxVal: searchCriteria.terrainMaxVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY)) &&
-                (!searchCriteria.checkExpProps || this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY));
+                bool isWithinRange = true;
+
+                if (isWithinRange && searchCriteria.checkTerrain) isWithinRange = this.CheckIfCellTerrainIsInRange(searchCriteria: searchCriteria, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
+
+                if (isWithinRange && searchCriteria.checkExpProps)
+                {
+                    isWithinRange = this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
+
+                    if (isWithinRange && searchCriteria.expPropsStrictSearch)
+                    {
+                        // strict search - making sure that cell does not contain other value anywhere
+                        isWithinRange = !this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: !searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
+                    }
+                }
 
                 if (isWithinRange) cellCoordsBag.Add(new Point(cell.cellNoX, cell.cellNoY));
             });
@@ -391,22 +409,27 @@ namespace SonOfRobin
 
             foreach (Point point in coordsList)
             {
-                Cell cell = this.grid.cellGrid[point.X, point.Y];
-                Rectangle cellRect = cell.rect;
+                Point cellCenter = this.grid.cellGrid[point.X, point.Y].rect.Center; // center is used to avoid using extreme edges, which are not accurate
 
-                xMin = Math.Min(xMin, cellRect.Left);
-                xMax = Math.Max(xMax, cellRect.Right);
-                yMin = Math.Min(yMin, cellRect.Top);
-                yMax = Math.Max(yMax, cellRect.Bottom);
+                xMin = Math.Min(xMin, cellCenter.X);
+                xMax = Math.Max(xMax, cellCenter.X);
+                yMin = Math.Min(yMin, cellCenter.Y);
+                yMax = Math.Max(yMax, cellCenter.Y);
             }
 
             return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
         }
 
-        private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, int cellNoX, int cellNoY)
+        private bool CheckIfCellTerrainIsInRange(SearchCriteria searchCriteria, int cellNoX, int cellNoY)
         {
-            return this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= terrainMinVal &&
-                   this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= terrainMaxVal;
+            // strictSearch: true == whole cell must match search criteria, false == any cell part must match search criteria
+
+            return searchCriteria.terrainStrictSearch ?
+                this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= searchCriteria.terrainMinVal &&
+                this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= searchCriteria.terrainMaxVal :
+
+                this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= searchCriteria.terrainMinVal &&
+                this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= searchCriteria.terrainMaxVal;
         }
     }
 }
