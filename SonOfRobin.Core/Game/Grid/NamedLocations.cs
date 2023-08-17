@@ -142,7 +142,7 @@ namespace SonOfRobin
         private Location currentLocation;
         private bool locationsCreated;
         private readonly Random random;
-        private readonly NameRandomizer nameRandomizer;
+        private NameRandomizer nameRandomizer;
         public List<Location> DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
         public int DiscoveredLocationsCount { get { return this.DiscoveredLocations.Count; } }
         public int AllLocationsCount { get { return this.locationList.Count; } }
@@ -225,11 +225,12 @@ namespace SonOfRobin
 
             foreach (Location location in this.locationList)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
                 // location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
+            this.nameRandomizer = null;
         }
 
         private void CreateLocationsForCategory(Category category)
