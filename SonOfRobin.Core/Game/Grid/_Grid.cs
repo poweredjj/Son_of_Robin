@@ -270,7 +270,7 @@ namespace SonOfRobin
             this.WholeIslandPreviewTexture.SetData(pixelData);
 
             // copying named locations
-            this.namedLocations.CopyLocations(templateGrid.namedLocations);
+            this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
 
             // copying cell data
 

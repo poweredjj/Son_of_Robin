@@ -106,17 +106,26 @@ namespace SonOfRobin
             this.locationsCreated |= true;
         }
 
+        public void CopyLocationsFromTemplate(NamedLocations templateLocations)
+        {
+            this.locationList.Clear();
+            foreach (Location location in templateLocations.locationList)
+            {
+                location.hasBeenDiscovered = false;
+                this.locationList.Add(location);
+            }
+        }
+
         public void GenerateLocations()
         {
             if (this.locationsCreated) return;
 
             Random random = new(this.grid.world.seed);
 
-            var pointsBag = this.FindRandomRectThatMeetsCriteria(random: random, checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false);
-            if (pointsBag.Any())
+            Rectangle areaRect = this.FindRandomRectThatMeetsCriteria(random: random, checkTerrain: true, checkExpProps: false, terrainName: Terrain.Name.Height, terrainMinVal: Terrain.rocksLevelMin, terrainMaxVal: 255, extPropsName: ExtBoardProps.Name.Sea, expPropsVal: false, maxCells: 150);
+            if (areaRect.Width != 1 && areaRect.Height != 1)
             {
-                Rectangle locationRect = this.GetLocationRect(pointsBag);
-                this.locationList.Add(new Location(name: "testy hills", areaRect: locationRect));
+                this.locationList.Add(new Location(name: "testy hills", areaRect: areaRect));
                 this.locationList.Last().hasBeenDiscovered = true; // for testing
             }
 
@@ -128,37 +137,7 @@ namespace SonOfRobin
             this.locationsCreated = true;
         }
 
-        private Rectangle GetLocationRect(ConcurrentBag<Point> pointsBag)
-        {
-            int xMin = Int32.MaxValue;
-            int xMax = 0;
-            int yMin = Int32.MaxValue;
-            int yMax = 0;
-
-            foreach (Point point in pointsBag)
-            {
-                Cell cell = this.grid.cellGrid[point.X, point.Y];
-                Rectangle cellRect = cell.rect;
-                xMin = Math.Min(xMin, cellRect.Left);
-                xMax = Math.Max(xMax, cellRect.Right);
-                yMin = Math.Min(yMin, cellRect.Top);
-                yMax = Math.Max(yMax, cellRect.Bottom);
-            }
-
-            return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
-        }
-
-        public void CopyLocations(NamedLocations templateLocations)
-        {
-            this.locationList.Clear();
-            foreach (Location location in templateLocations.locationList)
-            {
-                location.hasBeenDiscovered = false;
-                this.locationList.Add(location);
-            }
-        }
-
-        private ConcurrentBag<Point> FindRandomRectThatMeetsCriteria(Random random, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal)
+        private Rectangle FindRandomRectThatMeetsCriteria(Random random, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal, int maxCells = 0)
         {
             if (!checkTerrain && !checkExpProps) throw new ArgumentException("No search criteria.");
 
@@ -189,13 +168,15 @@ namespace SonOfRobin
             {
                 var randomPoint = foundCellsList[random.Next(foundCellsList.Count)];
 
-                return this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, checkTerrain: checkTerrain, checkExpProps: checkExpProps, terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, extPropsName: extPropsName, expPropsVal: expPropsVal);
+                var pointsBagForFilledArea = this.FloodFillIfInRange(startingCells: new ConcurrentBag<Point> { randomPoint }, checkTerrain: checkTerrain, checkExpProps: checkExpProps, terrainName: terrainName, terrainMinVal: terrainMinVal, terrainMaxVal: terrainMaxVal, extPropsName: extPropsName, expPropsVal: expPropsVal, maxCells: maxCells);
+
+                return this.GetLocationRect(pointsBagForFilledArea);
             }
 
-            return null;
+            return new Rectangle(0, 0, 0, 0);
         }
 
-        private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal)
+        private ConcurrentBag<Point> FloodFillIfInRange(ConcurrentBag<Point> startingCells, bool checkTerrain, bool checkExpProps, Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, ExtBoardProps.Name extPropsName, bool expPropsVal, int maxCells = 0)
         {
             if (!checkTerrain && !checkExpProps) throw new ArgumentException("No search criteria.");
 
@@ -248,10 +229,30 @@ namespace SonOfRobin
                     processedCells[currentCell.X, currentCell.Y] = true;
                 });
 
-                if (!nextCells.Any()) break;
+                if (!nextCells.Any() || (maxCells != 0 && cellsInsideRange.Count > maxCells)) break;
             }
 
             return cellsInsideRange; // cell coords
+        }
+
+        private Rectangle GetLocationRect(ConcurrentBag<Point> pointsBag)
+        {
+            int xMin = Int32.MaxValue;
+            int xMax = 0;
+            int yMin = Int32.MaxValue;
+            int yMax = 0;
+
+            foreach (Point point in pointsBag)
+            {
+                Cell cell = this.grid.cellGrid[point.X, point.Y];
+                Rectangle cellRect = cell.rect;
+                xMin = Math.Min(xMin, cellRect.Left);
+                xMax = Math.Max(xMax, cellRect.Right);
+                yMin = Math.Min(yMin, cellRect.Top);
+                yMax = Math.Max(yMax, cellRect.Bottom);
+            }
+
+            return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
         }
 
         private bool CheckIfCellTerrainIsInRange(Terrain.Name terrainName, byte terrainMinVal, byte terrainMaxVal, Point coordinates)
