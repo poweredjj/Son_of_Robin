@@ -77,45 +77,104 @@ namespace SonOfRobin
 
         public class Location
         {
+            public readonly Grid grid;
             public readonly string name;
             public readonly Category category;
+            public readonly List<Point> coordsList;
             public readonly Rectangle areaRect;
             public readonly Rectangle textRect;
+            public readonly List<Cell> cells;
             public bool hasBeenDiscovered;
 
-            public Location(string name, Category category, Rectangle areaRect, bool hasBeenDiscovered = false)
+            public Location(Grid grid, string name, Category category, List<Point> coordsList, bool hasBeenDiscovered = false)
             {
+                this.grid = grid;
                 this.name = name;
                 this.category = category;
-                this.areaRect = areaRect;
+                this.coordsList = coordsList;
+                this.areaRect = this.GetAreaRect(this.coordsList);
+                this.cells = this.GetCells(this.coordsList);
                 this.textRect = areaRect;
                 this.textRect.Inflate(-areaRect.Width / 6, -areaRect.Height / 6);
                 this.hasBeenDiscovered = hasBeenDiscovered;
             }
 
+            public bool IsPointInsideLocation(Point point)
+            {
+                if (!this.areaRect.Contains(point)) return false;
+
+                foreach (Cell cell in this.cells)
+                {
+                    if (cell.rect.Contains(point)) return true;
+                }
+
+                return false;
+            }
+
+            public void DrawCellRects(Color color)
+            {
+                foreach (Cell cell in this.cells)
+                {
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, color);
+                }
+            }
+
+            private List<Cell> GetCells(List<Point> coordsList)
+            {
+                return coordsList.Select(c => this.grid.cellGrid[c.X, c.Y]).ToList();
+            }
+
+            private Rectangle GetAreaRect(List<Point> coordsList)
+            {
+                int xMin = Int32.MaxValue;
+                int xMax = 0;
+                int yMin = Int32.MaxValue;
+                int yMax = 0;
+
+                foreach (Point point in coordsList)
+                {
+                    Rectangle cellRect = this.grid.cellGrid[point.X, point.Y].rect;
+
+                    xMin = Math.Min(xMin, cellRect.Left);
+                    xMax = Math.Max(xMax, cellRect.Right);
+                    yMin = Math.Min(yMin, cellRect.Top);
+                    yMax = Math.Max(yMax, cellRect.Bottom);
+                }
+
+                return new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
+            }
+
             public Object Serialize()
             {
+                List<int> coordsListX = this.coordsList.Select(point => point.X).ToList();
+                List<int> coordsListY = this.coordsList.Select(point => point.Y).ToList();
+
                 var locationData = new Dictionary<string, object>
-            {
-                { "name", this.name },
-                { "category", this.category },
-                { "areaRect", this.areaRect },
-                { "hasBeenDiscovered", this.hasBeenDiscovered },
-            };
+
+                {
+                    { "name", this.name },
+                    { "category", this.category },
+                    { "coordsListX", coordsListX }, // directly serializing List<Point> would bloat save file
+                    { "coordsListY", coordsListY }, // directly serializing List<Point> would bloat save file
+                    { "hasBeenDiscovered", this.hasBeenDiscovered },
+                };
 
                 return locationData;
             }
 
-            public static Location Deserialize(Object locationData)
+            public static Location Deserialize(Grid grid, Object locationData)
             {
                 var locationDict = (Dictionary<string, object>)locationData;
 
                 string name = (string)locationDict["name"];
                 Category category = (Category)(Int64)locationDict["category"];
-                Rectangle areaRect = (Rectangle)locationDict["areaRect"];
                 bool hasBeenDiscovered = (bool)locationDict["hasBeenDiscovered"];
 
-                return new(name: name, category: category, areaRect: areaRect, hasBeenDiscovered: hasBeenDiscovered);
+                List<int> coordsListX = (List<int>)locationDict["coordsListX"];
+                List<int> coordsListY = (List<int>)locationDict["coordsListY"];
+                List<Point> coordsList = coordsListX.Zip(coordsListY, (x, y) => new Point(x, y)).ToList();
+
+                return new(grid: grid, name: name, category: category, coordsList: coordsList, hasBeenDiscovered: hasBeenDiscovered);
             }
         }
 
@@ -173,16 +232,16 @@ namespace SonOfRobin
         {
             foreach (Location location in this.locationList)
             {
-                if (location.areaRect.Contains(playerPos))
+                if (location.IsPointInsideLocation(new Point((int)playerPos.X, (int)playerPos.Y)))
                 {
-                    if (location == currentLocation) return null;
-                    currentLocation = location;
+                    if (location == this.currentLocation) return null;
+                    this.currentLocation = location;
                     return location;
                 }
             }
 
-            currentLocation = null;
-            return currentLocation;
+            this.currentLocation = null;
+            return this.currentLocation;
         }
 
         public void SetAllLocationsAsDiscovered()
@@ -211,7 +270,7 @@ namespace SonOfRobin
 
             foreach (object singleLocationData in (List<object>)locationData)
             {
-                this.locationList.Add(Location.Deserialize(singleLocationData));
+                this.locationList.Add(Location.Deserialize(grid: this.grid, locationData: singleLocationData));
             }
             this.locationsCreated |= true;
         }
@@ -251,7 +310,6 @@ namespace SonOfRobin
         {
             SearchCriteria searchCriteria;
             int minCells, maxCells, density; // density: low number == high density, high number == low density
-            bool getFullCellSize;
 
             switch (category)
             {
@@ -263,9 +321,8 @@ namespace SonOfRobin
                         terrainMaxVal: 255
                         );
 
-                    getFullCellSize = false;
                     minCells = 10;
-                    maxCells = 100;
+                    maxCells = 300;
                     density = 2; // 2
 
                     break;
@@ -282,9 +339,8 @@ namespace SonOfRobin
                         expPropsVal: false
                         );
 
-                    getFullCellSize = false;
                     minCells = 10;
-                    maxCells = 80;
+                    maxCells = 150;
                     density = 1;
 
                     break;
@@ -297,7 +353,6 @@ namespace SonOfRobin
                         terrainMaxVal: 255
                         );
 
-                    getFullCellSize = true;
                     minCells = 1;
                     maxCells = 150;
                     density = 1;
@@ -307,14 +362,12 @@ namespace SonOfRobin
                 case Category.Swamp:
                     searchCriteria = new(
                         checkExpProps: true,
-                        expPropsStrictSearch: true,
                         extPropsName: ExtBoardProps.Name.BiomeSwamp,
                         expPropsVal: true
                         );
 
-                    getFullCellSize = true;
-                    minCells = 30;
-                    maxCells = 150;
+                    minCells = 15;
+                    maxCells = 400;
                     density = 1;
 
                     break;
@@ -325,26 +378,11 @@ namespace SonOfRobin
 
             var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(searchCriteria));
 
-            int regionNo = 0;
             foreach (List<Point> coordsList in cellCoordsByRegion)
             {
                 if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
 
-                Rectangle areaRect = this.GetLocationRect(coordsList: coordsList, getFullCellSize: getFullCellSize);
-
-                bool collidesWithAnotherLocation = false;
-                foreach (Location location in this.locationList)
-                {
-                    if (location.areaRect.Intersects(areaRect))
-                    {
-                        collidesWithAnotherLocation = true;
-                        break;
-                    }
-                }
-                if (collidesWithAnotherLocation) continue;
-
-                regionNo++;
-                this.locationList.Add(new Location(name: this.GetRegionName(category), category: category, areaRect: areaRect));
+                this.locationList.Add(new(grid: this.grid, name: this.GetRegionName(category), coordsList: coordsList, category: category));
             }
         }
 
@@ -490,45 +528,6 @@ namespace SonOfRobin
 
                 if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
             }
-        }
-
-        private Rectangle GetLocationRect(List<Point> coordsList, bool getFullCellSize)
-        {
-            int xMin = Int32.MaxValue;
-            int xMax = 0;
-            int yMin = Int32.MaxValue;
-            int yMax = 0;
-
-            if (getFullCellSize)
-            {
-                foreach (Point point in coordsList)
-                {
-                    Rectangle cellRect = this.grid.cellGrid[point.X, point.Y].rect;
-
-                    xMin = Math.Min(xMin, cellRect.Left);
-                    xMax = Math.Max(xMax, cellRect.Right);
-                    yMin = Math.Min(yMin, cellRect.Top);
-                    yMax = Math.Max(yMax, cellRect.Bottom);
-                }
-            }
-            else
-            {
-                foreach (Point point in coordsList)
-                {
-                    Point cellCenter = this.grid.cellGrid[point.X, point.Y].rect.Center; // center is used to avoid using extreme edges, which are not accurate
-
-                    xMin = Math.Min(xMin, cellCenter.X);
-                    xMax = Math.Max(xMax, cellCenter.X);
-                    yMin = Math.Min(yMin, cellCenter.Y);
-                    yMax = Math.Max(yMax, cellCenter.Y);
-                }
-            }
-
-            Rectangle locationRect = new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
-            if (locationRect.Width == 0) locationRect.Inflate(this.grid.cellWidth / 2, 0);
-            if (locationRect.Height == 0) locationRect.Inflate(0, this.grid.cellHeight / 2);
-
-            return locationRect;
         }
 
         private bool CheckIfCellTerrainIsInRange(SearchCriteria searchCriteria, int cellNoX, int cellNoY)

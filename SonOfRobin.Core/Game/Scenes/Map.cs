@@ -574,7 +574,6 @@ namespace SonOfRobin
 
             // drawing named locations (without effects)
 
-            Texture2D namedLocationBg = SonOfRobinGame.WhiteRectangle;
             float locationTextScale = Math.Min(spriteSize, 3f) * 4;
             int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
             Color outlineColor = new(74, 52, 0);
@@ -583,7 +582,12 @@ namespace SonOfRobin
             {
                 if (location.areaRect.Intersects(this.camera.viewRect))
                 {
-                    if (Preferences.debugShowNamedLocationAreas) SonOfRobinGame.SpriteBatch.Draw(namedLocationBg, location.areaRect, Color.White * 0.3f);
+                    if (Preferences.debugShowNamedLocationAreas)
+                    {
+                        SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, Color.Green * 0.2f);
+                        Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
+                        location.DrawCellRects(Color.White * 0.35f);
+                    }
 
                     Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: outlineColor, outlineSize: outlineSize, centered: true, scale: locationTextScale);
                 }
