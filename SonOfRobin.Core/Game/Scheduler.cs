@@ -50,6 +50,8 @@ namespace SonOfRobin
             CameraTrackPiece = 33,
             CameraTrackCoords = 34,
             CameraSetZoom = 35,
+            CameraSetMovementSpeed = 87,
+            CameraResetMovementSpeed = 88,
             ShowCookingProgress = 36,
             ShowBrewingProgress = 37,
             RestoreHints = 38,
@@ -1096,6 +1098,26 @@ namespace SonOfRobin
 
                             world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier, setInstantly: setInstantly);
 
+                            return;
+                        }
+
+                    case TaskName.CameraSetMovementSpeed:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            float movementSpeed = (float)this.ExecuteHelper;
+
+                            world.camera.SetMovementSpeed(movementSpeed);
+                            return;
+                        }
+
+                    case TaskName.CameraResetMovementSpeed:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.camera.SetMovementSpeed(1f);
                             return;
                         }
 

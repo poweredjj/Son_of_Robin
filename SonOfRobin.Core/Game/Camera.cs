@@ -48,9 +48,12 @@ namespace SonOfRobin
             }
         }
 
+        private const int defaultMovementSlowdown = 20;
+        private const int defaultZoomSlowdown = 20;
+
         private bool disableFluidMotionMoveForOneFrame;
-        private const int movementSlowdown = 20;
-        private int zoomSlowdown = 20;
+        private int movementSlowdown;
+        private int zoomSlowdown;
 
         public Rectangle viewRect;
         public Vector2 viewPos;
@@ -137,6 +140,9 @@ namespace SonOfRobin
 
         public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
         {
+            this.ResetMovementSpeed();
+            this.ResetZoom();
+
             this.world = world;
             this.tweener = new Tweener();
             this.shakeVal = Vector2.Zero;
@@ -182,8 +188,8 @@ namespace SonOfRobin
                 float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
                 float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
 
-                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Width / 1.7, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
-                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Height / 1.7, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
+                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Width / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistX, clampToEdges: true);
+                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Height / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistY, clampToEdges: true);
 
                 movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
                 movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
@@ -281,9 +287,19 @@ namespace SonOfRobin
 
         public void SetZoom(float zoom, bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
-            this.zoomSlowdown = (int)(movementSlowdown / zoomSpeedMultiplier);
+            this.zoomSlowdown = (int)(defaultZoomSlowdown / zoomSpeedMultiplier);
             this.TargetZoom = zoom;
             if (setInstantly) this.CurrentZoom = zoom;
+        }
+
+        public void ResetMovementSpeed()
+        {
+            this.SetMovementSpeed(1f);
+        }
+
+        public void SetMovementSpeed(float speedMultiplier)
+        {
+            this.movementSlowdown = (int)(defaultMovementSlowdown / speedMultiplier);
         }
 
         private Vector2 GetTargetCoords()

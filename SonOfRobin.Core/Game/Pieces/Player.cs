@@ -964,13 +964,16 @@ namespace SonOfRobin
                 }
             }
 
-            NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
-            if (location != null)
+            if (this.world.MapEnabled && this.CanSeeAnything)
             {
-                if (!location.hasBeenDiscovered)
+                NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
+                if (location != null)
                 {
-                    location.hasBeenDiscovered = true;
-                    this.world.Grid.namedLocations.ShowDiscoveryMessage();
+                    if (!location.hasBeenDiscovered)
+                    {
+                        
+                        this.world.Grid.namedLocations.ProcessDiscovery();
+                    }
                 }
             }
         }

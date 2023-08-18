@@ -253,6 +253,7 @@ namespace SonOfRobin
                     this.solidColorManager.RemoveAll(0);
 
                     this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
+                    this.camera.ResetMovementSpeed();
                     this.camera.TrackPiece(this.Player);
 
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);

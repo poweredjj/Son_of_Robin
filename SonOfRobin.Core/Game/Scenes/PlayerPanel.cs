@@ -180,7 +180,7 @@ namespace SonOfRobin
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: locationOutlineColor * this.viewParams.drawOpacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: locationOutlineColor * this.viewParams.drawOpacity, outlineSize: 2, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }

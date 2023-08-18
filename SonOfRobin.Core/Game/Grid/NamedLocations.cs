@@ -291,6 +291,7 @@ namespace SonOfRobin
         }
 
         private static readonly TimeSpan discoveryCooldown = TimeSpan.FromMinutes(5);
+        private const int playerLocationCheckCooldownFrames = 60 * 2;
 
         private readonly Grid grid;
         private readonly List<Location> locationList;
@@ -299,6 +300,7 @@ namespace SonOfRobin
         private bool locationsCreated;
         private readonly Random random;
         private NameRandomizer nameRandomizer;
+        private int playerLocationLastCheckedFrame;
         public List<Location> DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
         public int DiscoveredLocationsCount { get { return this.DiscoveredLocations.Count; } }
         public int AllLocationsCount { get { return this.locationList.Count; } }
@@ -312,14 +314,17 @@ namespace SonOfRobin
             this.nameRandomizer = new(random: this.random);
             this.playerLocation = null;
             this.lastDiscovery = DateTime.MinValue;
+            this.playerLocationLastCheckedFrame = 0;
         }
 
         public Location PlayerLocation
         {
             get
             {
-                if (this.grid.world.CurrentUpdate % 60 == 0)
+                if (this.grid.world.CurrentUpdate > this.playerLocationLastCheckedFrame + playerLocationCheckCooldownFrames)
                 {
+                    this.playerLocationLastCheckedFrame = this.grid.world.CurrentUpdate;
+
                     Point playerPos = new((int)this.grid.world.Player.sprite.position.X, (int)this.grid.world.Player.sprite.position.Y);
                     this.playerLocation = null;
 
@@ -337,34 +342,40 @@ namespace SonOfRobin
             }
         }
 
-        public void ShowDiscoveryMessage()
+        public void ProcessDiscovery()
         {
-            if (this.playerLocation == null || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
-
-            if (DateTime.Now - this.lastDiscovery < discoveryCooldown)
+            if (this.playerLocation == null ||
+                DateTime.Now - this.lastDiscovery < discoveryCooldown ||
+                Scene.GetTopSceneOfType(typeof(TextWindow)) != null)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered '{this.playerLocation.name}'!");
                 return;
             }
+
+            this.playerLocation.hasBeenDiscovered = true;
+
+            World world = this.grid.world;
+            Player player = world.Player;
 
             this.lastDiscovery = DateTime.Now;
 
             Vector2 locationCenter = new(this.playerLocation.areaRect.Center.X, this.playerLocation.areaRect.Center.Y);
-            this.grid.world.camera.TrackCoords(locationCenter);
+            Vector2 pointToShow = world.camera.CurrentPos + ((locationCenter - world.camera.CurrentPos) / 2);
 
             var taskChain = new List<Object> { };
 
-            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
 
-            // tasks before the messages - inserted at 0, so the last go first
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.3f, storeForLaterUse: true));
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: pointToShow, storeForLaterUse: true));
 
-            // task after the messages - added at the end, ordered normally
+            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.grid.world.Player, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraResetMovementSpeed, delay: 0, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: player, storeForLaterUse: true));
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
