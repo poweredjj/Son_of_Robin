@@ -576,7 +576,6 @@ namespace SonOfRobin
 
             float locationTextScale = Math.Min(spriteSize, 3f) * 4;
             int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
-            Color outlineColor = new(74, 52, 0);
 
             foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
             {
@@ -584,12 +583,12 @@ namespace SonOfRobin
                 {
                     if (Preferences.debugShowNamedLocationAreas)
                     {
-                        SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, Color.Green * 0.2f);
+                        SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, location.Color * 0.25f);
                         Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
-                        location.DrawCellRects(Color.White * 0.35f);
+                        location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                     }
 
-                    Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: outlineColor, outlineSize: outlineSize, centered: true, scale: locationTextScale);
+                    Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
                 }
             }
 

@@ -16,6 +16,8 @@ namespace SonOfRobin
             Volcano = 2,
             Swamp = 3,
             Desert = 4,
+            Island = 5,
+            Shore = 6,
         }
 
         public class NameRandomizer
@@ -54,6 +56,17 @@ namespace SonOfRobin
 
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
+        private static readonly Dictionary<Category, Color> colorByCategory = new()
+        {
+            { Category.Hills, new Color(43, 43, 43) },
+            { Category.Lake, new Color(37, 37, 138) },
+            { Category.Volcano, new Color(237, 0, 0) },
+            { Category.Swamp, new Color(26, 82, 0) },
+            { Category.Desert, new Color(122, 98, 0) },
+            { Category.Island, new Color(4, 184, 157) },
+            { Category.Shore, new Color(186, 137, 32) },
+        };
+
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
         {
             { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Misty", "Mystical", "Verdant", "Timeless", "Twilight", "Celestial", "Solstice", "Seraph's", "Starlight", "Cascade", "Moonshadow", "Sunfire", "Eldertree", "Thunder", "Astral", "Crystal", "Obsidian", "Nova", "Starfall", "Pauline's", "Horizon Hues", "Caribbean", "Sunburst", "Sunkissed", "Azure", "Meridian" } },
@@ -64,7 +77,11 @@ namespace SonOfRobin
 
             { Category.Swamp, new List<string>{ "Muddy", "Mangrove", "Soggy", "Mosquito", "Murky", "Fogbound", "Murmuring", "Trecherous", "Drifting", "Whispering", "Venomous", "Sinking", "Withering", "Malarial", "Forsaken", "Foggy", "Cursed", "Ghostly", "Misty", "Dying", "Desolate", "Gloomveil", "Sorrowful", "Lamenting", "Melancholy", "Wilted", "Hopeless", "Anguished", "Fading", "Black" } },
 
-            { Category.Desert, new List<string>{ "Scorched" } },
+            { Category.Desert, new List<string>{ "Scorched", "Arid", "Mirage", "Ephemeral", "Saharan", "Zephyr", "Desolate", "Fading", "Forsaken", "Lost", "Forgotten", "Lonely", "Dusty" } },
+
+            { Category.Island, new List<string>{ "Seagull's", "Tiny", "Sunkissed", "Palmshade", "Coral", "Coconut", "Fool's", "Mermaid's", "Treasure", "Tranquil", "Driftwood", "Bahama", "Reefside", "Smuggler's", "Hidden", "Rogue's" } },
+
+            { Category.Shore, new List<string>{ "Captain's", "Mariner's", "Buccaneer's", "Palmshade", "Swashbuckler's", "Marauder's", "Cutlass", "Bounty", "Dead Man's", "Corsair's", "Pirate's", "Tropic", "Shipwrecked", "Survivor's", "Marooned" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -77,7 +94,11 @@ namespace SonOfRobin
 
             { Category.Swamp, new List<string>{ "Swamp", "Mire", "Quagmire", "Boglands", "Marsh", "Gloommarsh", "Morass", "Bog", "Waters", "Fenlands", "Damplands", "Fen" } },
 
-            { Category.Desert, new List<string>{ "Desert" } },
+            { Category.Desert, new List<string>{ "Desert", "Sands", "Dunes", "Wasteland", "Erg", "Quicksands" } },
+
+            { Category.Island, new List<string>{ "Islet", "Refuge", "Retreat", "Haven", "Shoal", "Sandbar", "Atoll", "Cay", "Hideaway" } },
+
+            { Category.Shore, new List<string>{ "Shore", "Beachfront", "Riviera", "Beach", "Haven", "Coast", "Sand"  } },
             };
 
         public class Location
@@ -90,6 +111,7 @@ namespace SonOfRobin
             public readonly Rectangle textRect;
             public readonly List<Cell> cells;
             public bool hasBeenDiscovered;
+            public Color Color { get { return colorByCategory[this.category]; } }
 
             public Location(Grid grid, string name, Category category, List<Point> coordsList, bool hasBeenDiscovered = false)
             {
@@ -343,7 +365,7 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            var testCategories = new List<Category> { Category.Desert };
+            // var testCategories = new List<Category> { Category.Shore };
 
             foreach (Category category in allCategories) // allCategories
             {
@@ -352,8 +374,8 @@ namespace SonOfRobin
 
             foreach (Location location in this.locationList)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
-                location.hasBeenDiscovered = true; // for testing
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
+                // location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
@@ -362,19 +384,19 @@ namespace SonOfRobin
 
         private void CreateLocationsForCategory(Category category)
         {
-            CellSearch cellSearch;
+            List<CellSearch> cellSearches = new();
             int minCells, maxCells, density; // density: low number == high density, high number == low density
 
             switch (category)
             {
                 case Category.Hills:
 
-                    cellSearch = new CellSearch(
+                    cellSearches.Add(new CellSearch(
                         searchEntriesTerrain: new List<SearchEntryTerrain> {
                             new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin + 15, maxVal: 255),
                             new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
                         }
-                        );
+                        ));
 
                     minCells = 15;
                     maxCells = 200;
@@ -384,12 +406,11 @@ namespace SonOfRobin
 
                 case Category.Lake:
 
-                    cellSearch = new CellSearch(
+                    cellSearches.Add(new CellSearch(
                         searchEntriesTerrain: new List<SearchEntryTerrain> {
-                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: Terrain.waterLevelMax),
-                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),},
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: Terrain.waterLevelMax) },
                         searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.Sea, value: false, strictSearch: true) }
-                        );
+                        ));
 
                     minCells = 20;
                     maxCells = 500;
@@ -399,10 +420,10 @@ namespace SonOfRobin
 
                 case Category.Volcano:
 
-                    cellSearch = new CellSearch(
+                    cellSearches.Add(new CellSearch(
                         searchEntriesTerrain: new List<SearchEntryTerrain> {
                             new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin + 1, maxVal: 255) }
-                        );
+                        ));
 
                     minCells = 1;
                     maxCells = 150;
@@ -412,9 +433,9 @@ namespace SonOfRobin
 
                 case Category.Swamp:
 
-                    cellSearch = new CellSearch(
+                    cellSearches.Add(new CellSearch(
                         searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true) }
-                        );
+                        ));
 
                     minCells = 20;
                     maxCells = 400;
@@ -424,17 +445,53 @@ namespace SonOfRobin
 
                 case Category.Desert:
 
-                    cellSearch = new(
+                    cellSearches.Add(new(
                         searchEntriesTerrain: new List<SearchEntryTerrain> {
                             new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 75),
                             new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
-                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: Terrain.rocksLevelMin - 1),
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax, maxVal: Terrain.rocksLevelMin),
                         },
                         searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.Sea, value: false, strictSearch: true) }
-                        );
+                        ));
 
                     minCells = 10;
                     maxCells = 400;
+                    density = 1;
+
+                    break;
+
+                case Category.Island:
+
+                    cellSearches.Add(new(
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
+                        ));
+
+                    minCells = 5;
+                    maxCells = 140;
+                    density = 1;
+
+                    break;
+
+                case Category.Shore:
+
+                    // multiple searches, to break up shoreline into smaller pieces
+
+                    cellSearches.Add(new(
+                            searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 128, strictSearch: true),
+                        },
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
+                        ));
+
+                    cellSearches.Add(new(
+                           searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 129, maxVal: 255, strictSearch: true),
+                       },
+                       searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
+                       ));
+
+                    minCells = 15;
+                    maxCells = 800;
                     density = 1;
 
                     break;
@@ -443,13 +500,16 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported category - {category}.");
             }
 
-            var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(cellSearch));
-
-            foreach (List<Point> coordsList in cellCoordsByRegion)
+            foreach (CellSearch cellSearch in cellSearches)
             {
-                if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
+                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(cellSearch));
 
-                this.locationList.Add(new(grid: this.grid, name: this.GetRegionName(category), coordsList: coordsList, category: category));
+                foreach (List<Point> coordsList in cellCoordsByRegion)
+                {
+                    if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
+
+                    this.locationList.Add(new(grid: this.grid, name: this.GetRegionName(category), coordsList: coordsList, category: category));
+                }
             }
         }
 
