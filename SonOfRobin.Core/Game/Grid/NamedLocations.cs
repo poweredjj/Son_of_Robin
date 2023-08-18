@@ -292,8 +292,7 @@ namespace SonOfRobin
 
         private readonly Grid grid;
         private readonly List<Location> locationList;
-        public Location CurrentLocation { get; private set; }
-
+        private Location playerLocation;
         private bool locationsCreated;
         private readonly Random random;
         private NameRandomizer nameRandomizer;
@@ -305,26 +304,33 @@ namespace SonOfRobin
         {
             this.grid = grid;
             this.locationList = new List<Location>();
-            this.CurrentLocation = null;
             this.locationsCreated = false;
             this.random = new(this.grid.world.seed);
             this.nameRandomizer = new(random: this.random);
+            this.playerLocation = null;
         }
 
-        public Location UpdateCurrentLocation(Vector2 playerPos)
+        public Location PlayerLocation
         {
-            foreach (Location location in this.locationList)
+            get
             {
-                if (location.IsPointInsideLocation(new Point((int)playerPos.X, (int)playerPos.Y)))
+                if (this.grid.world.CurrentUpdate % 60 == 0)
                 {
-                    if (location == this.CurrentLocation) return null;
-                    this.CurrentLocation = location;
-                    return location;
-                }
-            }
+                    Point playerPos = new((int)this.grid.world.Player.sprite.position.X, (int)this.grid.world.Player.sprite.position.Y);
+                    this.playerLocation = null;
 
-            this.CurrentLocation = null;
-            return this.CurrentLocation;
+                    foreach (Location location in this.locationList)
+                    {
+                        if (location.IsPointInsideLocation(playerPos))
+                        {
+                            this.playerLocation = location;
+                            break;
+                        }
+                    }
+                }
+
+                return this.playerLocation;
+            }
         }
 
         public void SetAllLocationsAsDiscovered()

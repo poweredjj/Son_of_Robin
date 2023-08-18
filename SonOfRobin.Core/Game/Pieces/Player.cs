@@ -964,16 +964,13 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.CurrentUpdate % 60 * 2 == 0)
+            NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
+            if (location != null)
             {
-                NamedLocations.Location newLocation = this.world.Grid.namedLocations.UpdateCurrentLocation(this.sprite.position);
-                if (newLocation != null)
+                if (!location.hasBeenDiscovered)
                 {
-                    if (!newLocation.hasBeenDiscovered)
-                    {
-                        newLocation.hasBeenDiscovered = true;
-                        MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered '{newLocation.name}'!"); // TODO add player dialogue (with multiple phrases)
-                    }
+                    location.hasBeenDiscovered = true;
+                    MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered '{location.name}'!"); // TODO add player dialogue (with multiple phrases)
                 }
             }
         }

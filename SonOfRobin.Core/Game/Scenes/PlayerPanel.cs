@@ -12,6 +12,7 @@ namespace SonOfRobin
         private static readonly SpriteFont itemCounterFont = SonOfRobinGame.FontTommy40;
         private static readonly SpriteFont buffFont = SonOfRobinGame.FontTommy40;
         private const int posY = 4;
+        private static readonly Color locationOutlineColor = new(0, 36, 156);
 
         private readonly World world;
         private bool isHidden;
@@ -174,12 +175,12 @@ namespace SonOfRobin
 
             // drawing location name
 
-            NamedLocations.Location location = this.world.Grid.namedLocations.CurrentLocation;
+            NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
             if (location != null)
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: locationOutlineColor * this.viewParams.drawOpacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }
