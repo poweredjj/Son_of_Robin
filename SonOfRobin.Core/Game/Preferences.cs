@@ -334,7 +334,7 @@ namespace SonOfRobin
         public static bool debugInstantCookBrew = false;
         public static bool debugShowOutsideCamera = false;
         public static bool debugShowFocusRect = false;
-        public static bool debugShowNamedLocationAreas = false;
+        public static bool debugShowNamedLocationAreas = true;
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
         public static bool DebugShowWholeMap
         {

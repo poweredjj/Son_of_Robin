@@ -15,6 +15,7 @@ namespace SonOfRobin
             Lake = 1,
             Volcano = 2,
             Swamp = 3,
+            Desert = 4,
         }
 
         public class NameRandomizer
@@ -62,6 +63,8 @@ namespace SonOfRobin
             { Category.Volcano, new List<string>{ "Fiery", "Lava", "Infernal", "Flaming", "Smoldering", "Molten", "Blazing", "Hellish" } },
 
             { Category.Swamp, new List<string>{ "Muddy", "Mangrove", "Soggy", "Mosquito", "Murky", "Fogbound", "Murmuring", "Trecherous", "Drifting", "Whispering", "Venomous", "Sinking", "Withering", "Malarial", "Forsaken", "Foggy", "Cursed", "Ghostly", "Misty", "Dying", "Desolate", "Gloomveil", "Sorrowful", "Lamenting", "Melancholy", "Wilted", "Hopeless", "Anguished", "Fading", "Black" } },
+
+            { Category.Desert, new List<string>{ "Scorched" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -73,6 +76,8 @@ namespace SonOfRobin
             { Category.Volcano, new List<string>{ "Volcano", "Crater", "Caldera", "Peak" } },
 
             { Category.Swamp, new List<string>{ "Swamp", "Mire", "Quagmire", "Boglands", "Marsh", "Gloommarsh", "Morass", "Bog", "Waters", "Fenlands", "Damplands", "Fen" } },
+
+            { Category.Desert, new List<string>{ "Desert" } },
             };
 
         public class Location
@@ -178,33 +183,82 @@ namespace SonOfRobin
             }
         }
 
-        public readonly struct SearchCriteria
+        public readonly struct SearchEntryTerrain
         {
-            public readonly bool checkTerrain;
-            public readonly bool terrainStrictSearch;
-            public readonly Terrain.Name terrainName;
-            public readonly byte terrainMinVal;
-            public readonly byte terrainMaxVal;
+            public readonly Terrain.Name name;
+            public readonly byte minVal;
+            public readonly byte maxVal;
+            public readonly bool strictSearch;
 
-            public readonly bool checkExpProps;
-            public readonly bool expPropsStrictSearch;
-            public readonly ExtBoardProps.Name extPropsName;
-            public readonly bool expPropsVal;
-
-            public SearchCriteria(bool checkTerrain = false, bool terrainStrictSearch = false, Terrain.Name terrainName = Terrain.Name.Height, byte terrainMinVal = 0, byte terrainMaxVal = 255, bool checkExpProps = false, bool expPropsStrictSearch = false, ExtBoardProps.Name extPropsName = ExtBoardProps.Name.Sea, bool expPropsVal = true)
+            public SearchEntryTerrain(Terrain.Name name, byte minVal, byte maxVal, bool strictSearch = false)
             {
-                if (!checkTerrain && !checkExpProps) throw new ArgumentException("Invalid search criteria.");
+                this.name = name;
+                this.minVal = minVal;
+                this.maxVal = maxVal;
+                this.strictSearch = strictSearch;
+            }
+        }
 
-                this.checkTerrain = checkTerrain;
-                this.terrainStrictSearch = terrainStrictSearch;
-                this.terrainName = terrainName;
-                this.terrainMinVal = terrainMinVal;
-                this.terrainMaxVal = terrainMaxVal;
+        public readonly struct SearchEntryExtProps
+        {
+            public readonly bool strictSearch;
+            public readonly ExtBoardProps.Name name;
+            public readonly bool value;
 
-                this.checkExpProps = checkExpProps;
-                this.expPropsStrictSearch = expPropsStrictSearch;
-                this.extPropsName = extPropsName;
-                this.expPropsVal = expPropsVal;
+            public SearchEntryExtProps(ExtBoardProps.Name name, bool value, bool strictSearch = false)
+            {
+                this.name = name;
+                this.value = value;
+                this.strictSearch = strictSearch;
+            }
+        }
+
+        public readonly struct CellSearch
+        {
+            public readonly List<SearchEntryTerrain> searchEntriesTerrain;
+            public readonly List<SearchEntryExtProps> searchEntriesExtProps;
+
+            public CellSearch(List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null)
+            {
+                if (searchEntriesTerrain == null) searchEntriesTerrain = new List<SearchEntryTerrain>();
+                if (searchEntriesExtProps == null) searchEntriesExtProps = new List<SearchEntryExtProps>();
+
+                if (!searchEntriesTerrain.Any() && !searchEntriesExtProps.Any()) throw new ArgumentException("Invalid search criteria.");
+
+                this.searchEntriesTerrain = searchEntriesTerrain;
+                this.searchEntriesExtProps = searchEntriesExtProps;
+            }
+
+            public bool CellMeetsCriteria(Cell cell)
+            {
+                Grid grid = cell.grid;
+                int cellNoX = cell.cellNoX;
+                int cellNoY = cell.cellNoY;
+
+                foreach (SearchEntryTerrain searchEntryTerrain in this.searchEntriesTerrain)
+                {
+                    if (!TerrainIsInRange(grid: grid, cellNoX: cellNoX, cellNoY: cellNoY, terrainName: searchEntryTerrain.name, minVal: searchEntryTerrain.minVal, maxVal: searchEntryTerrain.maxVal, strictSearch: searchEntryTerrain.strictSearch)) return false;
+                }
+
+                foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
+                {
+                    if (!grid.CheckIfContainsExtPropertyForCell(name: searchEntryExtProps.name, value: searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
+                    if (searchEntryExtProps.strictSearch && grid.CheckIfContainsExtPropertyForCell(name: searchEntryExtProps.name, value: !searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
+                }
+
+                return true;
+            }
+
+            private static bool TerrainIsInRange(Grid grid, int cellNoX, int cellNoY, Terrain.Name terrainName, byte minVal, byte maxVal, bool strictSearch)
+            {
+                // strictSearch: true == whole cell must match search criteria, false == any cell part must match search criteria
+
+                byte minCellVal = grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                byte maxCellVal = grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+
+                return strictSearch ?
+                    minCellVal >= minVal && maxCellVal <= maxVal :
+                    maxCellVal >= minVal && minCellVal <= maxVal;
             }
         }
 
@@ -289,7 +343,7 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            // var testCategories = new List<Category> { Category.Swamp };
+            var testCategories = new List<Category> { Category.Desert };
 
             foreach (Category category in allCategories) // allCategories
             {
@@ -298,8 +352,8 @@ namespace SonOfRobin
 
             foreach (Location location in this.locationList)
             {
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
-                // location.hasBeenDiscovered = true; // for testing
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
+                location.hasBeenDiscovered = true; // for testing
             }
 
             this.locationsCreated = true;
@@ -308,49 +362,46 @@ namespace SonOfRobin
 
         private void CreateLocationsForCategory(Category category)
         {
-            SearchCriteria searchCriteria;
+            CellSearch cellSearch;
             int minCells, maxCells, density; // density: low number == high density, high number == low density
 
             switch (category)
             {
                 case Category.Hills:
-                    searchCriteria = new(
-                        checkTerrain: true,
-                        terrainName: Terrain.Name.Height,
-                        terrainMinVal: Terrain.rocksLevelMin + 15,
-                        terrainMaxVal: 255
+
+                    cellSearch = new CellSearch(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin + 15, maxVal: 255),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
+                        }
                         );
 
-                    minCells = 10;
-                    maxCells = 300;
-                    density = 2; // 2
+                    minCells = 15;
+                    maxCells = 200;
+                    density = 1; // 2
 
                     break;
 
                 case Category.Lake:
-                    searchCriteria = new(
-                        checkTerrain: true,
-                        terrainName: Terrain.Name.Height,
-                        terrainMinVal: 0,
-                        terrainMaxVal: Terrain.waterLevelMax,
-                        checkExpProps: true,
-                        expPropsStrictSearch: true,
-                        extPropsName: ExtBoardProps.Name.Sea,
-                        expPropsVal: false
+
+                    cellSearch = new CellSearch(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: Terrain.waterLevelMax),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),},
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.Sea, value: false, strictSearch: true) }
                         );
 
-                    minCells = 10;
-                    maxCells = 150;
+                    minCells = 20;
+                    maxCells = 500;
                     density = 1;
 
                     break;
 
                 case Category.Volcano:
-                    searchCriteria = new(
-                        checkTerrain: true,
-                        terrainName: Terrain.Name.Height,
-                        terrainMinVal: Terrain.lavaMin + 1,
-                        terrainMaxVal: 255
+
+                    cellSearch = new CellSearch(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin + 1, maxVal: 255) }
                         );
 
                     minCells = 1;
@@ -360,13 +411,29 @@ namespace SonOfRobin
                     break;
 
                 case Category.Swamp:
-                    searchCriteria = new(
-                        checkExpProps: true,
-                        extPropsName: ExtBoardProps.Name.BiomeSwamp,
-                        expPropsVal: true
+
+                    cellSearch = new CellSearch(
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true) }
                         );
 
-                    minCells = 15;
+                    minCells = 20;
+                    maxCells = 400;
+                    density = 1;
+
+                    break;
+
+                case Category.Desert:
+
+                    cellSearch = new(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 75),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: Terrain.rocksLevelMin - 1),
+                        },
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.Sea, value: false, strictSearch: true) }
+                        );
+
+                    minCells = 10;
                     maxCells = 400;
                     density = 1;
 
@@ -376,7 +443,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported category - {category}.");
             }
 
-            var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(searchCriteria));
+            var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(cellSearch));
 
             foreach (List<Point> coordsList in cellCoordsByRegion)
             {
@@ -420,28 +487,13 @@ namespace SonOfRobin
             return "";
         }
 
-        private ConcurrentBag<Point> FindAllCellCoordsThatMeetCriteria(SearchCriteria searchCriteria)
+        private ConcurrentBag<Point> FindAllCellCoordsThatMeetCriteria(CellSearch cellSearch)
         {
             var cellCoordsBag = new ConcurrentBag<Point>();
 
             Parallel.ForEach(this.grid.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
             {
-                bool isWithinRange = true;
-
-                if (isWithinRange && searchCriteria.checkTerrain) isWithinRange = this.CheckIfCellTerrainIsInRange(searchCriteria: searchCriteria, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
-
-                if (isWithinRange && searchCriteria.checkExpProps)
-                {
-                    isWithinRange = this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
-
-                    if (isWithinRange && searchCriteria.expPropsStrictSearch)
-                    {
-                        // strict search - making sure that cell does not contain other value anywhere
-                        isWithinRange = !this.grid.CheckIfContainsExtPropertyForCell(name: searchCriteria.extPropsName, value: !searchCriteria.expPropsVal, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY);
-                    }
-                }
-
-                if (isWithinRange) cellCoordsBag.Add(new Point(cell.cellNoX, cell.cellNoY));
+                if (cellSearch.CellMeetsCriteria(cell: cell)) cellCoordsBag.Add(new Point(cell.cellNoX, cell.cellNoY));
             });
 
             return cellCoordsBag;
@@ -528,18 +580,6 @@ namespace SonOfRobin
 
                 if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
             }
-        }
-
-        private bool CheckIfCellTerrainIsInRange(SearchCriteria searchCriteria, int cellNoX, int cellNoY)
-        {
-            // strictSearch: true == whole cell must match search criteria, false == any cell part must match search criteria
-
-            byte minCellVal = this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
-            byte maxCellVal = this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
-
-            return searchCriteria.terrainStrictSearch ?
-                minCellVal >= searchCriteria.terrainMinVal && maxCellVal <= searchCriteria.terrainMaxVal :
-                maxCellVal >= searchCriteria.terrainMinVal && minCellVal <= searchCriteria.terrainMaxVal;
         }
     }
 }
