@@ -13,6 +13,7 @@ namespace SonOfRobin
         {
             Hills = 0,
             Lake = 1,
+            Volcano = 2,
         }
 
         public class NameRandomizer
@@ -51,16 +52,22 @@ namespace SonOfRobin
 
         private static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
 
-        private static readonly List<string> openingList = new List<string> { "Unending", "Grand", "Barren", "Solitary", "Echoing", "Whispering" };
+        private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
+        {
+            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Misty", "Mystical", "Verdant", "Timeless", "Twilight", "Celestial", "Solstice", "Seraph's", "Starlight", "Cascade", "Moonshadow", "Sunfire", "Eldertree", "Thunder", "Astral", "Crystal", "Obsidian", "Nova", "Starfall", "Pauline's", "Horizon Hues", "Caribbean", "Sunburst", "Sunkissed", "Azure", "Meridian" } },
 
-        private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Windy", "Grand", "Patrick's", "Mysterious", "Windswept", "Majestic", "Enchanted", "Enigmatic", "Serene", "Tranquil", "Misty", "Mystical", "Verdant", "Timeless" } },
-            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magician's" } },
+            { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magician's", "Emerald Mirror", "Turquoise", "Paradise", "Palm Breeze", "Coconut", "Calypso", "Coral", "Mariner's", "Mango", "Siren's", "Flamingo", "Monkey", "Mermaid's" } },
+
+            { Category.Volcano, new List<string>{ "Fiery", "Lava", "Infernal", "Flaming", "Smoldering", "Molten", "Blazing", "Hellish" } },
             };
 
-        private static readonly Dictionary<Category, List<string>> nounListByCategory = new Dictionary<Category, List<string>> {
-            { Category.Hills, new List<string>{ "Hills", "Mountain", "Plateau", "Highlands", "Summit", "Ridge", "Crest", "Uplands", "Slopes", "Overlook", "Mesa", "Peaks" } },
-            { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters", "Lagoon", "Cove", "Mirage", "Abyss", "Expanse", "Mirage", "Mirage", "Reservoir", "Mirage" } },
+        private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
+        {
+            { Category.Hills, new List<string>{ "Hills", "Mountain", "Plateau", "Highlands", "Summit", "Ridge", "Crest", "Uplands", "Slopes", "Overlook", "Mesa", "Peaks", "Spire", "Peak", "Cliffs" } },
+
+            { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters", "Lagoon", "Cove", "Mirage", "Abyss", "Expanse", "Reservoir", "Basin" } },
+
+            { Category.Volcano, new List<string>{ "Volcano", "Crater", "Caldera", "Peak" } },
             };
 
         public class Location
@@ -218,7 +225,9 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            foreach (Category category in allCategories)
+            var testCategories = new List<Category> { Category.Volcano };
+
+            foreach (Category category in allCategories) // allCategories
             {
                 this.CreateLocationsForCategory(category);
             }
@@ -237,6 +246,7 @@ namespace SonOfRobin
         {
             SearchCriteria searchCriteria;
             int minCells, maxCells, density; // density: low number == high density, high number == low density
+            bool getFullCellSize;
 
             switch (category)
             {
@@ -248,6 +258,7 @@ namespace SonOfRobin
                         terrainMaxVal: 255
                         );
 
+                    getFullCellSize = false;
                     minCells = 10;
                     maxCells = 100;
                     density = 2; // 2
@@ -266,8 +277,24 @@ namespace SonOfRobin
                         expPropsVal: false
                         );
 
+                    getFullCellSize = false;
                     minCells = 10;
                     maxCells = 80;
+                    density = 1;
+
+                    break;
+
+                case Category.Volcano:
+                    searchCriteria = new(
+                        checkTerrain: true,
+                        terrainName: Terrain.Name.Height,
+                        terrainMinVal: Terrain.lavaMin + 1,
+                        terrainMaxVal: 255
+                        );
+
+                    getFullCellSize = true;
+                    minCells = 1;
+                    maxCells = 150;
                     density = 1;
 
                     break;
@@ -283,7 +310,7 @@ namespace SonOfRobin
             {
                 if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
 
-                Rectangle areaRect = this.GetLocationRect(coordsList);
+                Rectangle areaRect = this.GetLocationRect(coordsList: coordsList, getFullCellSize: getFullCellSize);
 
                 bool collidesWithAnotherLocation = false;
                 foreach (Location location in this.locationList)
@@ -303,16 +330,14 @@ namespace SonOfRobin
 
         private string GetRegionName(Category category)
         {
-            int maxTryCount = 15;
+            int maxTryCount = 10;
 
             for (int currentTry = 0; currentTry < maxTryCount; currentTry++)
             {
-                string opening = this.random.Next(8) == 0 ? this.nameRandomizer.RandomizeFromList(openingList) : "";
                 string adjective = this.nameRandomizer.RandomizeFromList(adjectiveListByCategory[category]);
                 string noun = this.nameRandomizer.RandomizeFromList(nounListByCategory[category]);
 
                 string regionName = $"{adjective} {noun}";
-                if (opening.Length > 0) regionName = $"{opening} {regionName}";
 
                 bool nameAlreadyExists = false;
                 foreach (Location location in this.locationList)
@@ -326,8 +351,7 @@ namespace SonOfRobin
 
                 if (!nameAlreadyExists || currentTry == maxTryCount - 1)
                 {
-                    // all counters of used names must be increased
-                    if (opening.Length > 0) this.nameRandomizer.IncreaseCounterForVal(opening);
+                    // used names counters must be increased
                     this.nameRandomizer.IncreaseCounterForVal(adjective);
                     this.nameRandomizer.IncreaseCounterForVal(noun);
 
@@ -448,36 +472,55 @@ namespace SonOfRobin
             }
         }
 
-        private Rectangle GetLocationRect(List<Point> coordsList)
+        private Rectangle GetLocationRect(List<Point> coordsList, bool getFullCellSize)
         {
             int xMin = Int32.MaxValue;
             int xMax = 0;
             int yMin = Int32.MaxValue;
             int yMax = 0;
 
-            foreach (Point point in coordsList)
+            if (getFullCellSize)
             {
-                Point cellCenter = this.grid.cellGrid[point.X, point.Y].rect.Center; // center is used to avoid using extreme edges, which are not accurate
+                foreach (Point point in coordsList)
+                {
+                    Rectangle cellRect = this.grid.cellGrid[point.X, point.Y].rect;
 
-                xMin = Math.Min(xMin, cellCenter.X);
-                xMax = Math.Max(xMax, cellCenter.X);
-                yMin = Math.Min(yMin, cellCenter.Y);
-                yMax = Math.Max(yMax, cellCenter.Y);
+                    xMin = Math.Min(xMin, cellRect.Left);
+                    xMax = Math.Max(xMax, cellRect.Right);
+                    yMin = Math.Min(yMin, cellRect.Top);
+                    yMax = Math.Max(yMax, cellRect.Bottom);
+                }
+            }
+            else
+            {
+                foreach (Point point in coordsList)
+                {
+                    Point cellCenter = this.grid.cellGrid[point.X, point.Y].rect.Center; // center is used to avoid using extreme edges, which are not accurate
+
+                    xMin = Math.Min(xMin, cellCenter.X);
+                    xMax = Math.Max(xMax, cellCenter.X);
+                    yMin = Math.Min(yMin, cellCenter.Y);
+                    yMax = Math.Max(yMax, cellCenter.Y);
+                }
             }
 
-            return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
+            Rectangle locationRect = new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
+            if (locationRect.Width == 0) locationRect.Inflate(this.grid.cellWidth / 2, 0);
+            if (locationRect.Height == 0) locationRect.Inflate(0, this.grid.cellHeight / 2);
+
+            return locationRect;
         }
 
         private bool CheckIfCellTerrainIsInRange(SearchCriteria searchCriteria, int cellNoX, int cellNoY)
         {
             // strictSearch: true == whole cell must match search criteria, false == any cell part must match search criteria
 
-            return searchCriteria.terrainStrictSearch ?
-                this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= searchCriteria.terrainMinVal &&
-                this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= searchCriteria.terrainMaxVal :
+            byte minCellVal = this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+            byte maxCellVal = this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
 
-                this.grid.GetMaxValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) >= searchCriteria.terrainMinVal &&
-                this.grid.GetMinValueForCell(terrainName: searchCriteria.terrainName, cellNoX: cellNoX, cellNoY: cellNoY) <= searchCriteria.terrainMaxVal;
+            return searchCriteria.terrainStrictSearch ?
+                minCellVal >= searchCriteria.terrainMinVal && maxCellVal <= searchCriteria.terrainMaxVal :
+                maxCellVal >= searchCriteria.terrainMinVal && minCellVal <= searchCriteria.terrainMaxVal;
         }
     }
 }
