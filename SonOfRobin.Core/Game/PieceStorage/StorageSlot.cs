@@ -238,7 +238,7 @@ namespace SonOfRobin
                 int rectSize = (int)(destRect.Height * 0.6f);
                 int rectOffset = (int)(rectSize * 0.2f);
 
-                Rectangle newRect = new Rectangle(x: destRect.X - rectOffset, y: destRect.Y - rectOffset, width: (int)(destRect.Height * 0.6f), height: (int)(destRect.Height * 0.6f));
+                Rectangle newRect = new(x: destRect.X - rectOffset, y: destRect.Y - rectOffset, width: (int)(destRect.Height * 0.6f), height: (int)(destRect.Height * 0.6f));
                 Texture2D newIconTexture = TextureBank.GetTexture(TextureBank.TextureName.New);
 
                 Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);

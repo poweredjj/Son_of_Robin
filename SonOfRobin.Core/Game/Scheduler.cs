@@ -50,6 +50,8 @@ namespace SonOfRobin
             CameraTrackPiece = 33,
             CameraTrackCoords = 34,
             CameraSetZoom = 35,
+            CameraSetMovementSpeed = 87,
+            CameraResetMovementSpeed = 88,
             ShowCookingProgress = 36,
             ShowBrewingProgress = 37,
             RestoreHints = 38,
@@ -99,6 +101,7 @@ namespace SonOfRobin
             MakePlayerJumpOverThisPiece = 83,
             InventoryApplyPotion = 84,
             OpenAndDestroyTreasureChest = 85,
+            SetAllNamedLocationsAsDiscovered = 86,
         }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
@@ -1098,6 +1101,26 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.CameraSetMovementSpeed:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            float movementSpeed = (float)this.ExecuteHelper;
+
+                            world.camera.SetMovementSpeed(movementSpeed);
+                            return;
+                        }
+
+                    case TaskName.CameraResetMovementSpeed:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.camera.SetMovementSpeed(1f);
+                            return;
+                        }
+
                     case TaskName.ShowCookingProgress:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1717,6 +1740,14 @@ namespace SonOfRobin
                             treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
                             new WorldEvent(eventName: WorldEvent.EventName.Destruction, delay: 60 * 2, world: treasureChest.world, boardPiece: treasureChest, eventHelper: 30);
+
+                            return;
+                        }
+
+                    case TaskName.SetAllNamedLocationsAsDiscovered:
+                        {
+                            World world = (World)this.ExecuteHelper;
+                            world.Grid.namedLocations.SetAllLocationsAsDiscovered();
 
                             return;
                         }

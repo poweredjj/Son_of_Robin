@@ -14,8 +14,8 @@ namespace SonOfRobin
 {
     public class BoardGraphics
     {
-        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHeight = GetColorsByHeight();
-        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHumidity = GetColorsByHumidity();
+        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHeight = GetPatternNameByHeight();
+        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHumidity = GetPatternNameByHumidity();
 
         private readonly Cell cell;
         public FileStream fileStream;
@@ -338,7 +338,7 @@ namespace SonOfRobin
                 (byte)255);
         }
 
-        private static Dictionary<RepeatingPattern.Name, List<byte>> GetColorsByHeight()
+        private static Dictionary<RepeatingPattern.Name, List<byte>> GetPatternNameByHeight()
         {
             return new Dictionary<RepeatingPattern.Name, List<byte>>() {
                 { RepeatingPattern.Name.water_deep, new List<byte>(){0,(byte)(Terrain.waterLevelMax / 3)} },
@@ -355,14 +355,14 @@ namespace SonOfRobin
             };
         }
 
-        private static Dictionary<RepeatingPattern.Name, List<byte>> GetColorsByHumidity()
+        private static Dictionary<RepeatingPattern.Name, List<byte>> GetPatternNameByHumidity()
         {
             return new Dictionary<RepeatingPattern.Name, List<byte>>() {
                 { RepeatingPattern.Name.sand, new List<byte>(){0, 75} },
                 { RepeatingPattern.Name.ground_bad, new List<byte>(){75, 115} },
                 { RepeatingPattern.Name.ground_good, new List<byte>(){115, 120} },
-                { RepeatingPattern.Name.grass_bad, new List<byte>(){120, Terrain.rocksLevelMin} },
-                { RepeatingPattern.Name.grass_good, new List<byte>(){Terrain.rocksLevelMin, 255} },
+                { RepeatingPattern.Name.grass_bad, new List<byte>(){120, 160 } },
+                { RepeatingPattern.Name.grass_good, new List<byte>(){160, 255} },
             };
         }
     }

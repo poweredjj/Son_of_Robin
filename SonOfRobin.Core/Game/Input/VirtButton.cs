@@ -26,6 +26,7 @@ namespace SonOfRobin
 
         MapToggleMarker = 14,
         MapCenterPlayer = 15,
+        MapToggleLocations = 23,
 
         DebugPause = 16,
         DebugPlay = 17,
@@ -56,6 +57,7 @@ namespace SonOfRobin
             { VButName.InvSort, "sort" },
             { VButName.MapToggleMarker, "create_marker" },
             { VButName.MapCenterPlayer, "go_to_player" },
+            { VButName.MapToggleLocations, "location_names" },
         };
 
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };

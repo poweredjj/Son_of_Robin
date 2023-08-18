@@ -597,6 +597,7 @@ namespace SonOfRobin
                             textLines.Add($"Time played: {timePlayedString}");
                             textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
                             textLines.Add($"Map discovered: {Math.Round(world.Grid.VisitedCellsPercentage * 100, 1)}%");
+                            textLines.Add($"Locations found: {world.Grid.namedLocations.DiscoveredLocationsCount}/{world.Grid.namedLocations.AllLocationsCount}");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
@@ -917,6 +918,8 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "show plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPlantGrowthInCamera");
                         new Selector(menu: menu, name: "show anim size change", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimSizeChangeInCamera");
                         new Selector(menu: menu, name: "fast plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugFastPlantGrowth");
+                        new Selector(menu: menu, name: "show named location areas", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowNamedLocationAreas");
+                        if (world != null) new Invoker(menu: menu, name: "discover all locations", taskName: Scheduler.TaskName.SetAllNamedLocationsAsDiscovered, executeHelper: world);
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "vertical sync", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "VSync", rebuildsMenu: true);
                         new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
@@ -1183,7 +1186,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "map");
-            foreach (string propertyName in new List<string> { "mapToggleMarker", "mapZoomIn", "mapZoomOut", "mapCenterPlayer" })
+            foreach (string propertyName in new List<string> { "mapToggleMarker", "mapZoomIn", "mapZoomOut", "mapCenterPlayer", "mapToggleLocations" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);

@@ -886,7 +886,6 @@ namespace SonOfRobin
             bool isInWater = this.sprite.IsInWater;
             bool isRaining = this.world.weather.IsRaining;
 
-            // adding and removing heat
             if (this.world.CurrentUpdate % 65 == 0)
             {
                 if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining)
@@ -962,6 +961,19 @@ namespace SonOfRobin
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
                     this.world.camera.AddRandomShake();
                     this.world.FlashRedOverlay();
+                }
+            }
+
+            if (this.world.MapEnabled && this.CanSeeAnything)
+            {
+                NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
+                if (location != null)
+                {
+                    if (!location.hasBeenDiscovered)
+                    {
+                        
+                        this.world.Grid.namedLocations.ProcessDiscovery();
+                    }
                 }
             }
         }

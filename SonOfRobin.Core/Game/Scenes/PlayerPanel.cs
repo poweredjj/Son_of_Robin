@@ -12,19 +12,20 @@ namespace SonOfRobin
         private static readonly SpriteFont itemCounterFont = SonOfRobinGame.FontTommy40;
         private static readonly SpriteFont buffFont = SonOfRobinGame.FontTommy40;
         private const int posY = 4;
+        private static readonly Color locationOutlineColor = new(0, 36, 156);
 
         private readonly World world;
         private bool isHidden;
 
-        private int CounterSize
+        private static int CounterSize
         { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
 
         public Rectangle CounterRect
         {
             get
             {
-                int counterSize = this.CounterSize;
-                Rectangle counterRect = new Rectangle(x: this.BarWidth + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
+                int counterSize = CounterSize;
+                Rectangle counterRect = new Rectangle(x: BarWidth + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
                 return counterRect;
             }
         }
@@ -49,10 +50,10 @@ namespace SonOfRobin
             }
         }
 
-        private int BarWidth
+        private static int BarWidth
         { get { return (int)(SonOfRobinGame.VirtualWidth * 0.27f); } }
 
-        private int BarHeight
+        private static int BarHeight
         { get { return (int)(BarWidth * 0.03f); } }
 
         private int IconWidthHeight
@@ -96,7 +97,7 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
-            this.viewParams.Width = (int)this.BarWidth;
+            this.viewParams.Width = (int)BarWidth;
             this.viewParams.CenterView(horizontally: true, vertically: false);
         }
 
@@ -123,13 +124,14 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Player player = world.Player;
-            int width = this.BarWidth;
-            int height = this.BarHeight;
-            int barsHeight;
-            int posY = PlayerPanel.posY;
+            int currentPosY = 0;
 
             // drawing stat bars
             {
+                int width = BarWidth;
+                int height = BarHeight;
+                int posY = PlayerPanel.posY;
+
                 int posX = 0;
                 int vOffsetCorrection = 4;
 
@@ -139,7 +141,7 @@ namespace SonOfRobin
                 new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: TextureBank.GetTexture(TextureBank.TextureName.Bed));
                 new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
-                barsHeight = StatBar.BatchHeight; // must be invoked before drawing bars
+                currentPosY = StatBar.BatchHeight + 5; // must be invoked before drawing bars
 
                 StatBar.FinishThisBatch();
                 StatBar.DrawAll();
@@ -147,7 +149,7 @@ namespace SonOfRobin
 
             // drawing stored items counter
             {
-                int counterSize = this.CounterSize;
+                int counterSize = CounterSize;
                 Rectangle counterRect = this.CounterRect;
 
                 AnimData.framesForPkgs[AnimData.PkgName.BackpackMediumOutline].DrawAndKeepInRectBounds(destBoundsRect: counterRect, color: Color.White * this.viewParams.drawOpacity, opacity: 0.85f);
@@ -171,9 +173,21 @@ namespace SonOfRobin
                 Helpers.DrawTextInsideRectWithShadow(font: itemCounterFont, text: Convert.ToString(totalSlotCount), rectangle: totalRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
             }
 
+            // drawing location name
+
+            NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
+            if (location != null)
+            {
+                Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
+
+                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: locationOutlineColor * this.viewParams.drawOpacity, outlineSize: 2, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+
+                currentPosY += nameRect.Height + 5;
+            }
+
             // drawing status icons
             {
-                int iconPosY = barsHeight + 5;
+                int iconPosY = currentPosY;
                 int iconPosX = 0;
                 int iconWidthHeight = this.IconWidthHeight;
                 int margin = this.IconMargin;
@@ -239,7 +253,7 @@ namespace SonOfRobin
                     Helpers.DrawRectangleOutline(rect: iconRect, color: frameColor * this.viewParams.drawOpacity, borderWidth: 2);
 
                     iconPosX += iconWidthHeight + margin;
-                    if (iconPosX > width)
+                    if (iconPosX > BarWidth)
                     {
                         iconPosY += iconWidthHeight + margin;
                         iconPosX = 0;

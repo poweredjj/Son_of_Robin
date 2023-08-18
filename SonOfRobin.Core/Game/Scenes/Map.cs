@@ -19,8 +19,8 @@ namespace SonOfRobin
         private readonly Camera camera;
         private readonly MapOverlay mapOverlay;
         private readonly EffInstance sketchEffect;
-        private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
-        public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
+        private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
+        public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
 
         public bool FullScreen
         { get { return this.Mode == MapMode.Full; } }
@@ -352,6 +352,10 @@ namespace SonOfRobin
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
             }
 
+            // location names toggle
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleLocations)) Preferences.mapShowLocationNames = !Preferences.mapShowLocationNames;
+
             // movement
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
@@ -458,17 +462,17 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             // drawing last steps (without effects)
 
             float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int totalSteps = this.world.Player.LastSteps.Count;
             int stepNo = 0;
 
             Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
-            Rectangle stepTextureRect = new Rectangle(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
+            Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
 
             foreach (Vector2 stepPos in this.world.Player.LastSteps)
             {
@@ -484,7 +488,7 @@ namespace SonOfRobin
                     }
 
                     int rectSize = 8;
-                    Rectangle blackRect = new Rectangle(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
+                    Rectangle blackRect = new(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
                     blackRect.Inflate(blackRect.Width * spriteSize, blackRect.Height * spriteSize);
 
                     SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
@@ -572,6 +576,29 @@ namespace SonOfRobin
                 }
             }
 
+            // drawing named locations (without effects)
+
+            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
+            {
+                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
+                int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
+
+                foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
+                {
+                    if (location.areaRect.Intersects(this.camera.viewRect))
+                    {
+                        if (Preferences.debugShowNamedLocationAreas)
+                        {
+                            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, location.Color * 0.25f);
+                            Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
+                            location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
+                        }
+
+                        Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
+                    }
+                }
+            }
+
             // drawing map edges over everything
 
             SonOfRobinGame.SpriteBatch.Draw(TextureBank.GetTexture(TextureBank.TextureName.MapEdges), extendedMapRect, Color.White);
@@ -583,7 +610,7 @@ namespace SonOfRobin
                 int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
                 int crosshairHalfSize = crossHairSize / 2;
 
-                Rectangle crosshairRect = new Rectangle(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
+                Rectangle crosshairRect = new(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
                 AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }

@@ -111,6 +111,7 @@ namespace SonOfRobin
         public static bool swapMouseButtons = false;
         public static bool rumbleEnabled = true;
         public static bool alwaysRun = false;
+        public static bool mapShowLocationNames = true; // not saved
         public static int stateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
         public static float StateMachinesDurationFramePercent
@@ -168,7 +169,7 @@ namespace SonOfRobin
                 if (darknessResolution == value) return;
                 darknessResolution = value;
                 World world = World.GetTopWorld();
-                if (world != null) world.CreateNewDarknessMask();
+                world?.CreateNewDarknessMask();
             }
         }
 
@@ -334,6 +335,7 @@ namespace SonOfRobin
         public static bool debugInstantCookBrew = false;
         public static bool debugShowOutsideCamera = false;
         public static bool debugShowFocusRect = false;
+        public static bool debugShowNamedLocationAreas = false;
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
         public static bool DebugShowWholeMap
         {
