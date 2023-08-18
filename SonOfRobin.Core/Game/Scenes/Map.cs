@@ -578,26 +578,23 @@ namespace SonOfRobin
 
             // drawing named locations (without effects)
 
-            if (Preferences.mapShowLocationNames)
+            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
             {
                 float locationTextScale = Math.Min(spriteSize, 3f) * 4;
                 int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
 
-                if (this.Mode == MapMode.Full)
+                foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
                 {
-                    foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
+                    if (location.areaRect.Intersects(this.camera.viewRect))
                     {
-                        if (location.areaRect.Intersects(this.camera.viewRect))
+                        if (Preferences.debugShowNamedLocationAreas)
                         {
-                            if (Preferences.debugShowNamedLocationAreas)
-                            {
-                                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, location.Color * 0.25f);
-                                Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
-                                location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
-                            }
-
-                            Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
+                            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, location.Color * 0.25f);
+                            Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
+                            location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                         }
+
+                        Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
                     }
                 }
             }

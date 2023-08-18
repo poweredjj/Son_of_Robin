@@ -292,7 +292,8 @@ namespace SonOfRobin
 
         private readonly Grid grid;
         private readonly List<Location> locationList;
-        private Location currentLocation;
+        public Location CurrentLocation { get; private set; }
+
         private bool locationsCreated;
         private readonly Random random;
         private NameRandomizer nameRandomizer;
@@ -304,7 +305,7 @@ namespace SonOfRobin
         {
             this.grid = grid;
             this.locationList = new List<Location>();
-            this.currentLocation = null;
+            this.CurrentLocation = null;
             this.locationsCreated = false;
             this.random = new(this.grid.world.seed);
             this.nameRandomizer = new(random: this.random);
@@ -316,14 +317,14 @@ namespace SonOfRobin
             {
                 if (location.IsPointInsideLocation(new Point((int)playerPos.X, (int)playerPos.Y)))
                 {
-                    if (location == this.currentLocation) return null;
-                    this.currentLocation = location;
+                    if (location == this.CurrentLocation) return null;
+                    this.CurrentLocation = location;
                     return location;
                 }
             }
 
-            this.currentLocation = null;
-            return this.currentLocation;
+            this.CurrentLocation = null;
+            return this.CurrentLocation;
         }
 
         public void SetAllLocationsAsDiscovered()
