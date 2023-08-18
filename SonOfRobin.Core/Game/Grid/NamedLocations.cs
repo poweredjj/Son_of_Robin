@@ -290,9 +290,12 @@ namespace SonOfRobin
             }
         }
 
+        private static readonly TimeSpan discoveryCooldown = TimeSpan.FromMinutes(5);
+
         private readonly Grid grid;
         private readonly List<Location> locationList;
         private Location playerLocation;
+        private DateTime lastDiscovery;
         private bool locationsCreated;
         private readonly Random random;
         private NameRandomizer nameRandomizer;
@@ -308,6 +311,7 @@ namespace SonOfRobin
             this.random = new(this.grid.world.seed);
             this.nameRandomizer = new(random: this.random);
             this.playerLocation = null;
+            this.lastDiscovery = DateTime.MinValue;
         }
 
         public Location PlayerLocation
@@ -331,6 +335,41 @@ namespace SonOfRobin
 
                 return this.playerLocation;
             }
+        }
+
+        public void ShowDiscoveryMessage()
+        {
+            if (this.playerLocation == null || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
+
+            if (DateTime.Now - this.lastDiscovery < discoveryCooldown)
+            {
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered '{this.playerLocation.name}'!");
+                return;
+            }
+
+            this.lastDiscovery = DateTime.Now;
+
+            Vector2 locationCenter = new(this.playerLocation.areaRect.Center.X, this.playerLocation.areaRect.Center.Y);
+            this.grid.world.camera.TrackCoords(locationCenter);
+
+            var taskChain = new List<Object> { };
+
+            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+
+            // tasks before the messages - inserted at 0, so the last go first
+
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
+
+            // task after the messages - added at the end, ordered normally
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.grid.world.Player, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
 
         public void SetAllLocationsAsDiscovered()

@@ -970,7 +970,7 @@ namespace SonOfRobin
                 if (!location.hasBeenDiscovered)
                 {
                     location.hasBeenDiscovered = true;
-                    MessageLog.AddMessage(msgType: MsgType.User, message: $"Discovered '{location.name}'!"); // TODO add player dialogue (with multiple phrases)
+                    this.world.Grid.namedLocations.ShowDiscoveryMessage();
                 }
             }
         }
