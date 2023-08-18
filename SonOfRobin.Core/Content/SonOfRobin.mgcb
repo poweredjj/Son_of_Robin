@@ -6189,18 +6189,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.png
 
-#begin gfx/named_location.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/named_location.png
-
 #begin gfx/new.png
 /importer:TextureImporter
 /processor:TextureProcessor

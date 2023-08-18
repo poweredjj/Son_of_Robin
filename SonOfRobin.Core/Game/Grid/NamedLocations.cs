@@ -14,6 +14,7 @@ namespace SonOfRobin
             Hills = 0,
             Lake = 1,
             Volcano = 2,
+            Swamp = 3,
         }
 
         public class NameRandomizer
@@ -59,6 +60,8 @@ namespace SonOfRobin
             { Category.Lake, new List<string>{ "Deep", "Shiny", "Golden", "Lover's", "Shallow", "Silent", "Tranquil", "Reflective", "Serene", "Crystaline", "Secretive", "Ethereal", "Undisturbed", "Luminous", "Whispering", "Magician's", "Emerald Mirror", "Turquoise", "Paradise", "Palm Breeze", "Coconut", "Calypso", "Coral", "Mariner's", "Mango", "Siren's", "Flamingo", "Monkey", "Mermaid's" } },
 
             { Category.Volcano, new List<string>{ "Fiery", "Lava", "Infernal", "Flaming", "Smoldering", "Molten", "Blazing", "Hellish" } },
+
+            { Category.Swamp, new List<string>{ "Muddy", "Mangrove", "Soggy", "Mosquito", "Murky", "Fogbound", "Murmuring", "Trecherous", "Drifting", "Whispering", "Venomous", "Sinking", "Withering", "Malarial", "Forsaken", "Foggy", "Cursed", "Ghostly", "Misty", "Dying", "Desolate", "Gloomveil", "Sorrowful", "Lamenting", "Melancholy", "Wilted", "Hopeless", "Anguished", "Fading", "Black" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -68,6 +71,8 @@ namespace SonOfRobin
             { Category.Lake, new List<string>{ "Lake", "Pond", "Depths", "Waters", "Lagoon", "Cove", "Mirage", "Abyss", "Expanse", "Reservoir", "Basin" } },
 
             { Category.Volcano, new List<string>{ "Volcano", "Crater", "Caldera", "Peak" } },
+
+            { Category.Swamp, new List<string>{ "Swamp", "Mire", "Quagmire", "Boglands", "Marsh", "Gloommarsh", "Morass", "Bog", "Waters", "Fenlands", "Damplands", "Fen" } },
             };
 
         public class Location
@@ -225,7 +230,7 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            var testCategories = new List<Category> { Category.Volcano };
+            // var testCategories = new List<Category> { Category.Swamp };
 
             foreach (Category category in allCategories) // allCategories
             {
@@ -294,6 +299,21 @@ namespace SonOfRobin
 
                     getFullCellSize = true;
                     minCells = 1;
+                    maxCells = 150;
+                    density = 1;
+
+                    break;
+
+                case Category.Swamp:
+                    searchCriteria = new(
+                        checkExpProps: true,
+                        expPropsStrictSearch: true,
+                        extPropsName: ExtBoardProps.Name.BiomeSwamp,
+                        expPropsVal: true
+                        );
+
+                    getFullCellSize = true;
+                    minCells = 30;
                     maxCells = 150;
                     density = 1;
 

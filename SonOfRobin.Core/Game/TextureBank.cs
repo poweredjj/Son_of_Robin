@@ -40,8 +40,6 @@ namespace SonOfRobin
             ScrollingWaterCaustics2 = 25,
             ScrollingFog = 26,
 
-            NamedLocationBg = 64,
-
             VirtualJoypadBackground = 10,
             VirtualJoypadStick = 11,
 
@@ -114,8 +112,6 @@ namespace SonOfRobin
             { TextureName.ScrollingWaterCaustics1, "scrolling textures/water_caustics1" },
             { TextureName.ScrollingWaterCaustics2, "scrolling textures/water_caustics2" },
             { TextureName.ScrollingFog, "scrolling textures/fog" },
-
-            { TextureName.NamedLocationBg, "named_location" },
 
             { TextureName.VirtualJoypadBackground, "virtual_joypad_background" },
             { TextureName.VirtualJoypadStick, "virtual_joypad_stick" },
