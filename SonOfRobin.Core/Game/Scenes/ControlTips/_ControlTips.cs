@@ -299,6 +299,7 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "toggle marker", textures: InputMapper.GetTextures(InputMapper.Action.MapToggleMarker));
                         new ButtonTip(tipCollection: this.tipCollection, text: "center on player", textures: InputMapper.GetTextures(InputMapper.Action.MapCenterPlayer));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "show names", textures: InputMapper.GetTextures(InputMapper.Action.MapToggleLocations));
                         new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.MapSwitch));
                         break;
                     }

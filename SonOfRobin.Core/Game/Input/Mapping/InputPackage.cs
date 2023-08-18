@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class InputPackage
     {
-        public const float version = 1.12f;
+        public const float version = 1.13f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -35,6 +35,7 @@ namespace SonOfRobin
                 {"toolbarPrev", "previous item"},
                 {"toolbarNext", "next item"},
                 {"mapToggleMarker", "toggle marker"},
+                {"mapToggleLocations", "toggle locations"},
                 {"mapCenterPlayer", "center on player"},
                 {"mapZoomIn", "zoom in"},
                 {"mapZoomOut", "zoom out"},
@@ -66,6 +67,7 @@ namespace SonOfRobin
         public StoredInput invPickStack;
         public StoredInput invSort;
         public StoredInput mapToggleMarker;
+        public StoredInput mapToggleLocations;
         public StoredInput mapCenterPlayer;
         public StoredInput mapZoomIn;
         public StoredInput mapZoomOut;
@@ -73,7 +75,7 @@ namespace SonOfRobin
         public bool IsObsolete
         { get { return this.packageVersion != version; } }
 
-        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
+        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapToggleLocations, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -101,6 +103,7 @@ namespace SonOfRobin
             this.invPickStack = invPickStack;
             this.interact = interact;
             this.mapToggleMarker = mapToggleMarker;
+            this.mapToggleLocations = mapToggleLocations;
             this.mapCenterPlayer = mapCenterPlayer;
             this.mapZoomIn = mapZoomIn;
             this.mapZoomOut = mapZoomOut;
@@ -135,6 +138,7 @@ namespace SonOfRobin
                 invPickStack: this.invPickStack,
                 invSort: this.invSort,
                 mapToggleMarker: this.mapToggleMarker,
+                mapToggleLocations: this.mapToggleLocations,
                 mapCenterPlayer: this.mapCenterPlayer,
                 mapZoomIn: this.mapZoomIn,
                 mapZoomOut: this.mapZoomOut,
@@ -168,6 +172,7 @@ namespace SonOfRobin
                 this.invPickStack == inputPackage.invPickStack &&
                 this.invSort == inputPackage.invSort &&
                 this.mapToggleMarker == inputPackage.mapToggleMarker &&
+                this.mapToggleLocations == inputPackage.mapToggleLocations &&
                 this.mapCenterPlayer == inputPackage.mapCenterPlayer &&
                 this.mapZoomIn == inputPackage.mapZoomIn &&
                 this.mapZoomOut == inputPackage.mapZoomOut &&
@@ -186,7 +191,7 @@ namespace SonOfRobin
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
-                { new List<string> { "cancel", "mapToggleMarker", "mapCenterPlayer", "mapZoomIn", "mapZoomOut" } }, // map
+                { new List<string> { "cancel", "mapToggleMarker", "mapCenterPlayer", "mapZoomIn", "mapZoomOut", "mapToggleLocations" } }, // map
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)
@@ -292,6 +297,7 @@ namespace SonOfRobin
             packageData["invPickStack"] = invPickStack.Serialize();
             packageData["invSort"] = invSort.Serialize();
             packageData["mapToggleMarker"] = mapToggleMarker.Serialize();
+            packageData["mapToggleLocations"] = mapToggleLocations.Serialize();
             packageData["mapCenterPlayer"] = mapCenterPlayer.Serialize();
             packageData["mapZoomIn"] = mapZoomIn.Serialize();
             packageData["mapZoomOut"] = mapZoomOut.Serialize();
@@ -329,11 +335,12 @@ namespace SonOfRobin
             StoredInput invPickStack = StoredInput.Deserialize(inputDict["invPickStack"]);
             StoredInput invSort = StoredInput.Deserialize(inputDict["invSort"]);
             StoredInput mapToggleMarker = StoredInput.Deserialize(inputDict["mapToggleMarker"]);
+            StoredInput mapToggleLocations = StoredInput.Deserialize(inputDict["mapToggleLocations"]);
             StoredInput mapCenterPlayer = StoredInput.Deserialize(inputDict["mapCenterPlayer"]);
             StoredInput mapZoomIn = StoredInput.Deserialize(inputDict["mapZoomIn"]);
             StoredInput mapZoomOut = StoredInput.Deserialize(inputDict["mapZoomOut"]);
 
-            return new InputPackage(packageVersion: version, leftStick: leftStick, rightStick: rightStick, left: left, right: right, up: up, down: down, confirm: confirm, cancel: cancel, pauseMenu: pauseMenu, sprint: sprint, inventory: inventory, pickUp: pickUp, craft: craft, interact: interact, map: map, useTool: useTool, zoomOut: zoomOut, toolbarPrev: toolbarPrev, toolbarNext: toolbarNext, invSwitch: invSwitch, invPickOne: invPickOne, invPickStack: invPickStack, invSort: invSort, mapToggleMarker: mapToggleMarker, mapCenterPlayer: mapCenterPlayer, mapZoomIn: mapZoomIn, mapZoomOut: mapZoomOut);
+            return new InputPackage(packageVersion: version, leftStick: leftStick, rightStick: rightStick, left: left, right: right, up: up, down: down, confirm: confirm, cancel: cancel, pauseMenu: pauseMenu, sprint: sprint, inventory: inventory, pickUp: pickUp, craft: craft, interact: interact, map: map, useTool: useTool, zoomOut: zoomOut, toolbarPrev: toolbarPrev, toolbarNext: toolbarNext, invSwitch: invSwitch, invPickOne: invPickOne, invPickStack: invPickStack, invSort: invSort, mapToggleMarker: mapToggleMarker, mapToggleLocations: mapToggleLocations, mapCenterPlayer: mapCenterPlayer, mapZoomIn: mapZoomIn, mapZoomOut: mapZoomOut);
         }
     }
 }
