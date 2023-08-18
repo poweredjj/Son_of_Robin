@@ -19,8 +19,8 @@ namespace SonOfRobin
         private readonly Camera camera;
         private readonly MapOverlay mapOverlay;
         private readonly EffInstance sketchEffect;
-        private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
-        public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
+        private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
+        public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
 
         public bool FullScreen
         { get { return this.Mode == MapMode.Full; } }
@@ -580,7 +580,7 @@ namespace SonOfRobin
 
             if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
             {
-                float locationTextScale = Math.Min(spriteSize, 3f) * 4;
+                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
                 int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
 
                 foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)

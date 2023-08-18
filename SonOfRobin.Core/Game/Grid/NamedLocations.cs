@@ -290,7 +290,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly TimeSpan discoveryCooldown = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan discoveryCooldown = TimeSpan.FromSeconds(5); // FromMinutes(5)
         private const int playerLocationCheckCooldownFrames = 60 * 2;
 
         private readonly Grid grid;
@@ -359,7 +359,6 @@ namespace SonOfRobin
             this.lastDiscovery = DateTime.Now;
 
             Vector2 locationCenter = new(this.playerLocation.areaRect.Center.X, this.playerLocation.areaRect.Center.Y);
-            Vector2 pointToShow = world.camera.CurrentPos + ((locationCenter - world.camera.CurrentPos) / 2);
 
             var taskChain = new List<Object> { };
 
@@ -369,7 +368,7 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.3f, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: pointToShow, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: locationCenter, storeForLaterUse: true));
 
             taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
 
