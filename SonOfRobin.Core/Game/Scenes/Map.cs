@@ -577,6 +577,12 @@ namespace SonOfRobin
             float locationTextScale = Math.Min(spriteSize, 3f) * 4;
             int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
 
+            if (this.Mode == MapMode.Mini)
+            {
+                locationTextScale /= 2;
+                outlineSize /= 2;
+            }
+
             foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
             {
                 if (location.areaRect.Intersects(this.camera.viewRect))
@@ -591,6 +597,7 @@ namespace SonOfRobin
                     Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
                 }
             }
+
 
             // drawing map edges over everything
 

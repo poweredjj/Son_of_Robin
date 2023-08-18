@@ -18,6 +18,7 @@ namespace SonOfRobin
             Desert = 4,
             Island = 5,
             Shore = 6,
+            Grassland = 7,
         }
 
         public class NameRandomizer
@@ -65,6 +66,7 @@ namespace SonOfRobin
             { Category.Desert, new Color(122, 98, 0) },
             { Category.Island, new Color(4, 184, 157) },
             { Category.Shore, new Color(186, 137, 32) },
+            { Category.Grassland, new Color(27, 168, 2) },
         };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
@@ -81,7 +83,9 @@ namespace SonOfRobin
 
             { Category.Island, new List<string>{ "Seagull's", "Tiny", "Sunkissed", "Palmshade", "Coral", "Coconut", "Fool's", "Mermaid's", "Treasure", "Tranquil", "Driftwood", "Bahama", "Reefside", "Smuggler's", "Hidden", "Rogue's" } },
 
-            { Category.Shore, new List<string>{ "Captain's", "Mariner's", "Buccaneer's", "Palmshade", "Swashbuckler's", "Marauder's", "Cutlass", "Bounty", "Dead Man's", "Corsair's", "Pirate's", "Tropic", "Shipwrecked", "Survivor's", "Marooned" } },
+            { Category.Shore, new List<string>{ "Captain's", "Mariner's", "Buccaneer's", "Palmshade", "Swashbuckler's", "Marauder's", "Cutlass", "Bounty", "Dead Man's", "Corsair's", "Pirate's", "Tropic", "Shipwrecked", "Survivor's", "Marooned", "Columbus" } },
+
+            { Category.Grassland, new List<string>{ "Green", "Grassy", "Breezy", "Whispering", "Serene", "Abundant", "Palmshade", "Harmony", "Explorer's", "Bounty", "Governor's", "Tranquil", "Restful", "Tropic", "Verdant", "St. Augustine's", "Saint Francis'", "Vespucci's" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -99,6 +103,8 @@ namespace SonOfRobin
             { Category.Island, new List<string>{ "Islet", "Refuge", "Retreat", "Haven", "Shoal", "Sandbar", "Atoll", "Cay", "Hideaway" } },
 
             { Category.Shore, new List<string>{ "Shore", "Beachfront", "Riviera", "Beach", "Haven", "Coast", "Sand"  } },
+
+            { Category.Grassland, new List<string>{ "Grassland", "Meadow", "Savanna", "Expanse", "Plains", "Prairie", "Oasis", "Steppe", "Glade" } },
             };
 
         public class Location
@@ -365,7 +371,7 @@ namespace SonOfRobin
         {
             if (this.locationsCreated) return;
 
-            // var testCategories = new List<Category> { Category.Shore };
+            // var testCategories = new List<Category> { Category.Grassland };
 
             foreach (Category category in allCategories) // allCategories
             {
@@ -451,7 +457,7 @@ namespace SonOfRobin
                             new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
                             new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax, maxVal: Terrain.rocksLevelMin),
                         },
-                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.Sea, value: false, strictSearch: true) }
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: false, strictSearch: true) }
                         ));
 
                     minCells = 10;
@@ -467,7 +473,7 @@ namespace SonOfRobin
                         ));
 
                     minCells = 5;
-                    maxCells = 140;
+                    maxCells = 100;
                     density = 1;
 
                     break;
@@ -490,8 +496,24 @@ namespace SonOfRobin
                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
                        ));
 
-                    minCells = 15;
+                    minCells = 25;
                     maxCells = 800;
+                    density = 1;
+
+                    break;
+
+                case Category.Grassland:
+
+                    cellSearches.Add(new(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 118, maxVal: 255),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin, strictSearch: true),
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin, strictSearch: true),
+                        }
+                        ));
+
+                    minCells = 15;
+                    maxCells = 250;
                     density = 1;
 
                     break;
