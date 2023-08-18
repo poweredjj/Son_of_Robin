@@ -290,7 +290,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly TimeSpan discoveryCooldown = TimeSpan.FromSeconds(5); // FromMinutes(5)
+        private static readonly TimeSpan discoveryCooldown = TimeSpan.FromMinutes(5);
         private const int playerLocationCheckCooldownFrames = 60 * 2;
 
         private readonly Grid grid;
@@ -370,7 +370,7 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: locationCenter, storeForLaterUse: true));
 
-            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.TrumpetChime).ConvertToTask());
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraResetMovementSpeed, delay: 0, storeForLaterUse: true));
 

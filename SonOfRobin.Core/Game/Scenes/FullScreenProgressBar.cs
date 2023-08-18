@@ -13,9 +13,9 @@ namespace SonOfRobin
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
 
-        private static readonly Color bgColor = new Color(252, 252, 246);
-        private static readonly Color primaryTextColor = new Color(105, 215, 252);
-        private static readonly Color optionalTextColor = new Color(156, 181, 252);
+        private static readonly Color bgColor = new(252, 252, 246);
+        private static readonly Color primaryTextColor = new(105, 215, 252);
+        private static readonly Color optionalTextColor = new(156, 181, 252);
         public float ProgressBarPercentage { get; private set; }
         private bool isActive;
         private string progressBarText;

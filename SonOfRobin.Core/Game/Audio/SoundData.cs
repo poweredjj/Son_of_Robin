@@ -285,6 +285,7 @@ namespace SonOfRobin
             Jump = 221,
             SteamHit = 222,
             PlasticDrop = 223,
+            TrumpetChime = 224,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -511,6 +512,7 @@ namespace SonOfRobin
             { Name.Jump, "380471__acebrian__jump" },
             { Name.SteamHit, "90143__pengo_au__steam_burst" },
             { Name.PlasticDrop, "211171__sdlx__plastic-lid-snap" },
+            { Name.TrumpetChime, "AudioGen_trumpet_chime" },
             };
     }
 }
