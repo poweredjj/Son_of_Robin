@@ -355,10 +355,15 @@ namespace SonOfRobin
 
             World world = this.grid.world;
             Player player = world.Player;
+            Rectangle viewRect = world.camera.viewRect;
 
             this.lastDiscovery = DateTime.Now;
 
             Vector2 locationCenter = new(this.playerLocation.areaRect.Center.X, this.playerLocation.areaRect.Center.Y);
+
+            Vector2 distanceFromLocationCenter = Helpers.VectorKeepBelowSetValue(vector: locationCenter - player.sprite.position, maxValX: viewRect.Width / 2, maxValY: viewRect.Height / 2);
+
+            Vector2 pointToShow = player.sprite.position + distanceFromLocationCenter;
 
             var taskChain = new List<Object> { };
 
@@ -368,7 +373,7 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.3f, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: locationCenter, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: pointToShow, storeForLaterUse: true));
 
             taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.TrumpetChime).ConvertToTask());
 

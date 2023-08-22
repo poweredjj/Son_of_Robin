@@ -304,11 +304,16 @@ namespace SonOfRobin
 
         public static Vector2 VectorKeepBelowSetValue(Vector2 vector, float maxVal)
         {
+            return VectorKeepBelowSetValue(vector: vector, maxValX: maxVal, maxValY: maxVal);
+        }
+
+        public static Vector2 VectorKeepBelowSetValue(Vector2 vector, float maxValX, float maxValY)
+        {
             bool isXNegative = vector.X < 0;
             bool isYNegative = vector.Y < 0;
 
-            float newXComponent = Math.Min(Math.Abs(vector.X), maxVal);
-            float newYComponent = Math.Min(Math.Abs(vector.Y), maxVal);
+            float newXComponent = Math.Min(Math.Abs(vector.X), maxValX);
+            float newYComponent = Math.Min(Math.Abs(vector.Y), maxValY);
 
             if (isXNegative) newXComponent = -newXComponent;
             if (isYNegative) newYComponent = -newYComponent;

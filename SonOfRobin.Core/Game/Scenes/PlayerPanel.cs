@@ -176,7 +176,7 @@ namespace SonOfRobin
             // drawing location name
 
             NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
-            if (location != null)
+            if (location != null && location.hasBeenDiscovered)
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 

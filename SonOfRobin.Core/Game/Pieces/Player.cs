@@ -967,14 +967,7 @@ namespace SonOfRobin
             if (this.world.MapEnabled && this.CanSeeAnything)
             {
                 NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
-                if (location != null)
-                {
-                    if (!location.hasBeenDiscovered)
-                    {
-                        
-                        this.world.Grid.namedLocations.ProcessDiscovery();
-                    }
-                }
+                if (location != null && !location.hasBeenDiscovered) this.world.Grid.namedLocations.ProcessDiscovery();
             }
         }
 
