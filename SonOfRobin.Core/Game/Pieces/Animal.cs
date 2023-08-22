@@ -357,7 +357,7 @@ namespace SonOfRobin
                         this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                        this.world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
+                        this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
                     }
 
                     this.activeState = State.AnimalChaseTarget;

@@ -245,7 +245,7 @@ namespace SonOfRobin
                             ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
                         }
 
-                        world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
+                        world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
                     }
                 }
 

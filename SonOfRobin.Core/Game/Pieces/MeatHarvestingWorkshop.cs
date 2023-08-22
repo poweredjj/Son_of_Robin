@@ -205,7 +205,7 @@ namespace SonOfRobin
                 foreach (BoardPiece meatPiece in totalObtainedPieces)
                 {
                     this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
-                    if (!bonusPieces.Any()) this.world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
+                    if (!bonusPieces.Any()) this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
                 }
                 this.DisableMeatSlots();
             }

@@ -392,7 +392,7 @@ namespace SonOfRobin
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 10, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 120, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
@@ -454,9 +454,9 @@ namespace SonOfRobin
             return true;
         }
 
-        public void CheckForPieceHintToShow(bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
+        public void CheckForPieceHintToShow(bool ignorePlayerState = false, bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
-            if (this.world.Player.activeState != BoardPiece.State.PlayerControlledWalking || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
+            if ((!ignorePlayerState && this.world.Player.activeState != BoardPiece.State.PlayerControlledWalking) || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
             if (!this.WaitFrameReached && typesToCheckOnly == null && fieldPieceNameToCheck == PieceTemplate.Name.Empty && newOwnedPieceNameToCheck == PieceTemplate.Name.Empty) return;
 
             bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.Player, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck);

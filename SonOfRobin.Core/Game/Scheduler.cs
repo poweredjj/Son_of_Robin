@@ -1207,7 +1207,7 @@ namespace SonOfRobin
                             PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
                             PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
 
-                            world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
+                            world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
 
                             return;
                         }

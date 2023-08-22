@@ -1232,7 +1232,7 @@ namespace SonOfRobin
                 closestPiece.HeatLevel = 0f;
 
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
-                this.world.HintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
+                this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
             {
