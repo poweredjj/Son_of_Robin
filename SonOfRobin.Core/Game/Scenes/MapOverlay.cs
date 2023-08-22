@@ -88,10 +88,16 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if ((this.map.Mode == Map.MapMode.Off && !this.transManager.HasAnyTransition) || this.map.FinalMapToDisplay == null) return;
+            if ((this.map.Mode == Map.MapMode.Off && !this.transManager.HasAnyTransition) ||
+                this.map.FinalMapToDisplay == null)
+            {
+                return;
+            }
+
+            float opacity = 1f - this.map.world.cineCurtainShowPercentage;
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * opacity * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
         }
     }

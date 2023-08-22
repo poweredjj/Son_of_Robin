@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,6 +32,8 @@ namespace SonOfRobin
 
         private bool spectatorMode;
         private bool cineMode;
+        public float cineCurtainShowPercentage; // 0 - 1
+        private readonly Tweener tweener;
         public readonly PieceTemplate.Name initialPlayerName;
         public readonly int seed;
         public readonly int resDivider;
@@ -89,9 +92,12 @@ namespace SonOfRobin
         {
             this.seed = seed;
             this.random = new Random(seed);
+            this.tweener = new Tweener();
 
             this.demoMode = demoMode;
             this.cineMode = false;
+            this.cineCurtainShowPercentage = 0f;
+
             this.BuildMode = false;
             this.spectatorMode = false;
             if (this.demoMode)
@@ -226,10 +232,31 @@ namespace SonOfRobin
             get { return cineMode; }
             set
             {
-                cineMode = value;
+                if (this.cineMode == value) return;
 
-                if (cineMode)
+                Tween tweenCurtain = this.tweener.FindTween(target: this, memberName: "cineCurtainShowPercentage");
+                float tweenDuration = 0.35f;
+
+                if (!value)
                 {
+                    if (this.cineCurtainShowPercentage > 0 && (tweenCurtain == null || !tweenCurtain.IsComplete))
+                    {
+                        tweenCurtain?.CancelAndComplete();
+                        this.tweener.TweenTo(target: this, expression: world => world.cineCurtainShowPercentage, toValue: 0f, duration: tweenDuration)
+                            .Easing(EasingFunctions.CircleIn);
+                        new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, executeHelper: false, delay: (int)(tweenDuration * 60f));
+                        return;
+                    }
+                }
+
+                this.cineMode = value;
+
+                if (value)
+                {
+                    tweenCurtain?.CancelAndComplete();
+                    this.tweener.TweenTo(target: this, expression: world => world.cineCurtainShowPercentage, toValue: 1f, duration: tweenDuration)
+                        .Easing(EasingFunctions.CircleInOut);
+
                     this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
                     this.tipsLayout = ControlTips.TipsLayout.Empty;
                     this.InputType = InputTypes.None;
@@ -915,6 +942,7 @@ namespace SonOfRobin
             this.UpdateViewParams();
             this.weather.Update();
             this.swayManager.Update();
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
             if (this.soundPaused && this.inputActive)
             {
@@ -1374,6 +1402,23 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 FieldTip.DrawFieldTips(world: this);
+                SonOfRobinGame.SpriteBatch.End();
+            }
+
+            if (this.cineCurtainShowPercentage > 0)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(); // with "blank" transformMatrix, to draw in screenSpace (avoiding stuttering)
+
+                int screenWidth = SonOfRobinGame.VirtualWidth;
+                int screenHeight = SonOfRobinGame.VirtualHeight;
+
+                int curtainHeight = (int)(screenHeight * 0.12f * this.cineCurtainShowPercentage);
+                Rectangle topRect = new(x: 0, y: 0, width: screenWidth, curtainHeight);
+                Rectangle bottomRect = new(x: 0, y: screenHeight - curtainHeight, width: screenWidth, height: curtainHeight);
+
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, topRect, Color.Black);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bottomRect, Color.Black);
+
                 SonOfRobinGame.SpriteBatch.End();
             }
 

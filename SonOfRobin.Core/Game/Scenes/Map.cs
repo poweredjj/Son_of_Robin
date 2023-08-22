@@ -15,7 +15,7 @@ namespace SonOfRobin
             Off = 2,
         }
 
-        private readonly World world;
+        public readonly World world;
         private readonly Camera camera;
         private readonly MapOverlay mapOverlay;
         private readonly EffInstance sketchEffect;
@@ -120,7 +120,7 @@ namespace SonOfRobin
 
                 Texture2D mapTexture = BoardGraphics.GetMapTextureScaledForScreenSize(grid: this.world.Grid, width: width, height: height);
 
-                Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
+                Rectangle sourceRectangle = new(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
                 mapTexture.Dispose();

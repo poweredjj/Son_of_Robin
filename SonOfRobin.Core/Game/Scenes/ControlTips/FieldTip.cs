@@ -166,7 +166,7 @@ namespace SonOfRobin
 
                 float textOpacity = this.targetOpacity == 0.5f ? this.currentOpacity * 2f : this.currentOpacity;
 
-                Rectangle pieceNameRect = new Rectangle(x: destRect.X + ((destRect.Width - textWidth) / 2), y: textPosY, width: textWidth, height: textHeight);
+                Rectangle pieceNameRect = new(x: destRect.X + ((destRect.Width - textWidth) / 2), y: textPosY, width: textWidth, height: textHeight);
 
                 Helpers.DrawTextInsideRectWithShadow(font: SonOfRobinGame.FontTommy40, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
             }
@@ -174,7 +174,7 @@ namespace SonOfRobin
 
         private void MoveIfObstructsPlayerOrOtherTip()
         {
-            List<Rectangle> rectsToCheck = new List<Rectangle>();
+            var rectsToCheck = new List<Rectangle>();
 
             if (this.world.Player != null) rectsToCheck.Add(this.world.Player.sprite.GfxRect);
             foreach (FieldTip fieldTip in tipsDict.Values)
