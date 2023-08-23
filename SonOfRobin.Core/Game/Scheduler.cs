@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static SonOfRobin.Craft;
 
 namespace SonOfRobin
 {
@@ -1714,7 +1713,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Recipe plantRecipe = new(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
+                            Craft.Recipe plantRecipe = new(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
 
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                             plantRecipe.TryToProducePieces(player: player, showMessages: false);

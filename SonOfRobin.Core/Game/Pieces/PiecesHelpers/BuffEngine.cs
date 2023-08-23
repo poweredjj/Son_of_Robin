@@ -24,6 +24,7 @@ namespace SonOfRobin
             Fatigue = 13,
             Sprint = 14,
             SprintCooldown = 15,
+            ExtendSprintDuration = 26,
             LowHP = 16,
             Tired = 17,
             Hungry = 18,
@@ -50,7 +51,7 @@ namespace SonOfRobin
         {
             get
             {
-                foreach (Buff regenPoisonBuff in this.FindBuffsOfType(BuffType.RegenPoison))
+                foreach (Buff regenPoisonBuff in this.GetBuffsOfType(BuffType.RegenPoison))
                 {
                     if ((int)regenPoisonBuff.value < 0) return true;
                 }
@@ -153,7 +154,7 @@ namespace SonOfRobin
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
         }
 
-        private List<Buff> FindBuffsOfType(BuffType buffType)
+        public List<Buff> GetBuffsOfType(BuffType buffType)
         {
             return this.buffDict.Values.Where(buff => buff.type == buffType).ToList();
         }
@@ -483,6 +484,12 @@ namespace SonOfRobin
                         return true;
                     }
 
+                case BuffType.ExtendSprintDuration:
+                    {
+                        // this buff existence is enough to extend sprint duration
+                        return (int)buff.value > 0;
+                    }
+
                 case BuffType.SprintCooldown:
                     {
                         // this buff exists only to show negative status and prevent sprint
@@ -562,6 +569,19 @@ namespace SonOfRobin
             }
 
             return mergedBuffList;
+        }
+
+        public static Buff MergeMultipleSameTypeBuffs(List<Buff> buffList)
+        {
+            Buff resultBuff = buffList[0];
+            buffList.RemoveAt(0);
+
+            foreach (Buff buff in buffList)
+            {
+                resultBuff = MergeTwoSameTypeBuffs(buff, resultBuff);
+            }
+
+            return resultBuff;
         }
 
         public static Buff MergeTwoSameTypeBuffs(Buff buff1, Buff buff2)
@@ -664,6 +684,10 @@ namespace SonOfRobin
 
                 case BuffType.Sprint:
                     value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.ExtendSprintDuration:
+                    value = (int)buff1.value + (int)buff2.value;
                     break;
 
                 case BuffType.SprintCooldown:

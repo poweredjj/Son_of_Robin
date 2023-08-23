@@ -2521,7 +2521,10 @@ namespace SonOfRobin
 
                 case Name.BootsSpeed:
                     {
-                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.Speed, value: 1f) };
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.Speed, value: 1f),
+                            new Buff(type: BuffEngine.BuffType.ExtendSprintDuration, value: 60 * 2),
+                        };
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsSpeed, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "boots of speed", description: "Increase speed.");

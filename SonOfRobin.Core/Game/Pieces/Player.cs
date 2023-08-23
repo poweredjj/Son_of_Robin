@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static SonOfRobin.Scene;
 
 namespace SonOfRobin
 {
@@ -711,7 +710,19 @@ namespace SonOfRobin
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
                 ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
-                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this.world);
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle))
+                {
+                    int sprintDuration = 60 * 3;
+
+                    if (this.buffEngine.HasBuff(BuffEngine.BuffType.ExtendSprintDuration))
+                    {
+                        Buff mergedExtendedSprintBuffs = BuffEngine.MergeMultipleSameTypeBuffs(this.buffEngine.GetBuffsOfType(BuffEngine.BuffType.ExtendSprintDuration));
+                        int sprintExtension = (int)mergedExtendedSprintBuffs.value;
+                        sprintDuration += sprintExtension;
+                    }
+
+                    this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: sprintDuration, value: 2f), world: this.world);
+                }
             }
 
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
@@ -1133,7 +1144,7 @@ namespace SonOfRobin
         {
             if (checkIfSleepIsPossible && sleepEngine.minFatiguePercentPossibleToGet > 0 && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
             {
-                new TextWindow(text: "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
+                new TextWindow(text: "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
                 return;
             }
 

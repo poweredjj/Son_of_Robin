@@ -105,6 +105,10 @@ namespace SonOfRobin
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
+                case BuffEngine.BuffType.ExtendSprintDuration:
+                    value = Helpers.CastObjectToInt(value);
+                    break;
+
                 default:
                     break;
             }
@@ -192,6 +196,9 @@ namespace SonOfRobin
                     return true;
 
                 case BuffEngine.BuffType.Sprint:
+                    return true;
+
+                case BuffEngine.BuffType.ExtendSprintDuration:
                     return true;
 
                 case BuffEngine.BuffType.SprintCooldown:
@@ -312,6 +319,12 @@ namespace SonOfRobin
                     description = $"Sprint {sign}{this.value}{duration}.";
                     break;
 
+                case BuffEngine.BuffType.ExtendSprintDuration:
+                    int extensionVal = (int)this.value;
+                    float sprintExtensionSeconds = (float)Math.Round((float)extensionVal / 60f, 1);
+                    description = $"Sprint time {sign}{sprintExtensionSeconds}s.";
+                    break;
+
                 case BuffEngine.BuffType.SprintCooldown:
                     description = $"Cannot sprint{duration}.";
                     break;
@@ -408,6 +421,11 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.Sprint:
                     return null;
 
+                case BuffEngine.BuffType.ExtendSprintDuration:
+                    int extensionVal = (int)this.value;
+                    float sprintSeconds = (float)Math.Round((float)extensionVal / 60f, 1);
+                    return $"Sprint time {sign}{sprintSeconds}s.";
+
                 case BuffEngine.BuffType.SprintCooldown:
                     return "Cannot sprint for a while.";
 
@@ -467,8 +485,11 @@ namespace SonOfRobin
                     case BuffEngine.BuffType.Fatigue:
                         return this.isPositive ? "rest" : "fatigue";
 
+                    case BuffEngine.BuffType.ExtendSprintDuration:
+                        return "extended sprint";
+
                     default:
-                        return "this buff has no potionText defined";
+                        return "no potionText defined";
                 }
             }
         }
@@ -547,6 +568,9 @@ namespace SonOfRobin
 
                 case BuffEngine.BuffType.SprintCooldown:
                     return "CANNOT\nSPRINT";
+
+                case BuffEngine.BuffType.ExtendSprintDuration:
+                    return null;
 
                 case BuffEngine.BuffType.HeatLevelLocked:
                     return null;
