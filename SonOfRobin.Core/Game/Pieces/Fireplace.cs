@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Fireplace : BoardPiece
     {
-        private static readonly Dictionary<PieceTemplate.Name, int> fuelFramesByName = new Dictionary<PieceTemplate.Name, int>
+        private static readonly Dictionary<PieceTemplate.Name, int> fuelFramesByName = new()
         {
             // number of frames each piece will burn for
             { PieceTemplate.Name.Stick, 60 * 20 },
@@ -21,7 +21,7 @@ namespace SonOfRobin
 
         private readonly ushort scareRange;
         private bool isOn;
-        private int currentCycleBurningFramesLeft;
+        private int currentCycleEndFrame;
         private int burnStartFrame;
         private int burnAllFuelEndFrame;
 
@@ -38,14 +38,16 @@ namespace SonOfRobin
             this.scareRange = scareRange;
             this.isOn = false;
             this.burnStartFrame = 0;
-            this.currentCycleBurningFramesLeft = 0;
+            this.currentCycleEndFrame = 0;
             this.burnAllFuelEndFrame = 0;
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
 
-            var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames);
-            allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOn);
-            allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOff);
+            var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames)
+            {
+                PieceTemplate.Name.FireplaceTriggerOn,
+                PieceTemplate.Name.FireplaceTriggerOff,
+            };
             this.PieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
             BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
@@ -122,7 +124,7 @@ namespace SonOfRobin
             }
 
             var storedFuel = this.StoredFuel;
-            if (storedFuel.Count == 0)
+            if (!storedFuel.Any())
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 else MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");
@@ -131,24 +133,20 @@ namespace SonOfRobin
 
             if (!this.IsOn) this.burnStartFrame = this.world.CurrentUpdate;
 
-            BoardPiece fuel = storedFuel[0];
-            storedFuel.RemoveAt(0);
+            PieceTemplate.Name currentlyBurningFuelName = storedFuel[0].name;
 
-            this.PieceStorage.DestroyOneSpecifiedPiece(fuel.name);
-            this.currentCycleBurningFramesLeft = fuelFramesByName[fuel.name];
+            this.PieceStorage.DestroyOneSpecifiedPiece(currentlyBurningFuelName);
+            this.currentCycleEndFrame = this.world.CurrentUpdate + fuelFramesByName[currentlyBurningFuelName];
 
-            this.UpdateEndFrame(storedFuel);
+            this.UpdateBurnAllFuelEndFrame();
 
             return true;
         }
 
-        private void UpdateEndFrame()
-        { this.UpdateEndFrame(this.StoredFuel); }
-
-        private void UpdateEndFrame(List<BoardPiece> storedFuel)
+        private void UpdateBurnAllFuelEndFrame()
         {
-            this.burnAllFuelEndFrame = this.world.CurrentUpdate + this.currentCycleBurningFramesLeft;
-            foreach (BoardPiece fuelPiece in storedFuel)
+            this.burnAllFuelEndFrame = this.currentCycleEndFrame;
+            foreach (BoardPiece fuelPiece in this.StoredFuel)
             {
                 this.burnAllFuelEndFrame += fuelFramesByName[fuelPiece.name];
             }
@@ -157,22 +155,21 @@ namespace SonOfRobin
 
         public override void SM_FireplaceBurn()
         {
-            int timeDelta = this.FramesSinceLastProcessed;
+            if (this.world.CurrentUpdate % 15 != 0) return;
 
-            this.currentCycleBurningFramesLeft -= timeDelta;
-
-            bool stopBurning = this.world.weather.IsRaining || (this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false));
+            bool stopBurning = this.world.weather.IsRaining || (this.world.CurrentUpdate >= this.currentCycleEndFrame && !this.StartFire(showMessage: false));
             if (stopBurning)
             {
                 this.IsOn = false;
                 return;
             }
 
-            if (this.world.CurrentUpdate % 10 != 0) return;
-            this.UpdateEndFrame();
+            this.UpdateBurnAllFuelEndFrame();
 
             var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
             var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal));
+
+            bool hintShown = this.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.AnimalScaredOfFire);
 
             foreach (BoardPiece piece in animalPieces)
             {
@@ -183,7 +180,11 @@ namespace SonOfRobin
                 animal.aiData.Reset();
                 animal.activeState = State.AnimalFlee;
 
-                if (PieceInfo.GetInfo(animal.name).isCarnivorous && animal.sprite.IsInCameraRect) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
+                if (!hintShown && PieceInfo.GetInfo(animal.name).isCarnivorous && animal.sprite.IsInCameraRect)
+                {
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
+                    hintShown = true;
+                }
             }
         }
 
@@ -205,9 +206,8 @@ namespace SonOfRobin
             Dictionary<string, Object> pieceData = base.Serialize();
 
             pieceData["fireplace_isOn"] = this.isOn;
-            pieceData["fireplace_currentCycleBurningFramesLeft"] = this.currentCycleBurningFramesLeft;
             pieceData["fireplace_burnStartFrame"] = this.burnStartFrame;
-            pieceData["fireplace_burnAllFuelEndFrame"] = this.burnAllFuelEndFrame;
+            pieceData["fireplace_currentCycleEndFrame"] = this.currentCycleEndFrame;
             return pieceData;
         }
 
@@ -215,9 +215,11 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.isOn = (bool)pieceData["fireplace_isOn"];
-            this.currentCycleBurningFramesLeft = (int)(Int64)pieceData["fireplace_currentCycleBurningFramesLeft"];
             this.burnStartFrame = (int)(Int64)pieceData["fireplace_burnStartFrame"];
-            this.burnAllFuelEndFrame = (int)(Int64)pieceData["fireplace_burnAllFuelEndFrame"];
+
+            if (pieceData.ContainsKey("fireplace_currentCycleEndFrame")) this.currentCycleEndFrame = (int)(Int64)pieceData["fireplace_currentCycleEndFrame"]; // for compatibility with old saves
+
+            this.UpdateBurnAllFuelEndFrame();
         }
     }
 }
