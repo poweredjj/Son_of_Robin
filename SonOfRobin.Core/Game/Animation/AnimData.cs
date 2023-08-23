@@ -262,10 +262,12 @@ namespace SonOfRobin
             BackpackSmall = 226,
             BackpackMedium = 227,
             BackpackBig = 228,
+            BackpackLuxurious = 315,
 
             BeltSmall = 229,
             BeltMedium = 230,
             BeltBig = 231,
+            BeltLuxurious = 316,
             Map = 232,
 
             HatSimple = 233,
@@ -694,6 +696,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BackpackSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BackpackMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.BackpackBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_big", layer: 1, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.BackpackLuxurious, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_luxurious", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Miss, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
@@ -721,6 +724,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BeltSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.BeltBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_big", layer: 0, scale: 0.06f));
+            AddFrameList(animPackage: PkgName.BeltLuxurious, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_luxurious", layer: 0, scale: 0.06f));
             AddFrameList(animPackage: PkgName.HatSimple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hat_simple", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.BootsProtective, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_protective", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BootsMountain, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));

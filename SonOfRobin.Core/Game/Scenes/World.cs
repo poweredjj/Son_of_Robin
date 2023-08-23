@@ -659,7 +659,7 @@ namespace SonOfRobin
                     if (playerName == PieceTemplate.Name.PlayerTestDemoness)
                     {
                         var pieceNamesToEquip = new List<PieceTemplate.Name> {
-                                PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple, PieceTemplate.Name.Dungarees
+                                PieceTemplate.Name.BootsAllTerrain, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackLuxurious, PieceTemplate.Name.BeltLuxurious, PieceTemplate.Name.HatSimple, PieceTemplate.Name.Dungarees
                             };
 
                         foreach (PieceTemplate.Name name in pieceNamesToEquip)

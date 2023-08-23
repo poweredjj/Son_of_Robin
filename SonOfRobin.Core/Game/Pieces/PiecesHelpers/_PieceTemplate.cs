@@ -211,10 +211,12 @@ namespace SonOfRobin
             BackpackSmall = 157,
             BackpackMedium = 158,
             BackpackBig = 159,
+            BackpackLuxurious = 221,
 
             BeltSmall = 160,
             BeltMedium = 161,
             BeltBig = 162,
+            BeltLuxurious = 222,
             Map = 163,
 
             Dungarees = 164,
@@ -2427,6 +2429,18 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.BackpackLuxurious:
+                    {
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)5),
+                            new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)3)};
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackLuxurious, equipType: Equipment.EquipType.Backpack,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "luxurious backpack", description: "Expands inventory space.");
+
+                        return boardPiece;
+                    }
+
                 case Name.BeltSmall:
                     {
                         var buffList = new List<Buff> {
@@ -2456,6 +2470,17 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
+
+                        return boardPiece;
+                    }
+
+                case Name.BeltLuxurious:
+                    {
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)6)};
+
+                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltLuxurious, equipType: Equipment.EquipType.Belt,
+                            allowedTerrain: terrainShallowWaterToVolcano, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "luxurious belt", description: "Expands belt space.");
 
                         return boardPiece;
                     }

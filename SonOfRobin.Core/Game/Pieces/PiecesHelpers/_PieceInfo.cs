@@ -2156,6 +2156,15 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         break;
 
+                    case PieceTemplate.Name.BackpackLuxurious:
+                        this.category = BoardPiece.Category.Leather;
+                        this.startingMass = 900;
+                        this.fireAffinity = 0.5f;
+                        this.canBePickedUp = true;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
+                        break;
+
                     case PieceTemplate.Name.BeltSmall:
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 200;
@@ -2175,6 +2184,15 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BeltBig:
                         this.category = BoardPiece.Category.Leather;
                         this.startingMass = 400;
+                        this.fireAffinity = 0.5f;
+                        this.canBePickedUp = true;
+                        this.placeMaxDistance = 500;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.BeltLuxurious:
+                        this.category = BoardPiece.Category.Leather;
+                        this.startingMass = 500;
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
