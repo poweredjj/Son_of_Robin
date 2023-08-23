@@ -35,7 +35,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
 
         public List<Type> shownGeneralHints = new List<Type> { };
         public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
@@ -348,7 +348,7 @@ namespace SonOfRobin
                         {
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
-                            SolidColor whiteOverlay = new SolidColor(color: Color.White, viewOpacity: 1f);
+                            SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
                             this.world.solidColorManager.Add(whiteOverlay);
 
                             taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
@@ -362,7 +362,7 @@ namespace SonOfRobin
                             taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
                             taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
 
-                            Vector2 seaOffset = new Vector2(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
+                            Vector2 seaOffset = new(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
 
                             int edgeDistLeft = (int)player.sprite.position.X;
                             int edgeDistRight = (int)(this.world.width - player.sprite.position.X);

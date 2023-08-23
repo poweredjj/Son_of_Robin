@@ -350,6 +350,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.SmallBase,
                     generalHintToActivate: HintEngine.Type.CineSmallBase,
+                    showCineCurtains: true,
                     ignoreHintSetting: true,
                     piecesCraftedCount: new List<CountComparison> {
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
@@ -358,6 +359,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors1,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "Are there other | | survivors?", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.PlayerBoy), PieceInfo.GetTexture(PieceTemplate.Name.PlayerGirl)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "I should look for them... ", boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
@@ -367,6 +369,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors2,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "I don't see any survivors.", boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "Let's not lose hope... ", boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
@@ -376,6 +379,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors3,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture }, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
@@ -386,6 +390,7 @@ namespace SonOfRobin
 
                  new PieceHint(
                     type: PieceHint.Type.CineDay2,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "A day has passed already.\nIs there any way for me to return home?", boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "Right now, there are more important matters.\nLike | food, | shelter...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
@@ -395,6 +400,7 @@ namespace SonOfRobin
 
                   new PieceHint(
                     type: PieceHint.Type.CineDay3,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "Another day has passed.", boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "I guess I'm gonna | live here for a while...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
@@ -406,6 +412,7 @@ namespace SonOfRobin
 
                    new PieceHint(
                     type: PieceHint.Type.CineDay4,
+                    showCineCurtains: true,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: "What day is it?", boxType: HintMessage.BoxType.Dialogue, blockInput: true),
                     new HintMessage(text: "I've lost the track of time already...", boxType: HintMessage.BoxType.Dialogue, blockInput: true),

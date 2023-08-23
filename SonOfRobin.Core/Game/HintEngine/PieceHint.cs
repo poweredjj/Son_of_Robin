@@ -111,8 +111,9 @@ namespace SonOfRobin
         private readonly bool fieldOnly;
         private readonly bool menuOnly;
         private readonly bool ignoreHintSetting;
+        private readonly bool showCineCurtains;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false, bool showCineCurtains = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -145,6 +146,7 @@ namespace SonOfRobin
             if (message != null) this.messageList = new List<HintMessage> { new HintMessage(text: message, imageList: imageList, blockInput: true) };
             this.tutorialsToActivate = tutorialsToActivate;
             this.generalHintToActivate = generalHintToActivate;
+            this.showCineCurtains = showCineCurtains;
 
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
@@ -193,6 +195,8 @@ namespace SonOfRobin
 
         private void Show(World world)
         {
+            if (this.showCineCurtains) world.cineCurtains.Enabled = true;
+
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
                 world.HintEngine.ShowGeneralHint(type: this.generalHintToActivate, ignoreDelay: true);
