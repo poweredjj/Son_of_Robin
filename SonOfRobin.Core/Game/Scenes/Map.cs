@@ -580,6 +580,9 @@ namespace SonOfRobin
 
             if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
             {
+                SpriteFont locationFont = SonOfRobinGame.FontTommy20;
+                var drawnNamesRects = new List<Rectangle>();
+
                 float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
                 int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
 
@@ -594,7 +597,31 @@ namespace SonOfRobin
                             location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                         }
 
-                        Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, pos: new Vector2(location.textRect.Center.X, location.textRect.Center.Y), color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, centered: true, scale: locationTextScale);
+                        Vector2 textSize = locationFont.MeasureString(location.name);
+
+                        Rectangle newTextRect = new(x: 0, y: 0, width: (int)(textSize.X * locationTextScale), height: (int)(textSize.Y * locationTextScale));
+                        newTextRect.X = location.areaRect.Center.X - (newTextRect.Width / 2);
+                        newTextRect.Y = location.areaRect.Center.Y - (newTextRect.Height / 2);
+
+                        foreach (Rectangle checkedRect in drawnNamesRects)
+                        {
+                            if (newTextRect.Intersects(checkedRect))
+                            {
+                                bool newRectIsHigher = newTextRect.Center.Y < checkedRect.Center.Y;
+
+                                int overlapY = newRectIsHigher ?
+                                    newTextRect.Bottom - checkedRect.Top :
+                                    checkedRect.Bottom - newTextRect.Top;
+
+                                newTextRect.Y += overlapY * (newRectIsHigher ? -1 : 1);
+
+                                break;
+                            }
+                        }
+
+                        Helpers.DrawTextInsideRectWithOutline(font: locationFont, rectangle: newTextRect, text: location.name, color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, drawTestRect: false);
+
+                        drawnNamesRects.Add(newTextRect);
                     }
                 }
             }
