@@ -414,10 +414,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 0.7f, DragCoefficient = 1f
-                                },
+                                new DragModifier { Density = 0.7f, DragCoefficient = 1f },
                             }
                         };
                         break;
@@ -454,10 +451,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 1f, DragCoefficient = 1f
-                                },
+                                new DragModifier { Density = 1f, DragCoefficient = 1f },
                             }
                         };
                         break;
@@ -495,10 +489,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 1.2f, DragCoefficient = 1.2f
-                                },
+                                new DragModifier { Density = 1.2f, DragCoefficient = 1.2f },
                             }
                         };
                         break;
@@ -535,10 +526,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 1f, DragCoefficient = 1f
-                                },
+                                new DragModifier { Density = 1f, DragCoefficient = 1f },
                             }
                         };
                         break;
@@ -647,8 +635,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 2f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -681,8 +668,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 2f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -715,8 +701,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 5f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -749,8 +734,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 2f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -783,8 +767,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 2f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -817,8 +800,7 @@ namespace SonOfRobin
                                 },
                                 VelocityThreshold = 2f
                             },
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                           }
                         };
                         break;
@@ -840,8 +822,7 @@ namespace SonOfRobin
 
                             Modifiers =
                         {
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
 
                             new AgeModifier
                             {
@@ -872,8 +853,7 @@ namespace SonOfRobin
 
                             Modifiers =
                         {
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                             new AgeModifier
                             {
                                 Interpolators =
@@ -903,8 +883,7 @@ namespace SonOfRobin
 
                             Modifiers =
                         {
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                             new AgeModifier
                             {
                                 Interpolators =
@@ -935,8 +914,7 @@ namespace SonOfRobin
 
                             Modifiers =
                             {
-                            new DragModifier
-                            { Density = 0.2f, DragCoefficient = 40f },
+                            new DragModifier { Density = 0.2f, DragCoefficient = 40f },
                              new AgeModifier
                                 {
                                     Interpolators =
@@ -990,10 +968,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 1f, DragCoefficient = 0.13f
-                                },
+                                new DragModifier { Density = 1f, DragCoefficient = 0.13f },
                                 new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f }
                             }
                         };
@@ -1066,10 +1041,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier
-                                {
-                                    Density = 2.4f, DragCoefficient = 2.4f
-                                },
+                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 35f},
                             }
                         };
@@ -1108,6 +1080,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
+                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                                 new LinearGravityModifier { Direction = -Vector2.UnitY, Strength = 7f },
                             }
                         };
