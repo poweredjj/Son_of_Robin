@@ -298,6 +298,11 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.HarvestMeat}),
 
                 new PieceHint(
+                    type: PieceHint.Type.Totem, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.Totem },
+                    message: $"Hmm...\nI can feel mysterious aura surrounding this | { PieceInfo.GetInfo(PieceTemplate.Name.Totem).readableName }.\nMaybe I should examine it.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Totem) }),
+
+                new PieceHint(
                     type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     message: "| I can start brewing\n| potions now!",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture },

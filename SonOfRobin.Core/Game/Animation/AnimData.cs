@@ -128,6 +128,8 @@ namespace SonOfRobin
             HotPlate = 91,
             CookingPot = 92,
 
+            Totem = 317,
+
             Stick1 = 93,
             Stick2 = 94,
             Stick3 = 95,
@@ -761,6 +763,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.FenceVerticalShort, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
             AddFrameList(animPackage: PkgName.FenceHorizontalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
             AddFrameList(animPackage: PkgName.FenceVerticalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
+            AddFrameList(animPackage: PkgName.Totem, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));

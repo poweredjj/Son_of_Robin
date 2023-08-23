@@ -15,6 +15,8 @@ namespace SonOfRobin
             Night = 4,
         }
 
+        private const double timeConversionFactor = 1.5;
+
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
         public int ElapsedUpdates { get; private set; }
@@ -69,7 +71,10 @@ namespace SonOfRobin
         }
 
         public static TimeSpan ConvertUpdatesCountToTimeSpan(int updatesCount)
-        { return TimeSpan.FromSeconds(updatesCount * 1.5); }
+        { return TimeSpan.FromSeconds(updatesCount * timeConversionFactor); }
+
+        public static int ConvertTimeSpanToUpdates(TimeSpan timeSpan)
+        { return (int)(timeSpan.TotalSeconds / timeConversionFactor); }
 
         public TimeSpan IslandTimeElapsed
         { get { return ConvertUpdatesCountToTimeSpan(this.ElapsedUpdates) + startTimeOffset; } }

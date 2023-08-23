@@ -795,7 +795,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger };
+            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger, PieceTemplate.Name.OfferTrigger };
             if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
@@ -811,8 +811,9 @@ namespace SonOfRobin
             bool addIgnite = piece.name == PieceTemplate.Name.FireplaceTriggerOn;
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
             bool addProcess = piece.name == PieceTemplate.Name.MeatHarvestTrigger;
+            bool addOffer = piece.name == PieceTemplate.Name.OfferTrigger;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addProcess);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addProcess, addOffer: addOffer);
             return;
         }
 

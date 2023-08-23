@@ -67,6 +67,7 @@ namespace SonOfRobin
             VirtButtonHarvestMeat = 48,
             VirtButtonUseAnvil = 49,
             VirtButtonJump = 50,
+            VirtButtonOffer = 64,
 
             ParticleCircleSharp = 51,
             ParticleCircleSoft = 52,
@@ -140,6 +141,7 @@ namespace SonOfRobin
             { TextureName.VirtButtonHarvestMeat, "input/VirtButton/harvest_meat" },
             { TextureName.VirtButtonUseAnvil, "input/VirtButton/use_anvil" },
             { TextureName.VirtButtonJump, "input/VirtButton/jump" },
+            { TextureName.VirtButtonOffer, "input/VirtButton/offer" },
 
             { TextureName.ParticleCircleSharp, "particles/circle_16x16_sharp" },
             { TextureName.ParticleCircleSoft, "particles/circle_16x16_soft" },

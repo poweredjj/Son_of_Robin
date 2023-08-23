@@ -111,7 +111,9 @@ namespace SonOfRobin
             FinishBrewing = 16,
             StopBurning = 17,
             TurnOffHarvestingWorkshop = 18,
-            DropDebris = 19
+            DropDebris = 19,
+            SwitchLightEngine = 20,
+            TotemAffectWeather = 21,
         }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
@@ -352,6 +354,25 @@ namespace SonOfRobin
                         // setting next loop event
 
                         new WorldEvent(eventName: EventName.BurnOutLightSource, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
+                        return;
+                    }
+
+                case EventName.SwitchLightEngine:
+                    {
+                        bool activate = (bool)this.eventHelper;
+
+                        if (activate) this.boardPiece.sprite.lightEngine.Activate();
+                        else this.boardPiece.sprite.lightEngine.Deactivate();
+
+                        return;
+                    }
+
+                case EventName.TotemAffectWeather:
+                    {
+                        float goodOfferingMass = Helpers.CastObjectToFloat(this.eventHelper);
+                        Totem totem = (Totem)this.boardPiece;
+                        totem.AffectWeather(goodOfferingMass);
+
                         return;
                     }
 

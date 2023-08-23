@@ -1335,6 +1335,16 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
+                    case PieceTemplate.Name.Totem:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 1.0f;
+                        this.boardTask = Scheduler.TaskName.InteractWithTotem;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOffer;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        break;
+
                     case PieceTemplate.Name.Stick:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 1.0f;
@@ -1729,6 +1739,11 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.MeatHarvestTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
+                    case PieceTemplate.Name.OfferTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         break;

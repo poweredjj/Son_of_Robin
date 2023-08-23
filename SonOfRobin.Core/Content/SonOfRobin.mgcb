@@ -4269,6 +4269,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/map.png
 
+#begin gfx/input/VirtButton/offer.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/offer.png
+
 #begin gfx/input/VirtButton/open_container.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7449,6 +7461,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/tools_gravel.png
 
+#begin gfx/totem.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/totem.png
+
 #begin gfx/transparent_pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8384,6 +8408,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/434895__julius-galla__steps-on-loose-stones-actions-3.ogg
+
+#begin sound/442956__qubodup__creepy-cave.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/442956__qubodup__creepy-cave.ogg
 
 #begin sound/445109__breviceps__mud-splat.ogg
 /importer:OggImporter

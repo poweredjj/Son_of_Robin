@@ -20,6 +20,7 @@ namespace SonOfRobin
             Equip = 7,
             Fruits = 8,
             Lab = 9,
+            Totem = 11,
         }
 
         public readonly World world;
@@ -595,7 +596,7 @@ namespace SonOfRobin
             StorageType storageType = (StorageType)(Int64)storageDict["storageType"];
             List<PieceTemplate.Name> allowedPieceNames = (List<PieceTemplate.Name>)storageDict["allowedPieceNames"];
 
-            PieceStorage storage = new PieceStorage(width: width, height: height, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit, allowedPieceNames: allowedPieceNames, label: label);
+            PieceStorage storage = new(width: width, height: height, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit, allowedPieceNames: allowedPieceNames, label: label);
             if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))
             {
                 byte lastUsedSlotX = (byte)(Int64)storageDict["lastUsedSlotX"];

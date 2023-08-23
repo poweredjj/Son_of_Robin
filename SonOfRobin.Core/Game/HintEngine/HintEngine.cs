@@ -37,9 +37,9 @@ namespace SonOfRobin
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
 
-        public List<Type> shownGeneralHints = new List<Type> { };
-        public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
-        public List<Tutorials.Type> shownTutorials = new List<Tutorials.Type> { };
+        public List<Type> shownGeneralHints = new() { };
+        public List<PieceHint.Type> shownPieceHints = new() { };
+        public List<Tutorials.Type> shownTutorials = new() { };
         public readonly World world;
         private int waitUntilFrame;
 
@@ -59,7 +59,6 @@ namespace SonOfRobin
                 {"shownGeneralHints", this.shownGeneralHints },
                 {"shownPieceHints", this.shownPieceHints },
                 {"shownTutorials", this.shownTutorials },
-                {"waitUntilFrame", this.waitUntilFrame },
             };
 
             return hintsData;
@@ -70,7 +69,7 @@ namespace SonOfRobin
             this.shownGeneralHints = (List<Type>)hintsData["shownGeneralHints"];
             this.shownPieceHints = (List<PieceHint.Type>)hintsData["shownPieceHints"];
             this.shownTutorials = (List<Tutorials.Type>)hintsData["shownTutorials"];
-            this.waitUntilFrame = (int)(Int64)hintsData["waitUntilFrame"];
+            this.waitUntilFrame = this.world.CurrentUpdate + 200;
         }
 
         public void UpdateWaitFrame()

@@ -91,6 +91,7 @@ namespace SonOfRobin
             AddFadeInAnim = 72,
             InteractWithCooker = 73,
             InteractWithLab = 74,
+            InteractWithTotem = 90,
             InventoryCombineItems = 75,
             InventoryReleaseHeldPieces = 76,
             RemoveBuffs = 78,
@@ -1613,6 +1614,28 @@ namespace SonOfRobin
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
                             TaskName taskName = alchemyLab.IsOn ? TaskName.ShowBrewingProgress : TaskName.OpenContainer;
                             new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+                            return;
+                        }
+
+                    case TaskName.InteractWithTotem:
+                        {
+                            Totem totem = (Totem)this.ExecuteHelper;
+
+                            if (totem.CanBeUsedNow) new Task(taskName: TaskName.OpenContainer, delay: 0, executeHelper: this.ExecuteHelper);
+                            else
+                            {
+                                int hoursToActivation = (int)Math.Ceiling(totem.TimeUntilCanBeUsed.TotalMinutes / 60);
+
+                                string timeLeftString = hoursToActivation == 1 ?
+                                    $"{hoursToActivation} symbol is glowing" :
+                                    $"{hoursToActivation} symbols are glowing";
+
+                                HintEngine.ShowMessageDuringPause(new List<HintMessage> {
+                                   new HintMessage(text: $"I cannot approach this | {totem.readableName} now.\n{timeLeftString}.",
+                                   blockInput: true, imageList: new List<Texture2D> { totem.sprite.AnimFrame.texture }),
+                                   });
+                            }
+
                             return;
                         }
 

@@ -6,7 +6,7 @@ using System.Linq;
 namespace SonOfRobin
 {
     [Serializable]
-    public struct WeatherEvent
+    public readonly struct WeatherEvent
     {
         public readonly Weather.WeatherType type;
         public readonly float intensity;
@@ -512,7 +512,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                TimeSpan gap = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
+                TimeSpan gap = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
                 timeCursor += gap;
 
                 if (timeCursor >= endTime) return; // no point in adding event, if timeCursor is outside range
@@ -525,15 +525,15 @@ namespace SonOfRobin
                     if (minDuration < TimeSpan.FromMinutes(10)) return;
                 }
 
-                TimeSpan duration = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
+                TimeSpan duration = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
 
                 TimeSpan maxTransition = TimeSpan.FromTicks((long)(duration.Ticks / 4));
                 TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
-                TimeSpan transition = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
+                TimeSpan transition = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
 
                 float intensity = randomizeIntensity ? Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity) : maxIntensity;
 
-                bool add = addChanceFactor == 0 || world.random.NextSingle() >= addChanceFactor;
+                bool add = addChanceFactor == 0 || this.world.random.NextSingle() >= addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
                 timeCursor += duration;
@@ -556,9 +556,36 @@ namespace SonOfRobin
             }
         }
 
+        public void RemoveAllEventsForDuration(TimeSpan duration)
+        {
+            DateTime endTime = this.world.islandClock.IslandDateTime + duration;
+            weatherEvents.RemoveAll(e => e.startTime < endTime);
+
+            if (endTime > this.forecastEnd) this.forecastEnd = endTime; // to prevent from overwriting with new forecast
+        }
+
+        public void CreateVeryBadWeatherForDuration(TimeSpan duration)
+        {
+            TimeSpan transitionDuration = TimeSpan.FromMinutes(8);
+            if (duration < transitionDuration * 2) return;
+
+            DateTime startTime = this.world.islandClock.IslandDateTime;
+            DateTime endTime = startTime + duration;
+
+            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Clouds, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
+
+            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Rain, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration / 3));
+
+            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
+
+            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Fog, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
+
+            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: 0.8f, randomizeIntensity: false);
+        }
+
         public Dictionary<string, Object> Serialize()
         {
-            Dictionary<string, Object> weatherData = new Dictionary<string, object>
+            Dictionary<string, Object> weatherData = new()
             {
                 { "weatherEvents", this.weatherEvents },
                 { "currentIntensityForType", this.currentIntensityForType },
@@ -589,7 +616,7 @@ namespace SonOfRobin
 
             foreach (WeatherType type in allTypes)
             {
-                this.currentIntensityForType[type] = 0; // for compatibility with older saves
+                this.currentIntensityForType[type] = 0; // for compatibility with older saves (when introducing new weather type)
             }
 
             foreach (var kvp in (Dictionary<WeatherType, float>)weatherData["currentIntensityForType"])

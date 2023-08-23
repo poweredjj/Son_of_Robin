@@ -1274,7 +1274,7 @@ namespace SonOfRobin
 
         public void FlashRedOverlay()
         {
-            SolidColor redOverlay = new SolidColor(color: Color.Red, viewOpacity: 0.0f);
+            SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
             this.solidColorManager.Add(redOverlay);

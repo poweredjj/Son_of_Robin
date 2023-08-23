@@ -74,6 +74,7 @@ namespace SonOfRobin
             WoodenFencePositive = 67,
             DeadAnimal = 68,
             HarvestingWorkshop = 69,
+            Totem = 70,
 
             CineLookForSurvivors1 = 57,
             CineLookForSurvivors2 = 58,

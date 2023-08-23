@@ -104,6 +104,8 @@ namespace SonOfRobin
             AlchemyLabStandard = 65,
             AlchemyLabAdvanced = 66,
 
+            Totem = 223,
+
             FenceHorizontalShort = 202,
             FenceVerticalShort = 203,
             FenceHorizontalLong = 204,
@@ -168,6 +170,7 @@ namespace SonOfRobin
             UpgradeTrigger = 114,
             BrewTrigger = 115,
             MeatHarvestTrigger = 212,
+            OfferTrigger = 224,
             FireplaceTriggerOn = 116,
             FireplaceTriggerOff = 117,
 
@@ -951,6 +954,15 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.OfferTrigger:
+                    {
+                        var allowedTerrain = terrainCanGoAnywhere;
+
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.", activeState: BoardPiece.State.Empty);
+
+                        return boardPiece;
+                    }
+
                 case Name.FireplaceTriggerOn:
                     {
                         var allowedTerrain = terrainCanGoAnywhere;
@@ -1316,6 +1328,16 @@ namespace SonOfRobin
 
                         meatDryingRack.sprite.AssignNewName("off");
                         return meatDryingRack;
+                    }
+
+                case Name.Totem:
+                    {
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
+
+                        var totem = new Totem(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Totem, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "totem", description: "A totem with magical powers.", soundPack: soundPack);
+
+                        return totem;
                     }
 
                 case Name.Clam:
