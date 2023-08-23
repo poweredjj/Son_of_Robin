@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -32,8 +31,6 @@ namespace SonOfRobin
 
         private bool spectatorMode;
         private bool cineMode;
-        public float cineCurtainShowPercentage; // 0 - 1
-        private readonly Tweener tweener;
         public readonly PieceTemplate.Name initialPlayerName;
         public readonly int seed;
         public readonly int resDivider;
@@ -46,6 +43,7 @@ namespace SonOfRobin
         private RenderTarget2D darknessMask;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
+        public readonly CineCurtains cineCurtains;
 
         public readonly CraftStats craftStats;
         public readonly KitchenStats cookStats;
@@ -92,11 +90,9 @@ namespace SonOfRobin
         {
             this.seed = seed;
             this.random = new Random(seed);
-            this.tweener = new Tweener();
 
             this.demoMode = demoMode;
             this.cineMode = false;
-            this.cineCurtainShowPercentage = 0f;
 
             this.BuildMode = false;
             this.spectatorMode = false;
@@ -164,6 +160,7 @@ namespace SonOfRobin
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
+            this.cineCurtains = new CineCurtains();
             this.initialPlayerName = playerName;
             this.debugText = "";
             if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride);
@@ -171,6 +168,7 @@ namespace SonOfRobin
 
             this.AddLinkedScene(this.map);
             this.AddLinkedScene(this.playerPanel);
+            this.AddLinkedScene(this.cineCurtains);
 
             this.solidColorManager = new SolidColorManager(this);
             this.stateMachineTypesManager = new SMTypesManager(this);
@@ -227,6 +225,7 @@ namespace SonOfRobin
         public Sound DialogueSound
         { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
 
+
         public bool CineMode
         {
             get { return cineMode; }
@@ -234,29 +233,10 @@ namespace SonOfRobin
             {
                 if (this.cineMode == value) return;
 
-                Tween tweenCurtain = this.tweener.FindTween(target: this, memberName: "cineCurtainShowPercentage");
-                float tweenDuration = 0.35f;
-
-                if (!value)
-                {
-                    if (this.cineCurtainShowPercentage > 0 && (tweenCurtain == null || !tweenCurtain.IsComplete))
-                    {
-                        tweenCurtain?.CancelAndComplete();
-                        this.tweener.TweenTo(target: this, expression: world => world.cineCurtainShowPercentage, toValue: 0f, duration: tweenDuration)
-                            .Easing(EasingFunctions.CircleIn);
-                        new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, executeHelper: false, delay: (int)(tweenDuration * 60f));
-                        return;
-                    }
-                }
-
                 this.cineMode = value;
 
                 if (value)
                 {
-                    tweenCurtain?.CancelAndComplete();
-                    this.tweener.TweenTo(target: this, expression: world => world.cineCurtainShowPercentage, toValue: 1f, duration: tweenDuration)
-                        .Easing(EasingFunctions.CircleInOut);
-
                     this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
                     this.tipsLayout = ControlTips.TipsLayout.Empty;
                     this.InputType = InputTypes.None;
@@ -282,6 +262,8 @@ namespace SonOfRobin
                     this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
                     this.camera.ResetMovementSpeed();
                     this.camera.TrackPiece(this.Player);
+
+                    if (this.cineCurtains.Enabled) this.cineCurtains.Enabled = false;
 
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);
                 }
@@ -942,7 +924,6 @@ namespace SonOfRobin
             this.UpdateViewParams();
             this.weather.Update();
             this.swayManager.Update();
-            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
             if (this.soundPaused && this.inputActive)
             {
@@ -1402,23 +1383,6 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 FieldTip.DrawFieldTips(world: this);
-                SonOfRobinGame.SpriteBatch.End();
-            }
-
-            if (this.cineCurtainShowPercentage > 0)
-            {
-                SonOfRobinGame.SpriteBatch.Begin(); // with "blank" transformMatrix, to draw in screenSpace (avoiding stuttering)
-
-                int screenWidth = SonOfRobinGame.VirtualWidth;
-                int screenHeight = SonOfRobinGame.VirtualHeight;
-
-                int curtainHeight = (int)(screenHeight * 0.12f * this.cineCurtainShowPercentage);
-                Rectangle topRect = new(x: 0, y: 0, width: screenWidth, curtainHeight);
-                Rectangle bottomRect = new(x: 0, y: screenHeight - curtainHeight, width: screenWidth, height: curtainHeight);
-
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, topRect, Color.Black);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bottomRect, Color.Black);
-
                 SonOfRobinGame.SpriteBatch.End();
             }
 

@@ -64,6 +64,7 @@ namespace SonOfRobin
             RemoveScene = 45,
             ChangeSceneInputType = 46,
             SetCineMode = 47,
+            SetCineCurtains = 89,
             AddTransition = 48,
             SolidColorAddOverlay = 49,
             SolidColorRemoveAll = 50,
@@ -1292,6 +1293,15 @@ namespace SonOfRobin
                             if (world == null || world.demoMode) return;
 
                             world.CineMode = (bool)this.ExecuteHelper;
+                            return;
+                        }
+
+                    case TaskName.SetCineCurtains:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null || world.demoMode) return;
+
+                            world.cineCurtains.Enabled = (bool)this.ExecuteHelper;
                             return;
                         }
 

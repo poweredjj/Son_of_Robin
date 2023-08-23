@@ -1180,6 +1180,8 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
+            float opacity = Math.Max(1f - ((this.piece.world).cineCurtains.showPercentage * 2f), 0) * this.viewParams.drawOpacity;
+
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int margin = this.Margin;
@@ -1187,14 +1189,14 @@ namespace SonOfRobin
             int spriteSize = Convert.ToInt32((float)tileSize * 0.7f);
             int spriteOffset = (tileSize - spriteSize) / 2;
 
-            this.DrawMainLabel();
+            this.DrawMainLabel(opacity: opacity);
 
             Rectangle bgRect = this.BgRect;
 
             if (this.type != Type.SingleBottom)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.BlanchedAlmond * 0.7f * this.viewParams.drawOpacity);
-                Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.BlanchedAlmond * 0.7f * opacity);
+                Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * opacity, borderWidth: 2);
             }
 
             foreach (StorageSlot slot in this.storage.AllSlots)
@@ -1211,16 +1213,16 @@ namespace SonOfRobin
                 Color outlineColor = isActive ? Color.LawnGreen : Color.White;
                 Color fillColor = isActive ? Color.LightSeaGreen : Color.White;
 
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, tileRect, fillColor * 0.35f * this.viewParams.drawOpacity);
-                Helpers.DrawRectangleOutline(rect: tileRect, color: outlineColor * this.viewParams.drawOpacity * 0.8f, borderWidth: 2);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, tileRect, fillColor * 0.35f * opacity);
+                Helpers.DrawRectangleOutline(rect: tileRect, color: outlineColor * opacity * 0.8f, borderWidth: 2);
 
-                this.DrawSlotLabel(slot: slot, tileRect: tileRect);
+                this.DrawSlotLabel(slot: slot, tileRect: tileRect, opacity: opacity);
 
                 Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPosWithMargin.X + spriteOffset, (int)slotPosWithMargin.Y + spriteOffset, spriteSize, spriteSize);
-                slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity, drawNewIcon: this.type != Type.SingleBottom);
+                slot.Draw(destRect: destRect, opacity: opacity, drawNewIcon: this.type != Type.SingleBottom);
 
-                Rectangle quantityRect = new Rectangle(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
-                DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: this.viewParams.drawOpacity);
+                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
+                DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: opacity);
             }
 
             if (this.InputType != InputTypes.Always) this.DrawCursor();
@@ -1228,17 +1230,17 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        private void DrawSlotLabel(StorageSlot slot, Rectangle tileRect)
+        private void DrawSlotLabel(StorageSlot slot, Rectangle tileRect, float opacity)
         {
             if (slot.label == "" || !slot.IsEmpty) return;
 
             Rectangle labelRect = tileRect;
             labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: new Color(50, 50, 50) * this.viewParams.drawOpacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, outlineColor: new Color(50, 50, 50) * opacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
         }
 
-        private void DrawMainLabel()
+        private void DrawMainLabel(float opacity)
         {
             if (this.type == Type.SingleBottom) return;
 
@@ -1258,8 +1260,8 @@ namespace SonOfRobin
             float shadowOffset = textHeight * 0.06f;
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: labelPos, color: Color.White * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public static void DrawQuantity(int pieceCount, Rectangle destRect, float opacity, bool ignoreSingle = true)
@@ -1297,8 +1299,8 @@ namespace SonOfRobin
 
             slotPos += new Vector2(tileSize * 0.5f, tileSize * 0.5f);
 
-            Rectangle sourceRectangle = new Rectangle(0, 0, cursorTexture.Width, cursorTexture.Height);
-            Rectangle destinationRectangle = new Rectangle((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
+            Rectangle sourceRectangle = new(0, 0, cursorTexture.Width, cursorTexture.Height);
+            Rectangle destinationRectangle = new((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
 
             if (draggedPieces.Count > 0)
             {
@@ -1320,7 +1322,7 @@ namespace SonOfRobin
                     StatBar.DrawAll();
                 }
 
-                Rectangle quantityRect = new Rectangle(x: shownPieceRect.X, y: shownPieceRect.Y + (shownPieceRect.Height / 2), width: shownPieceRect.Width, height: shownPieceRect.Height / 2);
+                Rectangle quantityRect = new(x: shownPieceRect.X, y: shownPieceRect.Y + (shownPieceRect.Height / 2), width: shownPieceRect.Width, height: shownPieceRect.Height / 2);
                 DrawQuantity(pieceCount: draggedPieces.Count, destRect: quantityRect, opacity: this.viewParams.drawOpacity);
             }
 

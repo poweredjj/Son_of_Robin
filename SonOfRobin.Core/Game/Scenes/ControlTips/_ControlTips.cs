@@ -141,13 +141,17 @@ namespace SonOfRobin
         {
             if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
 
+            float tipsOpacity = this.currentScene?.GetType() == typeof(World) ?
+                Math.Max(1f - (((World)this.currentScene).cineCurtains.showPercentage * 2f), 0) :
+                1f;
+
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int drawOffsetX = 0;
 
             foreach (ButtonTip tip in this.tipCollection.Values)
             {
-                tip.Draw(controlTips: this, drawOffsetX: drawOffsetX);
+                tip.Draw(controlTips: this, drawOffsetX: drawOffsetX, globalOpacity: tipsOpacity);
                 drawOffsetX += tip.width + tipMargin;
             }
 
@@ -162,7 +166,7 @@ namespace SonOfRobin
         public static void RefreshTopTipsLayout()
         {
             ControlTips topTips = GetTopTips();
-            if (topTips != null) topTips.RefreshLayout();
+            topTips?.RefreshLayout();
         }
 
         public void RefreshLayout()

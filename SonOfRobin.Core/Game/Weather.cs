@@ -322,7 +322,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.NextGlobalWindBlow > islandDateTime) return;
+            if (this.NextGlobalWindBlow > islandDateTime || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
 
             if (this.WindOriginX == -1 || this.WindOriginY == -1)
             {

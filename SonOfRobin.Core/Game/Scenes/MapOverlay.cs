@@ -94,7 +94,7 @@ namespace SonOfRobin
                 return;
             }
 
-            float opacity = 1f - this.map.world.cineCurtainShowPercentage;
+            float opacity = 1f - this.map.world.cineCurtains.showPercentage;
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * opacity * this.viewParams.drawOpacity);

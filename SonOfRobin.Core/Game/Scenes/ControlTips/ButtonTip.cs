@@ -55,22 +55,21 @@ namespace SonOfRobin
             }
         }
 
-        public void Draw(ControlTips controlTips, int drawOffsetX)
+        public void Draw(ControlTips controlTips, int drawOffsetX, float globalOpacity)
         {
-            Vector2 basePos = new Vector2(drawOffsetX, 0);
+            Vector2 basePos = new(drawOffsetX, 0);
 
             float opacityMultiplier = this.highlighter.IsOn ? 1f : 0.5f;
 
-            int textureWidth, textureHeight;
             int textureOffsetX = 0;
             int textureMaxHeight = 0;
             foreach (Texture2D texture in this.textures)
             {
-                textureWidth = (int)(texture.Width * textureScale);
-                textureHeight = (int)(texture.Height * textureScale);
+                int textureWidth = (int)(texture.Width * textureScale);
+                int textureHeight = (int)(texture.Height * textureScale);
                 textureMaxHeight = Math.Max(textureHeight, textureMaxHeight);
 
-                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.Opacity * opacityMultiplier);
+                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.Opacity * opacityMultiplier * globalOpacity);
                 textureOffsetX += textureWidth + margin;
             }
 
@@ -81,11 +80,11 @@ namespace SonOfRobin
             {
                 for (int y = -1; y < 2; y++)
                 {
-                    SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos + new Vector2(x, y), color: Color.Black * controlTips.viewParams.drawOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                    SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos + new Vector2(x, y), color: Color.Black * controlTips.viewParams.drawOpacity * globalOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
                 }
             }
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos, color: Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos, color: Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier * globalOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             // Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)(font.MeasureString(this.text).X * fontScale), (int)(font.MeasureString(this.text).Y * fontScale)), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }

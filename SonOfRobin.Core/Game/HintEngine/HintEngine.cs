@@ -303,10 +303,11 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
 
-                        this.world.CineMode = true;
-
                         Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.cineCurtains.showPercentage = 1f; // no transition here
+                        this.world.CineMode = true;
 
                         // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
                         var taskChain = new List<Object>();
