@@ -40,6 +40,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            if (this.showPercentage == 0) return;
+
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int screenWidth = SonOfRobinGame.VirtualWidth;
