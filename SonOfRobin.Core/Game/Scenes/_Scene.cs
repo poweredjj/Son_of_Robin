@@ -95,7 +95,7 @@ namespace SonOfRobin
                 currentUpdateStackUpdateNo = SonOfRobinGame.CurrentUpdate;
                 currentUpdateStack.Clear();
 
-                if (sceneStack.Count == 0) return currentUpdateStack;
+                if (!sceneStack.Any()) return currentUpdateStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -122,7 +122,7 @@ namespace SonOfRobin
                 currentDrawStackDrawNo = SonOfRobinGame.CurrentDraw;
                 currentDrawStack.Clear();
 
-                if (sceneStack.Count == 0) return currentDrawStack;
+                if (!sceneStack.Any()) return currentDrawStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -415,7 +415,7 @@ namespace SonOfRobin
         {
             // transitions are updated independently from scene updates - to keep the transitions going even when scene.Update() is not processed
 
-            foreach (Scene scene in sceneStack)
+            foreach (Scene scene in sceneStack.ToList())
             {
                 scene.transManager.Update();
             }
@@ -446,7 +446,7 @@ namespace SonOfRobin
 
             UpdateAllTransitions();
 
-            if (sceneStack.Count == 0) throw new DivideByZeroException("SceneStack is empty.");
+            if (!sceneStack.Any()) throw new DivideByZeroException("SceneStack is empty.");
 
             LastUpdateDuration = UpdateTimeElapsed;
         }
