@@ -114,7 +114,6 @@ namespace SonOfRobin
             public readonly Category category;
             public readonly List<Point> coordsList;
             public readonly Rectangle areaRect;
-            public readonly Rectangle textRect;
             public readonly List<Cell> cells;
             public bool hasBeenDiscovered;
             public Color Color { get { return colorByCategory[this.category]; } }
@@ -127,8 +126,6 @@ namespace SonOfRobin
                 this.coordsList = coordsList;
                 this.areaRect = this.GetAreaRect(this.coordsList);
                 this.cells = this.GetCells(this.coordsList);
-                this.textRect = areaRect;
-                this.textRect.Inflate(-areaRect.Width / 6, -areaRect.Height / 6);
                 this.hasBeenDiscovered = hasBeenDiscovered;
             }
 
