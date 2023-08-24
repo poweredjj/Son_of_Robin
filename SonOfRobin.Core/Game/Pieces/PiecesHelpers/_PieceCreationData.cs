@@ -39,9 +39,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.002f, maxAmount: 10),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: 10),
+                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: 10),
+                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.002f, maxAmount: 4),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f),
 
@@ -61,6 +61,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.1f),
                 new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.08f, maxAmount: 200),
                 new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.11f),
+
+                new PieceCreationData(name: PieceTemplate.Name.Totem, multiplier: 0.1f, maxAmount: 2),
 
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),

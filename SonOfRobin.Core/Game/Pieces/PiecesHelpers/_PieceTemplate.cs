@@ -1335,7 +1335,13 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
 
-                        var totem = new Totem(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Totem, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "totem", description: "A totem with magical powers.", soundPack: soundPack);
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                                { Terrain.Name.Biome, new AllowedRange(min: (byte)(Terrain.biomeMin + (255 - Terrain.biomeMin) / 2), max:255 ) },
+                            },
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
+
+                        var totem = new Totem(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Totem, allowedTerrain: allowedTerrain, maxHitPoints: 30, readableName: "totem", description: "A totem with magical powers.", soundPack: soundPack);
 
                         return totem;
                     }

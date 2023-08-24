@@ -1343,6 +1343,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
+                        this.allowedDensity = new AllowedDensity(radius: 2000, maxNoOfPiecesSameName: 0);
                         break;
 
                     case PieceTemplate.Name.Stick:

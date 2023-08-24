@@ -19,6 +19,7 @@ namespace SonOfRobin
             Island = 5,
             Shore = 6,
             Grassland = 7,
+            Ruins = 8,
         }
 
         public class NameRandomizer
@@ -67,6 +68,7 @@ namespace SonOfRobin
             { Category.Island, new Color(4, 184, 157) },
             { Category.Shore, new Color(186, 137, 32) },
             { Category.Grassland, new Color(27, 168, 2) },
+            { Category.Ruins, new Color(112, 112, 112) },
         };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
@@ -86,6 +88,9 @@ namespace SonOfRobin
             { Category.Shore, new List<string>{ "Captain's", "Mariner's", "Buccaneer's", "Palmshade", "Swashbuckler's", "Marauder's", "Cutlass", "Bounty", "Dead Man's", "Corsair's", "Pirate's", "Tropic", "Shipwrecked", "Survivor's", "Marooned", "Columbus" } },
 
             { Category.Grassland, new List<string>{ "Green", "Grassy", "Breezy", "Whispering", "Serene", "Abundant", "Palmshade", "Harmony", "Explorer's", "Bounty", "Governor's", "Tranquil", "Restful", "Tropic", "Verdant", "St. Augustine's", "Saint Francis'", "Vespucci's" } },
+
+            { Category.Ruins, new List<string>{ "Ancient" } },
+
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -105,6 +110,8 @@ namespace SonOfRobin
             { Category.Shore, new List<string>{ "Shore", "Beachfront", "Riviera", "Beach", "Haven", "Coast", "Sand"  } },
 
             { Category.Grassland, new List<string>{ "Grassland", "Meadow", "Savanna", "Expanse", "Plains", "Prairie", "Oasis", "Steppe", "Glade" } },
+
+            { Category.Ruins, new List<string>{ "Ruins" } },
             };
 
         public class Location
@@ -464,7 +471,7 @@ namespace SonOfRobin
 
                     minCells = 15;
                     maxCells = 200;
-                    density = 1; // 2
+                    density = 1;
 
                     break;
 
@@ -503,6 +510,18 @@ namespace SonOfRobin
 
                     minCells = 20;
                     maxCells = 400;
+                    density = 1;
+
+                    break;
+
+                case Category.Ruins:
+
+                    cellSearches.Add(new CellSearch(
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true) }
+                        ));
+
+                    minCells = 2;
+                    maxCells = 800;
                     density = 1;
 
                     break;

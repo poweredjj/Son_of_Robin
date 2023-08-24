@@ -37,6 +37,7 @@ namespace SonOfRobin
             beach_bright = 17,
             beach_dark = 18,
             swamp = 19,
+            ruins = 22,
             lava = 20,
             volcano_edge = 21,
         };
