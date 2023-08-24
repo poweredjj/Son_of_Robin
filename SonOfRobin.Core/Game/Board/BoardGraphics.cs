@@ -302,8 +302,6 @@ namespace SonOfRobin
 
                 if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.swamp;
                 else if (extDataValDict[ExtBoardProps.Name.BiomeRuins]) return RepeatingPattern.Name.ruins;
-
-                // future biome colors should be defined here
             }
 
             foreach (var kvp in patternNamesByHeight)
