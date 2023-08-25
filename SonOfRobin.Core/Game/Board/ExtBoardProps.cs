@@ -7,19 +7,6 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-    public readonly struct BiomeConstrain
-    {
-        public readonly Terrain.Name terrainName;
-        public readonly byte min;
-        public readonly byte max;
-
-        public BiomeConstrain(Terrain.Name terrainName, byte min, byte max)
-        {
-            this.terrainName = terrainName;
-            this.min = min;
-            this.max = max;
-        }
-    }
 
     public class ExtBoardProps
     {
@@ -27,6 +14,7 @@ namespace SonOfRobin
         {
             Sea = 0,
             OuterBeach = 1,
+
             // each biome name must start with "Biome"
             BiomeSwamp = 2,
             BiomeRuins = 3,
@@ -35,16 +23,16 @@ namespace SonOfRobin
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
         public static readonly List<Name> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
 
-        public static readonly Dictionary<Name, List<BiomeConstrain>> biomeConstrains = new()
+        public static readonly Dictionary<Name, List<TerrainSearch>> biomeConstrains = new()
         {
-            { Name.BiomeSwamp, new List<BiomeConstrain>{
-                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 159),
-                 new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
+            { Name.BiomeSwamp, new List<TerrainSearch>{
+                 new TerrainSearch(name: Terrain.Name.Height, min: 106, max: 159),
+                 new TerrainSearch(name: Terrain.Name.Humidity, min: 80, max: 255),
             } },
 
-            { Name.BiomeRuins, new List<BiomeConstrain>{
-                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 120, max: 145),
-                 new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 0, max: 160),
+            { Name.BiomeRuins, new List<TerrainSearch>{
+                 new TerrainSearch(name: Terrain.Name.Height, min: 120, max: 145),
+                 new TerrainSearch(name: Terrain.Name.Humidity, min: 0, max: 160),
             } }
         };
 

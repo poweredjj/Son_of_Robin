@@ -463,9 +463,8 @@ namespace SonOfRobin
 
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
-                 terrainName: Terrain.Name.Height,
-                 minVal: 0,
-                 maxVal: (byte)Terrain.waterLevelMax,
+                 terrainSearches: new List<TerrainSearch> { new TerrainSearch(name: Terrain.Name.Height, min: 0, max: (byte)Terrain.waterLevelMax) },
+                 setNameIfInsideRange: true,
                  nameToSetIfInRange: ExtBoardProps.Name.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach
@@ -478,12 +477,9 @@ namespace SonOfRobin
 
             this.FloodFillExtProps(
                  startingPoints: beachEdgePointListRaw,
-                 terrainName: Terrain.Name.Height,
-                 minVal: Terrain.waterLevelMax,
-                 maxVal: (byte)(Terrain.waterLevelMax + 5),
-                 nameToSetIfInRange: ExtBoardProps.Name.OuterBeach,
-                 setNameIfOutsideRange: false,
-                 nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
+                 terrainSearches: new List<TerrainSearch> { new TerrainSearch(name: Terrain.Name.Height, min: Terrain.waterLevelMax, max: (byte)(Terrain.waterLevelMax + 5)) },
+                 setNameIfInsideRange: true,
+                 nameToSetIfInRange: ExtBoardProps.Name.OuterBeach
                  );
         }
 
@@ -527,12 +523,9 @@ namespace SonOfRobin
 
                         ConcurrentBag<Point> biomeRawPoints = this.FloodFillExtProps(
                               startingPoints: new ConcurrentBag<Point> { new Point(cursorRawX, cursorRawY) },
-                              terrainName: Terrain.Name.Biome,
-                              minVal: biomeMinVal,
-                              maxVal: biomeMaxVal,
+                              setNameIfInsideRange: true,
                               nameToSetIfInRange: biomeName,
-                              setNameIfOutsideRange: false,
-                              nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                              terrainSearches: new List<TerrainSearch> { new TerrainSearch(name: Terrain.Name.Biome, min: biomeMinVal, max: biomeMaxVal) }
                               );
 
                         Parallel.ForEach(biomeRawPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
@@ -563,7 +556,7 @@ namespace SonOfRobin
 
                 if (ExtBoardProps.biomeConstrains.ContainsKey(biomeName))
                 {
-                    ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: true);
+                    ConcurrentBag<Point> pointsToRemoveFromBiome = this.GetPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: true);
 
                     Parallel.ForEach(pointsToRemoveFromBiome, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
@@ -595,7 +588,7 @@ namespace SonOfRobin
             return pointBag;
         }
 
-        private ConcurrentBag<Point> FilterPointsOutsideBiomeConstrains(ConcurrentBag<Point> oldPointBag, List<BiomeConstrain> constrainsList, bool xyRaw)
+        private ConcurrentBag<Point> GetPointsOutsideBiomeConstrains(ConcurrentBag<Point> oldPointBag, List<TerrainSearch> constrainsList, bool xyRaw)
         {
             var newPointBag = new ConcurrentBag<Point>();
 
@@ -603,9 +596,9 @@ namespace SonOfRobin
             {
                 bool withinConstrains = true;
 
-                foreach (BiomeConstrain constrain in constrainsList)
+                foreach (TerrainSearch constrain in constrainsList)
                 {
-                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, position: currentPoint, xyRaw: xyRaw);
+                    byte value = this.GetFieldValue(terrainName: constrain.name, position: currentPoint, xyRaw: xyRaw);
 
                     if (value < constrain.min || value > constrain.max)
                     {
@@ -620,7 +613,7 @@ namespace SonOfRobin
             return newPointBag;
         }
 
-        private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, Terrain.Name terrainName, byte minVal, byte maxVal, ExtBoardProps.Name nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.Name nameToSetIfOutsideRange)
+        private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, List<TerrainSearch> terrainSearches, ExtBoardProps.Name nameToSetIfInRange = ExtBoardProps.Name.Sea, bool setNameIfInsideRange = false, bool setNameIfOutsideRange = false, ExtBoardProps.Name nameToSetIfOutsideRange = ExtBoardProps.Name.Sea)
         {
             int dividedWidth = this.world.width / this.resDivider;
             int dividedHeight = this.world.height / this.resDivider;
@@ -647,12 +640,22 @@ namespace SonOfRobin
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    byte value = this.GetFieldValue(terrainName: terrainName, position: currentPoint, xyRaw: true);
+                    bool isInRange = true;
+                    foreach (TerrainSearch terrainSearch in terrainSearches)
+                    {
+                        byte value = this.GetFieldValue(terrainName: terrainSearch.name, position: currentPoint, xyRaw: true);
 
-                    if (minVal <= value && value <= maxVal) // point within range
+                        if (terrainSearch.min > value || value > terrainSearch.max)
+                        {
+                            isInRange = false;
+                            break;
+                        }
+                    }
+
+                    if (isInRange) // point within range
                     {
                         rawPointsInsideRange.Add(currentPoint);
-                        this.SetExtProperty(name: nameToSetIfInRange, value: true, position: currentPoint, xyRaw: true);
+                        if (setNameIfInsideRange) this.SetExtProperty(name: nameToSetIfInRange, value: true, position: currentPoint, xyRaw: true);
 
                         foreach (Point currentOffset in offsetList)
                         {
