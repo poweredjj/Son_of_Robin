@@ -89,7 +89,7 @@ namespace SonOfRobin
 
             { Category.Grassland, new List<string>{ "Green", "Grassy", "Breezy", "Whispering", "Serene", "Abundant", "Palmshade", "Harmony", "Explorer's", "Bounty", "Governor's", "Tranquil", "Restful", "Tropic", "Verdant", "St. Augustine's", "Saint Francis'", "Vespucci's" } },
 
-            { Category.Ruins, new List<string>{ "Ancient" } },
+            { Category.Ruins, new List<string>{ "Ancient", "Lost", "Jungle", "Ceremonial", "Mystical", "Crumbling", "Forgotten", "Decaying", "Faded", "Mossy", "Vineswept", "Eroding" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -110,7 +110,7 @@ namespace SonOfRobin
 
             { Category.Grassland, new List<string>{ "Grassland", "Meadow", "Savanna", "Expanse", "Plains", "Prairie", "Oasis", "Steppe", "Glade" } },
 
-            { Category.Ruins, new List<string>{ "Ruins" } },
+            { Category.Ruins, new List<string>{ "Ruins", "Remnants", "Enclave", "Court", "Mausoleum", "Keep", "Sanctum", "Site", "Grounds", "Totems", "Citadel", "Ruinscape" } },
             };
 
         public class Location
@@ -122,6 +122,7 @@ namespace SonOfRobin
             public readonly Rectangle areaRect;
             public readonly List<Cell> cells;
             public bool hasBeenDiscovered;
+
             public Color Color
             { get { return colorByCategory[this.category]; } }
 
@@ -305,10 +306,13 @@ namespace SonOfRobin
         private readonly Random random;
         private NameRandomizer nameRandomizer;
         private int playerLocationLastCheckedFrame;
+
         public List<Location> DiscoveredLocations
         { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
+
         public int DiscoveredLocationsCount
         { get { return this.DiscoveredLocations.Count; } }
+
         public int AllLocationsCount
         { get { return this.locationList.Count; } }
 

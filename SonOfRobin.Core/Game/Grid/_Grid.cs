@@ -550,7 +550,7 @@ namespace SonOfRobin
 
             // setting biome constrains
 
-            int minPointCount = 2000 / this.resDivider;
+            int minPointCount = 2800 / this.resDivider;
             var tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, List<Point>>();
 
             foreach (var kvp in pointCollectionsForBiomes)
