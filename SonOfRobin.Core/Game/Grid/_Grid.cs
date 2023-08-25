@@ -1102,9 +1102,12 @@ namespace SonOfRobin
                 }
             }
 
-            var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+            var visiblePieces = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+            var offScreenParticleEmitterPieces = this.world.recentParticlesManager.OffScreenPieces;
 
-            foreach (BoardPiece piece in visiblePieces.OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom))
+            var allPieces = visiblePieces.Concat(offScreenParticleEmitterPieces);
+
+            foreach (BoardPiece piece in allPieces.OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom))
             { piece.sprite.Draw(); }
 
             StatBar.DrawAll();

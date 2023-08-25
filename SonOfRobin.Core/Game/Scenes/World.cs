@@ -74,6 +74,7 @@ namespace SonOfRobin
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
+        public readonly RecentParticlesManager recentParticlesManager;
         public readonly SwayManager swayManager;
         public string debugText;
         public int ProcessedNonPlantsCount { get; private set; }
@@ -121,6 +122,7 @@ namespace SonOfRobin
             this.trackingManager = new TrackingManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
+            this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
             this.width = width;
             this.height = height;
@@ -935,6 +937,7 @@ namespace SonOfRobin
             this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, maxNoToLoad: 3);
 
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
+            this.recentParticlesManager.Update();
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 
