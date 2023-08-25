@@ -508,43 +508,55 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
-            var tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
+            byte biomeMinVal = Terrain.biomeMin;
+            byte biomeMaxVal = 255;
 
-            while (true)
+            int maxX = this.world.width / this.resDivider;
+            int maxY = this.world.height / this.resDivider;
+
+            var checkedCoordsRaw = new bool[maxX, maxY];
+
+            int cursorRawX = 0;
+            int cursorRawY = 0;
+
+            while (true) // using Parallel here would result in a random biome distribution
             {
-                byte minVal = Terrain.biomeMin;
-                byte maxVal = 255;
-
-                if (!tempRawPointsForBiomeCreation.Any())
+                if (!checkedCoordsRaw[cursorRawX, cursorRawY])
                 {
-                    tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: Terrain.Name.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
-                }
-                else
-                {
-                    tempRawPointsForBiomeCreation = this.FilterPointsWithoutSpecifiedExtProps(oldPointBag: tempRawPointsForBiomeCreation, extPropNames: ExtBoardProps.allBiomes, xyRaw: true);
-                }
+                    byte value = this.GetFieldValue(terrainName: Terrain.Name.Biome, x: cursorRawX, y: cursorRawY, xyRaw: true);
 
-                if (tempRawPointsForBiomeCreation.Any())
-                {
-                    var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
-                    this.biomeCountByName[biomeName]++;
-
-                    ConcurrentBag<Point> biomeRawPoints = this.FloodFillExtProps(
-                          startingPoints: new ConcurrentBag<Point> { tempRawPointsForBiomeCreation.First() },
-                          terrainName: Terrain.Name.Biome,
-                          minVal: minVal,
-                          maxVal: maxVal,
-                          nameToSetIfInRange: biomeName,
-                          setNameIfOutsideRange: false,
-                          nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
-                          );
-
-                    Parallel.ForEach(biomeRawPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                    if (biomeMinVal <= value && value <= biomeMaxVal)
                     {
-                        this.tempRawPointsForCreatedBiomes[biomeName].Add(point);
-                    });
+                        var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
+                        this.biomeCountByName[biomeName]++;
+
+                        ConcurrentBag<Point> biomeRawPoints = this.FloodFillExtProps(
+                              startingPoints: new ConcurrentBag<Point> { new Point(cursorRawX, cursorRawY) },
+                              terrainName: Terrain.Name.Biome,
+                              minVal: biomeMinVal,
+                              maxVal: biomeMaxVal,
+                              nameToSetIfInRange: biomeName,
+                              setNameIfOutsideRange: false,
+                              nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                              );
+
+                        Parallel.ForEach(biomeRawPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                        {
+                            this.tempRawPointsForCreatedBiomes[biomeName].Add(point);
+                            checkedCoordsRaw[point.X, point.Y] = true;
+                        });
+                    }
+
+                    checkedCoordsRaw[cursorRawX, cursorRawY] = true;
                 }
-                else break;
+
+                cursorRawX++;
+                if (cursorRawX >= maxX)
+                {
+                    cursorRawX = 0;
+                    cursorRawY++;
+                    if (cursorRawY >= maxY) break;
+                }
             }
         }
 
@@ -630,7 +642,7 @@ namespace SonOfRobin
             return pointBag;
         }
 
-        private ConcurrentBag<Point> FilterPointsWithoutSpecifiedExtProps(ConcurrentBag<Point> oldPointBag, List<ExtBoardProps.Name> extPropNames, bool xyRaw)
+        private ConcurrentBag<Point> GetPointsWithoutSpecifiedExtProps(ConcurrentBag<Point> oldPointBag, List<ExtBoardProps.Name> extPropNames, bool xyRaw)
         {
             var newPointBag = new ConcurrentBag<Point>();
 
@@ -638,8 +650,7 @@ namespace SonOfRobin
             {
                 var extPropsFound = false;
 
-                var extDataValDict = this.GetExtValueDict(position: currentPoint, xyRaw: xyRaw);
-                foreach (var kvp in extDataValDict)
+                foreach (var kvp in this.GetExtValueDict(position: currentPoint, xyRaw: xyRaw))
                 {
                     if (kvp.Value && extPropNames.Contains(kvp.Key))
                     {
