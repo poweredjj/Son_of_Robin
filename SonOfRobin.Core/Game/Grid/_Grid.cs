@@ -1104,15 +1104,21 @@ namespace SonOfRobin
 
             var visiblePieces = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
             var offScreenParticleEmitterPieces = this.world.recentParticlesManager.OffScreenPieces;
+            var piecesToDraw = visiblePieces.Concat(offScreenParticleEmitterPieces);
 
-            var allPieces = visiblePieces.Concat(offScreenParticleEmitterPieces);
+            int drawnPiecesCount = 0;
 
-            foreach (BoardPiece piece in allPieces.OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom))
-            { piece.sprite.Draw(); }
+            foreach (BoardPiece piece in piecesToDraw
+                .OrderBy(o => o.sprite.AnimFrame.layer)
+                .ThenBy(o => o.sprite.GfxRect.Bottom))
+            {
+                piece.sprite.Draw();
+                drawnPiecesCount++; // using counter, to avoid iterating IEnumerable again
+            }
 
             StatBar.DrawAll();
 
-            return visiblePieces.Count();
+            return drawnPiecesCount;
         }
 
         public void DrawDebugData(bool drawCellData, bool drawPieceData)
