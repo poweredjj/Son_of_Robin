@@ -606,29 +606,28 @@ namespace SonOfRobin
             };
 
             // Create a HashSet for faster point existence checks
-            HashSet<Point> pointsSet = new HashSet<Point>(pointsBag);
+            var pointsSet = new HashSet<Point>(pointsBag);
 
             // Create a 2D array to track processed points
             bool[,] bitmapPointIsProcessed = new bool[width, height];
 
             // Initialize variables for tracking regions and points
             int currentRegion = 0;
-            List<List<Point>> pointsByRegion = new List<List<Point>>();
+            var pointsByRegion = new List<List<Point>>();
 
             // filling regions
 
             // Process each point only once
             foreach (var start in pointsSet)
             {
-                if (bitmapPointIsProcessed[start.X, start.Y])
-                    continue;
+                if (bitmapPointIsProcessed[start.X, start.Y]) continue;
 
-                List<Point> thisRegionPoints = new List<Point>();
-                Stack<Point> stack = new Stack<Point>();
+                var thisRegionPoints = new List<Point>();
+                var stack = new Stack<Point>();
                 stack.Push(start);
 
                 // Explore the region connected to the starting point using Depth-First Search (DFS)
-                while (stack.Count > 0)
+                while (stack.Any())
                 {
                     Point currentPoint = stack.Pop();
 
@@ -642,9 +641,8 @@ namespace SonOfRobin
 
                     foreach (Point offset in offsetList)
                     {
-                        Point nextPoint = new Point(currentPoint.X + offset.X, currentPoint.Y + offset.Y);
-                        if (pointsSet.Contains(nextPoint))
-                            stack.Push(nextPoint);
+                        Point nextPoint = new(currentPoint.X + offset.X, currentPoint.Y + offset.Y);
+                        if (pointsSet.Contains(nextPoint)) stack.Push(nextPoint);
                     }
                 }
 
