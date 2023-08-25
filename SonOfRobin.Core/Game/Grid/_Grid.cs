@@ -501,6 +501,7 @@ namespace SonOfRobin
             int maxY = this.world.height / this.resDivider;
 
             var checkedCoordsRaw = new bool[maxX, maxY];
+            var biomeCoordsRaw = new bool[maxX, maxY];
 
             var biomeSearchesByName = new Dictionary<ExtBoardProps.Name, List<TerrainSearch>>();
             foreach (ExtBoardProps.Name biomeName in ExtBoardProps.allBiomes)
@@ -528,14 +529,21 @@ namespace SonOfRobin
                               terrainSearches: biomeSearchesByName[nextBiomeName]
                               );
 
-                        if (biomeRawPoints.Count >= 1500 / this.resDivider)
+                        var biomeRawPointsVerified = new List<Point>();
+                        foreach (Point filledPoint in biomeRawPoints)
                         {
-                            tempRawPointsForCreatedBiomes[nextBiomeName].AddRange(biomeRawPoints);
-                            biomeCountByName[nextBiomeName]++;
+                            // checking if this point hasn't been marked as biome already
+                            if (!biomeCoordsRaw[filledPoint.X, filledPoint.Y]) biomeRawPointsVerified.Add(filledPoint);
+                        }
 
-                            foreach (Point filledPoint in biomeRawPoints)
+                        if (biomeRawPointsVerified.Count >= 1500 / this.resDivider)
+                        {
+                            tempRawPointsForCreatedBiomes[nextBiomeName].AddRange(biomeRawPointsVerified);
+                            biomeCountByName[nextBiomeName]++;
+                            foreach (Point filledPoint in biomeRawPointsVerified)
                             {
                                 checkedCoordsRaw[filledPoint.X, filledPoint.Y] = true;
+                                biomeCoordsRaw[filledPoint.X, filledPoint.Y] = true;
                             }
 
                             nextBiomeName = biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
