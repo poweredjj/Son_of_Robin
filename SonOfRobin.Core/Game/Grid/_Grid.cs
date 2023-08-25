@@ -556,42 +556,35 @@ namespace SonOfRobin
             foreach (var kvp in pointCollectionsForBiomes)
             {
                 ExtBoardProps.Name biomeName = kvp.Key;
-                List<ConcurrentBag<Point>> pointLists = kvp.Value;
-                var biomeConstrains = ExtBoardProps.biomeConstrains[biomeName];
+                List<ConcurrentBag<Point>> pointBags = kvp.Value;
+                var terrainSearches = ExtBoardProps.biomeConstrains[biomeName].ToList();
+                terrainSearches.Insert(0, new TerrainSearch(name: Terrain.Name.Biome, min: biomeMinVal, max: biomeMaxVal));
+
+                var strictTerrainSearches = ExtBoardProps.biomeConstrains[biomeName].ToList();
+                strictTerrainSearches.Insert(0, new TerrainSearch(name: Terrain.Name.Biome, min: Terrain.biomeMin + 5, max: biomeMaxVal));
+
                 tempRawPointsForCreatedBiomes[biomeName] = new List<Point>();
 
-                foreach (ConcurrentBag<Point> inputPointBag in pointLists)
+                foreach (ConcurrentBag<Point> currentPointBag in pointBags)
                 {
-                    if (inputPointBag.Count < minimumPointCount) continue;
+                    if (currentPointBag.Count < minimumPointCount) continue;
 
-                    var constrainedPointBag = new ConcurrentBag<Point>();
-                    Parallel.ForEach(inputPointBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                    Point selectedPoint = currentPointBag.First();
+                    foreach (Point point in currentPointBag)
                     {
-                        if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: biomeConstrains, point: point, xyRaw: true)) constrainedPointBag.Add(point);
-                    });
-                    if (constrainedPointBag.Count < minimumPointCount) continue;
-
-                    while (true)
-                    {
-                        ConcurrentBag<Point> filledRegion = this.FloodFillExtProps(
-                            startingPoints: new ConcurrentBag<Point> { constrainedPointBag.First() },
-                            terrainSearches: biomeSearchList
-                            );
-
-                        if (filledRegion.Count >= minimumPointCount) tempRawPointsForCreatedBiomes[biomeName].AddRange(filledRegion);
-
-                        var newPointBag = new ConcurrentBag<Point>();
-                        Parallel.ForEach(constrainedPointBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                        if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: strictTerrainSearches, point: point, xyRaw: true))
                         {
-                            if (!filledRegion.Contains(point)) newPointBag.Add(point);
-                        });
-
-                        MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} constrainedPointBag {constrainedPointBag.Count}");
-
-
-                        constrainedPointBag = newPointBag;
-                        if (!constrainedPointBag.Any()) break;
+                            selectedPoint = point;
+                            break;
+                        }
                     }
+
+                    ConcurrentBag<Point> filledRegion = this.FloodFillExtProps(
+                        startingPoints: new ConcurrentBag<Point> { selectedPoint },
+                        terrainSearches: terrainSearches
+                        );
+
+                    if (filledRegion.Count >= minimumPointCount) tempRawPointsForCreatedBiomes[biomeName].AddRange(filledRegion);
                 }
             }
 
