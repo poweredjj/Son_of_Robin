@@ -83,7 +83,6 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
         private Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>> tempRawPointsForCreatedBiomes;
-        private readonly Dictionary<ExtBoardProps.Name, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
         private DateTime lastUnloadedTime;
 
@@ -138,15 +137,6 @@ namespace SonOfRobin
             }
 
             this.tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
-            this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
-
-            Random tempRandom = new(this.world.seed); // separate from world.random, to avoid changing world.random state (difference when copying grid from template)
-            foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => tempRandom.Next()).ToList()) // shuffled biome list
-            {
-                this.biomeCountByName[name] = 0;
-                this.tempRawPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
-            }
-
             this.PrepareNextStage(incrementCurrentStage: false);
         }
 
@@ -508,6 +498,15 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
+            var biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
+
+            Random random = new(this.world.seed); // based on original seed (to ensure that biome order will be identical for given seed)
+            foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => random.Next())) // shuffled biome list
+            {
+                biomeCountByName[name] = 0;
+                this.tempRawPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
+            }
+
             byte biomeMinVal = Terrain.biomeMin;
             byte biomeMaxVal = 255;
 
@@ -527,8 +526,8 @@ namespace SonOfRobin
 
                     if (biomeMinVal <= value && value <= biomeMaxVal)
                     {
-                        var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
-                        this.biomeCountByName[biomeName]++;
+                        var biomeName = biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
+                        biomeCountByName[biomeName]++;
 
                         ConcurrentBag<Point> biomeRawPoints = this.FloodFillExtProps(
                               startingPoints: new ConcurrentBag<Point> { new Point(cursorRawX, cursorRawY) },
