@@ -562,7 +562,7 @@ namespace SonOfRobin
                     Parallel.ForEach(pointsToRemoveFromBiome, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
                         // can write to array using parallel, if every thread accesses its own indices
-                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y, xyRaw: true);
+                        this.SetExtProperty(name: biomeName, value: false, position: point, xyRaw: true);
                     });
                 }
             }
@@ -638,7 +638,7 @@ namespace SonOfRobin
             {
                 var extPropsFound = false;
 
-                var extDataValDict = this.GetExtValueDict(x: currentPoint.X, y: currentPoint.Y, xyRaw: xyRaw);
+                var extDataValDict = this.GetExtValueDict(position: currentPoint, xyRaw: xyRaw);
                 foreach (var kvp in extDataValDict)
                 {
                     if (kvp.Value && extPropNames.Contains(kvp.Key))
@@ -664,7 +664,7 @@ namespace SonOfRobin
 
                 foreach (BiomeConstrain constrain in constrainsList)
                 {
-                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, x: currentPoint.X, y: currentPoint.Y, xyRaw: xyRaw);
+                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, position: currentPoint, xyRaw: xyRaw);
 
                     if (value < constrain.min || value > constrain.max)
                     {
@@ -706,12 +706,12 @@ namespace SonOfRobin
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    byte value = this.GetFieldValue(terrainName: terrainName, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
+                    byte value = this.GetFieldValue(terrainName: terrainName, position: currentPoint, xyRaw: true);
 
                     if (minVal <= value && value <= maxVal) // point within range
                     {
                         rawPointsInsideRange.Add(currentPoint);
-                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, position: currentPoint, xyRaw: true);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -727,7 +727,7 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
+                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, position: currentPoint, xyRaw: true);
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
@@ -1164,10 +1164,21 @@ namespace SonOfRobin
             else return this.terrainByName[terrainName].GetMapData(x, y);
         }
 
+        public byte GetFieldValue(Terrain.Name terrainName, Point position, bool xyRaw = false)
+        {
+            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(position.X, position.Y);
+            else return this.terrainByName[terrainName].GetMapData(position.X, position.Y);
+        }
+
         public byte GetFieldValue(Terrain.Name terrainName, Vector2 position, bool xyRaw = false)
         {
             if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
             else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
+        }
+
+        public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(Point position, bool xyRaw = false)
+        {
+            return this.extBoardProps.GetValueDict(x: position.X, y: position.Y, xyRaw: xyRaw);
         }
 
         public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(int x, int y, bool xyRaw = false)
@@ -1188,6 +1199,11 @@ namespace SonOfRobin
         public void SetExtProperty(ExtBoardProps.Name name, bool value, int x, int y, bool xyRaw = false)
         {
             this.extBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: xyRaw);
+        }
+
+        public void SetExtProperty(ExtBoardProps.Name name, bool value, Point position, bool xyRaw = false)
+        {
+            this.extBoardProps.SetValue(name: name, value: value, x: position.X, y: position.Y, xyRaw: xyRaw);
         }
 
         private Cell[,] MakeGrid()
