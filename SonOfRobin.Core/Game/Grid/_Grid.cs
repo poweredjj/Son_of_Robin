@@ -550,41 +550,31 @@ namespace SonOfRobin
 
             // setting biome constrains
 
-            int minimumPointCount = 1500 / this.resDivider;
+            int minPointCount = 1500 / this.resDivider;
             var tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, List<Point>>();
 
             foreach (var kvp in pointCollectionsForBiomes)
             {
                 ExtBoardProps.Name biomeName = kvp.Key;
                 List<ConcurrentBag<Point>> pointBags = kvp.Value;
-                var terrainSearches = ExtBoardProps.biomeConstrains[biomeName].ToList();
-                terrainSearches.Insert(0, new TerrainSearch(name: Terrain.Name.Biome, min: biomeMinVal, max: biomeMaxVal));
-
-                var strictTerrainSearches = ExtBoardProps.biomeConstrains[biomeName].ToList();
-                strictTerrainSearches.Insert(0, new TerrainSearch(name: Terrain.Name.Biome, min: Terrain.biomeMin + 5, max: biomeMaxVal));
 
                 tempRawPointsForCreatedBiomes[biomeName] = new List<Point>();
 
                 foreach (ConcurrentBag<Point> currentPointBag in pointBags)
                 {
-                    if (currentPointBag.Count < minimumPointCount) continue;
+                    if (currentPointBag.Count < minPointCount) continue;
 
-                    Point selectedPoint = currentPointBag.First();
-                    foreach (Point point in currentPointBag)
+                    var constrainedPointBag = new ConcurrentBag<Point>();
+                    Parallel.ForEach(currentPointBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
-                        if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: strictTerrainSearches, point: point, xyRaw: true))
-                        {
-                            selectedPoint = point;
-                            break;
-                        }
+                        if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: ExtBoardProps.biomeConstrains[biomeName], point: point, xyRaw: true)) constrainedPointBag.Add(point);
+                    });
+
+                    // slicing constrained points into connected regions
+                    foreach (List<Point> slicedPointsList in Helpers.SlicePointBagIntoConnectedRegions(width: maxX, height: maxY, pointsBag: constrainedPointBag))
+                    {
+                        if (slicedPointsList.Count >= minPointCount) tempRawPointsForCreatedBiomes[biomeName].AddRange(slicedPointsList);
                     }
-
-                    ConcurrentBag<Point> filledRegion = this.FloodFillExtProps(
-                        startingPoints: new ConcurrentBag<Point> { selectedPoint },
-                        terrainSearches: terrainSearches
-                        );
-
-                    if (filledRegion.Count >= minimumPointCount) tempRawPointsForCreatedBiomes[biomeName].AddRange(filledRegion);
                 }
             }
 
@@ -602,6 +592,8 @@ namespace SonOfRobin
                 });
             }
         }
+
+
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
         {
