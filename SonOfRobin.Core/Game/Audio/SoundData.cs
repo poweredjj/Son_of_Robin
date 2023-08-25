@@ -287,6 +287,7 @@ namespace SonOfRobin
             PlasticDrop = 223,
             TrumpetChime = 224,
             CreepyCave = 225,
+            Rattle = 226,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -515,6 +516,7 @@ namespace SonOfRobin
             { Name.PlasticDrop, "211171__sdlx__plastic-lid-snap" },
             { Name.TrumpetChime, "AudioGen_trumpet_chime" },
             { Name.CreepyCave, "442956__qubodup__creepy-cave" },
+            { Name.Rattle, "475827__zeffon__rattle-01" },
             };
     }
 }

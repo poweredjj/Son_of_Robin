@@ -1333,7 +1333,7 @@ namespace SonOfRobin
                 case Name.Totem:
                     {
                         var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.Rattle, ignore3DAlways: true));
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
