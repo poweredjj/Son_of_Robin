@@ -82,7 +82,7 @@ namespace SonOfRobin
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
-        private Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
+        private Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>> tempRawPointsForCreatedBiomes;
         private readonly Dictionary<ExtBoardProps.Name, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
         private DateTime lastUnloadedTime;
@@ -137,14 +137,14 @@ namespace SonOfRobin
                 return;
             }
 
-            this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
+            this.tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
             Random tempRandom = new(this.world.seed); // separate from world.random, to avoid changing world.random state (difference when copying grid from template)
             foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => tempRandom.Next()).ToList()) // shuffled biome list
             {
                 this.biomeCountByName[name] = 0;
-                this.tempPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
+                this.tempRawPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
             }
 
             this.PrepareNextStage(incrementCurrentStage: false);
@@ -483,7 +483,8 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
                  terrainName: Terrain.Name.Height,
-                 minVal: 0, maxVal: (byte)Terrain.waterLevelMax,
+                 minVal: 0,
+                 maxVal: (byte)Terrain.waterLevelMax,
                  nameToSetIfInRange: ExtBoardProps.Name.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach
@@ -494,13 +495,11 @@ namespace SonOfRobin
         {
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.Name.OuterBeach, value: true);
 
-            byte minVal = Terrain.waterLevelMax;
-            byte maxVal = (byte)(Terrain.waterLevelMax + 5);
-
             this.FloodFillExtProps(
                  startingPoints: beachEdgePointListRaw,
                  terrainName: Terrain.Name.Height,
-                 minVal: minVal, maxVal: maxVal,
+                 minVal: Terrain.waterLevelMax,
+                 maxVal: (byte)(Terrain.waterLevelMax + 5),
                  nameToSetIfInRange: ExtBoardProps.Name.OuterBeach,
                  setNameIfOutsideRange: false,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
@@ -530,18 +529,19 @@ namespace SonOfRobin
                     var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
                     this.biomeCountByName[biomeName]++;
 
-                    ConcurrentBag<Point> biomePoints = this.FloodFillExtProps(
+                    ConcurrentBag<Point> biomeRawPoints = this.FloodFillExtProps(
                           startingPoints: new ConcurrentBag<Point> { tempRawPointsForBiomeCreation.First() },
                           terrainName: Terrain.Name.Biome,
-                          minVal: minVal, maxVal: maxVal,
+                          minVal: minVal,
+                          maxVal: maxVal,
                           nameToSetIfInRange: biomeName,
                           setNameIfOutsideRange: false,
                           nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
                           );
 
-                    Parallel.ForEach(biomePoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                    Parallel.ForEach(biomeRawPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
-                        this.tempPointsForCreatedBiomes[biomeName].Add(point);
+                        this.tempRawPointsForCreatedBiomes[biomeName].Add(point);
                     });
                 }
                 else break;
@@ -550,18 +550,19 @@ namespace SonOfRobin
 
         private void ExtApplyBiomeConstrains()
         {
-            foreach (var kvp in this.tempPointsForCreatedBiomes)
+            foreach (var kvp in this.tempRawPointsForCreatedBiomes)
             {
                 ExtBoardProps.Name biomeName = kvp.Key;
                 ConcurrentBag<Point> biomePoints = kvp.Value;
 
                 if (ExtBoardProps.biomeConstrains.ContainsKey(biomeName))
                 {
-                    ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: false);
+                    ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: true);
 
                     Parallel.ForEach(pointsToRemoveFromBiome, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
-                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // can write to array using parallel, if every thread accesses its own indices
+                        // can write to array using parallel, if every thread accesses its own indices
+                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y, xyRaw: true);
                     });
                 }
             }
@@ -570,18 +571,21 @@ namespace SonOfRobin
         private void ExtEndCreation()
         {
             this.extBoardProps.EndCreationAndSave();
-            this.tempPointsForCreatedBiomes = null;
+            this.tempRawPointsForCreatedBiomes = null;
         }
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
         {
+            int maxX = this.world.width / this.resDivider;
+            int maxY = this.world.height / this.resDivider;
+
             var pointBag = new ConcurrentBag<Point>();
 
-            Parallel.For(0, this.world.width / this.resDivider, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
+            Parallel.For(0, maxX, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
             {
-                for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
+                for (int rawY = 0; rawY < maxY; rawY++)
                 {
-                    if (this.GetExtProperty(name: nameToUse, x: rawX * this.resDivider, y: rawY * this.resDivider) == value)
+                    if (this.GetExtProperty(name: nameToUse, x: rawX, y: rawY, xyRaw: true) == value)
                     {
                         pointBag.Add(new Point(rawX, rawY));
                     }
@@ -595,17 +599,20 @@ namespace SonOfRobin
         {
             var pointBag = new ConcurrentBag<Point>();
 
-            Parallel.For(0, this.world.width / this.resDivider, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
+            int maxX = this.world.width / this.resDivider;
+            int maxY = this.world.height / this.resDivider;
+
+            Parallel.For(0, maxX, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
             {
-                for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
+                for (int rawY = 0; rawY < maxY; rawY++)
                 {
-                    byte value = this.GetFieldValue(terrainName: terrainName, x: rawX * this.resDivider, y: rawY * this.resDivider);
+                    byte value = this.GetFieldValue(terrainName: terrainName, x: rawX, y: rawY, xyRaw: true);
 
                     if (minVal <= value && value <= maxVal)
                     {
                         bool extPropsFound = false;
 
-                        var extDataValDict = this.GetExtValueDict(x: rawX * this.resDivider, y: rawY * this.resDivider);
+                        var extDataValDict = this.GetExtValueDict(x: rawX, y: rawY, xyRaw: true);
                         foreach (var kvp in extDataValDict)
                         {
                             if (kvp.Value && extPropNames.Contains(kvp.Key))
@@ -631,10 +638,7 @@ namespace SonOfRobin
             {
                 var extPropsFound = false;
 
-                int x = xyRaw ? currentPoint.X * this.resDivider : currentPoint.X;
-                int y = xyRaw ? currentPoint.Y * this.resDivider : currentPoint.Y;
-
-                var extDataValDict = this.GetExtValueDict(x: x, y: y);
+                var extDataValDict = this.GetExtValueDict(x: currentPoint.X, y: currentPoint.Y, xyRaw: xyRaw);
                 foreach (var kvp in extDataValDict)
                 {
                     if (kvp.Value && extPropNames.Contains(kvp.Key))
@@ -660,10 +664,7 @@ namespace SonOfRobin
 
                 foreach (BiomeConstrain constrain in constrainsList)
                 {
-                    int x = xyRaw ? currentPoint.X * this.resDivider : currentPoint.X;
-                    int y = xyRaw ? currentPoint.Y * this.resDivider : currentPoint.Y;
-
-                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, x: x, y: y);
+                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, x: currentPoint.X, y: currentPoint.Y, xyRaw: xyRaw);
 
                     if (value < constrain.min || value > constrain.max)
                     {
@@ -694,7 +695,7 @@ namespace SonOfRobin
             bool[,] processedMap = new bool[dividedWidth, dividedHeight]; // working inside "compressed" map space, to avoid unnecessary calculations
 
             var nextPoints = new ConcurrentBag<Point>(startingPoints);
-            var pointsInsideRange = new ConcurrentBag<Point>();
+            var rawPointsInsideRange = new ConcurrentBag<Point>();
 
             while (true)
             {
@@ -705,15 +706,12 @@ namespace SonOfRobin
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
-                    int realX = currentPoint.X * this.resDivider;
-                    int realY = currentPoint.Y * this.resDivider;
-
-                    byte value = this.GetFieldValue(terrainName: terrainName, x: realX, y: realY);
+                    byte value = this.GetFieldValue(terrainName: terrainName, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
 
                     if (minVal <= value && value <= maxVal) // point within range
                     {
-                        pointsInsideRange.Add(new Point(realX, realY));
-                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
+                        rawPointsInsideRange.Add(currentPoint);
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -729,7 +727,7 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
+                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
@@ -738,7 +736,7 @@ namespace SonOfRobin
                 if (!nextPoints.Any()) break;
             }
 
-            return pointsInsideRange;
+            return rawPointsInsideRange;
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
@@ -1172,24 +1170,24 @@ namespace SonOfRobin
             else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
         }
 
-        public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(int x, int y)
+        public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(int x, int y, bool xyRaw = false)
         {
-            return this.extBoardProps.GetValueDict(x: x, y: y, xyRaw: false);
+            return this.extBoardProps.GetValueDict(x: x, y: y, xyRaw: xyRaw);
         }
 
-        public bool GetExtProperty(ExtBoardProps.Name name, Vector2 position)
+        public bool GetExtProperty(ExtBoardProps.Name name, Vector2 position, bool xyRaw = false)
         {
-            return this.extBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: false);
+            return this.extBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: xyRaw);
         }
 
-        public bool GetExtProperty(ExtBoardProps.Name name, int x, int y)
+        public bool GetExtProperty(ExtBoardProps.Name name, int x, int y, bool xyRaw = false)
         {
-            return this.extBoardProps.GetValue(name: name, x: x, y: y, xyRaw: false);
+            return this.extBoardProps.GetValue(name: name, x: x, y: y, xyRaw: xyRaw);
         }
 
-        public void SetExtProperty(ExtBoardProps.Name name, bool value, int x, int y)
+        public void SetExtProperty(ExtBoardProps.Name name, bool value, int x, int y, bool xyRaw = false)
         {
-            this.extBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: false);
+            this.extBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: xyRaw);
         }
 
         private Cell[,] MakeGrid()
