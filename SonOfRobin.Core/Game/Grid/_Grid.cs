@@ -551,14 +551,16 @@ namespace SonOfRobin
             // setting biome constrains
 
             int minPointCount = 2800 / this.resDivider;
-            var tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, List<Point>>();
+            var tempConstrainedPointsListForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
+            var tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<List<Point>>>();
 
             foreach (var kvp in pointCollectionsForBiomes)
             {
                 ExtBoardProps.Name biomeName = kvp.Key;
                 List<ConcurrentBag<Point>> pointBags = kvp.Value;
 
-                tempRawPointsForCreatedBiomes[biomeName] = new List<Point>();
+                tempConstrainedPointsListForBiomes[biomeName] = new List<ConcurrentBag<Point>>();
+                tempRawPointsForCreatedBiomes[biomeName] = new ConcurrentBag<List<Point>>();
 
                 foreach (ConcurrentBag<Point> currentPointBag in pointBags)
                 {
@@ -570,12 +572,24 @@ namespace SonOfRobin
                         if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: ExtBoardProps.biomeConstrains[biomeName], point: point, xyRaw: true)) constrainedPointBag.Add(point);
                     });
 
-                    // slicing constrained points into connected regions
+                    tempConstrainedPointsListForBiomes[biomeName].Add(constrainedPointBag);
+                }
+            }
+
+            // slicing constrained points into connected regions
+
+            foreach (var kvp in tempConstrainedPointsListForBiomes)
+            {
+                ExtBoardProps.Name biomeName = kvp.Key;
+                List<ConcurrentBag<Point>> listOfPointBags = kvp.Value;
+
+                Parallel.ForEach(listOfPointBags, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, constrainedPointBag =>
+                {
                     foreach (List<Point> slicedPointsList in Helpers.SlicePointBagIntoConnectedRegions(width: maxX, height: maxY, pointsBag: constrainedPointBag))
                     {
-                        if (slicedPointsList.Count >= minPointCount) tempRawPointsForCreatedBiomes[biomeName].AddRange(slicedPointsList);
+                        if (slicedPointsList.Count >= minPointCount) tempRawPointsForCreatedBiomes[biomeName].Add(slicedPointsList);
                     }
-                }
+                });
             }
 
             // setting biome values
@@ -583,12 +597,15 @@ namespace SonOfRobin
             foreach (var kvp in tempRawPointsForCreatedBiomes)
             {
                 ExtBoardProps.Name biomeName = kvp.Key;
-                List<Point> biomeRawPoints = kvp.Value;
+                ConcurrentBag<List<Point>> listOfPointBags = kvp.Value;
 
-                Parallel.ForEach(biomeRawPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                Parallel.ForEach(listOfPointBags, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, pointList =>
                 {
-                    // can write to array using parallel, if every thread accesses its own indices
-                    this.SetExtProperty(name: biomeName, value: true, position: point, xyRaw: true);
+                    foreach (Point point in pointList)
+                    {
+                        // can write to array using parallel, if every thread accesses its own indices
+                        this.SetExtProperty(name: biomeName, value: true, position: point, xyRaw: true);
+                    }
                 });
             }
         }
