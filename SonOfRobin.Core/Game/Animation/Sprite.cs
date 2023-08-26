@@ -819,7 +819,11 @@ namespace SonOfRobin
             if (this.particleEngine != null && Preferences.showParticles)
             {
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
-                if (this.particleEngine.HasAnyParticles) this.particleEngine.Draw();
+                if (this.particleEngine.HasAnyParticles)
+                {
+                    this.particleEngine.Draw();
+                    this.world.recentParticlesManager.AddPiece(this.boardPiece);
+                }
             }
 
             if (Preferences.debugShowRects)

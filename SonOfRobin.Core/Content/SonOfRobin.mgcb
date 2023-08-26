@@ -6741,6 +6741,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating textures/mountain_medium.png
 
+#begin gfx/repeating textures/ruins.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating textures/ruins.png
+
 #begin gfx/repeating textures/sand.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8462,6 +8474,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/475094__josh74000mc__thunder3.ogg
+
+#begin sound/475827__zeffon__rattle-01.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/475827__zeffon__rattle-01.ogg
 
 #begin sound/481090__greenfiresound__meat-drop-1.ogg
 /importer:OggImporter

@@ -7,19 +7,6 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-    public struct BiomeConstrain
-    {
-        public readonly Terrain.Name terrainName;
-        public readonly byte min;
-        public readonly byte max;
-
-        public BiomeConstrain(Terrain.Name terrainName, byte min, byte max)
-        {
-            this.terrainName = terrainName;
-            this.min = min;
-            this.max = max;
-        }
-    }
 
     public class ExtBoardProps
     {
@@ -27,16 +14,25 @@ namespace SonOfRobin
         {
             Sea = 0,
             OuterBeach = 1,
-            BiomeSwamp = 2, // each biome name must start with "biome"
+
+            // each biome name must start with "Biome"
+            BiomeSwamp = 2,
+            BiomeRuins = 3,
         };
 
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
         public static readonly List<Name> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
 
-        public static readonly Dictionary<Name, List<BiomeConstrain>> biomeConstrains = new Dictionary<Name, List<BiomeConstrain>> {
-            { Name.BiomeSwamp, new List<BiomeConstrain>{
-                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 159),
-                 new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
+        public static readonly Dictionary<Name, List<TerrainSearch>> biomeConstrains = new()
+        {
+            { Name.BiomeSwamp, new List<TerrainSearch>{
+                 new TerrainSearch(name: Terrain.Name.Height, min: 106, max: 159),
+                 new TerrainSearch(name: Terrain.Name.Humidity, min: 80, max: 255),
+            } },
+
+            { Name.BiomeRuins, new List<TerrainSearch>{
+                 new TerrainSearch(name: Terrain.Name.Height, min: 120, max: 145),
+                 new TerrainSearch(name: Terrain.Name.Humidity, min: 0, max: 140),
             } }
         };
 
@@ -200,7 +196,6 @@ namespace SonOfRobin
                 this.containsPropertiesTrueGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
                 this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
             });
-
 
             foreach (Name name in allExtPropNames)
             {

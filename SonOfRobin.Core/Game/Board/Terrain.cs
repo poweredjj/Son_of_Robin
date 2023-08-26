@@ -5,6 +5,20 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
+    public readonly struct TerrainSearch
+    {
+        public readonly Terrain.Name name;
+        public readonly byte min;
+        public readonly byte max;
+
+        public TerrainSearch(Terrain.Name name, byte min, byte max)
+        {
+            this.name = name;
+            this.min = min;
+            this.max = max;
+        }
+    }
+
     public class Terrain
     {
         public enum Name : byte

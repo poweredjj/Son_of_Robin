@@ -19,6 +19,7 @@ namespace SonOfRobin
             Island = 5,
             Shore = 6,
             Grassland = 7,
+            Ruins = 8,
         }
 
         public class NameRandomizer
@@ -67,6 +68,7 @@ namespace SonOfRobin
             { Category.Island, new Color(4, 184, 157) },
             { Category.Shore, new Color(186, 137, 32) },
             { Category.Grassland, new Color(27, 168, 2) },
+            { Category.Ruins, new Color(112, 112, 112) },
         };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
@@ -86,6 +88,8 @@ namespace SonOfRobin
             { Category.Shore, new List<string>{ "Captain's", "Mariner's", "Buccaneer's", "Palmshade", "Swashbuckler's", "Marauder's", "Cutlass", "Bounty", "Dead Man's", "Corsair's", "Pirate's", "Tropic", "Shipwrecked", "Survivor's", "Marooned", "Columbus" } },
 
             { Category.Grassland, new List<string>{ "Green", "Grassy", "Breezy", "Whispering", "Serene", "Abundant", "Palmshade", "Harmony", "Explorer's", "Bounty", "Governor's", "Tranquil", "Restful", "Tropic", "Verdant", "St. Augustine's", "Saint Francis'", "Vespucci's" } },
+
+            { Category.Ruins, new List<string>{ "Ancient", "Lost", "Jungle", "Ceremonial", "Mystical", "Crumbling", "Forgotten", "Decaying", "Faded", "Mossy", "Vineswept", "Eroding" } },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -105,6 +109,8 @@ namespace SonOfRobin
             { Category.Shore, new List<string>{ "Shore", "Beachfront", "Riviera", "Beach", "Haven", "Coast", "Sand"  } },
 
             { Category.Grassland, new List<string>{ "Grassland", "Meadow", "Savanna", "Expanse", "Plains", "Prairie", "Oasis", "Steppe", "Glade" } },
+
+            { Category.Ruins, new List<string>{ "Ruins", "Remnants", "Enclave", "Court", "Mausoleum", "Keep", "Sanctum", "Site", "Grounds", "Totems", "Citadel", "Ruinscape" } },
             };
 
         public class Location
@@ -116,7 +122,9 @@ namespace SonOfRobin
             public readonly Rectangle areaRect;
             public readonly List<Cell> cells;
             public bool hasBeenDiscovered;
-            public Color Color { get { return colorByCategory[this.category]; } }
+
+            public Color Color
+            { get { return colorByCategory[this.category]; } }
 
             public Location(Grid grid, string name, Category category, List<Point> coordsList, bool hasBeenDiscovered = false)
             {
@@ -298,9 +306,15 @@ namespace SonOfRobin
         private readonly Random random;
         private NameRandomizer nameRandomizer;
         private int playerLocationLastCheckedFrame;
-        public List<Location> DiscoveredLocations { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
-        public int DiscoveredLocationsCount { get { return this.DiscoveredLocations.Count; } }
-        public int AllLocationsCount { get { return this.locationList.Count; } }
+
+        public List<Location> DiscoveredLocations
+        { get { return this.locationList.Where(location => location.hasBeenDiscovered).ToList(); } }
+
+        public int DiscoveredLocationsCount
+        { get { return this.DiscoveredLocations.Count; } }
+
+        public int AllLocationsCount
+        { get { return this.locationList.Count; } }
 
         public NamedLocations(Grid grid)
         {
@@ -464,7 +478,7 @@ namespace SonOfRobin
 
                     minCells = 15;
                     maxCells = 200;
-                    density = 1; // 2
+                    density = 1;
 
                     break;
 
@@ -503,6 +517,18 @@ namespace SonOfRobin
 
                     minCells = 20;
                     maxCells = 400;
+                    density = 1;
+
+                    break;
+
+                case Category.Ruins:
+
+                    cellSearches.Add(new CellSearch(
+                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true) }
+                        ));
+
+                    minCells = 2;
+                    maxCells = 800;
                     density = 1;
 
                     break;
@@ -582,8 +608,7 @@ namespace SonOfRobin
 
             foreach (CellSearch cellSearch in cellSearches)
             {
-                var cellCoordsByRegion = this.SplitCellBagIntoRegions(this.FindAllCellCoordsThatMeetCriteria(cellSearch));
-
+                var cellCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.grid.noOfCellsX, height: this.grid.noOfCellsY, pointsBag: this.FindAllCellCoordsThatMeetCriteria(cellSearch));
                 foreach (List<Point> coordsList in cellCoordsByRegion)
                 {
                     if (coordsList.Count < minCells || coordsList.Count > maxCells || this.random.Next(density) != 0) continue;
@@ -637,89 +662,6 @@ namespace SonOfRobin
             });
 
             return cellCoordsBag;
-        }
-
-        private List<List<Point>> SplitCellBagIntoRegions(ConcurrentBag<Point> cellCoordsBag)
-        {
-            // preparing data
-
-            List<Point> offsetList = new()
-            {
-                new Point(-1, 0),
-                new Point(1, 0),
-                new Point(0, -1),
-                new Point(0, 1),
-            };
-
-            int noOfCellsX = this.grid.noOfCellsX;
-            int noOfCellsY = this.grid.noOfCellsY;
-
-            var gridCellExists = new bool[noOfCellsX, noOfCellsY];
-            var gridCellIsProcessed = new bool[noOfCellsX, noOfCellsY];
-
-            Parallel.ForEach(cellCoordsBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cellCoords =>
-            {
-                gridCellExists[cellCoords.X, cellCoords.Y] = true;
-            });
-
-            Parallel.For(0, noOfCellsY, y =>
-            {
-                for (int x = 0; x < noOfCellsX; x++)
-                {
-                    gridCellIsProcessed[x, y] = !gridCellExists[x, y];
-                }
-            });
-
-            int currentRegion = 0;
-            var cellCoordsByRegion = new List<List<Point>>();
-            var cellCoordsLeftToProcess = cellCoordsBag.Distinct().ToList();
-
-            // filling regions
-
-            if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
-
-            while (true)
-            {
-                var nextCoords = new ConcurrentBag<Point> { cellCoordsLeftToProcess.First() };
-                var thisRegionCoords = new ConcurrentBag<Point>();
-
-                while (true)
-                {
-                    List<Point> currentCellCoords = nextCoords.Distinct().ToList(); // using Distinct() to filter out duplicates
-                    nextCoords = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
-
-                    Parallel.ForEach(currentCellCoords, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentCell =>
-                    {
-                        // array can be written to using parallel, if every thread accesses its own indices
-
-                        if (gridCellExists[currentCell.X, currentCell.Y])
-                        {
-                            thisRegionCoords.Add(currentCell);
-                            foreach (Point currentOffset in offsetList)
-                            {
-                                Point nextPoint = new(currentCell.X + currentOffset.X, currentCell.Y + currentOffset.Y);
-
-                                if (nextPoint.X >= 0 && nextPoint.X < noOfCellsX &&
-                                    nextPoint.Y >= 0 && nextPoint.Y < noOfCellsY &&
-                                    !gridCellIsProcessed[nextPoint.X, nextPoint.Y])
-                                {
-                                    nextCoords.Add(nextPoint);
-                                }
-                            }
-                        }
-
-                        gridCellIsProcessed[currentCell.X, currentCell.Y] = true;
-                    });
-
-                    if (!nextCoords.Any()) break;
-                }
-
-                cellCoordsLeftToProcess = cellCoordsLeftToProcess.Where(coords => !thisRegionCoords.Contains(coords)).ToList();
-                cellCoordsByRegion.Add(thisRegionCoords.Distinct().ToList());
-                currentRegion++;
-
-                if (!cellCoordsLeftToProcess.Any()) return cellCoordsByRegion;
-            }
         }
     }
 }

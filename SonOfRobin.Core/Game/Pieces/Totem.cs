@@ -71,6 +71,7 @@ namespace SonOfRobin
                 bool isFood = offeredPiece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten;
 
                 if (isFood) goodOfferingMass += offeredPiece.Mass;
+                else if (offeredPiece.GetType() == typeof(Animal)) goodOfferingMass += 100;
                 else goodOfferingMass -= 50;
             }
             if (goodOfferingMass == 0) goodOfferingMass = -50; // to make sure that mass is always positive or negative

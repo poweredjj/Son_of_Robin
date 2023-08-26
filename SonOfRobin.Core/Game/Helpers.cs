@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -587,6 +588,69 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
                 return false;
             }
+        }
+
+        public static List<List<Point>> SlicePointBagIntoConnectedRegions(int width, int height, ConcurrentBag<Point> pointsBag)
+        {
+            // optimized by ChatGPT
+
+            // preparing data
+
+            // List of offset points representing neighboring positions (up, down, left, right)
+            Point[] offsetList = new Point[]
+            {
+                new Point(-1, 0),
+                new Point(1, 0),
+                new Point(0, -1),
+                new Point(0, 1),
+            };
+
+            // Create a HashSet for faster point existence checks
+            var pointsSet = new HashSet<Point>(pointsBag);
+
+            // Create a 2D array to track processed points
+            bool[,] bitmapPointIsProcessed = new bool[width, height];
+
+            // Initialize variables for tracking regions and points
+            int currentRegion = 0;
+            var pointsByRegion = new List<List<Point>>();
+
+            // filling regions
+
+            // Process each point only once
+            foreach (var start in pointsSet)
+            {
+                if (bitmapPointIsProcessed[start.X, start.Y]) continue;
+
+                var thisRegionPoints = new List<Point>();
+                var stack = new Stack<Point>();
+                stack.Push(start);
+
+                // Explore the region connected to the starting point using Depth-First Search (DFS)
+                while (stack.Any())
+                {
+                    Point currentPoint = stack.Pop();
+
+                    if (currentPoint.X < 0 || currentPoint.X >= width ||
+                        currentPoint.Y < 0 || currentPoint.Y >= height ||
+                        bitmapPointIsProcessed[currentPoint.X, currentPoint.Y])
+                        continue;
+
+                    thisRegionPoints.Add(currentPoint);
+                    bitmapPointIsProcessed[currentPoint.X, currentPoint.Y] = true;
+
+                    foreach (Point offset in offsetList)
+                    {
+                        Point nextPoint = new(currentPoint.X + offset.X, currentPoint.Y + offset.Y);
+                        if (pointsSet.Contains(nextPoint)) stack.Push(nextPoint);
+                    }
+                }
+
+                pointsByRegion.Add(thisRegionPoints);
+                currentRegion++;
+            }
+
+            return pointsByRegion;
         }
     }
 }

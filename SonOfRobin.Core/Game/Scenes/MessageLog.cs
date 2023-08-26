@@ -67,15 +67,19 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (messages.Count == 0) return;
+            if (!messages.Any()) return;
+
+            List<Message> messagesToDisplay;
+
+            try
+            { messagesToDisplay = messages.ToList(); }
+            catch (ArgumentException) { return; } // if some background process tries to add message right now
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            int currentFrame = SonOfRobinGame.CurrentUpdate;
-
-            var messagesToDisplay = messages.ToList();
             messagesToDisplay.Reverse();
 
+            int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentOffsetY = 0;
 
             foreach (Message message in messagesToDisplay)
@@ -89,7 +93,7 @@ namespace SonOfRobin
 
                 if (this.screenHeight - currentOffsetY >= freePixelsAboveMessages)
                 {
-                    Vector2 txtPos = new Vector2(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
+                    Vector2 txtPos = new(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
 
                     float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
                     float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;

@@ -576,9 +576,9 @@ namespace SonOfRobin
 
             this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Rain, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration / 3));
 
-            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
-
             this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Fog, intensity: 1f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
+
+            this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 0.45f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
 
             this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: 0.8f, randomizeIntensity: false);
         }

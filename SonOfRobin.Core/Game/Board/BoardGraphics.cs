@@ -301,8 +301,7 @@ namespace SonOfRobin
                 Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
 
                 if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.swamp;
-
-                // future biome colors should be defined here
+                else if (extDataValDict[ExtBoardProps.Name.BiomeRuins]) return RepeatingPattern.Name.ruins;
             }
 
             foreach (var kvp in patternNamesByHeight)

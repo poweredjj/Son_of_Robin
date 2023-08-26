@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class GridTemplate
     {
-        private const float currentVersion = 1.26f;
+        private const float currentVersion = 1.27f;
         private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
         private static Point properCellSize = new(1, 1);
