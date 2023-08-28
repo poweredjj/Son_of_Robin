@@ -35,8 +35,8 @@ namespace SonOfRobin
         private BoardPiece boardPiece;
         private BoardPiece visPiece;
 
-        private static readonly AudioListener audioListener = new AudioListener();
-        private static readonly AudioEmitter audioEmitter = new AudioEmitter();
+        private static readonly AudioListener audioListener = new();
+        private static readonly AudioEmitter audioEmitter = new();
 
         public Sound(SoundData.Name name = SoundData.Name.Empty, List<SoundData.Name> nameList = null, BoardPiece boardPiece = null, float volume = 1f, bool isLooped = false, int cooldown = 0, bool ignore3DAlways = false, float maxPitchVariation = 0f, float pitchChange = 0f, int volumeFadeFrames = 30)
         {
@@ -129,7 +129,7 @@ namespace SonOfRobin
         {
             if (!Scene.currentlyProcessedScene.soundActive || !GlobalOn || this.isEmpty) return;
 
-            this.ignore3DThisPlay = ignore3DThisPlay;
+            this.ignore3DThisPlay = ignore3DThisPlay || this.boardPiece != null && !this.boardPiece.sprite.IsOnBoard;
 
             if (this.cooldown > 0 && !ignoreCooldown)
             {
@@ -141,7 +141,7 @@ namespace SonOfRobin
 
             if (this.isLooped) this.TargetVolume = 1f;
 
-            if (this.boardPiece != null && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
+            if (this.boardPiece != null && this.boardPiece.sprite.IsOnBoard && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
 
             SoundData.Name soundName = this.SoundNameList.Count == 1 ? this.SoundNameList[0] : this.SoundNameList[SonOfRobinGame.random.Next(this.SoundNameList.Count)];
             ManagedSoundInstance managedSoundInstance = ManagedSoundInstance.GetNewOrStoppedInstance(soundName: soundName);
@@ -158,7 +158,11 @@ namespace SonOfRobin
             managedSoundInstance.Volume = this.Volume;
             managedSoundInstance.IsLooped = this.isLooped;
 
-            if (this.boardPiece != null)
+            audioListener.Position = Vector3.Zero; // resetting, in case of not using 3d
+            audioEmitter.Position = Vector3.Zero;  // resetting, in case of not using 3d
+            managedSoundInstance.Apply3D(audioListener, audioEmitter);
+
+            if (this.boardPiece != null && this.boardPiece.sprite.IsOnBoard)
             {
                 this.CreateSoundVisual();
                 this.UpdatePosition(managedSoundInstance);
@@ -166,7 +170,7 @@ namespace SonOfRobin
 
             bool instanceStartedCorrectly = managedSoundInstance.Play(this.Id);
             if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
-            else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
+            else MessageLog.AddMessage(msgType: MsgType.User, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
 
         private void CreateSoundVisual()
