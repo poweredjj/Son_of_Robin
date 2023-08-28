@@ -17,6 +17,26 @@ namespace SonOfRobin
             WaitIndefinitely = 3,
         };
 
+        public enum Skill : byte
+        {
+            Hunter = 0,
+            Plunderer = 1,
+            Crafter = 2,
+            Unstoppable = 3,
+            Fashionista = 4,
+            Diligent = 5,
+        }
+
+        public static readonly Dictionary<Skill, string> skillDescriptions = new Dictionary<Skill, string>
+        {
+            { Skill.Hunter, "can harvest animal meat in the wild" },
+            { Skill.Plunderer, "better chance of item drops" },
+            { Skill.Crafter, "more speed and less fatigue while crafting" },
+            { Skill.Unstoppable, "gets tired slower" },
+            { Skill.Fashionista, "additional accessory slot" },
+            { Skill.Diligent, "tools last longer" },
+        };
+
         private const int maxShootingPower = 90;
         public const int maxLastStepsCount = 100;
         public const int maxCraftLevel = 5;
@@ -26,6 +46,7 @@ namespace SonOfRobin
         public int fedLevel;
         public float maxFatigue;
         private float fatigue;
+        public readonly List<Skill> skills;
         public int CraftLevel { get; private set; }
         public int CookLevel { get; private set; }
         public int BrewLevel { get; private set; }
@@ -59,6 +80,7 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxFatigue = 2000f;
             this.fatigue = 0;
+            this.skills = new List<Skill>();
             this.CraftLevel = 1;
             this.CookLevel = 1;
             this.BrewLevel = 1;
@@ -445,6 +467,7 @@ namespace SonOfRobin
             pieceData["player_maxFedLevel"] = this.maxFedLevel;
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
+            pieceData["player_skills"] = this.skills;
             pieceData["player_craftLevel"] = this.CraftLevel;
             pieceData["player_cookLevel"] = this.CookLevel;
             pieceData["player_brewLevel"] = this.BrewLevel;
@@ -465,6 +488,9 @@ namespace SonOfRobin
             this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
+            var skills = (List<Skill>)pieceData["player_skills"];
+            this.skills.Clear();
+            this.skills.AddRange(skills);
             this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.CookLevel = (int)(Int64)pieceData["player_cookLevel"];
             this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"];
