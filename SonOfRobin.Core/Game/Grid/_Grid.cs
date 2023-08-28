@@ -841,7 +841,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in cellsWithinDistance)
             {
-                foreach (Sprite currentSprite in cell.spriteGroups[groupName].Values)
+                foreach (Sprite currentSprite in cell.spriteGroups[groupName])
                 {
                     if (Vector2.Distance(currentSprite.position, mainSprite.position) <= distance && currentSprite != mainSprite) spritesWithinDistance.Add(currentSprite);
                 }
@@ -862,7 +862,7 @@ namespace SonOfRobin
                 foreach (Cell cell in cellsWithinDistance)
                 {
                     spritesWithinDistance.AddRange(
-                        cell.spriteGroups[groupName].Values.Where(
+                        cell.spriteGroups[groupName].Where(
                             currentSprite => Vector2.Distance(new Vector2(currentSprite.GfxRect.Center.X, currentSprite.GfxRect.Bottom), centerPos) <= distance &&
                             currentSprite != mainSprite));
                 }
@@ -872,7 +872,7 @@ namespace SonOfRobin
                 foreach (Cell cell in cellsWithinDistance)
                 {
                     spritesWithinDistance.AddRange(
-                        cell.spriteGroups[groupName].Values.Where(
+                        cell.spriteGroups[groupName].Where(
                             currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
                             currentSprite != mainSprite));
                 }
@@ -896,7 +896,7 @@ namespace SonOfRobin
             var spritesInsideTriangle = new List<Sprite>();
             foreach (Cell cell in cellsInsideRect)
             {
-                spritesInsideTriangle.AddRange(cell.spriteGroups[groupName].Values.Where(
+                spritesInsideTriangle.AddRange(cell.spriteGroups[groupName].Where(
                       currentSprite => rect.Contains(currentSprite.position) && Helpers.IsPointInsideTriangle(point: new Point((int)currentSprite.position.X, (int)currentSprite.position.Y), triangleA: point1, triangleB: point2, triangleC: point3)));
             }
 
@@ -914,14 +914,14 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
                 {
-                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
+                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
                 }
             }
             else
             {
                 foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
                 {
-                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Values);
+                    spritesInCameraView.AddRange(cell.spriteGroups[groupName]);
                 }
             }
 
@@ -949,7 +949,7 @@ namespace SonOfRobin
 
             Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
-                foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
+                foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {
                     allSprites.Add(sprite);
                 }
@@ -967,7 +967,7 @@ namespace SonOfRobin
 
             Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
-                foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
+                foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {
                     if (sprite.GfxRect.Intersects(rectangle)) allSprites.Add(sprite);
                 }

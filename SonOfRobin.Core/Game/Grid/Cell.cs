@@ -30,7 +30,7 @@ namespace SonOfRobin
         public bool VisitedByPlayer { get; private set; }
         public bool temporaryDecorationsCreated;
 
-        public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
+        public readonly Dictionary<Group, HashSet<Sprite>> spriteGroups;
         public BoardGraphics boardGraphics;
         public bool HasWater { get; private set; }
         public bool IsAllWater { get; private set; }
@@ -80,10 +80,10 @@ namespace SonOfRobin
             this.VisitedByPlayer = false;
             this.temporaryDecorationsCreated = false;
 
-            this.spriteGroups = new Dictionary<Group, Dictionary<string, Sprite>> { };
+            this.spriteGroups = new Dictionary<Group, HashSet<Sprite>> { };
             foreach (Group groupName in allGroups)
             {
-                this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
+                this.spriteGroups[groupName] = new HashSet<Sprite>();
             }
 
             this.allowedNames = new List<PieceTemplate.Name>();
@@ -188,7 +188,7 @@ namespace SonOfRobin
         public void RemoveSprite(Sprite sprite)
         {
             foreach (Group currentGroupName in allGroups)
-            { this.spriteGroups[currentGroupName].Remove(sprite.id); }
+            { this.spriteGroups[currentGroupName].Remove(sprite); }
 
             sprite.currentCell = null;
         }
@@ -197,10 +197,10 @@ namespace SonOfRobin
         {
             foreach (Group currentGroupName in allGroups)
             {
-                if (this.spriteGroups[currentGroupName].ContainsKey(sprite.id))
+                if (this.spriteGroups[currentGroupName].Contains(sprite))
                 {
-                    this.spriteGroups[currentGroupName].Remove(sprite.id);
-                    newCell.spriteGroups[currentGroupName][sprite.id] = sprite;
+                    this.spriteGroups[currentGroupName].Remove(sprite);
+                    newCell.spriteGroups[currentGroupName].Add(sprite);
                 }
             }
         }
@@ -211,8 +211,8 @@ namespace SonOfRobin
 
             foreach (Group currentGroupName in allGroups)
             {
-                if (groupNames.Contains(currentGroupName)) this.spriteGroups[currentGroupName][sprite.id] = sprite;
-                else this.spriteGroups[currentGroupName].Remove(sprite.id);
+                if (groupNames.Contains(currentGroupName)) this.spriteGroups[currentGroupName].Add(sprite);
+                else this.spriteGroups[currentGroupName].Remove(sprite);
             }
         }
 
@@ -220,14 +220,14 @@ namespace SonOfRobin
         {
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - adding to group {groupName}.");
 
-            this.spriteGroups[groupName][sprite.id] = sprite;
+            this.spriteGroups[groupName].Add(sprite);
         }
 
         public void RemoveFromGroup(Sprite sprite, Group groupName)
         {
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - removing from group {groupName}.");
 
-            this.spriteGroups[groupName].Remove(sprite.id);
+            this.spriteGroups[groupName].Remove(sprite);
         }
 
         public IEnumerable<Sprite> GetSpritesFromSurroundingCells(Group groupName)
@@ -236,7 +236,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in this.surroundingCells)
             {
-                surroundingSprites.AddRange(cell.spriteGroups[groupName].Values);
+                surroundingSprites.AddRange(cell.spriteGroups[groupName]);
             }
 
             return surroundingSprites;
@@ -282,7 +282,7 @@ namespace SonOfRobin
 
             if (drawPieceData)
             {
-                foreach (Sprite sprite in this.spriteGroups[groupName].Values)
+                foreach (Sprite sprite in this.spriteGroups[groupName])
                 {
                     string spriteText = $"{sprite.AnimPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
                     Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: new Vector2(sprite.ColRect.Left, sprite.ColRect.Bottom), color: Color.White, outlineColor: Color.Black, outlineSize: 1);

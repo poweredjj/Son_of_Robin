@@ -1150,7 +1150,7 @@ namespace SonOfRobin
                     int randomCellNo = random.Next(plantCellsQueue.Count);
                     Cell cell = this.plantCellsQueue[randomCellNo];
                     this.plantCellsQueue.RemoveAt(randomCellNo);
-                    this.plantSpritesQueue.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants].Values); // not shuffled to save cpu time
+                    this.plantSpritesQueue.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
 
                     if (!plantCellsQueue.Any() || !this.CanProcessMoreOffCameraRectPiecesNow) break;
                 }

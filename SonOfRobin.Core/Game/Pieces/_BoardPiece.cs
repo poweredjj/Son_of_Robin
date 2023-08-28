@@ -892,7 +892,7 @@ namespace SonOfRobin
 
             if (isInCameraRect)
             {
-                if (this.flameLight == null && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < Preferences.maxFlameLightsPerCell && SonOfRobinGame.fps.FPS >= 45)
+                if (this.flameLight == null && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Count < Preferences.maxFlameLightsPerCell && SonOfRobinGame.fps.FPS >= 45)
                 {
                     this.flameLight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.EmptyVisualEffect, closestFreeSpot: true);
 

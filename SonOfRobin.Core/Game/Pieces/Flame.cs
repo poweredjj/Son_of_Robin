@@ -181,7 +181,7 @@ namespace SonOfRobin
             // updating lightEngine
 
             this.sprite.lightEngine.Size = Math.Max(affectedDistance * 5, 50);
-            if (!this.sprite.lightEngine.IsActive && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Values.Count < 2)
+            if (!this.sprite.lightEngine.IsActive && this.sprite.currentCell.spriteGroups[Cell.Group.LightSource].Count < 2)
             {
                 this.sprite.lightEngine.Activate();
             }
