@@ -380,7 +380,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.Mode == MapMode.Off || (this.Mode == MapMode.Mini && SonOfRobinGame.CurrentUpdate % 2 != 0)) return;
+            if (this.Mode == MapMode.Off) return;
 
             this.UpdateBackground();
 
