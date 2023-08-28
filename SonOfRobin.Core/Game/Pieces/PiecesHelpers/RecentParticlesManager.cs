@@ -7,56 +7,52 @@ namespace SonOfRobin
     public class RecentParticlesManager
     {
         private readonly World world;
-        private readonly Dictionary<string, BoardPiece> pieceDict;
-        public IEnumerable<BoardPiece> OffScreenPieces { get { return this.pieceDict.Values.Where(piece => !world.camera.viewRect.Intersects(piece.sprite.GfxRect)); } }
+        private readonly HashSet<BoardPiece> pieceSet;
+        public IEnumerable<BoardPiece> OffScreenPieces { get { return this.pieceSet.Where(piece => !world.camera.viewRect.Intersects(piece.sprite.GfxRect)); } }
 
         public RecentParticlesManager(World world)
         {
             this.world = world;
-            this.pieceDict = new Dictionary<string, BoardPiece>();
+            this.pieceSet = new HashSet<BoardPiece>();
         }
 
         public void AddPiece(BoardPiece piece)
         {
-            if (!this.pieceDict.ContainsKey(piece.id) && piece.sprite.IsInCameraRect)
-            {
-                this.pieceDict[piece.id] = piece;
-
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {this.pieceDict.Count - 1} -> {this.pieceDict.Count} ({piece.readableName})");
-            }
+            this.pieceSet.Add(piece);
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {this.pieceDict.Count - 1} -> {this.pieceDict.Count} ({piece.readableName})");
         }
 
         public void Update()
         {
             if (SonOfRobinGame.fps.FPS <= 25)
             {
-                this.pieceDict.Clear();
+                this.pieceSet.Clear();
                 return;
             }
 
             Vector2 cameraCenter = new(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y);
             int maxDistance = this.world.camera.viewRect.Width;
 
-            // int pieceCountPrevious = this.pieceDict.Count;
+            // int pieceCountPrevious = this.pieceSet.Count;
 
-            var keysToRemove = new List<string>();
+            var piecesToRemove = new List<BoardPiece>();
 
-            foreach (BoardPiece piece in this.pieceDict.Values)
+            foreach (BoardPiece piece in this.pieceSet)
             {
                 if (piece.sprite.particleEngine == null ||
                     !piece.sprite.particleEngine.HasAnyParticles ||
                     Vector2.Distance(piece.sprite.position, cameraCenter) > maxDistance)
                 {
-                    keysToRemove.Add(piece.id);
+                    piecesToRemove.Add(piece);
                 }
             }
 
-            foreach (string pieceID in keysToRemove)
+            foreach (BoardPiece pieceToRemove in piecesToRemove)
             {
-                this.pieceDict.Remove(pieceID);
+                this.pieceSet.Remove(pieceToRemove);
             }
 
-            // int pieceCountCurrent = this.pieceDict.Count;
+            // int pieceCountCurrent = this.pieceSet.Count;
             // if (pieceCountCurrent != pieceCountPrevious) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {pieceCountPrevious} -> {pieceCountCurrent}");
         }
     }
