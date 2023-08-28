@@ -753,7 +753,7 @@ namespace SonOfRobin
 
             foreach (PieceCreationData creationData in creationDataListRegular)
             {
-                if (doNotCreatePiecesList.Contains(creationData.name)) continue;
+                if (doNotCreatePiecesList.Contains(creationData.name) || creationData.doNotReplenish && !initialCreation) continue;
 
                 int minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
                 if (creationData.maxAmount > -1) minAmount = Math.Min(minAmount, creationData.maxAmount);

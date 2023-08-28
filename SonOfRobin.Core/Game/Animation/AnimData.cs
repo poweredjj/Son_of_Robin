@@ -18,9 +18,9 @@ namespace SonOfRobin
 
         public enum PkgName : ushort
         {
-
             NoAnim = 0,
             Empty = 1,
+
             WhiteSpotLayerMinus1 = 2,
             WhiteSpotLayerOne = 3,
             WhiteSpotLayerZero = 4,
@@ -130,84 +130,82 @@ namespace SonOfRobin
             CookingPot = 88,
 
             Totem = 89,
+            RuinsWallHorizontal1 = 90,
+            RuinsWallHorizontal2 = 91,
+            RuinsWallWallVertical = 92,
+            RuinsColumn = 93,
+            RuinsRubble = 94,
 
-            Stick1 = 90,
-            Stick2 = 91,
-            Stick3 = 92,
-            Stick4 = 93,
-            Stick5 = 94,
-            Stick6 = 95,
-            Stick7 = 96,
+            Stick = 95,
+            Stone = 96,
+            Granite = 97,
 
-            Stone = 97,
-            Granite = 98,
+            Clay = 98,
 
-            Clay = 99,
+            Apple = 99,
+            Banana = 100,
+            Cherry = 101,
+            Tomato = 102,
+            Carrot = 103,
+            Acorn = 104,
 
-            Apple = 100,
-            Banana = 101,
-            Cherry = 102,
-            Tomato = 103,
-            Carrot = 104,
-            Acorn = 105,
+            SeedBag = 105,
+            CoffeeRaw = 106,
+            CoffeeRoasted = 107,
 
-            SeedBag = 106,
-            CoffeeRaw = 107,
-            CoffeeRoasted = 108,
+            Clam = 108,
 
-            Clam = 109,
+            MeatRawRegular = 109,
+            MeatRawPrime = 110,
+            MeatDried = 111,
+            Fat = 112,
+            Burger = 113,
+            MealStandard = 114,
+            Leather = 115,
 
-            MeatRawRegular = 110,
-            MeatRawPrime = 111,
-            MeatDried = 112,
-            Fat = 113,
-            Burger = 114,
-            MealStandard = 115,
-            Leather = 116,
+            KnifeSimple = 116,
 
-            KnifeSimple = 117,
+            AxeWood = 117,
+            AxeStone = 118,
+            AxeIron = 119,
+            AxeCrystal = 120,
 
-            AxeWood = 118,
-            AxeStone = 119,
-            AxeIron = 120,
-            AxeCrystal = 121,
+            PickaxeWood = 121,
+            PickaxeStone = 122,
+            PickaxeIron = 123,
+            PickaxeCrystal = 124,
 
-            PickaxeWood = 122,
-            PickaxeStone = 123,
-            PickaxeIron = 124,
-            PickaxeCrystal = 125,
+            ScytheStone = 125,
+            ScytheIron = 126,
+            ScytheCrystal = 127,
 
-            ScytheStone = 126,
-            ScytheIron = 127,
-            ScytheCrystal = 128,
+            SpearWood = 128,
+            SpearStone = 129,
+            SpearIron = 130,
+            SpearCrystal = 131,
 
-            SpearWood = 129,
-            SpearStone = 130,
-            SpearIron = 131,
-            SpearCrystal = 132,
+            ShovelStone = 132,
+            ShovelIron = 133,
+            ShovelCrystal = 134,
 
-            ShovelStone = 133,
-            ShovelIron = 134,
-            ShovelCrystal = 135,
+            BowBasic = 135,
+            BowAdvanced = 136,
 
-            BowBasic = 136,
-            BowAdvanced = 137,
+            ArrowWood = 137,
+            ArrowStone = 138,
+            ArrowIron = 139,
+            ArrowCrystal = 140,
+            ArrowExploding = 141,
 
-            ArrowWood = 138,
-            ArrowStone = 139,
-            ArrowIron = 140,
-            ArrowCrystal = 141,
-            ArrowExploding = 142,
+            CoalDeposit = 142,
+            IronDeposit = 143,
 
-            CoalDeposit = 143,
-            IronDeposit = 144,
+            CrystalDepositSmall = 144,
+            CrystalDepositBig = 145,
 
-            CrystalDepositSmall = 145,
-            CrystalDepositBig = 146,
-
-            DigSite = 147,
-            DigSiteGlass = 148,
-            DigSiteRuins = 283,
+            DigSite = 146,
+            DigSiteGlass = 147,
+            DigSiteRuins = 148,
 
             Coal = 149,
             IronOre = 150,
@@ -610,13 +608,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BloodSplatter3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
 
             AddFrameList(animPackage: PkgName.WoodPlank, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 32, y: 0, width: 32, height: 32, scale: 0.8f));
-            AddFrameList(animPackage: PkgName.Stick1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 26, y: 73, width: 25, height: 21));
-            AddFrameList(animPackage: PkgName.Stick2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 100, y: 73, width: 25, height: 22));
-            AddFrameList(animPackage: PkgName.Stick3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 23, y: 105, width: 25, height: 25));
-            AddFrameList(animPackage: PkgName.Stick4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks1", layer: 0, x: 100, y: 104, width: 25, height: 25));
-            AddFrameList(animPackage: PkgName.Stick5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks2", layer: 0, x: 22, y: 72, width: 25, height: 25));
-            AddFrameList(animPackage: PkgName.Stick6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks2", layer: 0, x: 53, y: 68, width: 25, height: 25));
-            AddFrameList(animPackage: PkgName.Stick7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks2", layer: 0, x: 100, y: 70, width: 25, height: 25));
+            AddFrameList(animPackage: PkgName.Stick, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "sticks", layer: 0, x: 26, y: 73, width: 25, height: 21));
             AddFrameList(animPackage: PkgName.Banana, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "banana", layer: 0, scale: 0.08f));
             AddFrameList(animPackage: PkgName.Cherry, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "cherry", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.Apple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "apple", layer: 0, scale: 0.075f));
@@ -731,6 +723,11 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.FenceHorizontalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
             AddFrameList(animPackage: PkgName.FenceVerticalLong, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
             AddFrameList(animPackage: PkgName.Totem, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
+            AddFrameList(animPackage: PkgName.RuinsColumn, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "ruins_column", layer: 1));
+            AddFrameList(animPackage: PkgName.RuinsRubble, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "ruins_rubble", layer: 1));
+            AddFrameList(animPackage: PkgName.RuinsWallHorizontal1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_1", layer: 1));
+            AddFrameList(animPackage: PkgName.RuinsWallHorizontal2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_2", layer: 1));
+            AddFrameList(animPackage: PkgName.RuinsWallWallVertical, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
             AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));

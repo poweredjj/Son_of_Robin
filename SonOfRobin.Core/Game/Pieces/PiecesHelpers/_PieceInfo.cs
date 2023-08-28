@@ -108,7 +108,6 @@ namespace SonOfRobin
             public readonly bool projectileCanExplode;
             public readonly TextureBank.TextureName interactVirtButtonName;
 
-
             public bool CanHurtAnimals
             {
                 get
@@ -1358,6 +1357,44 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 2000, maxNoOfPiecesSameName: 0);
+                        break;
+
+                    case PieceTemplate.Name.RuinsColumn:
+                        this.category = BoardPiece.Category.Stone;
+                        this.movesWhenDropped = false;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
+
+                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 80, maxNumberToDrop: 2)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
+                        break;
+
+                    case PieceTemplate.Name.RuinsRubble:
+                        this.category = BoardPiece.Category.Stone;
+                        this.movesWhenDropped = false;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
+
+                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 80, maxNumberToDrop: 3)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 5, maxNumberToDrop: 1)});
+                        break;
+
+                    case PieceTemplate.Name.RuinsWall:
+                        this.category = BoardPiece.Category.Stone;
+                        this.movesWhenDropped = false;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
+
+                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 80, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.Stick:
