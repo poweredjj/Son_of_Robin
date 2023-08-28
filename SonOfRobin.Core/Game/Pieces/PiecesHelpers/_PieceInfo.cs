@@ -1337,7 +1337,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Totem:
                         this.category = BoardPiece.Category.Wood;
-                        this.fireAffinity = 1.0f;
+                        this.fireAffinity = 0.0f; // protected from fire
                         this.boardTask = Scheduler.TaskName.InteractWithTotem;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOffer;
                         this.blocksMovement = true;
