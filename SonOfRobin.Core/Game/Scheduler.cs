@@ -105,14 +105,14 @@ namespace SonOfRobin
             SetAllNamedLocationsAsDiscovered = 86,
         }
 
-        private static readonly Dictionary<int, List<Task>> queue = new();
+        private static readonly Dictionary<int, Queue<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
 
         public static bool HasTaskChainInQueue
         {
             get
             {
-                foreach (List<Task> taskList in queue.Values)
+                foreach (Queue<Task> taskList in queue.Values)
                 {
                     foreach (Task task in taskList)
                     {
@@ -138,8 +138,13 @@ namespace SonOfRobin
 
             foreach (int frameNo in framesToProcess)
             {
-                foreach (Task task in queue[frameNo]) // if System.InvalidOperationException occurs, most likely some task has been added to current frame queue
-                { task.Execute(); }
+                Queue<Task> frameQueue = queue[frameNo];
+
+                while (frameQueue.Count > 0)
+                {
+                    // if System.InvalidOperationException occurs, most likely some task has been added to current frame queue
+                    frameQueue.Dequeue().Execute();
+                }
 
                 queue.Remove(frameNo);
             }
@@ -149,7 +154,7 @@ namespace SonOfRobin
         {
             foreach (int frameNo in queue.Keys.ToList())
             {
-                queue[frameNo] = queue[frameNo].Where(task => task.taskName != taskName).ToList();
+                queue[frameNo] = new Queue<Task>(queue[frameNo].Where(task => task.taskName != taskName));
             }
         }
 
@@ -216,8 +221,8 @@ namespace SonOfRobin
 
                 if (this.turnOffInputUntilExecution) this.TurnOffInput();
                 if (this.frame == -1) this.frame = SonOfRobinGame.CurrentUpdate + this.delay;
-                if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
-                queue[this.frame].Add(this);
+                if (!queue.ContainsKey(this.frame)) queue[this.frame] = new Queue<Task>();
+                queue[this.frame].Enqueue(this);
             }
 
             public void Execute()
