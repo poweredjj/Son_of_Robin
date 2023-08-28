@@ -139,7 +139,7 @@ namespace SonOfRobin
         public void Destroy()
         {
             // for properly disposing used objects
-            if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
+            this.WholeIslandPreviewTexture?.Dispose();
             this.WholeIslandPreviewTexture = null;
 
             Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
@@ -417,7 +417,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             this.PrepareNextStage(incrementCurrentStage: true);
         }
@@ -487,6 +487,7 @@ namespace SonOfRobin
         {
             // setting up variables
 
+            ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
             var biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
             var pointCollectionsForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
@@ -567,7 +568,7 @@ namespace SonOfRobin
                     if (currentPointBag.Count < minPointCount) continue;
 
                     var constrainedPointBag = new ConcurrentBag<Point>();
-                    Parallel.ForEach(currentPointBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                    Parallel.ForEach(currentPointBag, parallelOptions, point =>
                     {
                         if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: ExtBoardProps.biomeConstrains[biomeName], point: point, xyRaw: true)) constrainedPointBag.Add(point);
                     });
@@ -583,7 +584,7 @@ namespace SonOfRobin
                 ExtBoardProps.Name biomeName = kvp.Key;
                 List<ConcurrentBag<Point>> listOfPointBags = kvp.Value;
 
-                Parallel.ForEach(listOfPointBags, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, constrainedPointBag =>
+                Parallel.ForEach(listOfPointBags, parallelOptions, constrainedPointBag =>
                 {
                     foreach (List<Point> slicedPointsList in Helpers.SlicePointBagIntoConnectedRegions(width: maxX, height: maxY, pointsBag: constrainedPointBag))
                     {
@@ -599,7 +600,7 @@ namespace SonOfRobin
                 ExtBoardProps.Name biomeName = kvp.Key;
                 ConcurrentBag<List<Point>> listOfPointBags = kvp.Value;
 
-                Parallel.ForEach(listOfPointBags, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, pointList =>
+                Parallel.ForEach(listOfPointBags, parallelOptions, pointList =>
                 {
                     foreach (Point point in pointList)
                     {
@@ -646,7 +647,7 @@ namespace SonOfRobin
             int dividedWidth = this.world.width / this.resDivider;
             int dividedHeight = this.world.height / this.resDivider;
 
-            List<Point> offsetList = new()
+            Point[] offsetArray = new Point[]
             {
                 new Point(-1, 0),
                 new Point(1, 0),
@@ -658,13 +659,14 @@ namespace SonOfRobin
 
             var nextPoints = new ConcurrentBag<Point>(startingPoints);
             var rawPointsInsideRange = new ConcurrentBag<Point>();
+            ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
 
             while (true)
             {
-                List<Point> currentPoints = nextPoints.Distinct().ToList(); // using Distinct() to filter out duplicates
+                HashSet<Point> currentPoints = new(nextPoints); // using HashSet to filter out duplicates
                 nextPoints = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                Parallel.ForEach(currentPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentPoint =>
+                Parallel.ForEach(currentPoints, parallelOptions, currentPoint =>
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
@@ -673,7 +675,7 @@ namespace SonOfRobin
                         rawPointsInsideRange.Add(currentPoint);
                         if (setNameIfInsideRange) this.SetExtProperty(name: nameToSetIfInRange, value: true, position: currentPoint, xyRaw: true);
 
-                        foreach (Point currentOffset in offsetList)
+                        foreach (Point currentOffset in offsetArray)
                         {
                             Point nextPoint = new(currentPoint.X + currentOffset.X, currentPoint.Y + currentOffset.Y);
 
@@ -693,7 +695,7 @@ namespace SonOfRobin
                     processedMap[currentPoint.X, currentPoint.Y] = true;
                 });
 
-                if (nextPoints.Count == 0) break;
+                if (nextPoints.IsEmpty) break;
             }
 
             return rawPointsInsideRange;

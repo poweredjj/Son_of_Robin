@@ -618,7 +618,7 @@ namespace SonOfRobin
             // filling regions
 
             // Process each point only once
-            foreach (var start in pointsSet)
+            foreach (Point start in pointsSet)
             {
                 if (bitmapPointIsProcessed[start.X, start.Y]) continue;
 

@@ -342,6 +342,7 @@ namespace SonOfRobin
             // saving pieces data
             {
                 bool piecesSaved = false;
+                ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
 
                 while (true)
                 {
@@ -362,7 +363,7 @@ namespace SonOfRobin
                         }
                     }
 
-                    Parallel.For(0, packagesToProcess.Count, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, packageIndex =>
+                    Parallel.For(0, packagesToProcess.Count, parallelOptions, packageIndex =>
                     {
                         var package = packagesToProcess[packageIndex];
 
@@ -533,6 +534,7 @@ namespace SonOfRobin
             // loading pieces
             {
                 bool allPiecesProcessed = false;
+                ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
 
                 while (true)
                 {
@@ -545,7 +547,7 @@ namespace SonOfRobin
                         throw new ArgumentException($"Error while reading pieces data for slot {saveSlotName}.");
                     }
 
-                    Parallel.For(0, Preferences.MaxThreadsToUse, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, threadNo =>
+                    Parallel.For(0, Preferences.MaxThreadsToUse, parallelOptions, threadNo =>
                     {
                         int packageToLoad = this.currentPiecePackageNo + threadNo;
 
