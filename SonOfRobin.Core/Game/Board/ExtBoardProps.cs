@@ -32,7 +32,8 @@ namespace SonOfRobin
 
             { Name.BiomeRuins, new List<TerrainSearch>{
                  new TerrainSearch(name: Terrain.Name.Height, min: 120, max: 145),
-                 new TerrainSearch(name: Terrain.Name.Humidity, min: 0, max: 140),
+                 new TerrainSearch(name: Terrain.Name.Humidity, min: 0, max: 200),
+                 new TerrainSearch(name: Terrain.Name.Biome, min: Terrain.biomeMin + ((Terrain.biomeDeep - Terrain.biomeMin) / 3), max: 255),
             } }
         };
 
