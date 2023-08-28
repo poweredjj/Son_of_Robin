@@ -167,7 +167,7 @@ namespace SonOfRobin
         {
             foreach (var kvp in this.extPropertiesDict)
             {
-                bool value = world.Grid.GetExtProperty(name: kvp.Key, position: position);
+                bool value = world.Grid.ExtBoardProps.GetValue(name: kvp.Key, x: (int)position.X, y: (int)position.Y); ;
                 if (value != kvp.Value) return false;
             }
 

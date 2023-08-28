@@ -298,7 +298,7 @@ namespace SonOfRobin
 
             if (pixelBiome >= Terrain.biomeMin)
             {
-                Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
+                Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.ExtBoardProps.GetValueDict(x: x, y: y);
 
                 if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.swamp;
                 else if (extDataValDict[ExtBoardProps.Name.BiomeRuins]) return RepeatingPattern.Name.ruins;

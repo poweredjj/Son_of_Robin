@@ -294,7 +294,7 @@ namespace SonOfRobin
         public bool GetExtProperty(ExtBoardProps.Name name)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.Grid.GetExtProperty(name: name, position: this.position);
+            return this.world.Grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
         }
 
         public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)

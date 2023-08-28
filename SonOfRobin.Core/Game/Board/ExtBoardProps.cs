@@ -147,7 +147,7 @@ namespace SonOfRobin
             else return this.containsPropertiesFalseGridCell[name].GetVal(cellNoX, cellNoY);
         }
 
-        public Dictionary<Name, bool> GetValueDict(int x, int y, bool xyRaw)
+        public Dictionary<Name, bool> GetValueDict(int x, int y, bool xyRaw = false)
         {
             var valueDict = new Dictionary<Name, bool>();
 
@@ -159,13 +159,13 @@ namespace SonOfRobin
             return valueDict;
         }
 
-        public bool GetValue(Name name, int x, int y, bool xyRaw)
+        public bool GetValue(Name name, int x, int y, bool xyRaw = false)
         {
             if (xyRaw) return this.extDataByProperty[name].GetVal(x, y);
             else return this.extDataByProperty[name].GetVal(x / this.Grid.resDivider, y / this.Grid.resDivider);
         }
 
-        public void SetValue(Name name, bool value, int x, int y, bool xyRaw)
+        public void SetValue(Name name, bool value, int x, int y, bool xyRaw = false)
         {
             if (xyRaw) this.extDataByProperty[name].SetVal(x: x, y: y, value: value);
             else this.extDataByProperty[name].SetVal(x: x / this.Grid.resDivider, y: y / this.Grid.resDivider, value: value);

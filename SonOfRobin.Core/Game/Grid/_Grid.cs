@@ -72,7 +72,7 @@ namespace SonOfRobin
         public Texture2D WholeIslandPreviewTexture { get; private set; }
 
         private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
-        private ExtBoardProps extBoardProps;
+        public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
 
         public readonly Cell[,] cellGrid;
@@ -242,8 +242,8 @@ namespace SonOfRobin
 
             // copying ext data
 
-            this.extBoardProps = templateGrid.extBoardProps;
-            this.extBoardProps.AttachToNewGrid(this);
+            this.ExtBoardProps = templateGrid.ExtBoardProps;
+            this.ExtBoardProps.AttachToNewGrid(this);
 
             // copying whole island texture
 
@@ -348,32 +348,32 @@ namespace SonOfRobin
                     break;
 
                 case Stage.CheckExtData:
-                    if (this.extBoardProps == null) this.extBoardProps = new ExtBoardProps(grid: this);
+                    if (this.ExtBoardProps == null) this.ExtBoardProps = new ExtBoardProps(grid: this);
 
                     break;
 
                 case Stage.SetExtDataSea:
-                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateSea();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateSea();
 
                     break;
 
                 case Stage.SetExtDataBeach:
-                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
 
                     break;
 
                 case Stage.SetExtDataBiomes:
-                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateBiomes();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateBiomes();
 
                     break;
 
                 case Stage.SetExtDataPropertiesGrid:
-                    if (this.extBoardProps.CreationInProgress) this.extBoardProps.CreateContainsPropertiesGrid();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.CreateContainsPropertiesGrid();
 
                     break;
 
                 case Stage.SetExtDataFinish:
-                    if (this.extBoardProps.CreationInProgress) this.extBoardProps.EndCreationAndSave();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave();
 
                     break;
 
@@ -417,7 +417,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             this.PrepareNextStage(incrementCurrentStage: true);
         }
@@ -605,7 +605,7 @@ namespace SonOfRobin
                     foreach (Point point in pointList)
                     {
                         // can write to array using parallel, if every thread accesses its own indices
-                        this.SetExtProperty(name: biomeName, value: true, position: point, xyRaw: true);
+                        this.ExtBoardProps.SetValue(name: biomeName, value: true, x: point.X, y: point.Y, xyRaw: true);
                     }
                 });
             }
@@ -622,7 +622,7 @@ namespace SonOfRobin
             {
                 for (int rawY = 0; rawY < maxY; rawY++)
                 {
-                    if (this.GetExtProperty(name: nameToUse, x: rawX, y: rawY, xyRaw: true) == value)
+                    if (this.ExtBoardProps.GetValue(name: nameToUse, x: rawX, y: rawY, xyRaw: true) == value)
                     {
                         pointBag.Add(new Point(rawX, rawY));
                     }
@@ -673,7 +673,7 @@ namespace SonOfRobin
                     if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: terrainSearches, point: currentPoint, xyRaw: true))
                     {
                         rawPointsInsideRange.Add(currentPoint);
-                        if (setNameIfInsideRange) this.SetExtProperty(name: nameToSetIfInRange, value: true, position: currentPoint, xyRaw: true);
+                        if (setNameIfInsideRange) this.ExtBoardProps.SetValue(name: nameToSetIfInRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
 
                         foreach (Point currentOffset in offsetArray)
                         {
@@ -689,7 +689,7 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, position: currentPoint, xyRaw: true);
+                        if (setNameIfOutsideRange) this.ExtBoardProps.SetValue(name: nameToSetIfOutsideRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
@@ -1117,7 +1117,7 @@ namespace SonOfRobin
 
         public bool CheckIfContainsExtPropertyForCell(ExtBoardProps.Name name, bool value, int cellNoX, int cellNoY)
         {
-            return this.extBoardProps.CheckIfContainsPropertyForCell(name: name, value: value, cellNoX: cellNoX, cellNoY: cellNoY);
+            return this.ExtBoardProps.CheckIfContainsPropertyForCell(name: name, value: value, cellNoX: cellNoX, cellNoY: cellNoY);
         }
 
         public byte GetFieldValue(Terrain.Name terrainName, int x, int y, bool xyRaw = false)
@@ -1136,36 +1136,6 @@ namespace SonOfRobin
         {
             if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
             else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
-        }
-
-        public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(Point position, bool xyRaw = false)
-        {
-            return this.extBoardProps.GetValueDict(x: position.X, y: position.Y, xyRaw: xyRaw);
-        }
-
-        public Dictionary<ExtBoardProps.Name, bool> GetExtValueDict(int x, int y, bool xyRaw = false)
-        {
-            return this.extBoardProps.GetValueDict(x: x, y: y, xyRaw: xyRaw);
-        }
-
-        public bool GetExtProperty(ExtBoardProps.Name name, Vector2 position, bool xyRaw = false)
-        {
-            return this.extBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: xyRaw);
-        }
-
-        public bool GetExtProperty(ExtBoardProps.Name name, int x, int y, bool xyRaw = false)
-        {
-            return this.extBoardProps.GetValue(name: name, x: x, y: y, xyRaw: xyRaw);
-        }
-
-        public void SetExtProperty(ExtBoardProps.Name name, bool value, int x, int y, bool xyRaw = false)
-        {
-            this.extBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: xyRaw);
-        }
-
-        public void SetExtProperty(ExtBoardProps.Name name, bool value, Point position, bool xyRaw = false)
-        {
-            this.extBoardProps.SetValue(name: name, value: value, x: position.X, y: position.Y, xyRaw: xyRaw);
         }
 
         private Cell[,] MakeGrid()
