@@ -1028,7 +1028,7 @@ namespace SonOfRobin
                        });
                         break;
 
-                    case PieceTemplate.Name.JarTreasure:
+                    case PieceTemplate.Name.JarTreasureRich:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
@@ -1049,6 +1049,29 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheStone, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelStone, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearStone, chanceToDrop: 10, maxNumberToDrop: 1),
+                                });
+                        break;
+
+                    case PieceTemplate.Name.JarTreasurePoor:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 0.4f;
+                        this.movesWhenDropped = false;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 50;
+                        this.inOpacityFadeDuration = 30;
+                        this.isAffectedByWind = true;
+
+                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarBroken, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ArrowStone, chanceToDrop: 15, maxNumberToDrop: 30),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BowBasic, chanceToDrop: 5, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.AxeStone, chanceToDrop: 3, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.PickaxeStone, chanceToDrop: 3, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ScytheStone, chanceToDrop: 3, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ShovelStone, chanceToDrop: 3, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.SpearStone, chanceToDrop: 3, maxNumberToDrop: 1),
                                 });
                         break;
 
@@ -1443,12 +1466,13 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 2, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasureRich, chanceToDrop: 2, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clam, chanceToDrop: 30, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
@@ -1457,12 +1481,13 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 4, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasureRich, chanceToDrop: 4, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 25, maxNumberToDrop: 2),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Acorn, chanceToDrop: 10, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
@@ -1471,12 +1496,13 @@ namespace SonOfRobin
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 6, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasureRich, chanceToDrop: 6, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 25, maxNumberToDrop: 3),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
                         break;
@@ -1484,6 +1510,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1496,6 +1523,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1503,10 +1531,26 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureBig, chanceToDrop: 2, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureNormal, chanceToDrop: 8, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasure, chanceToDrop: 15, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasureRich, chanceToDrop: 15, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 20, maxNumberToDrop: 2),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
+                        break;
+
+                    case PieceTemplate.Name.RuinsDigSite:
+                        this.category = BoardPiece.Category.Dirt;
+                        this.placeMaxDistance = 1000;
+                        this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+
+                        this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
+                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasurePoor, chanceToDrop: 25, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 40, maxNumberToDrop: 3),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 20, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 20, maxNumberToDrop: 1)}
+                                    );
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:

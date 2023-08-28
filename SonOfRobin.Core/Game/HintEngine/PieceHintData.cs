@@ -441,9 +441,9 @@ namespace SonOfRobin
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowExploding }),
 
                 new PieceHint(
-                    type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.JarTreasure },
-                    message: $"I need to destroy this | {PieceInfo.GetInfo(PieceTemplate.Name.JarTreasure).readableName} to see what's inside.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.JarTreasure) }),
+                    type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor },
+                    message: $"I need to destroy this | {PieceInfo.GetInfo(PieceTemplate.Name.JarTreasureRich).readableName} to see what's inside.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.JarTreasureRich) }),
 
                 new PieceHint(
                     type: PieceHint.Type.CandleForLantern,

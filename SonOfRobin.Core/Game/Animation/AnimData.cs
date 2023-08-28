@@ -207,6 +207,7 @@ namespace SonOfRobin
 
             DigSite = 147,
             DigSiteGlass = 148,
+            DigSiteRuins = 283,
 
             Coal = 149,
             IronOre = 150,
@@ -1046,10 +1047,11 @@ namespace SonOfRobin
                     ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
                 });
 
+            AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
+            AddFrameList(animPackage: PkgName.DigSiteRuins, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site_ruins", layer: 0, scale: 0.35f));
+
             AddFrameList(animPackage: PkgName.ArrowExploding, animName: "default", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.ArrowExploding, animName: "burning", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
-
-            AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
 
             AddFrameList(animPackage: PkgName.Clam, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 128, y: 256, width: 64, height: 64, scale: 0.5f));

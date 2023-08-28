@@ -71,207 +71,209 @@ namespace SonOfRobin
             MineralsMossyBig = 47,
             MineralsMossySmall = 48,
 
-            JarTreasure = 49,
-            JarBroken = 50,
-            CrateStarting = 51,
-            CrateRegular = 52,
+            JarTreasureRich = 49,
+            JarTreasurePoor = 50,
+            JarBroken = 51,
+            CrateStarting = 52,
+            CrateRegular = 53,
 
-            ChestWooden = 53,
-            ChestStone = 54,
-            ChestIron = 55,
-            ChestCrystal = 56,
-            ChestTreasureNormal = 57,
-            ChestTreasureBig = 58,
+            ChestWooden = 54,
+            ChestStone = 55,
+            ChestIron = 56,
+            ChestCrystal = 57,
+            ChestTreasureNormal = 58,
+            ChestTreasureBig = 59,
 
-            CampfireSmall = 59,
-            CampfireMedium = 60,
+            CampfireSmall = 60,
+            CampfireMedium = 61,
 
-            FertileGroundSmall = 61,
-            FertileGroundMedium = 62,
-            FertileGroundLarge = 63,
+            FertileGroundSmall = 62,
+            FertileGroundMedium = 63,
+            FertileGroundLarge = 64,
 
-            WorkshopEssential = 64,
-            WorkshopBasic = 65,
-            WorkshopAdvanced = 66,
-            WorkshopMaster = 67,
+            WorkshopEssential = 65,
+            WorkshopBasic = 66,
+            WorkshopAdvanced = 67,
+            WorkshopMaster = 68,
 
-            WorkshopMeatHarvesting = 68,
-            MeatDryingRackRegular = 69,
-            MeatDryingRackWide = 70,
-            WorkshopLeatherBasic = 71,
-            WorkshopLeatherAdvanced = 72,
+            WorkshopMeatHarvesting = 69,
+            MeatDryingRackRegular = 70,
+            MeatDryingRackWide = 71,
+            WorkshopLeatherBasic = 72,
+            WorkshopLeatherAdvanced = 73,
 
-            AlchemyLabStandard = 73,
-            AlchemyLabAdvanced = 74,
+            AlchemyLabStandard = 74,
+            AlchemyLabAdvanced = 75,
 
-            Totem = 75,
+            Totem = 76,
 
-            FenceHorizontalShort = 76,
-            FenceVerticalShort = 77,
-            FenceHorizontalLong = 78,
-            FenceVerticalLong = 79,
+            FenceHorizontalShort = 77,
+            FenceVerticalShort = 78,
+            FenceHorizontalLong = 79,
+            FenceVerticalLong = 80,
 
-            Furnace = 80,
-            Anvil = 81,
-            HotPlate = 82,
-            CookingPot = 83,
+            Furnace = 81,
+            Anvil = 82,
+            HotPlate = 83,
+            CookingPot = 84,
 
-            Stick = 84,
-            WoodLogRegular = 85,
-            WoodLogHard = 86,
-            WoodPlank = 87,
-            Stone = 88,
-            Granite = 89,
-            Clay = 90,
-            Rope = 91,
-            Clam = 92,
+            Stick = 85,
+            WoodLogRegular = 86,
+            WoodLogHard = 87,
+            WoodPlank = 88,
+            Stone = 89,
+            Granite = 90,
+            Clay = 91,
+            Rope = 92,
+            Clam = 93,
 
-            CoalDeposit = 93,
-            IronDeposit = 94,
+            CoalDeposit = 94,
+            IronDeposit = 95,
 
-            BeachDigSite = 95,
-            ForestDigSite = 96,
-            DesertDigSite = 97,
-            GlassDigSite = 98,
-            SwampDigSite = 99,
-            SwampGeyser = 100,
-            SwampGas = 101,
+            BeachDigSite = 96,
+            ForestDigSite = 97,
+            DesertDigSite = 98,
+            GlassDigSite = 99,
+            SwampDigSite = 100,
+            RuinsDigSite = 212,
+            SwampGeyser = 101,
+            SwampGas = 102,
 
-            CrystalDepositSmall = 102,
-            CrystalDepositBig = 103,
+            CrystalDepositSmall = 103,
+            CrystalDepositBig = 104,
 
-            Coal = 104,
-            IronOre = 105,
-            IronBar = 106,
-            IronRod = 107,
-            IronNail = 108,
-            IronPlate = 109,
-            GlassSand = 110,
-            Crystal = 111,
+            Coal = 105,
+            IronOre = 106,
+            IronBar = 107,
+            IronRod = 108,
+            IronNail = 109,
+            IronPlate = 110,
+            GlassSand = 111,
+            Crystal = 112,
 
-            Backlight = 112,
-            BloodSplatter = 113,
-            Attack = 114,
-            Miss = 115,
-            Zzz = 116,
-            Heart = 117,
-            MapMarker = 118,
-            MusicNote = 119,
-            Crosshair = 120,
+            Backlight = 113,
+            BloodSplatter = 114,
+            Attack = 115,
+            Miss = 116,
+            Zzz = 117,
+            Heart = 118,
+            MapMarker = 119,
+            MusicNote = 120,
+            Crosshair = 121,
 
-            BubbleExclamationRed = 121,
-            BubbleExclamationBlue = 122,
-            BubbleCraftGreen = 123,
+            BubbleExclamationRed = 122,
+            BubbleExclamationBlue = 123,
+            BubbleCraftGreen = 124,
 
-            RainDrop = 124,
-            Explosion = 125,
+            RainDrop = 125,
+            Explosion = 126,
 
-            CookingTrigger = 126,
-            UpgradeTrigger = 127,
-            BrewTrigger = 128,
-            MeatHarvestTrigger = 129,
-            OfferTrigger = 130,
-            FireplaceTriggerOn = 131,
-            FireplaceTriggerOff = 132,
+            CookingTrigger = 127,
+            UpgradeTrigger = 128,
+            BrewTrigger = 129,
+            MeatHarvestTrigger = 130,
+            OfferTrigger = 131,
+            FireplaceTriggerOn = 132,
+            FireplaceTriggerOff = 133,
 
-            KnifeSimple = 133,
-            AxeWood = 134,
-            AxeStone = 135,
-            AxeIron = 136,
-            AxeCrystal = 137,
+            KnifeSimple = 134,
+            AxeWood = 135,
+            AxeStone = 136,
+            AxeIron = 137,
+            AxeCrystal = 138,
 
-            PickaxeWood = 138,
-            PickaxeStone = 139,
-            PickaxeIron = 140,
-            PickaxeCrystal = 141,
+            PickaxeWood = 139,
+            PickaxeStone = 140,
+            PickaxeIron = 141,
+            PickaxeCrystal = 142,
 
-            SpearWood = 142,
-            SpearStone = 143,
-            SpearIron = 144,
-            SpearCrystal = 145,
+            SpearWood = 143,
+            SpearStone = 144,
+            SpearIron = 145,
+            SpearCrystal = 146,
 
-            ScytheStone = 146,
-            ScytheIron = 147,
-            ScytheCrystal = 148,
+            ScytheStone = 147,
+            ScytheIron = 148,
+            ScytheCrystal = 149,
 
-            ShovelStone = 149,
-            ShovelIron = 150,
-            ShovelCrystal = 151,
+            ShovelStone = 150,
+            ShovelIron = 151,
+            ShovelCrystal = 152,
 
-            BowBasic = 152,
-            BowAdvanced = 153,
+            BowBasic = 153,
+            BowAdvanced = 154,
 
-            ArrowWood = 154,
-            ArrowStone = 155,
-            ArrowIron = 156,
-            ArrowCrystal = 157,
-            ArrowExploding = 158,
+            ArrowWood = 155,
+            ArrowStone = 156,
+            ArrowIron = 157,
+            ArrowCrystal = 158,
+            ArrowExploding = 159,
 
-            TentSmall = 159,
-            TentMedium = 160,
-            TentBig = 161,
+            TentSmall = 160,
+            TentMedium = 161,
+            TentBig = 162,
 
-            BackpackSmall = 162,
-            BackpackMedium = 163,
-            BackpackBig = 164,
-            BackpackLuxurious = 165,
+            BackpackSmall = 163,
+            BackpackMedium = 164,
+            BackpackBig = 165,
+            BackpackLuxurious = 166,
 
-            BeltSmall = 166,
-            BeltMedium = 167,
-            BeltBig = 168,
-            BeltLuxurious = 169,
-            Map = 170,
+            BeltSmall = 167,
+            BeltMedium = 168,
+            BeltBig = 169,
+            BeltLuxurious = 170,
+            Map = 171,
 
-            Dungarees = 171,
-            HatSimple = 172,
-            BootsProtective = 173,
-            BootsMountain = 174,
-            BootsAllTerrain = 175,
-            BootsSpeed = 176,
-            GlovesStrength = 177,
-            GlassesVelvet = 178,
+            Dungarees = 172,
+            HatSimple = 173,
+            BootsProtective = 174,
+            BootsMountain = 175,
+            BootsAllTerrain = 176,
+            BootsSpeed = 177,
+            GlovesStrength = 178,
+            GlassesVelvet = 179,
 
-            TorchSmall = 179,
-            TorchBig = 180,
+            TorchSmall = 180,
+            TorchBig = 181,
 
-            LanternEmpty = 181,
-            LanternFull = 182,
-            Candle = 183,
+            LanternEmpty = 182,
+            LanternFull = 183,
+            Candle = 184,
 
-            HumanSkeleton = 184,
+            HumanSkeleton = 185,
 
-            HerbsBlack = 185,
-            HerbsBlue = 186,
-            HerbsCyan = 187,
-            HerbsGreen = 188,
-            HerbsYellow = 189,
-            HerbsRed = 190,
-            HerbsViolet = 191,
-            HerbsBrown = 192,
-            HerbsDarkViolet = 193,
-            HerbsDarkGreen = 194,
+            HerbsBlack = 186,
+            HerbsBlue = 187,
+            HerbsCyan = 188,
+            HerbsGreen = 189,
+            HerbsYellow = 190,
+            HerbsRed = 191,
+            HerbsViolet = 192,
+            HerbsBrown = 193,
+            HerbsDarkViolet = 194,
+            HerbsDarkGreen = 195,
 
-            EmptyBottle = 195,
-            PotionGeneric = 196,
-            BottleOfOil = 197,
+            EmptyBottle = 196,
+            PotionGeneric = 197,
+            BottleOfOil = 198,
 
-            Hole = 198,
-            TreeStump = 199,
+            Hole = 199,
+            TreeStump = 200,
 
-            LavaFlame = 200,
-            LavaGas = 201,
+            LavaFlame = 201,
+            LavaGas = 202,
 
-            SoundLakeWaves = 202,
-            SoundSeaWind = 203,
-            SoundNightCrickets = 204,
-            SoundNoonCicadas = 205,
-            SoundLava = 206,
+            SoundLakeWaves = 203,
+            SoundSeaWind = 204,
+            SoundNightCrickets = 205,
+            SoundNoonCicadas = 206,
+            SoundLava = 207,
 
-            SeaWave = 207,
-            PredatorRepellant = 208,
+            SeaWave = 208,
+            PredatorRepellant = 209,
 
-            ParticleEmitter = 209,
-            EmptyVisualEffect = 210,
+            ParticleEmitter = 210,
+            EmptyVisualEffect = 211,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1128,7 +1130,22 @@ namespace SonOfRobin
                         return treasureChest;
                     }
 
-                case Name.JarTreasure:
+                case Name.JarTreasureRich:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding1));
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
+
+                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", soundPack: soundPack);
+
+                        return decoration;
+                    }
+
+                case Name.JarTreasurePoor:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
@@ -1481,6 +1498,17 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
+
+                        return boardPiece;
+                    }
+
+                case Name.RuinsDigSite:
+                    {
+                        var allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteRuins, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 40, readableName: "dig site", description: "May contain some buried items.");
 
                         return boardPiece;
                     }

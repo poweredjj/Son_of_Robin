@@ -1545,6 +1545,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/dig_site_glass_shine_3.png
 
+#begin gfx/dig_site_ruins.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/dig_site_ruins.png
+
 #begin gfx/dungarees.png
 /importer:TextureImporter
 /processor:TextureProcessor

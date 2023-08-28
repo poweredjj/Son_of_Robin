@@ -61,6 +61,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.1f),
                 new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.08f, maxAmount: 200),
                 new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.11f),
+                new PieceCreationData(name: PieceTemplate.Name.RuinsDigSite, multiplier: 0.14f),
 
                 new PieceCreationData(name: PieceTemplate.Name.Totem, multiplier: 0.1f, maxAmount: 2),
 
