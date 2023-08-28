@@ -26,15 +26,15 @@ namespace SonOfRobin
 
         MapToggleMarker = 14,
         MapCenterPlayer = 15,
-        MapToggleLocations = 23,
+        MapToggleLocations = 16,
 
-        DebugPause = 16,
-        DebugPlay = 17,
-        DebugFastForward = 18,
-        DebugClear = 19,
-        DebugBreakAll = 20,
-        DebugBreakVisible = 21,
-        DebugClockAdvance = 22,
+        DebugPause = 17,
+        DebugPlay = 18,
+        DebugFastForward = 19,
+        DebugClear = 20,
+        DebugBreakAll = 21,
+        DebugBreakVisible = 22,
+        DebugClockAdvance = 23,
     }
 
     public class VirtButton

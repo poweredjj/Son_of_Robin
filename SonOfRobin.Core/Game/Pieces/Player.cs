@@ -474,7 +474,7 @@ namespace SonOfRobin
             this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_globalChestStorage"], storagePiece: this);
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
-            if (pieceData.ContainsKey("player_harvestLevel")) this.HarvestLevel = (int)(Int64)pieceData["player_harvestLevel"]; // for compatibility with old saves
+            this.HarvestLevel = (int)(Int64)pieceData["player_harvestLevel"];
 
             this.RefreshAllowedPiecesForStorages();
         }

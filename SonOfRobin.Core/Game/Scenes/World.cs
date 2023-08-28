@@ -569,7 +569,7 @@ namespace SonOfRobin
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
                 this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]);
                 this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
-                if (headerData.ContainsKey("meatHarvestStats")) this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]); // for compatibility with old saves
+                this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
             }
 

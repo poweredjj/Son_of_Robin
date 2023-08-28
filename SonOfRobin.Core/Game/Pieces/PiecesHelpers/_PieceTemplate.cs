@@ -53,242 +53,225 @@ namespace SonOfRobin
             Carrot = 32,
             Acorn = 33,
             MeatRawRegular = 34,
-            MeatRawPrime = 197,
-            MeatDried = 35,
-            Fat = 36,
-            Leather = 37,
+            MeatRawPrime = 35,
+            MeatDried = 36,
+            Fat = 37,
+            Leather = 38,
 
-            Burger = 38,
-            Meal = 39,
+            Burger = 39,
+            Meal = 40,
 
-            Rabbit = 40,
-            Fox = 41,
-            Tiger = 42,
-            Frog = 43,
+            Rabbit = 41,
+            Fox = 42,
+            Tiger = 43,
+            Frog = 44,
 
-            MineralsBig = 44,
-            MineralsSmall = 45,
-            MineralsMossyBig = 46,
-            MineralsMossySmall = 47,
+            MineralsBig = 45,
+            MineralsSmall = 46,
+            MineralsMossyBig = 47,
+            MineralsMossySmall = 48,
 
-            JarTreasure = 48,
-            JarBroken = 49,
-            CrateStarting = 50,
-            CrateRegular = 51,
+            JarTreasure = 49,
+            JarBroken = 50,
+            CrateStarting = 51,
+            CrateRegular = 52,
 
-            ChestWooden = 52,
-            ChestStone = 53,
-            ChestIron = 54,
-            ChestCrystal = 55,
-            ChestTreasureNormal = 56,
-            ChestTreasureBig = 57,
+            ChestWooden = 53,
+            ChestStone = 54,
+            ChestIron = 55,
+            ChestCrystal = 56,
+            ChestTreasureNormal = 57,
+            ChestTreasureBig = 58,
 
-            CampfireSmall = 58,
-            CampfireMedium = 219,
+            CampfireSmall = 59,
+            CampfireMedium = 60,
 
-            FertileGroundSmall = 199,
-            FertileGroundMedium = 200,
-            FertileGroundLarge = 201,
+            FertileGroundSmall = 61,
+            FertileGroundMedium = 62,
+            FertileGroundLarge = 63,
 
-            WorkshopEssential = 59,
-            WorkshopBasic = 60,
-            WorkshopAdvanced = 61,
-            WorkshopMaster = 62,
+            WorkshopEssential = 64,
+            WorkshopBasic = 65,
+            WorkshopAdvanced = 66,
+            WorkshopMaster = 67,
 
-            WorkshopMeatHarvesting = 211,
-            MeatDryingRackRegular = 213,
-            MeatDryingRackWide = 214,
-            WorkshopLeatherBasic = 63,
-            WorkshopLeatherAdvanced = 64,
+            WorkshopMeatHarvesting = 68,
+            MeatDryingRackRegular = 69,
+            MeatDryingRackWide = 70,
+            WorkshopLeatherBasic = 71,
+            WorkshopLeatherAdvanced = 72,
 
-            AlchemyLabStandard = 65,
-            AlchemyLabAdvanced = 66,
+            AlchemyLabStandard = 73,
+            AlchemyLabAdvanced = 74,
 
-            Totem = 223,
+            Totem = 75,
 
-            FenceHorizontalShort = 202,
-            FenceVerticalShort = 203,
-            FenceHorizontalLong = 204,
-            FenceVerticalLong = 205,
+            FenceHorizontalShort = 76,
+            FenceVerticalShort = 77,
+            FenceHorizontalLong = 78,
+            FenceVerticalLong = 79,
 
-            Furnace = 67,
-            Anvil = 68,
-            HotPlate = 69,
-            CookingPot = 70,
+            Furnace = 80,
+            Anvil = 81,
+            HotPlate = 82,
+            CookingPot = 83,
 
-            Stick = 72,
-            WoodLogRegular = 73,
-            WoodLogHard = 74,
-            WoodPlank = 75,
-            Stone = 76,
-            Granite = 77,
-            Clay = 78,
-            Rope = 79,
-            Clam = 80,
+            Stick = 84,
+            WoodLogRegular = 85,
+            WoodLogHard = 86,
+            WoodPlank = 87,
+            Stone = 88,
+            Granite = 89,
+            Clay = 90,
+            Rope = 91,
+            Clam = 92,
 
-            CoalDeposit = 81,
-            IronDeposit = 82,
+            CoalDeposit = 93,
+            IronDeposit = 94,
 
-            BeachDigSite = 83,
-            ForestDigSite = 84,
-            DesertDigSite = 85,
-            GlassDigSite = 86,
-            SwampDigSite = 87,
-            SwampGeyser = 210,
-            SwampGas = 188,
+            BeachDigSite = 95,
+            ForestDigSite = 96,
+            DesertDigSite = 97,
+            GlassDigSite = 98,
+            SwampDigSite = 99,
+            SwampGeyser = 100,
+            SwampGas = 101,
 
-            CrystalDepositSmall = 88,
-            CrystalDepositBig = 89,
+            CrystalDepositSmall = 102,
+            CrystalDepositBig = 103,
 
-            Coal = 90,
-            IronOre = 91,
-            IronBar = 92,
-            IronRod = 93,
-            IronNail = 94,
-            IronPlate = 95,
-            GlassSand = 96,
-            Crystal = 97,
+            Coal = 104,
+            IronOre = 105,
+            IronBar = 106,
+            IronRod = 107,
+            IronNail = 108,
+            IronPlate = 109,
+            GlassSand = 110,
+            Crystal = 111,
 
-            Backlight = 98,
-            BloodSplatter = 99,
-            Attack = 100,
-            Miss = 101,
-            Zzz = 102,
-            Heart = 103,
-            MapMarker = 104,
-            MusicNote = 105,
-            Crosshair = 106,
+            Backlight = 112,
+            BloodSplatter = 113,
+            Attack = 114,
+            Miss = 115,
+            Zzz = 116,
+            Heart = 117,
+            MapMarker = 118,
+            MusicNote = 119,
+            Crosshair = 120,
 
-            BubbleExclamationRed = 107,
-            BubbleExclamationBlue = 108,
-            BubbleCraftGreen = 109,
+            BubbleExclamationRed = 121,
+            BubbleExclamationBlue = 122,
+            BubbleCraftGreen = 123,
 
-            RainDrop = 110,
-            Explosion = 111,
+            RainDrop = 124,
+            Explosion = 125,
 
-            CookingTrigger = 113,
-            UpgradeTrigger = 114,
-            BrewTrigger = 115,
-            MeatHarvestTrigger = 212,
-            OfferTrigger = 224,
-            FireplaceTriggerOn = 116,
-            FireplaceTriggerOff = 117,
+            CookingTrigger = 126,
+            UpgradeTrigger = 127,
+            BrewTrigger = 128,
+            MeatHarvestTrigger = 129,
+            OfferTrigger = 130,
+            FireplaceTriggerOn = 131,
+            FireplaceTriggerOff = 132,
 
-            KnifeSimple = 118,
-            AxeWood = 119,
-            AxeStone = 120,
-            AxeIron = 121,
-            AxeCrystal = 122,
+            KnifeSimple = 133,
+            AxeWood = 134,
+            AxeStone = 135,
+            AxeIron = 136,
+            AxeCrystal = 137,
 
-            PickaxeWood = 123,
-            PickaxeStone = 124,
-            PickaxeIron = 125,
-            PickaxeCrystal = 126,
+            PickaxeWood = 138,
+            PickaxeStone = 139,
+            PickaxeIron = 140,
+            PickaxeCrystal = 141,
 
-            SpearWood = 127,
-            SpearStone = 128,
-            SpearIron = 129,
-            SpearCrystal = 130,
+            SpearWood = 142,
+            SpearStone = 143,
+            SpearIron = 144,
+            SpearCrystal = 145,
 
-            ScytheStone = 131,
-            ScytheIron = 132,
-            ScytheCrystal = 133,
+            ScytheStone = 146,
+            ScytheIron = 147,
+            ScytheCrystal = 148,
 
-            ShovelStone = 134,
-            ShovelIron = 135,
-            ShovelCrystal = 136,
+            ShovelStone = 149,
+            ShovelIron = 150,
+            ShovelCrystal = 151,
 
-            BowBasic = 137,
-            BowAdvanced = 138,
+            BowBasic = 152,
+            BowAdvanced = 153,
 
-            ArrowWood = 139,
-            ArrowStone = 140,
-            ArrowIron = 141,
-            ArrowCrystal = 142,
-            ArrowExploding = 143,
+            ArrowWood = 154,
+            ArrowStone = 155,
+            ArrowIron = 156,
+            ArrowCrystal = 157,
+            ArrowExploding = 158,
 
-            TentSmall = 154,
-            TentMedium = 155,
-            TentBig = 156,
+            TentSmall = 159,
+            TentMedium = 160,
+            TentBig = 161,
 
-            BackpackSmall = 157,
-            BackpackMedium = 158,
-            BackpackBig = 159,
-            BackpackLuxurious = 221,
+            BackpackSmall = 162,
+            BackpackMedium = 163,
+            BackpackBig = 164,
+            BackpackLuxurious = 165,
 
-            BeltSmall = 160,
-            BeltMedium = 161,
-            BeltBig = 162,
-            BeltLuxurious = 222,
-            Map = 163,
+            BeltSmall = 166,
+            BeltMedium = 167,
+            BeltBig = 168,
+            BeltLuxurious = 169,
+            Map = 170,
 
-            Dungarees = 164,
-            HatSimple = 165,
-            BootsProtective = 166,
-            BootsMountain = 215,
-            BootsAllTerrain = 220,
-            BootsSpeed = 216,
-            GlovesStrength = 217,
-            GlassesVelvet = 218,
+            Dungarees = 171,
+            HatSimple = 172,
+            BootsProtective = 173,
+            BootsMountain = 174,
+            BootsAllTerrain = 175,
+            BootsSpeed = 176,
+            GlovesStrength = 177,
+            GlassesVelvet = 178,
 
-            TorchSmall = 167,
-            TorchBig = 168,
+            TorchSmall = 179,
+            TorchBig = 180,
 
-            LanternEmpty = 169,
-            LanternFull = 170,
-            Candle = 171,
+            LanternEmpty = 181,
+            LanternFull = 182,
+            Candle = 183,
 
-            HumanSkeleton = 172,
+            HumanSkeleton = 184,
 
-            HerbsBlack = 174,
-            HerbsBlue = 175,
-            HerbsCyan = 176,
-            HerbsGreen = 177,
-            HerbsYellow = 178,
-            HerbsRed = 179,
-            HerbsViolet = 180,
-            HerbsBrown = 206,
-            HerbsDarkViolet = 207,
-            HerbsDarkGreen = 208,
+            HerbsBlack = 185,
+            HerbsBlue = 186,
+            HerbsCyan = 187,
+            HerbsGreen = 188,
+            HerbsYellow = 189,
+            HerbsRed = 190,
+            HerbsViolet = 191,
+            HerbsBrown = 192,
+            HerbsDarkViolet = 193,
+            HerbsDarkGreen = 194,
 
-            EmptyBottle = 181,
-            PotionGeneric = 182,
-            BottleOfOil = 184,
+            EmptyBottle = 195,
+            PotionGeneric = 196,
+            BottleOfOil = 197,
 
-            Hole = 185,
-            TreeStump = 186,
+            Hole = 198,
+            TreeStump = 199,
 
-            LavaFlame = 187,
-            LavaGas = 189,
+            LavaFlame = 200,
+            LavaGas = 201,
 
-            SoundLakeWaves = 191,
-            SoundSeaWind = 192,
-            SoundNightCrickets = 193,
-            SoundNoonCicadas = 194,
-            SoundLava = 195,
+            SoundLakeWaves = 202,
+            SoundSeaWind = 203,
+            SoundNightCrickets = 204,
+            SoundNoonCicadas = 205,
+            SoundLava = 206,
 
-            SeaWave = 196,
-            PredatorRepellant = 173,
+            SeaWave = 207,
+            PredatorRepellant = 208,
 
-            ParticleEmitter = 198,
-            EmptyVisualEffect = 209,
-
-            // obsolete below (kept for compatibility with old saves)
-
-            UpgradeBenchObsolete = 71,
-            BurningFlameObsolete = 112,
-            PotionCoffeeObsolete = 183,
-            SoundSeaWavesObsolete = 190,
-            DebrisPlantObsolete = 144,
-            DebrisStoneObsolete = 145,
-            DebrisWoodObsolete = 146,
-            DebrisLeafObsolete = 147,
-            DebrisCrystalObsolete = 148,
-            DebrisCeramicObsolete = 149,
-            DebrisStarObsolete = 150,
-            DebrisSootObsolete = 151,
-            DebrisHeartObsolete = 152,
-            DebrisBloodDropObsolete = 153,
+            ParticleEmitter = 209,
+            EmptyVisualEffect = 210,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1286,17 +1269,6 @@ namespace SonOfRobin
                         return alchemyLab;
                     }
 
-                case Name.UpgradeBenchObsolete:
-                    {
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
-
-                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedTerrain: terrainFieldCraft, maxHitPoints: 30, readableName: "upgrade bench (obsolete)", description: "For upgrading items.", soundPack: soundPack);
-
-                        combineWorkshop.sprite.AssignNewName("off");
-                        return combineWorkshop;
-                    }
-
                 case Name.WorkshopMeatHarvesting:
                     {
                         var soundPack = new PieceSoundPack();
@@ -1874,17 +1846,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.PotionCoffeeObsolete:
-                    {
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, allowedTerrain: terrainShallowWaterToVolcano,
-                             rotatesWhenDropped: true, readableName: "coffee (obsolete)", description: "Coffee-based drink.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
-
-                        return boardPiece;
-                    }
-
                 case Name.PotionGeneric:
                     {
                         // A generic potion, which animPackage and buffs will be set later.
@@ -2286,102 +2247,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.DebrisStoneObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "stone debris", description: "Floats around after hitting stone things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisPlantObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "plant debris", description: "Floats around after hitting plant things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisWoodObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "wood debris", description: "Floats around after hitting wood things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisLeafObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "leaf", description: "Floats around after hitting plant things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisCrystalObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "crystal shard", description: "Floats around after hitting crystal things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisCeramicObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisSootObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
-
-                        return boardPiece;
-                    }
-
-                case Name.DebrisHeartObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
-
-                        heartDebris.sprite.opacity = 0.7f;
-
-                        return heartDebris;
-                    }
-
-                case Name.DebrisStarObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
-
-                        var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
-                        Color color = colors[random.Next(colors.Count)];
-                        starDebris.sprite.color = color;
-
-                        return starDebris;
-                    }
-
-                case Name.DebrisBloodDropObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
-
-                        BoardPiece boardPiece = new Debris(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, rotatesWhenDropped: false, readableName: "blood drop", description: "Floats around after hitting living things.");
-
-                        return boardPiece;
-                    }
-
                 case Name.TentSmall:
                     {
                         var wakeUpBuffs = new List<Buff> {
@@ -2741,15 +2606,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.BurningFlameObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
-
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "flame (obsolete)", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn);
-
-                        return flame;
-                    }
-
                 case Name.LavaFlame:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
@@ -2848,21 +2704,6 @@ namespace SonOfRobin
                         visualEffect.sprite.opacity = 0f;
 
                         return visualEffect;
-                    }
-
-                case Name.SoundSeaWavesObsolete:
-                    {
-                        AllowedTerrain allowedTerrain = new AllowedTerrain(
-                            rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium },
-                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
-
-                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea waves sound (obsolete)", description: "Ambient sound for sea waves.", sound: sound, visible: Preferences.debugShowSounds);
-
-                        ambientSound.sprite.color = Color.Cyan;
-
-                        return ambientSound;
                     }
 
                 case Name.SoundSeaWind:

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 
@@ -23,26 +22,26 @@ namespace SonOfRobin
     public class TrackingManager
     {
         public readonly World world;
-        private readonly Dictionary<string, Tracking> trackingQueue;
+        private readonly HashSet<Tracking> trackingSet;
 
         public int TrackingCount
-        { get { return trackingQueue.Count; } }
+        { get { return trackingSet.Count; } }
 
         public TrackingManager(World world)
         {
             this.world = world;
-            this.trackingQueue = new Dictionary<string, Tracking>();
+            this.trackingSet = new HashSet<Tracking>();
         }
 
         public void AddToQueue(Tracking tracking)
         {
-            this.trackingQueue[tracking.followingSprite.id] = tracking;
+            this.trackingSet.Add(tracking);
         }
 
         public void ProcessQueue()
         {
             // parallel processing causes data corruption and crashes
-            foreach (var tracking in this.trackingQueue.Values.ToList())
+            foreach (var tracking in new HashSet<Tracking>(this.trackingSet))
             {
                 if (tracking.ShouldThisBeRemoved(this.world)) this.RemoveFromQueue(tracking);
                 else tracking.SetPosition(trackingManager: this);
@@ -51,31 +50,30 @@ namespace SonOfRobin
 
         public void RemoveFromQueue(Tracking tracking)
         {
-            this.trackingQueue.Remove(tracking.followingSprite.id);
+            this.trackingSet.Remove(tracking);
             if (tracking.bounceWhenRemoved && tracking.followingSprite.boardPiece.exists)
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{tracking.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
 
-                Vector2 passiveMovement = new Vector2(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
+                Vector2 passiveMovement = new(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
                 tracking.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);
             }
         }
 
-        public void RemoveFromQueue(BoardPiece pieceToRemove)
-        {
-            this.trackingQueue.Remove(pieceToRemove.id);
-        }
-
         public Sprite GetTargetSprite(Sprite followingSprite)
         {
-            if (this.trackingQueue.ContainsKey(followingSprite.id)) return this.trackingQueue[followingSprite.id].targetSprite;
+            foreach (Tracking tracking in this.trackingSet)
+            {
+                if (tracking.followingSprite == followingSprite) return tracking.targetSprite;
+            }
+
             return null;
         }
 
         public List<Object> Serialize()
         {
             var trackingData = new List<Object> { };
-            foreach (Tracking tracking in this.trackingQueue.Values)
+            foreach (Tracking tracking in this.trackingSet)
             {
                 trackingData.Add(tracking.Serialize());
             }

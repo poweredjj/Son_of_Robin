@@ -45,11 +45,10 @@ namespace SonOfRobin
             MapCenterPlayer = 28,
             MapZoomIn = 29,
             MapZoomOut = 30,
-            MapToggleLocations = 33,
+            MapToggleLocations = 31,
+            MapSwitch = 32,
 
-            MapSwitch = 31,
-
-            SecretLicenceBypass = 32,
+            SecretLicenceBypass = 33,
         }
 
         public const int defaultRepeatThreshold = 35;

@@ -385,7 +385,6 @@ namespace SonOfRobin
             if (!this.sprite.IsOnBoard) return;
 
             this.sprite.RemoveFromBoard();
-            this.world.trackingManager.RemoveFromQueue(this);
             this.RemoveFromPieceCount();
         }
 
@@ -450,7 +449,6 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_createdByPlayer")) this.createdByPlayer = (bool)pieceData["base_createdByPlayer"];
-            if (pieceData.ContainsKey("base_burnLevel")) this.heatLevel = (float)(double)pieceData["base_burnLevel"]; // for compatibility with old saves
             if (pieceData.ContainsKey("base_heatLevel")) this.heatLevel = (float)(double)pieceData["base_heatLevel"];
             if (pieceData.ContainsKey("base_readableName")) this.readableName = (string)pieceData["base_readableName"];
             if (pieceData.ContainsKey("base_description")) this.description = (string)pieceData["base_description"];

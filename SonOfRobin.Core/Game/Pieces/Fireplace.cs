@@ -217,7 +217,7 @@ namespace SonOfRobin
             this.isOn = (bool)pieceData["fireplace_isOn"];
             this.burnStartFrame = (int)(Int64)pieceData["fireplace_burnStartFrame"];
 
-            if (pieceData.ContainsKey("fireplace_currentCycleEndFrame")) this.currentCycleEndFrame = (int)(Int64)pieceData["fireplace_currentCycleEndFrame"]; // for compatibility with old saves
+            this.currentCycleEndFrame = (int)(Int64)pieceData["fireplace_currentCycleEndFrame"];
 
             this.UpdateBurnAllFuelEndFrame();
         }

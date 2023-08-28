@@ -370,7 +370,7 @@ namespace SonOfRobin
                     Type pieceType = piece.GetType();
                     Sprite sprite = piece.sprite;
 
-                    if (piece.pieceInfo.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
+                    if (piece.pieceInfo.canBePickedUp || pieceType == typeof(Animal) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
                     {
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
 

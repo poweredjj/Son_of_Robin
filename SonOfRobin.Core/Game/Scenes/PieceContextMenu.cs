@@ -23,7 +23,7 @@ namespace SonOfRobin
             Brew = 10,
             Harvest = 11,
             Equip = 12,
-            Offer,
+            Offer = 13,
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;

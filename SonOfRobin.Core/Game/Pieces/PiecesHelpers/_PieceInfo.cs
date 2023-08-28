@@ -1296,15 +1296,6 @@ namespace SonOfRobin
                         this.isAffectedByWind = true;
                         break;
 
-                    case PieceTemplate.Name.UpgradeBenchObsolete:
-                        this.category = BoardPiece.Category.Wood;
-                        this.fireAffinity = 0.8f;
-                        this.boardTask = Scheduler.TaskName.OpenContainer;
-                        this.blocksMovement = true;
-                        this.destroysPlantsWhenBuilt = true;
-                        this.isAffectedByWind = true;
-                        break;
-
                     case PieceTemplate.Name.WorkshopMeatHarvesting:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.8f;
@@ -1718,17 +1709,6 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
-                    case PieceTemplate.Name.BurningFlameObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.startingMass = 60;
-                        this.maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
-                        this.canShrink = true;
-                        this.placeMaxDistance = 0;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        this.inOpacityFadeDuration = 30;
-                        break;
-
                     case PieceTemplate.Name.CookingTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
@@ -2026,96 +2006,6 @@ namespace SonOfRobin
                         this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
                         this.projectileCanExplode = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisPlantObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 60;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisStoneObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 60;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisWoodObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 60;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisLeafObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 230;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisCrystalObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 230;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisCeramicObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 230;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisStarObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 90;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisSootObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 230;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisHeartObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 110;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
-                        break;
-
-                    case PieceTemplate.Name.DebrisBloodDropObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.destructionDelay = 230;
-                        this.placeMaxDistance = 500;
-                        this.ignoresCollisions = true;
-                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
@@ -2453,13 +2343,6 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
                         break;
 
-                    case PieceTemplate.Name.PotionCoffeeObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.startingMass = 200;
-                        this.canBePickedUp = true;
-                        this.toolbarTask = Scheduler.TaskName.GetDrinked;
-                        break;
-
                     case PieceTemplate.Name.BottleOfOil:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 200;
@@ -2518,14 +2401,6 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
                         this.inOpacityFadeDuration = 120;
-                        break;
-
-                    case PieceTemplate.Name.SoundSeaWavesObsolete:
-                        this.category = BoardPiece.Category.Indestructible;
-                        this.serialize = false;
-                        this.floatsOnWater = true;
-                        this.ambsoundPlayDelay = 300;
-                        this.ambsoundPlayDelayMaxVariation = 200;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:

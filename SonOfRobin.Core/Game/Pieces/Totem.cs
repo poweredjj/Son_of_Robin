@@ -133,7 +133,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            if (pieceData.ContainsKey("totem_lockedUntilIslandDateTime")) this.lockedUntilIslandDateTime = (DateTime)pieceData["totem_lockedUntilIslandDateTime"]; // for compatibility with old saves
+            this.lockedUntilIslandDateTime = (DateTime)pieceData["totem_lockedUntilIslandDateTime"];
         }
     }
 }

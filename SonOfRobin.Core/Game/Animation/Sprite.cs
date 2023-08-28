@@ -12,7 +12,6 @@ namespace SonOfRobin
         {
             // must be lowercase, to match animName
             left = 0,
-
             right = 1,
             up = 2,
             down = 3,

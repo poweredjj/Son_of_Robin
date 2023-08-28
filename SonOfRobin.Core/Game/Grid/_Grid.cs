@@ -188,7 +188,7 @@ namespace SonOfRobin
             var cellData = (List<Object>)gridData["cellData"];
 
             Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
-            if (gridData.ContainsKey("namedLocations")) grid.namedLocations.Deserialize(gridData["namedLocations"]); // for compatibility with old saves
+            grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
             for (int i = 0; i < grid.allCells.Count; i++)
             {

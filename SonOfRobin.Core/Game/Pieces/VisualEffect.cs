@@ -219,12 +219,10 @@ namespace SonOfRobin
                 explosion.sprite.AssignNewSize(3);
                 new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f);
 
-                var ignoredTypesList = new List<Type> { typeof(Debris), typeof(Flame) };
-
                 var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
-                    if (!ignoredTypesList.Contains(piece.GetType())) piece.HeatLevel += 2;
+                    piece.HeatLevel += 2;
                 }
 
                 this.HeatLevel = 0;
