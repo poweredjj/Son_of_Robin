@@ -267,7 +267,7 @@ namespace SonOfRobin
                 if (this.heatLevel > 0)
                 {
                     this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.heatLevel, boardPiece: this, framesLeft: -1));
-                    this.world.AddPieceToHeatQueue(this);
+                    this.world.heatedPieces.Add(this);
                 }
 
                 if (this.IsBurning)
@@ -765,7 +765,7 @@ namespace SonOfRobin
             if (!this.sprite.IsOnBoard)
             {
                 this.heatLevel = 0; // changing the value directly
-                this.world.RemovePieceFromHeatQueue(this);
+                this.world.heatedPieces.Remove(this);
                 return;
             }
 
@@ -780,7 +780,7 @@ namespace SonOfRobin
 
             if (this.HeatLevel == 0)
             {
-                this.world.RemovePieceFromHeatQueue(this);
+                this.world.heatedPieces.Remove(this);
                 return;
             }
 

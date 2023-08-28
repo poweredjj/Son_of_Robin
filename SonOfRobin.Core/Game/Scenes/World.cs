@@ -59,10 +59,10 @@ namespace SonOfRobin
         private readonly List<PieceCreationData> creationDataListRegular;
         private readonly List<PieceCreationData> creationDataListTemporaryDecorations;
         private readonly List<Sprite> temporaryDecorationSprites;
-        public List<Cell> plantCellsQueue;
-        public List<Sprite> plantSpritesQueue;
-        private Dictionary<string, BoardPiece> heatQueue;
-        public List<Sprite> nonPlantSpritesQueue;
+        public Queue<Cell> plantCellsQueue;
+        public Queue<Sprite> plantSpritesQueue;
+        public readonly HashSet<BoardPiece> heatedPieces;
+        public Queue<Sprite> nonPlantSpritesQueue;
         public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
@@ -147,10 +147,10 @@ namespace SonOfRobin
             foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
             this.pieceCountByClass = new Dictionary<Type, int> { };
             this.HintEngine = new HintEngine(world: this);
-            this.plantSpritesQueue = new List<Sprite>();
-            this.nonPlantSpritesQueue = new List<Sprite>();
-            this.heatQueue = new Dictionary<string, BoardPiece>();
-            this.plantCellsQueue = new List<Cell>();
+            this.plantSpritesQueue = new Queue<Sprite>();
+            this.nonPlantSpritesQueue = new Queue<Sprite>();
+            this.heatedPieces = new HashSet<BoardPiece>();
+            this.plantCellsQueue = new Queue<Cell>();
             this.ProcessedNonPlantsCount = 0;
             this.ProcessedPlantsCount = 0;
             this.blockingLightSpritesList = new List<Sprite>();
@@ -396,7 +396,7 @@ namespace SonOfRobin
         }
 
         public int HeatQueueSize
-        { get { return this.heatQueue.Count; } }
+        { get { return this.heatedPieces.Count; } }
 
         private Vector2 DarknessMaskScale
         {
@@ -609,7 +609,7 @@ namespace SonOfRobin
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
-                    if (newBoardPiece.HeatLevel > 0) this.AddPieceToHeatQueue(newBoardPiece);
+                    if (newBoardPiece.HeatLevel > 0) this.heatedPieces.Add(newBoardPiece);
 
                     if (PieceInfo.IsPlayer(templateName))
                     {
@@ -1036,22 +1036,18 @@ namespace SonOfRobin
             }
         }
 
-        public void AddPieceToHeatQueue(BoardPiece boardPiece)
-        {
-            this.heatQueue[boardPiece.id] = boardPiece;
-        }
 
         public void RemovePieceFromHeatQueue(BoardPiece boardPiece)
         {
             try
-            { this.heatQueue.Remove(boardPiece.id); }
+            { this.heatedPieces.Remove(boardPiece); }
             catch (KeyNotFoundException)
             { }
         }
 
         private void ProcessHeatQueue()
         {
-            foreach (BoardPiece boardPiece in this.heatQueue.Values.ToList())
+            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.heatedPieces))
             {
                 boardPiece.ProcessHeat();
             }
@@ -1071,9 +1067,11 @@ namespace SonOfRobin
             {
                 // var startTime = DateTime.Now; // for testing
 
-                this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
+                this.nonPlantSpritesQueue = new Queue<Sprite>(
+                    this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
                     .Where(sprite => sprite.boardPiece.FramesSinceLastProcessed > 0)
-                    .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
+                    .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed)
+                    );
 
                 // var duration = DateTime.Now - startTime; // for testing
                 // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue ({this.nonPlantSpritesQueue.Count}) - duration {duration.Milliseconds}ms"); // for testing
@@ -1085,8 +1083,7 @@ namespace SonOfRobin
             {
                 if (nonPlantSpritesQueue.Count == 0) return;
 
-                BoardPiece currentNonPlant = this.nonPlantSpritesQueue[0].boardPiece;
-                this.nonPlantSpritesQueue.RemoveAt(0);
+                BoardPiece currentNonPlant = this.nonPlantSpritesQueue.Dequeue().boardPiece;
 
                 this.ProcessOneNonPlant(currentNonPlant);
                 this.ProcessedNonPlantsCount++;
@@ -1137,23 +1134,25 @@ namespace SonOfRobin
 
             if (!this.plantCellsQueue.Any())
             {
-                this.plantCellsQueue = new List<Cell>(this.Grid.allCells.ToList());
-                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
+                this.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
+                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             if (!this.plantSpritesQueue.Any())
             {
+                var newPlantSpritesList = new List<Sprite>();
+
                 while (true)
                 {
-                    int randomCellNo = random.Next(plantCellsQueue.Count);
-                    Cell cell = this.plantCellsQueue[randomCellNo];
-                    this.plantCellsQueue.RemoveAt(randomCellNo);
-                    this.plantSpritesQueue.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
+                    Cell cell = this.plantCellsQueue.Dequeue();
+                    newPlantSpritesList.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
 
                     if (!plantCellsQueue.Any() || !this.CanProcessMoreOffCameraRectPiecesNow) break;
                 }
+
+                this.plantSpritesQueue = new Queue<Sprite>(newPlantSpritesList);
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
@@ -1162,9 +1161,7 @@ namespace SonOfRobin
             {
                 if (!this.plantSpritesQueue.Any()) return;
 
-                Plant currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
-                this.plantSpritesQueue.RemoveAt(0);
-
+                Plant currentPlant = (Plant)this.plantSpritesQueue.Dequeue().boardPiece;
                 if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;
 
                 currentPlant.StateMachineWork();
