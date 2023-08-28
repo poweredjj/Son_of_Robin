@@ -173,7 +173,7 @@ namespace SonOfRobin
 
             foreach (var kvp in this.rangesByTerrainName)
             {
-                var fieldValue = world.Grid.GetFieldValue(position: position, terrainName: kvp.Key);
+                var fieldValue = world.Grid.terrainByName[kvp.Key].GetMapData((int)position.X, (int)position.Y);
                 if (!kvp.Value.IsInRange(fieldValue)) return false;
             }
 

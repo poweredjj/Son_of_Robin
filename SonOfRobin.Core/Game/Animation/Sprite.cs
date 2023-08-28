@@ -288,7 +288,7 @@ namespace SonOfRobin
         public byte GetFieldValue(Terrain.Name terrainName)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get a field value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.Grid.GetFieldValue(position: this.position, terrainName: terrainName);
+            return this.world.Grid.terrainByName[terrainName].GetMapData((int)this.position.X, (int)this.position.Y);
         }
 
         public bool GetExtProperty(ExtBoardProps.Name name)

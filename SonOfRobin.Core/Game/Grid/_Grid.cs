@@ -71,7 +71,7 @@ namespace SonOfRobin
         public readonly float wholeIslandPreviewScale;
         public Texture2D WholeIslandPreviewTexture { get; private set; }
 
-        private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
+        public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
 
@@ -518,7 +518,7 @@ namespace SonOfRobin
             {
                 if (!checkedCoordsRaw[currentPoint.X, currentPoint.Y])
                 {
-                    byte value = this.GetFieldValue(terrainName: Terrain.Name.Biome, position: currentPoint, xyRaw: true);
+                    byte value = this.terrainByName[Terrain.Name.Biome].GetMapDataRaw(currentPoint.X, currentPoint.Y);
 
                     if (biomeMinVal <= value && value <= biomeMaxVal)
                     {
@@ -636,7 +636,10 @@ namespace SonOfRobin
         {
             foreach (TerrainSearch terrainSearch in terrainSearches)
             {
-                byte value = this.GetFieldValue(terrainName: terrainSearch.name, position: point, xyRaw: xyRaw);
+                byte value = xyRaw ?
+                    this.terrainByName[terrainSearch.name].GetMapDataRaw(point.X, point.Y) :
+                    this.terrainByName[terrainSearch.name].GetMapData(point.X, point.Y);
+
                 if (terrainSearch.min > value || value > terrainSearch.max) return false;
             }
             return true;
@@ -1103,39 +1106,6 @@ namespace SonOfRobin
             int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
             int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
             return this.cellGrid[cellNoX, cellNoY];
-        }
-
-        public byte GetMinValueForCell(Terrain.Name terrainName, int cellNoX, int cellNoY)
-        {
-            return this.terrainByName[terrainName].GetMinValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
-        }
-
-        public byte GetMaxValueForCell(Terrain.Name terrainName, int cellNoX, int cellNoY)
-        {
-            return this.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
-        }
-
-        public bool CheckIfContainsExtPropertyForCell(ExtBoardProps.Name name, bool value, int cellNoX, int cellNoY)
-        {
-            return this.ExtBoardProps.CheckIfContainsPropertyForCell(name: name, value: value, cellNoX: cellNoX, cellNoY: cellNoY);
-        }
-
-        public byte GetFieldValue(Terrain.Name terrainName, int x, int y, bool xyRaw = false)
-        {
-            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(x, y);
-            else return this.terrainByName[terrainName].GetMapData(x, y);
-        }
-
-        public byte GetFieldValue(Terrain.Name terrainName, Point position, bool xyRaw = false)
-        {
-            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(position.X, position.Y);
-            else return this.terrainByName[terrainName].GetMapData(position.X, position.Y);
-        }
-
-        public byte GetFieldValue(Terrain.Name terrainName, Vector2 position, bool xyRaw = false)
-        {
-            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
-            else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
         }
 
         private Cell[,] MakeGrid()

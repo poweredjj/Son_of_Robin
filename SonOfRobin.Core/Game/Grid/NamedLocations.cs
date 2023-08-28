@@ -275,8 +275,9 @@ namespace SonOfRobin
 
                 foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
                 {
-                    if (!grid.CheckIfContainsExtPropertyForCell(name: searchEntryExtProps.name, value: searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
-                    if (searchEntryExtProps.strictSearch && grid.CheckIfContainsExtPropertyForCell(name: searchEntryExtProps.name, value: !searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
+                    if (!grid.ExtBoardProps.CheckIfContainsPropertyForCell(name: searchEntryExtProps.name, value: searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
+
+                    if (searchEntryExtProps.strictSearch && grid.ExtBoardProps.CheckIfContainsPropertyForCell(name: searchEntryExtProps.name, value: !searchEntryExtProps.value, cellNoX: cellNoX, cellNoY: cellNoY)) return false;
                 }
 
                 return true;
@@ -286,8 +287,8 @@ namespace SonOfRobin
             {
                 // strictSearch: true == whole cell must match search criteria, false == any cell part must match search criteria
 
-                byte minCellVal = grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
-                byte maxCellVal = grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                byte minCellVal = grid.terrainByName[terrainName].GetMinValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
+                byte maxCellVal = grid.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
 
                 return strictSearch ?
                     minCellVal >= minVal && maxCellVal <= maxVal :

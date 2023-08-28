@@ -96,8 +96,8 @@ namespace SonOfRobin
 
             foreach (Terrain.Name terrainName in Terrain.allTerrains)
             {
-                minValForTerrain[terrainName] = this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
-                maxValForTerrain[terrainName] = this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                minValForTerrain[terrainName] = this.grid.terrainByName[terrainName].GetMinValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
+                maxValForTerrain[terrainName] = this.grid.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
             }
 
             this.HasWater = minValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
@@ -120,8 +120,8 @@ namespace SonOfRobin
 
                     if (allowedMinVal > 0 || allowedMaxVal < 255)
                     {
-                        byte minVal = this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
-                        byte maxVal = this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                        byte minVal = this.grid.terrainByName[terrainName].GetMinValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
+                        byte maxVal = this.grid.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
 
                         if ((allowedMinVal < minVal && allowedMaxVal < minVal) ||
                             (allowedMinVal > maxVal && allowedMaxVal > maxVal))
@@ -139,7 +139,7 @@ namespace SonOfRobin
                         ExtBoardProps.Name name = kvp.Key;
                         bool value = kvp.Value;
 
-                        if (!this.grid.CheckIfContainsExtPropertyForCell(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
+                        if (!this.grid.ExtBoardProps.CheckIfContainsPropertyForCell(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -274,7 +274,7 @@ namespace SonOfRobin
                     ExtBoardProps.Name name = kvp.Key;
                     Color color = kvp.Value;
 
-                    if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, color * 0.4f);
+                    if (this.grid.ExtBoardProps.CheckIfContainsPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, color * 0.4f);
                 }
             }
 

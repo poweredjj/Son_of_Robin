@@ -139,7 +139,7 @@ namespace SonOfRobin
                 for (int distance = 0; distance < maxDistance; distance += oneStepDistance)
                 {
                     beachPos += oneStepOffset;
-                    if (this.world.Grid.GetFieldValue(position: beachPos, terrainName: Terrain.Name.Height) > Terrain.waterLevelMax) break;
+                    if (this.world.Grid.terrainByName[Terrain.Name.Height].GetMapData((int)beachPos.X, (int)beachPos.Y) > Terrain.waterLevelMax) break;
                 }
 
                 float delay = this.world.random.Next(15);

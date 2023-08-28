@@ -285,9 +285,9 @@ namespace SonOfRobin
 
         private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)
         {
-            byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
-            byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
-            byte pixelBiome = grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: x, y: y);
+            byte pixelHeight = grid.terrainByName[Terrain.Name.Height].GetMapData(x, y);
+            byte pixelHumidity = grid.terrainByName[Terrain.Name.Humidity].GetMapData(x, y);
+            byte pixelBiome = grid.terrainByName[Terrain.Name.Biome].GetMapData(x, y);
 
             //{ // for testing
             //    Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
