@@ -8,18 +8,18 @@ namespace SonOfRobin
     public class WorldEventManager
     {
         public readonly World world;
-        private readonly Dictionary<int, List<WorldEvent>> eventQueue;
+        private readonly Dictionary<int, Queue<WorldEvent>> eventQueue;
 
         public WorldEventManager(World world)
         {
             this.world = world;
-            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
+            this.eventQueue = new Dictionary<int, Queue<WorldEvent>>();
         }
 
         public void AddToQueue(WorldEvent worldEvent, bool addFadeOut = true)
         {
-            if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new List<WorldEvent>();
-            this.eventQueue[worldEvent.startUpdateNo].Add(worldEvent);
+            if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new Queue<WorldEvent>();
+            this.eventQueue[worldEvent.startUpdateNo].Enqueue(worldEvent);
 
             if (worldEvent.eventName == WorldEvent.EventName.Destruction && addFadeOut)
             {
@@ -42,9 +42,7 @@ namespace SonOfRobin
 
             foreach (int frame in this.eventQueue.Keys.ToList())
             {
-                List<WorldEvent> eventlist = this.eventQueue[frame]
-                    .Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove).ToList();
-                this.eventQueue[frame] = eventlist;
+                this.eventQueue[frame] = new Queue<WorldEvent>(this.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove));
             }
         }
 
