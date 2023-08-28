@@ -19,7 +19,7 @@ namespace SonOfRobin
             get
             {
                 this.CleanRemovedScenes();
-                return this.solidColors.Any();
+                return this.solidColors.Count > 0;
             }
         }
 

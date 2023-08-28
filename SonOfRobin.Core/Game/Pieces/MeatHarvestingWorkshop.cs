@@ -148,7 +148,7 @@ namespace SonOfRobin
             var bonusPieces = new List<BoardPiece>();
             var taskChain = new List<Object>();
 
-            if (basePieces.Any())
+            if (basePieces.Count > 0)
             {
                 // processing bonus pieces
 
@@ -167,7 +167,7 @@ namespace SonOfRobin
                     if (this.world.random.Next(bonusChance) == 0) bonusPieces.Add(PieceTemplate.Create(world: world, templateName: meatPiece.name));
                 }
 
-                if (bonusPieces.Any())
+                if (bonusPieces.Count > 0)
                 {
                     var bonusPiecesDict = bonusPieces.GroupBy(piece => piece.name).ToDictionary(piece => piece.Key, piece => piece.Count());
 
@@ -205,7 +205,7 @@ namespace SonOfRobin
                 foreach (BoardPiece meatPiece in totalObtainedPieces)
                 {
                     this.PieceStorage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
-                    if (!bonusPieces.Any()) this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
+                    if (bonusPieces.Count == 0) this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, newOwnedPieceNameToCheck: meatPiece.name);
                 }
                 this.DisableMeatSlots();
             }

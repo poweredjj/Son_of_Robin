@@ -256,7 +256,7 @@ namespace SonOfRobin
                 if (searchEntriesTerrain == null) searchEntriesTerrain = new List<SearchEntryTerrain>();
                 if (searchEntriesExtProps == null) searchEntriesExtProps = new List<SearchEntryExtProps>();
 
-                if (!searchEntriesTerrain.Any() && !searchEntriesExtProps.Any()) throw new ArgumentException("Invalid search criteria.");
+                if (searchEntriesTerrain.Count == 0 && searchEntriesExtProps.Count == 0) throw new ArgumentException("Invalid search criteria.");
 
                 this.searchEntriesTerrain = searchEntriesTerrain;
                 this.searchEntriesExtProps = searchEntriesExtProps;

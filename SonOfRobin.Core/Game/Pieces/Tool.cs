@@ -79,7 +79,7 @@ namespace SonOfRobin
             var targetsThatCanBeHit = targetsForCurrentTool.Where(target => target.canBeHit).ToList();
             var targetsThatCannotBeHit = targetsForCurrentTool.Where(target => !target.canBeHit).ToList();
 
-            if (!highlightOnly && !targetsThatCanBeHit.Any() && targetsThatCannotBeHit.Any())
+            if (!highlightOnly && targetsThatCanBeHit.Count == 0 && targetsThatCannotBeHit.Count > 0)
             {
                 string piecesText = targetsThatCannotBeHit.Count == 1 ? targetsThatCannotBeHit[0].readableName : $"these targets ({targetsThatCannotBeHit.Count})";
 

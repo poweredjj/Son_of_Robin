@@ -577,7 +577,7 @@ namespace SonOfRobin
 
         public void UpdateLastSteps()
         {
-            if (this.world.MapEnabled && (!this.LastSteps.Any() || Vector2.Distance(this.sprite.position, this.LastSteps.Last()) > 180))
+            if (this.world.MapEnabled && (this.LastSteps.Count == 0 || Vector2.Distance(this.sprite.position, this.LastSteps.Last()) > 180))
             {
                 this.LastSteps.Add(this.sprite.position);
                 if (this.LastSteps.Count > maxLastStepsCount) this.LastSteps.RemoveAt(0);

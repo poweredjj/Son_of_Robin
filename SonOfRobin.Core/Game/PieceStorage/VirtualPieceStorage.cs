@@ -34,7 +34,7 @@ namespace SonOfRobin
             base.Update();
 
             var resizedStorages = this.virtStoragePackList.Where(storagePack => storagePack.StorageResized);
-            if (resizedStorages.Any()) this.Recalculate();
+            if (resizedStorages.Count() > 0) this.Recalculate();
             foreach (VirtPieceStoragePack storagePack in resizedStorages)
             {
                 storagePack.UpdateStorageSize();

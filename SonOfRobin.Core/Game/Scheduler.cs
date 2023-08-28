@@ -134,7 +134,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.CurrentUpdate >= inputTurnedOffUntilFrame) Input.GlobalInputActive = true;
 
             var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.CurrentUpdate >= frameNo).ToList(); // ToList() is needed; a copy must be iterated
-            if (!framesToProcess.Any()) return;
+            if (framesToProcess.Count == 0) return;
 
             foreach (int frameNo in framesToProcess)
             {
@@ -601,7 +601,7 @@ namespace SonOfRobin
                             if (activeTool.pieceInfo.toolRange == 0)
                             {
                                 var animals = targets.Where(piece => piece.GetType() == typeof(Animal));
-                                if (animals.Any()) targets = animals;
+                                if (animals.Count() > 0) targets = animals;
 
                                 Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
 
@@ -1157,7 +1157,7 @@ namespace SonOfRobin
                             // making a copy of the original taskChain, to avoid modifying it - needed for menus
                             List<Object> taskChain = new((List<Object>)this.ExecuteHelper);
 
-                            if (!taskChain.Any()) return;
+                            if (taskChain.Count == 0) return;
 
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
@@ -1480,10 +1480,10 @@ namespace SonOfRobin
                             // building error list
 
                             var errorsFound = new List<string>();
-                            if (incorrectBoardPieces.Any()) errorsFound.Add($"Pieces placed incorrectly on the field: {incorrectBoardPieces.Count}.");
-                            if (incorrectStoragePieces.Any()) errorsFound.Add($"Pieces placed incorrectly in the storage: {incorrectStoragePieces.Count}.");
-                            if (blockedPieces.Any()) errorsFound.Add($"Pieces blocked: {blockedPieces.Count}.");
-                            if (duplicatedPiecesByID.Any())
+                            if (incorrectBoardPieces.Count > 0) errorsFound.Add($"Pieces placed incorrectly on the field: {incorrectBoardPieces.Count}.");
+                            if (incorrectStoragePieces.Count > 0) errorsFound.Add($"Pieces placed incorrectly in the storage: {incorrectStoragePieces.Count}.");
+                            if (blockedPieces.Count > 0) errorsFound.Add($"Pieces blocked: {blockedPieces.Count}.");
+                            if (duplicatedPiecesByID.Count > 0)
                             {
                                 errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count}):");
 
@@ -1493,8 +1493,8 @@ namespace SonOfRobin
                                 }
                             }
 
-                            bool isCorrect = !errorsFound.Any();
-                            string message = errorsFound.Any() ? String.Join("\n", errorsFound) : "No incorrect pieces found.";
+                            bool isCorrect = errorsFound.Count == 0;
+                            string message = errorsFound.Count > 0 ? String.Join("\n", errorsFound) : "No incorrect pieces found.";
 
                             // showing message
 

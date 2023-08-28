@@ -185,13 +185,13 @@ namespace SonOfRobin
             var storedFuel = this.PieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
             var storedPotions = this.PieceStorage.GetAllPieces().Where(piece => potionNames.Contains(piece.name)).ToList();
 
-            if (!storedBases.Any() && !storedBoosters.Any() && !storedFuel.Any())
+            if (storedBases.Count == 0 && storedBoosters.Count == 0 && storedFuel.Count == 0)
             {
                 new TextWindow(text: "I need at least one | | | base and | fuel to brew.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
-            if (!storedFuel.Any())
+            if (storedFuel.Count == 0)
             {
                 string fuelMarkers = "";
                 var imageList = new List<Texture2D>();
@@ -206,7 +206,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (!storedBases.Any())
+            if (storedBases.Count == 0)
             {
                 string baseMarkers = "";
                 var imageList = new List<Texture2D>();
@@ -316,13 +316,13 @@ namespace SonOfRobin
 
             if (!customPotion)
             {
-                if (!adjustedBuffList.Any())
+                if (adjustedBuffList.Count == 0)
                 {
                     potionReadableName = $"{potionReadableName} of the fool";
                     potionDescription = "A useless potion.";
                 }
 
-                if (adjustedBuffList.Any() && !potionReadableName.ToLower().Contains("coffee"))
+                if (adjustedBuffList.Count > 0 && !potionReadableName.ToLower().Contains("coffee"))
                 {
                     string plusSign = adjustedBuffList.Count > 1 ? "+" : "";
                     potionReadableName = $"{potionReadableName} of {adjustedBuffList[0].PotionText}{plusSign}";
@@ -336,7 +336,7 @@ namespace SonOfRobin
 
             // setting potion color
 
-            if (!customPotion && storedBoosters.Any())
+            if (!customPotion && storedBoosters.Count > 0)
             {
                 var colorByBoosterDict = new Dictionary<PieceTemplate.Name, AnimData.PkgName> {
                     { PieceTemplate.Name.HerbsBlack, AnimData.PkgName.PotionBlack  },

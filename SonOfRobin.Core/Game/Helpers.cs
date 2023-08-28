@@ -627,7 +627,7 @@ namespace SonOfRobin
                 stack.Push(start);
 
                 // Explore the region connected to the starting point using Depth-First Search (DFS)
-                while (stack.Any())
+                while (stack.Count > 0)
                 {
                     Point currentPoint = stack.Pop();
 

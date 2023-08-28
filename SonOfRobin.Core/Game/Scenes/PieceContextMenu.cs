@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -341,7 +340,7 @@ namespace SonOfRobin
 
                         List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
 
-                        if (!piecesToMove.Any()) return;
+                        if (piecesToMove.Count == 0) return;
 
                         piecesToMove[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
                         new RumbleEvent(force: 0.20f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);

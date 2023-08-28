@@ -45,7 +45,7 @@ namespace SonOfRobin
         { get { return this.buffDict.Values.ToList(); } }
 
         public bool HasAnyBuff
-        { get { return this.buffDict.Any(); } }
+        { get { return this.buffDict.Count > 0; } }
 
         public bool HasPoisonBuff
         {

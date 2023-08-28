@@ -455,7 +455,7 @@ namespace SonOfRobin
         {
             if (this.creationComplete) return;
 
-            if (Preferences.ShowControlTips && this.entryList.Any() && this.entryList.Last().GetType() != typeof(Separator))
+            if (Preferences.ShowControlTips && this.entryList.Count > 0 && this.entryList.Last().GetType() != typeof(Separator))
             {
                 new Separator(menu: this, name: "", isEmpty: true); // to prevent ControlTips from obstructing the last entry
             }
@@ -510,7 +510,7 @@ namespace SonOfRobin
             if (Preferences.EnableTouchButtons) return false;
 
             var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
-            if (!pressTouches.Any()) return false;
+            if (pressTouches.Count() == 0) return false;
 
             Rectangle menuRect = this.BgRect;
             menuRect.X += (int)this.viewParams.drawPosX;

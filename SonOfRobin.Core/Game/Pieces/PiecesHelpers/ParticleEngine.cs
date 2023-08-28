@@ -1140,7 +1140,7 @@ namespace SonOfRobin
                 if (presetData.Serialize) activePresetsList.Add(preset);
             }
 
-            if (!activePresetsList.Any()) return null;
+            if (activePresetsList.Count == 0) return null;
 
             Dictionary<string, Object> particleData = new Dictionary<string, object>
             {
@@ -1163,7 +1163,7 @@ namespace SonOfRobin
 
         public void Update()
         {
-            if (!this.dataByPreset.Any()) return;
+            if (this.dataByPreset.Count == 0) return;
 
             foreach (var kvp in this.dataByPreset.ToList())
             {
@@ -1174,7 +1174,7 @@ namespace SonOfRobin
                 if (presetData.HasFinished) this.dataByPreset.Remove(presetName);
             }
 
-            if (!this.dataByPreset.Any()) return;
+            if (this.dataByPreset.Count == 0) return;
 
             Preset preset = this.dataByPreset.First().Key;
             switch (preset)

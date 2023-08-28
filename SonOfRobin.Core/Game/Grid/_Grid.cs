@@ -202,7 +202,7 @@ namespace SonOfRobin
         public static Grid GetMatchingTemplateFromSceneStack(int seed, int width, int height, int cellWidth = 0, int cellHeight = 0, bool ignoreCellSize = false)
         {
             var existingWorlds = Scene.GetAllScenesOfType(typeof(World));
-            if (!existingWorlds.Any()) return null;
+            if (existingWorlds.Count == 0) return null;
 
             foreach (Scene scene in existingWorlds)
             {
@@ -693,7 +693,7 @@ namespace SonOfRobin
                     processedMap[currentPoint.X, currentPoint.Y] = true;
                 });
 
-                if (!nextPoints.Any()) break;
+                if (nextPoints.Count == 0) break;
             }
 
             return rawPointsInsideRange;
@@ -708,7 +708,7 @@ namespace SonOfRobin
         {
             var cellList = this.cellListsForPieceNames[pieceName];
 
-            if (!cellList.Any())
+            if (cellList.Count == 0)
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
                 return this.allCells[0]; // to properly return a (useless) cell
@@ -1229,7 +1229,7 @@ namespace SonOfRobin
             if (visitedByPlayerOnly) cellsInCameraViewWithNoTexturesSearch = cellsInCameraViewWithNoTexturesSearch.Where(cell => cell.VisitedByPlayer);
 
             var cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTexturesSearch.ToList();
-            if (!cellsInCameraViewWithNoTextures.Any()) return;
+            if (cellsInCameraViewWithNoTextures.Count == 0) return;
 
             if (SonOfRobinGame.BoardTextureProcessor.CanTakeNewCellsNow)
             {

@@ -121,7 +121,7 @@ namespace SonOfRobin
                 var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter) };
 
                 var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType())).ToList();
-                if (!stackToSearch.Any()) return true;
+                if (stackToSearch.Count == 0) return true;
 
                 stackToSearch.Reverse();
                 Scene topScene = stackToSearch.First();
@@ -402,7 +402,7 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleStack));
             }
 
-            if (extInfoTextList.Any())
+            if (extInfoTextList.Count > 0)
             {
                 entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
             }
@@ -425,7 +425,7 @@ namespace SonOfRobin
             var combineEntries = PieceInfo.GetCombinesWithTextEntryList(pieceName: selectedPiece.name, scale: 0.7f);
             entryList.AddRange(combineEntries);
 
-            if (selectedPiece.buffList != null && selectedPiece.buffList.Any())
+            if (selectedPiece.buffList != null && selectedPiece.buffList.Count > 0)
             {
                 if (selectedPiece.pieceInfo.CanHurtAnimals) entryList.Add(new InfoWindow.TextEntry(text: "Target receives:", color: Color.White, scale: smallScale));
 
@@ -933,7 +933,7 @@ namespace SonOfRobin
             if (Preferences.EnableTouchButtons || this.otherInventory == null) return false;
 
             var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
-            if (!pressTouches.Any()) return false;
+            if (pressTouches.Count() == 0) return false;
 
             int inflateSize = (int)(SonOfRobinGame.VirtualHeight * 0.02);
 
@@ -1047,7 +1047,7 @@ namespace SonOfRobin
                 this.disableTouchContextMenuUntilFrame = SonOfRobinGame.CurrentUpdate + 15;
             }
 
-            PieceTemplate.Name topPieceName = this.draggedPieces.Any() ? this.draggedPieces[0].name : PieceTemplate.Name.Empty;
+            PieceTemplate.Name topPieceName = this.draggedPieces.Count > 0 ? this.draggedPieces[0].name : PieceTemplate.Name.Empty;
             if (this.draggedPieces.Count == initialDraggedCount && topPieceName == initialTopPieceName) Sound.QuickPlay(SoundData.Name.Error);
             else
             {
@@ -1058,7 +1058,7 @@ namespace SonOfRobin
 
         private bool TryToCombinePieces(StorageSlot slot)
         {
-            if (!this.draggedPieces.Any() || slot.PieceCount == 0) return false;
+            if (this.draggedPieces.Count == 0 || slot.PieceCount == 0) return false;
 
             BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: this.draggedPieces[0], piece2: slot.TopPiece);
             if (combinedPiece != null)
@@ -1078,7 +1078,7 @@ namespace SonOfRobin
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)
         {
-            if (!this.draggedPieces.Any() || slot.PieceCount == 0) return false;
+            if (this.draggedPieces.Count == 0 || slot.PieceCount == 0) return false;
             if (this.draggedPieces.Count > 1 && slot.PieceCount > 1) return false;
             if (this.draggedPieces[0].name != PieceTemplate.Name.PotionGeneric && slot.pieceList[0].name != PieceTemplate.Name.PotionGeneric) return false;
 
@@ -1100,15 +1100,15 @@ namespace SonOfRobin
             }
 
             var piecesThatCanReceiveBuffs = targetPieces.Where(
-                piece => !piece.buffList.Any() &&
+                piece => piece.buffList.Count == 0 &&
                 piece.pieceInfo.CanHurtAnimals)
                 .ToList();
 
-            if (!piecesThatCanReceiveBuffs.Any()) return false;
+            if (piecesThatCanReceiveBuffs.Count == 0) return false;
 
             var allowedBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.RegenPoison, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
             var buffsThatCanBeMoved = potion.buffList.Where(buff => allowedBuffTypes.Contains(buff.type) && !buff.isPositive).ToList();
-            if (!buffsThatCanBeMoved.Any()) return false;
+            if (buffsThatCanBeMoved.Count == 0) return false;
 
             string counterText = targetPieces.Count > 1 ? $" x{targetPieces.Count}" : "";
 
@@ -1130,7 +1130,7 @@ namespace SonOfRobin
                         receivingPiece.buffList.Add(Buff.CopyBuff(buff));
                     }
 
-                    if (buffsThatCanBeMoved.Any())
+                    if (buffsThatCanBeMoved.Count > 0)
                     {
                         string plusSign = buffsThatCanBeMoved.Count > 1 ? "+" : "";
                         receivingPiece.readableName = $"{receivingPiece.readableName} of {buffsThatCanBeMoved[0].PotionText}{plusSign}";

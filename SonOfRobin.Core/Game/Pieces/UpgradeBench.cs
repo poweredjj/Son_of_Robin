@@ -48,7 +48,7 @@ namespace SonOfRobin
 
         private void CreateAllowedNames()
         {
-            if (mainNames.Any() && boosterNames.Any()) return;
+            if (mainNames.Count > 0 && boosterNames.Count > 0) return;
 
             var typeList = new List<System.Type> { typeof(Tool), typeof(Projectile) };
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
@@ -95,7 +95,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece pieceToUpgrade in piecesToUpgrade)
             {
-                if (pieceToUpgrade.buffList.Any())
+                if (pieceToUpgrade.buffList.Count > 0)
                 {
                     new TextWindow(text: $"This | {pieceToUpgrade.readableName} has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.AnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;

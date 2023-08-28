@@ -121,7 +121,7 @@ namespace SonOfRobin
 
         public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
         {
-            if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return Vector2.Zero;
+            if (!Input.InputActive || (lastFrameTouchPanelState.Count == 0 && touchPanelState.Count == 0)) return Vector2.Zero;
 
             Vector2 prevPos = Vector2.Zero;
             Vector2 currentPos = Vector2.Zero;
@@ -154,7 +154,7 @@ namespace SonOfRobin
 
         public static float GetZoomDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
         {
-            if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return 0;
+            if (!Input.InputActive || (lastFrameTouchPanelState.Count == 0 && touchPanelState.Count == 0)) return 0;
 
             Vector2 prevPos1 = Vector2.Zero;
             Vector2 prevPos2 = Vector2.Zero;
@@ -207,7 +207,7 @@ namespace SonOfRobin
         public static bool IsStateAvailable(TouchLocationState state)
         {
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state);
-            return matchingTypes.Any();
+            return matchingTypes.Count() > 0;
         }
 
         private static int lastFrameLayoutChanged = 0;

@@ -402,7 +402,7 @@ namespace SonOfRobin
 
                     while (true) // looking for first non-intersecting cell
                     {
-                        if (!cellList.Any())
+                        if (cellList.Count == 0)
                         {
                             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
                             return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there

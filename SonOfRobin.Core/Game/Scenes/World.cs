@@ -762,7 +762,7 @@ namespace SonOfRobin
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
-            if (!amountToCreateByName.Keys.Any()) return false;
+            if (amountToCreateByName.Keys.Count == 0) return false;
 
             // creating pieces
 
@@ -1132,7 +1132,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (!this.plantCellsQueue.Any())
+            if (this.plantCellsQueue.Count == 0)
             {
                 this.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
                 // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
@@ -1140,7 +1140,7 @@ namespace SonOfRobin
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
-            if (!this.plantSpritesQueue.Any())
+            if (this.plantSpritesQueue.Count == 0)
             {
                 var newPlantSpritesList = new List<Sprite>();
 
@@ -1149,7 +1149,7 @@ namespace SonOfRobin
                     Cell cell = this.plantCellsQueue.Dequeue();
                     newPlantSpritesList.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
 
-                    if (!plantCellsQueue.Any() || !this.CanProcessMoreOffCameraRectPiecesNow) break;
+                    if (plantCellsQueue.Count == 0 || !this.CanProcessMoreOffCameraRectPiecesNow) break;
                 }
 
                 this.plantSpritesQueue = new Queue<Sprite>(newPlantSpritesList);
@@ -1159,7 +1159,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                if (!this.plantSpritesQueue.Any()) return;
+                if (this.plantSpritesQueue.Count == 0) return;
 
                 Plant currentPlant = (Plant)this.plantSpritesQueue.Dequeue().boardPiece;
                 if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;

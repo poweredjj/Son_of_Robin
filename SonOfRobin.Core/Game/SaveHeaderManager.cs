@@ -11,7 +11,7 @@ namespace SonOfRobin
         public static readonly float saveVersion = 1.502f;
 
         public static bool AnySavesExist
-        { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Any(); } }
+        { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Count() > 0; } }
 
         public static List<SaveHeaderInfo> CorrectSaves
         {
@@ -72,7 +72,7 @@ namespace SonOfRobin
         {
             List<SaveHeaderInfo> incorrectSaves = IncorrectSaves;
 
-            if (!incorrectSaves.Any())
+            if (incorrectSaves.Count == 0)
             {
                 new TextWindow(text: "No incompatible saves were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
                 return;

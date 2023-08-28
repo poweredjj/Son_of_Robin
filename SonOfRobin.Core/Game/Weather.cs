@@ -435,7 +435,7 @@ namespace SonOfRobin
             }
             else
             {
-                if (this.weatherEvents.Any())
+                if (this.weatherEvents.Count > 0)
                 {
                     var weatherEventsByEndTime = this.weatherEvents.OrderByDescending(e => e.endTime).ToList();
                     forecastStartTime = weatherEventsByEndTime[0].endTime;

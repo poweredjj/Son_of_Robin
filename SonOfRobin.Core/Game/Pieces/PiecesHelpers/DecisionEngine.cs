@@ -44,7 +44,7 @@ namespace SonOfRobin
                 .Where(choice => choice.Priority > 0 && choice.Piece != null)
                 .OrderByDescending(choice => choice.Priority);
 
-            return possibleChoices.Any() ? possibleChoices.First() : null;
+            return possibleChoices.Count() > 0 ? possibleChoices.First() : null;
         }
     }
 }

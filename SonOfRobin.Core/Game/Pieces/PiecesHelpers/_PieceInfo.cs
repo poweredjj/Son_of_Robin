@@ -2881,7 +2881,7 @@ namespace SonOfRobin
             var entryList = new List<InfoWindow.TextEntry>();
 
             var combinesWith = info[pieceName].combinesWith;
-            if (!combinesWith.Any()) return entryList;
+            if (combinesWith.Count == 0) return entryList;
 
             string text = "Combines with: ";
             var imageList = new List<Texture2D>();

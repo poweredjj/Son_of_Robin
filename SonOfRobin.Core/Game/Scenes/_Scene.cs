@@ -95,7 +95,7 @@ namespace SonOfRobin
                 currentUpdateStackUpdateNo = SonOfRobinGame.CurrentUpdate;
                 currentUpdateStack.Clear();
 
-                if (!sceneStack.Any()) return currentUpdateStack;
+                if (sceneStack.Count == 0) return currentUpdateStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -122,7 +122,7 @@ namespace SonOfRobin
                 currentDrawStackDrawNo = SonOfRobinGame.CurrentDraw;
                 currentDrawStack.Clear();
 
-                if (!sceneStack.Any()) return currentDrawStack;
+                if (sceneStack.Count == 0) return currentDrawStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -446,7 +446,7 @@ namespace SonOfRobin
 
             UpdateAllTransitions();
 
-            if (!sceneStack.Any()) throw new DivideByZeroException("SceneStack is empty.");
+            if (sceneStack.Count == 0) throw new DivideByZeroException("SceneStack is empty.");
 
             LastUpdateDuration = UpdateTimeElapsed;
         }
@@ -464,7 +464,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (!restoredScenesIDs.Any()) return;
+            if (restoredScenesIDs.Count == 0) return;
 
             waitingScenes = waitingScenes.Where(scene => !restoredScenesIDs.Contains(scene.id)).ToList();
         }

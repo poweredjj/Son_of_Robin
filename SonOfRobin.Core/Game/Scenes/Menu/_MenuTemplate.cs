@@ -556,12 +556,12 @@ namespace SonOfRobin
                                 }
                             }
 
-                            if (positiveBuffTextLines.Any())
+                            if (positiveBuffTextLines.Count > 0)
                             {
                                 infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), color: Color.Cyan, scale: 0.75f));
                             }
 
-                            if (negativeBuffTextLines.Any())
+                            if (negativeBuffTextLines.Count > 0)
                             {
                                 infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), color: new Color(255, 120, 70), scale: 0.75f));
                             }
@@ -853,7 +853,7 @@ namespace SonOfRobin
                             .Where(file => file.ToLower().Contains("son_of_robin_save_") &&
                             (file.EndsWith(".zip") || file.EndsWith(".jpg"))); // workaround - media files are always shown on mobile
 
-                        if (saveZipPaths.Any())
+                        if (saveZipPaths.Count() > 0)
                         {
                             foreach (string saveZipFile in saveZipPaths)
                             {

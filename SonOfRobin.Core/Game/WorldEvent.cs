@@ -53,7 +53,7 @@ namespace SonOfRobin
                 .OrderBy(frameNo => frameNo)
                 .ToList();
 
-            if (!framesToProcess.Any()) return;
+            if (framesToProcess.Count == 0) return;
 
             foreach (int frameNo in framesToProcess)
             {

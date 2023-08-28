@@ -598,7 +598,7 @@ namespace SonOfRobin
 
                 var allSprites = world.Grid.GetSpritesFromAllCells(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
 
-                if (!allSprites.Any()) return;
+                if (allSprites.Count == 0) return;
 
                 var index = BoardPiece.Random.Next(allSprites.Count);
                 world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, moveInstantly: true);

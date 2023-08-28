@@ -226,7 +226,7 @@ namespace SonOfRobin
 
             var seenPieces = this.GetSeenPieces().Where(piece => piece.exists);
 
-            if (!seenPieces.Any())
+            if (seenPieces.Count() == 0)
             {
                 this.activeState = State.AnimalWalkAround;
                 this.aiData.Reset();
@@ -241,7 +241,7 @@ namespace SonOfRobin
             BoardPiece enemyPiece = null;
 
             var enemyList = seenPieces.Where(piece => this.IsEatenBy.Contains(piece.name));
-            if (enemyList.Any())
+            if (enemyList.Count() > 0)
             {
                 enemyPiece = FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
                 enemyDistance = Vector2.Distance(this.sprite.position, enemyPiece.sprite.position);
@@ -256,10 +256,10 @@ namespace SonOfRobin
 
             BoardPiece foodPiece = null;
 
-            if (foodList.Any())
+            if (foodList.Count > 0)
             {
                 var deadFoodList = foodList.Where(piece => !piece.alive).ToList();
-                if (deadFoodList.Any()) foodList = deadFoodList;
+                if (deadFoodList.Count > 0) foodList = deadFoodList;
                 foodPiece = this.world.random.Next(8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList.ElementAt(world.random.Next(foodList.Count()));
             }
 
@@ -273,7 +273,7 @@ namespace SonOfRobin
                 seenPieces.Where(piece => piece.name == this.name).Count() <= 3) // will not mate in a crowded area
             {
                 var matingPartners = this.AssessAsMatingPartners(seenPieces);
-                if (matingPartners.Any())
+                if (matingPartners.Count() > 0)
                 {
                     if (this.world.random.Next(8) != 0)
                     { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
@@ -464,7 +464,7 @@ namespace SonOfRobin
 
             if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
-                if (this.name == target.name && this.AssessAsMatingPartners(new List<BoardPiece> { this.target }).Any())
+                if (this.name == target.name && this.AssessAsMatingPartners(new List<BoardPiece> { this.target }).Count() > 0)
                 {
                     this.activeState = State.AnimalMate;
                     this.aiData.Reset();
@@ -847,7 +847,7 @@ namespace SonOfRobin
                             .Where(cell => cell.IsAllWater && cell != this.sprite.currentCell)
                             .OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)); // sorting by distance
 
-                    if (cellsWithinDistance.Any())
+                    if (cellsWithinDistance.Count() > 0)
                     {
                         Cell targetCell;
 

@@ -92,7 +92,7 @@ namespace SonOfRobin
             {
                 try
                 {
-                    if (!this.tasksToProcess.Any()) Thread.Sleep(1); // to avoid high CPU usage
+                    if (this.tasksToProcess.Count == 0) Thread.Sleep(1); // to avoid high CPU usage
                     else
                     {
                         var tasksBatch = this.tasksToProcess.ToList();
@@ -110,7 +110,7 @@ namespace SonOfRobin
 
         private void ProcessCellsBatch(List<ProcessingTask> tasksToProcess)
         {
-            if (!tasksToProcess.Any()) return;
+            if (tasksToProcess.Count == 0) return;
 
             this.IsProcessingNow = true;
 

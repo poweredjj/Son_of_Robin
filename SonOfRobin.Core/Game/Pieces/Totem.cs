@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -53,7 +52,7 @@ namespace SonOfRobin
                 if (!slot.locked) offeredPieces.AddRange(slot.GetAllPieces(remove: true));
             }
 
-            if (!offeredPieces.Any())
+            if (offeredPieces.Count == 0)
             {
                 new TextWindow(text: "There is nothing to offer.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;

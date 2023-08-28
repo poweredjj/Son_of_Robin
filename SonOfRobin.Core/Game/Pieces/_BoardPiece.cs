@@ -420,7 +420,7 @@ namespace SonOfRobin
             if (this.heatLevel > 0) pieceData["base_heatLevel"] = this.heatLevel;
             var soundPackSerialized = this.soundPack.Serialize();
             if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
-            if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
+            if (this.buffList.Count > 0) pieceData["base_buffList"] = this.buffList;
             if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
             if (this.createdByPlayer != pieceInfo.createdByPlayer) pieceData["base_createdByPlayer"] = this.createdByPlayer;
             if (!this.alive) pieceData["base_alive"] = this.alive;

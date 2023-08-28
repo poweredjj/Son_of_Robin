@@ -123,7 +123,7 @@ namespace SonOfRobin
 
         public bool ImageListEqual(List<Texture2D> imageListToCompare)
         {
-            if (!this.imageInfoList.Any() && imageListToCompare == null) return true;
+            if (this.imageInfoList.Count == 0 && imageListToCompare == null) return true;
             return this.ImageList == imageListToCompare;
         }
 
@@ -151,7 +151,7 @@ namespace SonOfRobin
 
         private (string, List<ImageInfo>) GetTextWithResizedMarkersAndImageInfo(List<Texture2D> imageList)
         {
-            if (!imageList.Any()) return (this.textOriginal.ToString(), new List<ImageInfo>());
+            if (imageList.Count == 0) return (this.textOriginal.ToString(), new List<ImageInfo>());
 
             int imageNo = 0;
             string newText = "";

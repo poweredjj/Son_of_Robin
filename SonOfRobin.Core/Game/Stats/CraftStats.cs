@@ -181,7 +181,7 @@ namespace SonOfRobin
             else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !seedNames.Contains(name)).ToList();
 
             var pieceNames = collectionToShow.Keys.Where(name => allowedNames.Contains(name)).OrderBy(n => PieceInfo.GetInfo(n).readableName);
-            if (!pieceNames.Any()) return;
+            if (pieceNames.Count() == 0) return;
 
             int entriesPerPage = 15;
             int pageCounter = 1;

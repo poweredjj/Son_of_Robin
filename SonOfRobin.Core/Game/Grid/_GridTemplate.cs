@@ -57,10 +57,10 @@ namespace SonOfRobin
         { get { return this.cellWidth != currentVersion; } }
 
         public static bool CorrectTemplatesExist
-        { get { return CorrectTemplates.Any(); } }
+        { get { return CorrectTemplates.Count > 0; } }
 
         public static bool CorrectNonDemoTemplatesOfProperSizeExist
-        { get { return CorrectNonDemoTemplatesOfProperSize.Any(); } }
+        { get { return CorrectNonDemoTemplatesOfProperSize.Count > 0; } }
 
         public static List<GridTemplate> CorrectTemplates
         {
@@ -170,7 +170,7 @@ namespace SonOfRobin
                 saveHeader.seed == gridTemplate.seed &&
                 saveHeader.width == gridTemplate.width &&
                 saveHeader.height == gridTemplate.height
-                ).Any())
+                ).Count() > 0)
                 {
                     pathsToKeep.Add(templatePath);
                     continue;
@@ -180,7 +180,7 @@ namespace SonOfRobin
                 currentWorld.seed == gridTemplate.seed &&
                 currentWorld.width == gridTemplate.width &&
                 currentWorld.height == gridTemplate.height
-                ).Any())
+                ).Count() > 0)
                 {
                     pathsToKeep.Add(templatePath);
                     continue;

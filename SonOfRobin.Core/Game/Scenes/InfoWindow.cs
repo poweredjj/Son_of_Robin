@@ -143,7 +143,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (!this.entryList.Any()) return Vector2.Zero;
+                if (this.entryList.Count == 0) return Vector2.Zero;
 
                 float globalScale = this.GlobalScale;
 

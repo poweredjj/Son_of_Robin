@@ -53,7 +53,7 @@ namespace SonOfRobin
         {
             if (DateTime.Now - lastTipGenerated < singleTipMaxDuration) return currentTip;
 
-            if (!tipsToDisplay.Any()) tipsToDisplay = allTips.ToList();
+            if (tipsToDisplay.Count == 0) tipsToDisplay = allTips.ToList();
 
             int randomTipNo = SonOfRobinGame.random.Next(tipsToDisplay.Count);
 

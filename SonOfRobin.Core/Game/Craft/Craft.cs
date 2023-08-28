@@ -265,7 +265,7 @@ namespace SonOfRobin
                 {
                     var multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys;
 
-                    if (multipleIngredientNames.Any())
+                    if (multipleIngredientNames.Count > 0)
                     {
                         PieceTemplate.Name randomNameToReduce = multipleIngredientNames.ElementAt(world.random.Next(multipleIngredientNames.Count));
                         byte quantity = ingredientsCopy[randomNameToReduce];
@@ -417,7 +417,7 @@ namespace SonOfRobin
                     taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
-                if (unlockedPieces.Any())
+                if (unlockedPieces.Count > 0)
                 {
                     Menu.RebuildAllMenus();
 
@@ -612,7 +612,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (unlockedPieces.Any())
+            if (unlockedPieces.Count > 0)
             {
                 Menu.RebuildAllMenus();
 

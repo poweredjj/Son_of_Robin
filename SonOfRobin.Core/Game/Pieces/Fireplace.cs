@@ -124,7 +124,7 @@ namespace SonOfRobin
             }
 
             var storedFuel = this.StoredFuel;
-            if (!storedFuel.Any())
+            if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 else MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");

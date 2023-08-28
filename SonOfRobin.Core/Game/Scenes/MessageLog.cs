@@ -67,7 +67,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (!messages.Any()) return;
+            if (messages.Count == 0) return;
 
             List<Message> messagesToDisplay;
 
