@@ -95,7 +95,7 @@ namespace SonOfRobin
                 if (closestAnimal != null)
                 {
                     Animal animal = (Animal)closestAnimal;
-                    Tool.HitTarget(attacker: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
+                    Tool.HitTarget(player: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
                     if (!this.pieceInfo.toolIndestructible)
                     {

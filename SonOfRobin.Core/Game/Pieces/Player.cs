@@ -31,10 +31,10 @@ namespace SonOfRobin
 
         public static readonly Dictionary<SkillName, string> skillDescriptions = new()
         {
-            { SkillName.Hunter, "harvest meat in the wild" },
+            { SkillName.Hunter, "harvest meat in the wild" }, // TODO make it work
             { SkillName.Plunderer, "more item drops" },
             { SkillName.Crafter, "faster, easier crafting" },
-            { SkillName.Survivalist, "improved resistance to hunger" },
+            { SkillName.Survivalist, "hunger resistance" },
             { SkillName.Fashionista, "extra accessory slot" },
             { SkillName.Maintainer, "tools last longer" },
         };

@@ -176,7 +176,7 @@ namespace SonOfRobin
                 this.world.HintEngine.Disable(Tutorials.Type.Hit);
 
                 int currentHitPower = (int)Math.Max(this.world.Player.strength * currentMultiplier, 1);
-                HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
+                HitTarget(player: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
                 anyTargetHit = true;
             } // target iteration end
 
@@ -185,7 +185,7 @@ namespace SonOfRobin
                 this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
                 {
-                    this.HitPoints -= 1;
+                    this.HitPoints -= player.Skill == Player.SkillName.Maintainer ? 0.7f : 1f;
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
                     if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
@@ -195,9 +195,9 @@ namespace SonOfRobin
             }
         }
 
-        public static void HitTarget(BoardPiece attacker, BoardPiece target, int hitPower, float targetPushMultiplier, List<Buff> buffList = null)
+        public static void HitTarget(Player player, BoardPiece target, int hitPower, float targetPushMultiplier, List<Buff> buffList = null)
         {
-            World world = attacker.world;
+            World world = player.world;
 
             BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
             new Tracking(world: world, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
@@ -236,7 +236,7 @@ namespace SonOfRobin
                     Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                     if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                     {
-                        int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target);
+                        int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target, multiplier: player.Skill == Player.SkillName.Plunderer ? 1.3f : 1f);
 
                         if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
                         {
@@ -285,7 +285,7 @@ namespace SonOfRobin
 
                     Animal animalTarget = (Animal)target;
 
-                    animalTarget.target = attacker;
+                    animalTarget.target = player;
                     animalTarget.aiData.Reset();
 
                     if (animalTarget.HitPointsPercent <= 0.4f && world.random.Next(6) == 0) animalTarget.activeState = State.AnimalCallForHelp;
@@ -317,7 +317,7 @@ namespace SonOfRobin
 
                     animalTarget.UpdateRegenCooldown(); // animal will not heal for a while
 
-                    var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
+                    var movement = (player.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
                     animalTarget.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: movement, maxVal: 400f));
                 }
                 else // not animal
@@ -325,7 +325,7 @@ namespace SonOfRobin
                     float hitPercentage = Math.Min((float)hitPower / (float)target.maxHitPoints, target.maxHitPoints);
 
                     float rotationChange = Math.Min(0.5f * hitPercentage, 0.25f);
-                    if ((target.sprite.position - attacker.sprite.position).X > 0) rotationChange *= -1;
+                    if ((target.sprite.position - player.sprite.position).X > 0) rotationChange *= -1;
 
                     // MessageLog.AddMessage(msgType: MsgType.User, message: $"rotationChange {rotationChange} hitPower {hitPower} exists {target.exists} hp {target.HitPointsPercent}"); // for testing
 

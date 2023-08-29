@@ -62,22 +62,22 @@ namespace SonOfRobin
 
         public int DropFirstPieces(int hitPower, BoardPiece piece)
         {
-            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
             this.DropDebris(piece: piece);
             return droppedPiecesCount;
         }
 
-        public int DropFinalPieces(BoardPiece piece)
+        public int DropFinalPieces(BoardPiece piece, float multiplier = 1f)
         {
-            int droppedPiecesCount = this.DropPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, multiplier: multiplier, droppedPieceList: this.finalDroppedPieces);
             this.DropDebris(piece: piece);
             return droppedPiecesCount;
         }
 
         public List<BoardPiece> GetAllPieces(BoardPiece piece)
         {
-            var firstPieces = this.GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
-            var finalPieces = this.GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            var firstPieces = GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
+            var finalPieces = GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
             return firstPieces.Concat(finalPieces).ToList();
         }
 
@@ -117,7 +117,7 @@ namespace SonOfRobin
             }
         }
 
-        private List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
+        private static List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
         {
             Type type = piece.GetType();
 
@@ -157,10 +157,10 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
+        private static int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
         {
             int droppedPiecesCount = 0;
-            var piecesToDrop = this.GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
+            var piecesToDrop = GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
             int noOfTries = 10;
 
             foreach (BoardPiece yieldPiece in piecesToDrop)

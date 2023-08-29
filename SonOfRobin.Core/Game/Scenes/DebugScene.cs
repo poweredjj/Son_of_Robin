@@ -173,7 +173,7 @@ namespace SonOfRobin
                 {
                     foreach (BoardPiece piece in world.Grid.GetPiecesInCameraView(groupName: Cell.Group.All))
                     {
-                        if (piece != world.Player) Tool.HitTarget(attacker: world.Player, target: piece, hitPower: 99999, targetPushMultiplier: 1f);
+                        if (piece != world.Player) Tool.HitTarget(player: world.Player, target: piece, hitPower: 99999, targetPushMultiplier: 1f);
                     }
                 }
             }
