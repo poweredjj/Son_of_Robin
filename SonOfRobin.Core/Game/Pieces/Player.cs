@@ -31,7 +31,7 @@ namespace SonOfRobin
 
         public static readonly Dictionary<SkillName, string> skillDescriptions = new()
         {
-            { SkillName.Hunter, "harvest meat in the wild" }, // TODO make it work
+            { SkillName.Hunter, "harvest meat in the wild" },
             { SkillName.Plunderer, "more item drops" },
             { SkillName.Crafter, "faster, easier crafting" },
             { SkillName.Survivalist, "hunger resistance" },
@@ -1397,6 +1397,21 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: activeToolbarPiece.pieceInfo.toolbarTask, delay: 0, executeHelper: executeHelper);
             return true;
+        }
+
+        public void HarvestMeatInTheField(StorageSlot slot)
+        {
+            BoardPiece animalPiece = slot.GetAllPieces(remove: true)[0];
+            var meatPieces = animalPiece.pieceInfo.Yield.GetAllPieces(piece: animalPiece);
+
+            foreach (BoardPiece meatPiece in meatPieces)
+            {
+                slot.storage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
+            }
+
+            // TODO add summary
+
+            Sound.QuickPlay(SoundData.Name.KnifeSharpen);
         }
 
         public bool CheckForCookLevelUp()

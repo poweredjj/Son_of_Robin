@@ -22,8 +22,9 @@ namespace SonOfRobin
             Extinguish = 9,
             Brew = 10,
             Harvest = 11,
-            Equip = 12,
-            Offer = 13,
+            FieldHarvest = 12,
+            Equip = 13,
+            Offer = 14,
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
@@ -135,12 +136,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addOffer = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addOffer: addOffer);
+            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -152,7 +153,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addOffer = false)
+        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -162,13 +163,14 @@ namespace SonOfRobin
             if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
             if (this.piece.GetType() == typeof(Seed)) contextActionList.Add(ContextAction.Plant);
             if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
-            if (addDrop) contextActionList.Add(ContextAction.Drop);
+            if (addFieldHarvest) contextActionList.Add(ContextAction.FieldHarvest);
             if (addCook) contextActionList.Add(ContextAction.Cook);
             if (addBrew) contextActionList.Add(ContextAction.Brew);
             if (addIgnite) contextActionList.Add(ContextAction.Ignite);
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
             if (addHarvest) contextActionList.Add(ContextAction.Harvest);
             if (addOffer) contextActionList.Add(ContextAction.Offer);
+            if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
@@ -483,6 +485,14 @@ namespace SonOfRobin
                     {
                         MeatHarvestingWorkshop workshop = (MeatHarvestingWorkshop)this.storage.storagePiece;
                         workshop.HarvestMeat();
+
+                        return;
+                    }
+
+                case ContextAction.FieldHarvest:
+                    {
+                        Player player = (Player)this.storage.storagePiece;
+                        player.HarvestMeatInTheField(this.slot);
 
                         return;
                     }
