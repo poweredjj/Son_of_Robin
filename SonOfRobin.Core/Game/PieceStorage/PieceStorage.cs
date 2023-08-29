@@ -406,7 +406,7 @@ namespace SonOfRobin
                             }
                             else
                             {
-                                if (withThisIDOnly != null) slot.DestroyPieceWithID(withThisIDOnly);
+                                if (withThisIDOnly != -1) slot.DestroyPieceWithID(withThisIDOnly);
                                 else slot.RemoveTopPiece();
                             }
 

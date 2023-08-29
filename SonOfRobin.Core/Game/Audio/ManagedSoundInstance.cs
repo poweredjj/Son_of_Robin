@@ -250,7 +250,7 @@ namespace SonOfRobin
                 {
                     foreach (ManagedSoundInstance managedSoundInstance in instancesList)
                     {
-                        if (managedSoundInstance.currentSoundID != null && !activeInstancesBySoundID.ContainsKey(managedSoundInstance.currentSoundID)) inactiveCount++;
+                        if (managedSoundInstance.currentSoundID != -1 && !activeInstancesBySoundID.ContainsKey(managedSoundInstance.currentSoundID)) inactiveCount++;
                     }
                 }
 
