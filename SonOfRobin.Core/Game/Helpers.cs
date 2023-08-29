@@ -31,12 +31,12 @@ namespace SonOfRobin
             Bottom = 2,
         };
 
-        private static int hashCounter = 0;
+        private static int currentID = (int)(DateTime.Now.Ticks & 0xFFFFFFFF);
 
-        public static string GetUniqueHash()
+        public static int GetUniqueID()
         {
-            hashCounter++;
-            return $"{Math.Abs(DateTime.Now.GetHashCode() / 10)}_{hashCounter}";
+            currentID++;
+            return currentID;
         }
 
         public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1, bool centered = false, float scale = 1f)

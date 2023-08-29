@@ -160,12 +160,12 @@ namespace SonOfRobin
             if (eventsWithoutPieces.Contains(eventName)) boardPiece = null;
             else
             {
-                if (!world.piecesByOldID.ContainsKey((string)eventData["piece_id"]))
+                if (!world.piecesByOldID.ContainsKey((int)(Int64)eventData["piece_id"]))
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {(string)eventData["piece_id"]}.", color: Color.Orange);
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {(int)(Int64)eventData["piece_id"]}.", color: Color.Orange);
                     return null;
                 }
-                boardPiece = world.piecesByOldID[(string)eventData["piece_id"]];
+                boardPiece = world.piecesByOldID[(int)(Int64)eventData["piece_id"]];
             }
 
             int startUpdateNo = (int)(Int64)eventData["startUpdateNo"];
@@ -272,7 +272,7 @@ namespace SonOfRobin
 
                 case EventName.RemoveBuff:
                     {
-                        string buffID = (string)this.eventHelper;
+                        int buffID = (int)this.eventHelper;
                         this.boardPiece.buffEngine.RemoveBuff(buffID: buffID, checkIfHasThisBuff: false);
 
                         return;
@@ -383,7 +383,7 @@ namespace SonOfRobin
 
                         var regenPoisonData = (Dictionary<string, Object>)this.eventHelper;
 
-                        string buffID = (string)regenPoisonData["buffID"];
+                        int buffID = (int)regenPoisonData["buffID"];
 
                         int delay = Helpers.CastObjectToInt(regenPoisonData["delay"]);
                         int charges = Helpers.CastObjectToInt(regenPoisonData["charges"]);

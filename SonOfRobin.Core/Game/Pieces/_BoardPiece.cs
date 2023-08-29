@@ -85,7 +85,7 @@ namespace SonOfRobin
         public const float minBurnVal = 0.5f;
 
         public readonly World world;
-        public readonly string id;
+        public readonly int id;
         public readonly PieceTemplate.Name name;
         public Sprite sprite;
         public State activeState;
@@ -119,7 +119,7 @@ namespace SonOfRobin
         public bool isTemporaryDecoration;
         private float hitPoints;
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public BoardPiece(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
         {
             this.world = world;
@@ -467,7 +467,7 @@ namespace SonOfRobin
                 this.RemoveFromStateMachines();
             }
 
-            this.world.piecesByOldID[(string)pieceData["base_id"]] = this;
+            this.world.piecesByOldID[(int)(Int64)pieceData["base_id"]] = this;
         }
 
         public virtual void DrawStatBar()
@@ -841,18 +841,16 @@ namespace SonOfRobin
             Rectangle heatRect = this.sprite.GfxRect;
             heatRect.Inflate(this.sprite.GfxRect.Width * 0.8f, this.sprite.GfxRect.Height * 0.8f);
 
-            IEnumerable<BoardPiece> piecesToHeat;
-            try
+            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            foreach (BoardPiece heatedPiece in nearbyPieces)
             {
-                piecesToHeat = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150)
-                    .Where(piece => piece.pieceInfo.fireAffinity > 0 && heatRect.Intersects(piece.sprite.ColRect));
-            }
-            catch (NullReferenceException) { piecesToHeat = new List<BoardPiece>(); }
-            catch (InvalidOperationException) { piecesToHeat = new List<BoardPiece>(); }
-
-            foreach (BoardPiece heatedPiece in piecesToHeat)
-            {
-                if (heatedPiece == this || heatedPiece.pieceInfo.fireAffinity == 0 || heatedPiece.sprite.IsInWater) continue;
+                if (heatedPiece.pieceInfo.fireAffinity == 0 ||
+                    !heatRect.Intersects(heatedPiece.sprite.ColRect) ||
+                    !heatedPiece.sprite.IsInWater ||
+                    heatedPiece == this)
+                {
+                    continue;
+                }
 
                 heatedPiece.HeatLevel += baseBurnVal * 0.27f;
 

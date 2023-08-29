@@ -29,7 +29,7 @@ namespace SonOfRobin
         }
 
         private readonly World world;
-        private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
+        private readonly Dictionary<int, SwayEvent> swayEventsBySpriteID;
         private List<WaitingSwayEvent> waitingEvents;
 
         public int SwayEventsCount
@@ -38,7 +38,7 @@ namespace SonOfRobin
         public SwayManager(World world)
         {
             this.world = world;
-            this.swayEventsBySpriteID = new Dictionary<string, SwayEvent>();
+            this.swayEventsBySpriteID = new Dictionary<int, SwayEvent>();
             this.waitingEvents = new List<WaitingSwayEvent>();
         }
 
@@ -88,7 +88,7 @@ namespace SonOfRobin
 
             this.ProcessWaitingEvents();
 
-            List<string> spriteIDsToRemove = new List<string>();
+            var spriteIDsToRemove = new List<int>();
 
             foreach (var kvp in this.swayEventsBySpriteID)
             {
@@ -98,7 +98,7 @@ namespace SonOfRobin
                 if (swayEvent.HasEnded) spriteIDsToRemove.Add(kvp.Key);
             }
 
-            foreach (string spriteID in spriteIDsToRemove)
+            foreach (int spriteID in spriteIDsToRemove)
             {
                 this.swayEventsBySpriteID.Remove(spriteID);
             }

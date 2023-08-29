@@ -29,7 +29,7 @@ namespace SonOfRobin
         private readonly string label;
 
         protected StorageSlot[,] slots;
-        protected Dictionary<string, Point> slotPosByID;
+        protected Dictionary<int, Point> slotPosByID;
         private readonly byte stackLimit;
         public StorageSlot lastUsedSlot; // last used by Inventory class
 
@@ -52,7 +52,7 @@ namespace SonOfRobin
             this.AllowedPieceNames = allowedPieceNames;
 
             this.slots = this.MakeEmptySlots();
-            this.slotPosByID = new Dictionary<string, Point>();
+            this.slotPosByID = new Dictionary<int, Point>();
             this.UpdateSlotPosByID();
         }
 
@@ -385,7 +385,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true, string withThisIDOnly = null)
+        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true, int withThisIDOnly = -1)
         {
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -395,7 +395,7 @@ namespace SonOfRobin
                 {
                     PieceTemplate.Name pieceName = slot.PieceName;
 
-                    if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0 && (withThisIDOnly == null || slot.AllPieceIDs.Contains(withThisIDOnly)))
+                    if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0 && (withThisIDOnly == -1 || slot.AllPieceIDs.Contains(withThisIDOnly)))
                     {
                         while (true)
                         {
@@ -497,12 +497,12 @@ namespace SonOfRobin
             return occurences;
         }
 
-        public bool ContainsThisPieceID(string pieceID)
+        public bool ContainsThisPieceID(int pieceID)
         {
             return this.FindPieceWithThisID(pieceID) != null;
         }
 
-        public BoardPiece FindPieceWithThisID(string pieceID)
+        public BoardPiece FindPieceWithThisID(int pieceID)
         {
             foreach (StorageSlot slot in this.OccupiedSlots)
             {

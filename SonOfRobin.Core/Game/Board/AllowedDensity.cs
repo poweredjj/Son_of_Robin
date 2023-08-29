@@ -27,7 +27,7 @@ namespace SonOfRobin
         {
             var nearbyPieces = piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radius);
 
-            if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count() > this.maxNoOfPiecesTotal) return false;
+            if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count > this.maxNoOfPiecesTotal) return false;
             if (this.maxNoOfPiecesSameName != -1 && CheckSameNameCount(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameName) return false;
             if (this.maxNoOfPiecesSameClass != -1 && CheckSameClass(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
             if (this.maxNoOfPiecesBlocking != -1 && CheckBlocking(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesBlocking) return false;

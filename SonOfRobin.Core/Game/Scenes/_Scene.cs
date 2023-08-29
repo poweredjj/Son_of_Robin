@@ -46,7 +46,7 @@ namespace SonOfRobin
         public ViewParams viewParams;
         public readonly TransManager transManager;
 
-        public readonly string id;
+        public readonly int id;
 
         private readonly List<Scene> linkedScenes;
 
@@ -192,7 +192,7 @@ namespace SonOfRobin
             this.linkedScenes = new List<Scene> { }; // scenes that will also be removed on Remove()
             this.alwaysUpdates = alwaysUpdates;
             this.alwaysDraws = alwaysDraws;
-            this.id = Helpers.GetUniqueHash();
+            this.id = Helpers.GetUniqueID();
 
             if (waitForOtherScenesOfTypeToEnd && this.OtherScenesOfThisTypePresent) waitingScenes.Add(this);
             else this.Activate();
@@ -453,7 +453,7 @@ namespace SonOfRobin
 
         private static void CheckWaitingScenes()
         {
-            var restoredScenesIDs = new List<string>();
+            var restoredScenesIDs = new HashSet<int>();
 
             foreach (Scene scene in waitingScenes)
             {

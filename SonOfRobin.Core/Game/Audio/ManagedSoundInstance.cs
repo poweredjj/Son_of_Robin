@@ -8,15 +8,15 @@ namespace SonOfRobin
 {
     public class ManagedSoundInstance
     {
-        private static readonly Dictionary<SoundData.Name, List<ManagedSoundInstance>> instanceListsByName = new Dictionary<SoundData.Name, List<ManagedSoundInstance>>();
-        private static readonly Dictionary<string, ManagedSoundInstance> activeInstancesBySoundID = new Dictionary<string, ManagedSoundInstance>();
+        private static readonly Dictionary<SoundData.Name, List<ManagedSoundInstance>> instanceListsByName = new();
+        private static readonly Dictionary<int, ManagedSoundInstance> activeInstancesBySoundID = new();
         public static int CreatedInstancesCount { get; private set; } = 0;
 
         private readonly SoundData.Name soundName;
         private readonly SoundEffectInstance instance; // should not be publicly exposed, to avoid uncontrolled Play()
         private DateTime lastPlayed;
 
-        private string currentSoundID;
+        private int currentSoundID;
         private static int nextFrameInstanceStoppingPossible = 0;
 
         public ManagedSoundInstance(SoundData.Name soundName)
@@ -24,7 +24,7 @@ namespace SonOfRobin
             this.soundName = soundName;
             this.instance = SoundData.soundsDict[soundName].CreateInstance();
             this.lastPlayed = DateTime.Now; // to have a proper value
-            this.currentSoundID = null;
+            this.currentSoundID = -1;
 
             if (!instanceListsByName.ContainsKey(soundName)) instanceListsByName[soundName] = new List<ManagedSoundInstance>();
             instanceListsByName[soundName].Add(this);
@@ -38,7 +38,7 @@ namespace SonOfRobin
         private void Delete()
         {
             this.instance.Dispose();
-            if (this.currentSoundID != null && activeInstancesBySoundID.ContainsKey(this.currentSoundID)) activeInstancesBySoundID.Remove(this.currentSoundID);
+            if (this.currentSoundID != -1 && activeInstancesBySoundID.ContainsKey(this.currentSoundID)) activeInstancesBySoundID.Remove(this.currentSoundID);
             instanceListsByName[this.soundName].Remove(this);
             CreatedInstancesCount--;
         }
@@ -50,7 +50,7 @@ namespace SonOfRobin
             this.Apply3D(Sound.audioListener, Sound.audioEmitter);
         }
 
-        private void AssignSoundID(string soundID)
+        private void AssignSoundID(int soundID)
         {
             if (activeInstancesBySoundID.ContainsKey(soundID) && activeInstancesBySoundID[soundID] != this) activeInstancesBySoundID[soundID].Stop();
 
@@ -60,12 +60,12 @@ namespace SonOfRobin
 
         private void ClearSoundID()
         {
-            if (this.currentSoundID == null) return;
+            if (this.currentSoundID == -1) return;
             activeInstancesBySoundID.Remove(this.currentSoundID);
-            this.currentSoundID = null;
+            this.currentSoundID = -1;
         }
 
-        public bool Play(string soundID)
+        public bool Play(int soundID)
         {
             if (this.currentSoundID != soundID) this.AssignSoundID(soundID);
 
@@ -159,7 +159,7 @@ namespace SonOfRobin
             if (this.instance.State == SoundState.Paused) this.instance.Resume();
         }
 
-        public static void Stop(string soundID)
+        public static void Stop(int soundID)
         {
             if (activeInstancesBySoundID.ContainsKey(soundID)) activeInstancesBySoundID[soundID].Stop();
         }
@@ -209,7 +209,7 @@ namespace SonOfRobin
             return new ManagedSoundInstance(soundName);
         }
 
-        public static ManagedSoundInstance GetPlayingInstance(string soundID)
+        public static ManagedSoundInstance GetPlayingInstance(int soundID)
         {
             if (!activeInstancesBySoundID.ContainsKey(soundID)) return null;
 

@@ -281,12 +281,12 @@ namespace SonOfRobin
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
-        public static BoardPiece Create(Name templateName, World world, string id = null)
+        public static BoardPiece Create(Name templateName, World world, int id = -1)
         {
             return CreatePiece(templateName: templateName, world: world, id: id);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, bool precisePlacement = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, bool precisePlacement = false, int id = -1, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
         {
             BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id);
 
@@ -317,9 +317,9 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, string id = null)
+        private static BoardPiece CreatePiece(Name templateName, World world, int id = -1)
         {
-            if (id == null) id = Helpers.GetUniqueHash();
+            if (id == -1) id = Helpers.GetUniqueID();
 
             Random random = BoardPiece.Random;
 

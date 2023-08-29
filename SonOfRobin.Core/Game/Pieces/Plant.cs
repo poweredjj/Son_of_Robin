@@ -24,7 +24,7 @@ namespace SonOfRobin
         private float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
 
-        public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
+        public Plant(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 10, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 

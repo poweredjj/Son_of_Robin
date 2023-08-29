@@ -10,7 +10,7 @@ namespace SonOfRobin
         public bool CanBeUsedNow { get { return this.world.islandClock.IslandDateTime >= this.lockedUntilIslandDateTime; } }
         public TimeSpan TimeUntilCanBeUsed { get { return this.lockedUntilIslandDateTime - this.world.islandClock.IslandDateTime; } }
 
-        public Totem(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
+        public Totem(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
              int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack, lightEngine: new LightEngine(size: 410, opacity: 0.7f, colorActive: true, color: new Color(71, 255, 255) * 1.2f, isActive: false, castShadows: true))

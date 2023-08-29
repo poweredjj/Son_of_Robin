@@ -1395,8 +1395,8 @@ namespace SonOfRobin
 
                             var incorrectBoardPieces = new List<BoardPiece>();
                             var incorrectStoragePieces = new List<BoardPiece>();
-                            var piecesByID = new Dictionary<string, List<BoardPiece>>();
-                            var duplicatedPiecesByID = new Dictionary<string, List<BoardPiece>>();
+                            var piecesByID = new Dictionary<int, List<BoardPiece>>();
+                            var duplicatedPiecesByID = new Dictionary<int, List<BoardPiece>>();
                             var blockedPieces = new List<BoardPiece>();
 
                             var blockedIgnoredTypesForNonPlants = new List<Type> { };

@@ -175,14 +175,14 @@ namespace SonOfRobin
         // deserialize
         {
             // if object was destroyed, it will no longer be available after loading
-            if (!world.piecesByOldID.ContainsKey((string)trackingData["followingSprite_id"]) ||
-                !world.piecesByOldID.ContainsKey((string)trackingData["targetSprite_id"])) return;
+            if (!world.piecesByOldID.ContainsKey((int)(Int64)trackingData["followingSprite_id"]) ||
+                !world.piecesByOldID.ContainsKey((int)(Int64)trackingData["targetSprite_id"])) return;
 
-            Sprite followingSprite = world.piecesByOldID[(string)trackingData["followingSprite_id"]].sprite;
+            Sprite followingSprite = world.piecesByOldID[(int)(Int64)trackingData["followingSprite_id"]].sprite;
             XAlign followingXAlign = (XAlign)(Int64)trackingData["followingXAlign"];
             YAlign followingYAlign = (YAlign)(Int64)trackingData["followingYAlign"];
 
-            Sprite targetSprite = world.piecesByOldID[(string)trackingData["targetSprite_id"]].sprite;
+            Sprite targetSprite = world.piecesByOldID[(int)(Int64)trackingData["targetSprite_id"]].sprite;
             XAlign targetXAlign = (XAlign)(Int64)trackingData["targetXAlign"];
             YAlign targetYAlign = (YAlign)(Int64)trackingData["targetYAlign"];
 

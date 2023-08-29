@@ -71,7 +71,7 @@ namespace SonOfRobin
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState, soundPack: soundPack)

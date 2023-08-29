@@ -13,7 +13,7 @@ namespace SonOfRobin
         public static bool menuOn = true;
         public static bool textWindowAnimOn = true;
         public static float globalVolume = 1f;
-        public static Dictionary<string, Sound> currentlyPlaying = new Dictionary<string, Sound>();
+        public static Dictionary<int, Sound> currentlyPlaying = new Dictionary<int, Sound>();
         public SoundData.Name Name { get; private set; }
         private float volume;
         public float FadeVolume { get; private set; }
@@ -27,7 +27,7 @@ namespace SonOfRobin
         private readonly float pitchChange;
         private readonly int volumeFadeFrames;
         private readonly float volumeFadePerFrame;
-        public string Id { get; private set; }
+        public int Id { get; private set; }
         public readonly bool isEmpty;
         public bool playAfterAssign; // to allow for playing empty sounds, that will be reassigned after deserialization
 
@@ -40,7 +40,7 @@ namespace SonOfRobin
 
         public Sound(SoundData.Name name = SoundData.Name.Empty, List<SoundData.Name> nameList = null, BoardPiece boardPiece = null, float volume = 1f, bool isLooped = false, int cooldown = 0, bool ignore3DAlways = false, float maxPitchVariation = 0f, float pitchChange = 0f, int volumeFadeFrames = 30)
         {
-            this.Id = Helpers.GetUniqueHash();
+            this.Id = Helpers.GetUniqueID();
 
             this.playAfterAssign = false;
             this.isEmpty = name == SoundData.Name.Empty && nameList == null;

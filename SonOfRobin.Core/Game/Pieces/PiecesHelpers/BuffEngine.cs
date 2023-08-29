@@ -38,7 +38,7 @@ namespace SonOfRobin
             RemovePoison = 26,
         };
 
-        private readonly Dictionary<string, Buff> buffDict;
+        private readonly Dictionary<int, Buff> buffDict;
         private readonly BoardPiece piece;
 
         public List<Buff> BuffList
@@ -63,10 +63,10 @@ namespace SonOfRobin
         public BuffEngine(BoardPiece piece)
         {
             this.piece = piece;
-            this.buffDict = new Dictionary<string, Buff> { };
+            this.buffDict = new Dictionary<int, Buff> { };
         }
 
-        public BuffEngine(BoardPiece piece, Dictionary<string, Buff> buffDict)
+        public BuffEngine(BoardPiece piece, Dictionary<int, Buff> buffDict)
         {
             this.piece = piece;
             this.buffDict = buffDict;
@@ -85,7 +85,7 @@ namespace SonOfRobin
         public static BuffEngine Deserialize(BoardPiece piece, Object buffEngineData)
         {
             var buffDataDict = (Dictionary<string, Object>)buffEngineData;
-            var buffDict = (Dictionary<string, Buff>)buffDataDict["buffDict"];
+            var buffDict = (Dictionary<int, Buff>)buffDataDict["buffDict"];
 
             return new BuffEngine(piece: piece, buffDict: buffDict);
         }
@@ -106,7 +106,7 @@ namespace SonOfRobin
         {
             if (buff.increaseIDAtEveryUse)
             {
-                buff.id = Helpers.GetUniqueHash();
+                buff.id = Helpers.GetUniqueID();
             }
 
             if (this.buffDict.ContainsKey(buff.id)) throw new ArgumentException($"Buff has been added twice - id {buff.id} type {buff.type}.");
@@ -136,7 +136,7 @@ namespace SonOfRobin
             }
         }
 
-        public void RemoveBuff(string buffID, bool checkIfHasThisBuff = true)
+        public void RemoveBuff(int buffID, bool checkIfHasThisBuff = true)
         {
             if (!this.buffDict.ContainsKey(buffID))
             {
@@ -179,7 +179,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool HasBuff(string buffID)
+        public bool HasBuff(int buffID)
         {
             foreach (Buff buff in this.buffDict.Values)
             {

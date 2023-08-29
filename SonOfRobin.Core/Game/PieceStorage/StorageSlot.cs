@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class StorageSlot
     {
-        public readonly string id;
+        public readonly int id;
         public readonly PieceStorage storage;
         public List<BoardPiece> pieceList;
         public byte stackLimit;
@@ -20,7 +20,7 @@ namespace SonOfRobin
 
         public StorageSlot(PieceStorage storage, byte stackLimit = 255, HashSet<PieceTemplate.Name> allowedPieceNames = null)
         {
-            this.id = Helpers.GetUniqueHash();
+            this.id = Helpers.GetUniqueID();
             this.storage = storage;
             this.pieceList = new List<BoardPiece> { };
             this.locked = false;
@@ -57,7 +57,7 @@ namespace SonOfRobin
         public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
 
-        public List<string> AllPieceIDs
+        public List<int> AllPieceIDs
         { get { return pieceList.Select(p => p.id).ToList(); } }
 
         public void AddPiece(BoardPiece piece)
@@ -135,7 +135,7 @@ namespace SonOfRobin
             return allPieces;
         }
 
-        public void DestroyPieceWithID(string idToRemove)
+        public void DestroyPieceWithID(int idToRemove)
         {
             if (this.locked) return;
 

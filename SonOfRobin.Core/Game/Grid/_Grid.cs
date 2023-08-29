@@ -855,10 +855,10 @@ namespace SonOfRobin
             return spritesWithinDistance;
         }
 
-        public IEnumerable<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
+        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
         {
             var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
-            var spritesWithinDistance = new List<Sprite>();
+            var piecesWithinDistance = new List<BoardPiece>();
 
             Vector2 centerPos = mainSprite.position + new Vector2(offsetX, offsetY);
 
@@ -866,24 +866,29 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in cellsWithinDistance)
                 {
-                    spritesWithinDistance.AddRange(
-                        cell.spriteGroups[groupName].Where(
-                            currentSprite => Vector2.Distance(new Vector2(currentSprite.GfxRect.Center.X, currentSprite.GfxRect.Bottom), centerPos) <= distance &&
-                            currentSprite != mainSprite));
+                    foreach (Sprite sprite in cell.spriteGroups[groupName])
+                    {
+                        if (Vector2.Distance(new Vector2(sprite.GfxRect.Center.X, sprite.GfxRect.Bottom), centerPos) <= distance && sprite != mainSprite)
+                        {
+                            piecesWithinDistance.Add(sprite.boardPiece);
+                        }
+                    }
                 }
             }
             else
             {
                 foreach (Cell cell in cellsWithinDistance)
                 {
-                    spritesWithinDistance.AddRange(
-                        cell.spriteGroups[groupName].Where(
-                            currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
-                            currentSprite != mainSprite));
+                    foreach (Sprite sprite in cell.spriteGroups[groupName])
+                    {
+                        if (Vector2.Distance(sprite.position, centerPos) <= distance && sprite != mainSprite)
+                        {
+                            piecesWithinDistance.Add(sprite.boardPiece);
+                        }
+                    }
                 }
             }
 
-            var piecesWithinDistance = spritesWithinDistance.Select(sprite => sprite.boardPiece);
             return piecesWithinDistance;
         }
 

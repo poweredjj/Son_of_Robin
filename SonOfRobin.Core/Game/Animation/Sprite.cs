@@ -20,7 +20,7 @@ namespace SonOfRobin
         public enum AdditionalMoveType : byte
         { None, Minimal, Half }
 
-        public readonly string id;
+        public readonly int id;
         public readonly BoardPiece boardPiece;
         public readonly World world;
 
@@ -55,7 +55,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
+        public Sprite(World world, int id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;

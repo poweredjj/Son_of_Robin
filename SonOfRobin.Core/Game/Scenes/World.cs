@@ -23,7 +23,7 @@ namespace SonOfRobin
 
         private Task backgroundTask;
         private Object saveGameData;
-        public Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
+        public Dictionary<int, BoardPiece> piecesByOldID; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
 
         private bool soundPaused;
@@ -103,7 +103,7 @@ namespace SonOfRobin
                 this.soundActive = false;
             }
             this.saveGameData = saveGameData;
-            this.piecesByOldID = new Dictionary<string, BoardPiece>();
+            this.piecesByOldID = new Dictionary<int, BoardPiece>();
             this.createMissingPiecesOutsideCamera = false;
             this.WorldCreationInProgress = true;
             this.populatingFramesLeft = populatingFramesTotal;
@@ -605,7 +605,7 @@ namespace SonOfRobin
                     int spritePosX = (int)(Int64)spriteData["posX"];
                     int spritePosY = (int)(Int64)spriteData["posY"];
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, ignoreCollisions: true, id: (int)(Int64)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);

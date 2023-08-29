@@ -19,7 +19,7 @@ namespace SonOfRobin
         private int realHitPower;
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
 
-        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
+        public Projectile(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
             byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)
@@ -183,21 +183,18 @@ namespace SonOfRobin
         {
             PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
 
-            Rectangle explosionRect = new Rectangle(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
+            Rectangle explosionRect = new(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
             explosionRect.Inflate(50, 50);
 
-            IEnumerable<BoardPiece> piecesToHeat;
-            try
-            {
-                piecesToHeat = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150)
-                    .Where(piece => piece.pieceInfo.fireAffinity > 0 && piece.GetType() != typeof(Player) && explosionRect.Intersects(piece.sprite.ColRect));
-            }
-            catch (NullReferenceException) { return; }
-            catch (InvalidOperationException) { return; }
+            var piecesWithinDistance = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            if (piecesWithinDistance.Count == 0) return;
 
-            foreach (BoardPiece piece in piecesToHeat)
+            foreach (BoardPiece piece in piecesWithinDistance)
             {
-                piece.HeatLevel = 1;
+                if (piece.pieceInfo.fireAffinity > 0 && piece.GetType() != typeof(Player) && explosionRect.Intersects(piece.sprite.ColRect))
+                {
+                    piece.HeatLevel = 1;
+                }
             }
         }
 

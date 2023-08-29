@@ -12,7 +12,7 @@ namespace SonOfRobin
         private int rainStepsLeft;
         private Vector2 rainStep;
 
-        public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, soundPack: soundPack)
@@ -222,7 +222,7 @@ namespace SonOfRobin
                 var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
-                    piece.HeatLevel += 2;
+                    if (piece.pieceInfo.fireAffinity > 0) piece.HeatLevel += 2;
                 }
 
                 this.HeatLevel = 0;

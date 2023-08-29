@@ -12,7 +12,7 @@ namespace SonOfRobin
         private int currentDelay;
         private int waitUntilFrame;
 
-        public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
+        public AmbientSound(World world, int id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
            bool visible = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)

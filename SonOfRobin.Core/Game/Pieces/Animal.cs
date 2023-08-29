@@ -26,7 +26,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
+        public Animal(World world, int id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
             byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
@@ -183,8 +183,10 @@ namespace SonOfRobin
             return matingPartners;
         }
 
-        public IEnumerable<BoardPiece> GetSeenPieces()
-        { return this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange); }
+        public List<BoardPiece> GetSeenPieces()
+        {
+            return this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange);
+        }
 
         private void UpdateAttackCooldown()
         {
@@ -224,9 +226,9 @@ namespace SonOfRobin
 
             // looking around
 
-            var seenPieces = this.GetSeenPieces().Where(piece => piece.exists);
+            var seenPieces = this.GetSeenPieces().Where(piece => piece.exists).ToList();
 
-            if (seenPieces.Count() == 0)
+            if (seenPieces.Count == 0)
             {
                 this.activeState = State.AnimalWalkAround;
                 this.aiData.Reset();
@@ -240,8 +242,8 @@ namespace SonOfRobin
             float enemyDistance = 10000000;
             BoardPiece enemyPiece = null;
 
-            var enemyList = seenPieces.Where(piece => this.IsEatenBy.Contains(piece.name));
-            if (enemyList.Count() > 0)
+            var enemyList = seenPieces.Where(piece => this.IsEatenBy.Contains(piece.name)).ToList();
+            if (enemyList.Count > 0)
             {
                 enemyPiece = FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
                 enemyDistance = Vector2.Distance(this.sprite.position, enemyPiece.sprite.position);

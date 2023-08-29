@@ -5,7 +5,7 @@ namespace SonOfRobin
     [Serializable]
     public class Buff
     {
-        public string id;
+        public int id;
         public readonly bool increaseIDAtEveryUse;
         public readonly BuffEngine.BuffType type;
         public readonly bool isPositive;
@@ -26,7 +26,7 @@ namespace SonOfRobin
             value = this.CastValueToCorrectType(value);
 
             this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
-            this.id = Helpers.GetUniqueHash();
+            this.id = Helpers.GetUniqueID();
             // AutoRemoveDelay should not be used for equip!
             // It should only be used for temporary buffs (food, status effects, etc.).
             this.autoRemoveDelay = autoRemoveDelay;
