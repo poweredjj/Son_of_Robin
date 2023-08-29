@@ -26,6 +26,7 @@ namespace SonOfRobin
         public static int newWorldResDivider;
         public static PieceTemplate.Name newWorldPlayerName;
         public static PieceTemplate.Name newWorldStartingItem;
+        public static Player.SkillName newWorldStartingSkill;
 
         public static bool randomSeed;
         public static char seedDigit1 = '0';
@@ -502,6 +503,7 @@ namespace SonOfRobin
         {
             newWorldPlayerName = PieceTemplate.Name.PlayerBoy;
             newWorldStartingItem = PieceTemplate.Name.BeltSmall;
+            newWorldStartingSkill = Player.SkillName.Maintainer;
             SelectedWorldSize = WorldSize.medium;
             CustomizeWorld = false;
         }
@@ -572,7 +574,6 @@ namespace SonOfRobin
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldSize"] = newWorldSize;
             prefsData["newWorldPlayerName"] = newWorldPlayerName;
-            prefsData["newWorldStartingItem"] = newWorldStartingItem;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -621,6 +622,7 @@ namespace SonOfRobin
             prefsData["showParticles"] = showParticles;
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
             prefsData["newWorldStartingItem"] = newWorldStartingItem;
+            prefsData["newWorldStartingSkill"] = newWorldStartingSkill;
             prefsData["StateMachinesDurationFramePercent"] = StateMachinesDurationFramePercent;
             prefsData["alwaysRun"] = alwaysRun;
 
@@ -696,6 +698,8 @@ namespace SonOfRobin
                     showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
                     StateMachinesDurationFramePercent = (int)(Int64)prefsData["StateMachinesDurationFramePercent"];
+                    newWorldStartingItem = (PieceTemplate.Name)(Int64)prefsData["newWorldStartingItem"];
+                    newWorldStartingSkill = (Player.SkillName)(Int64)prefsData["newWorldStartingSkill"];
                     alwaysRun = (bool)prefsData["alwaysRun"];
 
                     prefsLoaded = true;

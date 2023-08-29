@@ -427,7 +427,7 @@ namespace SonOfRobin
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerName", Preferences.newWorldPlayerName }, { "startingItem", Preferences.newWorldStartingItem } }, sound: SoundData.Name.NewGameStart);
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -499,6 +499,9 @@ namespace SonOfRobin
 
                             textLines.Add("| Player stats\n");
                             imageList.Add(PieceInfo.GetTexture(player.name));
+
+                            textLines.Add($"| {player.Skill} - {Player.skillDescriptions[player.Skill]}");
+                            imageList.Add(Player.skillTextures[player.Skill]);
 
                             textLines.Add($"| Strength: {player.strength}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
@@ -1072,6 +1075,7 @@ namespace SonOfRobin
         private static void CreateCharacterSelection(Menu menu)
         {
             var playerSelectorValueDict = new Dictionary<object, object>();
+            Preferences preferences = new();
 
             List<PieceTemplate.Name> playerNames = PieceInfo.GetPlayerNames();
             if (!Preferences.EnableTestCharacters) playerNames.Remove(PieceTemplate.Name.PlayerTestDemoness); // add every test character here
@@ -1081,7 +1085,7 @@ namespace SonOfRobin
                 playerSelectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
             }
 
-            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
+            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
 
             var startingItemNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
@@ -1092,7 +1096,15 @@ namespace SonOfRobin
                 startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.texture };
             }
 
-            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: new Preferences(), propertyName: "newWorldStartingItem", rebuildsAllMenus: true);
+            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem");
+
+            var startingSkillSelectorValueDict = new Dictionary<object, object>();
+            foreach (Player.SkillName skillName in Player.allSkillNames)
+            {
+                startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName.ToString().ToLower()} - {Player.skillDescriptions[skillName]}", Player.skillTextures[skillName] };
+            }
+
+            new Selector(menu: menu, name: "skill", valueDict: startingSkillSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingSkill");
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)

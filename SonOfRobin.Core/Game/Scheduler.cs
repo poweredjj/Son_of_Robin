@@ -324,10 +324,9 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }, { "resDivider", resDivider }, { "playerName", PieceTemplate.Name.PlayerBoy } }
+                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }, { "resDivider", resDivider } }
 
                             int width, height, seed, resDivider;
-                            PieceTemplate.Name playerName;
 
                             if (this.ExecuteHelper == null)
                             {
@@ -335,7 +334,6 @@ namespace SonOfRobin
                                 height = Preferences.newWorldSize;
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
-                                playerName = Preferences.newWorldPlayerName;
                             }
                             else
                             {
@@ -344,10 +342,9 @@ namespace SonOfRobin
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
-                                playerName = (PieceTemplate.Name)createData["playerName"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerName: playerName);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerName: Preferences.newWorldPlayerName);
 
                             return;
                         }

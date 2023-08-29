@@ -17,7 +17,7 @@ namespace SonOfRobin
             WaitIndefinitely = 3,
         };
 
-        public enum Skill : byte
+        public enum SkillName : byte
         {
             Hunter = 0,
             Plunderer = 1,
@@ -27,14 +27,26 @@ namespace SonOfRobin
             Maintainer = 5,
         }
 
-        public static readonly Dictionary<Skill, string> skillDescriptions = new Dictionary<Skill, string>
+        public static readonly SkillName[] allSkillNames = (SkillName[])Enum.GetValues(typeof(SkillName));
+
+        public static readonly Dictionary<SkillName, string> skillDescriptions = new()
         {
-            { Skill.Hunter, "can harvest animal meat in the wild" },
-            { Skill.Plunderer, "better chance of item drops" },
-            { Skill.Crafter, "more speed and less fatigue while crafting" },
-            { Skill.Unstoppable, "gets tired slower" },
-            { Skill.Fashionista, "additional accessory slot" },
-            { Skill.Maintainer, "tools last longer" },
+            { SkillName.Hunter, "can harvest animal meat in the wild" },
+            { SkillName.Plunderer, "has better chance of item drops" },
+            { SkillName.Crafter, "crafts faster and is less fatigued by it" },
+            { SkillName.Unstoppable, "gets tired slower" },
+            { SkillName.Fashionista, "additional accessory slot" },
+            { SkillName.Maintainer, "can use tools for longer" },
+        };
+
+        public static readonly Dictionary<SkillName, Texture2D> skillTextures = new()
+        {
+            { SkillName.Hunter, PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) },
+            { SkillName.Plunderer, PieceInfo.GetTexture(PieceTemplate.Name.ChestTreasureBig) },
+            { SkillName.Crafter, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) },
+            { SkillName.Unstoppable, TextureBank.GetTexture(TextureBank.TextureName.Bed) },
+            { SkillName.Fashionista, PieceInfo.GetTexture(PieceTemplate.Name.GlassesVelvet) },
+            { SkillName.Maintainer, PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) },
         };
 
         private const int maxShootingPower = 90;
@@ -46,7 +58,7 @@ namespace SonOfRobin
         public int fedLevel;
         public float maxFatigue;
         private float fatigue;
-        public readonly List<Skill> skills;
+        public SkillName Skill { get; private set; }
         public int CraftLevel { get; private set; }
         public int CookLevel { get; private set; }
         public int BrewLevel { get; private set; }
@@ -80,7 +92,7 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxFatigue = 2000f;
             this.fatigue = 0;
-            this.skills = new List<Skill>();
+            this.Skill = Preferences.newWorldStartingSkill;
             this.CraftLevel = 1;
             this.CookLevel = 1;
             this.BrewLevel = 1;
@@ -470,16 +482,16 @@ namespace SonOfRobin
             pieceData["player_maxFedLevel"] = this.maxFedLevel;
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
-            pieceData["player_skills"] = this.skills;
-            pieceData["player_craftLevel"] = this.CraftLevel;
-            pieceData["player_cookLevel"] = this.CookLevel;
-            pieceData["player_brewLevel"] = this.BrewLevel;
+            pieceData["player_Skill"] = this.Skill;
+            pieceData["player_CraftLevel"] = this.CraftLevel;
+            pieceData["player_CookLevel"] = this.CookLevel;
+            pieceData["player_BrewLevel"] = this.BrewLevel;
+            pieceData["player_HarvestLevel"] = this.HarvestLevel;
             pieceData["player_distanceWalked"] = this.distanceWalked;
-            pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
-            pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
-            pieceData["player_globalChestStorage"] = this.GlobalChestStorage.Serialize();
+            pieceData["player_ToolStorage"] = this.ToolStorage.Serialize();
+            pieceData["player_EquipStorage"] = this.EquipStorage.Serialize();
+            pieceData["player_GlobalChestStorage"] = this.GlobalChestStorage.Serialize();
             pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
-            pieceData["player_harvestLevel"] = this.HarvestLevel;
 
             return pieceData;
         }
@@ -491,19 +503,17 @@ namespace SonOfRobin
             this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
-            var skills = (List<Skill>)pieceData["player_skills"];
-            this.skills.Clear();
-            this.skills.AddRange(skills);
-            this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"];
-            this.CookLevel = (int)(Int64)pieceData["player_cookLevel"];
-            this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"];
+            this.Skill = (SkillName)(Int64)pieceData["player_Skill"];
+            this.CraftLevel = (int)(Int64)pieceData["player_CraftLevel"];
+            this.CookLevel = (int)(Int64)pieceData["player_CookLevel"];
+            this.BrewLevel = (int)(Int64)pieceData["player_BrewLevel"];
+            this.HarvestLevel = (int)(Int64)pieceData["player_HarvestLevel"];
             this.distanceWalked = (float)(double)pieceData["player_distanceWalked"];
-            this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
-            this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
-            this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_globalChestStorage"], storagePiece: this);
+            this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_ToolStorage"], storagePiece: this);
+            this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_EquipStorage"], storagePiece: this);
+            this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_GlobalChestStorage"], storagePiece: this);
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
-            this.HarvestLevel = (int)(Int64)pieceData["player_harvestLevel"];
 
             this.RefreshAllowedPiecesForStorages();
         }
