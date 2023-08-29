@@ -594,7 +594,7 @@ namespace SonOfRobin
                             Rectangle focusRect = player.GetFocusRect(inflateX: inflateVal, inflateY: inflateVal);
 
                             var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
-                            if (spritesForRect.IsEmpty) return;
+                            if (spritesForRect.Count == 0) return;
 
                             var targets = new List<BoardPiece>();
                             foreach (Sprite sprite in spritesForRect)

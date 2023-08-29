@@ -503,7 +503,7 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
             else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
 
-            var spritesBag = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
+            var spritesBag = this.world.Grid.GetSpritesForRectParallel(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
@@ -519,7 +519,7 @@ namespace SonOfRobin
 
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
-            // regular "foreach", because spriteBatch is not thread-safe
+            // regular "foreach", because SpriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom))
             {
                 BoardPiece piece = sprite.boardPiece;

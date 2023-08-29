@@ -963,13 +963,29 @@ namespace SonOfRobin
             return allSprites;
         }
 
-        public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
+        public List<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
+        {
+            var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
+
+            var allSprites = new List<Sprite>();
+            foreach (Cell cell in cells)
+            {
+                foreach (Sprite sprite in cell.spriteGroups[groupName])
+                {
+                    if (sprite.GfxRect.Intersects(rectangle)) allSprites.Add(sprite);
+                }
+            }
+
+            return allSprites;
+        }
+
+        public ConcurrentBag<Sprite> GetSpritesForRectParallel(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
 
             var allSprites = new ConcurrentBag<Sprite> { };
-
             Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName])

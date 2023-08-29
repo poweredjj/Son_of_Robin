@@ -286,7 +286,7 @@ namespace SonOfRobin
                 Rectangle focusRect = this.GetFocusRect();
 
                 var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
-                if (spritesForRect.IsEmpty) return null;
+                if (spritesForRect.Count == 0) return null;
 
                 var piecesToInteract = new List<BoardPiece>();
                 foreach (Sprite sprite in spritesForRect)
@@ -312,7 +312,7 @@ namespace SonOfRobin
                 Rectangle focusRect = this.GetFocusRect();
 
                 var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
-                if (spritesForRect.IsEmpty) return null;
+                if (spritesForRect.Count == 0) return null;
 
                 var piecesToPickUp = new List<BoardPiece>();
                 foreach (Sprite sprite in spritesForRect)
