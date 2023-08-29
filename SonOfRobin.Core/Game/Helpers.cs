@@ -36,7 +36,7 @@ namespace SonOfRobin
         public static string GetUniqueHash()
         {
             hashCounter++;
-            return $"{Math.Abs(DateTime.Now.GetHashCode())}_{hashCounter}";
+            return $"{Math.Abs(DateTime.Now.GetHashCode() / 10)}_{hashCounter}";
         }
 
         public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1, bool centered = false, float scale = 1f)
