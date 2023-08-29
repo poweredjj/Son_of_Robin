@@ -102,6 +102,9 @@ namespace SonOfRobin
             new WorldEvent(eventName: WorldEvent.EventName.TotemAffectWeather, world: this.world, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDelay), boardPiece: this, eventHelper: goodOfferingMass);
 
             new WorldEvent(eventName: WorldEvent.EventName.SwitchLightEngine, world: this.world, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDuration + weatherChangeDelay), boardPiece: this, eventHelper: false);
+
+            var rumbleData = new Dictionary<string, Object> { { "force", 0.08f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.6f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 1.3f } };
+            new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: eventsDelay, executeHelper: rumbleData);
         }
 
         public void AffectWeather(float goodOfferingMass)

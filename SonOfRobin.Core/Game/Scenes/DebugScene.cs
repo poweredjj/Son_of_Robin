@@ -79,7 +79,7 @@ namespace SonOfRobin
                 // debugLines.Add($"time until morning: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).TotalMinutes}");
             }
 
-            debugLines.Add($"rumble (events {RumbleManager.EventsCount}): BigMotor {Math.Round(RumbleManager.BigMotorCurrentForce, 1)} SmallMotor {Math.Round(RumbleManager.SmallMotorCurrentForce, 1)}");
+            debugLines.Add($"rumble (events {RumbleManager.EventsCount}): BigMotor {Math.Round(RumbleManager.BigMotorCurrentForce, 2)} SmallMotor {Math.Round(RumbleManager.SmallMotorCurrentForce, 2)}");
 
             SimpleFps fps = SonOfRobinGame.fps;
             debugLines.Add($"FPS: {fps.FPS} updates: {fps.Updates} frames: {fps.Frames}");
