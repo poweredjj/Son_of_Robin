@@ -37,9 +37,9 @@ namespace SonOfRobin
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
 
-        public List<Type> shownGeneralHints = new() { };
-        public List<PieceHint.Type> shownPieceHints = new() { };
-        public List<Tutorials.Type> shownTutorials = new() { };
+        public HashSet<Type> shownGeneralHints = new() { };
+        public HashSet<PieceHint.Type> shownPieceHints = new() { };
+        public HashSet<Tutorials.Type> shownTutorials = new() { };
         public readonly World world;
         private int waitUntilFrame;
 
@@ -66,9 +66,9 @@ namespace SonOfRobin
 
         public void Deserialize(Dictionary<string, Object> hintsData)
         {
-            this.shownGeneralHints = (List<Type>)hintsData["shownGeneralHints"];
-            this.shownPieceHints = (List<PieceHint.Type>)hintsData["shownPieceHints"];
-            this.shownTutorials = (List<Tutorials.Type>)hintsData["shownTutorials"];
+            this.shownGeneralHints = (HashSet<Type>)hintsData["shownGeneralHints"];
+            this.shownPieceHints = (HashSet<PieceHint.Type>)hintsData["shownPieceHints"];
+            this.shownTutorials = (HashSet<Tutorials.Type>)hintsData["shownTutorials"];
             this.waitUntilFrame = this.world.CurrentUpdate + 200;
         }
 

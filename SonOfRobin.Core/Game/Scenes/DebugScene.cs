@@ -519,7 +519,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.HintEngine.shownTutorials = Enum.GetValues(typeof(Tutorials.Type)).Cast<Tutorials.Type>().ToList();
+                world.HintEngine.shownTutorials = Enum.GetValues(typeof(Tutorials.Type)).Cast<Tutorials.Type>().ToHashSet();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
