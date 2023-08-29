@@ -117,10 +117,10 @@ namespace SonOfRobin
         { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.ignoresCollisions; } }
 
         public bool BlocksPlantGrowth
-        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksPlantGrowth; } }
+        { get { return this.boardPiece.pieceInfo != null && this.boardPiece.pieceInfo.blocksPlantGrowth; } }
 
         public bool IsInWater
-        { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax; } }
+        { get { return this.GetFieldValue(Terrain.Name.Height) <= Terrain.waterLevelMax; } }
 
         public bool CanDrownHere
         { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax - 10; } }

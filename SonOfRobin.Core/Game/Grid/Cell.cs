@@ -100,8 +100,8 @@ namespace SonOfRobin
                 maxValForTerrain[terrainName] = this.grid.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
             }
 
-            this.HasWater = minValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
-            this.IsAllWater = maxValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
+            this.HasWater = minValForTerrain[Terrain.Name.Height] <= Terrain.waterLevelMax;
+            this.IsAllWater = maxValForTerrain[Terrain.Name.Height] <= Terrain.waterLevelMax;
             this.HasLava = maxValForTerrain[Terrain.Name.Height] >= Terrain.lavaMin;
         }
 
