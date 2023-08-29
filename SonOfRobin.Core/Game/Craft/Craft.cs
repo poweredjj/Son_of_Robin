@@ -104,8 +104,8 @@ namespace SonOfRobin
                 float fatigueDifference = fatigueDifferenceForMasterLevel * (recipeLevelMultiplier + craftLevelMultiplier);
 
                 float realFatigue = this.fatigue - fatigueDifference;
+                if (player.Skill == Player.SkillName.Crafter) realFatigue *= 0.7f;
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real fatigue {realFatigue}");
-
                 return realFatigue;
             }
 
@@ -119,6 +119,7 @@ namespace SonOfRobin
                 float durationDifference = durationDifferenceForMasterLevel * (recipeLevelMultiplier + craftLevelMultiplier);
 
                 int realDuration = (int)(this.duration - durationDifference);
+                if (player.Skill == Player.SkillName.Crafter) realDuration = (int)((float)realDuration * 0.7f);
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real duration {realDuration}");
 
                 return realDuration;

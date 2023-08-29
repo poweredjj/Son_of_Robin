@@ -500,7 +500,7 @@ namespace SonOfRobin
                             textLines.Add("| Player stats\n");
                             imageList.Add(PieceInfo.GetTexture(player.name));
 
-                            textLines.Add($"| {player.Skill} - {Player.skillDescriptions[player.Skill]}");
+                            textLines.Add($"| {player.Skill}: {Player.skillDescriptions[player.Skill]}");
                             imageList.Add(Player.skillTextures[player.Skill]);
 
                             textLines.Add($"| Strength: {player.strength}");
@@ -1101,7 +1101,7 @@ namespace SonOfRobin
             var startingSkillSelectorValueDict = new Dictionary<object, object>();
             foreach (Player.SkillName skillName in Player.allSkillNames)
             {
-                startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName.ToString().ToLower()} - {Player.skillDescriptions[skillName]}", Player.skillTextures[skillName] };
+                startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName}: {Player.skillDescriptions[skillName]}", Player.skillTextures[skillName] };
             }
 
             new Selector(menu: menu, name: "skill", valueDict: startingSkillSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingSkill");

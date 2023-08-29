@@ -22,7 +22,7 @@ namespace SonOfRobin
             Hunter = 0,
             Plunderer = 1,
             Crafter = 2,
-            Unstoppable = 3,
+            Survivalist = 3,
             Fashionista = 4,
             Maintainer = 5,
         }
@@ -31,12 +31,12 @@ namespace SonOfRobin
 
         public static readonly Dictionary<SkillName, string> skillDescriptions = new()
         {
-            { SkillName.Hunter, "can harvest animal meat in the wild" },
-            { SkillName.Plunderer, "has better chance of item drops" },
-            { SkillName.Crafter, "crafts faster and is less fatigued by it" },
-            { SkillName.Unstoppable, "gets tired slower" },
-            { SkillName.Fashionista, "additional accessory slot" },
-            { SkillName.Maintainer, "can use tools for longer" },
+            { SkillName.Hunter, "harvest meat in the wild" },
+            { SkillName.Plunderer, "more item drops" },
+            { SkillName.Crafter, "faster, easier crafting" },
+            { SkillName.Survivalist, "improved resistance to hunger" },
+            { SkillName.Fashionista, "extra accessory slot" },
+            { SkillName.Maintainer, "tools last longer" },
         };
 
         public static readonly Dictionary<SkillName, Texture2D> skillTextures = new()
@@ -44,7 +44,7 @@ namespace SonOfRobin
             { SkillName.Hunter, PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) },
             { SkillName.Plunderer, PieceInfo.GetTexture(PieceTemplate.Name.ChestTreasureBig) },
             { SkillName.Crafter, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) },
-            { SkillName.Unstoppable, TextureBank.GetTexture(TextureBank.TextureName.Bed) },
+            { SkillName.Survivalist, PieceInfo.GetTexture(PieceTemplate.Name.Burger) },
             { SkillName.Fashionista, PieceInfo.GetTexture(PieceTemplate.Name.GlassesVelvet) },
             { SkillName.Maintainer, PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) },
         };
@@ -52,10 +52,9 @@ namespace SonOfRobin
         private const int maxShootingPower = 90;
         public const int maxLastStepsCount = 100;
         public const int maxCraftLevel = 5;
-        public const int heatFatigueMultiplier = 2;
 
-        public int maxFedLevel;
-        public int fedLevel;
+        public float maxFedLevel;
+        public float fedLevel;
         public float maxFatigue;
         private float fatigue;
         public SkillName Skill { get; private set; }
@@ -341,6 +340,12 @@ namespace SonOfRobin
             }
         }
 
+        public float GetFinalFatigueValue(float fatigueVal)
+        {
+            if (fatigueVal > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueVal *= 2;
+            return fatigueVal;
+        }
+
         public float Fatigue
         {
             get { return this.fatigue; }
@@ -349,7 +354,7 @@ namespace SonOfRobin
                 if (Preferences.DebugGodMode) return;
 
                 float fatigueDifference = value - this.fatigue;
-                if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= heatFatigueMultiplier;
+                fatigueDifference = this.GetFinalFatigueValue(fatigueDifference);
 
                 this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
 
@@ -427,6 +432,8 @@ namespace SonOfRobin
                 { new Point(0,2), Equipment.EquipType.Map },
             };
 
+            if (this.Skill == SkillName.Fashionista) equipTypeBySlotCoords[new Point(2, 2)] = Equipment.EquipType.Accessory;
+
             foreach (var kvp in equipTypeBySlotCoords)
             {
                 Point slotCoords = kvp.Key;
@@ -499,8 +506,8 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.fedLevel = (int)(Int64)pieceData["player_fedLevel"];
-            this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
+            this.fedLevel = (float)(double)pieceData["player_fedLevel"];
+            this.maxFedLevel = (float)(double)pieceData["player_maxFedLevel"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
             this.Skill = (SkillName)(Int64)pieceData["player_Skill"];
@@ -566,7 +573,11 @@ namespace SonOfRobin
 
             if (this.fedLevel > 0)
             {
-                this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max((float)energyAmount * 0.6f, 1), 0));
+                float hungerVal = energyAmount * 0.6f;
+                if (this.Skill == SkillName.Survivalist) hungerVal *= 0.7f;
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} hungerVal {hungerVal}");
+
+                this.fedLevel = Math.Max(this.fedLevel - hungerVal, 0);
 
                 if (this.FedPercent < 0.5f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Hungry);
                 if (this.FedPercent < 0.2f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
@@ -596,7 +607,7 @@ namespace SonOfRobin
             return (int)energyAmount * 2;
         }
 
-        private float ConvertFedLevelToFedPercent(int fedLevel)
+        private float ConvertFedLevelToFedPercent(float fedLevel)
         {
             return (float)fedLevel / (float)this.maxFedLevel;
         }
@@ -766,7 +777,7 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
-            this.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
+            this.ExpendEnergy(energyAmount: 1.0f, addFatigue: false);
             this.Walk();
 
             this.CheckGround();
@@ -906,7 +917,7 @@ namespace SonOfRobin
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
             if (hasBeenMoved)
             {
-                this.ExpendEnergy(energyAmount: 0.2f, addFatigue: true);
+                this.ExpendEnergy(energyAmount: 0.4f, addFatigue: true);
 
                 if (this.sprite.IsInWater && slowDownInWater)
                 {
@@ -1036,7 +1047,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledShooting()
         {
-            this.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
+            this.ExpendEnergy(energyAmount: 1.4f, addFatigue: false);
             this.CheckGround();
             this.CheckLowHP();
 

@@ -233,10 +233,10 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSapling));
             }
 
-            int fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
-            if (world.Player.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigue *= Player.heatFatigueMultiplier; // applied in Player.Fatigue, must be taken into account
+            float fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
+            fatigue = world.Player.GetFinalFatigueValue(fatigue);
 
-            extInfoTextList.Add($"| {fatigue}%");
+            extInfoTextList.Add($"| {(int)fatigue}%");
             extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
 
             TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(craftStats: world.craftStats, player: world.Player));
