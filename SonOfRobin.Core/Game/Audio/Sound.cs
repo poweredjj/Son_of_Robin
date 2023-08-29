@@ -35,8 +35,8 @@ namespace SonOfRobin
         private BoardPiece boardPiece;
         private BoardPiece visPiece;
 
-        private static readonly AudioListener audioListener = new();
-        private static readonly AudioEmitter audioEmitter = new();
+        public static readonly AudioListener audioListener = new();
+        public static readonly AudioEmitter audioEmitter = new();
 
         public Sound(SoundData.Name name = SoundData.Name.Empty, List<SoundData.Name> nameList = null, BoardPiece boardPiece = null, float volume = 1f, bool isLooped = false, int cooldown = 0, bool ignore3DAlways = false, float maxPitchVariation = 0f, float pitchChange = 0f, int volumeFadeFrames = 30)
         {
@@ -157,10 +157,6 @@ namespace SonOfRobin
             managedSoundInstance.Pitch = pitch;
             managedSoundInstance.Volume = this.Volume;
             managedSoundInstance.IsLooped = this.isLooped;
-
-            audioListener.Position = Vector3.Zero; // resetting, in case of not using 3d
-            audioEmitter.Position = Vector3.Zero;  // resetting, in case of not using 3d
-            managedSoundInstance.Apply3D(audioListener, audioEmitter);
 
             if (this.boardPiece != null && this.boardPiece.sprite.IsOnBoard)
             {

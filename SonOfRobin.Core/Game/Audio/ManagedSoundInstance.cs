@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,13 @@ namespace SonOfRobin
             if (this.currentSoundID != null && activeInstancesBySoundID.ContainsKey(this.currentSoundID)) activeInstancesBySoundID.Remove(this.currentSoundID);
             instanceListsByName[this.soundName].Remove(this);
             CreatedInstancesCount--;
+        }
+
+        public void Reset3D()
+        {
+            Sound.audioListener.Position = Vector3.Zero;
+            Sound.audioEmitter.Position = Vector3.Zero;
+            this.Apply3D(Sound.audioListener, Sound.audioEmitter);
         }
 
         private void AssignSoundID(string soundID)
@@ -191,7 +199,11 @@ namespace SonOfRobin
 
             foreach (ManagedSoundInstance managedSoundInstance in instanceListsByName[soundName])
             {
-                if (managedSoundInstance.instance.State != SoundState.Playing) return managedSoundInstance;
+                if (managedSoundInstance.instance.State != SoundState.Playing)
+                {
+                    managedSoundInstance.Reset3D();
+                    return managedSoundInstance;
+                }
             }
 
             return new ManagedSoundInstance(soundName);
