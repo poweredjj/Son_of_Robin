@@ -914,28 +914,34 @@ namespace SonOfRobin
             return piecesInsideTriangle;
         }
 
-        public IEnumerable<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
+        public List<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
             Camera camera = this.world.camera;
             var visibleCells = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
-            var spritesInCameraView = new List<Sprite>();
+            var piecesInCameraView = new List<BoardPiece>();
 
             if (compareWithCameraRect)
             {
                 foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
                 {
-                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
+                    foreach (Sprite sprite in cell.spriteGroups[groupName])
+                    {
+                        if (camera.viewRect.Intersects(sprite.GfxRect)) piecesInCameraView.Add(sprite.boardPiece);
+                    }
                 }
             }
             else
             {
                 foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
                 {
-                    spritesInCameraView.AddRange(cell.spriteGroups[groupName]);
+                    foreach (Sprite sprite in cell.spriteGroups[groupName])
+                    {
+                        piecesInCameraView.Add(sprite.boardPiece);
+                    }
                 }
             }
 
-            return spritesInCameraView.Select(sprite => sprite.boardPiece);
+            return piecesInCameraView;
         }
 
         private List<Cell> GetAllCells()
