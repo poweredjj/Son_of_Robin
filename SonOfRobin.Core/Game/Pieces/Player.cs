@@ -91,7 +91,7 @@ namespace SonOfRobin
             this.distanceWalked = 0;
             this.pointWalkTarget = Vector2.Zero;
 
-            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
+            var allowedToolbarPieces = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
             if (PieceInfo.HasBeenInitialized)
             {

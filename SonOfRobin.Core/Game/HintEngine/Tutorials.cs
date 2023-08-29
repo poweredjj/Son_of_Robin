@@ -47,7 +47,7 @@ namespace SonOfRobin
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
         public static readonly Dictionary<Type, Tutorial> tutorials = new Dictionary<Type, Tutorial> { };
 
-        public struct Tutorial
+        public readonly struct Tutorial
         {
             public readonly Type type;
             public readonly string name;

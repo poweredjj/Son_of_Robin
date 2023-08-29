@@ -8,13 +8,13 @@ namespace SonOfRobin
 {
     public class AlchemyLab : BoardPiece
     {
-        public static readonly List<PieceTemplate.Name> baseNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
+        public static readonly HashSet<PieceTemplate.Name> baseNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
 
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsDarkGreen, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
+        private static readonly HashSet<PieceTemplate.Name> boosterNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsDarkGreen, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
 
-        private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
+        private static readonly HashSet<PieceTemplate.Name> fuelNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
-        private static readonly List<PieceTemplate.Name> potionNames = new List<PieceTemplate.Name> { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionGeneric };
+        private static readonly HashSet<PieceTemplate.Name> potionNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionGeneric };
 
         private readonly int boosterSpace;
 

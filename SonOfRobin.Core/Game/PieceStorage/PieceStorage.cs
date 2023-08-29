@@ -33,11 +33,11 @@ namespace SonOfRobin
         private readonly byte stackLimit;
         public StorageSlot lastUsedSlot; // last used by Inventory class
 
-        public List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
+        public HashSet<PieceTemplate.Name> AllowedPieceNames { get; private set; }
         public byte Width { get; protected set; }
         public byte Height { get; protected set; }
 
-        public PieceStorage(byte width, byte height, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null, string label = null)
+        public PieceStorage(byte width, byte height, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, HashSet<PieceTemplate.Name> allowedPieceNames = null, string label = null)
         {
             if (width < 1) throw new ArgumentException($"Width {width} cannot be less than 1.");
             if (height < 1) throw new ArgumentException($"Height {height} cannot be less than 1.");
@@ -124,7 +124,7 @@ namespace SonOfRobin
             }
         }
 
-        public void AssignAllowedPieceNames(List<PieceTemplate.Name> allowedPieceNames)
+        public void AssignAllowedPieceNames(HashSet<PieceTemplate.Name> allowedPieceNames)
         {
             foreach (StorageSlot slot in this.AllSlots)
             { slot.allowedPieceNames = allowedPieceNames; }
@@ -594,7 +594,7 @@ namespace SonOfRobin
             string label = (string)storageDict["label"];
             var slotData = (List<Object>)storageDict["slotData"];
             StorageType storageType = (StorageType)(Int64)storageDict["storageType"];
-            List<PieceTemplate.Name> allowedPieceNames = (List<PieceTemplate.Name>)storageDict["allowedPieceNames"];
+            var allowedPieceNames = (HashSet<PieceTemplate.Name>)storageDict["allowedPieceNames"];
 
             PieceStorage storage = new(width: width, height: height, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit, allowedPieceNames: allowedPieceNames, label: label);
             if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))

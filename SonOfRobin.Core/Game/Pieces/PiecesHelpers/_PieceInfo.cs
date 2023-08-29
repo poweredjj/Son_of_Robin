@@ -2795,9 +2795,9 @@ namespace SonOfRobin
             return playerNameList;
         }
 
-        public static List<PieceTemplate.Name> GetNamesForEquipType(Equipment.EquipType equipType)
+        public static HashSet<PieceTemplate.Name> GetNamesForEquipType(Equipment.EquipType equipType)
         {
-            var equipNameList = new List<PieceTemplate.Name>();
+            var equipNameList = new HashSet<PieceTemplate.Name>();
             foreach (Info currentInfo in AllInfo)
             {
                 if (currentInfo.equipType == equipType) equipNameList.Add(currentInfo.name);

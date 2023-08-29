@@ -16,9 +16,9 @@ namespace SonOfRobin
 
         public bool locked;
         public bool hidden;
-        public List<PieceTemplate.Name> allowedPieceNames;
+        public HashSet<PieceTemplate.Name> allowedPieceNames;
 
-        public StorageSlot(PieceStorage storage, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
+        public StorageSlot(PieceStorage storage, byte stackLimit = 255, HashSet<PieceTemplate.Name> allowedPieceNames = null)
         {
             this.id = Helpers.GetUniqueHash();
             this.storage = storage;
@@ -195,7 +195,7 @@ namespace SonOfRobin
             this.locked = (bool)slotDict["locked"];
             this.hidden = (bool)slotDict["hidden"];
             this.label = (string)slotDict["label"];
-            this.allowedPieceNames = (List<PieceTemplate.Name>)slotDict["allowedPieceNames"];
+            this.allowedPieceNames = (HashSet<PieceTemplate.Name>)slotDict["allowedPieceNames"];
             this.stackLimit = (byte)(Int64)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
 

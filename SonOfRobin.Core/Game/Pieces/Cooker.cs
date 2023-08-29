@@ -8,9 +8,9 @@ namespace SonOfRobin
 {
     public class Cooker : BoardPiece
     {
-        public static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime, PieceTemplate.Name.MeatDried, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam, PieceTemplate.Name.Fat };
+        public static readonly HashSet<PieceTemplate.Name> ingredientNames = new() { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime, PieceTemplate.Name.MeatDried, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam, PieceTemplate.Name.Fat };
 
-        private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
+        private static readonly HashSet<PieceTemplate.Name> fuelNames = new() { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
         public readonly bool canBeUsedDuringRain;
         private readonly int ingredientSpace;
@@ -77,7 +77,7 @@ namespace SonOfRobin
             StorageSlot mealSlot = this.MealSlot;
             mealSlot.locked = false;
             mealSlot.hidden = false;
-            mealSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Meal };
+            mealSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Meal };
             mealSlot.label = "meal";
 
             StorageSlot fuelSlot = this.FuelSlot;

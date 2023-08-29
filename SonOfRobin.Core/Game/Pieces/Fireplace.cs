@@ -43,7 +43,7 @@ namespace SonOfRobin
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
 
-            var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames)
+            var allowedPieceNames = new HashSet<PieceTemplate.Name>(fuelNames)
             {
                 PieceTemplate.Name.FireplaceTriggerOn,
                 PieceTemplate.Name.FireplaceTriggerOff,

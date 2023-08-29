@@ -30,7 +30,7 @@ namespace SonOfRobin
             }
 
             StorageSlot harvestTriggerSlot = this.TriggerSlot;
-            harvestTriggerSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatHarvestTrigger };
+            harvestTriggerSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.MeatHarvestTrigger };
             BoardPiece harvestTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.MeatHarvestTrigger, world: this.world);
             harvestTriggerSlot.hidden = false;
             harvestTriggerSlot.locked = false;
@@ -42,7 +42,7 @@ namespace SonOfRobin
             animalSlot.locked = false;
             animalSlot.stackLimit = 1;
             animalSlot.label = "animal";
-            animalSlot.allowedPieceNames = new List<PieceTemplate.Name>();
+            animalSlot.allowedPieceNames = new HashSet<PieceTemplate.Name>();
             foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
             {
                 if (PieceInfo.TryToGetInfo(pieceName)?.type == typeof(Animal)) animalSlot.allowedPieceNames.Add(pieceName);
@@ -80,7 +80,7 @@ namespace SonOfRobin
         {
             foreach (StorageSlot slot in this.meatSlots)
             {
-                slot.allowedPieceNames = new List<PieceTemplate.Name>();
+                slot.allowedPieceNames = new HashSet<PieceTemplate.Name>();
             }
         }
 

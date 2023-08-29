@@ -93,7 +93,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly List<PieceTemplate.Name> rawMeatNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime };
+        private static readonly HashSet<PieceTemplate.Name> rawMeatNames = new() { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime };
         private static readonly PieceTemplate.Name driedMeatName = PieceTemplate.Name.MeatDried;
 
         private List<SlotExtensionDrying> slotExtensionList; // slots extended with drying data
@@ -115,7 +115,7 @@ namespace SonOfRobin
             int slotNo = 0;
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
-                slot.allowedPieceNames = rawMeatNames.ToList();
+                slot.allowedPieceNames = rawMeatNames.ToHashSet();
                 slot.allowedPieceNames.Add(driedMeatName);
                 slot.stackLimit = 1;
                 this.slotExtensionList.Add(new SlotExtensionDrying(slot));
