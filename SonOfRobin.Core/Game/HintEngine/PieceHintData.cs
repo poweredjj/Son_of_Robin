@@ -353,7 +353,7 @@ namespace SonOfRobin
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 0, comparison: CountComparison.Comparison.Equal) }),
 
                 new PieceHint(
-                    type: PieceHint.Type.SmallBase,
+                    type: PieceHint.Type.CineSmallBase,
                     generalHintToActivate: HintEngine.Type.CineSmallBase,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -517,6 +517,12 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort) },
                     alsoDisables: new List<PieceHint.Type> { PieceHint.Type.WoodenFenceNegative }),
 
+               new PieceHint(
+                    type: PieceHint.Type.SwampDigSite,
+                    message: "I think that | something valuable could be | buried | here...",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ChestTreasureBig), PieceInfo.GetTexture(PieceTemplate.Name.ShovelIron), PieceInfo.GetTexture(PieceTemplate.Name.SwampDigSite) },
+                    fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.SwampDigSite},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal}),
             };
 
             CheckData(newPieceHintList);

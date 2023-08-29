@@ -53,7 +53,6 @@ namespace SonOfRobin
             HerbsBlack = 40,
             GlassSand = 41,
             CanBuildWorkshop = 42,
-            SmallBase = 43,
             DangerousTiger = 44,
             DigSiteGlass = 45,
             CarrotPlant = 46,
@@ -75,7 +74,9 @@ namespace SonOfRobin
             DeadAnimal = 62,
             HarvestingWorkshop = 63,
             Totem = 64,
+            SwampDigSite = 71,
 
+            CineSmallBase = 43,
             CineLookForSurvivors1 = 65,
             CineLookForSurvivors2 = 66,
             CineLookForSurvivors3 = 67,
