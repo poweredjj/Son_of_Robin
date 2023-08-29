@@ -593,30 +593,30 @@ namespace SonOfRobin
                             int inflateVal = Math.Max(activeTool.pieceInfo.toolRange, 3);
                             Rectangle focusRect = player.GetFocusRect(inflateX: inflateVal, inflateY: inflateVal);
 
-                            var targets = world.Grid
-                                .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
-                                .Select(s => s.boardPiece)
-                                .Where(piece => piece.pieceInfo.Yield != null && piece.alive && piece != player);
+                            var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                            if (spritesForRect.IsEmpty) return;
+
+                            var targets = new List<BoardPiece>();
+                            foreach (Sprite sprite in spritesForRect)
+                            {
+                                if (sprite.boardPiece.pieceInfo.Yield != null && sprite.boardPiece.alive && sprite.boardPiece != player)
+                                {
+                                    targets.Add(sprite.boardPiece);
+                                }
+                            }
+                            if (targets.Count == 0) return;
 
                             if (activeTool.pieceInfo.toolRange == 0)
                             {
-                                var animals = targets.Where(piece => piece.GetType() == typeof(Animal));
-                                if (animals.Count() > 0) targets = animals;
+                                var animals = targets.Where(piece => piece.GetType() == typeof(Animal)).ToList();
+                                if (animals.Count > 0) targets = animals;
 
-                                Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
-
-                                try
-                                {
-                                    BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position)).First();
-                                    targets = new List<BoardPiece> { firstTarget };
-                                }
-                                catch (NullReferenceException)
-                                { return; }
-                                catch (InvalidOperationException)
-                                { return; }
+                                Vector2 focusRectCenter = new(focusRect.Center.X, focusRect.Center.Y);
+                                BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position)).First();
+                                targets = new List<BoardPiece> { firstTarget };
                             }
 
-                            activeTool.Use(shootingPower: shootingPower, targets: targets.ToList(), highlightOnly: highlightOnly);
+                            activeTool.Use(shootingPower: shootingPower, targets: targets, highlightOnly: highlightOnly);
 
                             return;
                         }

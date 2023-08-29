@@ -284,21 +284,22 @@ namespace SonOfRobin
             get
             {
                 Rectangle focusRect = this.GetFocusRect();
-                Vector2 focusRectCenter = new Vector2(focusRect.Center.X, focusRect.Center.Y);
 
-                try
+                var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                if (spritesForRect.IsEmpty) return null;
+
+                var piecesToInteract = new List<BoardPiece>();
+                foreach (Sprite sprite in spritesForRect)
                 {
-                    return world.Grid
-                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
-                        .Select(s => s.boardPiece)
-                        .Where(piece => piece.pieceInfo.boardTask != Scheduler.TaskName.Empty && !piece.IsBurning && piece != this)
-                        .OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position))
-                        .First();
+                    if (sprite.boardPiece.pieceInfo.boardTask != Scheduler.TaskName.Empty && !sprite.boardPiece.IsBurning && sprite.boardPiece != this)
+                    {
+                        piecesToInteract.Add(sprite.boardPiece);
+                    }
                 }
-                catch (NullReferenceException)
-                { return null; }
-                catch (InvalidOperationException)
-                { return null; }
+                if (piecesToInteract.Count == 0) return null;
+
+                Vector2 focusRectCenter = new(focusRect.Center.X, focusRect.Center.Y);
+                return piecesToInteract.OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position)).First();
             }
         }
 
@@ -310,19 +311,21 @@ namespace SonOfRobin
 
                 Rectangle focusRect = this.GetFocusRect();
 
-                try
+                var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                if (spritesForRect.IsEmpty) return null;
+
+                var piecesToPickUp = new List<BoardPiece>();
+                foreach (Sprite sprite in spritesForRect)
                 {
-                    return world.Grid
-                        .GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true)
-                        .Select(s => s.boardPiece)
-                        .Where(piece => piece.pieceInfo.canBePickedUp && !piece.IsBurning && (piece.GetType() != typeof(Animal) || !piece.alive))
-                        .OrderBy(piece => Vector2.Distance(this.sprite.position, piece.sprite.position))
-                        .First();
+                    if (sprite.boardPiece.pieceInfo.canBePickedUp && !sprite.boardPiece.IsBurning && (sprite.boardPiece.GetType() != typeof(Animal) || !sprite.boardPiece.alive))
+                    {
+                        piecesToPickUp.Add(sprite.boardPiece);
+                    }
                 }
-                catch (NullReferenceException)
-                { return null; }
-                catch (InvalidOperationException)
-                { return null; }
+                if (piecesToPickUp.Count == 0) return null;
+
+                Vector2 focusRectCenter = new(focusRect.Center.X, focusRect.Center.Y);
+                return piecesToPickUp.OrderBy(piece => Vector2.Distance(this.sprite.position, piece.sprite.position)).First();
             }
         }
 
