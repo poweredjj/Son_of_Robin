@@ -24,7 +24,7 @@ namespace SonOfRobin
             Crafter = 2,
             Unstoppable = 3,
             Fashionista = 4,
-            Diligent = 5,
+            Maintainer = 5,
         }
 
         public static readonly Dictionary<Skill, string> skillDescriptions = new Dictionary<Skill, string>
@@ -34,7 +34,7 @@ namespace SonOfRobin
             { Skill.Crafter, "more speed and less fatigue while crafting" },
             { Skill.Unstoppable, "gets tired slower" },
             { Skill.Fashionista, "additional accessory slot" },
-            { Skill.Diligent, "tools last longer" },
+            { Skill.Maintainer, "tools last longer" },
         };
 
         private const int maxShootingPower = 90;
