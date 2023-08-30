@@ -7,23 +7,23 @@ namespace SonOfRobin
     public class EffectCol // collection of effect instances
     {
         private readonly World world;
-        private List<EffInstance> effectInstanceList;
+        private HashSet<EffInstance> effectInstanceSet;
 
         public EffectCol(World world)
         {
             this.world = world; // used for currentUpdate only
-            this.effectInstanceList = new List<EffInstance> { };
+            this.effectInstanceSet = new HashSet<EffInstance> { };
         }
 
         public bool ThereAreEffectsToRender
-        { get { return this.effectInstanceList.Count > 0; } }
+        { get { return this.effectInstanceSet.Count > 0; } }
 
         private List<EffInstance> EffectsLeftToRender
         {
             get
             {
                 int currentUpdate = this.world == null ? SonOfRobinGame.CurrentUpdate : this.world.CurrentUpdate;
-                return this.effectInstanceList.Where(effInstance => !effInstance.WasUsedInThisFrame(currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
+                return this.effectInstanceSet.Where(effInstance => !effInstance.WasUsedInThisFrame(currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
             }
         }
 
@@ -32,29 +32,29 @@ namespace SonOfRobin
             // Draw() clears effect list, if draw is missing (frameskip) - duplicates will occur
             if (ignoreIfDuplicated && this.ThisEffectHasBeenApplied(effect: effInstance.effect)) return;
 
-            this.effectInstanceList.Add(effInstance);
+            this.effectInstanceSet.Add(effInstance);
         }
 
         public void RemoveAllEffects()
         {
-            this.effectInstanceList.Clear();
+            this.effectInstanceSet.Clear();
         }
 
         public void RemoveEffectsOfType(Effect effect)
         {
-            this.effectInstanceList = this.effectInstanceList.Where(effInstance => effInstance.effect != effect).ToList();
+            this.effectInstanceSet = this.effectInstanceSet.Where(effInstance => effInstance.effect != effect).ToHashSet();
         }
 
         private bool ThisEffectHasBeenApplied(Effect effect)
         {
-            foreach (EffInstance effInstance in this.effectInstanceList)
+            foreach (EffInstance effInstance in this.effectInstanceSet)
             { if (effInstance.effect == effect) return true; }
             return false;
         }
 
         public bool TurnOnNextEffect(Scene scene, int currentUpdateToUse)
         {
-            if (this.effectInstanceList.Count == 0) return false;
+            if (this.effectInstanceSet.Count == 0) return false;
 
             var effectsLeftToRender = this.EffectsLeftToRender;
 
@@ -65,8 +65,8 @@ namespace SonOfRobin
                 effInstance.TurnOn(currentUpdateToUse);
                 if (effInstance.framesLeft == 0)
                 {
-                    this.effectInstanceList.Remove(effInstance);
-                    if (!this.effectInstanceList.Contains(effInstance)) break;
+                    this.effectInstanceSet.Remove(effInstance);
+                    if (!this.effectInstanceSet.Contains(effInstance)) break;
                 }
             }
 
