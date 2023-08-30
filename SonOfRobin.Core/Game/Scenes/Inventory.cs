@@ -75,12 +75,10 @@ namespace SonOfRobin
             this.type = layout;
             this.transDirection = transDirection;
 
-            if (this.storage.lastUsedSlot != null)
+            if (this.storage.LastUsedSlotPos.X != -1 && this.storage.LastUsedSlotPos.Y != -1)
             {
-                Point lastUsedSlotPos = this.storage.GetSlotPos(this.storage.lastUsedSlot);
-
-                this.cursorX = lastUsedSlotPos.X;
-                this.cursorY = lastUsedSlotPos.Y;
+                this.cursorX = Math.Min(Math.Max(this.storage.LastUsedSlotPos.X, 0), this.storage.Width - 1);
+                this.cursorY = Math.Min(Math.Max(this.storage.LastUsedSlotPos.Y, 0), this.storage.Height - 1);
             }
             else
             {
@@ -513,7 +511,7 @@ namespace SonOfRobin
             if (this.type != Type.SingleBottom && this.inputActive) this.UpdateHintWindow();
             this.ProcessInput();
             this.SetActivePieceAsIdentified();
-            this.storage.lastUsedSlot = this.ActiveSlot;
+            this.storage.LastUsedSlotPos = new Point(this.CursorX, this.CursorY);
         }
 
         private void SetActivePieceAsIdentified()

@@ -250,7 +250,17 @@ namespace SonOfRobin
         { get { return new List<PieceStorage> { this.ToolStorage, this.PieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
-        { get { return this.ToolStorage?.lastUsedSlot; } }
+        {
+            get
+            {
+                if (this.ToolStorage == null) return null;
+
+                Point lastUsedSlotPos = this.ToolStorage.LastUsedSlotPos;
+                if (lastUsedSlotPos.X == -1 && lastUsedSlotPos.Y == -1) return null;
+
+                return this.ToolStorage?.GetSlot(lastUsedSlotPos.X, lastUsedSlotPos.Y);
+            }
+        }
 
         public BoardPiece ActiveToolbarPiece
         { get { return this.ActiveSlot?.TopPiece; } }

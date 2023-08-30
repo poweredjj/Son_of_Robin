@@ -31,7 +31,8 @@ namespace SonOfRobin
         protected StorageSlot[,] slots;
         protected Dictionary<int, Point> slotPosByID;
         private readonly byte stackLimit;
-        public StorageSlot lastUsedSlot; // last used by Inventory class
+        protected Point lastUsedSlotPos; // last used by Inventory class
+        public virtual Point LastUsedSlotPos { get { return this.lastUsedSlotPos; } set { this.lastUsedSlotPos = value; } }
 
         public HashSet<PieceTemplate.Name> AllowedPieceNames { get; private set; }
         public byte Width { get; protected set; }
@@ -50,6 +51,7 @@ namespace SonOfRobin
             this.Width = width;
             this.Height = height;
             this.AllowedPieceNames = allowedPieceNames;
+            this.lastUsedSlotPos = new Point(-1, -1);
 
             this.slots = this.MakeEmptySlots();
             this.slotPosByID = new Dictionary<int, Point>();
@@ -575,12 +577,10 @@ namespace SonOfRobin
               { "allowedPieceNames", AllowedPieceNames },
             };
 
-            if (this.lastUsedSlot != null)
+            if (this.LastUsedSlotPos.X != -1 && this.LastUsedSlotPos.Y != -1)
             {
-                Point slotPos = this.GetSlotPos(this.lastUsedSlot);
-
-                storageDict["lastUsedSlotX"] = (byte)slotPos.X;
-                storageDict["lastUsedSlotY"] = (byte)slotPos.Y;
+                storageDict["lastUsedSlotX"] = (byte)this.LastUsedSlotPos.X;
+                storageDict["lastUsedSlotY"] = (byte)this.LastUsedSlotPos.Y;
             }
 
             return storageDict;
@@ -605,7 +605,7 @@ namespace SonOfRobin
             {
                 byte lastUsedSlotX = (byte)(Int64)storageDict["lastUsedSlotX"];
                 byte lastUsedSlotY = (byte)(Int64)storageDict["lastUsedSlotY"];
-                storage.lastUsedSlot = storage.GetSlot(x: lastUsedSlotX, y: lastUsedSlotY);
+                storage.LastUsedSlotPos = new Point(lastUsedSlotX, lastUsedSlotY);
             }
 
             int slotNo = 0;
