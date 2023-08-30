@@ -697,7 +697,7 @@ namespace SonOfRobin
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
                     showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
-                    StateMachinesDurationFramePercent = (int)(Int64)prefsData["StateMachinesDurationFramePercent"];
+                    StateMachinesDurationFramePercent = (float)(double)prefsData["StateMachinesDurationFramePercent"];
                     newWorldStartingItem = (PieceTemplate.Name)(Int64)prefsData["newWorldStartingItem"];
                     newWorldStartingSkill = (Player.SkillName)(Int64)prefsData["newWorldStartingSkill"];
                     alwaysRun = (bool)prefsData["alwaysRun"];
