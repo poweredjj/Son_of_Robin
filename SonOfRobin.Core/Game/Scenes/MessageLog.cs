@@ -41,13 +41,13 @@ namespace SonOfRobin
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
 
-        private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
-        private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };
+        private static readonly HashSet<MsgType> displayedLevelsTemplateDebug = new() { MsgType.User, MsgType.Debug };
+        private static readonly HashSet<MsgType> displayedLevelsTemplateUser = new() { MsgType.User };
 
-        private static List<MsgType> DisplayedLevels
+        private static HashSet<MsgType> DisplayedLevels
         { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
 
-        private static List<Message> messages = new List<Message> { };
+        private static List<Message> messages = new() { };
 
         private readonly int marginX, marginY;
         private int screenHeight;
@@ -118,16 +118,16 @@ namespace SonOfRobin
 
         public static void AddMessage(string message, Color color, MsgType msgType, bool avoidDuplicates = false)
         {
-            if (avoidDuplicates && CheckIfDuplicate(message)) return;
+            if ((avoidDuplicates && CheckIfDuplicate(message)) || !DisplayedLevels.Contains(msgType)) return;
 
-            if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: color, msgType: msgType));
+            messages.Add(new Message(message: message, color: color, msgType: msgType));
         }
 
         public static void AddMessage(string message, MsgType msgType, bool avoidDuplicates = false)
         {
-            if (avoidDuplicates && CheckIfDuplicate(message)) return;
+            if ((avoidDuplicates && CheckIfDuplicate(message)) || !DisplayedLevels.Contains(msgType)) return;
 
-            if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: Color.White, msgType: msgType));
+            messages.Add(new Message(message: message, color: Color.White, msgType: msgType));
         }
 
         private static void DeleteOldMessages(int currentFrame)

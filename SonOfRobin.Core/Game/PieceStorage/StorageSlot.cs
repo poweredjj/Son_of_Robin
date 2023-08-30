@@ -207,7 +207,7 @@ namespace SonOfRobin
 
                 PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
-                var newBoardPiece = PieceTemplate.CreatePiece(world: this.storage.world, templateName: templateName);
+                var newBoardPiece = PieceTemplate.CreatePiece(world: this.storage.world, templateName: templateName, id: (int)(Int64)pieceData["base_id"]);
                 newBoardPiece.Deserialize(pieceData);
                 this.pieceList.Add(newBoardPiece);
             }

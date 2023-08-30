@@ -31,7 +31,7 @@ namespace SonOfRobin
             Bottom,
         };
 
-        private static int currentID = (int)(DateTime.Now.Ticks & 0xFFFFFFFF);
+        private static int currentID = (int)(DateTime.Now.Ticks & 0x7FFFFFFF);
 
         public static int GetUniqueID()
         {

@@ -70,7 +70,12 @@ namespace SonOfRobin
             foreach (var eventList in this.eventQueue.Values)
             {
                 foreach (var plannedEvent in eventList)
-                { if (plannedEvent.CanBeSerialized) eventData.Add(plannedEvent.Serialize()); }
+                {
+                    if (plannedEvent.CanBeSerialized && (plannedEvent.boardPiece == null || plannedEvent.boardPiece.exists))
+                    {
+                        eventData.Add(plannedEvent.Serialize());
+                    }
+                }
             }
 
             return eventData;
@@ -154,18 +159,20 @@ namespace SonOfRobin
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)(Int64)eventData["eventName"];
 
-            var eventsWithoutPieces = new List<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
+            var eventsWithoutPieces = new HashSet<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
 
             BoardPiece boardPiece;
             if (eventsWithoutPieces.Contains(eventName)) boardPiece = null;
             else
             {
-                if (!world.piecesByOldID.ContainsKey((int)(Int64)eventData["piece_id"]))
+                int pieceID = (int)(Int64)eventData["piece_id"];
+
+                if (!world.piecesByIDForDeserialization.ContainsKey(pieceID))
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {(int)(Int64)eventData["piece_id"]}.", color: Color.Orange);
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", color: Color.Orange);
                     return null;
                 }
-                boardPiece = world.piecesByOldID[(int)(Int64)eventData["piece_id"]];
+                boardPiece = world.piecesByIDForDeserialization[pieceID];
             }
 
             int startUpdateNo = (int)(Int64)eventData["startUpdateNo"];

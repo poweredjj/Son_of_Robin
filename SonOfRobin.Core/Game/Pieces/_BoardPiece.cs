@@ -467,7 +467,7 @@ namespace SonOfRobin
                 this.RemoveFromStateMachines();
             }
 
-            this.world.piecesByOldID[(int)(Int64)pieceData["base_id"]] = this;
+            this.world.piecesByIDForDeserialization[(int)(Int64)pieceData["base_id"]] = this;
         }
 
         public virtual void DrawStatBar()

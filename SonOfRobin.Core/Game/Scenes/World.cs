@@ -23,7 +23,7 @@ namespace SonOfRobin
 
         private Task backgroundTask;
         private Object saveGameData;
-        public Dictionary<int, BoardPiece> piecesByOldID; // for deserialization only
+        public Dictionary<int, BoardPiece> piecesByIDForDeserialization; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
 
         private bool soundPaused;
@@ -103,7 +103,7 @@ namespace SonOfRobin
                 this.soundActive = false;
             }
             this.saveGameData = saveGameData;
-            this.piecesByOldID = new Dictionary<int, BoardPiece>();
+            this.piecesByIDForDeserialization = new Dictionary<int, BoardPiece>();
             this.createMissingPiecesOutsideCamera = false;
             this.WorldCreationInProgress = true;
             this.populatingFramesLeft = populatingFramesTotal;
@@ -226,7 +226,6 @@ namespace SonOfRobin
 
         public Sound DialogueSound
         { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
-
 
         public bool CineMode
         {
@@ -636,7 +635,7 @@ namespace SonOfRobin
 
                 // removing not needed data
 
-                this.piecesByOldID = null; // not needed anymore, "null" will make any attempt to access it afterwards crash the game
+                this.piecesByIDForDeserialization = null; // not needed anymore, "null" will make any attempt to access it afterwards crash the game
             }
         }
 
@@ -1035,7 +1034,6 @@ namespace SonOfRobin
                 }
             }
         }
-
 
         public void RemovePieceFromHeatQueue(BoardPiece boardPiece)
         {
