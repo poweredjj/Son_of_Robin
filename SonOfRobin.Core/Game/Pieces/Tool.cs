@@ -236,7 +236,8 @@ namespace SonOfRobin
                     Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                     if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                     {
-                        int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target, multiplier: player.Skill == Player.SkillName.Plunderer ? 1.3f : 1f);
+                        float countMultiplier = player.Skill == Player.SkillName.Plunderer && world.random.Next(8) == 0 ? 1.5f : 1f;
+                        int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target, countMultiplier: countMultiplier);
 
                         if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
                         {
@@ -253,7 +254,7 @@ namespace SonOfRobin
                 {
                     ((Plant)target).DropSeeds();
 
-                    if (target.PieceStorage != null) target.PieceStorage.DropAllPiecesToTheGround(addMovement: true); // plants do not drop their contents (fruits) by themselves
+                    target.PieceStorage?.DropAllPiecesToTheGround(addMovement: true); // plants do not drop their contents (fruits) by themselves
                 }
 
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);

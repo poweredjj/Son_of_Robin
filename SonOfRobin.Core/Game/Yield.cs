@@ -62,22 +62,22 @@ namespace SonOfRobin
 
         public int DropFirstPieces(int hitPower, BoardPiece piece)
         {
-            int droppedPiecesCount = DropPieces(piece: piece, multiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
             this.DropDebris(piece: piece);
             return droppedPiecesCount;
         }
 
-        public int DropFinalPieces(BoardPiece piece, float multiplier = 1f)
+        public int DropFinalPieces(BoardPiece piece, float chanceMultiplier = 1f, float countMultiplier = 1f)
         {
-            int droppedPiecesCount = DropPieces(piece: piece, multiplier: multiplier, droppedPieceList: this.finalDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces);
             this.DropDebris(piece: piece);
             return droppedPiecesCount;
         }
 
         public List<BoardPiece> GetAllPieces(BoardPiece piece)
         {
-            var firstPieces = GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
-            var finalPieces = GetPieces(piece: piece, multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            var firstPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.firstDroppedPieces);
+            var finalPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.finalDroppedPieces);
             return firstPieces.Concat(finalPieces).ToList();
         }
 
@@ -117,7 +117,7 @@ namespace SonOfRobin
             }
         }
 
-        private static List<BoardPiece> GetPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
+        private static List<BoardPiece> GetPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, float countMultiplier = 1f)
         {
             Type type = piece.GetType();
 
@@ -131,7 +131,7 @@ namespace SonOfRobin
             {
                 if (piece.Mass < ((Plant)piece).pieceInfo.plantAdultSizeMass)
                 {
-                    multiplier /= 6f;
+                    chanceMultiplier /= 6f;
                     // MessageLog.AddMessage(msgType: MsgType.User, message: $"Plant {this.mainPiece.readableName} is not adult, multiplier changed to {multiplier}."); // for testing
                 }
             }
@@ -143,11 +143,12 @@ namespace SonOfRobin
 
             foreach (DroppedPiece droppedPiece in droppedPieceList)
             {
-                if (random.Next(100) <= droppedPiece.chanceToDrop * multiplier)
+                if (random.Next(100) <= droppedPiece.chanceToDrop * chanceMultiplier)
                 {
-                    int numberToDrop = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
+                    int dropCount = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
+                    if (countMultiplier != 1) dropCount = (int)Math.Max(dropCount * countMultiplier, 1);
 
-                    for (int i = 0; i < numberToDrop; i++)
+                    for (int i = 0; i < dropCount; i++)
                     {
                         piecesList.Add(PieceTemplate.CreatePiece(world: world, templateName: droppedPiece.pieceName));
                     }
@@ -157,10 +158,10 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private static int DropPieces(BoardPiece piece, float multiplier, List<DroppedPiece> droppedPieceList)
+        private static int DropPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, float countMultiplier = 1f)
         {
             int droppedPiecesCount = 0;
-            var piecesToDrop = GetPieces(piece: piece, multiplier: multiplier, droppedPieceList: droppedPieceList);
+            var piecesToDrop = GetPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: droppedPieceList);
             int noOfTries = 10;
 
             foreach (BoardPiece yieldPiece in piecesToDrop)
@@ -176,7 +177,7 @@ namespace SonOfRobin
 
                         // duplicated in PieceTemplate
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                        if (yieldPiece.pieceInfo.appearDebris != null) yieldPiece.pieceInfo.appearDebris.DropDebris(piece: piece);
+                        yieldPiece.pieceInfo.appearDebris?.DropDebris(piece: piece);
 
                         // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");
 
