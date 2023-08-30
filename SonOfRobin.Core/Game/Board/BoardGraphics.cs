@@ -208,7 +208,7 @@ namespace SonOfRobin
 
             // filling upscaled grid
 
-            List<Point> edgePointList = new List<Point>();
+            List<Point> edgePointList = new();
 
             for (int localY = 0; localY < sourceHeight; localY++)
             {
@@ -227,7 +227,7 @@ namespace SonOfRobin
 
             // filling edges
 
-            RepeatingPattern.Name[,] workingGrid3x3 = new RepeatingPattern.Name[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
+            var workingGrid3x3 = new RepeatingPattern.Name[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
 
             foreach (Point point in edgePointList)
             {
