@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -26,31 +25,61 @@ namespace SonOfRobin
         public bool CanBePlacedHere(BoardPiece piece)
         {
             var nearbyPieces = piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radius);
+            int nearbyPieceCount = nearbyPieces.Count;
 
-            if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count > this.maxNoOfPiecesTotal) return false;
-            if (this.maxNoOfPiecesSameName != -1 && CheckSameNameCount(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameName) return false;
-            if (this.maxNoOfPiecesSameClass != -1 && CheckSameClass(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesSameClass) return false;
-            if (this.maxNoOfPiecesBlocking != -1 && CheckBlocking(piece: piece, nearbyPieces: nearbyPieces) > this.maxNoOfPiecesBlocking) return false;
+            if (this.maxNoOfPiecesTotal != -1 && nearbyPieceCount > this.maxNoOfPiecesTotal) return false;
+            if (this.maxNoOfPiecesSameName != -1 && !CheckSameNameCount(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameName)) return false;
+            if (this.maxNoOfPiecesSameClass != -1 && !CheckSameClass(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameClass)) return false;
+            if (this.maxNoOfPiecesBlocking != -1 && !CheckBlocking(nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesBlocking)) return false;
             if (this.forbidOverlapSameClass && CheckOverlapSameClass(piece: piece)) return false;
 
             return true;
         }
 
-        private static int CheckSameNameCount(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
+        private static bool CheckSameNameCount(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
         {
-            PieceTemplate.Name name = piece.name;
-            return nearbyPieces.Where(checkedPiece => checkedPiece.name == name && checkedPiece != piece).Count();
+            int pieceCounter = 0;
+            foreach (BoardPiece nearbyPiece in nearbyPieces)
+            {
+                if (nearbyPiece.name == piece.name)
+                {
+                    pieceCounter++;
+                    if (pieceCounter > maxCount) return false;
+                }
+            }
+
+            return true;
         }
 
-        private static int CheckSameClass(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
+        private static bool CheckSameClass(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
         {
             Type type = piece.GetType();
-            return nearbyPieces.Where(checkedPiece => checkedPiece.GetType() == type && checkedPiece != piece).Count();
+
+            int pieceCounter = 0;
+            foreach (BoardPiece nearbyPiece in nearbyPieces)
+            {
+                if (nearbyPiece.GetType() == type)
+                {
+                    pieceCounter++;
+                    if (pieceCounter > maxCount) return false;
+                }
+            }
+
+            return true;
         }
 
-        private static int CheckBlocking(BoardPiece piece, IEnumerable<BoardPiece> nearbyPieces)
+        private static bool CheckBlocking(List<BoardPiece> nearbyPieces, int maxCount)
         {
-            return nearbyPieces.Where(checkedPiece => checkedPiece.sprite.BlocksMovement && checkedPiece != piece).Count();
+            int pieceCounter = 0;
+            foreach (BoardPiece nearbyPiece in nearbyPieces)
+            {
+                if (nearbyPiece.sprite.BlocksMovement) pieceCounter++;
+                {
+                    if (pieceCounter > maxCount) return false;
+                }
+            }
+
+            return true;
         }
 
         private static bool CheckOverlapSameClass(BoardPiece piece)

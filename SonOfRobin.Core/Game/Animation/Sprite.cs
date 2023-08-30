@@ -602,7 +602,7 @@ namespace SonOfRobin
             bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;
             if (plantingMode)
             {
-                AllowedDensity plantingDensity = new AllowedDensity(radius: this.BlocksMovement ? (ushort)50 : (ushort)30, maxNoOfPiecesSameName: 0);
+                AllowedDensity plantingDensity = new(radius: this.BlocksMovement ? (ushort)50 : (ushort)30, maxNoOfPiecesSameName: 0);
 
                 if (!plantingDensity.CanBePlacedHere(this.boardPiece)) return true;
             }
