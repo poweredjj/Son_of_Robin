@@ -527,7 +527,10 @@ namespace SonOfRobin
                               terrainSearches: biomeSearchList
                               );
 
-                        ExtBoardProps.Name biomeName = biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
+                        ExtBoardProps.Name biomeName = biomeCountByName
+                            .OrderBy(kvp => kvp.Value * ExtBoardProps.biomeMultiplier[kvp.Key])
+                            .First().Key;
+
                         pointCollectionsForBiomes[biomeName].Add(biomeRawPoints);
                         biomeCountByName[biomeName]++;
 
@@ -551,7 +554,7 @@ namespace SonOfRobin
 
             // setting biome constrains
 
-            int minPointCount = 3000 / this.resDivider;
+            int minPointCount = 500000 / (this.resDivider * this.resDivider);
             var tempConstrainedPointsListForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
             var tempRawPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<List<Point>>>();
 

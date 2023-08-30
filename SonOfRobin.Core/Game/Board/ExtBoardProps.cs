@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-
     public class ExtBoardProps
     {
         public enum Name : byte
@@ -23,17 +22,23 @@ namespace SonOfRobin
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
         public static readonly List<Name> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
 
+        public static readonly Dictionary<Name, int> biomeMultiplier = new()
+        {
+            // 1 == highest occurence
+            { Name.BiomeSwamp, 1 },
+            { Name.BiomeRuins, 3 },
+        };
+
         public static readonly Dictionary<Name, List<TerrainSearch>> biomeConstrains = new()
         {
             { Name.BiomeSwamp, new List<TerrainSearch>{
-                 new TerrainSearch(name: Terrain.Name.Height, min: 106, max: 159),
+                 new TerrainSearch(name: Terrain.Name.Height, min: 106, max: Terrain.rocksLevelMin - 1),
                  new TerrainSearch(name: Terrain.Name.Humidity, min: 80, max: 255),
             } },
 
             { Name.BiomeRuins, new List<TerrainSearch>{
-                 new TerrainSearch(name: Terrain.Name.Height, min: 120, max: 145),
-                 new TerrainSearch(name: Terrain.Name.Humidity, min: 0, max: 200),
-                 new TerrainSearch(name: Terrain.Name.Biome, min: Terrain.biomeMin + ((Terrain.biomeDeep - Terrain.biomeMin) / 3), max: 255),
+                 new TerrainSearch(name: Terrain.Name.Height, min: 120, max: Terrain.rocksLevelMin - 1),
+                 new TerrainSearch(name: Terrain.Name.Biome, min: Terrain.biomeMin + ((Terrain.biomeDeep - Terrain.biomeMin) / 5), max: 255),
             } }
         };
 
