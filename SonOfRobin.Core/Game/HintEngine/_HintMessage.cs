@@ -10,13 +10,13 @@ namespace SonOfRobin
     {
         public enum BoxType : byte
         {
-            Dialogue = 0,
-            InvertedDialogue = 1,
-            GreenBox = 2,
-            BlueBox = 3,
-            LightBlueBox = 4,
-            RedBox = 5,
-            GoldBox = 6,
+            Dialogue,
+            InvertedDialogue,
+            GreenBox,
+            BlueBox,
+            LightBlueBox,
+            RedBox,
+            GoldBox,
         }
 
         public readonly string text;

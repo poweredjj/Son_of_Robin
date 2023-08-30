@@ -7,14 +7,14 @@ namespace SonOfRobin
     {
         public enum EquipType : byte
         {
-            None = 0, // for compatibility with PieceInfo
-            Head = 1,
-            Chest = 2,
-            Legs = 3,
-            Backpack = 4,
-            Belt = 5,
-            Accessory = 6,
-            Map = 7,
+            None, // for compatibility with PieceInfo
+            Head,
+            Chest,
+            Legs,
+            Backpack,
+            Belt,
+            Accessory,
+            Map,
         };
 
         public readonly EquipType equipType;

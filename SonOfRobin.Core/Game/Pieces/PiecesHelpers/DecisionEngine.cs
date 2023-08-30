@@ -7,9 +7,9 @@ namespace SonOfRobin
     {
         public enum Action : byte
         {
-            Eat = 0,
-            Mate = 1,
-            Flee = 2,
+            Eat,
+            Mate,
+            Flee,
         }
 
         public class Choice

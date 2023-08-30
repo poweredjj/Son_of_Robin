@@ -6,9 +6,9 @@ namespace SonOfRobin
     {
         public enum Transform : byte
         {
-            Linear = 0,
-            Sinus = 1,
-            Cosinus = 2,
+            Linear,
+            Sinus,
+            Cosinus,
         }
 
         private readonly TransManager transManager;

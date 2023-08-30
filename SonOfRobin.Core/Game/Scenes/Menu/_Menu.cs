@@ -11,9 +11,9 @@ namespace SonOfRobin
     {
         public enum Layout : byte
         {
-            Middle = 0,
-            Left = 1,
-            Right = 2,
+            Middle,
+            Left,
+            Right,
         }
 
         public static bool nextMenuNoStartTransition = false;

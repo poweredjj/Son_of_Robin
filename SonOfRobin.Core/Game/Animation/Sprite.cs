@@ -11,14 +11,18 @@ namespace SonOfRobin
         public enum Orientation : byte
         {
             // must be lowercase, to match animName
-            left = 0,
-            right = 1,
-            up = 2,
-            down = 3,
+            left,
+            right,
+            up,
+            down,
         }
 
         public enum AdditionalMoveType : byte
-        { None, Minimal, Half }
+        {
+            None,
+            Minimal,
+            Half
+        }
 
         public readonly int id;
         public readonly BoardPiece boardPiece;

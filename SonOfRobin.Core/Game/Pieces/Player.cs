@@ -11,10 +11,10 @@ namespace SonOfRobin
     {
         public enum SleepMode : byte
         {
-            Awake = 0,
-            Sleep = 1,
-            WaitMorning = 2,
-            WaitIndefinitely = 3,
+            Awake,
+            Sleep,
+            WaitMorning,
+            WaitIndefinitely,
         };
 
         public enum SkillName : byte

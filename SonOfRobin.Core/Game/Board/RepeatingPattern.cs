@@ -13,33 +13,33 @@ namespace SonOfRobin
 
             // plain colors:
 
-            just_red = 0,
-            just_blue = 1,
-            just_white = 2,
-            just_green = 3,
-            just_cyan = 4,
+            just_red,
+            just_blue,
+            just_white,
+            just_green,
+            just_cyan,
 
             // textures:
 
-            grass_good = 5,
+            grass_good,
 
-            grass_bad = 6,
-            water_supershallow = 7,
-            water_shallow = 8,
-            water_medium = 9,
-            water_deep = 10,
-            mountain_low = 11,
-            mountain_medium = 12,
-            mountain_high = 13,
-            ground_good = 14,
-            ground_bad = 15,
-            sand = 16,
-            beach_bright = 17,
-            beach_dark = 18,
-            swamp = 19,
-            ruins = 22,
-            lava = 20,
-            volcano_edge = 21,
+            grass_bad,
+            water_supershallow,
+            water_shallow,
+            water_medium,
+            water_deep,
+            mountain_low,
+            mountain_medium,
+            mountain_high,
+            ground_good,
+            ground_bad,
+            sand,
+            beach_bright,
+            beach_dark,
+            swamp,
+            ruins,
+            lava,
+            volcano_edge,
         };
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));

@@ -11,15 +11,15 @@ namespace SonOfRobin
     {
         public enum Category
         {
-            Hills = 0,
-            Lake = 1,
-            Volcano = 2,
-            Swamp = 3,
-            Desert = 4,
-            Island = 5,
-            Shore = 6,
-            Grassland = 7,
-            Ruins = 8,
+            Hills,
+            Lake,
+            Volcano,
+            Swamp,
+            Desert,
+            Island,
+            Shore,
+            Grassland,
+            Ruins,
         }
 
         public class NameRandomizer

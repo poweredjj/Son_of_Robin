@@ -10,15 +10,15 @@ namespace SonOfRobin
     {
         public enum Category : byte
         {
-            Field = 0,
-            Essential = 1,
-            Basic = 2,
-            Advanced = 3,
-            Master = 4,
-            Furnace = 5,
-            Anvil = 6,
-            LeatherBasic = 7,
-            LeatherAdvanced = 8,
+            Field,
+            Essential,
+            Basic,
+            Advanced,
+            Master,
+            Furnace,
+            Anvil,
+            LeatherBasic,
+            LeatherAdvanced,
         }
 
         public class Recipe

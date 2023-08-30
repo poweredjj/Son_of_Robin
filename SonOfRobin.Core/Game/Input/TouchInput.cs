@@ -8,23 +8,23 @@ namespace SonOfRobin
 {
     public enum TouchLayout
     {
-        Uninitialized = 0, // initial layout for TouchOverlay
-        Empty = 1,
-        MenuRightReturn = 2,
-        MenuMiddleReturn = 3,
-        MenuLeftReturn = 4,
-        CaptureInputCancel = 5,
-        WorldMain = 6,
-        WorldShoot = 7,
-        WorldSleep = 8,
-        WorldBuild = 9,
-        WorldSpectator = 10,
-        Inventory = 11,
-        Map = 12,
-        QuitLoading = 13,
-        TextWindowOk = 14,
-        TextWindowCancel = 15,
-        TextWindowOkCancel = 16,
+        Uninitialized, // initial layout for TouchOverlay
+        Empty,
+        MenuRightReturn,
+        MenuMiddleReturn,
+        MenuLeftReturn,
+        CaptureInputCancel,
+        WorldMain,
+        WorldShoot,
+        WorldSleep,
+        WorldBuild,
+        WorldSpectator,
+        Inventory,
+        Map,
+        QuitLoading,
+        TextWindowOk,
+        TextWindowCancel,
+        TextWindowOkCancel,
     }
 
     public class TouchInput

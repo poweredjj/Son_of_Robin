@@ -9,11 +9,11 @@ namespace SonOfRobin
     {
         public enum TargetCategory : byte
         {
-            Wood = 0,
-            Stone = 1,
-            Metal = 2,
-            SmallPlant = 3,
-            Animal = 4,
+            Wood,
+            Stone,
+            Metal,
+            SmallPlant,
+            Animal,
         }
 
         private int realHitPower;

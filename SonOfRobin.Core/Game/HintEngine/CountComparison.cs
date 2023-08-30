@@ -6,11 +6,11 @@ namespace SonOfRobin
     {
         public enum Comparison : byte
         {
-            Greater = 0,
-            GreaterOrEqual = 1,
-            Equal = 2,
-            LessOrEqual = 3,
-            Less = 4,
+            Greater,
+            GreaterOrEqual,
+            Equal,
+            LessOrEqual,
+            Less,
         }
 
         public readonly PieceTemplate.Name name;

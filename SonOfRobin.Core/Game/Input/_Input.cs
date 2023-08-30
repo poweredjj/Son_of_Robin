@@ -7,9 +7,9 @@ namespace SonOfRobin
     {
         public enum ControlType : byte
         {
-            Gamepad = 0,
-            KeyboardAndMouse = 1,
-            Touch = 2,
+            Gamepad,
+            KeyboardAndMouse,
+            Touch,
         }
 
         private static bool localInputActive = true;

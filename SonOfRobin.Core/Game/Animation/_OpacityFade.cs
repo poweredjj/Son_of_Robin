@@ -4,9 +4,9 @@
     {
         public enum Mode : byte
         {
-            Normal = 0,
-            CameraTargetObstruct = 1,
-            CameraTargetObstructRevert = 2,
+            Normal,
+            CameraTargetObstruct,
+            CameraTargetObstructRevert,
         }
 
         public const int defaultDuration = 30;

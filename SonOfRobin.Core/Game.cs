@@ -12,16 +12,16 @@ namespace SonOfRobin
 {
     public enum Platform : byte
     {
-        Desktop = 0,
-        Mobile = 1,
+        Desktop,
+        Mobile,
     }
 
     public enum OS : byte
     {
-        Windows = 0,
-        DesktopGL = 1,
-        Android = 2,
-        iOS = 3,
+        Windows,
+        DesktopGL,
+        Android,
+        iOS,
     }
 
     public class SonOfRobinGame : Game

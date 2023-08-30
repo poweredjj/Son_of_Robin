@@ -12,9 +12,9 @@ namespace SonOfRobin
         {
             public enum Justify : byte
             {
-                Left = 0,
-                Center = 1,
-                Right = 2,
+                Left,
+                Center,
+                Right,
             };
 
             public int Width { get { return (int)(this.textWithImages.textWidth * this.scale); } }

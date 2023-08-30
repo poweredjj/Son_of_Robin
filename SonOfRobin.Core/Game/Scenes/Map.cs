@@ -10,9 +10,9 @@ namespace SonOfRobin
     {
         public enum MapMode : byte
         {
-            Mini = 0,
-            Full = 1,
-            Off = 2,
+            Mini,
+            Full,
+            Off,
         }
 
         public readonly World world;

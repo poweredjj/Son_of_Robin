@@ -10,10 +10,10 @@ namespace SonOfRobin
         public enum WorldSize : byte
         {
             // lower case, for proper display in menu
-            small = 0,
-            medium = 1,
-            large = 2,
-            gigantic = 3,
+            small,
+            medium,
+            large,
+            gigantic,
         }
 
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 12, "low" }, { 8, "medium" }, { 5, "high" } };

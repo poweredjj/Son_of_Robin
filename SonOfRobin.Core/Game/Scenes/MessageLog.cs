@@ -8,8 +8,8 @@ namespace SonOfRobin
 {
     public enum MsgType : byte
     {
-        Debug = 0,
-        User = 1,
+        Debug,
+        User,
     }
 
     public class MessageLog : Scene

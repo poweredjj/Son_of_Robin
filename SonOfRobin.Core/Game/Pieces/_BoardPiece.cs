@@ -53,16 +53,16 @@ namespace SonOfRobin
 
         public enum Category
         {
-            NotSet = 0,
-            Wood = 1,
-            Stone = 2,
-            Metal = 3,
-            SmallPlant = 4,
-            Flesh = 5,
-            Leather = 6,
-            Dirt = 7,
-            Crystal = 8,
-            Indestructible = 9,
+            NotSet,
+            Wood,
+            Stone,
+            Metal,
+            SmallPlant,
+            Flesh,
+            Leather,
+            Dirt,
+            Crystal,
+            Indestructible,
         }
 
         public static Texture2D GetTextureForCategory(Category category)

@@ -16,18 +16,18 @@ namespace SonOfRobin
     {
         public enum Stage : byte
         {
-            LoadTerrain = 0,
-            GenerateTerrain = 1,
-            SaveTerrain = 2,
-            CheckExtData = 3,
-            SetExtDataSea = 4,
-            SetExtDataBeach = 5,
-            SetExtDataBiomes = 6,
-            SetExtDataPropertiesGrid = 7,
-            SetExtDataFinish = 8,
-            GenerateNamedLocations = 9,
-            FillAllowedNames = 10,
-            MakeEntireMapImage = 11,
+            LoadTerrain,
+            GenerateTerrain,
+            SaveTerrain,
+            CheckExtData,
+            SetExtDataSea,
+            SetExtDataBeach,
+            SetExtDataBiomes,
+            SetExtDataPropertiesGrid,
+            SetExtDataFinish,
+            GenerateNamedLocations,
+            FillAllowedNames,
+            MakeEntireMapImage,
         }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;

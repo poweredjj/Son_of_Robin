@@ -11,28 +11,28 @@ namespace SonOfRobin
     {
         public enum LayoutType : byte
         {
-            None = 0,
-            Toolbar = 1,
-            Inventory = 2,
-            FieldStorage = 3,
+            None,
+            Toolbar,
+            Inventory,
+            FieldStorage,
         }
 
         public enum TransDirection : byte
         {
-            Up = 0,
-            Down = 1,
-            Left = 2,
-            Right = 3,
+            Up,
+            Down,
+            Left,
+            Right,
         }
 
         public enum Type : byte
         {
-            SingleCenter = 0,
-            SingleBottom = 1,
-            DualLeft = 2,
-            DualRight = 3,
-            DualTop = 4,
-            DualBottom = 5,
+            SingleCenter,
+            SingleBottom,
+            DualLeft,
+            DualRight,
+            DualTop,
+            DualBottom,
         }
 
         private const int minFramesToDragByTouch = 15;

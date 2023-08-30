@@ -10,16 +10,16 @@ namespace SonOfRobin
     {
         public enum InputTypes : byte
         {
-            None = 0,
-            Always = 1,
-            Normal = 2,
+            None,
+            Always,
+            Normal,
         }
 
         public enum ProcessingModes : byte
         {
-            Update = 0,
-            RenderToTarget = 1,
-            Draw = 2,
+            Update,
+            RenderToTarget,
+            Draw,
         }
 
         public static List<Scene> sceneStack = new() { };

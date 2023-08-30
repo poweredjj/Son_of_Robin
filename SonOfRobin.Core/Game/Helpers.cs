@@ -19,16 +19,16 @@ namespace SonOfRobin
 
         public enum AlignX : byte
         {
-            Left = 0,
-            Center = 1,
-            Right = 2,
+            Left,
+            Center,
+            Right,
         };
 
         public enum AlignY : byte
         {
-            Top = 0,
-            Center = 1,
-            Bottom = 2,
+            Top,
+            Center,
+            Bottom,
         };
 
         private static int currentID = (int)(DateTime.Now.Ticks & 0xFFFFFFFF);

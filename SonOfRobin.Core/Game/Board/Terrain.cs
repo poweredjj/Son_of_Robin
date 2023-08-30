@@ -23,9 +23,9 @@ namespace SonOfRobin
     {
         public enum Name : byte
         {
-            Height = 0,
-            Humidity = 1,
-            Biome = 2,
+            Height,
+            Humidity,
+            Biome,
         }
 
         public static readonly Name[] allTerrains = (Name[])Enum.GetValues(typeof(Name));

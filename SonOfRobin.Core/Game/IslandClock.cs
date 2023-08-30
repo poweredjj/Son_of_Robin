@@ -8,11 +8,11 @@ namespace SonOfRobin
     {
         public enum PartOfDay : byte
         {
-            Morning = 0,
-            Noon = 1,
-            Afternoon = 2,
-            Evening = 3,
-            Night = 4,
+            Morning,
+            Noon,
+            Afternoon,
+            Evening,
+            Night,
         }
 
         private const double timeConversionFactor = 1.5;
