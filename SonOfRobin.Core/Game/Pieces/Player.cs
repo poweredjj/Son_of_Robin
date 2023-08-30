@@ -1415,11 +1415,14 @@ namespace SonOfRobin
 
             Sound.QuickPlay(SoundData.Name.KnifeSharpen);
 
-            // TODO add summary display
-
             new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.HitFlesh1);
 
-            if (meatPieces.Count >= 2)
+            if (meatPieces.Count == 0)
+            {
+                Scheduler.Task hintTask = new HintMessage(text: String.Join("\n", "Could not harvest anything..."), boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask();
+                hintTask.Execute();
+            }
+            else if (meatPieces.Count >= 2)
             {
                 new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 20, executeHelper: SoundData.Name.DestroyFlesh2);
                 new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 30, executeHelper: SoundData.Name.DropMeat3);
