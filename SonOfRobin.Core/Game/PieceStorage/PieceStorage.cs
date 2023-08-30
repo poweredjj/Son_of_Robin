@@ -219,7 +219,11 @@ namespace SonOfRobin
                 return false;
             }
 
-            if (piece.sprite.IsOnBoard) piece.RemoveFromBoard();
+            if (piece.sprite.IsOnBoard)
+            {
+                piece.RemoveFromBoard();
+                this.world.worldEventManager.RemovePieceFromQueue(pieceToRemove: piece);
+            }
             slot.AddPiece(piece);
 
             return true;
