@@ -191,9 +191,8 @@ namespace SonOfRobin
                 case Type.TooDarkToUseTools:
                     {
                         // no Disable(), because this hint should be shown every time
-                        ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"It's too dark to use my | {text}.", blockInput: true, imageList: new List<Texture2D> { texture }),
-                        });
+
+                        MessageLog.AddMessage(msgType: MsgType.User, message: $"Too dark to use {text}.", avoidDuplicates: true);
                         break;
                     }
 

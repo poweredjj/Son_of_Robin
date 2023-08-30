@@ -231,7 +231,10 @@ namespace SonOfRobin
 
             if (!canBeTurnedOn && showMessage && this.world.Player.activeState != BoardPiece.State.PlayerControlledSleep && GetTopSceneOfType(typeof(TextWindow)) == null)
             {
-                if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap)) new TextWindow(text: "It is too dark to read the map.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
+                {
+                    MessageLog.AddMessage(msgType: MsgType.User, message: "Too dark to read the map.", avoidDuplicates: true);
+                }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
 
