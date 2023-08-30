@@ -1299,7 +1299,7 @@ namespace SonOfRobin
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
 
-            var usedAtlasNames = new List<string>();
+            var usedAtlasNames = new HashSet<string>();
 
             foreach (List<AnimFrame> frameList in frameListById.Values)
             {
