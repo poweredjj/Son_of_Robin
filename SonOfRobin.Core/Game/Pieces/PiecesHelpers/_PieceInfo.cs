@@ -1369,7 +1369,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 80, maxNumberToDrop: 2)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 30, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.RuinsRubble:
@@ -1382,7 +1382,7 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 80, maxNumberToDrop: 3)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 5, maxNumberToDrop: 1)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 15, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.RuinsWall:

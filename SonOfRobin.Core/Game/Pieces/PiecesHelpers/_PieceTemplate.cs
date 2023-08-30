@@ -1344,7 +1344,7 @@ namespace SonOfRobin
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsColumn, allowedTerrain: allowedTerrain,
-                               maxHitPoints: 60, readableName: "column base", description: "Ancient column remains.");
+                               maxHitPoints: 40, readableName: "column base", description: "Ancient column remains.");
 
                         return boardPiece;
                     }
@@ -1356,7 +1356,7 @@ namespace SonOfRobin
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsRubble, allowedTerrain: allowedTerrain,
-                               maxHitPoints: 60, readableName: "rubble", description: "A pile of rubble.");
+                               maxHitPoints: 40, readableName: "rubble", description: "A pile of rubble.");
 
                         return boardPiece;
                     }
@@ -1371,7 +1371,7 @@ namespace SonOfRobin
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                               maxHitPoints: 180, readableName: "wall", description: "Ancient wall remains.");
+                               maxHitPoints: 130, readableName: "wall", description: "Ancient wall remains.");
 
                         return boardPiece;
                     }
