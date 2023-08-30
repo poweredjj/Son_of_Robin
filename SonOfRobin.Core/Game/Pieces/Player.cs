@@ -254,11 +254,10 @@ namespace SonOfRobin
             get
             {
                 if (this.ToolStorage == null) return null;
-
                 Point lastUsedSlotPos = this.ToolStorage.LastUsedSlotPos;
                 if (lastUsedSlotPos.X == -1 && lastUsedSlotPos.Y == -1) return null;
 
-                return this.ToolStorage?.GetSlot(lastUsedSlotPos.X, lastUsedSlotPos.Y);
+                return this.ToolStorage.GetSlot(lastUsedSlotPos.X, lastUsedSlotPos.Y);
             }
         }
 
