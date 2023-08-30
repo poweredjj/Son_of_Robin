@@ -1291,6 +1291,7 @@ namespace SonOfRobin
 
                 closestPiece.sprite.rotation = 0f;
                 closestPiece.HeatLevel = 0f;
+                if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar              
 
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
