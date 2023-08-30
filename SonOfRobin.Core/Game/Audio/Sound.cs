@@ -166,7 +166,7 @@ namespace SonOfRobin
 
             bool instanceStartedCorrectly = managedSoundInstance.Play(this.Id);
             if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
-            else MessageLog.AddMessage(msgType: MsgType.User, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
+            else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
 
         private void CreateSoundVisual()

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static SonOfRobin.Player;
 
 namespace SonOfRobin
 {
@@ -501,7 +502,7 @@ namespace SonOfRobin
                             imageList.Add(PieceInfo.GetTexture(player.name));
 
                             textLines.Add($"| {player.Skill}: {Player.skillDescriptions[player.Skill]}");
-                            imageList.Add(Player.skillTextures[player.Skill]);
+                            imageList.Add(PieceInfo.GetTexture(Player.skillTextures[player.Skill]));
 
                             textLines.Add($"| Strength: {player.strength}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
@@ -1103,7 +1104,7 @@ namespace SonOfRobin
             var startingSkillSelectorValueDict = new Dictionary<object, object>();
             foreach (Player.SkillName skillName in Player.allSkillNames)
             {
-                startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName}: {Player.skillDescriptions[skillName]}", Player.skillTextures[skillName] };
+                startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName}: {Player.skillDescriptions[skillName]}", PieceInfo.GetTexture(Player.skillTextures[skillName]) };
             }
 
             new Selector(menu: menu, name: "skill", valueDict: startingSkillSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingSkill");

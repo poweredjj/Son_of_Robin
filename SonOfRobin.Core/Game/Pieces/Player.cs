@@ -39,14 +39,14 @@ namespace SonOfRobin
             { SkillName.Maintainer, "tools last longer" },
         };
 
-        public static readonly Dictionary<SkillName, Texture2D> skillTextures = new()
+        public static readonly Dictionary<SkillName, PieceTemplate.Name> skillTextures = new()
         {
-            { SkillName.Hunter, PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) },
-            { SkillName.Plunderer, PieceInfo.GetTexture(PieceTemplate.Name.ChestTreasureBig) },
-            { SkillName.Crafter, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) },
-            { SkillName.Survivalist, PieceInfo.GetTexture(PieceTemplate.Name.Burger) },
-            { SkillName.Fashionista, PieceInfo.GetTexture(PieceTemplate.Name.GlassesVelvet) },
-            { SkillName.Maintainer, PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) },
+            { SkillName.Hunter, PieceTemplate.Name.MeatRawPrime },
+            { SkillName.Plunderer, PieceTemplate.Name.ChestTreasureBig },
+            { SkillName.Crafter, PieceTemplate.Name.WorkshopMaster },
+            { SkillName.Survivalist, PieceTemplate.Name.Burger },
+            { SkillName.Fashionista, PieceTemplate.Name.GlassesVelvet },
+            { SkillName.Maintainer, PieceTemplate.Name.AxeIron },
         };
 
         private const int maxShootingPower = 90;
