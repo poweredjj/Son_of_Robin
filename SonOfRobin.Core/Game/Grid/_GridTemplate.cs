@@ -170,7 +170,7 @@ namespace SonOfRobin
                 saveHeader.seed == gridTemplate.seed &&
                 saveHeader.width == gridTemplate.width &&
                 saveHeader.height == gridTemplate.height
-                ).Count() > 0)
+                ).Any())
                 {
                     pathsToKeep.Add(templatePath);
                     continue;
@@ -180,7 +180,7 @@ namespace SonOfRobin
                 currentWorld.seed == gridTemplate.seed &&
                 currentWorld.width == gridTemplate.width &&
                 currentWorld.height == gridTemplate.height
-                ).Count() > 0)
+                ).Any())
                 {
                     pathsToKeep.Add(templatePath);
                     continue;
@@ -190,7 +190,11 @@ namespace SonOfRobin
             List<string> pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
             foreach (string templatePathToDelete in pathsToDelete)
             {
-                Directory.Delete(path: templatePathToDelete, recursive: true);
+                try
+                { Directory.Delete(path: templatePathToDelete, recursive: true); }
+                catch (UnauthorizedAccessException) { }
+                catch (DirectoryNotFoundException) { }
+                catch (IOException) { }
             }
         }
 
