@@ -25,34 +25,37 @@ namespace SonOfRobin
         public bool CanBePlacedHere(BoardPiece piece)
         {
             var nearbyPieces = piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radius);
-            int nearbyPieceCount = nearbyPieces.Count;
 
-            if (this.maxNoOfPiecesTotal != -1 && nearbyPieceCount > this.maxNoOfPiecesTotal) return false;
-            if (this.maxNoOfPiecesSameName != -1 && !CheckSameNameCount(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameName)) return false;
-            if (this.maxNoOfPiecesSameClass != -1 && !CheckSameClass(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameClass)) return false;
-            if (this.maxNoOfPiecesBlocking != -1 && !CheckBlocking(nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesBlocking)) return false;
-            if (this.forbidOverlapSameClass && CheckOverlapSameClass(piece: piece)) return false;
+            if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count > this.maxNoOfPiecesTotal) return false;
+            if (this.maxNoOfPiecesSameName != -1 && CheckExceedsSameNameCount(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameName)) return false;
+            if (this.maxNoOfPiecesSameClass != -1 && CheckExceedsSameClass(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameClass)) return false;
+            if (this.maxNoOfPiecesBlocking != -1 && CheckExceedsBlocking(nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesBlocking)) return false;
+            if (this.forbidOverlapSameClass && CheckHasOverlapWithSameClass(piece: piece)) return false;
 
             return true;
         }
 
-        private static bool CheckSameNameCount(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
+        private static bool CheckExceedsSameNameCount(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
         {
+            if (nearbyPieces.Count <= maxCount) return false;
+
             int pieceCounter = 0;
             foreach (BoardPiece nearbyPiece in nearbyPieces)
             {
                 if (nearbyPiece.name == piece.name)
                 {
                     pieceCounter++;
-                    if (pieceCounter > maxCount) return false;
+                    if (pieceCounter > maxCount) return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
-        private static bool CheckSameClass(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
+        private static bool CheckExceedsSameClass(BoardPiece piece, List<BoardPiece> nearbyPieces, int maxCount)
         {
+            if (nearbyPieces.Count <= maxCount) return false;
+
             Type type = piece.GetType();
 
             int pieceCounter = 0;
@@ -61,28 +64,30 @@ namespace SonOfRobin
                 if (nearbyPiece.GetType() == type)
                 {
                     pieceCounter++;
-                    if (pieceCounter > maxCount) return false;
+                    if (pieceCounter > maxCount) return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
-        private static bool CheckBlocking(List<BoardPiece> nearbyPieces, int maxCount)
+        private static bool CheckExceedsBlocking(List<BoardPiece> nearbyPieces, int maxCount)
         {
+            if (nearbyPieces.Count <= maxCount) return false;
+
             int pieceCounter = 0;
             foreach (BoardPiece nearbyPiece in nearbyPieces)
             {
                 if (nearbyPiece.sprite.BlocksMovement) pieceCounter++;
                 {
-                    if (pieceCounter > maxCount) return false;
+                    if (pieceCounter > maxCount) return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
-        private static bool CheckOverlapSameClass(BoardPiece piece)
+        private static bool CheckHasOverlapWithSameClass(BoardPiece piece)
         {
             Type type = piece.GetType();
 
