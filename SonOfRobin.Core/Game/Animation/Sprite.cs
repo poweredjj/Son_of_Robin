@@ -115,10 +115,10 @@ namespace SonOfRobin
         }
 
         public bool BlocksMovement
-        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.blocksMovement; } }
+        { get { return this.boardPiece.pieceInfo != null && this.boardPiece.pieceInfo.blocksMovement; } }
 
         public bool IgnoresCollisions
-        { get { return this.boardPiece.pieceInfo == null ? false : this.boardPiece.pieceInfo.ignoresCollisions; } }
+        { get { return this.boardPiece.pieceInfo != null && this.boardPiece.pieceInfo.ignoresCollisions; } }
 
         public bool BlocksPlantGrowth
         { get { return this.boardPiece.pieceInfo != null && this.boardPiece.pieceInfo.blocksPlantGrowth; } }

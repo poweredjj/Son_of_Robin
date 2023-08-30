@@ -240,44 +240,21 @@ namespace SonOfRobin
 
         private static Vector2 GetSpriteOffset(Sprite sprite, XAlign xAlign, YAlign yAlign)
         {
-            int targetX;
-            int targetY;
-
-            switch (xAlign)
+            var targetX = xAlign switch
             {
-                case XAlign.Center:
-                    targetX = sprite.GfxRect.Center.X;
-                    break;
+                XAlign.Center => sprite.GfxRect.Center.X,
+                XAlign.Left => sprite.GfxRect.Left,
+                XAlign.Right => sprite.GfxRect.Right,
+                _ => throw new ArgumentException($"Unsupported xAlign - {xAlign}."),
+            };
 
-                case XAlign.Left:
-                    targetX = sprite.GfxRect.Left;
-                    break;
-
-                case XAlign.Right:
-                    targetX = sprite.GfxRect.Right;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported xAlign - {xAlign}.");
-            }
-
-            switch (yAlign)
+            var targetY = yAlign switch
             {
-                case YAlign.Center:
-                    targetY = sprite.GfxRect.Center.Y;
-                    break;
-
-                case YAlign.Top:
-                    targetY = sprite.GfxRect.Top;
-                    break;
-
-                case YAlign.Bottom:
-                    targetY = sprite.GfxRect.Bottom;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported yAlign - {yAlign}.");
-            }
+                YAlign.Center => sprite.GfxRect.Center.Y,
+                YAlign.Top => sprite.GfxRect.Top,
+                YAlign.Bottom => sprite.GfxRect.Bottom,
+                _ => throw new ArgumentException($"Unsupported yAlign - {yAlign}."),
+            };
 
             return new Vector2(targetX - sprite.position.X, targetY - sprite.position.Y);
         }

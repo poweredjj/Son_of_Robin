@@ -25,7 +25,7 @@ namespace SonOfRobin
         private readonly string drawParamName;
         private float sourceVal;
         public float TargetVal { get; private set; }
-        private Transform stageTransform;
+        private readonly Transform stageTransform;
         private readonly bool refreshBaseVal;
         private readonly bool replaceBaseValue;
 
@@ -37,7 +37,7 @@ namespace SonOfRobin
         private int endFrame;
         private int cycleStartFrame;
         private readonly int startDelay;
-        private int cycleDelay;
+        private readonly int cycleDelay;
 
         private readonly bool requireInputActiveAtRepeats;
         private readonly Scene inputActiveAtRepeatsScene;
@@ -115,20 +115,13 @@ namespace SonOfRobin
 
         private float ComputeStageTransform(float inputValue)
         {
-            switch (this.stageTransform)
+            return this.stageTransform switch
             {
-                case Transform.Linear:
-                    return inputValue;
-
-                case Transform.Sinus:
-                    return (float)Math.Sin(Math.PI * 2 * inputValue);
-
-                case Transform.Cosinus:
-                    return (float)Math.Cos(Math.PI * 2 * inputValue);
-
-                default:
-                    throw new ArgumentException($"Unsupported targetTransform - '{stageTransform}'.");
-            }
+                Transform.Linear => inputValue,
+                Transform.Sinus => (float)Math.Sin(Math.PI * 2 * inputValue),
+                Transform.Cosinus => (float)Math.Cos(Math.PI * 2 * inputValue),
+                _ => throw new ArgumentException($"Unsupported targetTransform - '{stageTransform}'."),
+            };
         }
 
         public void Update()

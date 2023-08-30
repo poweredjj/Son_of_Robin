@@ -9,12 +9,12 @@ namespace SonOfRobin
     {
         public const float currentVersion = 1.000019f; // version number should be incremented when any existing asset is updated
 
-        public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
-        public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
-        public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
+        public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
+        public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
+        public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new(); // default frames for packages
 
-        public static readonly Dictionary<string, Texture2D> textureDict = new Dictionary<string, Texture2D>();
-        public static Dictionary<string, Object> jsonDict = new Dictionary<string, Object>();
+        public static readonly Dictionary<string, Texture2D> textureDict = new();
+        public static Dictionary<string, Object> jsonDict = new();
 
         public enum PkgName : ushort
         {
@@ -1160,7 +1160,7 @@ namespace SonOfRobin
             // standing
             foreach (var kvp in yByDirection)
             {
-                List<AnimFrame> frameList = new List<AnimFrame>
+                List<AnimFrame> frameList = new()
                 {
                      AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
@@ -1171,7 +1171,7 @@ namespace SonOfRobin
             // walking
             foreach (var kvp in yByDirection)
             {
-                List<AnimFrame> frameList = new List<AnimFrame>
+                List<AnimFrame> frameList = new()
                 {
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
 
@@ -1201,7 +1201,7 @@ namespace SonOfRobin
             // standing
             foreach (var kvp in yByDirection)
             {
-                List<AnimFrame> frameList = new List<AnimFrame>
+                List<AnimFrame> frameList = new()
                 {
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
@@ -1212,7 +1212,7 @@ namespace SonOfRobin
             // walking
             foreach (var kvp in yByDirection)
             {
-                List<AnimFrame> frameList = new List<AnimFrame>
+                List<AnimFrame> frameList = new()
                 {
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: 0 + offsetX, atlasY: kvp.Value + offsetY,
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),

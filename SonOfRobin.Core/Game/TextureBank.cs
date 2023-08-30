@@ -163,8 +163,8 @@ namespace SonOfRobin
         private static ContentManager persistentTexturesManager;
         private static ContentManager temporaryTexturesManager;
 
-        private static Dictionary<string, Texture2D> textureByNamePersistent = new Dictionary<string, Texture2D>();
-        private static Dictionary<string, Texture2D> textureByNameTemporary = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, Texture2D> textureByNamePersistent = new();
+        private static readonly Dictionary<string, Texture2D> textureByNameTemporary = new();
 
         public static void AssignContentManagers(ContentManager persistentManager, ContentManager temporaryManager)
         {

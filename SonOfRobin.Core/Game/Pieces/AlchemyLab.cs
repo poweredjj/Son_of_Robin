@@ -286,7 +286,7 @@ namespace SonOfRobin
             // creating potion
 
             BoardPiece potion = PieceTemplate.Create(templateName: potionName, world: this.world);
-            buffList = BuffEngine.MergeSameTypeBuffsInList(world: this.world, buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
+            buffList = BuffEngine.MergeSameTypeBuffsInList(buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
 
             var adjustedBuffList = new List<Buff>();
 

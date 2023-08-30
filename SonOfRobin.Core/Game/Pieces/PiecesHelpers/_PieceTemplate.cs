@@ -309,8 +309,7 @@ namespace SonOfRobin
                 {
                     float destOpacity = boardPiece.sprite.opacity;
                     boardPiece.sprite.opacity = 0f;
-                    new OpacityFade(sprite: boardPiece.sprite, destOpacity: destOpacity,
-                        duration: boardPiece.pieceInfo.inOpacityFadeDuration);
+                    new OpacityFade(sprite: boardPiece.sprite, destOpacity: destOpacity, duration: boardPiece.pieceInfo.inOpacityFadeDuration);
                 }
             }
 

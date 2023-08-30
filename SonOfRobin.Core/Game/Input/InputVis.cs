@@ -18,7 +18,7 @@ namespace SonOfRobin
         {
             get
             {
-                switch (Input.currentControlType)
+                switch (Input.CurrentControlType)
                 {
                     case Input.ControlType.Touch:
                         return new List<Texture2D>();
@@ -30,7 +30,7 @@ namespace SonOfRobin
                         return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick.Analog);
 
                     default:
-                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
+                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.CurrentControlType}'.");
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace SonOfRobin
         {
             get
             {
-                switch (Input.currentControlType)
+                switch (Input.CurrentControlType)
                 {
                     case Input.ControlType.Touch:
                         return new List<Texture2D>();
@@ -51,7 +51,7 @@ namespace SonOfRobin
                         return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick.Analog);
 
                     default:
-                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
+                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.CurrentControlType}'.");
                 }
             }
         }

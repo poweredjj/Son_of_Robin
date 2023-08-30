@@ -180,12 +180,12 @@ namespace SonOfRobin
 
         public bool IsPlaying(Action action)
         {
-            return this.soundDict.ContainsKey(action) ? this.soundDict[action].IsPlaying : false;
+            return this.soundDict.ContainsKey(action) && this.soundDict[action].IsPlaying;
         }
 
         public bool IsLooped(Action action)
         {
-            return this.soundDict.ContainsKey(action) ? this.soundDict[action].isLooped : false;
+            return this.soundDict.ContainsKey(action) && this.soundDict[action].isLooped;
         }
 
         public void StopAll(Action ignoredAction)

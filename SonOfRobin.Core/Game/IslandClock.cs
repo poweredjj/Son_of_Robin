@@ -106,30 +106,19 @@ namespace SonOfRobin
             {
                 PartOfDay currentPartOfDay = this.CurrentPartOfDay;
 
-                switch (currentPartOfDay)
+                return currentPartOfDay switch
                 {
-                    case PartOfDay.Morning:
-                        return "in the morning";
-
-                    case PartOfDay.Noon:
-                        return "at noon";
-
-                    case PartOfDay.Afternoon:
-                        return "in the afternoon";
-
-                    case PartOfDay.Evening:
-                        return "in the evening";
-
-                    case PartOfDay.Night:
-                        return "at night";
-
-                    default:
-                        throw new ArgumentException($"Unsupported PartOfDay - '{currentPartOfDay}'.");
-                }
+                    PartOfDay.Morning => "in the morning",
+                    PartOfDay.Noon => "at noon",
+                    PartOfDay.Afternoon => "in the afternoon",
+                    PartOfDay.Evening => "in the evening",
+                    PartOfDay.Night => "at night",
+                    _ => throw new ArgumentException($"Unsupported PartOfDay - '{currentPartOfDay}'."),
+                };
             }
         }
 
-        public struct PartOfDayDefinition
+        public readonly struct PartOfDayDefinition
         {
             private static readonly List<PartOfDayDefinition> allDefinitions = new List<PartOfDayDefinition> {
                 new PartOfDayDefinition(partOfDay: PartOfDay.Night, startTime: TimeSpan.FromHours(0), endTime: TimeSpan.FromHours(4)),

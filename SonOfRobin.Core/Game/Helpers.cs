@@ -121,43 +121,21 @@ namespace SonOfRobin
 
             if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
 
-            int xOffset, yOffset;
-            switch (alignX)
+            var xOffset = alignX switch
             {
-                case AlignX.Left:
-                    xOffset = 0;
-                    break;
+                AlignX.Left => 0,
+                AlignX.Center => (int)((rectangle.Width - (textSize.X * scale)) / 2),
+                AlignX.Right => (int)(rectangle.Width - (textSize.X * scale)),
+                _ => throw new ArgumentException($"Unsupported alignX - {alignX}."),
+            };
 
-                case AlignX.Center:
-                    xOffset = (int)((rectangle.Width - (textSize.X * scale)) / 2);
-                    break;
-
-                case AlignX.Right:
-                    xOffset = (int)(rectangle.Width - (textSize.X * scale));
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignX - {alignX}.");
-            }
-
-            switch (alignY)
+            var yOffset = alignY switch
             {
-                case AlignY.Top:
-                    yOffset = 0;
-                    break;
-
-                case AlignY.Center:
-                    yOffset = (int)((rectangle.Height - (textSize.Y * scale)) / 2);
-                    break;
-
-                case AlignY.Bottom:
-                    yOffset = (int)(rectangle.Height - (textSize.Y * scale));
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignY - {alignY}.");
-            }
-
+                AlignY.Top => 0,
+                AlignY.Center => (int)((rectangle.Height - (textSize.Y * scale)) / 2),
+                AlignY.Bottom => (int)(rectangle.Height - (textSize.Y * scale)),
+                _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
+            };
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
@@ -176,42 +154,21 @@ namespace SonOfRobin
 
             if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
 
-            int xOffset, yOffset;
-            switch (alignX)
+            var xOffset = alignX switch
             {
-                case AlignX.Left:
-                    xOffset = 0;
-                    break;
+                AlignX.Left => 0,
+                AlignX.Center => (int)((rectangle.Width - scaledTexture.X) / 2),
+                AlignX.Right => (int)(rectangle.Width - scaledTexture.X),
+                _ => throw new ArgumentException($"Unsupported alignX - {alignX}."),
+            };
 
-                case AlignX.Center:
-                    xOffset = (int)((rectangle.Width - scaledTexture.X) / 2);
-                    break;
-
-                case AlignX.Right:
-                    xOffset = (int)(rectangle.Width - scaledTexture.X);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignX - {alignX}.");
-            }
-
-            switch (alignY)
+            var yOffset = alignY switch
             {
-                case AlignY.Top:
-                    yOffset = 0;
-                    break;
-
-                case AlignY.Center:
-                    yOffset = (int)((rectangle.Height - scaledTexture.Y) / 2);
-                    break;
-
-                case AlignY.Bottom:
-                    yOffset = (int)(rectangle.Height - scaledTexture.Y);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignY - {alignY}.");
-            }
+                AlignY.Top => 0,
+                AlignY.Center => (int)((rectangle.Height - scaledTexture.Y) / 2),
+                AlignY.Bottom => (int)(rectangle.Height - scaledTexture.Y),
+                _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
+            };
 
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
             if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);

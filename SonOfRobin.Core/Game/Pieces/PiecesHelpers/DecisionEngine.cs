@@ -26,7 +26,7 @@ namespace SonOfRobin
             }
         }
 
-        private List<Choice> allChoices;
+        private readonly List<Choice> allChoices;
 
         public DecisionEngine()
         {

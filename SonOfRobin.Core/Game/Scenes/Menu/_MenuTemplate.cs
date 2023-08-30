@@ -55,7 +55,7 @@ namespace SonOfRobin
             var confirmationDict = (Dictionary<string, Object>)confirmationData;
 
             string question = (string)confirmationDict["question"];
-            bool blocksUpdatesBelow = confirmationDict.ContainsKey("blocksUpdatesBelow") ? (bool)confirmationDict["blocksUpdatesBelow"] : false;
+            bool blocksUpdatesBelow = confirmationDict.ContainsKey("blocksUpdatesBelow") && (bool)confirmationDict["blocksUpdatesBelow"];
 
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
@@ -278,9 +278,9 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        if (Input.currentControlType != Input.ControlType.Touch || SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
+                        if (Input.CurrentControlType != Input.ControlType.Touch || SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
 
-                        if (Input.currentControlType != Input.ControlType.Touch) new Selector(menu: menu, name: "swap mouse buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "swapMouseButtons");
+                        if (Input.CurrentControlType != Input.ControlType.Touch) new Selector(menu: menu, name: "swap mouse buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "swapMouseButtons");
 
                         if (Preferences.EnableTouchButtons)
                         {
@@ -865,9 +865,11 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            Separator separator = new Separator(menu: menu, name: "no saves to import");
-                            separator.rectColor = Color.DarkRed;
-                            separator.textColor = new Color(255, 116, 82);
+                            Separator separator = new Separator(menu: menu, name: "no saves to import")
+                            {
+                                rectColor = Color.DarkRed,
+                                textColor = new Color(255, 116, 82)
+                            };
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);

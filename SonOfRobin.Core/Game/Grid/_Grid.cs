@@ -790,13 +790,13 @@ namespace SonOfRobin
             sprite.currentCell.RemoveSprite(sprite);
         }
 
-        public IEnumerable<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
+        public List<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
         {
             Cell cell = sprite.currentCell == null ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
-        public IEnumerable<Cell> GetCellsInsideRect(Rectangle rectangle, bool addPadding)
+        public List<Cell> GetCellsInsideRect(Rectangle rectangle, bool addPadding)
         {
             int padding = addPadding ? 1 : 0;
 
@@ -892,7 +892,7 @@ namespace SonOfRobin
             return piecesWithinDistance;
         }
 
-        public IEnumerable<BoardPiece> GetPiecesInsideTriangle(Point point1, Point point2, Point point3, Cell.Group groupName)
+        public List<BoardPiece> GetPiecesInsideTriangle(Point point1, Point point2, Point point3, Cell.Group groupName)
         {
             int xMin = (int)Math.Min(Math.Min(point1.X, point2.X), point3.X);
             int xMax = (int)Math.Max(Math.Max(point1.X, point2.X), point3.X);
@@ -911,7 +911,7 @@ namespace SonOfRobin
             }
 
             var piecesInsideTriangle = spritesInsideTriangle.Select(sprite => sprite.boardPiece);
-            return piecesInsideTriangle;
+            return piecesInsideTriangle.ToList();
         }
 
         public List<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
@@ -977,7 +977,7 @@ namespace SonOfRobin
         public List<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
 
             var allSprites = new List<Sprite>();
             foreach (Cell cell in cells)
@@ -994,7 +994,7 @@ namespace SonOfRobin
         public ConcurrentBag<Sprite> GetSpritesForRectParallel(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
 
             var allSprites = new ConcurrentBag<Sprite> { };
             Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>

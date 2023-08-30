@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class InfoWindow : Scene
     {
-        public struct TextEntry
+        public readonly struct TextEntry
         {
             public enum Justify : byte
             {

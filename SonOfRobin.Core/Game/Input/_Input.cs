@@ -15,7 +15,7 @@ namespace SonOfRobin
         private static bool localInputActive = true;
         private static bool globalInputActive = true;
         private static int globalInputReactivateUpdate = 0;
-        public static ControlType currentControlType { get; private set; } = SonOfRobinGame.platform == Platform.Mobile ? ControlType.Touch : ControlType.KeyboardAndMouse;
+        public static ControlType CurrentControlType { get; private set; } = SonOfRobinGame.platform == Platform.Mobile ? ControlType.Touch : ControlType.KeyboardAndMouse;
 
         public static bool InputActive
         { get { return localInputActive == true && globalInputActive == true; } set { localInputActive = value; } }
@@ -43,7 +43,7 @@ namespace SonOfRobin
             TouchInput.GetState();
             RefreshControlType();
             RumbleManager.Update();
-            SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;
+            SonOfRobinGame.Game.IsMouseVisible = CurrentControlType != ControlType.Gamepad;
 
             globalInputActive = savedGlobalInput;
             localInputActive = savedLocalInput;
@@ -55,9 +55,9 @@ namespace SonOfRobin
         {
             if (SonOfRobinGame.CurrentUpdate % 12 != 0) return;
 
-            ControlType prevControlType = currentControlType;
+            ControlType prevControlType = CurrentControlType;
 
-            if (currentControlType != ControlType.KeyboardAndMouse)
+            if (CurrentControlType != ControlType.KeyboardAndMouse)
             {
                 bool keyboardOrMousePressed = false;
 
@@ -75,10 +75,10 @@ namespace SonOfRobin
                         keyboardOrMousePressed = true;
                 }
 
-                if (keyboardOrMousePressed) currentControlType = ControlType.KeyboardAndMouse;
+                if (keyboardOrMousePressed) CurrentControlType = ControlType.KeyboardAndMouse;
             }
 
-            if (currentControlType != ControlType.Gamepad)
+            if (CurrentControlType != ControlType.Gamepad)
             {
                 var padState = Microsoft.Xna.Framework.Input.GamePad.GetState(index: 0, deadZoneMode: GamePadDeadZone.Circular);
                 var defaultState = GamePadState.Default;
@@ -86,17 +86,17 @@ namespace SonOfRobin
                 if (padState.ThumbSticks != defaultState.ThumbSticks ||
                     padState.DPad != defaultState.DPad ||
                     padState.Buttons != defaultState.Buttons ||
-                    padState.Triggers != defaultState.Triggers) currentControlType = ControlType.Gamepad;
+                    padState.Triggers != defaultState.Triggers) CurrentControlType = ControlType.Gamepad;
             }
 
-            if (currentControlType != ControlType.Touch)
+            if (CurrentControlType != ControlType.Touch)
             {
-                if (Preferences.EnableTouchButtons && TouchInput.IsBeingTouchedInAnyWay) currentControlType = ControlType.Touch;
+                if (Preferences.EnableTouchButtons && TouchInput.IsBeingTouchedInAnyWay) CurrentControlType = ControlType.Touch;
             }
 
-            if (prevControlType != currentControlType)
+            if (prevControlType != CurrentControlType)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching control type to {currentControlType}");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching control type to {CurrentControlType}");
 
                 InputVis.Refresh();
                 Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh everything that is connected to tips type

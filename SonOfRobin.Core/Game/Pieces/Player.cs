@@ -794,7 +794,7 @@ namespace SonOfRobin
                 {
                     Texture2D interactTexture = InputMapper.GetTexture(InputMapper.Action.WorldInteract);
 
-                    if (Input.currentControlType == Input.ControlType.Touch && pieceToInteract.pieceInfo.interactVirtButtonName != TextureBank.TextureName.Empty)
+                    if (Input.CurrentControlType == Input.ControlType.Touch && pieceToInteract.pieceInfo.interactVirtButtonName != TextureBank.TextureName.Empty)
                     {
                         interactTexture = TextureBank.GetTexture(pieceToInteract.pieceInfo.interactVirtButtonName);
                         VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.Interact, texture: interactTexture);

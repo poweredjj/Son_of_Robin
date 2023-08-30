@@ -69,7 +69,7 @@ namespace SonOfRobin
             catch (KeyNotFoundException) { }
 
             bool cacheLoadedCorrectly = false;
-            Rectangle colBounds = new Rectangle(0, 0, 1, 1);
+            Rectangle colBounds = new(0, 0, 1, 1);
 
             if (jsonData != null)
             {
@@ -152,7 +152,7 @@ namespace SonOfRobin
         private static Rectangle FindNonTransparentPixelsRect(Texture2D texture, int textureX, int textureY, int width, int height, int minAlpha)
         {
             Color[] colorData = new Color[width * height];
-            Rectangle extractRegion = new Rectangle(textureX, textureY, width, height);
+            Rectangle extractRegion = new(textureX, textureY, width, height);
             texture.GetData<Color>(0, extractRegion, colorData, 0, width * height);
 
             int xMin = width;
@@ -224,7 +224,7 @@ namespace SonOfRobin
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }
 
-            Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
+            Rectangle sourceRectangle = new(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
 
             SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }

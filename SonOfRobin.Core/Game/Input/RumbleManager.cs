@@ -113,7 +113,7 @@ namespace SonOfRobin
             get
             {
                 return Preferences.DebugMode ||
-                       (Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile));
+                       (Preferences.rumbleEnabled && (Input.CurrentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile));
             }
         }
 

@@ -174,23 +174,13 @@ namespace SonOfRobin
 
         public void SwitchToNextMode()
         {
-            switch (this.Mode)
+            this.Mode = this.Mode switch
             {
-                case MapMode.Mini:
-                    this.Mode = MapMode.Full;
-                    break;
-
-                case MapMode.Full:
-                    this.Mode = MapMode.Off;
-                    break;
-
-                case MapMode.Off:
-                    this.Mode = MapMode.Mini;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported mode - {this.Mode}.");
-            }
+                MapMode.Mini => MapMode.Full,
+                MapMode.Full => MapMode.Off,
+                MapMode.Off => MapMode.Mini,
+                _ => throw new ArgumentException($"Unsupported mode - {this.Mode}."),
+            };
         }
 
         public MapMode Mode

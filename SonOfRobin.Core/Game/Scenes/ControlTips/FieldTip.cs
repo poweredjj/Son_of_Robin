@@ -210,67 +210,37 @@ namespace SonOfRobin
             int textureHeight = this.TextureHeight;
             Rectangle targetRect = this.targetSprite.GfxRect;
 
-            Vector2 position;
-            switch (this.alignment)
+            var position = this.alignment switch
             {
-                case Alignment.Center:
-                    position = new Vector2(
-                        targetRect.Center.X - (textureWidth / 2),
-                        targetRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.TopOut:
-                    position = new Vector2(
-                        targetRect.Center.X - (textureWidth / 2),
-                        targetRect.Top - textureHeight);
-                    break;
-
-                case Alignment.TopIn:
-                    position = new Vector2(
-                        targetRect.Center.X - (textureWidth / 2),
-                        targetRect.Top);
-                    break;
-
-                case Alignment.LeftIn:
-                    position = new Vector2(
-                        targetRect.Left,
-                        targetRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.RightIn:
-                    position = new Vector2(
-                        targetRect.Right - textureWidth,
-                        targetRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.LeftOut:
-                    position = new Vector2(
-                        targetRect.Left - textureWidth,
-                        targetRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.RightOut:
-                    position = new Vector2(
-                        targetRect.Right,
-                        targetRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.BottomOut:
-                    position = new Vector2(
-                        targetRect.Center.X - (textureWidth / 2),
-                        targetRect.Bottom);
-                    break;
-
-                case Alignment.BottomIn:
-                    position = new Vector2(
-                        targetRect.Center.X - (textureWidth / 2),
-                        targetRect.Bottom - textureHeight);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignment - '{alignment}'.");
-            }
-
+                Alignment.Center => new Vector2(
+                                        targetRect.Center.X - (textureWidth / 2),
+                                        targetRect.Center.Y - (textureHeight / 2)),
+                Alignment.TopOut => new Vector2(
+                                        targetRect.Center.X - (textureWidth / 2),
+                                        targetRect.Top - textureHeight),
+                Alignment.TopIn => new Vector2(
+                                        targetRect.Center.X - (textureWidth / 2),
+                                        targetRect.Top),
+                Alignment.LeftIn => new Vector2(
+                                        targetRect.Left,
+                                        targetRect.Center.Y - (textureHeight / 2)),
+                Alignment.RightIn => new Vector2(
+                                        targetRect.Right - textureWidth,
+                                        targetRect.Center.Y - (textureHeight / 2)),
+                Alignment.LeftOut => new Vector2(
+                                        targetRect.Left - textureWidth,
+                                        targetRect.Center.Y - (textureHeight / 2)),
+                Alignment.RightOut => new Vector2(
+                                        targetRect.Right,
+                                        targetRect.Center.Y - (textureHeight / 2)),
+                Alignment.BottomOut => new Vector2(
+                                        targetRect.Center.X - (textureWidth / 2),
+                                        targetRect.Bottom),
+                Alignment.BottomIn => new Vector2(
+                                        targetRect.Center.X - (textureWidth / 2),
+                                        targetRect.Bottom - textureHeight),
+                _ => throw new ArgumentException($"Unsupported alignment - '{alignment}'."),
+            };
             return position;
         }
     }

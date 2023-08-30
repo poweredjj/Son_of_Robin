@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace SonOfRobin
 {
-    public struct HintMessage
+    public readonly struct HintMessage
     {
         public enum BoxType : byte
         {

@@ -277,7 +277,7 @@ namespace SonOfRobin
             if (Preferences.ShowTouchTips) shootingMessage = new HintMessage(text: "3. Tilt right analog stick in desired direction.", boxType: messageTextType);
             else
             {
-                if (Input.currentControlType == Input.ControlType.Gamepad) shootingMessage = new HintMessage(text: "3. Tilt the | in desired direction.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.WorldCameraMove) }, boxType: messageTextType);
+                if (Input.CurrentControlType == Input.ControlType.Gamepad) shootingMessage = new HintMessage(text: "3. Tilt the | in desired direction.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.WorldCameraMove) }, boxType: messageTextType);
                 else
                 {
                     var imageList = InputMapper.GetTextures(InputMapper.Action.WorldWalk);

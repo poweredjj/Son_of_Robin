@@ -2,7 +2,7 @@
 
 namespace SonOfRobin
 {
-    public struct CountComparison
+    public readonly struct CountComparison
     {
         public enum Comparison : byte
         {
@@ -24,28 +24,17 @@ namespace SonOfRobin
             this.comparison = comparison;
         }
 
-        public bool Check(int countCrafted)
+        public readonly bool Check(int countCrafted)
         {
-            switch (this.comparison)
+            return this.comparison switch
             {
-                case Comparison.Greater:
-                    return countCrafted > this.count;
-
-                case Comparison.GreaterOrEqual:
-                    return countCrafted >= this.count;
-
-                case Comparison.Equal:
-                    return countCrafted == this.count;
-
-                case Comparison.LessOrEqual:
-                    return countCrafted <= this.count;
-
-                case Comparison.Less:
-                    return countCrafted < this.count;
-
-                default:
-                    throw new ArgumentException($"Unsupported comparison - {this.comparison}.");
-            }
+                Comparison.Greater => countCrafted > this.count,
+                Comparison.GreaterOrEqual => countCrafted >= this.count,
+                Comparison.Equal => countCrafted == this.count,
+                Comparison.LessOrEqual => countCrafted <= this.count,
+                Comparison.Less => countCrafted < this.count,
+                _ => throw new ArgumentException($"Unsupported comparison - {this.comparison}."),
+            };
         }
     }
 }

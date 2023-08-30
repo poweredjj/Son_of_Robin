@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class FpsCounter : Scene
     {
-        public struct FpsValueGroup
+        public readonly struct FpsValueGroup
         {
             public readonly int fps;
             public readonly int length;
@@ -81,7 +81,7 @@ namespace SonOfRobin
             { -1, Color.Red },
             };
 
-        private FpsHistory fpsHistory;
+        private readonly FpsHistory fpsHistory;
         private int counterValue;
 
         private string CounterText

@@ -48,7 +48,7 @@ namespace SonOfRobin
             this.createdAt = DateTime.Now;
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
-            this.touchMode = Input.currentControlType == Input.ControlType.Touch;
+            this.touchMode = Input.CurrentControlType == Input.ControlType.Touch;
             this.lastTouchedEntry = null;
             this.templateName = templateName;
             this.name = name;
@@ -82,20 +82,13 @@ namespace SonOfRobin
         {
             get
             {
-                switch (this.layout)
+                return this.layout switch
                 {
-                    case Layout.Middle:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.7f);
-
-                    case Layout.Left:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
-
-                    case Layout.Right:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
-
-                    default:
-                        throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
-                }
+                    Layout.Middle => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.7f),
+                    Layout.Left => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f),
+                    Layout.Right => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f),
+                    _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
+                };
             }
         }
 
@@ -289,26 +282,13 @@ namespace SonOfRobin
                 Scene sceneBelow = this.GetSceneBelow();
                 if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
                 {
-                    Dictionary<string, float> paramsToChange;
-
-                    switch (this.layout)
+                    Dictionary<string, float> paramsToChange = this.layout switch
                     {
-                        case Layout.Middle:
-                            paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } };
-                            break;
-
-                        case Layout.Left:
-                            paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } };
-                            break;
-
-                        case Layout.Right:
-                            paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } };
-                            break;
-
-                        default:
-                            throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
-                    }
-
+                        Layout.Middle => new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } },
+                        Layout.Left => new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } },
+                        Layout.Right => new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } },
+                        _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
+                    };
                     this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: true, duration: 12, endRemoveScene: true);
 
                     return;
@@ -391,26 +371,13 @@ namespace SonOfRobin
 
             if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
             {
-                Dictionary<string, float> paramsToChange;
-
-                switch (this.layout)
+                Dictionary<string, float> paramsToChange = this.layout switch
                 {
-                    case Layout.Middle:
-                        paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } };
-                        break;
-
-                    case Layout.Left:
-                        paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } };
-                        break;
-
-                    case Layout.Right:
-                        paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } };
-                        break;
-
-                    default:
-                        throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
-                }
-
+                    Layout.Middle => new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } },
+                    Layout.Left => new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } },
+                    Layout.Right => new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } },
+                    _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
+                };
                 this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: false, duration: 12);
 
                 World topWorld = World.GetTopWorld();
@@ -679,23 +646,13 @@ namespace SonOfRobin
             this.viewParams.Width = this.EntryBgWidth;
             this.viewParams.Height = SonOfRobinGame.VirtualHeight;
 
-            switch (this.layout)
+            this.viewParams.PosX = this.layout switch
             {
-                case Menu.Layout.Middle:
-                    this.viewParams.PosX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2);
-                    break;
-
-                case Menu.Layout.Left:
-                    this.viewParams.PosX = 0;
-                    break;
-
-                case Menu.Layout.Right:
-                    this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
-            }
+                Layout.Middle => (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2),
+                Layout.Left => 0,
+                Layout.Right => (float)(SonOfRobinGame.VirtualWidth - this.viewParams.Width),
+                _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
+            };
 
             this.viewParams.PosY = 0;
         }

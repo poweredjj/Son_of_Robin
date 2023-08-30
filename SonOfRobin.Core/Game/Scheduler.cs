@@ -173,7 +173,7 @@ namespace SonOfRobin
             private int frame;
             private readonly bool turnOffInputUntilExecution;
 
-            public string TaskText
+            public readonly string TaskText
             {
                 get
                 {
@@ -200,7 +200,7 @@ namespace SonOfRobin
                 else this.frame = -1;
             }
 
-            private void TurnOffInput()
+            private readonly void TurnOffInput()
             {
                 Input.GlobalInputActive = false;
                 inputTurnedOffUntilFrame = Math.Max(this.frame, inputTurnedOffUntilFrame);
@@ -226,7 +226,7 @@ namespace SonOfRobin
                 queue[this.frame].Enqueue(this);
             }
 
-            public void Execute()
+            public readonly void Execute()
             {
                 switch (taskName)
                 {
@@ -757,7 +757,7 @@ namespace SonOfRobin
                             var resetData = (Dictionary<string, Object>)this.ExecuteHelper;
                             bool gamepad = (bool)resetData["gamepad"];
                             bool useDefault = (bool)resetData["useDefault"];
-                            bool showMessage = resetData.ContainsKey("showMessage") ? (bool)resetData["showMessage"] : true;
+                            bool showMessage = !resetData.ContainsKey("showMessage") || (bool)resetData["showMessage"];
 
                             if (gamepad)
                             {
@@ -1097,7 +1097,7 @@ namespace SonOfRobin
 
                             var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
                             float zoom = (float)zoomData["zoom"];
-                            bool setInstantly = zoomData.ContainsKey("setInstantly") ? (bool)zoomData["setInstantly"] : false;
+                            bool setInstantly = zoomData.ContainsKey("setInstantly") && (bool)zoomData["setInstantly"];
                             float zoomSpeedMultiplier = zoomData.ContainsKey("zoomSpeedMultiplier") ? (float)zoomData["zoomSpeedMultiplier"] : 1f;
 
                             world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier, setInstantly: setInstantly);
@@ -1244,9 +1244,9 @@ namespace SonOfRobin
                             Tutorials.Type type = (Tutorials.Type)tutorialData["tutorial"];
                             World worldToUse = (World)tutorialData["world"];
 
-                            bool ignoreHintsSetting = tutorialData.ContainsKey("ignoreHintsSetting") ? (bool)tutorialData["ignoreHintsSetting"] : false;
-                            bool ignoreDelay = tutorialData.ContainsKey("ignoreDelay") ? (bool)tutorialData["ignoreDelay"] : false;
-                            bool ignoreIfShown = tutorialData.ContainsKey("ignoreIfShown") ? (bool)tutorialData["ignoreIfShown"] : true;
+                            bool ignoreHintsSetting = tutorialData.ContainsKey("ignoreHintsSetting") && (bool)tutorialData["ignoreHintsSetting"];
+                            bool ignoreDelay = tutorialData.ContainsKey("ignoreDelay") && (bool)tutorialData["ignoreDelay"];
+                            bool ignoreIfShown = !tutorialData.ContainsKey("ignoreIfShown") || (bool)tutorialData["ignoreIfShown"];
 
                             Tutorials.ShowTutorialOnTheField(type: type, world: worldToUse, ignoreHintsSetting: ignoreHintsSetting, ignoreDelay: ignoreDelay, ignoreIfShown: ignoreIfShown);
 
@@ -1802,29 +1802,14 @@ namespace SonOfRobin
                             bool playerOnTheLeft = playerPos.X < obstaclePos.X;
                             bool playerOnTheTop = playerPos.Y < obstaclePos.Y;
 
-                            bool canJump;
-
-                            switch (player.sprite.orientation)
+                            var canJump = player.sprite.orientation switch
                             {
-                                case Sprite.Orientation.left:
-                                    canJump = !horizontal && !playerOnTheLeft;
-                                    break;
-
-                                case Sprite.Orientation.right:
-                                    canJump = !horizontal && playerOnTheLeft;
-                                    break;
-
-                                case Sprite.Orientation.up:
-                                    canJump = horizontal && !playerOnTheTop;
-                                    break;
-
-                                case Sprite.Orientation.down:
-                                    canJump = horizontal && playerOnTheTop;
-                                    break;
-
-                                default:
-                                    throw new ArgumentException($"Unsupported orientation - '{player.sprite.orientation}'.");
-                            }
+                                Sprite.Orientation.left => !horizontal && !playerOnTheLeft,
+                                Sprite.Orientation.right => !horizontal && playerOnTheLeft,
+                                Sprite.Orientation.up => horizontal && !playerOnTheTop,
+                                Sprite.Orientation.down => horizontal && playerOnTheTop,
+                                _ => throw new ArgumentException($"Unsupported orientation - '{player.sprite.orientation}'."),
+                            };
 
                             if (!canJump)
                             {

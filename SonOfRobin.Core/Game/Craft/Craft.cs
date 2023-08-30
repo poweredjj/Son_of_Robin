@@ -136,45 +136,18 @@ namespace SonOfRobin
                 }
 
                 BoardPiece.Category category = PieceInfo.GetInfo(pieceToCreate).category;
-                List<ParticleEngine.Preset> debrisTypeList;
-
-                switch (category)
+                List<ParticleEngine.Preset> debrisTypeList = category switch
                 {
-                    case BoardPiece.Category.Wood:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
-                        break;
-
-                    case BoardPiece.Category.Stone:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone };
-                        break;
-
-                    case BoardPiece.Category.Metal:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
-                        break;
-
-                    case BoardPiece.Category.SmallPlant:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass };
-                        break;
-
-                    case BoardPiece.Category.Flesh:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisBlood };
-                        break;
-
-                    case BoardPiece.Category.Leather:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood };
-                        break;
-
-                    case BoardPiece.Category.Crystal:
-                        debrisTypeList = new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCrystal };
-                        break;
-
-                    case BoardPiece.Category.Indestructible:
-                        debrisTypeList = new List<ParticleEngine.Preset>();
-                        break;
-
-                    default:
-                        throw new ArgumentException($"Unsupported category - '{category}'.");
-                }
+                    BoardPiece.Category.Wood => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
+                    BoardPiece.Category.Stone => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
+                    BoardPiece.Category.Metal => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
+                    BoardPiece.Category.SmallPlant => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
+                    BoardPiece.Category.Flesh => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisBlood },
+                    BoardPiece.Category.Leather => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
+                    BoardPiece.Category.Crystal => new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCrystal },
+                    BoardPiece.Category.Indestructible => new List<ParticleEngine.Preset>(),
+                    _ => throw new ArgumentException($"Unsupported category - '{category}'."),
+                };
 
                 Yield.antiCraftRecipes[this.pieceToCreate] = this;
                 return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisTypeList: debrisTypeList);
@@ -489,7 +462,7 @@ namespace SonOfRobin
             }
         }
 
-        private static Dictionary<Category, List<Recipe>> recipesByCategory = new Dictionary<Category, List<Recipe>> { };
+        private static readonly Dictionary<Category, List<Recipe>> recipesByCategory = new() { };
 
         private static List<Recipe> AllRecipes
         {

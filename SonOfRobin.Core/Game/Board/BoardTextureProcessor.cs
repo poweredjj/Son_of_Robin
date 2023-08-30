@@ -10,7 +10,7 @@ namespace SonOfRobin
 {
     public class BoardTextureProcessor
     {
-        public struct ProcessingTask
+        public readonly struct ProcessingTask
         {
             private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(5);
 

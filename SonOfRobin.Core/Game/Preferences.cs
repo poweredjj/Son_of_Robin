@@ -113,7 +113,7 @@ namespace SonOfRobin
         public static bool rumbleEnabled = true;
         public static bool alwaysRun = false;
         public static bool mapShowLocationNames = true; // not saved
-        public static int stateMachinesDurationFrameMS { get; private set; }
+        public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
         public static float StateMachinesDurationFramePercent
         {
@@ -121,7 +121,7 @@ namespace SonOfRobin
             set
             {
                 stateMachinesDurationFramePercent = value;
-                stateMachinesDurationFrameMS = (int)(1d / (double)60 * 1000d * stateMachinesDurationFramePercent);
+                StateMachinesDurationFrameMS = (int)(1d / (double)60 * 1000d * stateMachinesDurationFramePercent);
             }
         }
 
@@ -207,7 +207,7 @@ namespace SonOfRobin
         }
 
         public static bool ShowTouchTips
-        { get { return Input.currentControlType == Input.ControlType.Touch; } }
+        { get { return Input.CurrentControlType == Input.ControlType.Touch; } }
 
         public static bool enableTouchJoysticks = false;
 
@@ -218,7 +218,7 @@ namespace SonOfRobin
             get { return enableTouchButtons; }
             set
             {
-                if (SonOfRobinGame.platform == Platform.Mobile && Input.currentControlType == Input.ControlType.Touch) value = true; // when not using joypad / keyboard, mobile should always have touch buttons enabled
+                if (SonOfRobinGame.platform == Platform.Mobile && Input.CurrentControlType == Input.ControlType.Touch) value = true; // when not using joypad / keyboard, mobile should always have touch buttons enabled
                 enableTouchButtons = value;
 
                 if (enableTouchButtons)
@@ -360,27 +360,14 @@ namespace SonOfRobin
             {
                 selectedWorldSize = value;
 
-                switch (selectedWorldSize)
+                newWorldSize = selectedWorldSize switch
                 {
-                    case WorldSize.small:
-                        newWorldSize = 10000;
-                        break;
-
-                    case WorldSize.medium:
-                        newWorldSize = 30000;
-                        break;
-
-                    case WorldSize.large:
-                        newWorldSize = 40000;
-                        break;
-
-                    case WorldSize.gigantic:
-                        newWorldSize = 60000;
-                        break;
-
-                    default:
-                        throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
-                }
+                    WorldSize.small => 10000,
+                    WorldSize.medium => 30000,
+                    WorldSize.large => 40000,
+                    WorldSize.gigantic => 60000,
+                    _ => throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}."),
+                };
 
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldSize}x{newWorldSize}");
             }

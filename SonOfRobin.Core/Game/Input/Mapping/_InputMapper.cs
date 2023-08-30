@@ -591,7 +591,7 @@ namespace SonOfRobin
                 {
                     var textureList = new List<Texture2D>();
 
-                    switch (Input.currentControlType)
+                    switch (Input.CurrentControlType)
                     {
                         case Input.ControlType.Touch:
 
@@ -634,7 +634,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new ArgumentException($"Unsupported LastUsedType - '{Input.currentControlType}'.");
+                            throw new ArgumentException($"Unsupported LastUsedType - '{Input.CurrentControlType}'.");
                     }
 
                     return textureList;

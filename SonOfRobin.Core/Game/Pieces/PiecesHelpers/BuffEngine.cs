@@ -542,7 +542,7 @@ namespace SonOfRobin
             return regenValue != 0;
         }
 
-        public static List<Buff> MergeSameTypeBuffsInList(World world, List<Buff> buffList)
+        public static List<Buff> MergeSameTypeBuffsInList(List<Buff> buffList)
         {
             var buffsListsByType = new Dictionary<BuffType, List<Buff>>();
 
@@ -593,115 +593,39 @@ namespace SonOfRobin
             if (buff1.isPermanent != buff2.isPermanent) throw new ArgumentException($"Buffs' 'isPermanent' ({buff1.type}, {buff2.type}) are not the same.");
 
             BuffType buffType = buff1.type;
-
-            object value;
             int autoRemoveDelay = Math.Max(buff1.autoRemoveDelay, buff2.autoRemoveDelay);
             int sleepMinutesNeededForActivation = Math.Max(buff1.sleepMinutesNeededForActivation, buff2.sleepMinutesNeededForActivation);
             bool canKill = buff1.canKill || buff2.canKill;
             bool increaseIDAtEveryUse = buff1.increaseIDAtEveryUse || buff2.increaseIDAtEveryUse;
 
-            switch (buffType)
+            object value = buffType switch
             {
-                case BuffType.InvWidth:
-                    value = (byte)buff1.value + (byte)buff2.value;
-                    break;
-
-                case BuffType.InvHeight:
-                    value = (byte)buff1.value + (byte)buff2.value;
-                    break;
-
-                case BuffType.ToolbarWidth:
-                    value = (byte)buff1.value + (byte)buff2.value;
-                    break;
-
-                case BuffType.ToolbarHeight:
-                    value = (byte)buff1.value + (byte)buff2.value;
-                    break;
-
-                case BuffType.Speed:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.Strength:
-                    value = (int)buff1.value + (int)buff2.value;
-                    break;
-
-                case BuffType.HP:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.MaxHP:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.MaxFatigue:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.RegenPoison:
-                    value = (int)buff1.value + (int)buff2.value;
-                    break;
-
-                case BuffType.Haste:
-                    value = (int)buff1.value + (int)buff2.value;
-                    break;
-
-                case BuffType.Fatigue:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.EnableMap:
-                    value = null;
-                    break;
-
-                case BuffType.Tired:
-                    value = null;
-                    break;
-
-                case BuffType.Hungry:
-                    value = null;
-                    break;
-
-                case BuffType.Heat:
-                    value = null;
-                    break;
-
-                case BuffType.HeatProtection:
-                    value = null;
-                    break;
-
-                case BuffType.SwampProtection:
-                    value = null;
-                    break;
-
-                case BuffType.FastMountainWalking:
-                    value = null;
-                    break;
-
-                case BuffType.Wet:
-                    value = null;
-                    break;
-
-                case BuffType.Sprint:
-                    value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.ExtendSprintDuration:
-                    value = (int)buff1.value + (int)buff2.value;
-                    break;
-
-                case BuffType.SprintCooldown:
-                    value = null;
-                    break;
-
-                case BuffType.HeatLevelLocked:
-                    value = null;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported buff type - {buffType}.");
-            }
-
+                BuffType.InvWidth => (byte)buff1.value + (byte)buff2.value,
+                BuffType.InvHeight => (byte)buff1.value + (byte)buff2.value,
+                BuffType.ToolbarWidth => (byte)buff1.value + (byte)buff2.value,
+                BuffType.ToolbarHeight => (byte)buff1.value + (byte)buff2.value,
+                BuffType.Speed => (float)buff1.value + (float)buff2.value,
+                BuffType.Strength => (int)buff1.value + (int)buff2.value,
+                BuffType.HP => (float)buff1.value + (float)buff2.value,
+                BuffType.MaxHP => (float)buff1.value + (float)buff2.value,
+                BuffType.MaxFatigue => (float)buff1.value + (float)buff2.value,
+                BuffType.RegenPoison => (int)buff1.value + (int)buff2.value,
+                BuffType.Haste => (int)buff1.value + (int)buff2.value,
+                BuffType.Fatigue => (float)buff1.value + (float)buff2.value,
+                BuffType.EnableMap => null,
+                BuffType.Tired => null,
+                BuffType.Hungry => null,
+                BuffType.Heat => null,
+                BuffType.HeatProtection => null,
+                BuffType.SwampProtection => null,
+                BuffType.FastMountainWalking => null,
+                BuffType.Wet => null,
+                BuffType.Sprint => (float)buff1.value + (float)buff2.value,
+                BuffType.ExtendSprintDuration => (int)buff1.value + (int)buff2.value,
+                BuffType.SprintCooldown => null,
+                BuffType.HeatLevelLocked => null,
+                _ => throw new ArgumentException($"Unsupported buff type - {buffType}."),
+            };
             return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepMinutesNeededForActivation: sleepMinutesNeededForActivation, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
     }

@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class SoundData
     {
-        public static readonly Dictionary<Name, SoundEffect> soundsDict = new Dictionary<Name, SoundEffect>();
+        public static readonly Dictionary<Name, SoundEffect> soundsDict = new();
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
         public static void LoadAllSounds()
@@ -290,7 +290,8 @@ namespace SonOfRobin
             Rattle = 226,
         }
 
-        public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
+        public static readonly Dictionary<Name, string> soundFilenamesDict = new()
+        {
             { Name.Navigation, "628638__el-boss__menu-select-tick" },
             { Name.Tick, "268108__nenadsimic__button-tick" },
             { Name.Beep, "616821__trp__cell-phone-beep-2012" },

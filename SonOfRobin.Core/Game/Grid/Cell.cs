@@ -230,9 +230,9 @@ namespace SonOfRobin
             this.spriteGroups[groupName].Remove(sprite);
         }
 
-        public IEnumerable<Sprite> GetSpritesFromSurroundingCells(Group groupName)
+        public List<Sprite> GetSpritesFromSurroundingCells(Group groupName)
         {
-            List<Sprite> surroundingSprites = new List<Sprite>();
+            List<Sprite> surroundingSprites = new();
 
             foreach (Cell cell in this.surroundingCells)
             {

@@ -39,7 +39,7 @@ namespace SonOfRobin
 
     public class VirtButton
     {
-        private static Dictionary<VButName, string> labelTexturesByNames = new Dictionary<VButName, string>
+        private static readonly Dictionary<VButName, string> labelTexturesByNames = new()
         {
             { VButName.Confirm, "check_mark" },
             { VButName.Interact, "interact" },
@@ -113,7 +113,7 @@ namespace SonOfRobin
 
             this.activeCoupledObj = activeCoupledObj;
             this.activeCoupledVarName = activeCoupledVarName;
-            bool initialValue = this.activeCoupledVarName != "" ? this.GetCoupledVar() : false;
+            bool initialValue = this.activeCoupledVarName != "" && this.GetCoupledVar();
 
             this.isDown = initialValue;
             this.highlighter = new Highlighter(isOn: isHighlighted, coupledObj: highlightCoupledObj, coupledVarName: highlightCoupledVarName);

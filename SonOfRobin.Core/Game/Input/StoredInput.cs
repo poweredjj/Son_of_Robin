@@ -70,20 +70,13 @@ namespace SonOfRobin
             StoredInput other = (StoredInput)obj;
             if (this.type != other.type) return false;
 
-            switch (this.type)
+            return this.type switch
             {
-                case Type.Key:
-                    return this.key == other.key;
-
-                case Type.Button:
-                    return this.button == other.button;
-
-                case Type.Analog:
-                    return this.analog == other.analog;
-
-                default:
-                    throw new ArgumentException($"Unsupported type - '{type}'.");
-            }
+                Type.Key => this.key == other.key,
+                Type.Button => this.button == other.button,
+                Type.Analog => this.analog == other.analog,
+                _ => throw new ArgumentException($"Unsupported type - '{type}'."),
+            };
         }
 
         public override int GetHashCode()
@@ -96,27 +89,13 @@ namespace SonOfRobin
                 hash = hash * 23 + this.type.GetHashCode();
 
                 // Use a switch statement to get the hash code of the appropriate field, based on the value of the Type property.
-                switch (this.type)
+                hash = this.type switch
                 {
-                    case Type.Key:
-                        // Multiply the current hash by a prime number, and add the hash code of the Key field.
-                        hash = hash * 23 + this.key.GetHashCode();
-                        break;
-
-                    case Type.Button:
-                        // Multiply the current hash by a prime number, and add the hash code of the Button field.
-                        hash = hash * 23 + this.button.GetHashCode();
-                        break;
-
-                    case Type.Analog:
-                        // Multiply the current hash by a prime number, and add the hash code of the Analog field.
-                        hash = hash * 23 + this.analog.GetHashCode();
-                        break;
-
-                    default:
-                        throw new ArgumentException($"Unsupported type - '{this.type}'.");
-                }
-
+                    Type.Key => hash * 23 + this.key.GetHashCode(),// Multiply the current hash by a prime number, and add the hash code of the Key field.
+                    Type.Button => hash * 23 + this.button.GetHashCode(),// Multiply the current hash by a prime number, and add the hash code of the Button field.
+                    Type.Analog => hash * 23 + this.analog.GetHashCode(),// Multiply the current hash by a prime number, and add the hash code of the Analog field.
+                    _ => throw new ArgumentException($"Unsupported type - '{this.type}'."),
+                };
                 return hash;
             }
         }
@@ -154,20 +133,13 @@ namespace SonOfRobin
             var inputDict = (Dictionary<string, Object>)inputData;
 
             Type type = (Type)(Int64)inputDict["type"];
-            switch (type)
+            return type switch
             {
-                case Type.Key:
-                    return new StoredInput((Keys)(Int64)inputDict["key"]);
-
-                case Type.Button:
-                    return new StoredInput((Buttons)(Int64)inputDict["button"]);
-
-                case Type.Analog:
-                    return new StoredInput((InputMapper.AnalogType)(Int64)inputDict["analog"]);
-
-                default:
-                    throw new ArgumentException($"Unsupported type - '{type}'.");
-            }
+                Type.Key => new StoredInput((Keys)(Int64)inputDict["key"]),
+                Type.Button => new StoredInput((Buttons)(Int64)inputDict["button"]),
+                Type.Analog => new StoredInput((InputMapper.AnalogType)(Int64)inputDict["analog"]),
+                _ => throw new ArgumentException($"Unsupported type - '{type}'."),
+            };
         }
     }
 }
