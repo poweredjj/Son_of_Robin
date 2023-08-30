@@ -26,7 +26,7 @@ namespace SonOfRobin
             {
                 if ((this.srcName1 == piece1.name && this.srcName2 == piece2.name) || (this.srcName1 == piece2.name && this.srcName2 == piece1.name))
                 {
-                    return PieceTemplate.Create(templateName: this.resultName, world: piece1.world);
+                    return PieceTemplate.CreatePiece(templateName: this.resultName, world: piece1.world);
                 }
                 else return null;
             }

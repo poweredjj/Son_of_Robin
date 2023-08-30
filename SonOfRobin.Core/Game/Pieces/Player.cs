@@ -145,7 +145,7 @@ namespace SonOfRobin
             this.recipeToBuild = null;
             this.simulatedPieceToBuild = null;
 
-            BoardPiece knifeTool = PieceTemplate.Create(templateName: PieceTemplate.Name.KnifeSimple, world: this.world);
+            BoardPiece knifeTool = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.KnifeSimple, world: this.world);
             StorageSlot knifeSlot = this.ToolStorage.FindCorrectSlot(knifeTool);
             this.ToolStorage.AddPiece(knifeTool);
             knifeSlot.locked = true;
@@ -527,7 +527,7 @@ namespace SonOfRobin
 
         public void RefreshAllowedPiecesForStorages() // for older saves compatibility, to ensure that all storages have the right allowedPieceNames
         {
-            Player tempPlayer = (Player)PieceTemplate.Create(templateName: this.name, world: this.world);
+            Player tempPlayer = (Player)PieceTemplate.CreatePiece(templateName: this.name, world: this.world);
 
             for (int x = 0; x < this.EquipStorage.Width; x++)
             {

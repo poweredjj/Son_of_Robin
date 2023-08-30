@@ -149,7 +149,7 @@ namespace SonOfRobin
 
                     for (int i = 0; i < numberToDrop; i++)
                     {
-                        piecesList.Add(PieceTemplate.Create(world: world, templateName: droppedPiece.pieceName));
+                        piecesList.Add(PieceTemplate.CreatePiece(world: world, templateName: droppedPiece.pieceName));
                     }
                 }
             }

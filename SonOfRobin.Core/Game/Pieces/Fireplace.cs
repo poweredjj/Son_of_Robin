@@ -50,13 +50,13 @@ namespace SonOfRobin
             };
             this.PieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
-            BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
+            BoardPiece flameTrigger = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
 
             StorageSlot flameSlot = this.PieceStorage.GetSlot(0, 0);
             this.PieceStorage.AddPiece(flameTrigger);
             flameSlot.locked = true;
 
-            BoardPiece waterTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
+            BoardPiece waterTrigger = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
             StorageSlot waterSlot = this.PieceStorage.GetSlot(1, 0);
             this.PieceStorage.AddPiece(waterTrigger);
             waterSlot.locked = true;

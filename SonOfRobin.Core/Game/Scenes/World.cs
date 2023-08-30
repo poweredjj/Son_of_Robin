@@ -655,7 +655,7 @@ namespace SonOfRobin
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
-                    BoardPiece startingItem = PieceTemplate.Create(world: this, templateName: Preferences.newWorldStartingItem);
+                    BoardPiece startingItem = PieceTemplate.CreatePiece(world: this, templateName: Preferences.newWorldStartingItem);
                     this.Player.PieceStorage.AddPiece(startingItem); // should not equip the item automatically
 
                     if (playerName == PieceTemplate.Name.PlayerTestDemoness)
@@ -666,7 +666,7 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name name in pieceNamesToEquip)
                         {
-                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                            BoardPiece piece = PieceTemplate.CreatePiece(world: this, templateName: name);
                             this.Player.EquipStorage.AddPiece(piece);
                         }
 
@@ -677,13 +677,13 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name name in pieceNamesForToolbar)
                         {
-                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                            BoardPiece piece = PieceTemplate.CreatePiece(world: this, templateName: name);
                             this.Player.ToolStorage.AddPiece(piece);
                         }
 
                         for (int i = 0; i < 50; i++)
                         {
-                            BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowExploding);
+                            BoardPiece piece = PieceTemplate.CreatePiece(world: this, templateName: PieceTemplate.Name.ArrowExploding);
                             this.Player.ToolStorage.AddPiece(piece);
                         }
 
@@ -720,7 +720,7 @@ namespace SonOfRobin
                             bool pieceAdded = false;
                             for (int i = 0; i < count; i++)
                             {
-                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                BoardPiece piece = PieceTemplate.CreatePiece(world: this, templateName: name);
                                 pieceAdded = this.Player.PieceStorage.AddPiece(piece);
                                 if (!pieceAdded) break;
                             }

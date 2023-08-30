@@ -298,11 +298,6 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) }},
                             extPropertiesDict: noBiomeExtProps);
 
-        public static BoardPiece Create(Name templateName, World world, int id = -1)
-        {
-            return CreatePiece(templateName: templateName, world: world, id: id);
-        }
-
         public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, bool precisePlacement = false, int id = -1, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
         {
             BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id);
@@ -333,7 +328,7 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, int id = -1)
+        public static BoardPiece CreatePiece(Name templateName, World world, int id = -1)
         {
             if (id == -1) id = Helpers.GetUniqueID();
 

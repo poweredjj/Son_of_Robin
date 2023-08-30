@@ -405,7 +405,7 @@ namespace SonOfRobin
                         {
                             if (PieceInfo.GetInfo(pieceName).convertsWhenUsed && keepContainers)
                             {
-                                BoardPiece emptyContainter = PieceTemplate.Create(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
+                                BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                             }
                             else

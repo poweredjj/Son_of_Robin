@@ -26,7 +26,7 @@ namespace SonOfRobin
 
             StorageSlot offerTriggerSlot = this.PieceStorage.GetSlot(1, 0);
             offerTriggerSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.OfferTrigger };
-            BoardPiece offerTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.OfferTrigger, world: this.world);
+            BoardPiece offerTrigger = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.OfferTrigger, world: this.world);
             offerTriggerSlot.hidden = false;
             offerTriggerSlot.locked = false;
             offerTriggerSlot.AddPiece(offerTrigger);

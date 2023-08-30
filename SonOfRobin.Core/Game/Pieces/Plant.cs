@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                 if (haveEnoughMass)
                 {
-                    BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name);
+                    BoardPiece newPlant = PieceTemplate.CreatePiece(world: world, templateName: this.name);
                     if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
 
                     if (this.createdByPlayer)

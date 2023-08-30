@@ -754,7 +754,7 @@ namespace SonOfRobin
                     return;
                 }
 
-                BoardPiece child = PieceTemplate.Create(world: world, templateName: this.name);
+                BoardPiece child = PieceTemplate.CreatePiece(world: world, templateName: this.name);
                 if (this.sprite.allowedTerrain.HasBeenChanged) child.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
                 child.PlaceOnBoard(randomPlacement: false, position: this.sprite.position, closestFreeSpot: true);
 

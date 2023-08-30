@@ -84,7 +84,7 @@ namespace SonOfRobin
 
         private void AddFruit()
         {
-            BoardPiece fruitPiece = PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
+            BoardPiece fruitPiece = PieceTemplate.CreatePiece(templateName: this.fruitName, world: this.plant.world);
 
             if (this.plant.PieceStorage.FindCorrectSlot(piece: fruitPiece) != null)
             {

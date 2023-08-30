@@ -31,7 +31,7 @@ namespace SonOfRobin
 
             StorageSlot harvestTriggerSlot = this.TriggerSlot;
             harvestTriggerSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.MeatHarvestTrigger };
-            BoardPiece harvestTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.MeatHarvestTrigger, world: this.world);
+            BoardPiece harvestTrigger = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.MeatHarvestTrigger, world: this.world);
             harvestTriggerSlot.hidden = false;
             harvestTriggerSlot.locked = false;
             harvestTriggerSlot.AddPiece(harvestTrigger);
@@ -164,7 +164,7 @@ namespace SonOfRobin
 
                 foreach (BoardPiece meatPiece in basePieces)
                 {
-                    if (this.world.random.Next(bonusChance) == 0) bonusPieces.Add(PieceTemplate.Create(world: world, templateName: meatPiece.name));
+                    if (this.world.random.Next(bonusChance) == 0) bonusPieces.Add(PieceTemplate.CreatePiece(world: world, templateName: meatPiece.name));
                 }
 
                 if (bonusPieces.Count > 0)

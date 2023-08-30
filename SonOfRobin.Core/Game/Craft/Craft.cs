@@ -257,7 +257,7 @@ namespace SonOfRobin
                 {
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
-                        BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
+                        BoardPiece piece = PieceTemplate.CreatePiece(templateName: this.pieceToCreate, world: world);
 
                         craftedPieces.Add(piece);
                         bool pieceInserted = false;

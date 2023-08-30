@@ -39,7 +39,7 @@ namespace SonOfRobin
                     {
                         this.slot.GetAllPieces(remove: true);
 
-                        BoardPiece driedMeat = PieceTemplate.Create(templateName: driedMeatName, world: this.world);
+                        BoardPiece driedMeat = PieceTemplate.CreatePiece(templateName: driedMeatName, world: this.world);
                         driedMeat.Mass = meat.Mass;
 
                         this.slot.DestroyPieceAndReplaceWithAnother(driedMeat);

@@ -74,7 +74,7 @@ namespace SonOfRobin
 
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
-            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.Create(templateName: PieceTemplate.Name.BrewTrigger, world: this.world));
+            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BrewTrigger, world: this.world));
             flameTriggerSlot.locked = true;
 
             StorageSlot bottleSlot = this.BottleSlot;
@@ -285,7 +285,7 @@ namespace SonOfRobin
 
             // creating potion
 
-            BoardPiece potion = PieceTemplate.Create(templateName: potionName, world: this.world);
+            BoardPiece potion = PieceTemplate.CreatePiece(templateName: potionName, world: this.world);
             buffList = BuffEngine.MergeSameTypeBuffsInList(buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
 
             var adjustedBuffList = new List<Buff>();

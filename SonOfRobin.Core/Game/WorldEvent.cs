@@ -343,7 +343,7 @@ namespace SonOfRobin
                             {
                                 StorageSlot slot = portableLight.world.Player.ToolStorage.FindSlotContainingThisPiece(portableLight);
 
-                                BoardPiece emptyContainter = PieceTemplate.Create(templateName: portableLight.convertsToWhenUsedUp, world: world);
+                                BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: portableLight.convertsToWhenUsedUp, world: world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                             }
                             else world.Player.EquipStorage.DestroyBrokenPieces();

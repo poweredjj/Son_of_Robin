@@ -2721,7 +2721,7 @@ namespace SonOfRobin
 
             foreach (PieceTemplate.Name name in PieceTemplate.allNames)
             {
-                BoardPiece piece = PieceTemplate.Create(templateName: name, world: null);
+                BoardPiece piece = PieceTemplate.CreatePiece(templateName: name, world: null);
                 info[name] = new Info(piece: piece);
             }
 

@@ -71,7 +71,7 @@ namespace SonOfRobin
 
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
-            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.Create(templateName: PieceTemplate.Name.CookingTrigger, world: this.world));
+            if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.CookingTrigger, world: this.world));
             flameTriggerSlot.locked = true;
 
             StorageSlot mealSlot = this.MealSlot;
@@ -222,7 +222,7 @@ namespace SonOfRobin
 
             // creating meal
 
-            BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
+            BoardPiece meal = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.Meal, world: this.world);
             meal.Mass = cookedMass;
             this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
