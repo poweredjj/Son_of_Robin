@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 
@@ -281,6 +282,22 @@ namespace SonOfRobin
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
+        private static readonly AllowedTerrain terrainShallowWaterToVolcano = new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
+
+        private static readonly AllowedTerrain terrainBeachToVolcano = new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+        // biomeMin - 255 range should not be used, because biomes are actually further constrained
+        // instead, all biomes ext props must be checked
+        private static readonly Dictionary<ExtBoardProps.Name, bool> noBiomeExtProps = ExtBoardProps.allBiomes.ToDictionary(biomeName => biomeName, kv => false);
+
+        private static readonly AllowedTerrain terrainCanGoAnywhere = new();
+
+        private static readonly AllowedTerrain terrainFieldCraft = new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) }},
+                            extPropertiesDict: noBiomeExtProps);
+
         public static BoardPiece Create(Name templateName, World world, int id = -1)
         {
             return CreatePiece(templateName: templateName, world: world, id: id);
@@ -302,7 +319,7 @@ namespace SonOfRobin
             {
                 // duplicated in Yield
                 boardPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
-                if (boardPiece.pieceInfo.appearDebris != null) boardPiece.pieceInfo.appearDebris.DropDebris(piece: boardPiece);
+                boardPiece.pieceInfo.appearDebris?.DropDebris(piece: boardPiece);
 
                 // adding opacityFade
                 if (boardPiece.sprite.IsInCameraRect && boardPiece.pieceInfo.inOpacityFadeDuration > 0)
@@ -319,21 +336,6 @@ namespace SonOfRobin
         private static BoardPiece CreatePiece(Name templateName, World world, int id = -1)
         {
             if (id == -1) id = Helpers.GetUniqueID();
-
-            Random random = BoardPiece.Random;
-
-            AllowedTerrain terrainShallowWaterToVolcano = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-
-            AllowedTerrain terrainBeachToVolcano = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
-
-            AllowedTerrain terrainCanGoAnywhere = new AllowedTerrain();
-
-            AllowedTerrain terrainFieldCraft = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
 
             switch (templateName)
             {
@@ -414,8 +416,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 96, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 50, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.");
 
@@ -441,8 +442,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 115) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
                              maxAge: 900, massTakenMultiplier: 0.63f, readableName: "desert grass", description: "A grass, that grows on sand.");
@@ -470,8 +470,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 77, max: 95) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 128, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.");
 
@@ -481,12 +480,11 @@ namespace SonOfRobin
                 case Name.WaterLily:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.WaterLily1, AnimData.PkgName.WaterLily2, AnimData.PkgName.WaterLily3 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>{
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 12), max: (byte)(Terrain.waterLevelMax - 1)) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 140) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, false } });
 
@@ -499,13 +497,12 @@ namespace SonOfRobin
                 case Name.FlowersPlain:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.FlowersYellow1, AnimData.PkgName.FlowersWhite };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                            maxAge: 550, massTakenMultiplier: 1f, readableName: "regular flower", description: "A flower.");
@@ -518,8 +515,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
                            maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false));
@@ -531,8 +527,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min:Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
                          maxAge: 4000, massTakenMultiplier: 0.98f, readableName: "mountain flower", description: "A mountain flower.");
@@ -543,13 +538,12 @@ namespace SonOfRobin
                 case Name.TreeSmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.TreeSmall1, AnimData.PkgName.TreeSmall2 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 80, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
@@ -565,8 +559,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
@@ -582,8 +575,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Acorn);
 
@@ -601,8 +593,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Apple);
 
@@ -620,8 +611,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 120f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Cherry);
 
@@ -639,8 +629,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 159) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 210) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 250f, yOffsetPercent: -0.29f, areaWidthPercent: 0.85f, areaHeightPercent: 0.3f, fruitName: Name.Banana);
 
@@ -658,8 +647,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 159) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 210) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f));
@@ -675,8 +663,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 200) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
@@ -691,8 +678,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 80, max: 140) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 250) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
@@ -707,8 +693,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 200) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
@@ -723,8 +708,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
                             maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.");
@@ -735,7 +719,7 @@ namespace SonOfRobin
                 case Name.MineralsSmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsMossySmall4 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
@@ -751,7 +735,7 @@ namespace SonOfRobin
                 case Name.MineralsMossySmall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossySmall1, AnimData.PkgName.MineralsMossySmall2, AnimData.PkgName.MineralsMossySmall3, AnimData.PkgName.MineralsMossySmall4 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
@@ -767,7 +751,8 @@ namespace SonOfRobin
                 case Name.MineralsBig:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig2, AnimData.PkgName.MineralsBig3, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsBig5, AnimData.PkgName.MineralsBig6, AnimData.PkgName.MineralsBig7, AnimData.PkgName.MineralsBig8, AnimData.PkgName.MineralsBig9, AnimData.PkgName.MineralsBig10, AnimData.PkgName.MineralsBig11, AnimData.PkgName.MineralsBig12, AnimData.PkgName.MineralsBig13, AnimData.PkgName.MineralsBig14 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
+
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
@@ -782,7 +767,7 @@ namespace SonOfRobin
                 case Name.MineralsMossyBig:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossyBig1, AnimData.PkgName.MineralsMossyBig2, AnimData.PkgName.MineralsMossyBig3, AnimData.PkgName.MineralsMossyBig4, AnimData.PkgName.MineralsMossyBig5, AnimData.PkgName.MineralsMossyBig6, AnimData.PkgName.MineralsMossyBig7, AnimData.PkgName.MineralsMossyBig8, AnimData.PkgName.MineralsMossyBig9, AnimData.PkgName.MineralsMossyBig10, AnimData.PkgName.MineralsMossyBig11, AnimData.PkgName.MineralsMossyBig12 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
@@ -808,7 +793,7 @@ namespace SonOfRobin
                         var allowedTerrain = terrainCanGoAnywhere;
 
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.BloodSplatter1, AnimData.PkgName.BloodSplatter2, AnimData.PkgName.BloodSplatter3 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
                         BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                              readableName: "bloodSplatter", description: "A pool of blood.", activeState: BoardPiece.State.Empty);
 
@@ -1364,7 +1349,7 @@ namespace SonOfRobin
                 case Name.RuinsWall:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.RuinsWallHorizontal1, AnimData.PkgName.RuinsWallHorizontal2, AnimData.PkgName.RuinsWallWallVertical };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() { { Terrain.Name.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) } },
@@ -1479,7 +1464,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax + 5), (byte)(Terrain.waterLevelMax + 25)) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },});
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
@@ -1492,8 +1477,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
@@ -1506,8 +1490,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax + 10), max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
@@ -1520,8 +1503,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
@@ -1555,8 +1537,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
@@ -1568,8 +1549,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
@@ -1581,8 +1561,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
                             maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
@@ -1594,8 +1573,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
@@ -2022,8 +2000,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitLightGray, AnimData.PkgName.RabbitBeige, AnimData.PkgName.RabbitWhite };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
 
@@ -2043,8 +2021,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxWhite, AnimData.PkgName.FoxGray, AnimData.PkgName.FoxYellow };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
@@ -2066,12 +2044,11 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerWhite, AnimData.PkgName.TigerYellow };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 
                         var soundPack = new PieceSoundPack();
@@ -2093,8 +2070,8 @@ namespace SonOfRobin
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog2, AnimData.PkgName.Frog8 };
 
-                        var maleAnimPkgName = malePackageNames[random.Next(malePackageNames.Count)];
-                        var femaleAnimPkgName = femalePackageNames[random.Next(femalePackageNames.Count)];
+                        var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
@@ -2614,8 +2591,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireSmall, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 1, maxHitPoints: 30, readableName: "small campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
@@ -2629,8 +2605,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.volcanoEdgeMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireMedium, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "medium campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
@@ -2689,7 +2664,7 @@ namespace SonOfRobin
                 case Name.SwampGas:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
@@ -2721,7 +2696,7 @@ namespace SonOfRobin
                 case Name.LavaGas:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
@@ -2757,7 +2732,7 @@ namespace SonOfRobin
                 case Name.SeaWave:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.SeaWave };
-                        var animPkg = packageNames[random.Next(packageNames.Count)];
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
@@ -2806,8 +2781,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
 
@@ -2823,8 +2797,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 115, max: 150) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60);
 
@@ -2870,8 +2843,7 @@ namespace SonOfRobin
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundSmall, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (small)", description: "Seeds can be planted here.", maxHitPoints: 60);
 
@@ -2882,8 +2854,7 @@ namespace SonOfRobin
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", maxHitPoints: 80);
 
@@ -2894,8 +2865,7 @@ namespace SonOfRobin
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
-                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
-                        });
+                        }, extPropertiesDict: noBiomeExtProps);
 
                         FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundLarge, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (large)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
