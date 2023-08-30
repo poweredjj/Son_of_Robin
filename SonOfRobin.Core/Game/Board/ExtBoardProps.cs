@@ -16,6 +16,7 @@ namespace SonOfRobin
 
             // each biome name must start with "Biome"
             BiomeSwamp = 2,
+
             BiomeRuins = 3,
         };
 
@@ -231,6 +232,15 @@ namespace SonOfRobin
         private string GetContainsPropertiesPNGPath(Name name, bool contains)
         {
             return Path.Combine(this.templateFolder, $"ext_contains_{name}_{contains}.png");
+        }
+
+        public static Dictionary<Name, bool> GetNoBiomeExtProps()
+        {
+            // to create a fresh copy for every BoardPiece
+
+            // biomeMin - 255 range should not be used, because biomes are actually further constrained
+            // instead, all biomes ext props must be checked
+            return allBiomes.ToDictionary(biomeName => biomeName, kv => false);
         }
     }
 }

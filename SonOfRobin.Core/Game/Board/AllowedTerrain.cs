@@ -221,5 +221,27 @@ namespace SonOfRobin
                 HasBeenChanged = true
             };
         }
+
+        public static AllowedTerrain GetShallowWaterToVolcano()
+        {
+            // to create a fresh copy for every BoardPiece
+            return new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
+        }
+
+        public static AllowedTerrain GetBeachToVolcano()
+        {
+            // to create a fresh copy for every BoardPiece
+            return new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+        }
+
+        public static AllowedTerrain GetFieldCraft()
+        {
+            // to create a fresh copy for every BoardPiece
+            return new(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) }},
+                            extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
+        }
     }
 }
