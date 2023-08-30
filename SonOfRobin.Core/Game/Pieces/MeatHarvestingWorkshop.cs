@@ -226,16 +226,12 @@ namespace SonOfRobin
         public void TurnOn()
         {
             this.sprite.AssignNewName(newAnimName: "on");
-            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
-            this.soundPack.Play(PieceSoundPack.Action.IsOn);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BloodDripping, duration: 3 * 60);
         }
 
         public void TurnOff()
         {
             this.sprite.AssignNewName(newAnimName: "off");
-            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-            this.soundPack.Play(PieceSoundPack.Action.TurnOff);
         }
 
         public override Dictionary<string, Object> Serialize()

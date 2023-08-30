@@ -10,21 +10,21 @@ namespace SonOfRobin
     {
         protected enum ContextAction
         {
-            Drop = 0,
-            DropAll = 1,
-            Move = 2,
-            Eat = 3,
-            Drink = 4,
-            Plant = 5,
-            Cook = 6,
-            Switch = 7,
-            Ignite = 8,
-            Extinguish = 9,
-            Brew = 10,
-            Harvest = 11,
-            FieldHarvest = 12,
-            Equip = 13,
-            Offer = 14,
+            Drop,
+            DropAll,
+            FieldHarvest,
+            Harvest,
+            Move,
+            Eat,
+            Drink,
+            Plant,
+            Cook,
+            Switch,
+            Ignite,
+            Extinguish,
+            Brew,
+            Equip,
+            Offer,
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
@@ -32,9 +32,9 @@ namespace SonOfRobin
         private const float entryWidthPercent = 0.8f;
         private const float entryHeightPercent = 0.1f;
 
-        private static readonly Sound soundOpen = new Sound(SoundData.Name.Invoke);
-        private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
-        private static readonly Sound soundReturn = new Sound(SoundData.Name.Navigation);
+        private static readonly Sound soundOpen = new(SoundData.Name.Invoke);
+        private static readonly Sound soundNavigate = new(SoundData.Name.Navigation);
+        private static readonly Sound soundReturn = new(SoundData.Name.Navigation);
 
         private readonly BoardPiece piece;
         private readonly PieceStorage storage;
@@ -51,7 +51,7 @@ namespace SonOfRobin
         {
             get
             {
-                Vector2 menuPos = new Vector2(this.percentPosX * SonOfRobinGame.VirtualWidth, this.percentPosY * SonOfRobinGame.VirtualHeight);
+                Vector2 menuPos = new(this.percentPosX * SonOfRobinGame.VirtualWidth, this.percentPosY * SonOfRobinGame.VirtualHeight);
                 Rectangle bgRect = this.BgRect;
 
                 if (menuPos.X + bgRect.Width > SonOfRobinGame.VirtualWidth) menuPos.X = SonOfRobinGame.VirtualWidth - bgRect.Width;

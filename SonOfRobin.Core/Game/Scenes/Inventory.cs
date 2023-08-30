@@ -811,7 +811,7 @@ namespace SonOfRobin
             bool addIgnite = piece.name == PieceTemplate.Name.FireplaceTriggerOn;
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
             bool addHarvest = piece.name == PieceTemplate.Name.MeatHarvestTrigger;
-            bool addFieldHarvest = piece.GetType() == typeof(Animal) && !piece.alive && piece.world.Player.Skill == Player.SkillName.Hunter;
+            bool addFieldHarvest = piece.world.Player.Skill == Player.SkillName.Hunter && (this.storage.storageType == PieceStorage.StorageType.Virtual || this.storage.storageType == PieceStorage.StorageType.Inventory) && piece.GetType() == typeof(Animal) && !piece.alive;
             bool addOffer = piece.name == PieceTemplate.Name.OfferTrigger;
 
             new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer);

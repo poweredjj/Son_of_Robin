@@ -62,7 +62,6 @@ namespace SonOfRobin
         public int CookLevel { get; private set; }
         public int BrewLevel { get; private set; }
         public int HarvestLevel { get; private set; }
-
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -1291,7 +1290,7 @@ namespace SonOfRobin
 
                 closestPiece.sprite.rotation = 0f;
                 closestPiece.HeatLevel = 0f;
-                if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar              
+                if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar
 
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
@@ -1407,12 +1406,24 @@ namespace SonOfRobin
 
             foreach (BoardPiece meatPiece in meatPieces)
             {
-                slot.storage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
+                if (slot.CanFitThisPiece(meatPiece)) slot.AddPiece(meatPiece);
+                else slot.storage.AddPiece(piece: meatPiece, dropIfDoesNotFit: true);
             }
 
-            // TODO add summary
+            this.world.meatHarvestStats.RegisterMeatHarvest(animalPiece: animalPiece, obtainedBasePieces: meatPieces, obtainedBonusPieces: new List<BoardPiece>());
+            this.CheckForMeatHarvestingLevelUp();
 
             Sound.QuickPlay(SoundData.Name.KnifeSharpen);
+
+            // TODO add summary display
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.HitFlesh1);
+
+            if (meatPieces.Count >= 2)
+            {
+                new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 20, executeHelper: SoundData.Name.DestroyFlesh2);
+                new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 30, executeHelper: SoundData.Name.DropMeat3);
+            }
         }
 
         public bool CheckForCookLevelUp()
