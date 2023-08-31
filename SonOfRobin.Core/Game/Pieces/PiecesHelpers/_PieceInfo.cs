@@ -303,10 +303,10 @@ namespace SonOfRobin
                         this.plantMassToBurn = 5;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-                        this.plantMaxExistingNumber = 300;
+                        this.plantMaxExistingNumber = 500;
                         this.blocksPlantGrowth = true;
-                        this.placeMaxDistance = 400;
-                        this.allowedDensity = new AllowedDensity(radius: 350, maxNoOfPiecesSameName: 1);
+                        this.placeMaxDistance = 700;
+                        this.allowedDensity = new AllowedDensity(radius: 500, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisGrass,

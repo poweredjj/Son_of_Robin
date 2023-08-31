@@ -498,7 +498,7 @@ namespace SonOfRobin
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
-                           maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.", lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false));
+                           maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.");
 
                         return boardPiece;
                     }
