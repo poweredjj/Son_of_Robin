@@ -236,7 +236,10 @@ namespace SonOfRobin
                     Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                     if (target.pieceInfo.Yield != null && target.exists && !target.IsBurning)
                     {
-                        float countMultiplier = player.Skill == Player.SkillName.Plunderer && world.random.Next(12) == 0 ? 2f : 1f;
+                        int bonusChance = 12;
+                        if (player.Skill != Player.SkillName.Plunderer) bonusChance *= 5;
+
+                        float countMultiplier = world.random.Next(bonusChance) == 0 ? 2f : 1f;
                         int droppedPiecesCount = target.pieceInfo.Yield.DropFinalPieces(piece: target, countMultiplier: countMultiplier);
 
                         if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
