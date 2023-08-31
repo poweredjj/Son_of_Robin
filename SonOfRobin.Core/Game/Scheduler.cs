@@ -606,10 +606,13 @@ namespace SonOfRobin
                             }
                             if (targets.Count == 0) return;
 
-                            if (activeTool.pieceInfo.toolRange == 0 && activeTool.pieceInfo.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh))
+                            if (activeTool.pieceInfo.toolRange == 0)
                             {
-                                var animals = targets.Where(piece => piece.GetType() == typeof(Animal)).ToList();
-                                if (animals.Count > 0) targets = animals;
+                                if (activeTool.pieceInfo.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh))
+                                {
+                                    var animals = targets.Where(piece => piece.GetType() == typeof(Animal)).ToList();
+                                    if (animals.Count > 0) targets = animals;
+                                }
 
                                 Vector2 focusRectCenter = new(focusRect.Center.X, focusRect.Center.Y);
                                 BoardPiece firstTarget = targets.OrderBy(piece => Vector2.Distance(focusRectCenter, piece.sprite.position)).First();
