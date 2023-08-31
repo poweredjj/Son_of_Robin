@@ -2101,7 +2101,6 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Leather;
                         this.canBePickedUp = true;
                         this.stackSize = 1;
-                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.TentModern:
@@ -2198,7 +2197,6 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
-                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.BeltLuxurious:
@@ -2207,7 +2205,6 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
-                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Map:
@@ -2322,7 +2319,6 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
-                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.HumanSkeleton:

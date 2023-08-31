@@ -7,9 +7,10 @@ namespace SonOfRobin
 {
     public class Yield
     {
-        public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
+        public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new() { };
+        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump };
 
-        public struct DroppedPiece
+        public readonly struct DroppedPiece
         {
             public readonly PieceTemplate.Name pieceName;
             public readonly int chanceToDrop; // 0 - 100
@@ -144,10 +145,10 @@ namespace SonOfRobin
             foreach (DroppedPiece droppedPiece in droppedPieceList)
             {
                 if (random.Next(100) <= droppedPiece.chanceToDrop * chanceMultiplier)
-                {
+                {                  
                     int dropCount = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
                     int bonusCount = 0;
-                    if (countMultiplier != 1)
+                    if (countMultiplier != 1 && !piecesNotMultipliedByBonus.Contains(droppedPiece.pieceName))
                     {
                         int originalDropCount = dropCount;
                         dropCount = (int)Math.Max(dropCount * countMultiplier, 1);
@@ -155,7 +156,7 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.GreenYellow);
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.Yellow);
                             Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }

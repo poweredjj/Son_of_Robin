@@ -134,7 +134,7 @@ namespace SonOfRobin
 
             AddAction(action: Action.IsDestroyed, sound: new Sound(nameList: GetIsDestroyedNamesList(boardPiece), boardPiece: this.boardPiece, maxPitchVariation: 0.4f), replaceExisting: false);
 
-            AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(boardPiece), boardPiece: this.boardPiece, maxPitchVariation: 0.5f, cooldown: 30), replaceExisting: false);
+            AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(boardPiece), boardPiece: this.boardPiece, maxPitchVariation: 0.25f, cooldown: 30), replaceExisting: false);
 
             bool isPlayer = this.boardPiece.GetType() == typeof(Player);
             bool isAnimal = this.boardPiece.GetType() == typeof(Animal);

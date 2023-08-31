@@ -297,11 +297,6 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.HarvestMeat}),
 
                 new PieceHint(
-                    type: PieceHint.Type.Totem, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Totem },
-                    message: $"Hmm...\nI can feel mysterious aura surrounding this | { PieceInfo.GetInfo(PieceTemplate.Name.Totem).readableName }.\nMaybe I should examine it.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Totem) }),
-
-                new PieceHint(
                     type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     message: "| I can start brewing\n| potions now!",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture },
@@ -387,6 +382,13 @@ namespace SonOfRobin
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.RuinsWall, PieceTemplate.Name.RuinsColumn, PieceTemplate.Name.RuinsRubble, PieceTemplate.Name.RuinsDigSite },
                     message: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
+
+                 new PieceHint(
+                    showCineCurtains: true,
+                    ignoreHintSetting: true,
+                    type: PieceHint.Type.CineTotem, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Totem },
+                    message: $"Hmm...\nI can feel mysterious aura surrounding this | { PieceInfo.GetInfo(PieceTemplate.Name.Totem).readableName }.\nMaybe I should examine it.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Totem) }),
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors1,

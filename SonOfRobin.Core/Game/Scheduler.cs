@@ -346,6 +346,7 @@ namespace SonOfRobin
                                 resDivider = (int)createData["resDivider"];
                             }
 
+                            Preferences.Save();
                             new World(width: width, height: height, seed: seed, resDivider: resDivider, playerName: Preferences.newWorldPlayerName);
 
                             return;

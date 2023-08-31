@@ -378,13 +378,17 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 40, executeHelper: seaPos, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 0.15f, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: seaPos, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
                             taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 1f, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
 
