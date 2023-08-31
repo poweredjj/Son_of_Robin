@@ -117,10 +117,11 @@ namespace SonOfRobin
             DropDebris = 19,
             SwitchLightEngine = 20,
             TotemAffectWeather = 21,
+            CheckForPieceHints = 22,
         }
 
         // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
-        private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris };
+        private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp, EventName.YieldDropDebris, EventName.CheckForPieceHints };
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -489,6 +490,31 @@ namespace SonOfRobin
                         animal.target = target;
                         animal.aiData.Reset();
                         animal.activeState = BoardPiece.State.AnimalCallForHelp;
+
+                        return;
+                    }
+
+                case EventName.CheckForPieceHints:
+                    {
+                        // WorldEvent variant - resistant to Scheduler.ClearQueue() 
+
+                        // example eventHelper for this event
+                        //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+
+                        if (world.CineMode ||
+                            !world.inputActive ||
+                            world.Player.activeState != BoardPiece.State.PlayerControlledWalking)
+                        {
+                            new WorldEvent(eventName: this.eventName, world: world, delay: 60 * 2, boardPiece: null, eventHelper: this.eventHelper);
+                            return;
+                        }
+
+                        var pieceHintData = (Dictionary<string, Object>)this.eventHelper;
+                        List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;
+                        PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
+                        PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
+
+                        world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
 
                         return;
                     }

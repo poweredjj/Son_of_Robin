@@ -1206,7 +1206,20 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            if (world.CineMode || !world.inputActive || Scene.GetTopSceneOfType(typeof(TextWindow)) != null)
+                            // should be allowed when craft menu is on
+                            bool craftMenuActive = false;
+                            Scene menuScene = Scene.GetTopSceneOfType(typeof(Menu));
+                            if (menuScene != null)
+                            {
+                                Menu menu = (Menu)menuScene;
+                                craftMenuActive = menu.templateName.ToString().ToLower().Contains("craft");
+                            }
+
+                            if (!craftMenuActive &&
+                                (world.CineMode ||
+                                Scene.GetTopSceneOfType(typeof(TextWindow)) != null) ||
+                                world.Player.activeState != BoardPiece.State.PlayerControlledWalking
+                                )
                             {
                                 new Task(taskName: this.taskName, delay: 60 * 2, executeHelper: this.ExecuteHelper);
                                 return;
@@ -1374,6 +1387,7 @@ namespace SonOfRobin
                                 TextWindow textWindow = (TextWindow)scene;
                                 textWindow.RemoveWithoutExecutingTask(); // every cine task will be tied to a text window
                             }
+                            ClearQueue(); // to be sure, that no task will be executed
                             world.CineMode = false;
 
                             return;
