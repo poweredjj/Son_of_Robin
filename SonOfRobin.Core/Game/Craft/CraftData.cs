@@ -95,7 +95,10 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }, { PieceTemplate.Name.Fat, 1 }}, fatigue: fatigueItemSmall, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig } , craftCountToUnlock: 5),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 1 }}, fatigue: 40) };
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 1 }}, fatigue: 40),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }}, fatigue: 40)
+            };
         }
 
         public static List<Craft.Recipe> GetBasicWorkshopRecipes()
