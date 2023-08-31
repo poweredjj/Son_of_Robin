@@ -344,7 +344,7 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            new WorldEvent(eventName: WorldEvent.EventName.CheckForPieceHints, world: world, delay: 60 * 2, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }); // will be executed after playing this hint
+                            new WorldEvent(eventName: WorldEvent.EventName.CheckForPieceHints, world: world, delay: 60 * 2, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CineCrateStarting } } }); // will be executed after playing this hint
 
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 

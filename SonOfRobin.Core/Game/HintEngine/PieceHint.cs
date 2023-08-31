@@ -10,7 +10,6 @@ namespace SonOfRobin
     {
         public enum Type : byte
         {
-            CrateStarting = 0,
             CrateAnother = 1,
             TentModernPacked = 72,
             WoodNegative = 2,
@@ -77,8 +76,10 @@ namespace SonOfRobin
             Totem = 63,
             SwampDigSite = 64,
 
+            CineCrateStarting = 0,
             CineTentModernCantPack = 73,
             CineSmallBase = 65,
+            CineRuins = 74,
             CineLookForSurvivors1 = 66,
             CineLookForSurvivors2 = 67,
             CineLookForSurvivors3 = 68,
@@ -183,7 +184,7 @@ namespace SonOfRobin
         private readonly List<HintMessage> GetTutorials(HashSet<Tutorials.Type> shownTutorials)
         {
             var messageList = new List<HintMessage> { };
-            if (this.tutorialsToActivate == null) return messageList;
+            if (this.tutorialsToActivate == null || !Preferences.showHints) return messageList;
 
             foreach (Tutorials.Type type in this.tutorialsToActivate)
             {

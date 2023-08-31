@@ -15,14 +15,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.CrateAnother, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateRegular},
                     message: "I should check what's inside this | crate.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrateRegular) },
-                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.CrateStarting}),
-
-                new PieceHint(
-                    type: PieceHint.Type.CrateStarting, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting},
-                    message: "I've seen | crates like this on the ship.\nIt could contain valuable supplies.\nI should try to break it open.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrateStarting)},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrateRegular) }),
 
                 new PieceHint(
                     type: PieceHint.Type.TentModernPacked,
@@ -359,6 +352,15 @@ namespace SonOfRobin
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 0, comparison: CountComparison.Comparison.Equal) }),
 
                 new PieceHint(
+                    type: PieceHint.Type.CineCrateStarting,
+                    showCineCurtains: true,
+                    ignoreHintSetting: true,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting},
+                    message: "I've seen | crates like this on the ship.\nIt could contain valuable supplies.\nI should try to | break it open.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrateStarting), PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple)},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
+
+                new PieceHint(
                     type: PieceHint.Type.CineTentModernCantPack,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -370,13 +372,21 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CineSmallBase,
-                    generalHintToActivate: HintEngine.Type.CineSmallBase,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
+                    generalHintToActivate: HintEngine.Type.CineSmallBase,
                     piecesCraftedCount: new List<CountComparison> {
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
                         new CountComparison(name: PieceTemplate.Name.TentSmall, count: 1)},
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 } }, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.WorkshopEssential }),
+
+                 new PieceHint(
+                    type: PieceHint.Type.CineRuins,
+                    showCineCurtains: true,
+                    ignoreHintSetting: true,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.RuinsWall, PieceTemplate.Name.RuinsColumn, PieceTemplate.Name.RuinsRubble, PieceTemplate.Name.RuinsDigSite },
+                    message: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors1,
