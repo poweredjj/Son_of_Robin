@@ -496,10 +496,9 @@ namespace SonOfRobin
 
                 case EventName.CheckForPieceHints:
                     {
-                        // WorldEvent variant - resistant to Scheduler.ClearQueue() 
+                        // WorldEvent variant - resistant to Scheduler.ClearQueue()
 
-                        // example eventHelper for this event
-                        //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+                        // eventHelper for this event should be identical to Scheduler.TaskName.CheckForPieceHints
 
                         if (world.CineMode ||
                             !world.inputActive ||
@@ -509,12 +508,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                        var pieceHintData = (Dictionary<string, Object>)this.eventHelper;
-                        List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;
-                        PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
-                        PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
-
-                        world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecutePieceHintCheckNow, delay: 0, executeHelper: this.eventHelper);
 
                         return;
                     }

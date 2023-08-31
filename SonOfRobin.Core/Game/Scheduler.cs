@@ -55,7 +55,6 @@ namespace SonOfRobin
             ShowBrewingProgress = 40,
             RestoreHints = 41,
             OpenMainMenuIfSpecialKeysArePressed = 42,
-            CheckForPieceHints = 43,
             ShowHint = 44,
             ExecuteTaskChain = 45,
             ShowTutorialInMenu = 46,
@@ -104,6 +103,8 @@ namespace SonOfRobin
             OpenAndDestroyTreasureChest = 89,
             SetAllNamedLocationsAsDiscovered = 90,
             AddRumble = 91,
+            CheckForPieceHints = 43,
+            ExecutePieceHintCheckNow = 92,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -1200,8 +1201,7 @@ namespace SonOfRobin
 
                     case TaskName.CheckForPieceHints:
                         {
-                            // example executeHelper for this task
-                            //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+                            // Scheduler variant - can be used anywhere (menus, etc.)
 
                             World world = World.GetTopWorld();
                             if (world == null) return;
@@ -1224,6 +1224,21 @@ namespace SonOfRobin
                                 new Task(taskName: this.taskName, delay: 60 * 2, executeHelper: this.ExecuteHelper);
                                 return;
                             }
+
+                            new Task(taskName: TaskName.ExecutePieceHintCheckNow, delay: 0, executeHelper: this.ExecuteHelper);
+
+                            return;
+                        }
+
+                    case TaskName.ExecutePieceHintCheckNow:
+                        {
+                            // used to deduplicate unboxing code in Scheduler and WorldEvent
+
+                            // example executeHelper for this task
+                            //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
 
                             var pieceHintData = (Dictionary<string, Object>)this.ExecuteHelper;
                             List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;

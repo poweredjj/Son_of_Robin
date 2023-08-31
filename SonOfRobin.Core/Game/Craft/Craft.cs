@@ -455,7 +455,16 @@ namespace SonOfRobin
                     tutorialAdded = true;
                 }
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true, executeHelper: executeHelper));
+                if (pieceInfo.canBePickedUp)
+                {
+                    // showing in menu
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true, executeHelper: executeHelper));
+                }
+                else
+                {
+                    // showing on the field (WorldEvent works better for this case)
+                    new WorldEvent(eventName: WorldEvent.EventName.CheckForPieceHints, world: world, delay: 60 * 1, boardPiece: null, eventHelper: executeHelper);
+                }
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
                 new RumbleEvent(force: 0.15f, bigMotor: true, fadeInSeconds: 0.2f, durationSeconds: 0, fadeOutSeconds: 0.2f);

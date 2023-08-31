@@ -77,6 +77,7 @@ namespace SonOfRobin
             Totem = 63,
             SwampDigSite = 64,
 
+            CineTentModernCantPack = 73,
             CineSmallBase = 65,
             CineLookForSurvivors1 = 66,
             CineLookForSurvivors2 = 67,
