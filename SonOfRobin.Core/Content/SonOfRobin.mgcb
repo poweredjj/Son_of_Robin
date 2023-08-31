@@ -9117,6 +9117,12 @@
 /processorParam:Quality=Best
 /build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement_loop.ogg
 
+#begin sound/625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth.ogg
+
 #begin sound/627927__pandartb3d__smashed-egg.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

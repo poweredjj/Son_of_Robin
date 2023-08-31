@@ -9,7 +9,8 @@
 
 Texture2D SpriteTexture;
 sampler s0;
-float4 newColor;
+float4 colorizeColor;
+float opacity;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -27,14 +28,16 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
-	float4 color = tex2D(s0, input.TextureCoordinates);
+	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 
-	if (color.a <= 0.5) return color;
+	if (originalColor.a <= 0.5) return originalColor;
 	
 	float4 gray;
-	gray.rgb = (color.r + color.g + color.b) / 3.0;
+	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
 	gray.a = 1;
-	return gray + (newColor * 0.8);
+
+	float4 newColor = gray + (colorizeColor * 0.8);
+	return (newColor * opacity) + (originalColor * (1 - opacity));
 }
 
 technique SpriteDrawing

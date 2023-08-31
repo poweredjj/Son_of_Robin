@@ -155,18 +155,19 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}");
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.GreenYellow);
+                            Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }
+
+                    int effectDuration = (int)(60 * 2.5f);
 
                     for (int i = 0; i < dropCount; i++)
                     {
                         BoardPiece newPiece = PieceTemplate.CreatePiece(world: world, templateName: droppedPiece.pieceName);
                         if (bonusCount > 0)
                         {
-                            int duration = 60 * 2;
-                            newPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Orange, framesLeft: duration));
-                            newPiece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.LightCyan, textureSize: newPiece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: duration));
+                            newPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Orange, framesLeft: effectDuration, fadeFramesLeft: effectDuration));
                             bonusCount--;
                         }
 

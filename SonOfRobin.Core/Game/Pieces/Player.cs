@@ -999,7 +999,7 @@ namespace SonOfRobin
 
                         if (!this.buffEngine.HasBuff(buffType: BuffEngine.BuffType.RegenPoison, isPositive: false))
                         {
-                            Sound.QuickPlay(name: SoundData.Name.SplashMud, volume: 1f);
+                            Sound.QuickPlay(name: SoundData.Name.SplashMud);
 
                             this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: -35, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
                         }

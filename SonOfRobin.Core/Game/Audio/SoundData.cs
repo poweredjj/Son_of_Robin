@@ -288,6 +288,7 @@ namespace SonOfRobin
             TrumpetChime = 224,
             CreepyCave = 225,
             Rattle = 226,
+            BonusItem = 227,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -518,6 +519,7 @@ namespace SonOfRobin
             { Name.TrumpetChime, "AudioGen_trumpet_chime" },
             { Name.CreepyCave, "442956__qubodup__creepy-cave" },
             { Name.Rattle, "475827__zeffon__rattle-01" },
+            { Name.BonusItem, "625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth" },
             };
     }
 }
