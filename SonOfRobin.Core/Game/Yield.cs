@@ -146,11 +146,31 @@ namespace SonOfRobin
                 if (random.Next(100) <= droppedPiece.chanceToDrop * chanceMultiplier)
                 {
                     int dropCount = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
-                    if (countMultiplier != 1) dropCount = (int)Math.Max(dropCount * countMultiplier, 1);
+                    int bonusCount = 0;
+                    if (countMultiplier != 1)
+                    {
+                        int originalDropCount = dropCount;
+                        dropCount = (int)Math.Max(dropCount * countMultiplier, 1);
+                        if (dropCount > originalDropCount)
+                        {
+                            bonusCount = dropCount - originalDropCount;
+                            string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}");
+                        }
+                    }
 
                     for (int i = 0; i < dropCount; i++)
                     {
-                        piecesList.Add(PieceTemplate.CreatePiece(world: world, templateName: droppedPiece.pieceName));
+                        BoardPiece newPiece = PieceTemplate.CreatePiece(world: world, templateName: droppedPiece.pieceName);
+                        if (bonusCount > 0)
+                        {
+                            int duration = 60 * 2;
+                            newPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Orange, framesLeft: duration));
+                            newPiece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.LightCyan, textureSize: newPiece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: duration));
+                            bonusCount--;
+                        }
+
+                        piecesList.Add(newPiece);
                     }
                 }
             }

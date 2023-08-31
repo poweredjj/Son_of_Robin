@@ -23,7 +23,7 @@ namespace SonOfRobin
 
         public class Recipe
         {
-            private static readonly Dictionary<string, Recipe> recipeByID = new Dictionary<string, Recipe>();
+            private static readonly Dictionary<string, Recipe> recipeByID = new();
 
             public readonly string id;
             public readonly string readableID;
