@@ -201,7 +201,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Sleeping like this was really uncomfortable.\nI should really build a | better place to sleep in...", blockInput: true, imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.TentMedium).texture }),
+                            new HintMessage(text: "Sleeping here was really uncomfortable.\nI should really build a | better place to sleep in...", blockInput: true, imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.TentMedium).texture }),
                         });
                         break;
                     }
