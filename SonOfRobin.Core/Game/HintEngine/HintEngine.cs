@@ -344,6 +344,8 @@ namespace SonOfRobin
                         }
                         else
                         {
+                            new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 60 * 3, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }); // will be executed after playing this hint
+
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
                             SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
@@ -391,7 +393,6 @@ namespace SonOfRobin
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 120, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 

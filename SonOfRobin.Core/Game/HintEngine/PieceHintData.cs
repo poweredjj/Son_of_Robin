@@ -26,6 +26,13 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
 
                 new PieceHint(
+                    type: PieceHint.Type.TentModernPacked,
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.TentModernPacked).readableName } is in good shape.\nI should be able to | assemble it.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TentModernPacked), PieceInfo.GetTexture(PieceTemplate.Name.TentModern) },
+                    playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.TentModernPacked},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Craft}),
+
+                new PieceHint(
                     type: PieceHint.Type.HerbsRed,
                     message: "I think I could use these | herbs to make a healing potion.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed) },
@@ -311,10 +318,10 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.TorchPositive,
                     message: "This | torch will make navigating at night a lot easier.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall) },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) },
                     alsoDisables: new List<PieceHint.Type> {PieceHint.Type.TorchNegative },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Torch},
-                    playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall}),
+                    playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall, PieceTemplate.Name.TorchBig}),
 
                 new PieceHint(
                     type: PieceHint.Type.TorchNegative,

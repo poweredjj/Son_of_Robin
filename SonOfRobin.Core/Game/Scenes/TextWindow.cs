@@ -208,7 +208,6 @@ namespace SonOfRobin
                 if (this.tipsLayout == ControlTips.TipsLayout.TextWindowCancel || this.tipsLayout == ControlTips.TipsLayout.TextWindowOkCancel)
                 {
                     new Scheduler.Task(taskName: Scheduler.TaskName.SkipCinematics);
-
                     return;
                 }
                 else okButtonPressed = cancelButtonPressed; // if there is no cancel button, cancel button can be used as "ok"

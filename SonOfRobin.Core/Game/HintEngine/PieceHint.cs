@@ -12,6 +12,7 @@ namespace SonOfRobin
         {
             CrateStarting = 0,
             CrateAnother = 1,
+            TentModernPacked = 72,
             WoodNegative = 2,
             WoodPositive = 3,
             DigSiteNegative = 4,

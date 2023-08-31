@@ -220,13 +220,19 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.Craft, name: "crafting", title: "Crafting new items.",
                 messages: new List<HintMessage> {
+                    new HintMessage(text: "1. Stand on the ground or grassy area.", boxType: messageTextType),
+
                     Preferences.ShowTouchTips ?
-                    new HintMessage(text: "1. Select the item you want to craft by pressing it once.", boxType: messageTextType):
-                    new HintMessage(text: "1. Select the item you want to craft, using | and |.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.GlobalUp), InputMapper.GetTexture(InputMapper.Action.GlobalDown)}, boxType: messageTextType),
+                    new HintMessage(text: "2. Press | to enter craft menu.", imageList: new List<Texture2D>{ TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, boxType: messageTextType):
+                    new HintMessage(text: "2. Press | to enter craft menu.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.WorldFieldCraft)}, boxType: messageTextType),
+
                     Preferences.ShowTouchTips ?
-                    new HintMessage(text: "2. Activate craft by pressing it a second time.", boxType: messageTextType):
-                    new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType),
-                    new HintMessage(text: "3. If you have all necessary ingredients and some free space\nthe item will be crafted.", boxType: messageTextType)});
+                    new HintMessage(text: "3. Select the item you want to craft by pressing it once.", boxType: messageTextType):
+                    new HintMessage(text: "3. Select the item you want to craft, using | and |.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.GlobalUp), InputMapper.GetTexture(InputMapper.Action.GlobalDown)}, boxType: messageTextType),
+                    Preferences.ShowTouchTips ?
+                    new HintMessage(text: "4. Activate craft by pressing it a second time.", boxType: messageTextType):
+                    new HintMessage(text: "4. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType),
+                    new HintMessage(text: "5. If you have all necessary | | ingredients\nand some free space around you, the item will be | crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Granite), TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, boxType: messageTextType)});
 
             new Tutorial(type: Type.GeneralCraftLevels, name: "general crafting levels", title: "General crafting skill levels.",
                 messages: new List<HintMessage> {
@@ -361,7 +367,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.HowToSave, name: "saving", title: "Saving the game.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "I'm starting to get tired...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
-                new HintMessage(text: "You can rest and save your game inside shelter |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentSmall) }, boxType: messageTextType),
+                new HintMessage(text: "You can rest and save your game inside shelter |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentModern) }, boxType: messageTextType),
                 new HintMessage(text: "You can make one using crafting menu.", boxType: messageTextType)
                 });
 

@@ -604,7 +604,7 @@ namespace SonOfRobin
                             }
                             if (targets.Count == 0) return;
 
-                            if (activeTool.pieceInfo.toolRange == 0)
+                            if (activeTool.pieceInfo.toolRange == 0 && activeTool.pieceInfo.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh))
                             {
                                 var animals = targets.Where(piece => piece.GetType() == typeof(Animal)).ToList();
                                 if (animals.Count > 0) targets = animals;
@@ -1200,11 +1200,17 @@ namespace SonOfRobin
 
                     case TaskName.CheckForPieceHints:
                         {
+                            // example executeHelper for this task
+                            //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            // example executeHelper for this task
-                            //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
+                            if (world.CineMode || Scene.GetTopSceneOfType(typeof(TextWindow)) != null)
+                            {
+                                new Task(taskName: this.taskName, delay: 60 * 2, executeHelper: this.ExecuteHelper);
+                                return;
+                            }
 
                             var pieceHintData = (Dictionary<string, Object>)this.ExecuteHelper;
                             List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;
@@ -1366,9 +1372,8 @@ namespace SonOfRobin
                             foreach (var scene in textWindows)
                             {
                                 TextWindow textWindow = (TextWindow)scene;
-                                textWindow.RemoveWithoutExecutingTask(); // every cine task will be tied to text window
+                                textWindow.RemoveWithoutExecutingTask(); // every cine task will be tied to a text window
                             }
-                            ClearQueue(); // to be sure, that no task will be executed
                             world.CineMode = false;
 
                             return;

@@ -1125,7 +1125,11 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.EmptyBottle, chanceToDrop: 5, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassesVelvet, chanceToDrop: 5, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassesVelvet, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 80, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 30, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TentModernPacked, chanceToDrop: 70, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TentModernPacked, chanceToDrop: 30, maxNumberToDrop: 1),
                                 });
                         break;
 
