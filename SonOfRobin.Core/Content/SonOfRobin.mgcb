@@ -7401,6 +7401,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/tent_medium.jpg
 
+#begin gfx/tent_modern.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tent_modern.png
+
+#begin gfx/tent_modern_packed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tent_modern_packed.png
+
 #begin gfx/tile_19ba32a6.png
 /importer:TextureImporter
 /processor:TextureProcessor

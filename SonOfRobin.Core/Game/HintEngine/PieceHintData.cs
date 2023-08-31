@@ -326,7 +326,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.Fireplace,
-                    message: "This | bonfire looks ok.\nAll I need now is some | | wood...?",
+                    message: "This | bonfire looks ok.\nAll I need now is some | | | wood...?",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.Stick), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank) },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CampfireSmall}),

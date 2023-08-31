@@ -1102,6 +1102,10 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Burger, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TentModernPacked, chanceToDrop: 100, maxNumberToDrop: 1),
                                 });
                         break;
 
@@ -2087,6 +2091,22 @@ namespace SonOfRobin
                         this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
                         this.projectileCanExplode = true;
+                        break;
+
+                    case PieceTemplate.Name.TentModernPacked:
+                        this.category = BoardPiece.Category.Leather;
+                        this.canBePickedUp = true;
+                        this.stackSize = 1;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.TentModern:
+                        this.category = BoardPiece.Category.Leather;
+                        this.fireAffinity = 0.4f;
+                        this.boardTask = Scheduler.TaskName.OpenShelterMenu;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
                         break;
 
                     case PieceTemplate.Name.TentSmall:
