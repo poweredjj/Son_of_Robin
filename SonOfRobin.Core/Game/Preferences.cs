@@ -16,13 +16,14 @@ namespace SonOfRobin
             gigantic,
         }
 
-        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 12, "low" }, { 8, "medium" }, { 5, "high" } };
-        public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
-        public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new Dictionary<Object, Object> { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 12, "low" }, { 8, "medium" }, { 5, "high" } };
+        public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
+        public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
+
+        public static readonly List<PieceTemplate.Name> startingItemNames = new() { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
         public static int newWorldSize;
-
         public static int newWorldResDivider;
         public static PieceTemplate.Name newWorldPlayerName;
         public static PieceTemplate.Name newWorldStartingItem;
@@ -712,6 +713,8 @@ namespace SonOfRobin
             if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
+
+            if (!startingItemNames.Contains(newWorldStartingItem)) newWorldStartingItem = startingItemNames[0];
         }
 
         public static void CheckIfResolutionIsSupported()

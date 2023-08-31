@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static SonOfRobin.Player;
 
 namespace SonOfRobin
 {
@@ -1090,10 +1089,8 @@ namespace SonOfRobin
 
             new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
 
-            var startingItemNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
-
             var startingItemSelectorValueDict = new Dictionary<object, object>();
-            foreach (PieceTemplate.Name itemName in startingItemNames)
+            foreach (PieceTemplate.Name itemName in Preferences.startingItemNames)
             {
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(itemName);
                 startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.texture };
