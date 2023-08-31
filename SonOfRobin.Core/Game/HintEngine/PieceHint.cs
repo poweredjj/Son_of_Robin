@@ -179,7 +179,7 @@ namespace SonOfRobin
             return nearbyPieces;
         }
 
-        private readonly List<HintMessage> GetTutorials(List<Tutorials.Type> shownTutorials)
+        private readonly List<HintMessage> GetTutorials(HashSet<Tutorials.Type> shownTutorials)
         {
             var messageList = new List<HintMessage> { };
             if (this.tutorialsToActivate == null) return messageList;
@@ -207,7 +207,7 @@ namespace SonOfRobin
             }
 
             var messagesToDisplay = this.messageList.ToList();
-            messagesToDisplay.AddRange(this.GetTutorials(world.HintEngine.shownTutorials.ToList()));
+            messagesToDisplay.AddRange(this.GetTutorials(world.HintEngine.shownTutorials));
 
             if (this.fieldPiecesNearby != null)
             {

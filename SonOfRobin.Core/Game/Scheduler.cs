@@ -1206,7 +1206,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            if (world.CineMode || Scene.GetTopSceneOfType(typeof(TextWindow)) != null)
+                            if (world.CineMode || !world.inputActive || Scene.GetTopSceneOfType(typeof(TextWindow)) != null)
                             {
                                 new Task(taskName: this.taskName, delay: 60 * 2, executeHelper: this.ExecuteHelper);
                                 return;

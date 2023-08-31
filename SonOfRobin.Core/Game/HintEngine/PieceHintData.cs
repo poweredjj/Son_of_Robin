@@ -16,8 +16,7 @@ namespace SonOfRobin
                     type: PieceHint.Type.CrateAnother, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateRegular},
                     message: "I should check what's inside this | crate.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrateRegular) },
-                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.CrateStarting},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
+                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.CrateStarting}),
 
                 new PieceHint(
                     type: PieceHint.Type.CrateStarting, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting},

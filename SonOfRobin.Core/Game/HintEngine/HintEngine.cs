@@ -524,7 +524,6 @@ namespace SonOfRobin
         private void Disable(Type type, int delay = 0)
         {
             if (!this.shownGeneralHints.Contains(type)) this.shownGeneralHints.Add(type);
-
             if (delay != 0) new WorldEvent(eventName: WorldEvent.EventName.RestoreHint, delay: delay, world: this.world, boardPiece: null, eventHelper: type);
         }
 
