@@ -25,6 +25,7 @@ namespace SonOfRobin
             Survivalist = 3,
             Fashionista = 4,
             Maintainer = 5,
+            Hoarder = 6,
         }
 
         public static readonly SkillName[] allSkillNames = (SkillName[])Enum.GetValues(typeof(SkillName));
@@ -37,6 +38,7 @@ namespace SonOfRobin
             { SkillName.Survivalist, "hunger resistance" },
             { SkillName.Fashionista, "extra accessory slot" },
             { SkillName.Maintainer, "tools last longer" },
+            { SkillName.Hoarder, "can carry more items" },
         };
 
         public static readonly Dictionary<SkillName, PieceTemplate.Name> skillTextures = new()
@@ -47,6 +49,7 @@ namespace SonOfRobin
             { SkillName.Survivalist, PieceTemplate.Name.Burger },
             { SkillName.Fashionista, PieceTemplate.Name.GlassesVelvet },
             { SkillName.Maintainer, PieceTemplate.Name.AxeIron },
+            { SkillName.Hoarder, PieceTemplate.Name.BackpackMedium },
         };
 
         private const int maxShootingPower = 90;
@@ -131,7 +134,7 @@ namespace SonOfRobin
             }
             else allowedToolbarPieces.Add(PieceTemplate.Name.KnifeSimple);
 
-            this.PieceStorage = new PieceStorage(width: 4, height: 2, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.PieceStorage = new PieceStorage(width: 4, height: this.Skill == SkillName.Hoarder ? (byte)3 : (byte)2, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.ToolStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.GlobalChestStorage = new PieceStorage(width: 8, height: 6, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
