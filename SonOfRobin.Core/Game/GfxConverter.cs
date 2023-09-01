@@ -5,7 +5,6 @@ using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
@@ -21,7 +20,11 @@ namespace SonOfRobin
             int height = array2D.GetLength(1);
 
             var array1D = new byte[width * height];
-            Buffer.BlockCopy(array2D, 0, array1D, 0, array2D.Length * sizeof(byte));
+
+            for (int i = 0; i < array1D.Length; i++)
+            {
+                array1D[i] = array2D[i % width, i / width];
+            }
 
             using (var image = Image.LoadPixelData<L8>(array1D, width, height))
             {
@@ -41,14 +44,67 @@ namespace SonOfRobin
                     int width = image.Width;
                     int height = image.Height;
 
-                    var _IMemoryGroup = image.GetPixelMemoryGroup();
-                    var _MemoryGroup = _IMemoryGroup.ToArray()[0];
-                    var array1D = MemoryMarshal.AsBytes(_MemoryGroup.Span).ToArray();
-
                     var array2D = new byte[width, height];
-                    Buffer.BlockCopy(array1D, 0, array2D, 0, array1D.Length * sizeof(byte));
+
+                    var _IMemoryGroup = image.GetPixelMemoryGroup();
+                    int currentMemoryPos = 0;
+                    foreach (var group in _IMemoryGroup)
+                    {
+                        var array1D = MemoryMarshal.AsBytes(group.Span).ToArray();
+
+                        for (int i = 0; i < group.Length; i++)
+                        {
+                            array2D[(currentMemoryPos + i) % width, (currentMemoryPos + i) / width] = array1D[i];
+                        }
+                        currentMemoryPos += group.Length;
+                    }
 
                     return array2D;
+                }
+            }
+            catch (FileNotFoundException) { return null; }
+            catch (UnknownImageFormatException) { return null; } // file corrupted
+        }
+
+        public static void Save1DByteArrayToPNG(int width, int height, Byte[] array1D, string path)
+        {
+            // untested
+
+            if (array1D.Length != width * height) throw new ArgumentException($"Length {array1D} is different from declared size {width}x{height}");
+
+            using (var image = Image.LoadPixelData<L8>(array1D, width, height))
+            {
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                }
+            }
+        }
+
+        public static byte[] LoadPNGAs1DByteArray(string path)
+        {
+            // untested
+
+            try
+            {
+                using (var image = Image.Load<L8>(path))
+                {
+                    int width = image.Width;
+                    int height = image.Height;
+
+                    var array1D = new byte[width * height];
+
+                    var _IMemoryGroup = image.GetPixelMemoryGroup();
+                    int currentMemoryPos = 0;
+                    foreach (var group in _IMemoryGroup)
+                    {
+                        var bufferArray1D = MemoryMarshal.AsBytes(group.Span).ToArray();
+                        Buffer.BlockCopy(array1D, 0, bufferArray1D, currentMemoryPos, array1D.Length * sizeof(byte));
+
+                        currentMemoryPos += group.Length;
+                    }
+
+                    return array1D;
                 }
             }
             catch (FileNotFoundException) { return null; }

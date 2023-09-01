@@ -260,11 +260,13 @@ namespace SonOfRobin
 
             for (int y = 0; y < targetHeight; y++)
             {
+                int yFactor = (int)((float)y * multiplier);
+
                 for (int x = 0; x < targetWidth; x++)
                 {
                     Color pixel = RepeatingPattern.patternDict[upscaledGrid[x, y]].GetValue(
                         x: this.cell.xMin + (int)((float)x * multiplier),
-                        y: this.cell.yMin + (int)((float)y * multiplier));
+                        y: this.cell.yMin + yFactor);
 
                     image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
                 }
