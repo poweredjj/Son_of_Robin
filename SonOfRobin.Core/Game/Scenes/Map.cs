@@ -322,7 +322,9 @@ namespace SonOfRobin
 
             // zoom
 
-            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut) || TouchInput.IsBeingTouchedInAnyWay)
+            float analogZoom = InputMapper.Analog(InputMapper.Action.MapZoom).Y;
+
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut) || TouchInput.IsBeingTouchedInAnyWay || analogZoom != 0)
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
@@ -339,7 +341,8 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    float analogZoom = -InputMapper.Analog(InputMapper.Action.MapZoom).Y * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
+                    analogZoom = -analogZoom * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
+
                     if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false); // TODO try using proportional zooming here
 
                     currentZoom += analogZoom;
