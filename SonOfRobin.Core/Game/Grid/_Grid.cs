@@ -821,22 +821,26 @@ namespace SonOfRobin
 
         public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
         {
+            int xMinCellNo = FindMatchingCellInSingleAxis(
+                position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.world.width - 1), cellLength: this.cellWidth);
+
+            int xMaxCellNo = FindMatchingCellInSingleAxis(
+                position: Math.Clamp(value: (int)(position.X + distance), min: 0, max: this.world.width - 1), cellLength: this.cellWidth);
+
+            int yMinCellNo = FindMatchingCellInSingleAxis(
+                position: Math.Clamp(value: (int)(position.Y - distance), min: 0, max: this.world.height - 1), cellLength: this.cellHeight);
+
+            int yMaxCellNo = FindMatchingCellInSingleAxis(
+                position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.world.height - 1), cellLength: this.cellHeight);
+
             List<Cell> cellsWithinDistance = new();
-
-            int xMin = Math.Min(Math.Max(Convert.ToInt32(position.X - distance), 0), this.world.width - 1);
-            int xMax = Math.Min(Math.Max(Convert.ToInt32(position.X + distance), 0), this.world.width - 1);
-            int yMin = Math.Min(Math.Max(Convert.ToInt32(position.Y - distance), 0), this.world.height - 1);
-            int yMax = Math.Min(Math.Max(Convert.ToInt32(position.Y + distance), 0), this.world.height - 1);
-
-            int xMinCellNo = FindMatchingCellInSingleAxis(position: xMin, cellLength: this.cellWidth);
-            int xMaxCellNo = FindMatchingCellInSingleAxis(position: xMax, cellLength: this.cellWidth);
-            int yMinCellNo = FindMatchingCellInSingleAxis(position: yMin, cellLength: this.cellHeight);
-            int yMaxCellNo = FindMatchingCellInSingleAxis(position: yMax, cellLength: this.cellHeight);
 
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
-                { cellsWithinDistance.Add(this.cellGrid[x, y]); }
+                {
+                    cellsWithinDistance.Add(this.cellGrid[x, y]);
+                }
             }
 
             return cellsWithinDistance;
