@@ -1585,7 +1585,7 @@ namespace SonOfRobin
 
             // drawing ambient light
 
-            BlendState ambientBlend = new BlendState
+            BlendState ambientBlend = new()
             {
                 ColorBlendFunction = BlendFunction.Add,
                 ColorSourceBlend = Blend.DestinationColor,
@@ -1597,7 +1597,7 @@ namespace SonOfRobin
             // drawing point lights
 
             SonOfRobinGame.SpriteBatch.End();
-            BlendState colorLightBlend = new BlendState
+            BlendState colorLightBlend = new()
             {
                 AlphaBlendFunction = BlendFunction.Add,
                 AlphaSourceBlend = Blend.One,
@@ -1630,7 +1630,7 @@ namespace SonOfRobin
 
                 // drawing fog
 
-                if (fogPercentage > 0 && !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog))
+                if (fogPercentage > 0 && (this.Player == null || !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog)))
                 {
                     this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
                 }
