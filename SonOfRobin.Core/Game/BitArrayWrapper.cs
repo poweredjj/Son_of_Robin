@@ -1,8 +1,10 @@
 ﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SonOfRobin
 {
@@ -16,7 +18,14 @@ namespace SonOfRobin
         {
             this.width = width;
             this.height = height;
-            this.bitArray = new BitArray(width * height);
+            this.bitArray = new BitArray(this.width * this.height);
+        }
+
+        public BitArrayWrapper(int width, int height, bool[] boolArray)
+        {
+            this.width = width;
+            this.height = height;
+            this.bitArray = new BitArray(boolArray);
         }
 
         public void SetVal(int x, int y, bool value)
@@ -46,22 +55,25 @@ namespace SonOfRobin
 
         public bool SaveToPNG(string path)
         {
-            byte byteBlack = 0;
-            byte byteWhite = 255;
+            var workingArray = new bool[this.width * this.height];
+            this.bitArray.CopyTo(workingArray, 0);
 
-            using (var image = new Image<L8>(this.width, this.height))
+            using (var image = new Image<L8>(this.width, this.height)) // default image pixel value == 0
             {
-                for (int y = 0; y < this.height; y++)
+                for (int i = 0; i < workingArray.Length; i++)
                 {
-                    for (int x = 0; x < this.width; x++)
-                    {
-                        image[x, y] = new L8(this.GetVal(x, y) ? byteBlack : byteWhite);
-                    }
+                    if (!workingArray[i]) image[i % this.width, i / this.width] = new L8(255);
                 }
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
+                    image.Save(fileStream, new PngEncoder()
+                    {
+                        CompressionLevel = PngCompressionLevel.BestCompression,
+                        // ColorType = PngColorType.Palette, // DO NOT USE THIS OPTION - will freeze at bigger sizes
+                        // BitDepth = PngBitDepth.Bit1 // DO NOT USE THIS OPTION - will freeze at bigger sizes
+                    }
+                    );
                     return true;
                 }
             }
@@ -76,19 +88,23 @@ namespace SonOfRobin
                     int width = image.Width;
                     int height = image.Height;
 
-                    BitArrayWrapper bitArrayWrapper = new BitArrayWrapper(width: width, height: height);
+                    var boolArray = new bool[width * height];
 
-                    for (int y = 0; y < height; y++)
+                    var _IMemoryGroup = image.GetPixelMemoryGroup();
+                    int currentMemoryPos = 0;
+                    foreach (var group in _IMemoryGroup)
                     {
-                        int yFactor = y * width;
+                        var array1D = MemoryMarshal.AsBytes(group.Span).ToArray();
 
-                        for (int x = 0; x < width; x++)
+                        for (int i = 0; i < group.Length; i++)
                         {
-                            bitArrayWrapper.bitArray.Set(yFactor + x, image[x, y].PackedValue == 0);
+                            if (array1D[i] == 0) boolArray[currentMemoryPos + i] = true;
                         }
+
+                        currentMemoryPos += group.Length;
                     }
 
-                    return bitArrayWrapper;
+                    return new(width: width, height: height, boolArray: boolArray);
                 }
             }
             catch (FileNotFoundException) { return null; }
