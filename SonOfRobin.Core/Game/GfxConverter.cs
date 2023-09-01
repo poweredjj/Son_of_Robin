@@ -14,7 +14,63 @@ namespace SonOfRobin
 {
     public class GfxConverter
     {
-        public static void Save2DByteArrayToPNG(Byte[,] array2D, string path)
+        public static void Save2DByteArrayGreyscaleToPNGSquareFlipped(Byte[,] array2D, string path)
+        {
+            // use only with square bitmaps, to be read by counterpart method
+
+            int width = array2D.GetLength(0);
+            int height = array2D.GetLength(1);
+            if (width != height) throw new ArgumentException($"Width {width} does not match height {height}.");
+
+            var array1D = new byte[width * height];
+
+            // copies 2D array to 1D array the wrong way, has to be cancelled out by Buffer.BlockCopy when loading
+            Buffer.BlockCopy(array2D, 0, array1D, 0, array2D.Length * sizeof(byte));
+
+            using (var image = Image.LoadPixelData<L8>(array1D, width, height))
+            {
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                }
+            }
+        }
+
+        public static byte[,] LoadGreyscalePNGAs2DByteArraySquareFlipped(string path)
+        {
+            // use only with square bitmaps, saved with counterpart method
+
+            try
+            {
+                using (var image = Image.Load<L8>(path))
+                {
+                    int width = image.Width;
+                    int height = image.Height;
+                    if (width != height) throw new ArgumentException($"Width {width} does not match height {height}.");
+
+                    var array2D = new byte[width, height];
+
+                    var _IMemoryGroup = image.GetPixelMemoryGroup();
+                    int currentMemoryPos = 0;
+                    foreach (var group in _IMemoryGroup)
+                    {
+                        var array1D = MemoryMarshal.AsBytes(group.Span).ToArray();
+
+                        // copies 1D array to 2D array the wrong way, but cancels out Buffer.BlockCopy used while saving
+                        Buffer.BlockCopy(array1D, 0, array2D, currentMemoryPos, array1D.Length * sizeof(byte));
+
+                        currentMemoryPos += group.Length;
+                    }
+
+                    return array2D;
+                }
+            }
+            catch (FileNotFoundException) { return null; }
+            catch (UnknownImageFormatException) { return null; } // file corrupted
+            //catch (ArgumentException) { return null; } // file corrupted
+        }
+
+        public static void Save2DByteArrayGreyscaleToPNG(Byte[,] array2D, string path)
         {
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
@@ -35,7 +91,7 @@ namespace SonOfRobin
             }
         }
 
-        public static byte[,] LoadPNGAs2DByteArray(string path)
+        public static byte[,] LoadGreyscalePNGAs2DByteArray(string path)
         {
             try
             {
@@ -64,21 +120,6 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException) { return null; }
             catch (UnknownImageFormatException) { return null; } // file corrupted
-        }
-
-        public static void Save1DByteArrayToPNG(int width, int height, Byte[] array1D, string path)
-        {
-            // untested
-
-            if (array1D.Length != width * height) throw new ArgumentException($"Length {array1D} is different from declared size {width}x{height}");
-
-            using (var image = Image.LoadPixelData<L8>(array1D, width, height))
-            {
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
-                }
-            }
         }
 
         public static byte[] LoadPNGAs1DByteArray(string path)

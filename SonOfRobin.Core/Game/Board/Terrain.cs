@@ -80,7 +80,7 @@ namespace SonOfRobin
             this.addBorder = addBorder;
 
             string templatePath = this.Grid.gridTemplate.templatePath;
-            this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.png");
+            this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}_flipped.png");
             this.minValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_min.png");
             this.maxValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_max.png");
         }
@@ -91,9 +91,9 @@ namespace SonOfRobin
             byte[,] loadedMaxVal = null;
             byte[,] loadedMapData = null;
 
-            loadedMinVal = GfxConverter.LoadPNGAs2DByteArray(this.minValPngPath);
-            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadPNGAs2DByteArray(this.maxValPngPath);
-            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadPNGAs2DByteArray(this.terrainPngPath);
+            loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
+            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);
+            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadGreyscalePNGAs2DByteArraySquareFlipped(this.terrainPngPath);
 
             if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
@@ -154,9 +154,9 @@ namespace SonOfRobin
         {
             if (!this.CreationInProgress) return;
 
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.mapData, path: this.terrainPngPath);
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
+            GfxConverter.Save2DByteArrayGreyscaleToPNGSquareFlipped(array2D: this.mapData, path: this.terrainPngPath);
+            GfxConverter.Save2DByteArrayGreyscaleToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
+            GfxConverter.Save2DByteArrayGreyscaleToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
 
             this.CreationInProgress = false;
         }
