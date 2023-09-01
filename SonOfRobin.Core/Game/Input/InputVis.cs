@@ -24,10 +24,10 @@ namespace SonOfRobin
                         return new List<Texture2D>();
 
                     case Input.ControlType.Gamepad:
-                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.leftStick.Analog);
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.analogMovement.Analog);
 
                     case Input.ControlType.KeyboardAndMouse:
-                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick.Analog);
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.analogMovement.Analog);
 
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.CurrentControlType}'.");
@@ -45,10 +45,10 @@ namespace SonOfRobin
                         return new List<Texture2D>();
 
                     case Input.ControlType.Gamepad:
-                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.rightStick.Analog);
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.analogCamera.Analog);
 
                     case Input.ControlType.KeyboardAndMouse:
-                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick.Analog);
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.analogCamera.Analog);
 
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.CurrentControlType}'.");

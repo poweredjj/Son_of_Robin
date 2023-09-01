@@ -10,14 +10,14 @@ namespace SonOfRobin
     {
         public const float version = 1.13f;
 
-        private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
-            {
+        private static readonly Dictionary<string, string> readablePropertyNames = new()
+        {
                 {"left", "left"},
                 {"right", "right"},
                 {"up", "up"},
                 {"down", "down"},
-                {"leftStick", "movement"},
-                {"rightStick", "camera / aim"},
+                {"analogMovement", "movement"},
+                {"analogCamera", "camera / aim"},
                 {"confirm", "confirm"},
                 {"cancel", "cancel"},
                 {"interact", "interact"},
@@ -43,8 +43,8 @@ namespace SonOfRobin
 
         public readonly float packageVersion;
 
-        public StoredInput leftStick;
-        public StoredInput rightStick;
+        public StoredInput analogMovement;
+        public StoredInput analogCamera;
         public StoredInput left;
         public StoredInput right;
         public StoredInput up;
@@ -75,12 +75,12 @@ namespace SonOfRobin
         public bool IsObsolete
         { get { return this.packageVersion != version; } }
 
-        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapToggleLocations, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
+        public InputPackage(float packageVersion, StoredInput analogMovement, StoredInput analogCamera, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapToggleLocations, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
         {
             this.packageVersion = packageVersion;
 
-            this.leftStick = leftStick;
-            this.rightStick = rightStick;
+            this.analogMovement = analogMovement;
+            this.analogCamera = analogCamera;
             this.left = left;
             this.right = right;
             this.up = up;
@@ -109,7 +109,7 @@ namespace SonOfRobin
             this.mapZoomOut = mapZoomOut;
         }
 
-        public string GetReadablePropertyName(string propertyName)
+        public static string GetReadablePropertyName(string propertyName)
         {
             return readablePropertyNames[propertyName];
         }
@@ -118,8 +118,8 @@ namespace SonOfRobin
         {
             return new InputPackage(
                 packageVersion: this.packageVersion,
-                leftStick: this.leftStick,
-                rightStick: this.rightStick,
+                analogMovement: this.analogMovement,
+                analogCamera: this.analogCamera,
                 confirm: this.confirm,
                 cancel: this.cancel,
                 pauseMenu: this.pauseMenu,
@@ -152,8 +152,8 @@ namespace SonOfRobin
         {
             return
                 this.packageVersion == inputPackage.packageVersion &&
-                this.leftStick == inputPackage.leftStick &&
-                this.rightStick == inputPackage.rightStick &&
+                this.analogMovement == inputPackage.analogMovement &&
+                this.analogCamera == inputPackage.analogCamera &&
                 this.confirm == inputPackage.confirm &&
                 this.cancel == inputPackage.cancel &&
                 this.pauseMenu == inputPackage.pauseMenu &&
@@ -186,8 +186,9 @@ namespace SonOfRobin
         {
             // setting lists of properties, that should not be mapped to the same input
 
-            List<List<string>> groupsToCheck = new List<List<string>> {
-                { new List<string> { "leftStick", "rightStick" } }, // sticks
+            List<List<string>> groupsToCheck = new()
+            {
+                { new List<string> { "analogMovement", "analogCamera" } }, // sticks
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
@@ -220,8 +221,8 @@ namespace SonOfRobin
 
             // converting duplicates dictionary to image list and error list
 
-            List<string> errorList = new List<string>();
-            List<Texture2D> imageList = new List<Texture2D>();
+            List<string> errorList = new();
+            List<Texture2D> imageList = new();
 
             foreach (var kvp in duplicatedNamesByTextures)
             {
@@ -261,7 +262,7 @@ namespace SonOfRobin
             foreach (var kvp in valuesByNames)
             {
                 if (kvp.Value == null) continue;
-                if (duplicatedValues.Contains(kvp.Value)) duplicatesByValues[kvp.Value].Add(this.GetReadablePropertyName(kvp.Key));
+                if (duplicatedValues.Contains(kvp.Value)) duplicatesByValues[kvp.Value].Add(GetReadablePropertyName(kvp.Key));
             }
 
             return duplicatesByValues;
@@ -269,16 +270,16 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
-            Dictionary<string, Object> packageData = new Dictionary<string, object>();
+            Dictionary<string, Object> packageData = new();
 
             packageData["version"] = version;
 
-            packageData["leftStick"] = leftStick.Serialize();
-            packageData["rightStick"] = rightStick.Serialize();
-            packageData["left"] = left == null ? null : left.Serialize();
-            packageData["right"] = right == null ? null : right.Serialize();
-            packageData["up"] = up == null ? null : up.Serialize();
-            packageData["down"] = down == null ? null : down.Serialize();
+            packageData["leftStick"] = analogMovement.Serialize();
+            packageData["rightStick"] = analogCamera.Serialize();
+            packageData["left"] = left?.Serialize();
+            packageData["right"] = right?.Serialize();
+            packageData["up"] = up?.Serialize();
+            packageData["down"] = down?.Serialize();
             packageData["confirm"] = confirm.Serialize();
             packageData["cancel"] = cancel.Serialize();
             packageData["pauseMenu"] = pauseMenu.Serialize();
@@ -311,8 +312,8 @@ namespace SonOfRobin
 
             float version = (float)(double)inputDict["version"];
 
-            StoredInput leftStick = StoredInput.Deserialize(inputDict["leftStick"]);
-            StoredInput rightStick = StoredInput.Deserialize(inputDict["rightStick"]);
+            StoredInput analogMovement = StoredInput.Deserialize(inputDict["leftStick"]);
+            StoredInput analogCamera = StoredInput.Deserialize(inputDict["rightStick"]);
             StoredInput left = StoredInput.Deserialize(inputDict["left"]);
             StoredInput right = StoredInput.Deserialize(inputDict["right"]);
             StoredInput up = StoredInput.Deserialize(inputDict["up"]);
@@ -340,7 +341,7 @@ namespace SonOfRobin
             StoredInput mapZoomIn = StoredInput.Deserialize(inputDict["mapZoomIn"]);
             StoredInput mapZoomOut = StoredInput.Deserialize(inputDict["mapZoomOut"]);
 
-            return new InputPackage(packageVersion: version, leftStick: leftStick, rightStick: rightStick, left: left, right: right, up: up, down: down, confirm: confirm, cancel: cancel, pauseMenu: pauseMenu, sprint: sprint, inventory: inventory, pickUp: pickUp, craft: craft, interact: interact, map: map, useTool: useTool, zoomOut: zoomOut, toolbarPrev: toolbarPrev, toolbarNext: toolbarNext, invSwitch: invSwitch, invPickOne: invPickOne, invPickStack: invPickStack, invSort: invSort, mapToggleMarker: mapToggleMarker, mapToggleLocations: mapToggleLocations, mapCenterPlayer: mapCenterPlayer, mapZoomIn: mapZoomIn, mapZoomOut: mapZoomOut);
+            return new InputPackage(packageVersion: version, analogMovement: analogMovement, analogCamera: analogCamera, left: left, right: right, up: up, down: down, confirm: confirm, cancel: cancel, pauseMenu: pauseMenu, sprint: sprint, inventory: inventory, pickUp: pickUp, craft: craft, interact: interact, map: map, useTool: useTool, zoomOut: zoomOut, toolbarPrev: toolbarPrev, toolbarNext: toolbarNext, invSwitch: invSwitch, invPickOne: invPickOne, invPickStack: invPickStack, invSort: invSort, mapToggleMarker: mapToggleMarker, mapToggleLocations: mapToggleLocations, mapCenterPlayer: mapCenterPlayer, mapZoomIn: mapZoomIn, mapZoomOut: mapZoomOut);
         }
     }
 }

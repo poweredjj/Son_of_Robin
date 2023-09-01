@@ -42,6 +42,7 @@ namespace SonOfRobin
 
             MapToggleMarker = 26,
             MapMove = 27,
+            MapZoom = 34,
             MapCenterPlayer = 28,
             MapZoomIn = 29,
             MapZoomOut = 30,
@@ -78,9 +79,9 @@ namespace SonOfRobin
 
         protected static readonly Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: new StoredInput(AnalogType.PadLeft), rightStick: new StoredInput(AnalogType.PadRight), confirm: new StoredInput(Buttons.A), cancel: new StoredInput(Buttons.B), pauseMenu: new StoredInput(Buttons.Start), sprint: new StoredInput(Buttons.LeftStick), inventory: new StoredInput(Buttons.Y), pickUp: new StoredInput(Buttons.X), craft: new StoredInput(Buttons.DPadUp), interact: new StoredInput(Buttons.A), map: new StoredInput(Buttons.DPadRight), useTool: new StoredInput(Buttons.RightTrigger), zoomOut: new StoredInput(Buttons.LeftTrigger), toolbarPrev: new StoredInput(Buttons.LeftShoulder), toolbarNext: new StoredInput(Buttons.RightShoulder), invSwitch: new StoredInput(Buttons.LeftStick), invPickOne: new StoredInput(Buttons.Y), invPickStack: new StoredInput(Buttons.X), invSort: new StoredInput(Buttons.RightStick), mapToggleMarker: new StoredInput(Buttons.A), mapToggleLocations: new StoredInput(Buttons.X), mapCenterPlayer: new StoredInput(Buttons.LeftStick), mapZoomIn: new StoredInput(Buttons.RightTrigger), mapZoomOut: new StoredInput(Buttons.LeftTrigger));
+        public static readonly InputPackage defaultMappingGamepad = new(packageVersion: InputPackage.version, analogMovement: new StoredInput(AnalogType.PadLeft), analogCamera: new StoredInput(AnalogType.PadRight), confirm: new StoredInput(Buttons.A), cancel: new StoredInput(Buttons.B), pauseMenu: new StoredInput(Buttons.Start), sprint: new StoredInput(Buttons.LeftStick), inventory: new StoredInput(Buttons.Y), pickUp: new StoredInput(Buttons.X), craft: new StoredInput(Buttons.DPadUp), interact: new StoredInput(Buttons.A), map: new StoredInput(Buttons.DPadRight), useTool: new StoredInput(Buttons.RightTrigger), zoomOut: new StoredInput(Buttons.LeftTrigger), toolbarPrev: new StoredInput(Buttons.LeftShoulder), toolbarNext: new StoredInput(Buttons.RightShoulder), invSwitch: new StoredInput(Buttons.LeftStick), invPickOne: new StoredInput(Buttons.Y), invPickStack: new StoredInput(Buttons.X), invSort: new StoredInput(Buttons.RightStick), mapToggleMarker: new StoredInput(Buttons.A), mapToggleLocations: new StoredInput(Buttons.X), mapCenterPlayer: new StoredInput(Buttons.LeftStick), mapZoomIn: new StoredInput(Buttons.RightTrigger), mapZoomOut: new StoredInput(Buttons.LeftTrigger));
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: new StoredInput(AnalogType.FromKeys), rightStick: new StoredInput(AnalogType.Empty), confirm: new StoredInput(Keys.Enter), cancel: new StoredInput(Keys.Escape), pauseMenu: new StoredInput(Keys.Back), sprint: new StoredInput(Keys.NumPad0), inventory: new StoredInput(Keys.Enter), pickUp: new StoredInput(Keys.RightControl), craft: new StoredInput(Keys.NumPad5), interact: new StoredInput(Keys.RightShift), map: new StoredInput(Keys.M), useTool: new StoredInput(Keys.Space), zoomOut: new StoredInput(Keys.NumPad1), toolbarPrev: new StoredInput(Keys.OemOpenBrackets), toolbarNext: new StoredInput(Keys.OemCloseBrackets), invSwitch: new StoredInput(Keys.Tab), invPickOne: new StoredInput(Keys.RightShift), invPickStack: new StoredInput(Keys.Space), invSort: new StoredInput(Keys.LeftShift), mapToggleMarker: new StoredInput(Keys.Space), mapToggleLocations: new StoredInput(Keys.C), mapCenterPlayer: new StoredInput(Keys.A), mapZoomIn: new StoredInput(Keys.X), mapZoomOut: new StoredInput(Keys.Z), left: new StoredInput(Keys.Left), right: new StoredInput(Keys.Right), up: new StoredInput(Keys.Up), down: new StoredInput(Keys.Down));
+        public static readonly InputPackage defaultMappingKeyboard = new(packageVersion: InputPackage.version, analogMovement: new StoredInput(AnalogType.FromKeys), analogCamera: new StoredInput(AnalogType.Empty), confirm: new StoredInput(Keys.Enter), cancel: new StoredInput(Keys.Escape), pauseMenu: new StoredInput(Keys.Back), sprint: new StoredInput(Keys.NumPad0), inventory: new StoredInput(Keys.Enter), pickUp: new StoredInput(Keys.RightControl), craft: new StoredInput(Keys.NumPad5), interact: new StoredInput(Keys.RightShift), map: new StoredInput(Keys.M), useTool: new StoredInput(Keys.Space), zoomOut: new StoredInput(Keys.NumPad1), toolbarPrev: new StoredInput(Keys.OemOpenBrackets), toolbarNext: new StoredInput(Keys.OemCloseBrackets), invSwitch: new StoredInput(Keys.Tab), invPickOne: new StoredInput(Keys.RightShift), invPickStack: new StoredInput(Keys.Space), invSort: new StoredInput(Keys.LeftShift), mapToggleMarker: new StoredInput(Keys.Space), mapToggleLocations: new StoredInput(Keys.C), mapCenterPlayer: new StoredInput(Keys.A), mapZoomIn: new StoredInput(Keys.X), mapZoomOut: new StoredInput(Keys.Z), left: new StoredInput(Keys.Left), right: new StoredInput(Keys.Right), up: new StoredInput(Keys.Up), down: new StoredInput(Keys.Down));
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -110,10 +111,10 @@ namespace SonOfRobin
 
             // world
             {
-                var walkList = new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick };
+                var walkList = new List<object> { AnalogType.VirtLeft, keybMap.analogMovement, padMap.analogMovement };
                 if (Preferences.PointToWalk) walkList.Add(MouseAction.LeftButtonVisOnly);
                 new Mapping(action: Action.WorldWalk, anyInputList: walkList, keysToAnalog: keysToAnalog);
-                new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
+                new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.analogCamera });
                 new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
                 new Mapping(action: Action.WorldSprintToggle, anyInputList: new List<object> { keybMap.sprint, padMap.sprint, VButName.Sprint });
                 new Mapping(action: Action.WorldInventory, anyInputList: new List<object> { keybMap.inventory, padMap.inventory, VButName.Inventory });
@@ -147,7 +148,8 @@ namespace SonOfRobin
             {
                 new Mapping(action: Action.MapToggleMarker, anyInputList: new List<object> { keybMap.mapToggleMarker, padMap.mapToggleMarker, VButName.MapToggleMarker, MouseAction.RightButton });
                 new Mapping(action: Action.MapCenterPlayer, anyInputList: new List<object> { keybMap.mapCenterPlayer, padMap.mapCenterPlayer, VButName.MapCenterPlayer });
-                new Mapping(action: Action.MapMove, anyInputList: new List<object> { keybMap.leftStick, padMap.leftStick, MouseAction.LeftButtonVisOnly }, keysToAnalog: keysToAnalog); // virtual stick is replaced with direct touch reading
+                new Mapping(action: Action.MapMove, anyInputList: new List<object> { keybMap.analogMovement, padMap.analogMovement, MouseAction.LeftButtonVisOnly }, keysToAnalog: keysToAnalog); // virtual stick is replaced with direct touch reading
+                new Mapping(action: Action.MapZoom, anyInputList: new List<object> { padMap.analogCamera }); // virtual stick is replaced with direct touch reading
                 new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
                 new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, MouseAction.ScrollUp });
                 new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, MouseAction.ScrollDown });

@@ -337,7 +337,13 @@ namespace SonOfRobin
                     if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn)) currentZoom = this.camera.CurrentZoom + zoomChangeVal;
                     if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut)) currentZoom = this.camera.CurrentZoom - zoomChangeVal;
                 }
-                else currentZoom += TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false);
+                else
+                {
+                    float analogZoom = -InputMapper.Analog(InputMapper.Action.MapZoom).Y * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
+                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false); // TODO try using proportional zooming here
+
+                    currentZoom += analogZoom;
+                }
 
                 currentZoom = Math.Min(currentZoom, this.InitialZoom);
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.4f);
