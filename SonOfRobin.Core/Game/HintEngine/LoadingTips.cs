@@ -8,7 +8,7 @@ namespace SonOfRobin
     {
         private static readonly TimeSpan singleTipMaxDuration = TimeSpan.FromSeconds(30);
         private static string currentTip;
-        private static DateTime lastTipGenerated = new(1900, 1, 1);
+        private static DateTime lastTipGenerated = DateTime.MinValue;
 
         private static readonly List<string> allTips = new()
         {

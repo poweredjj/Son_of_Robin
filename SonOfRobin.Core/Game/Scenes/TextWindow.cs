@@ -48,7 +48,7 @@ namespace SonOfRobin
 
             base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound, waitForOtherScenesOfTypeToEnd: true)
         {
-            this.textWithImages = new TextWithImages(font: font, text: SplitText(text: text, maxWidth: maxWidth), imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, animSound: animSound, treatImagesAsSquares: treatImagesAsSquares);
+            this.textWithImages = new TextWithImages(font: font, text: Helpers.KeepTextLineBelowGivenLength(text: text, maxLength: maxWidth), imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, animSound: animSound, treatImagesAsSquares: treatImagesAsSquares);
 
             this.textScale = 1f; // to be updated below
             this.textColor = textColor;
@@ -152,43 +152,7 @@ namespace SonOfRobin
             if (inTrans) this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: true, duration: 15, playCount: -1, replaceBaseValue: false, baseParamName: "Rot", targetVal: 0.13f, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.17f));
         }
 
-        private static string SplitText(string text, int maxWidth)
-        {
-            string newText = "";
 
-            string[] lineList = text.Split(Environment.NewLine.ToCharArray());
-
-            int lineNo, wordNo, lineWidth;
-
-            lineNo = 0;
-            foreach (string line in lineList)
-            {
-                if (lineNo > 0) newText += "\n";
-                lineWidth = 0;
-
-                string[] wordList = line.Split(' ');
-
-                wordNo = 0;
-                foreach (string word in wordList)
-                {
-                    if (wordNo > 0) newText += " ";
-
-                    if (lineWidth + word.Length > maxWidth)
-                    {
-                        newText += "\n";
-                        lineWidth = 0;
-                    }
-
-                    newText += word;
-                    lineWidth += word.Length;
-                    wordNo++;
-                }
-
-                lineNo++;
-            }
-
-            return newText;
-        }
 
         public override void Update()
         {

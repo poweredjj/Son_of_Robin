@@ -1173,7 +1173,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitMorning) sleepModeText = "Waiting until morning...";
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
-            sleepModeText += $"\n{LoadingTips.GetTip()}";
+            sleepModeText += $"\n{Helpers.KeepTextLineBelowGivenLength(LoadingTips.GetTip(), 46)}";
 
             this.sleepEngine.Execute(player: this);
 

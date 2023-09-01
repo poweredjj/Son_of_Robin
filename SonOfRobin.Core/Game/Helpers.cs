@@ -609,5 +609,43 @@ namespace SonOfRobin
 
             return pointsByRegion;
         }
+
+        public static string KeepTextLineBelowGivenLength(string text, int maxLength)
+        {
+            string newText = "";
+
+            string[] lineList = text.Split(Environment.NewLine.ToCharArray());
+
+            int lineNo, wordNo, lineWidth;
+
+            lineNo = 0;
+            foreach (string line in lineList)
+            {
+                if (lineNo > 0) newText += "\n";
+                lineWidth = 0;
+
+                string[] wordList = line.Split(' ');
+
+                wordNo = 0;
+                foreach (string word in wordList)
+                {
+                    if (wordNo > 0) newText += " ";
+
+                    if (lineWidth + word.Length > maxLength)
+                    {
+                        newText += "\n";
+                        lineWidth = 0;
+                    }
+
+                    newText += word;
+                    lineWidth += word.Length;
+                    wordNo++;
+                }
+
+                lineNo++;
+            }
+
+            return newText;
+        }
     }
 }
