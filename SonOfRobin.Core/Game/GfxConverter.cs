@@ -197,11 +197,11 @@ namespace SonOfRobin
                 return fileStream;
             }
             catch (FileNotFoundException)
-            { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
+            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
             catch (IOException) // png file corrupted
-            { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
+            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted
-            { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
+            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 
             return null;
         }
@@ -217,7 +217,7 @@ namespace SonOfRobin
             }
             catch (InvalidOperationException)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidOperationException while trying to read texture from fileStream.");
+                MessageLog.AddMessage(debugMessage: true, message: "InvalidOperationException while trying to read texture from fileStream.");
 
                 fileStream.Dispose();
                 return null;

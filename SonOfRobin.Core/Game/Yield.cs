@@ -133,7 +133,7 @@ namespace SonOfRobin
                 if (piece.Mass < ((Plant)piece).pieceInfo.plantAdultSizeMass)
                 {
                     chanceMultiplier /= 6f;
-                    // MessageLog.AddMessage(msgType: MsgType.User, message: $"Plant {this.mainPiece.readableName} is not adult, multiplier changed to {multiplier}."); // for testing
+                    // MessageLog.AddMessage( message: $"Plant {this.mainPiece.readableName} is not adult, multiplier changed to {multiplier}."); // for testing
                 }
             }
 
@@ -156,7 +156,7 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            MessageLog.AddMessage(msgType: MsgType.User, message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.Yellow);
+                            MessageLog.AddMessage( message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.Yellow);
                             Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }
@@ -201,7 +201,7 @@ namespace SonOfRobin
                         yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
                         yieldPiece.pieceInfo.appearDebris?.DropDebris(piece: piece);
 
-                        // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");
+                        // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");
 
                         yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
 

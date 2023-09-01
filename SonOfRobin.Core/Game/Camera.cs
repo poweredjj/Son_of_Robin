@@ -194,7 +194,7 @@ namespace SonOfRobin
                 movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
                 movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
 
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
+                // MessageLog.AddMessage( message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
 
                 viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdownFactorX);
                 viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdownFactorY);

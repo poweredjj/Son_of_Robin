@@ -97,7 +97,7 @@ namespace SonOfRobin
 
             if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - creating new", color: Color.Yellow);
+                MessageLog.AddMessage(debugMessage: true, message: $"terrain {Convert.ToString(name).ToLower()} - creating new", color: Color.Yellow);
 
                 var gradientLines = this.CreateGradientLines();
                 this.gradientLineX = gradientLines.Item1;
@@ -109,7 +109,7 @@ namespace SonOfRobin
             }
             else
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - loaded");
+                MessageLog.AddMessage(debugMessage: true, message: $"terrain {Convert.ToString(name).ToLower()} - loaded");
 
                 this.mapData = loadedMapData;
                 this.minValGridCell = loadedMinVal;

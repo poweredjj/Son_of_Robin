@@ -81,10 +81,10 @@ namespace SonOfRobin
             foreach (SaveHeaderInfo saveInfo in incorrectSaves)
             {
                 saveInfo.Delete();
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Deleted obsolete save '{saveInfo.folderName}'.", color: Color.White);
+                MessageLog.AddMessage(debugMessage: true, message: $"Deleted obsolete save '{saveInfo.folderName}'.", color: Color.White);
             }
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Deleted obsolete saves ({incorrectSaves.Count}).", color: Color.White);
+            MessageLog.AddMessage( message: $"Deleted obsolete saves ({incorrectSaves.Count}).", color: Color.White);
         }
     }
 }

@@ -237,7 +237,7 @@ namespace SonOfRobin
                 {
                     if (booster.buffList == null)
                     {
-                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Booster {booster.readableName} has no buffList - ignoring.");
+                        MessageLog.AddMessage(debugMessage: true, message: $"Booster {booster.readableName} has no buffList - ignoring.");
                         continue;
                     }
                     buffList.AddRange(booster.buffList);

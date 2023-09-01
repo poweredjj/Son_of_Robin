@@ -116,7 +116,7 @@ namespace SonOfRobin
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
 
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map background {width}x{height} (fullscreen {this.FullScreen})");
+                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map background {width}x{height} (fullscreen {this.FullScreen})");
 
                 Texture2D mapTexture = BoardGraphics.GetMapTextureScaledForScreenSize(grid: this.world.Grid, width: width, height: height);
 
@@ -127,7 +127,7 @@ namespace SonOfRobin
 
                 this.dirtyBackground = false;
                 this.dirtyFog = true;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
+                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
             }
 
             this.UpdateCombinedGfx();
@@ -139,7 +139,7 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
+            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
 
             if (this.lowResWholeCombinedGfx == null || this.lowResWholeCombinedGfx.Width != this.viewParams.Width || this.lowResWholeCombinedGfx.Height != this.viewParams.Height)
             {
@@ -233,7 +233,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    MessageLog.AddMessage(msgType: MsgType.User, message: "Too dark to read the map.", avoidDuplicates: true);
+                    MessageLog.AddMessage( message: "Too dark to read the map.", avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -401,7 +401,7 @@ namespace SonOfRobin
 
             // drawing background
             bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
+            // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
             var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
             bool foundCellsWithMissingTextures = false;

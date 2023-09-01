@@ -282,7 +282,7 @@ namespace SonOfRobin
                 return slot.RemoveTopPiece();
             }
             catch (IndexOutOfRangeException)
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Can't get piece - inventory index out of bounds ({x},{y})", color: Color.White); }
+            { MessageLog.AddMessage(debugMessage: true, message: $"Can't get piece - inventory index out of bounds ({x},{y})", color: Color.White); }
 
             return null;
         }
@@ -306,7 +306,7 @@ namespace SonOfRobin
                     if (!destroyIfFreeSpotNotFound) slot.AddPiece(piece);
                     return false;
                 }
-                else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White);
+                else MessageLog.AddMessage(debugMessage: true, message: $"{piece.name} has been dropped.", color: Color.White);
 
                 if (!dropAllPieces) return true;
             }
@@ -340,7 +340,7 @@ namespace SonOfRobin
 
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
-            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Dropping {piece.readableName}...", color: Color.White);
+            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(debugMessage: true, message: $"Dropping {piece.readableName}...", color: Color.White);
 
             // the piece should naturally fall anywhere
             piece.sprite.allowedTerrain.CopyTerrainFromTemplate(new AllowedTerrain());

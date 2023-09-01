@@ -257,7 +257,7 @@ namespace SonOfRobin
             if (finish)
             {
                 TimeSpan loadingDuration = DateTime.Now - this.startTime;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+                MessageLog.AddMessage(debugMessage: true, message: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
                 this.Remove();
             }

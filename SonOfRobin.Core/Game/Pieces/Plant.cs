@@ -107,7 +107,7 @@ namespace SonOfRobin
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                if (showMessage) MessageLog.AddMessage(msgType: MsgType.User, message: $"There is nothing left to shake off from {this.readableName}.", avoidDuplicates: true);
+                if (showMessage) MessageLog.AddMessage( message: $"There is nothing left to shake off from {this.readableName}.", avoidDuplicates: true);
 
                 return false;
             }

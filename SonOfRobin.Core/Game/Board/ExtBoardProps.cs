@@ -76,7 +76,7 @@ namespace SonOfRobin
             bool loadedCorrectly = this.LoadTemplate();
             if (!loadedCorrectly)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "ext - creating new", color: Color.Yellow);
+                MessageLog.AddMessage(debugMessage: true, message: "ext - creating new", color: Color.Yellow);
 
                 this.extDataByProperty = this.MakeArrayCollection(); // need to be repeated
 
@@ -90,7 +90,7 @@ namespace SonOfRobin
             }
             else
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "ext - loaded");
+                MessageLog.AddMessage(debugMessage: true, message: "ext - loaded");
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }

@@ -370,7 +370,7 @@ namespace SonOfRobin
                     _ => throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}."),
                 };
 
-                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldSize}x{newWorldSize}");
+                //MessageLog.AddMessage(debugMessage: true, message: $"Setting world size to {newWorldSize}x{newWorldSize}");
             }
         }
 
@@ -616,7 +616,7 @@ namespace SonOfRobin
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences saved.", color: Color.White);
+            MessageLog.AddMessage(debugMessage: true, message: "Preferences saved.", color: Color.White);
         }
 
         public static void Load()
@@ -692,8 +692,8 @@ namespace SonOfRobin
 
                     prefsLoaded = true;
                 }
-                catch (KeyNotFoundException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
-                catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
+                catch (KeyNotFoundException) { MessageLog.AddMessage(debugMessage: true, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
+                catch (InvalidCastException) { MessageLog.AddMessage(debugMessage: true, message: "InvalidCastException while loading preferences.", color: Color.White); }
             }
 
             if (prefsLoaded)
@@ -712,7 +712,7 @@ namespace SonOfRobin
             }
             if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
+            MessageLog.AddMessage(debugMessage: true, message: "Preferences loaded.", color: Color.White);
 
             if (!startingItemNames.Contains(newWorldStartingItem)) newWorldStartingItem = startingItemNames[0];
         }

@@ -768,7 +768,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
+            if (childrenBorn > 0) MessageLog.AddMessage(debugMessage: true, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.pieceInfo.startingMass)
             {

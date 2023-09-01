@@ -162,7 +162,7 @@ namespace SonOfRobin
 
         public static void ClearQueue()
         {
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Clearing Scheduler queue.");
+            MessageLog.AddMessage(debugMessage: true, message: "Clearing Scheduler queue.");
             queue.Clear();
         }
 
@@ -209,7 +209,7 @@ namespace SonOfRobin
 
             public void Process()
             {
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} processing task {this.TaskText}", color: Color.LightYellow);
+                // MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.currentUpdate} processing task {this.TaskText}", color: Color.LightYellow);
 
                 if (this.delay <= 0) this.Execute();
                 else this.AddToQueue();
@@ -219,7 +219,7 @@ namespace SonOfRobin
             {
                 if (this.delay == 0) throw new ArgumentException($"Tried to add task with delay {this.delay} to queue.");
 
-                //  MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
+                //  MessageLog.AddMessage( message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
 
                 if (this.turnOffInputUntilExecution) this.TurnOffInput();
                 if (this.frame == -1) this.frame = SonOfRobinGame.CurrentUpdate + this.delay;
@@ -389,7 +389,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null)
                             {
-                                MessageLog.AddMessage(msgType: MsgType.User, message: "Could not create selected item, because no world was found.");
+                                MessageLog.AddMessage( message: "Could not create selected item, because no world was found.");
                                 return;
                             }
 
@@ -418,12 +418,12 @@ namespace SonOfRobin
                                 attemptNo++;
                                 if (attemptNo == 1000)
                                 {
-                                    MessageLog.AddMessage(msgType: MsgType.User, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                    MessageLog.AddMessage( message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
                                     break;
                                 }
                             }
 
-                            MessageLog.AddMessage(msgType: MsgType.User, message: $"{piecesCreated} '{templateName}' pieces created.");
+                            MessageLog.AddMessage( message: $"{piecesCreated} '{templateName}' pieces created.");
 
                             return;
                         }
@@ -1398,7 +1398,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Skipping cinematics", color: Color.White);
+                            MessageLog.AddMessage(debugMessage: true, message: "Skipping cinematics", color: Color.White);
 
                             var textWindows = Scene.GetAllScenesOfType(typeof(TextWindow));
                             foreach (var scene in textWindows)
@@ -1583,7 +1583,7 @@ namespace SonOfRobin
                             Sound sound = (Sound)this.ExecuteHelper;
                             sound.Stop(skipFade: true);
 
-                            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
+                            // MessageLog.AddMessage(debugMessage: true, message: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
 
                             return;
                         }
@@ -1789,7 +1789,7 @@ namespace SonOfRobin
                         {
                             if (World.DestroyedNotReleasedWorldCount == 0) return;
 
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", color: new Color(255, 180, 66));
+                            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", color: new Color(255, 180, 66));
                             GC.Collect();
                             RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
 

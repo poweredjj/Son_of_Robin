@@ -453,7 +453,7 @@ namespace SonOfRobin
 
             foreach (Location location in this.locationList)
             {
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"Location: {location.name} {location.areaRect}"); // for testing
+                // MessageLog.AddMessage( message: $"Location: {location.name} {location.areaRect}"); // for testing
                 // location.hasBeenDiscovered = true; // for testing
             }
 

@@ -28,7 +28,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in predatorPieces)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
+                MessageLog.AddMessage(debugMessage: true, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
 
                 Animal animal = (Animal)piece;
                 animal.target = this;
@@ -54,7 +54,7 @@ namespace SonOfRobin
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();
-                MessageLog.AddMessage(msgType: MsgType.User, message: "Map marker has been reached.");
+                MessageLog.AddMessage( message: "Map marker has been reached.");
             }
         }
 
@@ -199,7 +199,7 @@ namespace SonOfRobin
 
                         ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 7);
 
-                        // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
+                        // MessageLog.AddMessage(debugMessage: true, message: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
                     }
                 }
             }

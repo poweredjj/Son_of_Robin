@@ -131,7 +131,7 @@ namespace SonOfRobin
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
             this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
+            MessageLog.AddMessage(debugMessage: true, message: $"maxAnimalsPerName {maxAnimalsPerName}");
 
             var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
             this.creationDataListRegular = creationDataList.Where(data => !data.temporaryDecoration).ToList();
@@ -191,13 +191,13 @@ namespace SonOfRobin
             base.Remove();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", color: new Color(255, 180, 66));
+            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", color: new Color(255, 180, 66));
         }
 
         ~World()
         {
             DestroyedNotReleasedWorldCount--;
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", color: new Color(120, 255, 174));
+            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", color: new Color(120, 255, 174));
         }
 
         public PieceTemplate.Name PlayerName
@@ -503,7 +503,7 @@ namespace SonOfRobin
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(debugMessage: true, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             if (!this.demoMode)
             {
@@ -534,7 +534,7 @@ namespace SonOfRobin
             }
 
             TimeSpan populatingDuration = DateTime.Now - startTime;
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(debugMessage: true, message: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
         }
 
         private void Deserialize(bool gridOnly)
@@ -804,7 +804,7 @@ namespace SonOfRobin
                 if (piecesCreated >= maxAmountToCreateAtOnce) break;
             }
 
-            if (piecesCreated > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Created {piecesCreated} new pieces.");
+            if (piecesCreated > 0) MessageLog.AddMessage(debugMessage: true, message: $"Created {piecesCreated} new pieces.");
             this.createMissingPiecesOutsideCamera = false;
             return piecesCreated > 0;
         }
@@ -860,7 +860,7 @@ namespace SonOfRobin
             if (createdDecorationsCount > 0)
             {
                 TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
+                MessageLog.AddMessage(debugMessage: true, message: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -890,7 +890,7 @@ namespace SonOfRobin
             if (destroyedDecorationsCount > 0)
             {
                 TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
+                MessageLog.AddMessage(debugMessage: true, message: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
             }
             return;
         }
@@ -1029,7 +1029,7 @@ namespace SonOfRobin
 
                 if (processedPiecesCount > 30 && !this.CanProcessMoreCameraRectPiecesNow) // even in the worst case, some pieces must be processed
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                    MessageLog.AddMessage(debugMessage: true, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                     return;
                 }
             }
@@ -1057,7 +1057,7 @@ namespace SonOfRobin
 
             if (!this.CanProcessMoreOffCameraRectPiecesNow)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Non-plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                MessageLog.AddMessage(debugMessage: true, message: $"Non-plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
             }
 
@@ -1072,7 +1072,7 @@ namespace SonOfRobin
                     );
 
                 // var duration = DateTime.Now - startTime; // for testing
-                // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue ({this.nonPlantSpritesQueue.Count}) - duration {duration.Milliseconds}ms"); // for testing
+                // MessageLog.AddMessage( message: $"{this.CurrentUpdate} created new nonPlantSpritesQueue ({this.nonPlantSpritesQueue.Count}) - duration {duration.Milliseconds}ms"); // for testing
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
@@ -1126,14 +1126,14 @@ namespace SonOfRobin
 
             if (!this.CanProcessMoreOffCameraRectPiecesNow)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                MessageLog.AddMessage(debugMessage: true, message: $"Plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
             }
 
             if (this.plantCellsQueue.Count == 0)
             {
                 this.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
+                // MessageLog.AddMessage(debugMessage: true, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
@@ -1408,7 +1408,7 @@ namespace SonOfRobin
             }
             this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, darknessMaskWidth, darknessMaskHeight);
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
+            MessageLog.AddMessage(debugMessage: true, message: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
         }
 
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)

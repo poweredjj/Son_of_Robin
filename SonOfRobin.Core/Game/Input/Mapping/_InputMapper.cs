@@ -166,7 +166,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return new List<Texture2D>();
             }
 
@@ -177,7 +177,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return SonOfRobinGame.WhiteRectangle;
             }
 
@@ -191,7 +191,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return false;
             }
 
@@ -202,7 +202,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return false;
             }
 
@@ -213,7 +213,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return false;
             }
 
@@ -224,7 +224,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return Vector2.Zero;
             }
 
@@ -235,7 +235,7 @@ namespace SonOfRobin
         {
             if (!detailedMappings.ContainsKey(action))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
+                MessageLog.AddMessage(debugMessage: true, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
                 return 0f;
             }
 

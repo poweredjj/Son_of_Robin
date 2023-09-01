@@ -511,7 +511,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
+                MessageLog.AddMessage( message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
                 return false;
             }
         }
@@ -542,7 +542,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
+                MessageLog.AddMessage( message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
                 return false;
             }
         }

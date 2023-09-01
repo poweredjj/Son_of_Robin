@@ -166,7 +166,7 @@ namespace SonOfRobin
 
             bool instanceStartedCorrectly = managedSoundInstance.Play(this.Id);
             if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
-            else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
+            else MessageLog.AddMessage(debugMessage: true, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
 
         private void CreateSoundVisual()
@@ -190,7 +190,7 @@ namespace SonOfRobin
             this.TargetVolume = 0f;
             if (!skipFade && !this.VolumeFadeEnded)
             {
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.id} {this.soundNameList[0]} starting fade out...");
+                // MessageLog.AddMessage(debugMessage: true, message: $"{this.id} {this.soundNameList[0]} starting fade out...");
                 new Scheduler.Task(taskName: Scheduler.TaskName.StopSound, delay: this.volumeFadeFrames, executeHelper: this);
                 return;
             }
@@ -231,7 +231,7 @@ namespace SonOfRobin
 
             if (Math.Abs(this.TargetVolume - this.FadeVolume) < this.volumeFadePerFrame * 2) this.FadeVolume = this.TargetVolume;
 
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.id} {this.soundNameList[0]} fade updated {this.fadeVolume} --> {this.targetVolume}");
+            // MessageLog.AddMessage(debugMessage: true, message: $"{this.id} {this.soundNameList[0]} fade updated {this.fadeVolume} --> {this.targetVolume}");
             instance.Volume = this.Volume;
         }
 
@@ -251,7 +251,7 @@ namespace SonOfRobin
             {
                 if (!this.boardPiece.exists || !this.boardPiece.sprite.IsInCameraRect)
                 {
-                    // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Stopping sound ({this.boardPiece.readableName})");
+                    // MessageLog.AddMessage(debugMessage: true, message: $"Stopping sound ({this.boardPiece.readableName})");
                     this.Stop();
                     return;
                 }
@@ -265,7 +265,7 @@ namespace SonOfRobin
             Vector2 piecePos = this.boardPiece.sprite.position;
             audioEmitter.Position = new Vector3(piecePos.X, 0, piecePos.Y);
 
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Distance {Vector3.Distance(audioEmitter.Position, audioListener.Position)}");
+            // MessageLog.AddMessage( message: $"Distance {Vector3.Distance(audioEmitter.Position, audioListener.Position)}");
 
             float pitch = managedSoundInstance.Pitch;
             managedSoundInstance.Apply3D(audioListener, audioEmitter);

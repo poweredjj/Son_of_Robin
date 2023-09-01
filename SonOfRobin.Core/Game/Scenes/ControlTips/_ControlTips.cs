@@ -61,7 +61,7 @@ namespace SonOfRobin
             var tipsScene = GetTopSceneOfType(typeof(ControlTips));
             if (tipsScene == null)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "No tips scene was found.");
+                MessageLog.AddMessage(debugMessage: true, message: "No tips scene was found.");
                 return null;
             }
 
@@ -75,7 +75,7 @@ namespace SonOfRobin
 
             if (!topTips.tipCollection.ContainsKey(tipName))
             {
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No tip named '{tipName}' was found.");
+                // MessageLog.AddMessage(debugMessage: true, message: $"No tip named '{tipName}' was found.");
                 return;
             }
 
@@ -178,7 +178,7 @@ namespace SonOfRobin
         {
             if (this.currentScene == scene && this.tipsLayout == scene?.tipsLayout) return;
 
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching tips layout to '{tipsLayout}' with new scene.", color: Color.LightCyan);
+            // MessageLog.AddMessage(debugMessage: true, message: $"Switching tips layout to '{tipsLayout}' with new scene.", color: Color.LightCyan);
 
             this.currentScene = scene;
             this.SwitchToLayout(this.currentScene == null ? TipsLayout.Empty : scene.tipsLayout);
@@ -188,7 +188,7 @@ namespace SonOfRobin
         {
             if (this.currentLayout == tipsLayout && !force) return;
 
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
+            // MessageLog.AddMessage(debugMessage: true, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
 
             Preferences preferences = new Preferences();
             World world = World.GetTopWorld();

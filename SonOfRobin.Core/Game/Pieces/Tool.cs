@@ -303,7 +303,7 @@ namespace SonOfRobin
                             (animalTarget.Eats.Contains(world.PlayerName) ||
                             animalTarget.world.random.NextSingle() < animalTarget.pieceInfo.animalRetaliateChance);
 
-                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"hitPowerPercent {hitPowerPercent} fleeChance {fleeChance} flee {flee}"); // for testing
+                        // MessageLog.AddMessage( message: $"hitPowerPercent {hitPowerPercent} fleeChance {fleeChance} flee {flee}"); // for testing
 
                         if (willAttackPlayer)
                         {
@@ -331,7 +331,7 @@ namespace SonOfRobin
                     float rotationChange = Math.Min(0.5f * hitPercentage, 0.25f);
                     if ((target.sprite.position - player.sprite.position).X > 0) rotationChange *= -1;
 
-                    // MessageLog.AddMessage(msgType: MsgType.User, message: $"rotationChange {rotationChange} hitPower {hitPower} exists {target.exists} hp {target.HitPointsPercent}"); // for testing
+                    // MessageLog.AddMessage( message: $"rotationChange {rotationChange} hitPower {hitPower} exists {target.exists} hp {target.HitPointsPercent}"); // for testing
 
                     world.swayManager.AddSwayEvent(targetSprite: target.sprite, sourceSprite: null, targetRotation: target.sprite.rotation - rotationChange, playSound: false);
                 }

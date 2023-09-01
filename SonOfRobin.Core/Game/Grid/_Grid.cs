@@ -417,7 +417,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(debugMessage: true, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             this.PrepareNextStage(incrementCurrentStage: true);
         }
@@ -718,7 +718,7 @@ namespace SonOfRobin
 
             if (cellList.Count == 0)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
+                MessageLog.AddMessage(debugMessage: true, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
                 return this.allCells[0]; // to properly return a (useless) cell
             }
 
@@ -1246,9 +1246,9 @@ namespace SonOfRobin
             foreach (Cell cell in cellsToUnload)
             {
                 cell.boardGraphics.UnloadTexture();
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
+                MessageLog.AddMessage(debugMessage: true, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Finished unloading textures.", color: Color.Pink);
+            MessageLog.AddMessage(debugMessage: true, message: "Finished unloading textures.", color: Color.Pink);
             this.lastUnloadedTime = DateTime.Now;
         }
 
@@ -1257,7 +1257,7 @@ namespace SonOfRobin
             foreach (Cell cell in this.allCells)
             {
                 cell.boardGraphics.UnloadTexture();
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
+                MessageLog.AddMessage(debugMessage: true, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
             GC.Collect();
             this.lastUnloadedTime = DateTime.Now;

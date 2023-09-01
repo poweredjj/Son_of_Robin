@@ -192,7 +192,7 @@ namespace SonOfRobin
                     {
                         // no Disable(), because this hint should be shown every time
 
-                        MessageLog.AddMessage(msgType: MsgType.User, message: $"Too dark to use {text}.", avoidDuplicates: true);
+                        MessageLog.AddMessage( message: $"Too dark to use {text}.", avoidDuplicates: true);
                         break;
                     }
 
@@ -517,7 +517,7 @@ namespace SonOfRobin
             this.shownTutorials.Clear();
             this.waitUntilFrame = 0;
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: "Hints has been restored.");
+            MessageLog.AddMessage( message: "Hints has been restored.");
         }
 
         public void Enable(Type type)

@@ -106,7 +106,7 @@ namespace SonOfRobin
                 if (File.Exists(mapImagePath)) File.Delete(mapImagePath);
             }
             catch (Exception ex)
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error deleting file {mapImagePath}: {ex.Message}"); }
+            { MessageLog.AddMessage(debugMessage: true, message: $"Error deleting file {mapImagePath}: {ex.Message}"); }
 
             // generating new image
 
@@ -144,7 +144,7 @@ namespace SonOfRobin
                 {
                     imageWithTransparency.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                 }
-                catch (IOException ex) { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error saving image {mapImagePath}: {ex.Message}"); } // write error
+                catch (IOException ex) { MessageLog.AddMessage(debugMessage: true, message: $"Error saving image {mapImagePath}: {ex.Message}"); } // write error
             }
 
             return imageWithTransparency;

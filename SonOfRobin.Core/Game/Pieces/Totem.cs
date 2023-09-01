@@ -84,7 +84,7 @@ namespace SonOfRobin
             TimeSpan weatherChangeDuration = GetWeatherChangeDuration(goodOfferingMass);
             this.lockedUntilIslandDateTime = this.world.islandClock.IslandDateTime + weatherChangeDuration;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"goodOfferingMass {goodOfferingMass} delay {weatherChangeDelay} timespan {weatherChangeDuration}");
+            MessageLog.AddMessage(debugMessage: true, message: $"goodOfferingMass {goodOfferingMass} delay {weatherChangeDelay} timespan {weatherChangeDuration}");
 
             // first phase - burning the offering
 

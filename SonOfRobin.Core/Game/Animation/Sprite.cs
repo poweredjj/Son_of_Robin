@@ -341,7 +341,7 @@ namespace SonOfRobin
                 }
             }
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
+            MessageLog.AddMessage(debugMessage: true, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
 
             return false;
         }
@@ -407,7 +407,7 @@ namespace SonOfRobin
                     {
                         if (cellList.Count == 0)
                         {
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
+                            MessageLog.AddMessage(debugMessage: true, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
                             return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there
                         }
 
@@ -717,7 +717,7 @@ namespace SonOfRobin
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim frame not found {this.CompleteAnimID}.");
+                MessageLog.AddMessage(debugMessage: true, message: $"Anim frame not found {this.CompleteAnimID}.");
                 this.AnimFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
             }
 

@@ -44,7 +44,7 @@ namespace SonOfRobin
             }
             catch (IOException)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to write {Path.GetFileName(path)}.");
+                MessageLog.AddMessage(debugMessage: true, message: $"IOException while trying to write {Path.GetFileName(path)}.");
                 return false;
             }
         }

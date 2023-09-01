@@ -19,18 +19,14 @@ namespace SonOfRobin
             public readonly string text;
             public readonly int deletionFrame;
             public readonly Color color;
-            public readonly MsgType msgType;
             private static int lastDeletionFrame = 0;
 
-            public Message(string message, Color color, MsgType msgType)
+            public Message(string message, Color color)
             {
-                Console.WriteLine(message); // additional output
-
                 this.text = message;
                 this.color = color;
-                this.msgType = msgType;
 
-                int delay = (MessageLog.messages.Count == 0) ? 180 : 90 / Math.Min(MessageLog.messages.Count, 3);
+                int delay = (messages.Count == 0) ? 180 : 90 / Math.Min(messages.Count, 3);
 
                 this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + delay;
                 lastDeletionFrame = this.deletionFrame;
@@ -40,12 +36,7 @@ namespace SonOfRobin
         private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
-
-        private static readonly HashSet<MsgType> displayedLevelsTemplateDebug = new() { MsgType.User, MsgType.Debug };
-        private static readonly HashSet<MsgType> displayedLevelsTemplateUser = new() { MsgType.User };
-
-        private static HashSet<MsgType> DisplayedLevels
-        { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
+        private static string lastMessage = "";
 
         private static List<Message> messages = new() { };
 
@@ -84,8 +75,6 @@ namespace SonOfRobin
 
             foreach (Message message in messagesToDisplay)
             {
-                if (!DisplayedLevels.Contains(message.msgType)) continue;
-
                 string currentLineOfText = message.text;
 
                 Vector2 txtSize = font.MeasureString(currentLineOfText);
@@ -106,28 +95,19 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        private static bool CheckIfDuplicate(string text)
+        public static void AddMessage(string message, bool debugMessage = false, bool avoidDuplicates = false)
         {
-            foreach (Message message in messages)
-            {
-                if (message.text == text) return true;
-            }
-
-            return false;
+            AddMessage(message: message, color: Color.White, debugMessage: debugMessage, avoidDuplicates: avoidDuplicates);
         }
 
-        public static void AddMessage(string message, Color color, MsgType msgType, bool avoidDuplicates = false)
+        public static void AddMessage(string message, Color color, bool debugMessage = false, bool avoidDuplicates = false)
         {
-            if ((avoidDuplicates && CheckIfDuplicate(message)) || !DisplayedLevels.Contains(msgType)) return;
+            if (avoidDuplicates && lastMessage == message) return;
+            Console.WriteLine(message); // additional output
+            lastMessage = message;
+            if (debugMessage && !Preferences.DebugMode) return;
 
-            messages.Add(new Message(message: message, color: color, msgType: msgType));
-        }
-
-        public static void AddMessage(string message, MsgType msgType, bool avoidDuplicates = false)
-        {
-            if ((avoidDuplicates && CheckIfDuplicate(message)) || !DisplayedLevels.Contains(msgType)) return;
-
-            messages.Add(new Message(message: message, color: Color.White, msgType: msgType));
+            messages.Add(new Message(message: message, color: color));
         }
 
         private static void DeleteOldMessages(int currentFrame)

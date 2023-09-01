@@ -444,7 +444,7 @@ namespace SonOfRobin
                 new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
                 Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
             }
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
+            MessageLog.AddMessage(debugMessage: true, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             this.processingComplete = true;
         }
@@ -589,7 +589,7 @@ namespace SonOfRobin
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerName: playerName, resDivider: resDivider);
             this.MoveToTop();
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
+            MessageLog.AddMessage(debugMessage: true, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             // deleting other non-demo worlds
             var existingWorlds = GetAllScenesOfType(typeof(World));

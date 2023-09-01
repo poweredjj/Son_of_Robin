@@ -80,7 +80,7 @@ namespace SonOfRobin
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
+                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
 
                 this.StartBackgroundTask(); // starting new task, if previous one had failed
             }
@@ -103,7 +103,7 @@ namespace SonOfRobin
                 catch (Exception ex)
                 {
                     SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: ex, showTextWindow: false);
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"An error occured while processing background task: {ex.Message}");
+                    MessageLog.AddMessage(debugMessage: true, message: $"An error occured while processing background task: {ex.Message}");
                 }
             }
         }

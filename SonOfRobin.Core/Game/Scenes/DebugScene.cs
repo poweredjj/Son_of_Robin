@@ -104,9 +104,9 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
 
-            // if (Mouse.LeftIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
-            // if (Mouse.MiddleIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
-            // if (Mouse.RightIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
+            // if (Mouse.LeftIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
+            // if (Mouse.MiddleIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
+            // if (Mouse.RightIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
 
             if (world != null)
             {
@@ -469,7 +469,7 @@ namespace SonOfRobin
 
             //    if (textureToUpscale == null)
             //    {
-            //        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Source filename {sourcePngName} not found.");
+            //        MessageLog.AddMessage(debugMessage: true, message: $"Source filename {sourcePngName} not found.");
             //        return;
             //    }
 
@@ -491,7 +491,7 @@ namespace SonOfRobin
                     if (world.weather.RainPercentage > 0.7f) return;
                 }
 
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "Weather checking timed out.");
+                MessageLog.AddMessage(debugMessage: true, message: "Weather checking timed out.");
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F5))

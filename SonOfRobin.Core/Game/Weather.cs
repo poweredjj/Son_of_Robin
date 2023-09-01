@@ -28,7 +28,7 @@ namespace SonOfRobin
             this.endTime = startTime + duration;
             this.transitionLength = transitionLength;
 
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, D {this.startTime:d HH\\:mm} - D {this.endTime:d HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
+            // MessageLog.AddMessage( message: $"New WeatherEvent {this.type}, D {this.startTime:d HH\\:mm} - D {this.endTime:d HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
         }
 
         public float GetIntensity(DateTime datetime)
@@ -151,7 +151,7 @@ namespace SonOfRobin
         {
             if (dateTime > this.forecastEnd)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Forecast exceeded by {(dateTime - this.forecastEnd).TotalHours} hours when trying to get weather for {type}.");
+                MessageLog.AddMessage(debugMessage: true, message: $"Forecast exceeded by {(dateTime - this.forecastEnd).TotalHours} hours when trying to get weather for {type}.");
                 return 0;
             }
 
@@ -398,7 +398,7 @@ namespace SonOfRobin
 
             // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
             // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
+            // MessageLog.AddMessage( message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(1);
             TimeSpan maxCooldown = TimeSpan.FromMinutes(3);

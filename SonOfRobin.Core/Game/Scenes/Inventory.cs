@@ -997,7 +997,7 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
+            //MessageLog.AddMessage(debugMessage: true, message: $"ReleaseHeldPieces");
 
             PieceSoundPack firstPieceSoundPack = this.draggedPieces[0].soundPack;
 
@@ -1006,7 +1006,7 @@ namespace SonOfRobin
 
             var piecesThatDidNotFitIn = new List<BoardPiece> { };
 
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"forceReleaseAll {forceReleaseAll}");
+            //MessageLog.AddMessage(debugMessage: true, message: $"forceReleaseAll {forceReleaseAll}");
 
             foreach (BoardPiece piece in this.draggedPieces)
             {

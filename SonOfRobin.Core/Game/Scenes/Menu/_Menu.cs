@@ -75,7 +75,7 @@ namespace SonOfRobin
             this.SetTouchLayout();
             this.AddStartTransitions();
 
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
+            // MessageLog.AddMessage(debugMessage: true, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
         }
 
         public int EntryBgWidth
@@ -298,7 +298,7 @@ namespace SonOfRobin
             SonOfRobinGame.HintWindow.TurnOff();
             SonOfRobinGame.SmallProgressBar.TurnOff();
             base.Remove();
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
+            // MessageLog.AddMessage(debugMessage: true, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
 
             new Scheduler.Task(taskName: this.closingTask, executeHelper: this.closingTaskHelper);
         }
@@ -307,7 +307,7 @@ namespace SonOfRobin
         {
             this.closingTask = closingTask;
             this.closingTaskHelper = closingTaskHelper;
-            //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - adding closing task '{this.closingTask}'.");
+            //  MessageLog.AddMessage(debugMessage: true, message: $"Menu {this.name} - adding closing task '{this.closingTask}'.");
         }
 
         public static void RebuildAllMenus()
@@ -367,7 +367,7 @@ namespace SonOfRobin
 
             Scene sceneBelow = this.GetSceneBelow();
 
-            //  MessageLog.AddMessage(msgType: MsgType.User, message: $"sceneBelow {sceneBelow}", color: Color.White);
+            //  MessageLog.AddMessage( message: $"sceneBelow {sceneBelow}", color: Color.White);
 
             if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
             {
@@ -390,7 +390,7 @@ namespace SonOfRobin
             foreach (Menu menu in GetEveryMenuOfTemplate(templateName: templateName))
             {
                 menu.Remove();
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
+                MessageLog.AddMessage(debugMessage: true, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
             }
         }
 
@@ -401,7 +401,7 @@ namespace SonOfRobin
                 if (menu.templateName != templateName)
                 {
                     menu.Remove();
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
+                    MessageLog.AddMessage(debugMessage: true, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
                 }
             }
         }
