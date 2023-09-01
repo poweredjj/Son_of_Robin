@@ -341,9 +341,9 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    analogZoom = -analogZoom * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
+                    if (analogZoom != 0) analogZoom = -analogZoom * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
 
-                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false); // TODO try using proportional zooming here
+                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) * currentZoom * 1.5f; 
 
                     currentZoom += analogZoom;
                 }
