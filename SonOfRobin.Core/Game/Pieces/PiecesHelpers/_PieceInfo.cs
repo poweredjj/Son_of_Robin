@@ -1371,7 +1371,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
-                        this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 200, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1397,7 +1397,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
-                        this.allowedDensity = new AllowedDensity(radius: 200, maxNoOfPiecesSameName: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisStone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
