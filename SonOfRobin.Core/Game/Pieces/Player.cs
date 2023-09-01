@@ -216,7 +216,7 @@ namespace SonOfRobin
 
         public List<PieceStorage> GetCraftStoragesToTakeFrom(bool showCraftMarker)
         {
-            var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
+            var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage };
 
             if (this.ResourcefulCrafter)
             {
@@ -250,7 +250,7 @@ namespace SonOfRobin
         }
 
         public List<PieceStorage> CraftStoragesToPutInto
-        { get { return new List<PieceStorage> { this.ToolStorage, this.PieceStorage, this.EquipStorage }; } } // the same as above, changed order
+        { get { return new List<PieceStorage> { this.ToolStorage, this.PieceStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
         {
