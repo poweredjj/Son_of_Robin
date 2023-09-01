@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -17,17 +20,11 @@ namespace SonOfRobin
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
 
-            using (var image = new Image<L8>(width, height))
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte arrayVal = array2D[x, y];
-                        image[x, y] = new L8(arrayVal);
-                    }
-                }
+            var array1D = new byte[width * height];
+            Buffer.BlockCopy(array2D, 0, array1D, 0, array2D.Length * sizeof(byte));
 
+            using (var image = Image.LoadPixelData<L8>(array1D, width, height))
+            {
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
                     image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
@@ -44,15 +41,12 @@ namespace SonOfRobin
                     int width = image.Width;
                     int height = image.Height;
 
-                    var array2D = new byte[width, height];
+                    var _IMemoryGroup = image.GetPixelMemoryGroup();
+                    var _MemoryGroup = _IMemoryGroup.ToArray()[0];
+                    var array1D = MemoryMarshal.AsBytes(_MemoryGroup.Span).ToArray();
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            array2D[x, y] = image[x, y].PackedValue;
-                        }
-                    }
+                    var array2D = new byte[width, height];
+                    Buffer.BlockCopy(array1D, 0, array2D, 0, array1D.Length * sizeof(byte));
 
                     return array2D;
                 }
@@ -67,7 +61,7 @@ namespace SonOfRobin
             Color[] data = new Color[cropRect.Width * cropRect.Height];
             baseTexture.GetData(0, cropRect, data, 0, cropRect.Width * cropRect.Height);
 
-            Texture2D croppedTexture = new Texture2D(SonOfRobinGame.GfxDev, cropRect.Width, cropRect.Height);
+            Texture2D croppedTexture = new(SonOfRobinGame.GfxDev, cropRect.Width, cropRect.Height);
             croppedTexture.SetData(data);
 
             return croppedTexture;
@@ -95,7 +89,7 @@ namespace SonOfRobin
                 }
             }
 
-            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: paddedWidth, height: paddedHeight);
+            Texture2D texture = new(graphicsDevice: SonOfRobinGame.GfxDev, width: paddedWidth, height: paddedHeight);
             texture.SetData(paddedArray1D);
 
             return texture;
@@ -105,7 +99,7 @@ namespace SonOfRobin
         {
             // getting 1D pixel array
             Color[] rawData = new Color[width * height];
-            Rectangle extractRegion = new Rectangle(x, y, width, height);
+            Rectangle extractRegion = new(x, y, width, height);
             texture.GetData<Color>(0, extractRegion, rawData, 0, width * height);
 
             // getting 2D pixel grid
