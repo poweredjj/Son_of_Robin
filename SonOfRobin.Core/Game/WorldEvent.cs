@@ -280,7 +280,7 @@ namespace SonOfRobin
 
                 case EventName.RemoveBuff:
                     {
-                        int buffID = (int)this.eventHelper;
+                        int buffID = Helpers.CastObjectToInt(this.eventHelper);
                         this.boardPiece.buffEngine.RemoveBuff(buffID: buffID, checkIfHasThisBuff: false);
 
                         return;
@@ -343,7 +343,7 @@ namespace SonOfRobin
                         if (this.boardPiece.HitPoints <= 0)
                         {
                             world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.AnimFrame.texture);
-                            MessageLog.AddMessage( message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
+                            MessageLog.AddMessage(message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;
 
@@ -391,8 +391,7 @@ namespace SonOfRobin
 
                         var regenPoisonData = (Dictionary<string, Object>)this.eventHelper;
 
-                        int buffID = (int)regenPoisonData["buffID"];
-
+                        int buffID = Helpers.CastObjectToInt(regenPoisonData["buffID"]);
                         int delay = Helpers.CastObjectToInt(regenPoisonData["delay"]);
                         int charges = Helpers.CastObjectToInt(regenPoisonData["charges"]);
                         int hpChange = Helpers.CastObjectToInt(regenPoisonData["hpChange"]);
