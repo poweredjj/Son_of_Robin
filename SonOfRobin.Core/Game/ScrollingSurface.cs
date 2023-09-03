@@ -34,8 +34,6 @@ namespace SonOfRobin
 
         public void DrawAllWater()
         {
-            if (!Preferences.highQualityWater) return;
-
             bool waterFound = false;
             foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
             {
@@ -48,6 +46,14 @@ namespace SonOfRobin
             if (!waterFound) return;
 
             this.StartSpriteBatch(waterBlendMode: false);
+            SonOfRobinGame.GfxDev.Clear(waterColor);
+
+            if (!Preferences.highQualityWater)
+            {
+                SonOfRobinGame.SpriteBatch.End();
+                return;
+            }
+
             this.oceanFloor.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
