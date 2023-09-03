@@ -34,8 +34,6 @@ namespace SonOfRobin
 
         public void DrawAllWater()
         {
-            SonOfRobinGame.GfxDev.Clear(waterColor);
-
             if (!Preferences.highQualityWater) return;
 
             bool waterFound = false;
@@ -49,33 +47,39 @@ namespace SonOfRobin
             }
             if (!waterFound) return;
 
+            this.StartSpriteBatch(waterBlendMode: false);
             this.oceanFloor.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
-
-            BlendState waterBlend = new BlendState
-            {
-                AlphaBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.One,
-            };
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: waterBlend);
+            this.StartSpriteBatch(waterBlendMode: true);
 
             this.waterCaustics1.Draw();
             this.waterCaustics2.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
         }
 
         public void DrawFog(float opacity)
         {
             this.fog.Draw(opacity);
+        }
+
+        public void StartSpriteBatch(bool waterBlendMode = false)
+        {
+            BlendState blendState = waterBlendMode ?
+                new BlendState
+                {
+                    AlphaBlendFunction = BlendFunction.ReverseSubtract,
+                    AlphaSourceBlend = Blend.One,
+                    AlphaDestinationBlend = Blend.One,
+
+                    ColorBlendFunction = BlendFunction.Add,
+                    ColorSourceBlend = Blend.One,
+                    ColorDestinationBlend = Blend.One,
+                } :
+                BlendState.AlphaBlend;
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: blendState, samplerState: SamplerState.LinearWrap);
         }
     }
 
@@ -161,22 +165,23 @@ namespace SonOfRobin
 
             int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
             int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
-            int endColumn = Math.Max(columns, startColumn + (int)(viewRect.Width / this.texture.Width) + 1);
-            int endRow = Math.Max(rows, startRow + (int)(viewRect.Height / this.texture.Height) + 1);
+
+            int rowsWidth = Math.Max(columns, (int)(viewRect.Width / this.texture.Width) + 2);
+            int rowsHeight = Math.Max(rows, (int)(viewRect.Height / this.texture.Height) + 2);
 
             if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
             if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
 
-            for (int i = startRow; i <= endRow; i++)
-            {
-                for (int j = startColumn; j <= endColumn; j++)
-                {
-                    int x = (j * this.texture.Width) + offsetX;
-                    int y = (i * this.texture.Height) + offsetY;
+            Rectangle destRect = new(
+                x: (startColumn * this.texture.Width) + offsetX,
+                y: (startRow * this.texture.Height) + offsetY,
+                width: rowsWidth * this.texture.Width,
+                height: rowsHeight * this.texture.Height);
 
-                    SonOfRobinGame.SpriteBatch.Draw(this.texture, new Vector2(x, y), drawColor);
-                }
-            }
+            Rectangle sourceRect = destRect;
+            sourceRect.Location = Point.Zero;
+
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRect, drawColor);
         }
     }
 }

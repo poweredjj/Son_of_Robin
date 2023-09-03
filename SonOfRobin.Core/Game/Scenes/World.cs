@@ -1354,10 +1354,10 @@ namespace SonOfRobin
         {
             if (this.WorldCreationInProgress) return;
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-
             // drawing water surface
             this.scrollingSurfaceManager.DrawAllWater();
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing background (ground, leaving "holes" for water)
             this.Grid.DrawBackground(camera: this.camera);
@@ -1632,6 +1632,8 @@ namespace SonOfRobin
 
                 if (fogPercentage > 0 && (this.Player == null || !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog)))
                 {
+                    SonOfRobinGame.SpriteBatch.End();
+                    this.scrollingSurfaceManager.StartSpriteBatch(waterBlendMode: false);
                     this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
                 }
 
