@@ -684,8 +684,10 @@ namespace SonOfRobin
 
             Color color = canBuildHere ? Color.Green : Color.Red;
 
-            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
-            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.AnimFrame.textureSize, priority: 0));
+            Sprite simulatedPieceSprite = this.simulatedPieceToBuild.sprite;
+
+            simulatedPieceSprite.effectCol.AddEffect(new ColorizeInstance(color: color, priority: 0));
+            simulatedPieceSprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, drawFill: false, borderThickness: (int)(1f * (1f / simulatedPieceSprite.AnimFrame.scale)), textureSize: simulatedPieceSprite.AnimFrame.textureSize, priority: 1));
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
@@ -696,7 +698,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 if (canBuildHere) this.world.BuildPiece();
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { simulatedPieceSprite.AnimFrame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
             }
         }
 
