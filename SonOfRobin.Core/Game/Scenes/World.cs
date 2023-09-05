@@ -691,6 +691,8 @@ namespace SonOfRobin
                             cell.SetAsVisited();
                         }
 
+                        this.Grid.namedLocations.SetAllLocationsAsDiscovered();
+
                         var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
 
                         foreach (PieceTemplate.Name name in PieceTemplate.allNames)
