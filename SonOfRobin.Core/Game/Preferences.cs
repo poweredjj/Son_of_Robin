@@ -11,6 +11,7 @@ namespace SonOfRobin
         {
             // lower case, for proper display in menu
             small,
+
             medium,
             large,
             gigantic,
@@ -114,8 +115,12 @@ namespace SonOfRobin
         public static bool rumbleEnabled = true;
         public static bool alwaysRun = false;
         public static bool mapShowLocationNames = true; // not saved
+        public static bool pickupsHighlighted = false; // not saved
+        public static bool zoomedOut = false; // used to store virtual button value
+
         public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
+
         public static float StateMachinesDurationFramePercent
         {
             get { return stateMachinesDurationFramePercent; }
@@ -309,8 +314,6 @@ namespace SonOfRobin
             }
         }
 
-        public static bool zoomedOut = false; // used to store virtual button value
-
         // debug variables should not be saved to preferences file
         public static bool debugShowRects = false;
 
@@ -339,6 +342,7 @@ namespace SonOfRobin
         public static bool debugShowFocusRect = false;
         public static bool debugShowNamedLocationAreas = false;
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
+
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }

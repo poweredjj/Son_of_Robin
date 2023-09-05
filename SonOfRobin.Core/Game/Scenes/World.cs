@@ -1364,10 +1364,10 @@ namespace SonOfRobin
             this.Grid.DrawBackground(camera: this.camera);
 
             // drawing sprites
-            var noOfDisplayedSprites = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);
+            var drawnPieces = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);
 
             // updating debugText
-            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
+            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count}";
 
             // drawing debug cell data
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
@@ -1377,15 +1377,29 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
             this.DrawLightAndDarkness(this.lightSprites);
 
-            // drawing field tips
-            if (Preferences.showFieldControlTips)
+            // drawing highlighted pieces and field tips
+            if (Preferences.showFieldControlTips || Preferences.pickupsHighlighted)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                FieldTip.DrawFieldTips(world: this);
+                if (Preferences.pickupsHighlighted) this.DrawHighlightedPieces(drawnPieces);
+                if (Preferences.showFieldControlTips) FieldTip.DrawFieldTips(world: this);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
+        }
+
+        private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
+        {
+            if (this.demoMode || !this.Player.CanSeeAnything) return;
+
+            foreach (BoardPiece piece in drawnPieces)
+            {
+                if (!piece.pieceInfo.canBePickedUp || (piece.GetType() == typeof(Animal) && piece.alive)) continue;
+
+                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White * 0.7f, drawFill: false, textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
+                piece.sprite.Draw();
+            }
         }
 
         protected override void AdaptToNewSize()

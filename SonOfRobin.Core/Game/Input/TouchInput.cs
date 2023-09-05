@@ -281,7 +281,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
+                MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
             }
         }
 
@@ -439,6 +439,11 @@ namespace SonOfRobin
                         xPos += xShift;
                         new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
+                        yPos += yShift;
+                        xPos = 0.06f;
+
+                        new VirtButton(name: VButName.HighlightPickups, label: "HIGHLIGHT", bgColorPressed: Color.LimeGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "pickupsHighlighted");
+
                         return;
                     }
 
@@ -478,7 +483,7 @@ namespace SonOfRobin
                     {
                         ShowSticks = false;
 
-                        new VirtButton(name: VButName.Return, label: "STOP\nREST", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.Player, highlightCoupledVarName: "CanWakeNow");
+                        new VirtButton(name: VButName.WakeUp, label: "STOP\nREST", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.Player, highlightCoupledVarName: "CanWakeNow");
 
                         return;
                     }

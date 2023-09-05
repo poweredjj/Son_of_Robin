@@ -8,8 +8,9 @@
 #endif
 
 Texture2D SpriteTexture;
-float2 xTextureSize : VPOS;
-float4 xOutlineColor;
+float2 textureSize : VPOS;
+float4 outlineColor;
+bool drawFill;
 
 sampler2D InputSampler = sampler_state
 {
@@ -29,11 +30,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 currentPixel = tex2D(InputSampler, input.UV) * input.Color;
 	float4 output = currentPixel;
+
+	if (!drawFill) output = float4(0, 0, 0, 0);
+
 	float threshold = 0.4f;
 
 	if (currentPixel.a <= threshold)
 	{
-		float2 uvPix = float2(1 / xTextureSize.x, 1 / xTextureSize.y);
+		float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
 
 		if (false
 			|| tex2D(InputSampler, float2((1 * uvPix.x) + input.UV.x, (0 * uvPix.y) + input.UV.y)).a > threshold
@@ -42,7 +46,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 			|| tex2D(InputSampler, float2((0 * uvPix.x) + input.UV.x, (-1 * uvPix.y) + input.UV.y)).a > threshold
 		)
 		{
-			output = xOutlineColor;
+			output = outlineColor;
 		}
 	}
 

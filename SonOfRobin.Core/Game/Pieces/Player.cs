@@ -850,6 +850,8 @@ namespace SonOfRobin
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldHighlightPickups)) Preferences.pickupsHighlighted = !Preferences.pickupsHighlighted;
+
             bool pickUp = pieceToPickUp != null && (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
                 (Preferences.PointToInteract && pieceToPickUp.sprite.GfxRect.Contains(this.pointWalkTarget)));
 

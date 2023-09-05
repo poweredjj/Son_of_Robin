@@ -185,7 +185,7 @@ namespace SonOfRobin
             get
             {
                 int lastItemPos = (int)entryList[entryList.Count - 1].Position.Y;
-                return lastItemPos + this.EntryHeight + this.EntryMargin - SonOfRobinGame.VirtualHeight;
+                return Math.Max(lastItemPos + this.EntryHeight + this.EntryMargin - SonOfRobinGame.VirtualHeight, 1);
             }
         }
 
