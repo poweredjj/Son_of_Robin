@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1393,11 +1394,17 @@ namespace SonOfRobin
         {
             if (this.demoMode || !this.Player.CanSeeAnything) return;
 
+            float pulseOpacity = (float)(this.CurrentFrame % 120) / 120;
+            pulseOpacity = (float)(0.5 * Math.Cos(pulseOpacity * Math.PI - Math.PI / 2));
+
+            Color highlightColor = Helpers.Blend2Colors(firstColor: Color.LightCyan, secondColor: Color.Blue, firstColorOpacity: 1f - pulseOpacity, secondColorOpacity: pulseOpacity);
+            MessageLog.AddMessage(debugMessage: false, message: $"highlightColor {highlightColor.R} {highlightColor.G} {highlightColor.B} {highlightColor.A}", color: highlightColor);
+
             foreach (BoardPiece piece in drawnPieces)
             {
                 if (!piece.pieceInfo.canBePickedUp || (piece.GetType() == typeof(Animal) && piece.alive)) continue;
 
-                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White * 0.7f, drawFill: false, borderThickness: (int)(1f / piece.sprite.AnimFrame.scale), textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
+                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: highlightColor, drawFill: false, borderThickness: (int)(2 * (1f / piece.sprite.AnimFrame.scale)), textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
                 piece.sprite.Draw();
             }
         }

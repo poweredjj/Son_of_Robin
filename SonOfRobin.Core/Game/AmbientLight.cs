@@ -142,14 +142,12 @@ namespace SonOfRobin
             if (cloudsPercentage > 0)
             {
                 lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: Color.Transparent, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
-
                 darknessColor = Helpers.DarkenFirstColorWithSecond(firstColor: darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
             }
 
             if (lightningPercentage > 0)
             {
                 lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: new Color(181, 237, 255) * 2f, firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
-
                 darknessColor = Helpers.Blend2Colors(firstColor: darknessColor, secondColor: Color.Transparent, firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
             }
 
