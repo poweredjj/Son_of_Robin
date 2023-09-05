@@ -98,6 +98,48 @@ namespace SonOfRobin
             Helpers.DrawTextWithOutline(font: font, text: debugText, pos: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
 
             SonOfRobinGame.SpriteBatch.End();
+
+            // this.DrawTestPolygons();
+        }
+
+
+        private void DrawTestPolygons()
+        {
+            BasicEffect basicEffect = new(SonOfRobinGame.GfxDev);
+
+            basicEffect.View = Matrix.CreateLookAt(-Vector3.Zero, Vector3.Forward * 2f, Vector3.Up);
+            basicEffect.Projection = Matrix.CreateOrthographic(SonOfRobinGame.GfxDev.Viewport.Width, SonOfRobinGame.GfxDev.Viewport.Height, 0, -2f);
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            int size = 120;
+
+            VertexPositionTexture[] vert = new VertexPositionTexture[4];
+            vert[0].Position = new Vector3(0, 0, 0);
+            vert[1].Position = new Vector3(size, 0, 0);
+            vert[2].Position = new Vector3(0, size / 2, 0);
+            vert[3].Position = new Vector3(size, size, 0);
+
+            vert[0].TextureCoordinate = new Vector2(0, 0);
+            vert[1].TextureCoordinate = new Vector2(1, 0);
+            vert[2].TextureCoordinate = new Vector2(0, 1);
+            vert[3].TextureCoordinate = new Vector2(1, 1);
+
+            short[] ind = new short[6];
+            ind[0] = 0;
+            ind[1] = 2;
+            ind[2] = 1;
+            ind[3] = 1;
+            ind[4] = 2;
+            ind[5] = 3;
+
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+            }
         }
 
         public void ProcessDebugInput()
