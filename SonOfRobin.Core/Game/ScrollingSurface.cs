@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
-using System;
 
 namespace SonOfRobin
 {
@@ -172,17 +171,15 @@ namespace SonOfRobin
             int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
             int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
 
-            int rowsWidth = Math.Max(columns, (int)(viewRect.Width / this.texture.Width) + 2);
-            int rowsHeight = Math.Max(rows, (int)(viewRect.Height / this.texture.Height) + 2);
-
             if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
             if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
 
-            Rectangle destRect = new(
-                x: (startColumn * this.texture.Width) + offsetX,
-                y: (startRow * this.texture.Height) + offsetY,
-                width: rowsWidth * this.texture.Width,
-                height: rowsHeight * this.texture.Height);
+            int drawRectX = (startColumn * this.texture.Width) + offsetX;
+            int drawRectY = (startRow * this.texture.Height) + offsetY;
+            int drawRectWidth = viewRect.Width + (viewRect.X - drawRectX) + 4;
+            int drawRectHeight = viewRect.Height + (viewRect.Y - drawRectY) + 3;
+
+            Rectangle destRect = new(x: drawRectX, y: drawRectY, width: drawRectWidth, height: drawRectHeight);
 
             Rectangle sourceRect = destRect;
             sourceRect.Location = Point.Zero;
