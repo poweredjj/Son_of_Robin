@@ -23,6 +23,7 @@ namespace SonOfRobin
                 {"interact", "interact"},
                 {"useTool", "use tool"},
                 {"pickUp", "pick up"},
+                {"highlightPickups", "highlight pickups"},
                 {"sprint", "sprint"},
                 {"zoomOut", "zoom out"},
                 {"pauseMenu", "open pause"},

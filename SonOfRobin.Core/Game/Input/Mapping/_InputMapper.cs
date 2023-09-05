@@ -78,7 +78,7 @@ namespace SonOfRobin
             ScrollDown = 7,
         }
 
-        protected static readonly Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
+        protected static readonly Dictionary<Action, Mapping> detailedMappings = new();
 
         public static readonly InputPackage defaultMappingGamepad = new(packageVersion: InputPackage.version, analogMovement: new StoredInput(AnalogType.PadLeft), analogCamera: new StoredInput(AnalogType.PadRight), confirm: new StoredInput(Buttons.A), cancel: new StoredInput(Buttons.B), pauseMenu: new StoredInput(Buttons.Start), sprint: new StoredInput(Buttons.LeftStick), inventory: new StoredInput(Buttons.Y), pickUp: new StoredInput(Buttons.X), highlightPickups: new StoredInput(Buttons.B), craft: new StoredInput(Buttons.DPadUp), interact: new StoredInput(Buttons.A), map: new StoredInput(Buttons.DPadRight), useTool: new StoredInput(Buttons.RightTrigger), zoomOut: new StoredInput(Buttons.LeftTrigger), toolbarPrev: new StoredInput(Buttons.LeftShoulder), toolbarNext: new StoredInput(Buttons.RightShoulder), invSwitch: new StoredInput(Buttons.LeftStick), invPickOne: new StoredInput(Buttons.Y), invPickStack: new StoredInput(Buttons.X), invSort: new StoredInput(Buttons.RightStick), mapToggleMarker: new StoredInput(Buttons.A), mapToggleLocations: new StoredInput(Buttons.X), mapCenterPlayer: new StoredInput(Buttons.LeftStick), mapZoomIn: new StoredInput(Buttons.RightTrigger), mapZoomOut: new StoredInput(Buttons.LeftTrigger));
 
