@@ -25,16 +25,16 @@ namespace SonOfRobin
         {
             if (!RumbleManager.RumbleIsActive || (!bigMotor && !smallMotor)) return;
 
-            this.targetForce = Math.Max(Math.Min(force, 1f), 0);
+            this.targetForce = Math.Clamp(value: force, min: 0, max: 1);
             if (this.targetForce == 0) return;
 
             if (minSecondsSinceLastRumble > 0 && RumbleManager.TimeSinceLastRumbleEvent < TimeSpan.FromSeconds(minSecondsSinceLastRumble)) return;
             if (minSecondsSinceLastRumbleSmallMotor > 0 && RumbleManager.TimeSinceLastRumbleEventSmallMotor < TimeSpan.FromSeconds(minSecondsSinceLastRumbleSmallMotor)) return;
             if (minSecondsSinceLastRumbleBigMotor > 0 && RumbleManager.TimeSinceLastRumbleEventBigMotor < TimeSpan.FromSeconds(minSecondsSinceLastRumbleBigMotor)) return;
 
-            durationSeconds = Math.Max(Math.Min(durationSeconds, 10), 0);
-            fadeInSeconds = Math.Max(Math.Min(fadeInSeconds, 5), 0);
-            fadeOutSeconds = Math.Max(Math.Min(fadeOutSeconds, 5), 0);
+            durationSeconds = Math.Clamp(value: durationSeconds, min: 0, max: 10);
+            fadeInSeconds = Math.Clamp(value: fadeInSeconds, min: 0, max: 5);
+            fadeOutSeconds = Math.Clamp(value: fadeOutSeconds, min: 0, max: 5);
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {

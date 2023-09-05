@@ -1318,10 +1318,9 @@ namespace SonOfRobin
 
         public Vector2 KeepVector2InWorldBounds(Vector2 vector2)
         {
-            vector2.X = Math.Min(Math.Max(vector2.X, 0), this.width - 1);
-            vector2.Y = Math.Min(Math.Max(vector2.Y, 0), this.height - 1);
-
-            return vector2;
+            return new Vector2(
+                x: Math.Clamp(value: vector2.X, min: 0, max: this.width - 1),
+                y: Math.Clamp(value: vector2.Y, min: 0, max: this.height - 1));
         }
 
         public bool SpecifiedPiecesCountIsMet(Dictionary<PieceTemplate.Name, int> piecesToCount)

@@ -398,10 +398,9 @@ namespace SonOfRobin
             {
                 for (int i = 0; i < 10; i++) // trying to set target, which can be reached
                 {
-                    Vector2 targetPos = new Vector2(
-                        Math.Min(Math.Max((int)this.sprite.position.X + this.world.random.Next(-2000, 2000), 0), this.world.width - 1),
-                        Math.Min(Math.Max((int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), 0), this.world.height - 1)
-                        );
+                    Vector2 targetPos = new(
+                        Math.Clamp(value: (int)this.sprite.position.X + this.world.random.Next(-2000, 2000), min: 0, max: this.world.width - 1),
+                        Math.Clamp(value: (int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), min: 0, max: this.world.height - 1));
 
                     if (this.sprite.allowedTerrain.CanStandHere(world: this.world, position: targetPos))
                     {
@@ -561,7 +560,7 @@ namespace SonOfRobin
             }
             else throw new ArgumentException($"Unsupported target class - '{this.target.GetType()}'.");
 
-            int attackChance = (int)Math.Max(Math.Min((float)targetSpeed / (float)this.RealSpeed, 30), 1); // 1 == guaranteed hit, higher values == lower chance
+            int attackChance = (int)Math.Clamp(value: (float)targetSpeed / (float)this.RealSpeed, min: 1, max: 30); // 1 == guaranteed hit, higher values == lower chance
 
             if (this.world.random.Next(attackChance) == 0)
             {
@@ -868,7 +867,7 @@ namespace SonOfRobin
 
             // ExpendEnergy is not used, because it is a desperate life-saving measure for an animal
 
-            float runSpeed = Math.Min(Math.Max(this.speed * 1.7f, 1), 2.5f); // should not exceed these bounds
+            float runSpeed = Math.Clamp(value: this.speed * 1.7f, min: 1, max: 2.5f); // should not exceed these bounds
             bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, walkSpeed: runSpeed, slowDownOnRocks: false);
             if (!successfullWalking) this.aiData.Reset();
         }

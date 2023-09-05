@@ -200,10 +200,7 @@ namespace SonOfRobin
 
         public int KeepScrollInBounds(int scrollPos)
         {
-            int minPos = 0;
-            int maxPos = this.MaxScrollPos;
-            int limitedScrollPos = Math.Max(Math.Min(scrollPos, maxPos), minPos);
-            return limitedScrollPos;
+            return Math.Clamp(value: scrollPos, min: 0, max: this.MaxScrollPos);
         }
 
         public int CurrentScrollPosition

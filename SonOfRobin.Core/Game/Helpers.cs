@@ -338,13 +338,7 @@ namespace SonOfRobin
         public static double ConvertRange(double oldMin, double oldMax, double newMin, double newMax, double oldVal, bool clampToEdges)
         {
             double newVal = ((oldVal - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
-
-            if (clampToEdges)
-            {
-                newVal = Math.Min(newVal, newMax);
-                newVal = Math.Max(newVal, newMin);
-            }
-
+            if (clampToEdges) newVal = Math.Clamp(value: newVal, min: newMin, max: newMax);
             return newVal;
         }
 
@@ -511,7 +505,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                MessageLog.AddMessage( message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
+                MessageLog.AddMessage(message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
                 return false;
             }
         }
@@ -542,7 +536,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                MessageLog.AddMessage( message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
+                MessageLog.AddMessage(message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
                 return false;
             }
         }

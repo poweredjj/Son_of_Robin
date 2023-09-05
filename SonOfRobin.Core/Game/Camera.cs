@@ -219,8 +219,8 @@ namespace SonOfRobin
 
             if (this.keepInWorldBounds)
             {
-                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.width - screenWidth - 1f);
-                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.height - screenHeight - 1f);
+                xMin = Math.Clamp(value: xMin, min: 0, max: (float)this.world.width - screenWidth - 1f);
+                yMin = Math.Clamp(value: yMin, min: 0, max: (float)this.world.height - screenHeight - 1f);
             }
 
             float xMax = xMin + screenWidth;

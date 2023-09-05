@@ -77,8 +77,8 @@ namespace SonOfRobin
 
             if (this.storage.LastUsedSlotPos.X != -1 && this.storage.LastUsedSlotPos.Y != -1)
             {
-                this.cursorX = Math.Min(Math.Max(this.storage.LastUsedSlotPos.X, 0), this.storage.Width - 1);
-                this.cursorY = Math.Min(Math.Max(this.storage.LastUsedSlotPos.Y, 0), this.storage.Height - 1);
+                this.cursorX = Math.Clamp(value: this.storage.LastUsedSlotPos.X, min: 0, max: this.storage.Width - 1);
+                this.cursorY = Math.Clamp(value: this.storage.LastUsedSlotPos.Y, min: 0, max: this.storage.Height - 1);
             }
             else
             {

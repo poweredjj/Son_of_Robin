@@ -170,7 +170,7 @@ namespace SonOfRobin
         public float HitPoints
         {
             get { return this.hitPoints; }
-            set { this.hitPoints = Math.Min(Math.Max(value, 0), this.maxHitPoints); }
+            set { this.hitPoints = Math.Clamp(value: value, min: 0, max: this.maxHitPoints); }
         }
 
         public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow || Math.Abs(this.sprite.rotation) > 0.3f; } }
@@ -260,8 +260,7 @@ namespace SonOfRobin
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.pieceInfo.fireAffinity / 4 : this.pieceInfo.fireAffinity;
 
                 this.heatLevel += valDiff;
-                this.heatLevel = Math.Max(this.heatLevel, 0);
-                this.heatLevel = Math.Min(this.heatLevel, 1);
+                this.heatLevel = Math.Clamp(value: this.heatLevel, min: 0, max: 1);
 
                 this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
                 if (this.heatLevel > 0)

@@ -12,6 +12,7 @@ namespace SonOfRobin
         {
             // must be lowercase, to match animName
             left,
+
             right,
             up,
             down,
@@ -566,9 +567,10 @@ namespace SonOfRobin
         {
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
-            this.position = new Vector2((int)positionToCheck.X, (int)positionToCheck.Y); // to ensure integer values
-            this.position.X = Math.Min(Math.Max(this.position.X, 0), this.world.width - 1);
-            this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
+            this.position = new Vector2(
+                x: (int)Math.Clamp(value: positionToCheck.X, min: 0, max: this.world.width - 1),
+                y: (int)Math.Clamp(value: positionToCheck.Y, min: 0, max: this.world.height - 1));
+            // to ensure integer values
 
             this.UpdateRects();
             this.UpdateBoardLocation();
@@ -939,8 +941,8 @@ namespace SonOfRobin
                 float xLimit = shadowSprite.GfxRect.Width / 8;
                 float yLimit = shadowSprite.GfxRect.Height / 8;
 
-                float offsetX = Math.Max(Math.Min(xDiff / 6f, xLimit), -xLimit);
-                float offsetY = Math.Max(Math.Min(yDiff / 6f, yLimit), -yLimit);
+                float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
+                float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
 
                 Rectangle simulRect = shadowSprite.GfxRect;
                 simulRect.X += (int)offsetX;

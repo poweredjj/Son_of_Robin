@@ -84,7 +84,7 @@ namespace SonOfRobin
                 {
                     Vector2 txtPos = new(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
 
-                    float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
+                    float textOpacity = Math.Clamp(value: (float)(message.deletionFrame - currentFrame), min: 0, max: 1);
                     float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
                     Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);

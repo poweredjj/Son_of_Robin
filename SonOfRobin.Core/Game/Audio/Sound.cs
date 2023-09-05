@@ -151,7 +151,7 @@ namespace SonOfRobin
             {
                 double pitchChange = ((SonOfRobinGame.random.NextSingle() * 2d) - 1d) * this.maxPitchVariation;
                 pitch += (float)pitchChange;
-                pitch = Math.Max(Math.Min(pitch, 1), -1);
+                pitch = Math.Clamp(value: pitch, min: -1, max: 1);
             }
 
             managedSoundInstance.Pitch = pitch;
