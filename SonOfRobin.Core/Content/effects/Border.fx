@@ -33,28 +33,34 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
  
-    bool isOutlinePixel = false;	
+    bool isOutlinePixel = false;
 	
     if (currentPixel.a > threshold && input.UV.x > uvPix.x && input.UV.y > uvPix.y)
     {
+        // thick inside fill
         // checking non-transparent pixels for their non-transparent neighbours (and NOT first row / column)
         
-		// Calculate thickness in pixel coordinates
-        float2 thicknessPix = outlineThickness * uvPix;
-		
-        if (false
-			|| tex2D(InputSampler, float2(thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold
-			|| tex2D(InputSampler, float2(input.UV.x, thicknessPix.y + input.UV.y)).a <= threshold
-			|| tex2D(InputSampler, float2((-1 * thicknessPix.x) + input.UV.x, input.UV.y)).a <= threshold
-			|| tex2D(InputSampler, float2(input.UV.x, (-1 * thicknessPix.y) + input.UV.y)).a <= threshold
-		)
+        if (outlineThickness > 1)
         {
-            isOutlinePixel = true;
+          	// Calculate thickness in pixel coordinates
+            float2 thicknessPix = outlineThickness * uvPix;
+		
+            if (false
+			    || tex2D(InputSampler, float2(thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold
+			    || tex2D(InputSampler, float2(input.UV.x, thicknessPix.y + input.UV.y)).a <= threshold
+			    || tex2D(InputSampler, float2((-1 * thicknessPix.x) + input.UV.x, input.UV.y)).a <= threshold
+			    || tex2D(InputSampler, float2(input.UV.x, (-1 * thicknessPix.y) + input.UV.y)).a <= threshold
+		    )
+            {
+                isOutlinePixel = true;
+            }            
         }
     }
     else
     {	
-        // checking transparent pixels for their non-transparent neighbours (and ALWAYS first row / column, regardless of transparency)   
+        // thin outline fill
+        // checking transparent pixels for their non-transparent neighbours (and ALWAYS first row / column, regardless of transparency)  
+      
         if (false
 			|| tex2D(InputSampler, float2(uvPix.x + input.UV.x, input.UV.y)).a > threshold
 			|| tex2D(InputSampler, float2(input.UV.x, uvPix.y + input.UV.y)).a > threshold

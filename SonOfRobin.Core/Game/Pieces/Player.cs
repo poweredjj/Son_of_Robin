@@ -687,7 +687,7 @@ namespace SonOfRobin
             Sprite simulatedPieceSprite = this.simulatedPieceToBuild.sprite;
 
             simulatedPieceSprite.effectCol.AddEffect(new ColorizeInstance(color: color, priority: 0));
-            simulatedPieceSprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, drawFill: false, borderThickness: (int)(1f * (1f / simulatedPieceSprite.AnimFrame.scale)), textureSize: simulatedPieceSprite.AnimFrame.textureSize, priority: 1));
+            simulatedPieceSprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, drawFill: false, borderThickness: (int)(1f / simulatedPieceSprite.AnimFrame.scale), textureSize: simulatedPieceSprite.AnimFrame.textureSize, priority: 1));
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
@@ -827,8 +827,8 @@ namespace SonOfRobin
                 if (this.world.inputActive)
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.PickUp, world: this.world);
-                    pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
-                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.AnimFrame.textureSize, priority: 0));
+                    pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(13, 118, 163), priority: 0));
+                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, drawFill: false, borderThickness: (int)(2f * (1f / pieceToPickUp.sprite.AnimFrame.scale)), textureSize: pieceToPickUp.sprite.AnimFrame.textureSize, priority: 1));
                     VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
                     FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldPickUp), targetSprite: pieceToPickUp.sprite, alignment: this.sprite.position.Y > pieceToPickUp.sprite.position.Y ? FieldTip.Alignment.TopOut : FieldTip.Alignment.BottomOut);
