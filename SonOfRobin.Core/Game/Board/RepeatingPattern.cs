@@ -22,7 +22,6 @@ namespace SonOfRobin
             // textures:
 
             grass_good,
-
             grass_bad,
             water_supershallow,
             water_shallow,
@@ -44,7 +43,7 @@ namespace SonOfRobin
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
-        public static readonly Dictionary<Name, RepeatingPattern> patternDict = new Dictionary<Name, RepeatingPattern>();
+        public static readonly Dictionary<Name, RepeatingPattern> patternDict = new();
 
         public readonly Name name;
         private readonly Color[,] colorGrid;
