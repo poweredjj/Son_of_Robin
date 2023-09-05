@@ -1397,7 +1397,7 @@ namespace SonOfRobin
             {
                 if (!piece.pieceInfo.canBePickedUp || (piece.GetType() == typeof(Animal) && piece.alive)) continue;
 
-                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White * 0.7f, drawFill: false, textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
+                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White * 0.7f, drawFill: false, borderThickness: 2, textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
                 piece.sprite.Draw();
             }
         }

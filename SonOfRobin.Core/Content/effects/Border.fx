@@ -11,6 +11,7 @@ Texture2D SpriteTexture;
 float2 textureSize : VPOS;
 float4 outlineColor;
 bool drawFill;
+float borderThickness;
 
 sampler2D InputSampler = sampler_state
 {
@@ -29,28 +30,43 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	// shaders use color value range 0.0f - 1.0f
 
 	float4 currentPixel = tex2D(InputSampler, input.UV) * input.Color;
-	float4 output = currentPixel;
-
-	if (!drawFill) output = float4(0, 0, 0, 0);
 
 	float threshold = 0.4f;
-
-	if (currentPixel.a <= threshold)
+	if (currentPixel.a > threshold)
 	{
 		float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
 
-		if (false
-			|| tex2D(InputSampler, float2((1 * uvPix.x) + input.UV.x, (0 * uvPix.y) + input.UV.y)).a > threshold
-			|| tex2D(InputSampler, float2((0 * uvPix.x) + input.UV.x, (1 * uvPix.y) + input.UV.y)).a > threshold
-			|| tex2D(InputSampler, float2((-1 * uvPix.x) + input.UV.x, (0 * uvPix.y) + input.UV.y)).a > threshold
-			|| tex2D(InputSampler, float2((0 * uvPix.x) + input.UV.x, (-1 * uvPix.y) + input.UV.y)).a > threshold
-		)
+		// Calculate thickness in pixel coordinates
+		float2 thicknessPix = borderThickness * uvPix;
+
+		// Calculate offsets for neighboring pixels
+		float2 offsets[8] = {
+			float2(thicknessPix.x, 0),
+			float2(-thicknessPix.x, 0),
+			float2(0, thicknessPix.y),
+			float2(0, -thicknessPix.y),
+			float2(thicknessPix.x, thicknessPix.y),
+			float2(-thicknessPix.x, thicknessPix.y),
+			float2(thicknessPix.x, -thicknessPix.y),
+			float2(-thicknessPix.x, -thicknessPix.y)
+		};
+
+		// Check if any of the neighboring pixels exceed the threshold
+		bool isOutlinePixel = false;
+		for (int i = 0; i < 8; i++)
 		{
-			output = outlineColor;
+			if (tex2D(InputSampler, input.UV + offsets[i]).a <= threshold)
+			{
+				isOutlinePixel = true;
+				break;
+			}
 		}
+
+		if (isOutlinePixel) return outlineColor;	
 	}
 
-	return output;
+    if (!drawFill) return float4(0, 0, 0, 0);
+	else return currentPixel;
 }
 
 technique SpriteOutline
