@@ -623,7 +623,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.End();
 
-            // this.DrawTestPolygons();
+            this.DrawTestPolygons();
         }
 
         private void DrawScrollbar()
@@ -665,17 +665,26 @@ namespace SonOfRobin
 
             Viewport viewport = SonOfRobinGame.GfxDev.Viewport;
 
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: 0, top: viewport.Height, zNearPlane: 0, zFarPlane: 1); // works, but reversed
+
+            basicEffect.View = Matrix.Identity;
+
+            //backface culling
+
+            //turn off texture blurring
+            // SonOfRobinGame.GfxDev.SamplerStates[0] = SamplerState.PointClamp;
 
 
-            //basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
+            SonOfRobinGame.GfxDev.RasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None
+            };
+       
 
-
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: -1, zFarPlane: 1); // will not show anything unless CullMode.None is set
 
             // basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1); // standard settings when using spriteBatch
 
-            basicEffect.View = Matrix.CreateLookAt(Vector3.Zero, Vector3.Forward, Vector3.Up);
-            //basicEffect.View = Matrix.CreateLookAt(new Vector3(0, 0, 0), Vector3.Forward, Vector3.Up);
+            //basicEffect.View = Matrix.CreateLookAt(new Vector3(0, 0, 0), Vector3.Backward, Vector3.Up);
             //basicEffect.View *= this.TransformMatrix;
             //basicEffect.World = this.TransformMatrix;
 
@@ -684,10 +693,11 @@ namespace SonOfRobin
             basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
             basicEffect.TextureEnabled = true;
 
-            int size = SonOfRobinGame.GfxDev.Viewport.Height;
+            int size = SonOfRobinGame.GfxDev.Viewport.Height * 1;
 
             Vector3 basePos = Vector3.Zero;
-            // basePos = new(1000, 1000, 0);
+            basePos = new(0, 0, -1.0f);
+            //basePos = new(-size / 2, -size / 2, 0);
 
             VertexPositionTexture[] vert = new VertexPositionTexture[4];
             vert[0].Position = basePos + new Vector3(0, 0, 0);
@@ -715,6 +725,5 @@ namespace SonOfRobin
                     PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
             }
         }
-
     }
 }

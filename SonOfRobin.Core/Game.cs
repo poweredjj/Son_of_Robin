@@ -38,6 +38,7 @@ namespace SonOfRobin
         public static bool fakeMobileMode = false;
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
+        public static BasicEffect BasicEffect  { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
         public static Effect EffectColorize { get; private set; }
         public static Effect EffectBurn { get; private set; }
@@ -175,6 +176,12 @@ namespace SonOfRobin
             }
 
             GfxDev = base.GraphicsDevice;
+            BasicEffect = new(GfxDev);
+            GfxDev.RasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None // needed for basicEffect displaying "backside" when BasicEffects.Projection is aligned with SpriteBatch
+            };
+
             Preferences.CheckIfResolutionIsSupported();
 
             if (Preferences.FullScreenMode)
