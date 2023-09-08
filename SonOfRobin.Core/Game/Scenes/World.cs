@@ -1401,13 +1401,13 @@ namespace SonOfRobin
         {
             // for now only for testing
 
-            this.SetupPolygonDrawing();
+            this.SetupPolygonDrawing(allowRepeat: true);
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
             basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
             basicEffect.TextureEnabled = true;
 
-            int size = 600;
+            int size = 400;
 
             Vector3 basePos = Vector3.Zero;
             basePos = new(1000, 500, 0);
@@ -1419,10 +1419,12 @@ namespace SonOfRobin
             vert[2].Position = basePos + new Vector3(0, size / 2, 0);
             vert[3].Position = basePos + new Vector3(size, size, 0);
 
-            vert[0].TextureCoordinate = new Vector2(0, 0);
-            vert[1].TextureCoordinate = new Vector2(1, 0);
-            vert[2].TextureCoordinate = new Vector2(0, 1);
-            vert[3].TextureCoordinate = new Vector2(1, 1);
+            // Adjust the texture coordinates to make the texture wrap around
+            float textureRepeat = 3.0f; // You can adjust this value to control the number of repetitions
+            vert[0].TextureCoordinate = new Vector2(0, 0) * textureRepeat;
+            vert[1].TextureCoordinate = new Vector2(1, 0) * textureRepeat;
+            vert[2].TextureCoordinate = new Vector2(0, 1) * textureRepeat;
+            vert[3].TextureCoordinate = new Vector2(1, 1) * textureRepeat;
 
             short[] ind = new short[6];
             ind[0] = 0;
@@ -1444,7 +1446,7 @@ namespace SonOfRobin
 
         private void DrawTestCircle()
         {
-            this.SetupPolygonDrawing();
+            this.SetupPolygonDrawing(allowRepeat: true);
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
             basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
@@ -1462,12 +1464,8 @@ namespace SonOfRobin
                 float x = radius * (float)Math.Cos(angle);
                 float y = radius * (float)Math.Sin(angle);
 
-                // Calculate texture coordinates to target the edges of the texture
-                float u = 0.5f + 0.5f * x / radius;
-                float v = 0.5f - 0.5f * y / radius;
-
                 vert[i].Position = basePos + new Vector3(x, y, 0);
-                vert[i].TextureCoordinate = new Vector2(u, v);
+                vert[i].TextureCoordinate = new Vector2((x + radius) / (2 * radius), (y + radius) / (2 * radius));
             }
 
             short[] ind = new short[numSides * 3]; // Assuming you want to create triangles

@@ -108,8 +108,8 @@ namespace SonOfRobin
         {
             get
             {
-                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
+                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
+                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
 
                 return -100;
             }
