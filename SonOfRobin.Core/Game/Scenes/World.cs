@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1376,6 +1375,9 @@ namespace SonOfRobin
             // drawing light and darkness
             if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 3);
             SonOfRobinGame.SpriteBatch.End();
+
+            //this.DrawTestPolygons();
+
             this.DrawLightAndDarkness(this.lightSprites);
 
             // drawing highlighted pieces and field tips
@@ -1388,6 +1390,65 @@ namespace SonOfRobin
             }
 
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
+        }
+
+        private void DrawTestPolygons()
+        {
+            // setup
+
+            BasicEffect basicEffect = new(SonOfRobinGame.GfxDev);
+
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: SonOfRobinGame.GfxDev.Viewport.Width, bottom: 0, top: SonOfRobinGame.GfxDev.Viewport.Height, zNearPlane: 0, zFarPlane: -1); // works, but reversed
+
+            //basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: SonOfRobinGame.GfxDev.Viewport.Width, bottom: SonOfRobinGame.GfxDev.Viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
+
+            //basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: SonOfRobinGame.GfxDev.Viewport.Width, bottom: SonOfRobinGame.GfxDev.Viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
+
+
+            //basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: SonOfRobinGame.GfxDev.Viewport.Width, bottom: SonOfRobinGame.GfxDev.Viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1); // standard settings when using spriteBatch
+
+
+            basicEffect.View = Matrix.CreateLookAt(-Vector3.Zero, Vector3.Forward * 2f, Vector3.Up);
+            //basicEffect.View *= this.TransformMatrix;
+
+            basicEffect.World = this.TransformMatrix;
+
+
+            // drawing
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            int size = 800;
+
+            Vector3 basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
+            //basePos = Vector3.Zero;
+
+            VertexPositionTexture[] vert = new VertexPositionTexture[4];
+            vert[0].Position = basePos + new Vector3(0, 0, 0);
+            vert[1].Position = basePos + new Vector3(size, 0, 0);
+            vert[2].Position = basePos + new Vector3(0, size / 2, 0);
+            vert[3].Position = basePos + new Vector3(size, size, 0);
+
+            vert[0].TextureCoordinate = new Vector2(0, 0);
+            vert[1].TextureCoordinate = new Vector2(1, 0);
+            vert[2].TextureCoordinate = new Vector2(0, 1);
+            vert[3].TextureCoordinate = new Vector2(1, 1);
+
+            short[] ind = new short[6];
+            ind[0] = 0;
+            ind[1] = 2;
+            ind[2] = 1;
+            ind[3] = 1;
+            ind[4] = 2;
+            ind[5] = 3;
+
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+            }
         }
 
         private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
