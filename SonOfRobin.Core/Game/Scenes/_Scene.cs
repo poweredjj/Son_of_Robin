@@ -515,5 +515,22 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
+
+        protected void SetupPolygonDrawing()
+        {
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            Viewport viewport = SonOfRobinGame.GfxDev.Viewport;
+            basicEffect.View = Matrix.Identity;
+
+            SonOfRobinGame.GfxDev.RasterizerState = SonOfRobinGame.RasterizeStateNoCulling; // SpriteBatch resets this
+
+            // will not show anything unless CullMode.None is set
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1); 
+
+            basicEffect.World = this.TransformMatrix;
+            // basicEffect.View *= this.TransformMatrix; // alternative to setting basicEffect.World        
+        }
+
     }
 }

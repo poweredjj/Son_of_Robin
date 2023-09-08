@@ -1363,9 +1363,12 @@ namespace SonOfRobin
             // drawing background (ground, leaving "holes" for water)
             this.Grid.DrawBackground(camera: this.camera);
 
-            //SonOfRobinGame.SpriteBatch.End(); // ending before drawing polygons
-            //this.DrawTestPolygons(); // polygons must be drawn without SpriteBatch started (glitches will occur otherwise)
-            //SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spritebatch
+            if (Preferences.debugDrawTestPolygons)
+            {
+                SonOfRobinGame.SpriteBatch.End(); // ending before drawing polygons
+                this.DrawPolygons(); // polygons must be drawn without SpriteBatch started (glitches will occur otherwise)
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spritebatch
+            }
 
             // drawing sprites
             var drawnPieces = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);
@@ -1392,6 +1395,96 @@ namespace SonOfRobin
             }
 
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
+        }
+
+        private void DrawPolygons()
+        {
+            // for now only for testing
+
+            this.SetupPolygonDrawing();
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            int size = 600;
+
+            Vector3 basePos = Vector3.Zero;
+            basePos = new(1000, 500, 0);
+            basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
+
+            VertexPositionTexture[] vert = new VertexPositionTexture[4];
+            vert[0].Position = basePos + new Vector3(0, 0, 0);
+            vert[1].Position = basePos + new Vector3(size, 0, 0);
+            vert[2].Position = basePos + new Vector3(0, size / 2, 0);
+            vert[3].Position = basePos + new Vector3(size, size, 0);
+
+            vert[0].TextureCoordinate = new Vector2(0, 0);
+            vert[1].TextureCoordinate = new Vector2(1, 0);
+            vert[2].TextureCoordinate = new Vector2(0, 1);
+            vert[3].TextureCoordinate = new Vector2(1, 1);
+
+            short[] ind = new short[6];
+            ind[0] = 0;
+            ind[1] = 2;
+            ind[2] = 1;
+            ind[3] = 1;
+            ind[4] = 2;
+            ind[5] = 3;
+
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+            }
+
+            this.DrawTestCircle();
+        }
+
+        private void DrawTestCircle()
+        {
+            this.SetupPolygonDrawing();
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            int numSides = 16; // Change this to the desired number of sides for the circle
+            float radius = 200f; // Change this to set the radius of the circle
+            Vector3 basePos = new(2000, 1500, 0); // Change this to set the center of the circle
+
+            VertexPositionTexture[] vert = new VertexPositionTexture[numSides + 1];
+
+            for (int i = 0; i <= numSides; i++)
+            {
+                float angle = (float)(i * 2 * Math.PI / numSides);
+                float x = radius * (float)Math.Cos(angle);
+                float y = radius * (float)Math.Sin(angle);
+
+                // Calculate texture coordinates to target the edges of the texture
+                float u = 0.5f + 0.5f * x / radius;
+                float v = 0.5f - 0.5f * y / radius;
+
+                vert[i].Position = basePos + new Vector3(x, y, 0);
+                vert[i].TextureCoordinate = new Vector2(u, v);
+            }
+
+            short[] ind = new short[numSides * 3]; // Assuming you want to create triangles
+
+            for (int i = 0; i < numSides; i++)
+            {
+                ind[i * 3] = 0;
+                ind[i * 3 + 1] = (short)(i + 1);
+                ind[i * 3 + 2] = (short)(i + 2);
+            }
+
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+            }
         }
 
         private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
