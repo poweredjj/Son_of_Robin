@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -621,6 +622,8 @@ namespace SonOfRobin
             this.DrawScrollbar();
 
             SonOfRobinGame.SpriteBatch.End();
+
+            // this.DrawTestPolygons();
         }
 
         private void DrawScrollbar()
@@ -653,5 +656,65 @@ namespace SonOfRobin
 
             this.viewParams.PosY = 0;
         }
+
+        private void DrawTestPolygons()
+        {
+            // setup
+
+            BasicEffect basicEffect = new(SonOfRobinGame.GfxDev);
+
+            Viewport viewport = SonOfRobinGame.GfxDev.Viewport;
+
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: 0, top: viewport.Height, zNearPlane: 0, zFarPlane: 1); // works, but reversed
+
+
+            //basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
+
+
+
+            // basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1); // standard settings when using spriteBatch
+
+            basicEffect.View = Matrix.CreateLookAt(Vector3.Zero, Vector3.Forward, Vector3.Up);
+            //basicEffect.View = Matrix.CreateLookAt(new Vector3(0, 0, 0), Vector3.Forward, Vector3.Up);
+            //basicEffect.View *= this.TransformMatrix;
+            //basicEffect.World = this.TransformMatrix;
+
+            // drawing
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            int size = SonOfRobinGame.GfxDev.Viewport.Height;
+
+            Vector3 basePos = Vector3.Zero;
+            // basePos = new(1000, 1000, 0);
+
+            VertexPositionTexture[] vert = new VertexPositionTexture[4];
+            vert[0].Position = basePos + new Vector3(0, 0, 0);
+            vert[1].Position = basePos + new Vector3(size, 0, 0);
+            vert[2].Position = basePos + new Vector3(0, size / 2, 0);
+            vert[3].Position = basePos + new Vector3(size, size, 0);
+
+            vert[0].TextureCoordinate = new Vector2(0, 0);
+            vert[1].TextureCoordinate = new Vector2(1, 0);
+            vert[2].TextureCoordinate = new Vector2(0, 1);
+            vert[3].TextureCoordinate = new Vector2(1, 1);
+
+            short[] ind = new short[6];
+            ind[0] = 0;
+            ind[1] = 2;
+            ind[2] = 1;
+            ind[3] = 1;
+            ind[4] = 2;
+            ind[5] = 3;
+
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
+            }
+        }
+
     }
 }
