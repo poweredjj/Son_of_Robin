@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.MarchingSquaresMeshGenerator;
 
 namespace SonOfRobin
 {
@@ -420,7 +421,34 @@ namespace SonOfRobin
                     boolArray[point.X, point.Y] = true;
                 }
 
-                MarchingSquaresMeshGenerator.GenerateMesh(boolArray);
+                var connectedEdgesList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
+
+                Console.Write("\n");
+
+                for (int y = 0; y < height; y++)
+                {
+                    Console.Write("[ ");
+                    for (int x = 0; x < width; x++)
+                    {
+                        Console.Write(boolArray[x, y].ToString().ToLower());
+                        if (x < width - 1) Console.Write(", ");
+                    }
+                    Console.Write(" ],\n");
+                }
+
+                Console.Write("\n");
+
+                foreach (Edge edge in connectedEdgesList)
+                {
+                    string startX = edge.start.X.ToString().Replace(",", ".");
+                    string startY = edge.start.Y.ToString().Replace(",", ".");
+                    string endX = edge.end.X.ToString().Replace(",", ".");
+                    string endY = edge.end.Y.ToString().Replace(",", ".");
+
+                    Console.Write("{ ");
+                    Console.Write($"start: new Point({startX}, {startY}), end: new Point({endX}, {endY})");
+                    Console.Write(" },\n");
+                }
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

@@ -1,56 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using static SonOfRobin.MarchingSquaresMeshGenerator;
 
 namespace SonOfRobin
 {
+    public readonly struct MarchingCell
+    {
+        public readonly int x;
+        public readonly int y;
+        public readonly int topLeft;
+        public readonly int topRight;
+        public readonly int bottomLeft;
+        public readonly int bottomRight;
+        public readonly int cornerID;
+        public readonly List<Edge> edgeList;
+
+        public MarchingCell(int x, int y, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
+        {
+            this.x = x;
+            this.y = y;
+            this.topLeft = topLeft ? 1 : 0;
+            this.topRight = topRight ? 1 : 0;
+            this.bottomLeft = bottomLeft ? 1 : 0;
+            this.bottomRight = bottomRight ? 1 : 0;
+
+            this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
+
+            this.edgeList = new List<Edge>();
+            foreach (Edge edge in edgesForIDs[this.cornerID])
+            {
+                this.edgeList.Add(new Edge(
+                    start: new Vector2(edge.start.X + this.x, edge.start.Y + this.y),
+                    end: new Vector2(edge.end.X + this.x, edge.end.Y + this.y)));
+            }
+        }
+    }
+
     public class MarchingSquaresMeshGenerator
     {
         public readonly struct Edge
         {
             public readonly Vector2 start;
             public readonly Vector2 end;
+            public readonly double angle;
 
             public Edge(Vector2 start, Vector2 end)
             {
                 this.start = start;
                 this.end = end;
+                this.angle = GetAngleDegrees(start: start, end: end);
             }
-        }
 
-        public readonly struct MarchingCell
-        {
-            public readonly int x;
-            public readonly int y;
-            public readonly int topLeft;
-            public readonly int topRight;
-            public readonly int bottomLeft;
-            public readonly int bottomRight;
-            public readonly int cornerID;
-            public readonly List<Edge> edgeList;
-
-            public MarchingCell(int x, int y, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
+            private static double GetAngleDegrees(Vector2 start, Vector2 end)
             {
-                this.x = x;
-                this.y = y;
-                this.topLeft = topLeft ? 1 : 0;
-                this.topRight = topRight ? 1 : 0;
-                this.bottomLeft = bottomLeft ? 1 : 0;
-                this.bottomRight = bottomRight ? 1 : 0;
+                Vector2 delta = end - start;
+                double angleInRadians = Math.Atan2(delta.Y, delta.X);
+                return Math.Round(angleInRadians * 180 / Math.PI);
+            }
 
-                this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
-
-                this.edgeList = new List<Edge>();
-                foreach (Edge edge in edgesForIDs[this.cornerID])
-                {
-                    this.edgeList.Add(new Edge(
-                        start: new Vector2(edge.start.X + this.x, edge.start.Y + this.y),
-                        end: new Vector2(edge.end.X + this.x, edge.end.Y + this.y)));
-                }
+            public static Edge ReversedEdge(Edge edge)
+            {
+                return new Edge(start: edge.end, end: edge.start);
             }
         }
 
-        public static void GenerateMesh(bool[,] boolArray)
+        public static List<Edge> GenerateConnectedEdgesList(bool[,] boolArray)
         {
             int width = boolArray.GetLength(0);
             int height = boolArray.GetLength(1);
@@ -89,42 +105,66 @@ namespace SonOfRobin
                     bool bottomLeft = x >= 0 && y + 1 < height && boolArray[x, y + 1];
                     bool bottomRight = x + 1 < width && y + 1 < height && boolArray[x + 1, y + 1];
 
-                    MarchingCell marchingCell = new MarchingCell(x: x, y: y, topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight);
+                    MarchingCell marchingCell = new(x: x, y: y, topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight);
                     edgeList.AddRange(marchingCell.edgeList);
                 }
             }
 
-            // visualization for testing
+            return edgeList; // for testing
 
-            Console.Write("\n");
+            List<Edge> connectedEdgesList = OrderAndMergeEdges(edgeList);
 
-            for (int y = 0; y < height; y++)
-            {
-                Console.Write("[ ");
-                for (int x = 0; x < width; x++)
-                {
-                    Console.Write(boolArray[x, y].ToString().ToLower());
-                    if (x < width - 1) Console.Write(", ");
-                }
-                Console.Write(" ],\n");
-            }
-
-            Console.Write("\n");
-
-            foreach (Edge edge in edgeList)
-            {
-                string startX = edge.start.X.ToString().Replace(",", ".");
-                string startY = edge.start.Y.ToString().Replace(",", ".");
-                string endX = edge.end.X.ToString().Replace(",", ".");
-                string endY = edge.end.Y.ToString().Replace(",", ".");
-
-                Console.Write("{ ");
-                Console.Write($"start: new Point({startX}, {startY}), end: new Point({endX}, {endY})");
-                Console.Write(" },\n");
-            }
+            return connectedEdgesList;
         }
 
-        private static readonly Dictionary<int, List<Edge>> edgesForIDs = new()
+        public static List<Edge> OrderAndMergeEdges(List<Edge> edges)
+        {
+            var edgesToSort = edges.Distinct().ToList();
+            var sortedEdgesList = new List<Edge>();
+
+            Edge currentEdge = edgesToSort[0];
+            edgesToSort.RemoveAt(0);
+
+            while (true)
+            {
+                bool connectionFound = false;
+
+                for (int i = 0; i < edgesToSort.Count; i++)
+                {
+                    Edge nextEdge = edgesToSort[i];
+                    if (nextEdge.start == currentEdge.end || nextEdge.end == currentEdge.end)
+                    {
+                        if (nextEdge.end == currentEdge.end) nextEdge = Edge.ReversedEdge(nextEdge);
+
+                        connectionFound = true;
+                        edgesToSort.RemoveAt(i);
+
+                        if (currentEdge.angle == nextEdge.angle)
+                        {
+                            nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
+                            sortedEdgesList.Remove(currentEdge);
+                        }
+                        sortedEdgesList.Add(nextEdge);
+
+                        currentEdge = nextEdge;
+                        break;
+                    }
+                }
+                if (!connectionFound && edgesToSort.Count > 0)
+                {
+                    // next subpath
+                    currentEdge = edgesToSort[0];
+                    sortedEdgesList.Add(currentEdge);
+                    edgesToSort.RemoveAt(0);
+                }
+
+                if (edgesToSort.Count == 0) break;
+            }
+
+            return sortedEdgesList;
+        }
+
+        public static readonly Dictionary<int, List<Edge>> edgesForIDs = new()
         {
             // empty
             { 0000, new List<Edge>()},
@@ -134,66 +174,66 @@ namespace SonOfRobin
 
             // single corner cases (filled corners)
             { 1000, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.0f, 0.5f)),
             }},
             { 0100, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(1.0f, 0.5f)),
             }},
             { 0010, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.5f), new Vector2(0.5f, 1.0f)),
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(0.5f, 1.0f)),
             }},
             { 0001, new List<Edge> {
-                new Edge(new Vector2(0.5f, 1.0f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 1.0f), end: new Vector2(1.0f, 0.5f)),
             }},
 
             // single corner cases (empty corners)
             { 0111, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.0f, 0.5f)),
             }},
             { 1011, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(1.0f, 0.5f)),
             }},
             { 1101, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.5f), new Vector2(0.5f, 1.0f)),
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(0.5f, 1.0f)),
             }},
             { 1110, new List<Edge> {
-                new Edge(new Vector2(0.5f, 1.0f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 1.0f), end: new Vector2(1.0f, 0.5f)),
             }},
 
             // sides
 
             // top
             { 1100, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.5f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
             }},
 
             // bottom
             { 0011, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.5f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
             }},
 
             // left
             { 1010, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.5f, 1.0f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
             }},
 
             // right
             { 0101, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.5f, 1.0f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
             }},
 
             // diagonals
 
             // right top + left bottom
             { 0110, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.0f, 0.5f)),
-                new Edge(new Vector2(0.5f, 1.0f), new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 1.0f), end: new Vector2(1.0f, 0.5f)),
             }},
 
             // left top + right bottom
             { 1001, new List<Edge> {
-                new Edge(new Vector2(0.5f, 0.0f), new Vector2(1.0f, 0.5f)),
-                new Edge(new Vector2(0.0f, 0.5f), new Vector2(0.5f, 1.0f)),
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(0.5f, 1.0f)),
             }},
         };
     }
