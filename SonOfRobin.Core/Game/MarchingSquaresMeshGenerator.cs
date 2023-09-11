@@ -55,18 +55,42 @@ namespace SonOfRobin
             int width = boolArray.GetLength(0);
             int height = boolArray.GetLength(1);
 
-            var marchingCellArray = new MarchingCell[width, height];
+            var edgeList = new List<Edge>();
 
+            bool xZeroFilled = false;
+            for (int y = 0; y < height; y++)
+            {
+                if (boolArray[0, y])
+                {
+                    xZeroFilled = true;
+                    break;
+                }
+            }
+
+            bool yZeroFilled = false;
             for (int x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; y++)
+                if (boolArray[x, 0])
                 {
-                    bool topLeft = boolArray[x, y];
-                    bool topRight = x + 1 < width && boolArray[x + 1, y];
-                    bool bottomLeft = y + 1 < height && boolArray[x, y + 1];
+                    yZeroFilled = true;
+                    break;
+                }
+            }
+
+            int startingX = xZeroFilled ? -1 : 0;
+            int startingY = yZeroFilled ? -1 : 0;
+
+            for (int x = startingX; x < width; x++)
+            {
+                for (int y = startingY; y < height; y++)
+                {
+                    bool topLeft = x >= 0 && y >= 0 && boolArray[x, y];
+                    bool topRight = x + 1 < width && y >= 0 && boolArray[x + 1, y];
+                    bool bottomLeft = x >= 0 && y + 1 < height && boolArray[x, y + 1];
                     bool bottomRight = x + 1 < width && y + 1 < height && boolArray[x + 1, y + 1];
 
-                    marchingCellArray[x, y] = new MarchingCell(x: x, y: y, topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight);
+                    MarchingCell marchingCell = new MarchingCell(x: x, y: y, topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight);
+                    edgeList.AddRange(marchingCell.edgeList);
                 }
             }
 
@@ -87,22 +111,16 @@ namespace SonOfRobin
 
             Console.Write("\n");
 
-            for (int y = 0; y < height; y++)
+            foreach (Edge edge in edgeList)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    foreach (Edge edge in marchingCellArray[x, y].edgeList)
-                    {
-                        string startX = edge.start.X.ToString().Replace(",", ".");
-                        string startY = edge.start.Y.ToString().Replace(",", ".");
-                        string endX = edge.end.X.ToString().Replace(",", ".");
-                        string endY = edge.end.Y.ToString().Replace(",", ".");
+                string startX = edge.start.X.ToString().Replace(",", ".");
+                string startY = edge.start.Y.ToString().Replace(",", ".");
+                string endX = edge.end.X.ToString().Replace(",", ".");
+                string endY = edge.end.Y.ToString().Replace(",", ".");
 
-                        Console.Write("{ ");
-                        Console.Write($"start: new Point({startX}, {startY}), end: new Point({endX}, {endY})");
-                        Console.Write(" },\n");
-                    }
-                }
+                Console.Write("{ ");
+                Console.Write($"start: new Point({startX}, {startY}), end: new Point({endX}, {endY})");
+                Console.Write(" },\n");
             }
         }
 
@@ -156,12 +174,12 @@ namespace SonOfRobin
 
             // left
             { 1010, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.0f), new Vector2(0.5f, 1.0f)),
+                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.5f, 1.0f)),
             }},
 
             // right
             { 0101, new List<Edge> {
-                new Edge(new Vector2(0.0f, 0.0f), new Vector2(0.5f, 1.0f)),
+                new Edge(new Vector2(0.5f, 0.0f), new Vector2(0.5f, 1.0f)),
             }},
 
             // diagonals

@@ -374,6 +374,8 @@ namespace SonOfRobin
             {
                 var pointList = new List<Point>
                 {
+                    new Point(2, 0),
+                    new Point(3, 0),
                     new Point(2, 1),
                     new Point(7, 1),
                     new Point(8, 1),
@@ -382,11 +384,14 @@ namespace SonOfRobin
                     new Point(3, 2),
                     new Point(6, 2),
                     new Point(8, 2),
+                    new Point(9, 2),
+                    new Point(0, 3),
                     new Point(1, 3),
                     new Point(2, 3),
                     new Point(3, 3),
                     new Point(4, 3),
                     new Point(5, 3),
+                    new Point(0, 4),
                     new Point(1, 4),
                     new Point(2, 4),
                     new Point(5, 4),
