@@ -101,7 +101,7 @@ namespace SonOfRobin
         public static int VirtualHeight
         { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
-        private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
+        private static void MoveWindowOnWorkMachine(Game game)
         {
             if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
