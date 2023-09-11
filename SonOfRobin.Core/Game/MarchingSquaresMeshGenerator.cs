@@ -1,26 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using static SonOfRobin.MarchingSquaresMeshGenerator;
 
 namespace SonOfRobin
 {
     public readonly struct MarchingCell
     {
-        public readonly int x;
-        public readonly int y;
+        public readonly Vector2 pos;
         public readonly int topLeft;
         public readonly int topRight;
         public readonly int bottomLeft;
         public readonly int bottomRight;
         public readonly int cornerID;
-        public readonly List<Edge> edgeList;
+        public readonly HashSet<Edge> edgeSet;
 
-        public MarchingCell(int x, int y, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
+        public MarchingCell(Vector2 pos, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
         {
-            this.x = x;
-            this.y = y;
+            this.pos = pos;
             this.topLeft = topLeft ? 1 : 0;
             this.topRight = topRight ? 1 : 0;
             this.bottomLeft = bottomLeft ? 1 : 0;
@@ -28,12 +28,10 @@ namespace SonOfRobin
 
             this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
 
-            this.edgeList = new List<Edge>();
+            this.edgeSet = new HashSet<Edge>();
             foreach (Edge edge in edgesForIDs[this.cornerID])
             {
-                this.edgeList.Add(new Edge(
-                    start: new Vector2(edge.start.X + this.x, edge.start.Y + this.y),
-                    end: new Vector2(edge.end.X + this.x, edge.end.Y + this.y)));
+                this.edgeSet.Add(new Edge(start: this.pos + edge.start, end: this.pos + edge.end));
             }
         }
     }
@@ -64,14 +62,30 @@ namespace SonOfRobin
             {
                 return new Edge(start: edge.end, end: edge.start);
             }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = 17; // Prime number to start with
+
+                    // Ensure that start and end vectors are in a consistent order
+                    var orderedStart = Vector2.Min(start, end);
+                    var orderedEnd = Vector2.Max(start, end);
+
+                    hash = hash * 23 + orderedStart.GetHashCode();
+                    hash = hash * 23 + orderedEnd.GetHashCode();
+
+                    return hash;
+                }
+            }
+
         }
 
         public static List<Edge> GenerateConnectedEdgesList(bool[,] boolArray)
         {
             int width = boolArray.GetLength(0);
             int height = boolArray.GetLength(1);
-
-            var edgeList = new List<Edge>();
 
             bool xZeroFilled = false;
             for (int y = 0; y < height; y++)
@@ -96,7 +110,8 @@ namespace SonOfRobin
             int startingX = xZeroFilled ? -1 : 0;
             int startingY = yZeroFilled ? -1 : 0;
 
-            for (int x = startingX; x < width; x++)
+            var marchingCellBag = new ConcurrentBag<MarchingCell>();
+            Parallel.For(startingX, width, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
             {
                 for (int y = startingY; y < height; y++)
                 {
@@ -105,21 +120,26 @@ namespace SonOfRobin
                     bool bottomLeft = x >= 0 && y + 1 < height && boolArray[x, y + 1];
                     bool bottomRight = x + 1 < width && y + 1 < height && boolArray[x + 1, y + 1];
 
-                    MarchingCell marchingCell = new(x: x, y: y, topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight);
-                    edgeList.AddRange(marchingCell.edgeList);
+                    marchingCellBag.Add(new(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight));
                 }
+            });
+
+            var edgeSet = new HashSet<Edge>();
+            foreach (MarchingCell marchingCell in marchingCellBag)
+            {
+                edgeSet.UnionWith(marchingCell.edgeSet);
             }
 
-            return edgeList; // for testing
+            //return edgeSet.ToList(); // for testing
 
-            List<Edge> connectedEdgesList = OrderAndMergeEdges(edgeList);
+            List<Edge> connectedEdgesList = OrderAndMergeEdges(edgeSet);
 
             return connectedEdgesList;
         }
 
-        public static List<Edge> OrderAndMergeEdges(List<Edge> edges)
+        public static List<Edge> OrderAndMergeEdges(HashSet<Edge> edges)
         {
-            var edgesToSort = edges.Distinct().ToList();
+            var edgesToSort = edges.ToList();
             var sortedEdgesList = new List<Edge>();
 
             Edge currentEdge = edgesToSort[0];
@@ -206,17 +226,14 @@ namespace SonOfRobin
             { 1100, new List<Edge> {
                 new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
             }},
-
             // bottom
             { 0011, new List<Edge> {
                 new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
             }},
-
             // left
             { 1010, new List<Edge> {
                 new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
             }},
-
             // right
             { 0101, new List<Edge> {
                 new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),

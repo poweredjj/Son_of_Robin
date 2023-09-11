@@ -404,6 +404,16 @@ namespace SonOfRobin
                     new Point(5, 8),
                     new Point(3, 9),
                     new Point(4, 9),
+                    new Point(7, 8),
+                    new Point(8, 7),
+                    new Point(9, 8),
+                    new Point(8, 9),
+                    new Point(8, 5),
+                    new Point(0, 9),
+                    new Point(6, 0),
+                    new Point(0, 5),
+                    new Point(0, 6),
+                    new Point(0, 7),
                 };
 
                 int width = 0;
