@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static SonOfRobin.MarchingSquaresMeshGenerator;
 
 namespace SonOfRobin
 {
@@ -434,7 +433,7 @@ namespace SonOfRobin
                 var connectedEdgesList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
 
                 List<System.Drawing.PointF> pointFList = new();
-                foreach (Edge edge in connectedEdgesList)
+                foreach (MarchingSquaresMeshGenerator.Edge edge in connectedEdgesList)
                 {
                     var newPointF = new System.Drawing.PointF(edge.start);
                     if (!pointFList.Contains(newPointF)) pointFList.Add(newPointF);
@@ -455,7 +454,7 @@ namespace SonOfRobin
 
                 Console.Write("\n");
 
-                foreach (Edge edge in connectedEdgesList)
+                foreach (MarchingSquaresMeshGenerator.Edge edge in connectedEdgesList)
                 {
                     string startX = edge.start.X.ToString().Replace(",", ".");
                     string startY = edge.start.Y.ToString().Replace(",", ".");
