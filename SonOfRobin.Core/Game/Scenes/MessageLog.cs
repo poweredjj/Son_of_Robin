@@ -36,7 +36,8 @@ namespace SonOfRobin
         private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
-        private static string lastMessage = "";
+        private static string lastDebugMessage = "";
+        private static string lastUserMessage = "";
 
         private static List<Message> messages = new() { };
 
@@ -102,9 +103,15 @@ namespace SonOfRobin
 
         public static void AddMessage(string message, Color color, bool debugMessage = false, bool avoidDuplicates = false)
         {
-            if (avoidDuplicates && lastMessage == message) return;
+            if (avoidDuplicates)
+            {
+                if ((debugMessage && lastDebugMessage == message) || (!debugMessage && lastUserMessage == message)) return;
+            }
+
             Console.WriteLine(message); // additional output
-            lastMessage = message;
+            if (debugMessage) lastDebugMessage = message;
+            else lastUserMessage = message;
+
             if (debugMessage && !Preferences.DebugMode) return;
 
             messages.Add(new Message(message: message, color: color));
