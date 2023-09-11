@@ -433,6 +433,13 @@ namespace SonOfRobin
 
                 var connectedEdgesList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
 
+                List<System.Drawing.PointF> pointFList = new();
+                foreach (Edge edge in connectedEdgesList)
+                {
+                    var newPointF = new System.Drawing.PointF(edge.start);
+                    if (!pointFList.Contains(newPointF)) pointFList.Add(newPointF);
+                }
+
                 Console.Write("\n");
 
                 for (int y = 0; y < height; y++)
@@ -459,6 +466,11 @@ namespace SonOfRobin
                     Console.Write($"start: new Point({startX}, {startY}), end: new Point({endX}, {endY})");
                     Console.Write(" },\n");
                 }
+
+                var selfIntersectionResult = PolygonTriangulator.SelfIntersection(pointFList);
+                Console.WriteLine($"selfIntersectionResult {selfIntersectionResult}");
+
+                var triangleList = PolygonTriangulator.Triangulate(pointFList);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

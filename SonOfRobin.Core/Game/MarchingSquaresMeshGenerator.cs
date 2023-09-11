@@ -79,7 +79,6 @@ namespace SonOfRobin
                     return hash;
                 }
             }
-
         }
 
         public static List<Edge> GenerateConnectedEdgesList(bool[,] boolArray)
@@ -130,7 +129,7 @@ namespace SonOfRobin
                 edgeSet.UnionWith(marchingCell.edgeSet);
             }
 
-            //return edgeSet.ToList(); // for testing
+            // return edgeSet.ToList(); // for testing
 
             List<Edge> connectedEdgesList = OrderAndMergeEdges(edgeSet);
 
