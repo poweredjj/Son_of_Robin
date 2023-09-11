@@ -94,7 +94,8 @@ namespace SonOfRobin
                 foreach (BoardPiece target in targetsForCurrentTool)
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
-                    target.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, borderThickness: (int)(2f * (1f / target.sprite.AnimFrame.scale)), textureSize: target.sprite.AnimFrame.textureSize));
+
+                    target.sprite.effectCol.AddEffect(new BorderInstance(priority: 0, outlineColor: Color.Red, borderThickness: (int)(2f * (1f / target.sprite.AnimFrame.scale)), textureSize: target.sprite.AnimFrame.textureSize));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");

@@ -814,7 +814,8 @@ namespace SonOfRobin
                     }
 
                     FieldTip.AddUpdateTip(world: this.world, texture: interactTexture, targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.Center);
-                    pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green));
+
+                    pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green, priority: 1));
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Interact, world: this.world);
                     VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");

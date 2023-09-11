@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,6 +50,16 @@ namespace SonOfRobin
         {
             foreach (EffInstance effInstance in this.effectInstanceSet)
             { if (effInstance.effect == effect) return true; }
+            return false;
+        }
+
+        public bool HasEffectOfType(Type type)
+        {
+            foreach (EffInstance effect in this.effectInstanceSet)
+            {
+                if (effect.GetType() == type) return true;
+            }
+
             return false;
         }
 
