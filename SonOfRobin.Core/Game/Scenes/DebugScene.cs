@@ -364,10 +364,58 @@ namespace SonOfRobin
             //    ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.BloodDripping, duration: 1);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+            //    world.SpectatorMode = !world.SpectatorMode;
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                if (world == null) return;
-                world.SpectatorMode = !world.SpectatorMode;
+                var pointList = new List<Point>
+                {
+                    new Point(2, 1),
+                    new Point(7, 1),
+                    new Point(8, 1),
+                    new Point(1, 2),
+                    new Point(2, 2),
+                    new Point(3, 2),
+                    new Point(6, 2),
+                    new Point(8, 2),
+                    new Point(1, 3),
+                    new Point(2, 3),
+                    new Point(3, 3),
+                    new Point(4, 3),
+                    new Point(5, 3),
+                    new Point(1, 4),
+                    new Point(2, 4),
+                    new Point(5, 4),
+                    new Point(2, 5),
+                    new Point(3, 5),
+                    new Point(4, 5),
+                    new Point(3, 6),
+                    new Point(4, 7),
+                    new Point(5, 8),
+                    new Point(3, 9),
+                    new Point(4, 9),
+                };
+
+                int width = 0;
+                int height = 0;
+
+                foreach (Point point in pointList)
+                {
+                    width = Math.Max(width, point.X + 1);
+                    height = Math.Max(height, point.Y + 1);
+                }
+
+                var boolArray = new bool[width, height];
+                foreach (Point point in pointList)
+                {
+                    boolArray[point.X, point.Y] = true;
+                }
+
+                MarchingSquaresMeshGenerator.GenerateMesh(boolArray);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
