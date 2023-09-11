@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -39,7 +38,7 @@ namespace SonOfRobin
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static RasterizerState RasterizeStateNoCulling { get; private set; }
-        public static BasicEffect BasicEffect  { get; private set; }
+        public static BasicEffect BasicEffect { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
         public static Effect EffectColorize { get; private set; }
         public static Effect EffectBurn { get; private set; }
@@ -102,26 +101,10 @@ namespace SonOfRobin
         public static int VirtualHeight
         { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
-        public static object ramCounter = null;
-
-        public static float FreeRamMegabytesLeft
-        {
-            get
-            {
-                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
-
-                return -100;
-            }
-        }
-
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
-
-        public static bool WindowsMemoryLow
-        { get { return os == OS.Windows && FreeRamMegabytesLeft < 800; } }
 
         public static bool LicenceValid
         { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }

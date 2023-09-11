@@ -1228,14 +1228,7 @@ namespace SonOfRobin
         {
             if (SonOfRobinGame.CurrentUpdate % 60 != 0 || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
 
-            if (SonOfRobinGame.os == OS.Windows)
-            {
-                if (!SonOfRobinGame.WindowsMemoryLow) return;
-            }
-            else
-            {
-                if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
-            }
+            if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
 
             var cellsInCameraView = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null);
