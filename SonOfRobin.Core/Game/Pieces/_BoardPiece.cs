@@ -903,8 +903,9 @@ namespace SonOfRobin
 
                 if (this.flameLight != null)
                 {
-                    int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
                     int maxSize = Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height) * 3;
+                    int minSize = Math.Max(Math.Max(this.sprite.GfxRect.Width, this.sprite.GfxRect.Height), 90);
+                    minSize = Math.Min(minSize, maxSize);
 
                     this.flameLight.sprite.lightEngine.Size = (int)Helpers.ConvertRange(oldMin: 0.5f, oldMax: 1, newMin: minSize, newMax: maxSize, oldVal: this.HeatLevel, clampToEdges: true);
                 }
