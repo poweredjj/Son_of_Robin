@@ -137,7 +137,7 @@ public class PolygonTriangulator
         return 0;
     }
 
-    static bool Intersect(List<PointF> polygon, int vertex1Ind, int vertex2Ind, int vertex3Ind)
+    private static bool Intersect(List<PointF> polygon, int vertex1Ind, int vertex2Ind, int vertex3Ind)
     {
         float s1, s2, s3;
         for (int i = 0; i < polygon.Count; i++)
@@ -155,7 +155,7 @@ public class PolygonTriangulator
         return false;
     }
 
-    static float PMSquare(PointF p1, PointF p2)
+    private static float PMSquare(PointF p1, PointF p2)
     {
         return (p2.X * p1.Y - p1.X * p2.Y);
     }
@@ -165,7 +165,7 @@ public class PolygonTriangulator
         return (p3.X - p1.X) * (p2.Y - p1.Y) - (p2.X - p1.X) * (p3.Y - p1.Y);
     }
 
-    static int LineIntersect(PointF A1, PointF A2, PointF B1, PointF B2, ref PointF O)
+    private static int LineIntersect(PointF A1, PointF A2, PointF B1, PointF B2, ref PointF O)
     {
         float a1 = A2.Y - A1.Y;
         float b1 = A1.X - A2.X;

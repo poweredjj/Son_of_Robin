@@ -106,20 +106,24 @@ namespace SonOfRobin
                 }
             }
 
-            int startingX = xZeroFilled ? -1 : 0;
-            int startingY = yZeroFilled ? -1 : 0;
+            int startX = xZeroFilled ? -1 : 0;
+            int startY = yZeroFilled ? -1 : 0;
+
+            var neighbourArray = new bool[2, 2];
 
             var marchingCellBag = new ConcurrentBag<MarchingCell>();
-            Parallel.For(startingX, width, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
+            Parallel.For(startX, width, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
             {
-                for (int y = startingY; y < height; y++)
+                for (int y = startY; y < height; y++)
                 {
-                    bool topLeft = x >= 0 && y >= 0 && boolArray[x, y];
-                    bool topRight = x + 1 < width && y >= 0 && boolArray[x + 1, y];
-                    bool bottomLeft = x >= 0 && y + 1 < height && boolArray[x, y + 1];
-                    bool bottomRight = x + 1 < width && y + 1 < height && boolArray[x + 1, y + 1];
-
-                    marchingCellBag.Add(new(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: topLeft, topRight: topRight, bottomLeft: bottomLeft, bottomRight: bottomRight));
+                    for (int i = 0; i < 2; i++)
+                    {
+                        for (int j = 0; j < 2; j++)
+                        {
+                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && boolArray[x + i, y + j];
+                        }
+                    }
+                    marchingCellBag.Add(new(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: neighbourArray[0, 0], topRight: neighbourArray[1, 0], bottomLeft: neighbourArray[0, 1], bottomRight: neighbourArray[1, 1]));
                 }
             });
 
@@ -131,9 +135,7 @@ namespace SonOfRobin
 
             // return edgeSet.ToList(); // for testing
 
-            List<Edge> connectedEdgesList = OrderAndMergeEdges(edgeSet);
-
-            return connectedEdgesList;
+            return OrderAndMergeEdges(edgeSet);
         }
 
         public static List<Edge> OrderAndMergeEdges(HashSet<Edge> edges)
@@ -143,6 +145,7 @@ namespace SonOfRobin
 
             Edge currentEdge = edgesToSort[0];
             edgesToSort.RemoveAt(0);
+            sortedEdgesList.Add(currentEdge);
 
             while (true)
             {

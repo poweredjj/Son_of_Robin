@@ -372,47 +372,60 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
+                //var pointList = new List<Point>
+                //{
+                //    new Point(2, 0),
+                //    new Point(3, 0),
+                //    new Point(2, 1),
+                //    new Point(7, 1),
+                //    new Point(8, 1),
+                //    new Point(1, 2),
+                //    new Point(2, 2),
+                //    new Point(3, 2),
+                //    new Point(6, 2),
+                //    new Point(8, 2),
+                //    new Point(9, 2),
+                //    new Point(0, 3),
+                //    new Point(1, 3),
+                //    new Point(2, 3),
+                //    new Point(3, 3),
+                //    new Point(4, 3),
+                //    new Point(5, 3),
+                //    new Point(0, 4),
+                //    new Point(1, 4),
+                //    new Point(2, 4),
+                //    new Point(5, 4),
+                //    new Point(2, 5),
+                //    new Point(3, 5),
+                //    new Point(4, 5),
+                //    new Point(3, 6),
+                //    new Point(4, 7),
+                //    new Point(5, 8),
+                //    new Point(3, 9),
+                //    new Point(4, 9),
+                //    new Point(7, 8),
+                //    new Point(8, 7),
+                //    new Point(9, 8),
+                //    new Point(8, 9),
+                //    new Point(8, 5),
+                //    new Point(0, 9),
+                //    new Point(6, 0),
+                //    new Point(0, 5),
+                //    new Point(0, 6),
+                //    new Point(0, 7),
+                //};
+
                 var pointList = new List<Point>
                 {
+                    new Point(0, 0),
+                    new Point(1, 0),
                     new Point(2, 0),
-                    new Point(3, 0),
+                    new Point(0, 1),
+                    new Point(1, 1),
                     new Point(2, 1),
-                    new Point(7, 1),
-                    new Point(8, 1),
-                    new Point(1, 2),
-                    new Point(2, 2),
-                    new Point(3, 2),
-                    new Point(6, 2),
-                    new Point(8, 2),
-                    new Point(9, 2),
-                    new Point(0, 3),
-                    new Point(1, 3),
-                    new Point(2, 3),
-                    new Point(3, 3),
-                    new Point(4, 3),
-                    new Point(5, 3),
-                    new Point(0, 4),
-                    new Point(1, 4),
-                    new Point(2, 4),
-                    new Point(5, 4),
-                    new Point(2, 5),
-                    new Point(3, 5),
-                    new Point(4, 5),
-                    new Point(3, 6),
-                    new Point(4, 7),
-                    new Point(5, 8),
-                    new Point(3, 9),
-                    new Point(4, 9),
-                    new Point(7, 8),
-                    new Point(8, 7),
-                    new Point(9, 8),
-                    new Point(8, 9),
-                    new Point(8, 5),
-                    new Point(0, 9),
-                    new Point(6, 0),
-                    new Point(0, 5),
-                    new Point(0, 6),
-                    new Point(0, 7),
+                    new Point(0, 1),
+                    new Point(1, 1),
+                    new Point(2, 1),
                 };
 
                 int width = 0;
@@ -469,7 +482,7 @@ namespace SonOfRobin
                 var selfIntersectionResult = PolygonTriangulator.SelfIntersection(pointFList);
                 Console.WriteLine($"selfIntersectionResult {selfIntersectionResult}");
 
-                var triangleList = PolygonTriangulator.Triangulate(pointFList);
+                // var triangleList = PolygonTriangulator.Triangulate(pointFList);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
