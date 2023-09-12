@@ -4,40 +4,63 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using static SonOfRobin.MarchingSquaresMeshGenerator;
 
 namespace SonOfRobin
 {
-    public readonly struct MarchingCell
-    {
-        public readonly Vector2 pos;
-        public readonly int topLeft;
-        public readonly int topRight;
-        public readonly int bottomLeft;
-        public readonly int bottomRight;
-        public readonly int cornerID;
-        public readonly HashSet<Edge> edgeSet;
-
-        public MarchingCell(Vector2 pos, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
-        {
-            this.pos = pos;
-            this.topLeft = topLeft ? 1 : 0;
-            this.topRight = topRight ? 1 : 0;
-            this.bottomLeft = bottomLeft ? 1 : 0;
-            this.bottomRight = bottomRight ? 1 : 0;
-
-            this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
-
-            this.edgeSet = new HashSet<Edge>();
-            foreach (Edge edge in edgesForIDs[this.cornerID])
-            {
-                this.edgeSet.Add(new Edge(start: this.pos + edge.start, end: this.pos + edge.end));
-            }
-        }
-    }
-
     public class MarchingSquaresMeshGenerator
     {
+        public readonly struct MarchingCell
+        {
+            public readonly Vector2 pos;
+            public readonly int topLeft;
+            public readonly int topRight;
+            public readonly int bottomLeft;
+            public readonly int bottomRight;
+            public readonly int cornerID;
+            public readonly HashSet<Edge> edgeSet;
+
+            public MarchingCell(Vector2 pos, bool topLeft, bool topRight, bool bottomLeft, bool bottomRight)
+            {
+                this.pos = pos;
+                this.topLeft = topLeft ? 1 : 0;
+                this.topRight = topRight ? 1 : 0;
+                this.bottomLeft = bottomLeft ? 1 : 0;
+                this.bottomRight = bottomRight ? 1 : 0;
+
+                this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
+
+                this.edgeSet = new HashSet<Edge>();
+                foreach (Edge edge in edgesForIDs[this.cornerID])
+                {
+                    this.edgeSet.Add(new Edge(start: this.pos + edge.start, end: this.pos + edge.end));
+                }
+            }
+        }
+
+        public class Shape
+        {
+            public readonly List<Vector2> triangleVertices;
+            public readonly List<int> triangeIndices;
+            public readonly List<Edge> edges;
+            public bool isHole;
+
+            public Shape()
+            {
+                this.edges = new List<Edge>();
+                this.isHole = false;
+                this.triangleVertices = new List<Vector2>();
+                this.triangeIndices = new List<int>();
+            }
+
+            public Shape(List<Edge> edges)
+            {
+                this.edges = edges;
+                this.isHole = false;
+                this.triangleVertices = new List<Vector2>();
+                this.triangeIndices = new List<int>();
+            }
+        }
+
         public readonly struct Edge
         {
             public readonly Vector2 start;
@@ -81,7 +104,7 @@ namespace SonOfRobin
             }
         }
 
-        public static List<Edge> GenerateConnectedEdgesList(bool[,] boolArray)
+        public static List<Shape> GenerateConnectedEdgesList(bool[,] boolArray)
         {
             int width = boolArray.GetLength(0);
             int height = boolArray.GetLength(1);
@@ -112,7 +135,7 @@ namespace SonOfRobin
             var neighbourArray = new bool[2, 2];
 
             var marchingCellBag = new ConcurrentBag<MarchingCell>();
-            Parallel.For(startX, width, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
+            Parallel.For(startX, width, new ParallelOptions { MaxDegreeOfParallelism = 4 }, x =>
             {
                 for (int y = startY; y < height; y++)
                 {
@@ -123,7 +146,7 @@ namespace SonOfRobin
                             neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && boolArray[x + i, y + j];
                         }
                     }
-                    marchingCellBag.Add(new(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: neighbourArray[0, 0], topRight: neighbourArray[1, 0], bottomLeft: neighbourArray[0, 1], bottomRight: neighbourArray[1, 1]));
+                    marchingCellBag.Add(new MarchingCell(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: neighbourArray[0, 0], topRight: neighbourArray[1, 0], bottomLeft: neighbourArray[0, 1], bottomRight: neighbourArray[1, 1]));
                 }
             });
 
@@ -138,14 +161,17 @@ namespace SonOfRobin
             return OrderAndMergeEdges(edgeSet);
         }
 
-        public static List<Edge> OrderAndMergeEdges(HashSet<Edge> edges)
+        public static List<Shape> OrderAndMergeEdges(HashSet<Edge> edges)
         {
             var edgesToSort = edges.ToList();
-            var sortedEdgesList = new List<Edge>();
+            var shapeList = new List<Shape>();
+
+            var currentShape = new Shape();
+            shapeList.Add(currentShape);
 
             Edge currentEdge = edgesToSort[0];
             edgesToSort.RemoveAt(0);
-            sortedEdgesList.Add(currentEdge);
+            currentShape.edges.Add(currentEdge);
 
             while (true)
             {
@@ -164,9 +190,9 @@ namespace SonOfRobin
                         if (currentEdge.angle == nextEdge.angle)
                         {
                             nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
-                            sortedEdgesList.Remove(currentEdge);
+                            currentShape.edges.Remove(currentEdge);
                         }
-                        sortedEdgesList.Add(nextEdge);
+                        currentShape.edges.Add(nextEdge);
 
                         currentEdge = nextEdge;
                         break;
@@ -175,18 +201,73 @@ namespace SonOfRobin
                 if (!connectionFound && edgesToSort.Count > 0)
                 {
                     // next subpath
+                    currentShape = new Shape();
+                    shapeList.Add(currentShape);
+
                     currentEdge = edgesToSort[0];
-                    sortedEdgesList.Add(currentEdge);
+                    currentShape.edges.Add(currentEdge);
                     edgesToSort.RemoveAt(0);
                 }
 
                 if (edgesToSort.Count == 0) break;
             }
 
-            return sortedEdgesList;
+            return shapeList;
         }
 
-        public static readonly Dictionary<int, List<Edge>> edgesForIDs = new()
+        public static Dictionary<Shape, List<Shape>> GroupShapes(List<Shape> shapes)
+        {
+            var shapeGroups = new Dictionary<Shape, List<Shape>>();
+
+            foreach (Shape shape in shapes)
+            {
+                shapeGroups[shape] = FindHoles(shape, shapes);
+            }
+
+            foreach (Shape shape in shapeGroups.Keys.ToList())
+            {
+                if (shape.isHole) shapeGroups.Remove(shape);
+            }
+
+            return shapeGroups;
+        }
+
+        public static List<Shape> FindHoles(Shape outer, List<Shape> shapes)
+        {
+            var holes = new List<Shape>();
+
+            foreach (var shape in shapes)
+            {
+                if (shape == outer) continue;
+
+                if (IsPointInPolygon(shape.edges[0].start, outer.edges))
+                {
+                    shape.isHole = true;
+                    holes.Add(shape);
+                }
+            }
+
+            return holes;
+        }
+
+        public static bool IsPointInPolygon(Vector2 point, List<Edge> edges)
+        {
+            bool inside = false;
+
+            for (int i = 0, j = edges.Count - 1; i < edges.Count; j = i++)
+            {
+                if (((edges[i].start.Y <= point.Y && point.Y < edges[j].start.Y) ||
+                    (edges[j].start.Y <= point.Y && point.Y < edges[i].start.Y)) &&
+                    (point.X < (edges[j].start.X - edges[i].start.X) * (point.Y - edges[i].start.Y) / (edges[j].start.Y - edges[i].start.Y) + edges[i].start.X))
+                {
+                    inside = !inside;
+                }
+            }
+
+            return inside;
+        }
+
+        public static readonly Dictionary<int, List<Edge>> edgesForIDs = new Dictionary<int, List<Edge>>
         {
             // empty
             { 0000, new List<Edge>()},

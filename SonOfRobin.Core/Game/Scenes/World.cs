@@ -1399,6 +1399,138 @@ namespace SonOfRobin
 
         private void DrawPolygons()
         {
+            this.SetupPolygonDrawing(allowRepeat: true);
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.TextureEnabled = true;
+
+            var pointList = new List<Point>
+            {
+                new Point(0, 2),
+                new Point(2, 0),
+                new Point(3, 0),
+                new Point(2, 1),
+                new Point(7, 1),
+                new Point(8, 1),
+                new Point(1, 2),
+                new Point(2, 2),
+                new Point(3, 2),
+                new Point(6, 2),
+                new Point(8, 2),
+                new Point(9, 2),
+                new Point(0, 3),
+                new Point(2, 3),
+                new Point(4, 3),
+                new Point(5, 3),
+                new Point(0, 4),
+                new Point(1, 4),
+                new Point(2, 4),
+                new Point(5, 4),
+                new Point(2, 5),
+                new Point(3, 5),
+                new Point(4, 5),
+                new Point(3, 6),
+                new Point(4, 7),
+                new Point(5, 8),
+                new Point(3, 9),
+                new Point(4, 9),
+                new Point(7, 8),
+                new Point(8, 7),
+                new Point(9, 8),
+                new Point(8, 9),
+                new Point(8, 5),
+                new Point(0, 9),
+                new Point(6, 0),
+                new Point(0, 5),
+                new Point(0, 6),
+                new Point(0, 7),
+                };
+
+            int width = 0;
+            int height = 0;
+
+            foreach (Point point in pointList)
+            {
+                width = Math.Max(width, point.X + 1);
+                height = Math.Max(height, point.Y + 1);
+            }
+
+            var boolArray = new bool[width, height];
+            foreach (Point point in pointList)
+            {
+                boolArray[point.X, point.Y] = true;
+            }
+
+            var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
+            var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
+
+            foreach (var kvp in groupedShapes)
+            {
+                var doublesList = new List<double>(); // flat array of vertex coordinates like x0, y0, x1, y1, x2, y2...
+                var holeIndices = new List<int>(); // first vertex of each hole (points at doublesList, not accounting for double coords kept there)
+                var contour = kvp.Key;
+                var holes = kvp.Value;
+
+                int currentIndex = 0;
+                foreach (var edge in contour.edges)
+                {
+                    doublesList.Add(edge.start.X);
+                    doublesList.Add(edge.start.Y);
+                    contour.triangleVertices.Add(edge.start);
+                    currentIndex++;
+                }
+
+                foreach (var hole in holes)
+                {
+                    holeIndices.Add(currentIndex);
+
+                    foreach (var edge in hole.edges)
+                    {
+                        doublesList.Add(edge.start.X);
+                        doublesList.Add(edge.start.Y);
+                        contour.triangleVertices.Add(edge.start);
+                        currentIndex++;
+                    }
+                }
+
+                List<int> triangleIndices = Earcut.Tessellate(data: doublesList.ToArray(), holeIndices: holeIndices.ToArray());
+                contour.triangeIndices.AddRange(triangleIndices);
+
+                Vector3 basePos = Vector3.Zero;
+                basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
+
+                var vertList = new List<VertexPositionTexture>();
+
+                float textureRepeat = 3.0f; // You can adjust this value to control the number of repetitions
+
+                foreach (Vector2 position in contour.triangleVertices)
+                {
+                    VertexPositionTexture vertPos = new();
+                    vertPos.Position = basePos + new Vector3(position.X, position.Y, 0);
+                    vertPos.TextureCoordinate = new Vector2(vertPos.Position.X, vertPos.Position.Y) * textureRepeat;
+                    vertList.Add(vertPos);
+                }
+
+                short[] indices = new short[contour.triangeIndices.Count];
+                for (int i = 0; i < contour.triangeIndices.Count; i++)
+                {
+                    indices[i] = (short)contour.triangeIndices[i];
+                }
+
+                if (indices.Length == 0) continue;
+
+                foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                {
+                    effectPass.Apply();
+                    SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                        PrimitiveType.TriangleList, vertList.ToArray(), 0, vertList.Count, indices, 0, indices.Length / 3);
+                }
+            }
+        }
+
+        private void DrawPolygons_()
+        {
             // for now only for testing
 
             this.SetupPolygonDrawing(allowRepeat: true);
