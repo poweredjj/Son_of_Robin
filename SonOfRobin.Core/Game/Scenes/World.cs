@@ -1361,12 +1361,13 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing background (ground, leaving "holes" for water)
-            this.Grid.DrawBackground(camera: this.camera);
+            this.Grid.DrawBackground();
 
             if (Preferences.debugDrawTestPolygons)
             {
                 SonOfRobinGame.SpriteBatch.End(); // ending before drawing polygons
-                this.DrawPolygons(); // polygons must be drawn without SpriteBatch started (glitches will occur otherwise)
+                this.SetupPolygonDrawing(allowRepeat: true);
+                this.Grid.DrawMeshes(); // meshes must be drawn without SpriteBatch started (glitches will occur otherwise)
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spritebatch
             }
 
@@ -1397,63 +1398,6 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
         }
 
-        private void DrawPolygons()
-        {
-            BoardPiece trackedPiece = this.camera.TrackedPiece;
-            if (trackedPiece == null) return;
-
-            this.SetupPolygonDrawing(allowRepeat: true);
-            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-
-            basicEffect.Texture = TextureBank.GetTexture("repeating textures/mountain_low");
-            basicEffect.TextureEnabled = true;
-
-            var pointList = new List<Point>();
-
-            foreach (NamedLocations.Location location in this.Grid.namedLocations.DiscoveredLocations)
-            {
-                if (location.areaRect.Intersects(this.camera.viewRect))
-                {
-                    foreach (Cell cell in location.cells)
-                    {
-                        pointList.Add(new Point(cell.cellNoX, cell.cellNoY));
-                    }
-                }
-            }
-
-            int xMin = int.MaxValue;
-            int xMax = int.MinValue;
-            int yMin = int.MaxValue;
-            int yMax = int.MinValue;
-
-            foreach (Point point in pointList)
-            {
-                xMin = Math.Min(xMin, point.X);
-                xMax = Math.Max(xMax, point.X);
-                yMin = Math.Min(yMin, point.Y);
-                yMax = Math.Max(yMax, point.Y);
-            }
-
-            int width = xMax - xMin + 1;
-            int height = yMax - yMin + 1;
-
-            var boolArray = new bool[width, height];
-            foreach (Point point in pointList)
-            {
-                boolArray[point.X - xMin, point.Y - yMin] = true;
-            }
-
-            var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
-            var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
-
-            Mesh mesh = Mesh.ConvertShapesToMesh(offset: new Vector2(xMin * this.Grid.cellWidth, yMin * this.Grid.cellHeight), scaleX: this.Grid.cellWidth, scaleY: this.Grid.cellHeight, texture: basicEffect.Texture, groupedShapes: groupedShapes);
-
-            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
-            {
-                effectPass.Apply();
-                mesh.Draw();
-            }
-        }
 
         private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
         {

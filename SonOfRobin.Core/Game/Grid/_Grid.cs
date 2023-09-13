@@ -25,6 +25,7 @@ namespace SonOfRobin
             SetExtDataBiomes,
             SetExtDataPropertiesGrid,
             SetExtDataFinish,
+            GenerateMeshes,
             GenerateNamedLocations,
             FillAllowedNames,
             MakeEntireMapImage,
@@ -43,6 +44,7 @@ namespace SonOfRobin
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
             { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
+            { Stage.GenerateMeshes, "generating meshes" },
             { Stage.GenerateNamedLocations, "generating named locations" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.MakeEntireMapImage, "making entire map image" },
@@ -74,6 +76,7 @@ namespace SonOfRobin
         public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
+        public readonly List<Mesh> meshes;
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -93,6 +96,7 @@ namespace SonOfRobin
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
             this.namedLocations = new NamedLocations(grid: this);
+            this.meshes = new List<Mesh>();
 
             this.width = this.world.width;
             this.height = this.world.height;
@@ -162,7 +166,6 @@ namespace SonOfRobin
             // this data is included in save file (not in template)
 
             var cellData = new List<Object> { };
-
             foreach (Cell cell in this.allCells)
             {
                 cellData.Add(cell.Serialize());
@@ -257,6 +260,10 @@ namespace SonOfRobin
 
             // copying named locations
             this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
+
+            // copying meshes
+            this.meshes.Clear();
+            this.meshes.AddRange(templateGrid.meshes);
 
             // copying cell data
 
@@ -374,6 +381,12 @@ namespace SonOfRobin
 
                 case Stage.SetExtDataFinish:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave();
+
+                    break;
+
+                case Stage.GenerateMeshes:
+                    this.meshes.Clear();
+                    this.meshes.AddRange(BoardMeshGenerator.GenerateMeshes(this));
 
                     break;
 
@@ -1028,10 +1041,11 @@ namespace SonOfRobin
             return countByName;
         }
 
-        public void DrawBackground(Camera camera)
+        public void DrawBackground()
         {
             bool updateFog = false;
-            Rectangle cameraRect = camera.viewRect;
+            Camera camera = this.world.camera;
+            Rectangle cameraRect = this.world.camera.viewRect;
 
             foreach (Cell cell in this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: false))
             {
@@ -1045,6 +1059,28 @@ namespace SonOfRobin
             }
 
             if (updateFog) this.world.map.dirtyFog = true;
+        }
+
+        public void DrawMeshes()
+        {
+            Rectangle cameraRect = this.world.camera.viewRect;
+
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            basicEffect.Texture = TextureBank.GetTexture("repeating textures/mountain_low");
+            basicEffect.TextureEnabled = true;
+
+            foreach (Mesh mesh in this.meshes)
+            {
+                if (mesh.boundsRect.Intersects(cameraRect))
+                {
+                    foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                    {
+                        effectPass.Apply();
+                        mesh.Draw();
+                    }
+                }
+            }
         }
 
         public List<BoardPiece> DrawSprites(List<Sprite> blockingLightSpritesList)
