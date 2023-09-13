@@ -159,22 +159,30 @@ namespace SonOfRobin
 
             foreach (Name name in this.extDataByProperty.Keys)
             {
-                valueDict[name] = this.GetValue(name: name, x: x, y: y, xyRaw: xyRaw);
+                valueDict[name] = xyRaw ? this.GetValueRaw(name: name, rawX: x, rawY: y) : this.GetValue(name: name, x: x, y: y);
             }
 
             return valueDict;
         }
 
-        public bool GetValue(Name name, int x, int y, bool xyRaw = false)
+        public bool GetValue(Name name, int x, int y)
         {
-            if (xyRaw) return this.extDataByProperty[name].GetVal(x, y);
-            else return this.extDataByProperty[name].GetVal(x / this.Grid.resDivider, y / this.Grid.resDivider);
+            return this.extDataByProperty[name].GetVal(x / this.Grid.resDivider, y / this.Grid.resDivider);
         }
 
-        public void SetValue(Name name, bool value, int x, int y, bool xyRaw = false)
+        public bool GetValueRaw(Name name, int rawX, int rawY)
         {
-            if (xyRaw) this.extDataByProperty[name].SetVal(x: x, y: y, value: value);
-            else this.extDataByProperty[name].SetVal(x: x / this.Grid.resDivider, y: y / this.Grid.resDivider, value: value);
+            return this.extDataByProperty[name].GetVal(rawX, rawY);
+        }
+
+        public void SetValue(Name name, bool value, int x, int y)
+        {
+            this.extDataByProperty[name].SetVal(x: x / this.Grid.resDivider, y: y / this.Grid.resDivider, value: value);
+        }
+
+        public void SetValueRaw(Name name, bool value, int rawX, int rawY)
+        {
+            this.extDataByProperty[name].SetVal(x: rawX, y: rawY, value: value);
         }
 
         private bool LoadTemplate()

@@ -620,7 +620,7 @@ namespace SonOfRobin
                     foreach (Point point in pointList)
                     {
                         // can write to array using parallel, if every thread accesses its own indices
-                        this.ExtBoardProps.SetValue(name: biomeName, value: true, x: point.X, y: point.Y, xyRaw: true);
+                        this.ExtBoardProps.SetValueRaw(name: biomeName, value: true, rawX: point.X, rawY: point.Y);
                     }
                 });
             }
@@ -637,7 +637,7 @@ namespace SonOfRobin
             {
                 for (int rawY = 0; rawY < maxY; rawY++)
                 {
-                    if (this.ExtBoardProps.GetValue(name: nameToUse, x: rawX, y: rawY, xyRaw: true) == value)
+                    if (this.ExtBoardProps.GetValueRaw(name: nameToUse, rawX: rawX, rawY: rawY) == value)
                     {
                         pointBag.Add(new Point(rawX, rawY));
                     }
@@ -691,7 +691,7 @@ namespace SonOfRobin
                     if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: terrainSearches, point: currentPoint, xyRaw: true))
                     {
                         rawPointsInsideRange.Add(currentPoint);
-                        if (setNameIfInsideRange) this.ExtBoardProps.SetValue(name: nameToSetIfInRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
+                        if (setNameIfInsideRange) this.ExtBoardProps.SetValueRaw(name: nameToSetIfInRange, value: true, rawX: currentPoint.X, rawY: currentPoint.Y);
 
                         foreach (Point currentOffset in offsetArray)
                         {
@@ -707,7 +707,7 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) this.ExtBoardProps.SetValue(name: nameToSetIfOutsideRange, value: true, x: currentPoint.X, y: currentPoint.Y, xyRaw: true);
+                        if (setNameIfOutsideRange) this.ExtBoardProps.SetValueRaw(name: nameToSetIfOutsideRange, value: true, rawX: currentPoint.X, rawY: currentPoint.Y);
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
