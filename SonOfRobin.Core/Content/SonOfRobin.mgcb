@@ -6801,6 +6801,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating textures/swamp.png
 
+#begin gfx/repeating textures/unset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating textures/unset.png
+
 #begin gfx/repeating textures/volcano_edge.png
 /importer:TextureImporter
 /processor:TextureProcessor

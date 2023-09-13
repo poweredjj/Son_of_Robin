@@ -316,7 +316,7 @@ namespace SonOfRobin
                 if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0]) return kvp.Key;
             }
 
-            return RepeatingPattern.Name.just_red; // to indicate areas that should be filled but are not
+            return RepeatingPattern.Name.unset; // to indicate areas that should be filled but are not
         }
 
         public static Color CreateTexturedPixel(Grid grid, int x, int y)

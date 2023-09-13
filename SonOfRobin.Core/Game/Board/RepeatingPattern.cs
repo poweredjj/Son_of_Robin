@@ -11,6 +11,8 @@ namespace SonOfRobin
         {
             // lowercase to match filenames
 
+            unset,
+
             // plain colors:
 
             just_red,

@@ -16,11 +16,8 @@ namespace SonOfRobin
         public static List<Mesh> GenerateMeshes(Grid grid)
         {
             string meshesFilePath = Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
-
             List<Mesh> loadedMeshes = LoadFromTemplate(meshesFilePath);
             if (loadedMeshes != null) return loadedMeshes;
-
-            var meshBag = new ConcurrentBag<Mesh>();
 
             List<RawMapDataSearch> searches = new()
             {
@@ -44,7 +41,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
                 }),
 
-                // water_shallow is not listed, because it is just transparent (no meshes needed)
+                // water_shallow is not listed, because it is just transparent (no mesh needed)
 
                 new(
                 textureName: RepeatingPattern.Name.water_supershallow,
@@ -194,9 +191,18 @@ namespace SonOfRobin
                 }),
             };
 
+            var resultPatternsArray = new RepeatingPattern.Name[grid.dividedWidth, grid.dividedHeight];
+
+            foreach (var search in searches)
+            {
+                search.MarkAllRawPixelsThatMeetCriteria(grid: grid, nameToSet: search.textureName, resultPatternsArray: resultPatternsArray);
+            }
+
+            var meshBag = new ConcurrentBag<Mesh>();
+
             Parallel.ForEach(searches, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, search =>
             {
-                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: search.FindAllRawPixelsThatMeetCriteria(grid));
+                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: search.FindAllRawPixelsThatMeetCriteria(nameToSearch: search.textureName, resultPatternsArray: resultPatternsArray));
 
                 foreach (List<Point> pointList in pixelCoordsByRegion)
                 {
@@ -345,7 +351,7 @@ namespace SonOfRobin
                 this.searchEntriesExtProps = searchEntriesExtProps;
             }
 
-            public ConcurrentBag<Point> FindAllRawPixelsThatMeetCriteria(Grid grid)
+            public ConcurrentBag<Point> MarkAllRawPixelsThatMeetCriteria(Grid grid, RepeatingPattern.Name nameToSet, RepeatingPattern.Name[,] resultPatternsArray)
             {
                 var rawPixelsBag = new ConcurrentBag<Point>();
 
@@ -355,7 +361,35 @@ namespace SonOfRobin
                 {
                     for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
                     {
-                        if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY)) rawPixelsBag.Add(new Point(rawX, rawY));
+                        // TODO place list of searches here and iterate them in here
+
+                        if (resultPatternsArray[rawX, rawY] == RepeatingPattern.Name.unset && search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
+                        {
+                            rawPixelsBag.Add(new Point(rawX, rawY));
+                            resultPatternsArray[rawX, rawY] = nameToSet;
+                        }
+                    }
+                });
+
+                return rawPixelsBag;
+            }
+
+            public ConcurrentBag<Point> FindAllRawPixelsThatMeetCriteria(RepeatingPattern.Name nameToSearch, RepeatingPattern.Name[,] resultPatternsArray)
+            {
+                // TODO replace with a method that iterates every pixel once and adds to a dictionary
+
+                var rawPixelsBag = new ConcurrentBag<Point>();
+
+                int width = resultPatternsArray.GetLength(0);
+                int height = resultPatternsArray.GetLength(1);
+
+                RawMapDataSearch search = this; // needed for parallel access
+
+                Parallel.For(0, height, rawY =>
+                {
+                    for (int rawX = 0; rawX < width; rawX++)
+                    {
+                        if (resultPatternsArray[rawX, rawY] == nameToSearch) rawPixelsBag.Add(new Point(rawX, rawY));
                     }
                 });
 

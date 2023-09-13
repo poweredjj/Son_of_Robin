@@ -342,7 +342,7 @@ namespace SonOfRobin
         public static bool debugShowFocusRect = false;
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugDrawBitmapBackground = true; // default should be true
-        public static bool debugDrawTestPolygons = false;
+        public static bool debugDrawPolygonBackground = false;
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
 
         public static bool DebugShowWholeMap

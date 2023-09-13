@@ -1363,7 +1363,7 @@ namespace SonOfRobin
             // drawing background (ground, leaving "holes" for water)
             if (Preferences.debugDrawBitmapBackground) this.Grid.DrawBackground();
 
-            if (Preferences.debugDrawTestPolygons)
+            if (Preferences.debugDrawPolygonBackground)
             {
                 SonOfRobinGame.SpriteBatch.End(); // ending before drawing polygons
                 this.SetupPolygonDrawing(allowRepeat: true);
