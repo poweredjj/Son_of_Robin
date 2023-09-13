@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -22,49 +24,56 @@ namespace SonOfRobin
             // TODO replace test code with search similar to NamedLocations
             // test code
 
-            string textureName = "repeating textures/mountain_low";
+            List<RawMapDataSearch> searches = new();
 
-            var pointList = new List<Point>();
+            searches.Add(new(textureName: "repeating textures/mountain_low",
+                 searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 75),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: Terrain.biomeMin),
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax, maxVal: Terrain.rocksLevelMin),
+                    },
+                    searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: false) }
+            ));
 
-            foreach (NamedLocations.Location location in grid.namedLocations.locationList)
+            foreach (RawMapDataSearch search in searches)
             {
-                foreach (Cell cell in location.cells)
+                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: search.FindAllRawPixelsThatMeetCriteria(grid));
+
+                foreach (List<Point> pointList in pixelCoordsByRegion)
                 {
-                    pointList.Add(new Point(cell.cellNoX, cell.cellNoY));
+
+                    if (pointList.Count == 0) return meshList;
+
+                    int xMin = int.MaxValue;
+                    int xMax = int.MinValue;
+                    int yMin = int.MaxValue;
+                    int yMax = int.MinValue;
+
+                    foreach (Point point in pointList)
+                    {
+                        xMin = Math.Min(xMin, point.X);
+                        xMax = Math.Max(xMax, point.X);
+                        yMin = Math.Min(yMin, point.Y);
+                        yMax = Math.Max(yMax, point.Y);
+                    }
+
+                    int width = xMax - xMin + 1;
+                    int height = yMax - yMin + 1;
+
+                    var boolArray = new bool[width, height];
+                    foreach (Point point in pointList)
+                    {
+                        boolArray[point.X - xMin, point.Y - yMin] = true;
+                    }
+
+                    var groupedShapes = BitmapToShapesConverter.GenerateShapes(boolArray);
+
+                    Mesh mesh = ConvertShapesToMesh(offset: new Vector2(xMin * grid.resDivider, yMin * grid.resDivider), scaleX: grid.resDivider, scaleY: grid.resDivider, textureName: search.textureName, groupedShapes: groupedShapes);
+
+                    meshList.Add(mesh);
                 }
             }
 
-            if (pointList.Count == 0) return meshList;
-
-            int xMin = int.MaxValue;
-            int xMax = int.MinValue;
-            int yMin = int.MaxValue;
-            int yMax = int.MinValue;
-
-            foreach (Point point in pointList)
-            {
-                xMin = Math.Min(xMin, point.X);
-                xMax = Math.Max(xMax, point.X);
-                yMin = Math.Min(yMin, point.Y);
-                yMax = Math.Max(yMax, point.Y);
-            }
-
-            int width = xMax - xMin + 1;
-            int height = yMax - yMin + 1;
-
-            var boolArray = new bool[width, height];
-            foreach (Point point in pointList)
-            {
-                boolArray[point.X - xMin, point.Y - yMin] = true;
-            }
-
-            var groupedShapes = BitmapToShapesConverter.GenerateShapes(boolArray);
-
-            Mesh mesh = ConvertShapesToMesh(offset: new Vector2(xMin * grid.cellWidth, yMin * grid.cellHeight), scaleX: grid.cellWidth, scaleY: grid.cellHeight, textureName: textureName, groupedShapes: groupedShapes);
-
-            meshList.Add(mesh);
-
-            // test code end
 
             SaveToTemplate(meshesFilePath: meshesFilePath, meshList: meshList);
             return meshList;
@@ -156,6 +165,64 @@ namespace SonOfRobin
             }
 
             return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList);
+        }
+
+        public readonly struct RawMapDataSearch
+        {
+            public readonly string textureName;
+            public readonly List<SearchEntryTerrain> searchEntriesTerrain;
+            public readonly List<SearchEntryExtProps> searchEntriesExtProps;
+
+            public RawMapDataSearch(string textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null)
+            {
+                this.textureName = textureName;
+
+                if (searchEntriesTerrain == null) searchEntriesTerrain = new List<SearchEntryTerrain>();
+                if (searchEntriesExtProps == null) searchEntriesExtProps = new List<SearchEntryExtProps>();
+
+                if (searchEntriesTerrain.Count == 0 && searchEntriesExtProps.Count == 0) throw new ArgumentException("Invalid search criteria.");
+
+                this.searchEntriesTerrain = searchEntriesTerrain;
+                this.searchEntriesExtProps = searchEntriesExtProps;
+            }
+
+            public ConcurrentBag<Point> FindAllRawPixelsThatMeetCriteria(Grid grid)
+            {
+                var rawPixelsBag = new ConcurrentBag<Point>();
+
+                RawMapDataSearch search = this; // needed for parallel access
+
+                Parallel.For(0, grid.dividedHeight, rawY =>
+                {
+                    for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
+                    {
+                        if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY)) rawPixelsBag.Add(new Point(rawX, rawY));
+                    }
+                });
+
+                return rawPixelsBag;
+            }
+
+            public bool PixelMeetsCriteria(Grid grid, int rawX, int rawY)
+            {
+                foreach (SearchEntryTerrain searchEntryTerrain in this.searchEntriesTerrain)
+                {
+                    if (!TerrainMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY, terrainName: searchEntryTerrain.name, minVal: searchEntryTerrain.minVal, maxVal: searchEntryTerrain.maxVal)) return false;
+                }
+
+                foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
+                {
+                    if (grid.ExtBoardProps.GetValueRaw(name: searchEntryExtProps.name, rawX: rawX, rawY: rawY) != searchEntryExtProps.value) return false;
+                }
+
+                return true;
+            }
+
+            private static bool TerrainMeetsCriteria(Grid grid, int rawX, int rawY, Terrain.Name terrainName, byte minVal, byte maxVal)
+            {
+                byte value = grid.terrainByName[terrainName].GetMapDataRaw(rawX, rawY);
+                return value >= minVal && value <= maxVal;
+            }
         }
     }
 }

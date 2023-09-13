@@ -216,36 +216,6 @@ namespace SonOfRobin
             }
         }
 
-        public readonly struct SearchEntryTerrain
-        {
-            public readonly Terrain.Name name;
-            public readonly byte minVal;
-            public readonly byte maxVal;
-            public readonly bool strictSearch;
-
-            public SearchEntryTerrain(Terrain.Name name, byte minVal, byte maxVal, bool strictSearch = false)
-            {
-                this.name = name;
-                this.minVal = minVal;
-                this.maxVal = maxVal;
-                this.strictSearch = strictSearch;
-            }
-        }
-
-        public readonly struct SearchEntryExtProps
-        {
-            public readonly bool strictSearch;
-            public readonly ExtBoardProps.Name name;
-            public readonly bool value;
-
-            public SearchEntryExtProps(ExtBoardProps.Name name, bool value, bool strictSearch = false)
-            {
-                this.name = name;
-                this.value = value;
-                this.strictSearch = strictSearch;
-            }
-        }
-
         public readonly struct CellSearch
         {
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
@@ -663,6 +633,36 @@ namespace SonOfRobin
             });
 
             return cellCoordsBag;
+        }
+    }
+
+    public readonly struct SearchEntryTerrain
+    {
+        public readonly Terrain.Name name;
+        public readonly byte minVal;
+        public readonly byte maxVal;
+        public readonly bool strictSearch;
+
+        public SearchEntryTerrain(Terrain.Name name, byte minVal, byte maxVal, bool strictSearch = false)
+        {
+            this.name = name;
+            this.minVal = minVal;
+            this.maxVal = maxVal;
+            this.strictSearch = strictSearch;
+        }
+    }
+
+    public readonly struct SearchEntryExtProps
+    {
+        public readonly bool strictSearch;
+        public readonly ExtBoardProps.Name name;
+        public readonly bool value;
+
+        public SearchEntryExtProps(ExtBoardProps.Name name, bool value, bool strictSearch = false)
+        {
+            this.name = name;
+            this.value = value;
+            this.strictSearch = strictSearch;
         }
     }
 }
