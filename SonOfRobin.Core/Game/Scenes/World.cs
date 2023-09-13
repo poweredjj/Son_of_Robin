@@ -1483,71 +1483,12 @@ namespace SonOfRobin
             var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
             var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
 
-            var meshList = new List<Mesh>();
-
-            foreach (var kvp in groupedShapes)
-            {
-                var doublesList = new List<double>(); // flat array of vertex coordinates like x0, y0, x1, y1, x2, y2...
-                var holeIndices = new List<int>(); // first vertex of each hole (points at doublesList, not accounting for double coords kept there)
-                var contour = kvp.Key;
-                var holes = kvp.Value;
-
-                int currentIndex = 0;
-                foreach (var edge in contour.edges)
-                {
-                    doublesList.Add(edge.start.X);
-                    doublesList.Add(edge.start.Y);
-                    contour.triangleVertices.Add(edge.start);
-                    currentIndex++;
-                }
-
-                foreach (var hole in holes)
-                {
-                    holeIndices.Add(currentIndex);
-
-                    foreach (var edge in hole.edges)
-                    {
-                        doublesList.Add(edge.start.X);
-                        doublesList.Add(edge.start.Y);
-                        contour.triangleVertices.Add(edge.start);
-                        currentIndex++;
-                    }
-                }
-
-                List<int> triangleIndices = Earcut.Tessellate(data: doublesList.ToArray(), holeIndices: holeIndices.ToArray());
-                contour.triangeIndices.AddRange(triangleIndices);
-
-                Vector3 basePos = Vector3.Zero;
-                basePos = new(trackedPiece.sprite.position.X, trackedPiece.sprite.position.Y, 0);
-                basePos += new Vector3(-120, -120, 0);
-
-                var vertList = new List<VertexPositionTexture>();
-
-                foreach (Vector2 position in contour.triangleVertices)
-                {
-                    VertexPositionTexture vertex = new();
-                    vertex.Position = basePos + new Vector3(position.X * 20, position.Y * 20, 0);
-                    vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
-                    vertList.Add(vertex);
-                }
-
-                short[] indices = new short[contour.triangeIndices.Count];
-                for (int i = 0; i < contour.triangeIndices.Count; i++)
-                {
-                    indices[i] = (short)contour.triangeIndices[i];
-                }
-
-                meshList.Add(new Mesh(texture: basicEffect.Texture, vertList: vertList, indices: indices));
-            }
+            Mesh mesh = Mesh.ConvertShapesToMesh(offset: new Vector2(1000, 1000), texture: basicEffect.Texture, groupedShapes: groupedShapes);
 
             foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
-
-                foreach (Mesh mesh in meshList)
-                {
-                    mesh.Draw();
-                }
+                mesh.Draw();
             }
         }
 

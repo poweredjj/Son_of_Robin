@@ -37,8 +37,6 @@ namespace SonOfRobin
 
         public class Shape
         {
-            public readonly List<Vector2> triangleVertices;
-            public readonly List<int> triangeIndices;
             public readonly List<Edge> edges;
             public bool isHole;
 
@@ -46,16 +44,12 @@ namespace SonOfRobin
             {
                 this.edges = new List<Edge>();
                 this.isHole = false;
-                this.triangleVertices = new List<Vector2>();
-                this.triangeIndices = new List<int>();
             }
 
             public Shape(List<Edge> edges)
             {
                 this.edges = edges;
                 this.isHole = false;
-                this.triangleVertices = new List<Vector2>();
-                this.triangeIndices = new List<int>();
             }
         }
 
