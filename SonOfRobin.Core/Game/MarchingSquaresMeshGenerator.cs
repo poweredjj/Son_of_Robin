@@ -155,8 +155,6 @@ namespace SonOfRobin
                 edgeSet.UnionWith(marchingCell.edgeSet);
             }
 
-            // return edgeSet.ToList(); // for testing
-
             return OrderAndMergeEdges(edgeSet);
         }
 

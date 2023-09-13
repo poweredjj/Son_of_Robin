@@ -1399,6 +1399,9 @@ namespace SonOfRobin
 
         private void DrawPolygons()
         {
+            BoardPiece trackedPiece = this.camera.TrackedPiece;
+            if (trackedPiece == null) return;
+
             this.SetupPolygonDrawing(allowRepeat: true);
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
@@ -1480,6 +1483,8 @@ namespace SonOfRobin
             var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
             var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
 
+            var meshList = new List<Mesh>();
+
             foreach (var kvp in groupedShapes)
             {
                 var doublesList = new List<double>(); // flat array of vertex coordinates like x0, y0, x1, y1, x2, y2...
@@ -1513,7 +1518,7 @@ namespace SonOfRobin
                 contour.triangeIndices.AddRange(triangleIndices);
 
                 Vector3 basePos = Vector3.Zero;
-                basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
+                basePos = new(trackedPiece.sprite.position.X, trackedPiece.sprite.position.Y, 0);
                 basePos += new Vector3(-120, -120, 0);
 
                 var vertList = new List<VertexPositionTexture>();
@@ -1521,7 +1526,7 @@ namespace SonOfRobin
                 foreach (Vector2 position in contour.triangleVertices)
                 {
                     VertexPositionTexture vertex = new();
-                    vertex.Position = basePos + new Vector3(position.X * 25, position.Y * 25, 0);
+                    vertex.Position = basePos + new Vector3(position.X * 20, position.Y * 20, 0);
                     vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
                     vertList.Add(vertex);
                 }
@@ -1532,13 +1537,16 @@ namespace SonOfRobin
                     indices[i] = (short)contour.triangeIndices[i];
                 }
 
-                if (indices.Length == 0) continue;
+                meshList.Add(new Mesh(texture: basicEffect.Texture, vertList: vertList, indices: indices));
+            }
 
-                foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+            {
+                effectPass.Apply();
+
+                foreach (Mesh mesh in meshList)
                 {
-                    effectPass.Apply();
-                    SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                        PrimitiveType.TriangleList, vertList.ToArray(), 0, vertList.Count, indices, 0, indices.Length / 3);
+                    mesh.Draw();
                 }
             }
         }
