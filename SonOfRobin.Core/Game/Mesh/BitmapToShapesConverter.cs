@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace SonOfRobin
 {
-    public class MarchingSquaresMeshGenerator
+    public class BitmapToShapesConverter
     {
         public readonly struct MarchingCell
         {
@@ -25,12 +25,12 @@ namespace SonOfRobin
                 this.bottomLeft = bottomLeft ? 1 : 0;
                 this.bottomRight = bottomRight ? 1 : 0;
 
-                this.cornerID = (this.topLeft * 1000) + (this.topRight * 100) + (this.bottomLeft * 10) + this.bottomRight;
+                cornerID = this.topLeft * 1000 + this.topRight * 100 + this.bottomLeft * 10 + this.bottomRight;
 
-                this.edgeSet = new HashSet<Edge>();
-                foreach (Edge edge in edgesForIDs[this.cornerID])
+                edgeSet = new HashSet<Edge>();
+                foreach (Edge edge in edgesForIDs[cornerID])
                 {
-                    this.edgeSet.Add(new Edge(start: this.pos + edge.start, end: this.pos + edge.end));
+                    edgeSet.Add(new Edge(start: this.pos + edge.start, end: this.pos + edge.end));
                 }
             }
         }
@@ -42,14 +42,14 @@ namespace SonOfRobin
 
             public Shape()
             {
-                this.edges = new List<Edge>();
-                this.isHole = false;
+                edges = new List<Edge>();
+                isHole = false;
             }
 
             public Shape(List<Edge> edges)
             {
                 this.edges = edges;
-                this.isHole = false;
+                isHole = false;
             }
         }
 
@@ -63,7 +63,7 @@ namespace SonOfRobin
             {
                 this.start = start;
                 this.end = end;
-                this.angle = GetAngleDegrees(start: start, end: end);
+                angle = GetAngleDegrees(start: start, end: end);
             }
 
             private static double GetAngleDegrees(Vector2 start, Vector2 end)
@@ -96,7 +96,13 @@ namespace SonOfRobin
             }
         }
 
-        public static List<Shape> GenerateConnectedEdgesList(bool[,] boolArray)
+        public static Dictionary<Shape, List<Shape>> GenerateShapes(bool[,] boolArray)
+        {
+            var shapeList = GenerateConnectedEdgesList(boolArray);
+            return GroupShapes(shapeList);
+        }
+
+        private static List<Shape> GenerateConnectedEdgesList(bool[,] boolArray)
         {
             int width = boolArray.GetLength(0);
             int height = boolArray.GetLength(1);
@@ -206,7 +212,7 @@ namespace SonOfRobin
             return shapeList;
         }
 
-        public static Dictionary<Shape, List<Shape>> GroupShapes(List<Shape> shapes)
+        private static Dictionary<Shape, List<Shape>> GroupShapes(List<Shape> shapes)
         {
             var shapeGroups = new Dictionary<Shape, List<Shape>>();
 
@@ -247,9 +253,9 @@ namespace SonOfRobin
 
             for (int i = 0, j = edges.Count - 1; i < edges.Count; j = i++)
             {
-                if (((edges[i].start.Y <= point.Y && point.Y < edges[j].start.Y) ||
-                    (edges[j].start.Y <= point.Y && point.Y < edges[i].start.Y)) &&
-                    (point.X < (edges[j].start.X - edges[i].start.X) * (point.Y - edges[i].start.Y) / (edges[j].start.Y - edges[i].start.Y) + edges[i].start.X))
+                if ((edges[i].start.Y <= point.Y && point.Y < edges[j].start.Y ||
+                    edges[j].start.Y <= point.Y && point.Y < edges[i].start.Y) &&
+                    point.X < (edges[j].start.X - edges[i].start.X) * (point.Y - edges[i].start.Y) / (edges[j].start.Y - edges[i].start.Y) + edges[i].start.X)
                 {
                     inside = !inside;
                 }

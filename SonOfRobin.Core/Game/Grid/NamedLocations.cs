@@ -300,7 +300,7 @@ namespace SonOfRobin
         private const int playerLocationCheckCooldownFrames = 60 * 2;
 
         private readonly Grid grid;
-        private readonly List<Location> locationList;
+        public readonly List<Location> locationList;
         private Location playerLocation;
         private DateTime lastDiscovery;
         private bool locationsCreated;

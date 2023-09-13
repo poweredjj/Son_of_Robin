@@ -25,8 +25,8 @@ namespace SonOfRobin
             SetExtDataBiomes,
             SetExtDataPropertiesGrid,
             SetExtDataFinish,
-            GenerateMeshes,
             GenerateNamedLocations,
+            GenerateMeshes,
             FillAllowedNames,
             MakeEntireMapImage,
         }
@@ -44,8 +44,8 @@ namespace SonOfRobin
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
             { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
-            { Stage.GenerateMeshes, "generating meshes" },
             { Stage.GenerateNamedLocations, "generating named locations" },
+            { Stage.GenerateMeshes, "generating meshes" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.MakeEntireMapImage, "making entire map image" },
         };
@@ -384,14 +384,13 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.GenerateMeshes:
-                    this.meshes.Clear();
-                    this.meshes.AddRange(BoardMeshGenerator.GenerateMeshes(this));
+                case Stage.GenerateNamedLocations:
+                    this.namedLocations.GenerateLocations();
 
                     break;
 
-                case Stage.GenerateNamedLocations:
-                    this.namedLocations.GenerateLocations();
+                case Stage.GenerateMeshes:
+                    this.meshes.AddRange(BoardMeshGenerator.GenerateMeshes(this));
 
                     break;
 

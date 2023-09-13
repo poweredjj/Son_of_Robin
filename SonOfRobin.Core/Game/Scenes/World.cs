@@ -1398,7 +1398,6 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
         }
 
-
         private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
         {
             if (this.demoMode || !this.Player.CanSeeAnything) return;

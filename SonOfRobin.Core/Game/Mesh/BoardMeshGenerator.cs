@@ -24,19 +24,17 @@ namespace SonOfRobin
 
             string textureName = "repeating textures/mountain_low";
 
-            Texture2D texture = TextureBank.GetTexture(textureName);
-
             var pointList = new List<Point>();
 
-            foreach (NamedLocations.Location location in grid.namedLocations.DiscoveredLocations)
+            foreach (NamedLocations.Location location in grid.namedLocations.locationList)
             {
-
                 foreach (Cell cell in location.cells)
                 {
                     pointList.Add(new Point(cell.cellNoX, cell.cellNoY));
                 }
-
             }
+
+            if (pointList.Count == 0) return meshList;
 
             int xMin = int.MaxValue;
             int xMax = int.MinValue;
@@ -60,8 +58,7 @@ namespace SonOfRobin
                 boolArray[point.X - xMin, point.Y - yMin] = true;
             }
 
-            var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
-            var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
+            var groupedShapes = BitmapToShapesConverter.GenerateShapes(boolArray);
 
             Mesh mesh = ConvertShapesToMesh(offset: new Vector2(xMin * grid.cellWidth, yMin * grid.cellHeight), scaleX: grid.cellWidth, scaleY: grid.cellHeight, textureName: textureName, groupedShapes: groupedShapes);
 
@@ -98,7 +95,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<MarchingSquaresMeshGenerator.Shape, List<MarchingSquaresMeshGenerator.Shape>> groupedShapes, string textureName)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
