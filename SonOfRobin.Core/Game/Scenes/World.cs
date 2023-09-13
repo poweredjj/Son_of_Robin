@@ -1408,132 +1408,50 @@ namespace SonOfRobin
             basicEffect.Texture = TextureBank.GetTexture("repeating textures/mountain_low");
             basicEffect.TextureEnabled = true;
 
-            Vector2 textureSize = new(basicEffect.Texture.Width, basicEffect.Texture.Height);
+            var pointList = new List<Point>();
 
-            var pointList = new List<Point>
+            foreach (NamedLocations.Location location in this.Grid.namedLocations.DiscoveredLocations)
             {
-                new Point(0, 2),
-                new Point(2, 0),
-                new Point(3, 0),
-                new Point(2, 1),
-                new Point(7, 1),
-                new Point(8, 1),
-                new Point(1, 2),
-                new Point(2, 2),
-                new Point(3, 2),
-                new Point(6, 2),
-                new Point(8, 2),
-                new Point(9, 2),
-                new Point(0, 3),
-                new Point(2, 3),
-                new Point(4, 3),
-                new Point(5, 3),
-                new Point(0, 4),
-                new Point(1, 4),
-                new Point(2, 4),
-                new Point(5, 4),
-                new Point(2, 5),
-                new Point(3, 5),
-                new Point(4, 5),
-                new Point(3, 6),
-                new Point(4, 7),
-                new Point(5, 8),
-                new Point(3, 9),
-                new Point(4, 9),
-                new Point(7, 8),
-                new Point(8, 7),
-                new Point(9, 8),
-                new Point(8, 9),
-                new Point(8, 5),
-                new Point(0, 9),
-                new Point(6, 0),
-                new Point(0, 5),
-                new Point(0, 6),
-                new Point(0, 7),
-                };
+                if (location.areaRect.Intersects(this.camera.viewRect))
+                {
+                    foreach (Cell cell in location.cells)
+                    {
+                        pointList.Add(new Point(cell.cellNoX, cell.cellNoY));
+                    }
+                }
+            }
 
-            //pointList = new List<Point>
-            //    {
-            //        new Point(0, 0),
-            //        new Point(1, 0),
-            //        new Point(2, 0),
-            //        new Point(0, 1),
-            //        //new Point(1, 1),
-            //        new Point(2, 1),
-            //        new Point(0, 2),
-            //        new Point(1, 2),
-            //        new Point(2, 2),
-            //    };
-
-            int width = 0;
-            int height = 0;
+            int xMin = int.MaxValue;
+            int xMax = int.MinValue;
+            int yMin = int.MaxValue;
+            int yMax = int.MinValue;
 
             foreach (Point point in pointList)
             {
-                width = Math.Max(width, point.X + 1);
-                height = Math.Max(height, point.Y + 1);
+                xMin = Math.Min(xMin, point.X);
+                xMax = Math.Max(xMax, point.X);
+                yMin = Math.Min(yMin, point.Y);
+                yMax = Math.Max(yMax, point.Y);
             }
+
+            int width = xMax - xMin + 1;
+            int height = yMax - yMin + 1;
 
             var boolArray = new bool[width, height];
             foreach (Point point in pointList)
             {
-                boolArray[point.X, point.Y] = true;
+                boolArray[point.X - xMin, point.Y - yMin] = true;
             }
 
             var shapeList = MarchingSquaresMeshGenerator.GenerateConnectedEdgesList(boolArray);
             var groupedShapes = MarchingSquaresMeshGenerator.GroupShapes(shapeList);
 
-            Mesh mesh = Mesh.ConvertShapesToMesh(offset: new Vector2(1000, 1000), texture: basicEffect.Texture, groupedShapes: groupedShapes);
+            Mesh mesh = Mesh.ConvertShapesToMesh(offset: new Vector2(xMin * this.Grid.cellWidth, yMin * this.Grid.cellHeight), scaleX: this.Grid.cellWidth, scaleY: this.Grid.cellHeight, texture: basicEffect.Texture, groupedShapes: groupedShapes);
 
             foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
             {
                 effectPass.Apply();
                 mesh.Draw();
-            }
-        }
-
-        private void DrawPolygonsOld()
-        {
-            // for now only for testing
-
-            this.SetupPolygonDrawing(allowRepeat: true);
-            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-
-            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
-            basicEffect.TextureEnabled = true;
-
-            int size = 400;
-
-            Vector3 basePos = Vector3.Zero;
-            basePos = new(1000, 500, 0);
-            basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
-
-            VertexPositionTexture[] vert = new VertexPositionTexture[4];
-            vert[0].Position = basePos + new Vector3(0, 0, 0);
-            vert[1].Position = basePos + new Vector3(size, 0, 0);
-            vert[2].Position = basePos + new Vector3(0, size / 2, 0);
-            vert[3].Position = basePos + new Vector3(size, size, 0);
-
-            // Adjust the texture coordinates to make the texture wrap around
-            float textureRepeat = 3.0f; // You can adjust this value to control the number of repetitions
-            vert[0].TextureCoordinate = new Vector2(0, 0) * textureRepeat;
-            vert[1].TextureCoordinate = new Vector2(1, 0) * textureRepeat;
-            vert[2].TextureCoordinate = new Vector2(0, 1) * textureRepeat;
-            vert[3].TextureCoordinate = new Vector2(1, 1) * textureRepeat;
-
-            short[] ind = new short[6];
-            ind[0] = 0;
-            ind[1] = 2;
-            ind[2] = 1;
-            ind[3] = 1;
-            ind[4] = 2;
-            ind[5] = 3;
-
-            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
-            {
-                effectPass.Apply();
-                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
             }
         }
 

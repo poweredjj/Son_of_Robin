@@ -48,7 +48,7 @@ namespace SonOfRobin
                 PrimitiveType.TriangleList, this.vertArray, 0, this.vertArray.Length, indices, 0, this.triangleCount);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, Dictionary<MarchingSquaresMeshGenerator.Shape, List<MarchingSquaresMeshGenerator.Shape>> groupedShapes, Texture2D texture)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<MarchingSquaresMeshGenerator.Shape, List<MarchingSquaresMeshGenerator.Shape>> groupedShapes, Texture2D texture)
         {
             Vector2 textureSize = new(texture.Width, texture.Height);
 
@@ -94,7 +94,7 @@ namespace SonOfRobin
                 foreach (Vector2 position in vertPositionsForShape)
                 {
                     VertexPositionTexture vertex = new();
-                    vertex.Position = basePos + new Vector3(position.X * 20, position.Y * 20, 0);
+                    vertex.Position = basePos + new Vector3(position.X * scaleX, position.Y * scaleY, 0);
                     vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
                     shapeVertList.Add(vertex);
                 }
