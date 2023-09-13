@@ -1065,12 +1065,12 @@ namespace SonOfRobin
             Rectangle cameraRect = this.world.camera.viewRect;
 
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-
-            basicEffect.Texture = TextureBank.GetTexture("repeating textures/mountain_low");
             basicEffect.TextureEnabled = true;
 
             foreach (Mesh mesh in this.meshes)
             {
+                basicEffect.Texture = mesh.texture;
+
                 if (mesh.boundsRect.Intersects(cameraRect))
                 {
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)

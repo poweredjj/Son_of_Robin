@@ -1361,7 +1361,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing background (ground, leaving "holes" for water)
-            this.Grid.DrawBackground();
+            if (Preferences.debugDrawBitmapBackground) this.Grid.DrawBackground();
 
             if (Preferences.debugDrawTestPolygons)
             {
