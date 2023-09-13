@@ -1402,8 +1402,10 @@ namespace SonOfRobin
             this.SetupPolygonDrawing(allowRepeat: true);
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
-            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
+            basicEffect.Texture = TextureBank.GetTexture("repeating textures/mountain_low");
             basicEffect.TextureEnabled = true;
+
+            Vector2 textureSize = new(basicEffect.Texture.Width, basicEffect.Texture.Height);
 
             var pointList = new List<Point>
             {
@@ -1446,6 +1448,19 @@ namespace SonOfRobin
                 new Point(0, 6),
                 new Point(0, 7),
                 };
+
+            //pointList = new List<Point>
+            //    {
+            //        new Point(0, 0),
+            //        new Point(1, 0),
+            //        new Point(2, 0),
+            //        new Point(0, 1),
+            //        //new Point(1, 1),
+            //        new Point(2, 1),
+            //        new Point(0, 2),
+            //        new Point(1, 2),
+            //        new Point(2, 2),
+            //    };
 
             int width = 0;
             int height = 0;
@@ -1499,17 +1514,16 @@ namespace SonOfRobin
 
                 Vector3 basePos = Vector3.Zero;
                 basePos = new(this.Player.sprite.position.X, this.Player.sprite.position.Y, 0);
+                basePos += new Vector3(-120, -120, 0);
 
                 var vertList = new List<VertexPositionTexture>();
 
-                float textureRepeat = 3.0f; // You can adjust this value to control the number of repetitions
-
                 foreach (Vector2 position in contour.triangleVertices)
                 {
-                    VertexPositionTexture vertPos = new();
-                    vertPos.Position = basePos + new Vector3(position.X, position.Y, 0);
-                    vertPos.TextureCoordinate = new Vector2(vertPos.Position.X, vertPos.Position.Y) * textureRepeat;
-                    vertList.Add(vertPos);
+                    VertexPositionTexture vertex = new();
+                    vertex.Position = basePos + new Vector3(position.X * 25, position.Y * 25, 0);
+                    vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
+                    vertList.Add(vertex);
                 }
 
                 short[] indices = new short[contour.triangeIndices.Count];
@@ -1529,7 +1543,7 @@ namespace SonOfRobin
             }
         }
 
-        private void DrawPolygons_()
+        private void DrawPolygonsOld()
         {
             // for now only for testing
 
@@ -1565,49 +1579,6 @@ namespace SonOfRobin
             ind[3] = 1;
             ind[4] = 2;
             ind[5] = 3;
-
-            foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
-            {
-                effectPass.Apply();
-                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                    PrimitiveType.TriangleList, vert, 0, vert.Length, ind, 0, ind.Length / 3);
-            }
-
-            this.DrawTestCircle();
-        }
-
-        private void DrawTestCircle()
-        {
-            this.SetupPolygonDrawing(allowRepeat: true);
-            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-
-            basicEffect.Texture = TextureBank.GetTexture(textureName: TextureBank.TextureName.MapEdges);
-            basicEffect.TextureEnabled = true;
-
-            int numSides = 16; // Change this to the desired number of sides for the circle
-            float radius = 200f; // Change this to set the radius of the circle
-            Vector3 basePos = new(2000, 1500, 0); // Change this to set the center of the circle
-
-            VertexPositionTexture[] vert = new VertexPositionTexture[numSides + 1];
-
-            for (int i = 0; i <= numSides; i++)
-            {
-                float angle = (float)(i * 2 * Math.PI / numSides);
-                float x = radius * (float)Math.Cos(angle);
-                float y = radius * (float)Math.Sin(angle);
-
-                vert[i].Position = basePos + new Vector3(x, y, 0);
-                vert[i].TextureCoordinate = new Vector2((x + radius) / (2 * radius), (y + radius) / (2 * radius));
-            }
-
-            short[] ind = new short[numSides * 3]; // Assuming you want to create triangles
-
-            for (int i = 0; i < numSides; i++)
-            {
-                ind[i * 3] = 0;
-                ind[i * 3 + 1] = (short)(i + 1);
-                ind[i * 3 + 2] = (short)(i + 2);
-            }
 
             foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
             {

@@ -67,7 +67,7 @@ namespace SonOfRobin
             this.width = texture.Width;
             this.height = texture.Height;
             this.colorGrid = GfxConverter.ConvertTextureToGrid(texture: texture, x: 0, y: 0, width: texture.Width, height: texture.Height);
-            texture.Dispose(); // the texture is not needed after that
+            // texture.Dispose(); // the texture is not needed after that
 
             patternDict[this.name] = this;
         }

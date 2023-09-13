@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -134,8 +132,9 @@ namespace SonOfRobin
 
             var neighbourArray = new bool[2, 2];
 
-            var marchingCellBag = new ConcurrentBag<MarchingCell>();
-            Parallel.For(startX, width, new ParallelOptions { MaxDegreeOfParallelism = 4 }, x =>
+            var marchingCellList = new List<MarchingCell>();
+
+            for (int x = startX; x < width; x++)
             {
                 for (int y = startY; y < height; y++)
                 {
@@ -146,12 +145,12 @@ namespace SonOfRobin
                             neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && boolArray[x + i, y + j];
                         }
                     }
-                    marchingCellBag.Add(new MarchingCell(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: neighbourArray[0, 0], topRight: neighbourArray[1, 0], bottomLeft: neighbourArray[0, 1], bottomRight: neighbourArray[1, 1]));
+                    marchingCellList.Add(new MarchingCell(pos: new Vector2(x + 0.5f, y + 0.5f), topLeft: neighbourArray[0, 0], topRight: neighbourArray[1, 0], bottomLeft: neighbourArray[0, 1], bottomRight: neighbourArray[1, 1]));
                 }
-            });
+            }
 
             var edgeSet = new HashSet<Edge>();
-            foreach (MarchingCell marchingCell in marchingCellBag)
+            foreach (MarchingCell marchingCell in marchingCellList)
             {
                 edgeSet.UnionWith(marchingCell.edgeSet);
             }

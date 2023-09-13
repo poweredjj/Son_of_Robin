@@ -26,7 +26,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.504f;
-        public static readonly DateTime lastChanged = new(2023, 09, 12);
+        public static readonly DateTime lastChanged = new(2023, 09, 13);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -163,7 +163,8 @@ namespace SonOfRobin
             BasicEffect = new(GfxDev);
             RasterizeStateNoCulling = new RasterizerState
             {
-                CullMode = CullMode.None
+                CullMode = CullMode.None,
+                // FillMode = FillMode.WireFrame // for testing
             };
 
             Preferences.CheckIfResolutionIsSupported();
