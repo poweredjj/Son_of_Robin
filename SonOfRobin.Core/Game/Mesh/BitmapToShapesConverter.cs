@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace SonOfRobin
 {
@@ -9,12 +9,12 @@ namespace SonOfRobin
     {
         public class Shape
         {
-            public readonly HashSet<Edge> edges;
+            public readonly List<Vector2> pointList;
             public bool isHole;
 
             public Shape()
             {
-                this.edges = new HashSet<Edge>();
+                this.pointList = new List<Vector2>();
                 this.isHole = false;
             }
         }
@@ -29,7 +29,7 @@ namespace SonOfRobin
             {
                 this.start = start;
                 this.end = end;
-                angle = GetAngleDegrees(start: start, end: end);
+                this.angle = GetAngleDegrees(start: start, end: end);
             }
 
             private static double GetAngleDegrees(Vector2 start, Vector2 end)
@@ -134,50 +134,65 @@ namespace SonOfRobin
 
         public static List<Shape> OrderAndMergeEdges(HashSet<Edge> edges)
         {
-            var edgesToSort = edges.ToList();
+            var edgesToSort = new HashSet<Edge>(edges);
+
+            var edgesByPosDict = new Dictionary<Vector2, List<Edge>>();
+            foreach (Edge edge in edges)
+            {
+                if (!edgesByPosDict.ContainsKey(edge.start)) edgesByPosDict[edge.start] = new List<Edge>();
+                if (!edgesByPosDict.ContainsKey(edge.end)) edgesByPosDict[edge.end] = new List<Edge>();
+
+                edgesByPosDict[edge.start].Add(edge);
+                edgesByPosDict[edge.end].Add(edge);
+            }
+
             var shapeList = new List<Shape>();
 
             var currentShape = new Shape();
             shapeList.Add(currentShape);
 
-            Edge currentEdge = edgesToSort[0];
-            edgesToSort.RemoveAt(0);
-            currentShape.edges.Add(currentEdge);
+            Edge currentEdge = edgesToSort.First();
+            edgesToSort.Remove(currentEdge);
+            currentShape.pointList.Add(currentEdge.start);
 
             while (true)
             {
                 bool connectionFound = false;
 
-                for (int i = 0; i < edgesToSort.Count; i++)
+                if (edgesByPosDict.ContainsKey(currentEdge.end))
                 {
-                    Edge nextEdge = edgesToSort[i];
-                    if (nextEdge.start == currentEdge.end || nextEdge.end == currentEdge.end)
+                    foreach (Edge checkedEdge in edgesByPosDict[currentEdge.end])
                     {
-                        if (nextEdge.end == currentEdge.end) nextEdge = Edge.ReversedEdge(nextEdge);
-
-                        connectionFound = true;
-                        edgesToSort.RemoveAt(i);
-
-                        if (currentEdge.angle == nextEdge.angle)
+                        if (edgesToSort.Contains(checkedEdge))
                         {
-                            nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
-                            currentShape.edges.Remove(currentEdge);
-                        }
-                        currentShape.edges.Add(nextEdge);
+                            connectionFound = true;
+                            Edge nextEdge = checkedEdge;
+                            edgesToSort.Remove(nextEdge);
 
-                        currentEdge = nextEdge;
-                        break;
+                            if (nextEdge.end == currentEdge.end) nextEdge = Edge.ReversedEdge(nextEdge);
+
+                            if (currentEdge.angle == nextEdge.angle)
+                            {
+                                nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
+                                currentShape.pointList.Remove(currentEdge.end);
+                            }
+                            currentShape.pointList.Add(nextEdge.end);
+
+                            currentEdge = nextEdge;
+                            break;
+                        }
                     }
                 }
+
                 if (!connectionFound && edgesToSort.Count > 0)
                 {
                     // next subpath
                     currentShape = new Shape();
                     shapeList.Add(currentShape);
 
-                    currentEdge = edgesToSort[0];
-                    currentShape.edges.Add(currentEdge);
-                    edgesToSort.RemoveAt(0);
+                    currentEdge = edgesToSort.First();
+                    currentShape.pointList.Add(currentEdge.start);
+                    edgesToSort.Remove(currentEdge);
                 }
 
                 if (edgesToSort.Count == 0) break;
@@ -211,7 +226,7 @@ namespace SonOfRobin
             {
                 if (shape == outer) continue;
 
-                if (IsPointInPolygon(shape.edges.First().start, outer.edges.ToList()))
+                if (IsPointInPolygon(shape.pointList.First(), outer.pointList))
                 {
                     shape.isHole = true;
                     holes.Add(shape);
@@ -221,15 +236,15 @@ namespace SonOfRobin
             return holes;
         }
 
-        public static bool IsPointInPolygon(Vector2 point, List<Edge> edges)
+        public static bool IsPointInPolygon(Vector2 point, List<Vector2> points)
         {
             bool inside = false;
 
-            for (int i = 0, j = edges.Count - 1; i < edges.Count; j = i++)
+            for (int i = 0, j = points.Count - 1; i < points.Count; j = i++)
             {
-                if ((edges[i].start.Y <= point.Y && point.Y < edges[j].start.Y ||
-                    edges[j].start.Y <= point.Y && point.Y < edges[i].start.Y) &&
-                    point.X < (edges[j].start.X - edges[i].start.X) * (point.Y - edges[i].start.Y) / (edges[j].start.Y - edges[i].start.Y) + edges[i].start.X)
+                if ((points[i].Y <= point.Y && point.Y < points[j].Y ||
+                    points[j].Y <= point.Y && point.Y < points[i].Y) &&
+                    point.X < (points[j].X - points[i].X) * (point.Y - points[i].Y) / (points[j].Y - points[i].Y) + points[i].X)
                 {
                     inside = !inside;
                 }

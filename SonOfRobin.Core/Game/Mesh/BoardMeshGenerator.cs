@@ -312,7 +312,7 @@ namespace SonOfRobin
             var meshListSerialized = (List<Object>)loadedDict["meshList"];
 
             var meshBag = new ConcurrentBag<Mesh>();
-            Parallel.ForEach(meshListSerialized, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, meshData =>
+            Parallel.ForEach(meshListSerialized, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshData =>
             {
                 meshBag.Add(new Mesh(meshData));
             });
@@ -355,11 +355,11 @@ namespace SonOfRobin
                 var shapeVertList = new List<VertexPositionTexture>();
 
                 int currentIndex = 0;
-                foreach (var edge in contour.edges)
+                foreach (Vector2 pos in contour.pointList)
                 {
-                    doublesList.Add(edge.start.X);
-                    doublesList.Add(edge.start.Y);
-                    vertPositionsForShape.Add(edge.start);
+                    doublesList.Add(pos.X);
+                    doublesList.Add(pos.Y);
+                    vertPositionsForShape.Add(pos);
                     currentIndex++;
                 }
 
@@ -367,11 +367,11 @@ namespace SonOfRobin
                 {
                     holeIndices.Add(currentIndex);
 
-                    foreach (var edge in hole.edges)
+                    foreach (Vector2 pos in hole.pointList)
                     {
-                        doublesList.Add(edge.start.X);
-                        doublesList.Add(edge.start.Y);
-                        vertPositionsForShape.Add(edge.start);
+                        doublesList.Add(pos.X);
+                        doublesList.Add(pos.Y);
+                        vertPositionsForShape.Add(pos);
                         currentIndex++;
                     }
                 }
