@@ -311,13 +311,13 @@ namespace SonOfRobin
 
             var meshListSerialized = (List<Object>)loadedDict["meshList"];
 
-            var meshList = new List<Mesh>();
-            foreach (object meshData in (List<Object>)meshListSerialized)
+            var meshBag = new ConcurrentBag<Mesh>();
+            Parallel.ForEach(meshListSerialized, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, meshData =>
             {
-                meshList.Add(new Mesh(meshData));
-            }
+                meshBag.Add(new Mesh(meshData));
+            });
 
-            return meshList;
+            return meshBag.ToList();
         }
 
         public static void SaveToTemplate(string meshesFilePath, List<Mesh> meshList)
