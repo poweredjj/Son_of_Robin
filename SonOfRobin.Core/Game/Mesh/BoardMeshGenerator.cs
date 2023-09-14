@@ -14,10 +14,10 @@ namespace SonOfRobin
     {
         private const string meshesFileName = "meshes.json";
 
-        public static List<Mesh> GenerateMeshes(Grid grid)
+        public static Mesh[] GenerateMeshes(Grid grid)
         {
             string meshesFilePath = Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
-            List<Mesh> loadedMeshes = LoadFromTemplate(meshesFilePath);
+            Mesh[] loadedMeshes = LoadFromTemplate(meshesFilePath);
             if (loadedMeshes != null) return loadedMeshes;
 
             List<RawMapDataSearch> searchesUnsorted = new()
@@ -224,7 +224,7 @@ namespace SonOfRobin
                 if (!searches.Contains(search)) searches.Add(search);
             }
 
-            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches);
+            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches.ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
             //foreach (RawMapDataSearch search in searches)
@@ -274,13 +274,13 @@ namespace SonOfRobin
                 //}
             });
 
-            var meshList = meshBag.ToList();
+            var meshArray = meshBag.ToArray();
 
-            SaveToTemplate(meshesFilePath: meshesFilePath, meshList: meshList);
-            return meshList;
+            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray);
+            return meshArray;
         }
 
-        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, List<RawMapDataSearch> searches)
+        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearch[] searches)
         {
             var pixelBagsForPatterns = new Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>>();
             foreach (RawMapDataSearch search in searches)
@@ -294,8 +294,9 @@ namespace SonOfRobin
             {
                 for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
                 {
-                    foreach (RawMapDataSearch search in searches)
+                    for (int i = 0; i < searches.Length; i++)
                     {
+                        RawMapDataSearch search = searches[i];
                         if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
                         {
                             pixelBagsForPatterns[search.textureName].Add(new Point(rawX, rawY));
@@ -308,12 +309,13 @@ namespace SonOfRobin
             return pixelBagsForPatterns;
         }
 
-        public static List<Mesh> LoadFromTemplate(string meshesFilePath)
+        public static Mesh[] LoadFromTemplate(string meshesFilePath)
         {
             var loadedData = FileReaderWriter.Load(path: meshesFilePath);
             if (loadedData == null) return null;
 
             var loadedDict = (Dictionary<string, Object>)loadedData;
+
             float loadedVersion = (float)(double)loadedDict["version"];
             if (loadedVersion != Mesh.currentVersion) return null;
 
@@ -325,21 +327,21 @@ namespace SonOfRobin
                 meshBag.Add(new Mesh(meshData));
             });
 
-            return meshBag.ToList();
+            return meshBag.ToArray();
         }
 
-        public static void SaveToTemplate(string meshesFilePath, List<Mesh> meshList)
+        public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray)
         {
-            var meshListSerialized = new List<Object> { };
-            foreach (Mesh mesh in meshList)
+            var meshBagSerialized = new List<Object> { };
+            foreach (Mesh mesh in meshArray)
             {
-                meshListSerialized.Add(mesh.Serialize());
+                meshBagSerialized.Add(mesh.Serialize());
             }
 
             Dictionary<string, Object> meshData = new()
             {
                 { "version", Mesh.currentVersion },
-                { "meshList", meshListSerialized },
+                { "meshList", meshBagSerialized },
             };
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }

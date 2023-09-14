@@ -76,7 +76,7 @@ namespace SonOfRobin
         public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
-        public readonly List<Mesh> meshes;
+        public Mesh[] meshes;
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -96,7 +96,6 @@ namespace SonOfRobin
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
             this.namedLocations = new NamedLocations(grid: this);
-            this.meshes = new List<Mesh>();
 
             this.width = this.world.width;
             this.height = this.world.height;
@@ -262,8 +261,7 @@ namespace SonOfRobin
             this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
 
             // copying meshes
-            this.meshes.Clear();
-            this.meshes.AddRange(templateGrid.meshes);
+            this.meshes = templateGrid.meshes;
 
             // copying cell data
 
@@ -390,7 +388,8 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateMeshes:
-                    this.meshes.AddRange(BoardMeshGenerator.GenerateMeshes(this));
+                    this.meshes = BoardMeshGenerator.GenerateMeshes(this);
+                    MessageLog.AddMessage(debugMessage: true, message: $"{this.meshes.Length} meshes added.");
 
                     break;
 
@@ -1069,10 +1068,10 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in this.meshes)
             {
-                basicEffect.Texture = mesh.texture;
-
                 if (mesh.boundsRect.Intersects(cameraRect))
                 {
+                    basicEffect.Texture = mesh.texture;
+
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {
                         effectPass.Apply();
