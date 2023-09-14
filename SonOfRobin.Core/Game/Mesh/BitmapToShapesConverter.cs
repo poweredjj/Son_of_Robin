@@ -241,10 +241,10 @@ namespace SonOfRobin
         public static readonly Dictionary<int, Edge[]> edgesForIDs = new()
         {
             // empty
-            { 0000, new Edge[]{ } },
+            { 0000, Array.Empty<Edge>() },
 
             // full
-            { 1111, new Edge[]{ } },
+            { 1111, Array.Empty<Edge>() },
 
             // single corner cases (filled corners)
             { 1000, new Edge[] {

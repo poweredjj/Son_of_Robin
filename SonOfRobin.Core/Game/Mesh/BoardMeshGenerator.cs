@@ -19,7 +19,7 @@ namespace SonOfRobin
             List<Mesh> loadedMeshes = LoadFromTemplate(meshesFilePath);
             if (loadedMeshes != null) return loadedMeshes;
 
-            List<RawMapDataSearch> searches = new()
+            List<RawMapDataSearch> searchesUnsorted = new()
             {
                 new(
                 textureName: RepeatingPattern.Name.water_deep,
@@ -190,6 +190,38 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true),
                 }),
             };
+
+            // searches should be ordered from most to least common, to speed up search
+            var searchOrder = new List<RepeatingPattern.Name>
+            {
+                RepeatingPattern.Name.water_deep,
+                RepeatingPattern.Name.grass_bad,
+                RepeatingPattern.Name.mountain_low,
+                RepeatingPattern.Name.ground_bad,
+                RepeatingPattern.Name.beach_bright,
+                RepeatingPattern.Name.beach_dark,
+                RepeatingPattern.Name.water_medium,
+                RepeatingPattern.Name.swamp,
+                RepeatingPattern.Name.grass_good,
+                RepeatingPattern.Name.mountain_medium,
+                RepeatingPattern.Name.ruins,
+                RepeatingPattern.Name.water_supershallow,
+                RepeatingPattern.Name.ground_good,
+                RepeatingPattern.Name.mountain_high,
+                RepeatingPattern.Name.sand,
+                RepeatingPattern.Name.volcano_edge,
+                RepeatingPattern.Name.lava,
+
+                // names not specified here will be added at the end
+            };
+
+            var searches = searchesUnsorted.OrderBy(search => searchOrder.IndexOf(search.textureName)).ToList();
+
+            // Add any missing items at the end
+            foreach (RawMapDataSearch search in searchesUnsorted)
+            {
+                if (!searches.Contains(search)) searches.Add(search);
+            }
 
             var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches);
             var meshBag = new ConcurrentBag<Mesh>();
