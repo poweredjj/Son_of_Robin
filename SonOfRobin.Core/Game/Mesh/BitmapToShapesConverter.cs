@@ -37,19 +37,13 @@ namespace SonOfRobin
 
         public class Shape
         {
-            public readonly List<Edge> edges;
+            public readonly HashSet<Edge> edges;
             public bool isHole;
 
             public Shape()
             {
-                edges = new List<Edge>();
-                isHole = false;
-            }
-
-            public Shape(List<Edge> edges)
-            {
-                this.edges = edges;
-                isHole = false;
+                this.edges = new HashSet<Edge>();
+                this.isHole = false;
             }
         }
 
@@ -237,7 +231,7 @@ namespace SonOfRobin
             {
                 if (shape == outer) continue;
 
-                if (IsPointInPolygon(shape.edges[0].start, outer.edges))
+                if (IsPointInPolygon(shape.edges.First().start, outer.edges.ToList()))
                 {
                     shape.isHole = true;
                     holes.Add(shape);

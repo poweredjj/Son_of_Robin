@@ -191,18 +191,13 @@ namespace SonOfRobin
                 }),
             };
 
-            var resultPatternsArray = new RepeatingPattern.Name[grid.dividedWidth, grid.dividedHeight];
-
-            foreach (var search in searches)
-            {
-                search.MarkAllRawPixelsThatMeetCriteria(grid: grid, nameToSet: search.textureName, resultPatternsArray: resultPatternsArray);
-            }
-
+            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches);
             var meshBag = new ConcurrentBag<Mesh>();
 
-            Parallel.ForEach(searches, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, search =>
+            //foreach (RawMapDataSearch search in searches)
+            Parallel.ForEach(searches, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, search =>
             {
-                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: search.FindAllRawPixelsThatMeetCriteria(nameToSearch: search.textureName, resultPatternsArray: resultPatternsArray));
+                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[search.textureName]);
 
                 foreach (List<Point> pointList in pixelCoordsByRegion)
                 {
@@ -236,6 +231,7 @@ namespace SonOfRobin
 
                     meshBag.Add(mesh);
                 }
+                //}
             });
 
             var meshList = meshBag.ToList();
@@ -244,13 +240,47 @@ namespace SonOfRobin
             return meshList;
         }
 
+        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, List<RawMapDataSearch> searches)
+        {
+            var pixelBagsForPatterns = new Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>>();
+            foreach (RawMapDataSearch search in searches)
+            {
+                pixelBagsForPatterns[search.textureName] = new ConcurrentBag<Point>();
+            }
+
+            var rawPixelsBag = new ConcurrentBag<Point>();
+
+            Parallel.For(0, grid.dividedHeight, rawY =>
+            {
+                for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
+                {
+                    foreach (RawMapDataSearch search in searches)
+                    {
+                        if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
+                        {
+                            pixelBagsForPatterns[search.textureName].Add(new Point(rawX, rawY));
+                            break; // only one search criteria set for a given pixel
+                        }
+                    }
+                }
+            });
+
+            return pixelBagsForPatterns;
+        }
+
         public static List<Mesh> LoadFromTemplate(string meshesFilePath)
         {
             var loadedData = FileReaderWriter.Load(path: meshesFilePath);
             if (loadedData == null) return null;
 
+            var loadedDict = (Dictionary<string, Object>)loadedData;
+            float loadedVersion = (float)(double)loadedDict["version"];
+            if (loadedVersion != Mesh.currentVersion) return null;
+
+            var meshListSerialized = (List<Object>)loadedDict["meshList"];
+
             var meshList = new List<Mesh>();
-            foreach (object meshData in (List<Object>)loadedData)
+            foreach (object meshData in (List<Object>)meshListSerialized)
             {
                 meshList.Add(new Mesh(meshData));
             }
@@ -260,12 +290,17 @@ namespace SonOfRobin
 
         public static void SaveToTemplate(string meshesFilePath, List<Mesh> meshList)
         {
-            var meshData = new List<Object> { };
+            var meshListSerialized = new List<Object> { };
             foreach (Mesh mesh in meshList)
             {
-                meshData.Add(mesh.Serialize());
+                meshListSerialized.Add(mesh.Serialize());
             }
 
+            Dictionary<string, Object> meshData = new()
+            {
+                { "version", Mesh.currentVersion },
+                { "meshList", meshListSerialized },
+            };
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
@@ -349,51 +384,6 @@ namespace SonOfRobin
 
                 this.searchEntriesTerrain = searchEntriesTerrain;
                 this.searchEntriesExtProps = searchEntriesExtProps;
-            }
-
-            public ConcurrentBag<Point> MarkAllRawPixelsThatMeetCriteria(Grid grid, RepeatingPattern.Name nameToSet, RepeatingPattern.Name[,] resultPatternsArray)
-            {
-                var rawPixelsBag = new ConcurrentBag<Point>();
-
-                RawMapDataSearch search = this; // needed for parallel access
-
-                Parallel.For(0, grid.dividedHeight, rawY =>
-                {
-                    for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
-                    {
-                        // TODO place list of searches here and iterate them in here
-
-                        if (resultPatternsArray[rawX, rawY] == RepeatingPattern.Name.unset && search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
-                        {
-                            rawPixelsBag.Add(new Point(rawX, rawY));
-                            resultPatternsArray[rawX, rawY] = nameToSet;
-                        }
-                    }
-                });
-
-                return rawPixelsBag;
-            }
-
-            public ConcurrentBag<Point> FindAllRawPixelsThatMeetCriteria(RepeatingPattern.Name nameToSearch, RepeatingPattern.Name[,] resultPatternsArray)
-            {
-                // TODO replace with a method that iterates every pixel once and adds to a dictionary
-
-                var rawPixelsBag = new ConcurrentBag<Point>();
-
-                int width = resultPatternsArray.GetLength(0);
-                int height = resultPatternsArray.GetLength(1);
-
-                RawMapDataSearch search = this; // needed for parallel access
-
-                Parallel.For(0, height, rawY =>
-                {
-                    for (int rawX = 0; rawX < width; rawX++)
-                    {
-                        if (resultPatternsArray[rawX, rawY] == nameToSearch) rawPixelsBag.Add(new Point(rawX, rawY));
-                    }
-                });
-
-                return rawPixelsBag;
             }
 
             public bool PixelMeetsCriteria(Grid grid, int rawX, int rawY)

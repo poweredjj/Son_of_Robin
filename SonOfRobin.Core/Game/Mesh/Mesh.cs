@@ -7,6 +7,8 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
+        public const float currentVersion = 1.002f;
+
         public readonly string textureName;
         public readonly Texture2D texture;
         public readonly VertexPositionTexture[] vertices;

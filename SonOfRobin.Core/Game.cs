@@ -26,7 +26,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.504f;
-        public static readonly DateTime lastChanged = new(2023, 09, 13);
+        public static readonly DateTime lastChanged = new(2023, 09, 14);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -38,6 +38,7 @@ namespace SonOfRobin
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static RasterizerState RasterizeStateNoCulling { get; private set; }
+        public static RasterizerState RasterizeStateNoCullingWireframe { get; private set; }
         public static BasicEffect BasicEffect { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
         public static Effect EffectColorize { get; private set; }
@@ -161,10 +162,11 @@ namespace SonOfRobin
 
             GfxDev = base.GraphicsDevice;
             BasicEffect = new(GfxDev);
-            RasterizeStateNoCulling = new RasterizerState
+            RasterizeStateNoCulling = new RasterizerState { CullMode = CullMode.None };
+            RasterizeStateNoCullingWireframe = new RasterizerState
             {
                 CullMode = CullMode.None,
-                // FillMode = FillMode.WireFrame // for testing
+                FillMode = FillMode.WireFrame
             };
 
             Preferences.CheckIfResolutionIsSupported();
