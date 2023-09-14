@@ -259,7 +259,7 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 200, chunkHeight: 200, xOverlap: 2, yOverlap: 2)) // 1000, 1000
+                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 100, chunkHeight: 100, xOverlap: 2, yOverlap: 2)) // 500, 500
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
