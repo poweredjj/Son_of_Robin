@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SonOfRobin
@@ -34,7 +35,7 @@ namespace SonOfRobin
                 new(
                 textureName: RepeatingPattern.Name.water_medium,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: (byte)(Terrain.waterLevelMax / 3), maxVal: (byte)(Terrain.waterLevelMax / 3 * 2)),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: (byte)(Terrain.waterLevelMax / 3) + 1, maxVal: (byte)(Terrain.waterLevelMax / 3 * 2)),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
@@ -251,17 +252,24 @@ namespace SonOfRobin
                     int width = xMax - xMin + 1;
                     int height = yMax - yMin + 1;
 
-                    var boolArray = new bool[width, height];
-                    foreach (Point point in pointList)
+                    BitArrayWrapper bitArrayWrapper = new(width, height);
+                    foreach (Point point in CollectionsMarshal.AsSpan(pointList))
                     {
-                        boolArray[point.X - xMin, point.Y - yMin] = true;
+                        bitArrayWrapper.SetVal(x: point.X - xMin, y: point.Y - yMin, value: true);
                     }
+                    pointList.Clear(); // no longer needed, clearing memory
 
-                    var groupedShapes = BitmapToShapesConverter.GenerateShapes(boolArray);
+                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 200, chunkHeight: 200, xOverlap: 2, yOverlap: 2)) // 1000, 1000
+                    {
+                        var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
-                    Mesh mesh = ConvertShapesToMesh(offset: new Vector2(xMin * grid.resDivider, yMin * grid.resDivider), scaleX: grid.resDivider, scaleY: grid.resDivider, textureName: $"repeating textures/{search.textureName}", groupedShapes: groupedShapes);
+                        Mesh mesh = ConvertShapesToMesh(
+                            offset: new Vector2((chunk.xOffset + xMin) * grid.resDivider, (chunk.yOffset + yMin) * grid.resDivider),
+                            scaleX: grid.resDivider, scaleY: grid.resDivider,
+                            textureName: $"repeating textures/{search.textureName}", groupedShapes: groupedShapes);
 
-                    meshBag.Add(mesh);
+                        meshBag.Add(mesh);
+                    }
                 }
                 //}
             });

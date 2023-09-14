@@ -543,8 +543,6 @@ namespace SonOfRobin
 
         public static List<List<Point>> SlicePointBagIntoConnectedRegions(int width, int height, ConcurrentBag<Point> pointsBag)
         {
-            // optimized by ChatGPT
-
             // preparing data
 
             // List of offset points representing neighboring positions (up, down, left, right)

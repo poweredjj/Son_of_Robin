@@ -2,7 +2,9 @@
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -30,17 +32,12 @@ namespace SonOfRobin
 
         public void SetVal(int x, int y, bool value)
         {
-            this.bitArray.Set(this.ConvertRaw2DCoordinatesTo1D(x, y), value);
+            this.bitArray.Set((y * this.width) + x, value);
         }
 
         public bool GetVal(int x, int y)
         {
-            return this.bitArray.Get(this.ConvertRaw2DCoordinatesTo1D(x, y));
-        }
-
-        private int ConvertRaw2DCoordinatesTo1D(int x, int y)
-        {
-            return (y * this.width) + x;
+            return this.bitArray.Get((y * this.width) + x);
         }
 
         public void FillWithTrue()
@@ -109,6 +106,52 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException) { return null; }
             catch (UnknownImageFormatException) { return null; } // file corrupted
+        }
+
+        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight, int xOverlap = 0, int yOverlap = 0)
+        {
+            if (chunkWidth <= 0 || chunkHeight <= 0 || this.width <= 0 || this.height <= 0) throw new ArgumentException("Chunk dimensions and BitArray dimensions must be positive.");
+
+            int numChunksX = (int)Math.Ceiling((double)this.width / (double)chunkWidth);
+            int numChunksY = (int)Math.Ceiling((double)this.height / (double)chunkHeight);
+
+            var chunks = new List<BitArrayWrapperChunk>();
+
+            for (int chunkY = 0; chunkY < numChunksY; chunkY++)
+            {
+                for (int chunkX = 0; chunkX < numChunksX; chunkX++)
+                {
+                    int currentChunkWidth = Math.Min(chunkWidth + xOverlap, this.width - (chunkX * chunkWidth));
+                    int currentChunkHeight = Math.Min(chunkHeight + yOverlap, this.height - (chunkY * chunkHeight));
+
+                    chunks.Add(new(bitArrayWrapper: this, width: currentChunkWidth, height: currentChunkHeight, xOffset: chunkX * chunkWidth, yOffset: chunkY * chunkHeight));
+                }
+            }
+
+            return chunks;
+        }
+    }
+
+    public readonly struct BitArrayWrapperChunk
+    {
+        public readonly BitArrayWrapper bitArrayWrapper;
+        public readonly int width;
+        public readonly int height;
+        public readonly int xOffset;
+        public readonly int yOffset;
+
+        public BitArrayWrapperChunk(BitArrayWrapper bitArrayWrapper, int width, int height, int xOffset, int yOffset)
+        {
+            this.bitArrayWrapper = bitArrayWrapper;
+            this.width = width;
+            this.height = height;
+            this.xOffset = xOffset;
+            this.yOffset = yOffset;
+        }
+
+        public bool GetVal(int x, int y)
+        {
+            return this.bitArrayWrapper.GetVal(x: x + this.xOffset, y: y + this.yOffset);
         }
     }
 }

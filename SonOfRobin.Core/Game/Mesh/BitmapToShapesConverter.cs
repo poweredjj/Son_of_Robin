@@ -62,21 +62,21 @@ namespace SonOfRobin
             }
         }
 
-        public static Dictionary<Shape, List<Shape>> GenerateShapes(bool[,] boolArray)
+        public static Dictionary<Shape, List<Shape>> GenerateShapes(BitArrayWrapperChunk bitArrayChunk)
         {
-            var shapeList = GenerateConnectedEdgesList(boolArray);
+            var shapeList = GenerateConnectedEdgesList(bitArrayChunk);
             return GroupShapes(shapeList);
         }
 
-        private static List<Shape> GenerateConnectedEdgesList(bool[,] boolArray)
+        private static List<Shape> GenerateConnectedEdgesList(BitArrayWrapperChunk bitArrayChunk)
         {
-            int width = boolArray.GetLength(0);
-            int height = boolArray.GetLength(1);
+            int width = bitArrayChunk.width;
+            int height = bitArrayChunk.height;
 
             bool xZeroFilled = false;
             for (int y = 0; y < height; y++)
             {
-                if (boolArray[0, y])
+                if (bitArrayChunk.GetVal(0, y))
                 {
                     xZeroFilled = true;
                     break;
@@ -86,7 +86,7 @@ namespace SonOfRobin
             bool yZeroFilled = false;
             for (int x = 0; x < width; x++)
             {
-                if (boolArray[x, 0])
+                if (bitArrayChunk.GetVal(x, 0))
                 {
                     yZeroFilled = true;
                     break;
@@ -113,7 +113,7 @@ namespace SonOfRobin
                     {
                         for (int j = 0; j < 2; j++)
                         {
-                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && boolArray[x + i, y + j] ? 1 : 0;
+                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && bitArrayChunk.GetVal(x + i, y + j) ? 1 : 0;
                         }
                     }
 
@@ -147,6 +147,8 @@ namespace SonOfRobin
             }
 
             var shapeList = new List<Shape>();
+
+            if (edgesToSort.Count == 0) return shapeList;
 
             var currentShape = new Shape();
             shapeList.Add(currentShape);
