@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.002f;
+        public const float currentVersion = 1.003f;
 
         public readonly string textureName;
         public readonly Texture2D texture;
@@ -15,8 +15,9 @@ namespace SonOfRobin
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
+        public readonly int drawPriority;
 
-        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList)
+        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
         {
             var vertices = vertList.ToArray();
 
@@ -26,6 +27,7 @@ namespace SonOfRobin
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
             this.boundsRect = GetBoundsRect(vertices);
+            this.drawPriority = drawPriority;
         }
 
         public Mesh(object meshData)
@@ -39,6 +41,7 @@ namespace SonOfRobin
             this.triangleCount = this.indices.Length / 3;
 
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
+            this.drawPriority = (int)(Int64)meshDict["drawPriority"];
 
             var vertXPos = (List<float>)meshDict["vertXPos"];
             var vertYPos = (List<float>)meshDict["vertYPos"];
@@ -79,6 +82,7 @@ namespace SonOfRobin
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
+                { "drawPriority", drawPriority },
                 { "vertXPos", vertXPos },
                 { "vertYPos", vertYPos },
                 { "vertTexCoordX", vertTexCoordX },

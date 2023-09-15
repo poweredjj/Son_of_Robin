@@ -1066,7 +1066,8 @@ namespace SonOfRobin
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
 
-            foreach (Mesh mesh in this.meshes)
+            var meshesToDraw = this.meshes.Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority);
+            foreach (Mesh mesh in meshesToDraw)
             {
                 if (mesh.boundsRect.Intersects(cameraRect))
                 {

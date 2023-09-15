@@ -785,6 +785,8 @@ namespace SonOfRobin
 
         public void Draw(bool calculateSubmerge = true)
         {
+            if (!this.boardPiece.exists) return;
+
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.GfxRect)) this.hasBeenDiscovered = true;
 
             if (this.ObstructsCameraTarget && this.opacityFade == null) new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
@@ -862,7 +864,7 @@ namespace SonOfRobin
                     submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
                 }
 
-               this.AnimFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+                this.AnimFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }
             else
             {

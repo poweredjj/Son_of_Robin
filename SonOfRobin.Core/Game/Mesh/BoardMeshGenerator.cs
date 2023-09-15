@@ -20,20 +20,29 @@ namespace SonOfRobin
             Mesh[] loadedMeshes = LoadFromTemplate(meshesFilePath);
             if (loadedMeshes != null) return loadedMeshes;
 
-            List<RawMapDataSearch> searchesUnsorted = new()
+            List<RawMapDataSearchForTexture> searchesUnsorted = new()
             {
                 new(
-                textureName: RepeatingPattern.Name.water_deep,
+                // needed to fill small holes, that will occur between other meshes
+                textureName: RepeatingPattern.Name.ground_base, drawPriority: -1, otherSearchesAllowed: true,
+                searchEntriesTerrain: new List<SearchEntryTerrain> {
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 255),
+                    },
+                searchEntriesExtProps: new List<SearchEntryExtProps> {
+                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
+                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
+
+                new(
+                textureName: RepeatingPattern.Name.water_deep, canOverlap: false, // transparent textures should not overlap
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: (byte)(Terrain.waterLevelMax / 3)),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
+                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
 
                 new(
-                textureName: RepeatingPattern.Name.water_medium,
+                textureName: RepeatingPattern.Name.water_medium, canOverlap: false, // transparent textures should not overlap
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: (byte)(Terrain.waterLevelMax / 3) + 1, maxVal: (byte)(Terrain.waterLevelMax / 3 * 2)),
                     },
@@ -45,7 +54,7 @@ namespace SonOfRobin
                 // water_shallow is not listed, because it is just transparent (no mesh needed)
 
                 new(
-                textureName: RepeatingPattern.Name.water_supershallow,
+                textureName: RepeatingPattern.Name.water_supershallow, canOverlap: false, otherSearchesAllowed: true,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax - 3, maxVal: Terrain.waterLevelMax),
                     },
@@ -216,10 +225,10 @@ namespace SonOfRobin
                 // names not specified here will be added at the end
             };
 
-            var searches = searchesUnsorted.OrderBy(search => searchOrder.IndexOf(search.textureName)).ToList();
+            var searches = searchesUnsorted.OrderBy(search => search.otherSearchesAllowed).ThenBy(search => searchOrder.IndexOf(search.textureName)).ToList();
 
             // Add any missing items at the end
-            foreach (RawMapDataSearch search in searchesUnsorted)
+            foreach (RawMapDataSearchForTexture search in searchesUnsorted)
             {
                 if (!searches.Contains(search)) searches.Add(search);
             }
@@ -259,14 +268,16 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 100, chunkHeight: 100, xOverlap: 2, yOverlap: 2)) // 500, 500
+                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 100, chunkHeight: 100, xOverlap: 0, yOverlap: 0)) // 500, 500
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
                         Mesh mesh = ConvertShapesToMesh(
                             offset: new Vector2((chunk.xOffset + xMin) * grid.resDivider, (chunk.yOffset + yMin) * grid.resDivider),
                             scaleX: grid.resDivider, scaleY: grid.resDivider,
-                            textureName: $"repeating textures/{search.textureName}", groupedShapes: groupedShapes);
+                            textureName: $"repeating textures/{search.textureName}",
+                            drawPriority: search.drawPriority,
+                            groupedShapes: groupedShapes);
 
                         meshBag.Add(mesh);
                     }
@@ -280,10 +291,10 @@ namespace SonOfRobin
             return meshArray;
         }
 
-        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearch[] searches)
+        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
         {
             var pixelBagsForPatterns = new Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>>();
-            foreach (RawMapDataSearch search in searches)
+            foreach (RawMapDataSearchForTexture search in searches)
             {
                 pixelBagsForPatterns[search.textureName] = new ConcurrentBag<Point>();
             }
@@ -296,11 +307,11 @@ namespace SonOfRobin
                 {
                     for (int i = 0; i < searches.Length; i++)
                     {
-                        RawMapDataSearch search = searches[i];
+                        RawMapDataSearchForTexture search = searches[i];
                         if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
                         {
                             pixelBagsForPatterns[search.textureName].Add(new Point(rawX, rawY));
-                            break; // only one search criteria set for a given pixel
+                            if (!search.otherSearchesAllowed) break;
                         }
                     }
                 }
@@ -346,7 +357,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
@@ -406,16 +417,19 @@ namespace SonOfRobin
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList);
+            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority);
         }
 
-        public readonly struct RawMapDataSearch
+        public readonly struct RawMapDataSearchForTexture
         {
             public readonly RepeatingPattern.Name textureName;
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
             public readonly List<SearchEntryExtProps> searchEntriesExtProps;
+            public readonly bool canOverlap;
+            public readonly bool otherSearchesAllowed;
+            public readonly int drawPriority;
 
-            public RawMapDataSearch(RepeatingPattern.Name textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null)
+            public RawMapDataSearchForTexture(RepeatingPattern.Name textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool canOverlap = true, bool otherSearchesAllowed = true, int drawPriority = 1)
             {
                 this.textureName = textureName;
 
@@ -426,6 +440,10 @@ namespace SonOfRobin
 
                 this.searchEntriesTerrain = searchEntriesTerrain;
                 this.searchEntriesExtProps = searchEntriesExtProps;
+
+                this.canOverlap = canOverlap;
+                this.otherSearchesAllowed = otherSearchesAllowed;
+                this.drawPriority = drawPriority;
             }
 
             public bool PixelMeetsCriteria(Grid grid, int rawX, int rawY)

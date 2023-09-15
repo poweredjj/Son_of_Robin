@@ -32,6 +32,7 @@ namespace SonOfRobin
             mountain_low,
             mountain_medium,
             mountain_high,
+            ground_base,
             ground_good,
             ground_bad,
             sand,
