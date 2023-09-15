@@ -389,7 +389,7 @@ namespace SonOfRobin
 
                 case Stage.GenerateMeshes:
                     Mesh[] meshArray = BoardMeshGenerator.GenerateMeshes(this);
-                    this.meshGrid = new(totalWidth: this.width, totalHeight: this.height, blockWidth: 2000, blockHeight: 2000, meshArray: meshArray);
+                    this.meshGrid = new(totalWidth: this.width, totalHeight: this.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
 
                     break;
 

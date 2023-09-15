@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -30,8 +31,13 @@ namespace SonOfRobin
             Rectangle boundsRect = GetBoundsRect(vertices);
             this.boundsRect = boundsRect;
             this.drawPriority = drawPriority;
-            // meshID cannot use Helpers.GetUniqueID() because it is not thread-safe (duplicated IDs will occur)
-            this.meshID = $"{this.boundsRect.Left},{this.boundsRect.Top}_{this.boundsRect.Width}x{this.boundsRect.Height}_{this.textureName}";
+            this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
+        }
+
+        private static string GetID(Rectangle boundsRect, string textureName)
+        {
+            // needed to filter out duplicates
+            return $"{boundsRect.Left},{boundsRect.Top}_{boundsRect.Width}x{boundsRect.Height}_{textureName}";
         }
 
         public Mesh(object meshData)
@@ -45,7 +51,7 @@ namespace SonOfRobin
             this.triangleCount = this.indices.Length / 3;
 
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
-            this.meshID = (string)meshDict["meshID"];
+            this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
 
             this.drawPriority = (int)(Int64)meshDict["drawPriority"];
 
@@ -85,7 +91,6 @@ namespace SonOfRobin
 
             Dictionary<string, Object> meshData = new()
             {
-                { "meshID", this.meshID },
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
@@ -145,9 +150,6 @@ namespace SonOfRobin
                 }
             }
 
-            //var addedVertices = new HashSet(VertexPositionTexture);
-
-            // iterating over triangles
             for (int i = 0; i < this.indices.Length; i += 3)
             {
                 VertexPositionTexture vertex1 = this.vertices[indices[i]];
@@ -198,7 +200,7 @@ namespace SonOfRobin
         public readonly int numBlocksY;
         public readonly Mesh[,][] meshArray;
 
-        public MeshGrid(int totalWidth, int totalHeight, int blockWidth, int blockHeight, Mesh[] meshArray)
+        public MeshGrid(int totalWidth, int totalHeight, int blockWidth, int blockHeight, Mesh[] inputMeshArray)
         {
             if (totalWidth <= 0 || totalWidth <= 0) throw new ArgumentException($"Invalid total size {totalWidth}x{totalWidth}.");
             if (blockWidth <= 0 || blockHeight <= 0) throw new ArgumentException($"Invalid block size {blockWidth}x{blockHeight}.");
@@ -208,28 +210,33 @@ namespace SonOfRobin
             this.blockWidth = Math.Min(blockWidth, totalWidth);
             this.blockHeight = Math.Min(blockHeight, totalHeight);
 
-            this.numBlocksX = (int)Math.Ceiling((double)totalWidth / (double)blockWidth);
-            this.numBlocksY = (int)Math.Ceiling((double)totalHeight / (double)blockHeight);
+            int numBlocksX = (int)Math.Ceiling((double)totalWidth / (double)blockWidth);
+            int numBlocksY = (int)Math.Ceiling((double)totalHeight / (double)blockHeight);
 
-            this.meshArray = new Mesh[this.numBlocksX, this.numBlocksY][];
+            var meshArray = new Mesh[numBlocksX, numBlocksY][];
 
-            Rectangle blockRect = new(x: 0, y: 0, width: blockWidth, height: blockHeight);
-            for (int blockNoX = 0; blockNoX < this.numBlocksX; blockNoX++)
+            Parallel.For(0, numBlocksX, blockNoX =>
             {
-                for (int blockNoY = 0; blockNoY < this.numBlocksY; blockNoY++)
+                Rectangle blockRect = new(x: 0, y: 0, width: blockWidth, height: blockHeight);
+                blockRect.X = blockNoX * blockWidth;
+
+                for (int blockNoY = 0; blockNoY < numBlocksY; blockNoY++)
                 {
-                    blockRect.X = blockNoX * blockWidth;
                     blockRect.Y = blockNoY * blockHeight;
 
                     var blockMeshList = new List<Mesh>();
-                    foreach (Mesh mesh in meshArray)
+                    foreach (Mesh mesh in inputMeshArray)
                     {
                         if (mesh.boundsRect.Intersects(blockRect)) blockMeshList.Add(mesh);
                     }
 
-                    this.meshArray[blockNoX, blockNoY] = blockMeshList.ToArray();
+                    meshArray[blockNoX, blockNoY] = blockMeshList.ToArray();
                 }
-            }
+            });
+
+            this.numBlocksX = numBlocksX;
+            this.numBlocksY = numBlocksY;
+            this.meshArray = meshArray;
         }
 
         public List<Mesh> GetMeshesForRect(Rectangle rect)
