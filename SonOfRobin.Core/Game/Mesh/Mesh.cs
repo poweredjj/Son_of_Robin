@@ -8,9 +8,9 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.006f;
+        public const float currentVersion = 1.007f;
 
-        public readonly int meshID;
+        public readonly string meshID;
         public readonly string textureName;
         public readonly Texture2D texture;
         public readonly VertexPositionTexture[] vertices;
@@ -23,7 +23,6 @@ namespace SonOfRobin
         {
             var vertices = vertList.ToArray();
 
-            this.meshID = Helpers.GetUniqueID();
             this.textureName = textureName;
             this.texture = TextureBank.GetTexture(this.textureName);
             this.vertices = vertices;
@@ -32,6 +31,8 @@ namespace SonOfRobin
             Rectangle boundsRect = GetBoundsRect(vertices);
             this.boundsRect = boundsRect;
             this.drawPriority = drawPriority;
+            // meshID cannot use Helpers.GetUniqueID() because it is not thread-safe (duplicated IDs will occur)
+            this.meshID = $"{this.boundsRect.Left},{this.boundsRect.Top}-{this.boundsRect.Width}x{this.boundsRect.Height}_{this.textureName}";
 
             var overlappingCells = grid.GetCellsInsideRect(rectangle: boundsRect, addPadding: false);
             var assignedCellsIndexes = new int[overlappingCells.Count];
@@ -53,7 +54,7 @@ namespace SonOfRobin
             this.triangleCount = this.indices.Length / 3;
 
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
-            this.meshID = (int)(Int64)meshDict["meshID"];
+            this.meshID = (string)meshDict["meshID"];
 
             this.drawPriority = (int)(Int64)meshDict["drawPriority"];
 
@@ -187,7 +188,7 @@ namespace SonOfRobin
             this.blockHeight = (int)(Int64)meshGridDict["blockHeight"];
             this.numBlocksX = (int)(Int64)meshGridDict["numBlocksX"];
             this.numBlocksY = (int)(Int64)meshGridDict["numBlocksY"];
-            var meshIDByBlocks = (List<int>[,])meshGridDict["meshIDByBlocks"];
+            var meshIDByBlocks = (List<string>[,])meshGridDict["meshIDByBlocks"];
 
             var meshByID = meshList.ToDictionary(mesh => mesh.meshID, mesh => mesh);
 
@@ -200,7 +201,7 @@ namespace SonOfRobin
                     var blockMeshList = new List<Mesh>();
                     this.meshListGrid[blockNoX, blockNoY] = blockMeshList;
 
-                    foreach (int meshID in meshIDByBlocks[blockNoX, blockNoY])
+                    foreach (string meshID in meshIDByBlocks[blockNoX, blockNoY])
                     {
                         blockMeshList.Add(meshByID[meshID]);
                     }
@@ -210,14 +211,14 @@ namespace SonOfRobin
 
         public Object Serialize()
         {
-            var meshIDByBlocks = new List<int>[this.numBlocksX, this.numBlocksY];
+            var meshIDByBlocks = new List<string>[this.numBlocksX, this.numBlocksY];
 
             for (int blockNoX = 0; blockNoX < this.numBlocksX; blockNoX++)
             {
                 for (int blockNoY = 0; blockNoY < this.numBlocksY; blockNoY++)
                 {
                     var blockMeshList = this.meshListGrid[blockNoX, blockNoY];
-                    var meshIDList = new List<int>();
+                    var meshIDList = new List<string>();
                     meshIDByBlocks[blockNoX, blockNoY] = meshIDList;
 
                     foreach (Mesh mesh in blockMeshList)

@@ -35,6 +35,7 @@ namespace SonOfRobin
 
         public static int GetUniqueID()
         {
+            // doesn't work in parallel
             currentID++;
             return currentID;
         }

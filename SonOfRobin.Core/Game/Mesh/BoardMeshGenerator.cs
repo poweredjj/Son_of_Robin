@@ -290,7 +290,13 @@ namespace SonOfRobin
                 //} // for profiling in debugger
             });
 
-            var meshArray = meshBag.ToArray();
+            var meshByID = new Dictionary<string, Mesh>();
+            foreach (Mesh mesh in meshBag)
+            {
+                meshByID[mesh.meshID] = mesh; // filtering out duplicated meshes
+            }
+
+            var meshArray = meshByID.Values.ToArray();
 
             MeshGrid meshGrid = new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, meshArray: meshArray);
 
