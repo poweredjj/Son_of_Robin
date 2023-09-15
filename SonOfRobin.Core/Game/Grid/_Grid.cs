@@ -76,7 +76,7 @@ namespace SonOfRobin
         public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
-        public Mesh[] meshes;
+        private MeshGrid meshGrid;
 
         public readonly Cell[,] cellGrid;
         public readonly Cell[] allCells;
@@ -261,7 +261,7 @@ namespace SonOfRobin
             this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
 
             // copying meshes
-            this.meshes = templateGrid.meshes;
+            this.meshGrid = templateGrid.meshGrid;
 
             // copying cell data
 
@@ -388,17 +388,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateMeshes:
-                    this.meshes = BoardMeshGenerator.GenerateMeshes(this);
-
-                    foreach (Mesh mesh in this.meshes)
-                    {
-                        foreach (int cellIndex in mesh.assignedCellsIndexes)
-                        {
-                            this.allCells[cellIndex].meshSet.Add(mesh);
-                        }
-                    }
-
-                    MessageLog.AddMessage(debugMessage: true, message: $"{this.meshes.Length} meshes added.");
+                    this.meshGrid = BoardMeshGenerator.GenerateMeshes(this);
 
                     break;
 
@@ -1057,12 +1047,8 @@ namespace SonOfRobin
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
 
-            var meshSet = new HashSet<Mesh>();
-
             foreach (Cell cell in this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false))
             {
-                meshSet.UnionWith(cell.meshSet);
-
                 if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
                     cell.SetAsVisited();
@@ -1075,7 +1061,7 @@ namespace SonOfRobin
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
 
-            foreach (Mesh mesh in meshSet.OrderBy(mesh => mesh.drawPriority))
+            foreach (Mesh mesh in this.meshGrid.GetMeshesForRect(cameraRect).Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority))
             {
                 basicEffect.Texture = mesh.texture;
 

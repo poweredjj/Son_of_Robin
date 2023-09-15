@@ -14,11 +14,11 @@ namespace SonOfRobin
     {
         private const string meshesFileName = "meshes.json";
 
-        public static Mesh[] GenerateMeshes(Grid grid)
+        public static MeshGrid GenerateMeshes(Grid grid)
         {
             string meshesFilePath = Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
-            Mesh[] loadedMeshes = LoadFromTemplate(meshesFilePath);
-            if (loadedMeshes != null) return loadedMeshes;
+            MeshGrid loadedMeshGrid = LoadFromTemplate(meshesFilePath);
+            if (loadedMeshGrid != null) return loadedMeshGrid;
 
             List<RawMapDataSearchForTexture> searchesUnsorted = new()
             {
@@ -236,7 +236,7 @@ namespace SonOfRobin
             var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches.ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
-            //foreach (RawMapDataSearch search in searches)
+            //foreach (RawMapDataSearch search in searches) // for profiling in debugger
             Parallel.ForEach(searches, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, search =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[search.textureName]);
@@ -287,13 +287,15 @@ namespace SonOfRobin
                         meshBag.Add(mesh);
                     }
                 }
-                //}
+                //} // for profiling in debugger
             });
 
             var meshArray = meshBag.ToArray();
 
-            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray);
-            return meshArray;
+            MeshGrid meshGrid = new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, meshArray: meshArray);
+
+            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray, meshGrid: meshGrid);
+            return meshGrid;
         }
 
         public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
@@ -325,7 +327,7 @@ namespace SonOfRobin
             return pixelBagsForPatterns;
         }
 
-        public static Mesh[] LoadFromTemplate(string meshesFilePath)
+        public static MeshGrid LoadFromTemplate(string meshesFilePath)
         {
             var loadedData = FileReaderWriter.Load(path: meshesFilePath);
             if (loadedData == null) return null;
@@ -343,10 +345,10 @@ namespace SonOfRobin
                 meshBag.Add(new Mesh(meshData));
             });
 
-            return meshBag.ToArray();
+            return new MeshGrid(meshGridData: loadedDict["meshGrid"], meshList: meshBag.ToList());
         }
 
-        public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray)
+        public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray, MeshGrid meshGrid)
         {
             var meshBagSerialized = new List<Object> { };
             foreach (Mesh mesh in meshArray)
@@ -357,6 +359,7 @@ namespace SonOfRobin
             Dictionary<string, Object> meshData = new()
             {
                 { "version", Mesh.currentVersion },
+                { "meshGrid", meshGrid.Serialize() },
                 { "meshList", meshBagSerialized },
             };
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
