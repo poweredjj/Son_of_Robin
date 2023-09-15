@@ -62,21 +62,21 @@ namespace SonOfRobin
             }
         }
 
-        public static Dictionary<Shape, List<Shape>> GenerateShapes(BitArrayWrapperChunk bitArrayChunk)
+        public static Dictionary<Shape, List<Shape>> GenerateShapes(BitArrayWrapper bitArrayWrapper)
         {
-            var shapeList = GenerateConnectedEdgesList(bitArrayChunk);
+            var shapeList = GenerateConnectedEdgesList(bitArrayWrapper);
             return GroupShapes(shapeList);
         }
 
-        private static List<Shape> GenerateConnectedEdgesList(BitArrayWrapperChunk bitArrayChunk)
+        private static List<Shape> GenerateConnectedEdgesList(BitArrayWrapper bitArrayWrapper)
         {
-            int width = bitArrayChunk.width;
-            int height = bitArrayChunk.height;
+            int width = bitArrayWrapper.width;
+            int height = bitArrayWrapper.height;
 
             bool xZeroFilled = false;
             for (int y = 0; y < height; y++)
             {
-                if (bitArrayChunk.GetVal(0, y))
+                if (bitArrayWrapper.GetVal(0, y))
                 {
                     xZeroFilled = true;
                     break;
@@ -86,7 +86,7 @@ namespace SonOfRobin
             bool yZeroFilled = false;
             for (int x = 0; x < width; x++)
             {
-                if (bitArrayChunk.GetVal(x, 0))
+                if (bitArrayWrapper.GetVal(x, 0))
                 {
                     yZeroFilled = true;
                     break;
@@ -113,7 +113,7 @@ namespace SonOfRobin
                     {
                         for (int j = 0; j < 2; j++)
                         {
-                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && bitArrayChunk.GetVal(x + i, y + j) ? 1 : 0;
+                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && bitArrayWrapper.GetVal(x + i, y + j) ? 1 : 0;
                         }
                     }
 

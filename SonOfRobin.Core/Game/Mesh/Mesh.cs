@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.007f;
+        public const float currentVersion = 1.008f;
 
         public readonly string meshID;
         public readonly string textureName;
@@ -19,7 +19,7 @@ namespace SonOfRobin
         public readonly Rectangle boundsRect;
         public readonly int drawPriority;
 
-        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority, Grid grid)
+        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
         {
             var vertices = vertList.ToArray();
 
@@ -32,15 +32,7 @@ namespace SonOfRobin
             this.boundsRect = boundsRect;
             this.drawPriority = drawPriority;
             // meshID cannot use Helpers.GetUniqueID() because it is not thread-safe (duplicated IDs will occur)
-            this.meshID = $"{this.boundsRect.Left},{this.boundsRect.Top}-{this.boundsRect.Width}x{this.boundsRect.Height}_{this.textureName}";
-
-            var overlappingCells = grid.GetCellsInsideRect(rectangle: boundsRect, addPadding: false);
-            var assignedCellsIndexes = new int[overlappingCells.Count];
-
-            for (int i = 0; i < overlappingCells.Count; i++)
-            {
-                assignedCellsIndexes[i] = overlappingCells[i].cellIndex;
-            }
+            this.meshID = $"{this.boundsRect.Left},{this.boundsRect.Top}_{this.boundsRect.Width}x{this.boundsRect.Height}_{this.textureName}";
         }
 
         public Mesh(object meshData)
@@ -130,6 +122,91 @@ namespace SonOfRobin
         {
             SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
                 PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+        }
+
+        public List<Mesh> SplitIntoChunks(int maxChunkSize)
+        {
+            if (maxChunkSize <= 0) throw new ArgumentException($"Invalid chunk size {maxChunkSize}.");
+
+            int numChunksX = (int)Math.Ceiling((double)this.boundsRect.Width / (double)maxChunkSize);
+            int numChunksY = (int)Math.Ceiling((double)this.boundsRect.Height / (double)maxChunkSize);
+
+            if (numChunksX == 1 && numChunksY == 1) return new List<Mesh> { this };
+
+            return new List<Mesh> { this }; // for testing
+
+            var indicesByVertices = new Dictionary<VertexPositionTexture, List<short>>[numChunksX, numChunksY];
+
+            for (int blockNoX = 0; blockNoX < numChunksX; blockNoX++)
+            {
+                for (int blockNoY = 0; blockNoY < numChunksY; blockNoY++)
+                {
+                    indicesByVertices[blockNoX, blockNoY] = new Dictionary<VertexPositionTexture, List<short>>();
+                }
+            }
+
+            // iterating over triangles
+            for (int i = 0; i < this.indices.Length; i += 3)
+            {
+                short index1 = indices[i];
+                short index2 = indices[i + 1];
+                short index3 = indices[i + 2];
+
+                VertexPositionTexture vertex1 = this.vertices[index1];
+                VertexPositionTexture vertex2 = this.vertices[index2];
+                VertexPositionTexture vertex3 = this.vertices[index3];
+
+                float xMin = Math.Min(Math.Min(vertex1.Position.X, vertex2.Position.X), vertex3.Position.X);
+                float yMin = Math.Min(Math.Min(vertex1.Position.Y, vertex2.Position.Y), vertex3.Position.Y);
+
+                int xBlockNo = (int)((xMin - this.boundsRect.X) / maxChunkSize);
+                int yBlockNo = (int)((yMin - this.boundsRect.Y) / maxChunkSize);
+
+                // Add the indices of the triangle to the corresponding vertex positions
+                AddToSplitIndices(indicesByVertices[xBlockNo, yBlockNo], vertex1, index1);
+                AddToSplitIndices(indicesByVertices[xBlockNo, yBlockNo], vertex2, index2);
+                AddToSplitIndices(indicesByVertices[xBlockNo, yBlockNo], vertex3, index3);
+            }
+
+            var chunkMeshes = new List<Mesh>();
+
+            for (int blockNoX = 0; blockNoX < numChunksX; blockNoX++)
+            {
+                for (int blockNoY = 0; blockNoY < numChunksY; blockNoY++)
+                {
+                    if (indicesByVertices[blockNoX, blockNoY].Count > 0)
+                    {
+                        var newVertices = new List<VertexPositionTexture>();
+                        var newIndices = new List<short>();
+
+                        foreach (var kvp in indicesByVertices[blockNoX, blockNoY])
+                        {
+                            VertexPositionTexture position = kvp.Key;
+                            List<short> indices = kvp.Value;
+
+                            // Add the position to the newVertices list
+                            newVertices.Add(position);
+
+                            // Update the indices in the newIndices list to point to the corresponding positions
+                            for (int i = 0; i < indices.Count; i++)
+                            {
+                                short newIndex = (short)(newVertices.Count - 1); // Index of the added position
+                                newIndices.Add(newIndex);
+                            }
+                        }
+
+                        chunkMeshes.Add(new(textureName: this.textureName, vertList: newVertices, indicesList: newIndices, drawPriority: this.drawPriority));
+                    }
+                }
+            }
+
+            return chunkMeshes;
+        }
+
+        private static void AddToSplitIndices(Dictionary<VertexPositionTexture, List<short>> splitIndices, VertexPositionTexture vertex, short index)
+        {
+            if (!splitIndices.ContainsKey(vertex)) splitIndices[vertex] = new List<short>();
+            splitIndices[vertex].Add(index);
         }
     }
 

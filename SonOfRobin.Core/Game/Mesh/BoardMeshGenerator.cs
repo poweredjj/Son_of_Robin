@@ -268,23 +268,19 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    int overlap = search.canOverlap ? 2 : 0;
+                    var groupedShapes = BitmapToShapesConverter.GenerateShapes(bitArrayWrapper);
 
-                    int chunkSize = Math.Max(1000 / grid.resDivider, 15); // 1000
+                    Mesh mesh = ConvertShapesToMesh(
+                        offset: new Vector2(xMin * grid.resDivider, yMin * grid.resDivider),
+                        scaleX: grid.resDivider, scaleY: grid.resDivider,
+                        textureName: $"repeating textures/{search.textureName}",
+                        drawPriority: search.drawPriority,
+                        groupedShapes: groupedShapes);
 
-                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: chunkSize, chunkHeight: chunkSize, xOverlap: overlap, yOverlap: overlap))
+                    List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 100);
+                    foreach (Mesh splitMesh in splitMeshes)
                     {
-                        var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
-
-                        Mesh mesh = ConvertShapesToMesh(
-                            offset: new Vector2((chunk.xOffset + xMin) * grid.resDivider, (chunk.yOffset + yMin) * grid.resDivider),
-                            scaleX: grid.resDivider, scaleY: grid.resDivider,
-                            textureName: $"repeating textures/{search.textureName}",
-                            drawPriority: search.drawPriority,
-                            grid: grid,
-                            groupedShapes: groupedShapes);
-
-                        meshBag.Add(mesh);
+                        meshBag.Add(splitMesh);
                     }
                 }
                 //} // for profiling in debugger
@@ -371,7 +367,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority, Grid grid)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
@@ -431,7 +427,7 @@ namespace SonOfRobin
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority, grid: grid);
+            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority);
         }
 
         public readonly struct RawMapDataSearchForTexture
@@ -439,7 +435,6 @@ namespace SonOfRobin
             public readonly RepeatingPattern.Name textureName;
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
             public readonly List<SearchEntryExtProps> searchEntriesExtProps;
-            public readonly bool canOverlap;
             public readonly bool otherSearchesAllowed;
             public readonly int drawPriority;
 
@@ -455,7 +450,6 @@ namespace SonOfRobin
                 this.searchEntriesTerrain = searchEntriesTerrain;
                 this.searchEntriesExtProps = searchEntriesExtProps;
 
-                this.canOverlap = canOverlap;
                 this.otherSearchesAllowed = otherSearchesAllowed;
                 this.drawPriority = drawPriority;
             }
