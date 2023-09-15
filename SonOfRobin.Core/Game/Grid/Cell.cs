@@ -9,6 +9,7 @@ namespace SonOfRobin
     {
         public readonly Grid grid;
 
+        public readonly int cellIndex;
         public readonly int cellNoX;
         public readonly int cellNoY;
 
@@ -52,10 +53,11 @@ namespace SonOfRobin
             StateMachinesPlants,
         }
 
-        public Cell(Grid grid, int cellNoX, int cellNoY, int cellWidth, int cellHeight)
+        public Cell(Grid grid, int cellIndex, int cellNoX, int cellNoY, int cellWidth, int cellHeight)
         {
             this.grid = grid;
 
+            this.cellIndex = cellIndex;
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
 

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.003f;
+        public const float currentVersion = 1.005f;
 
         public readonly string textureName;
         public readonly Texture2D texture;
@@ -17,7 +17,7 @@ namespace SonOfRobin
         public readonly Rectangle boundsRect;
         public readonly int drawPriority;
 
-        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
+        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority, Grid grid)
         {
             var vertices = vertList.ToArray();
 
@@ -26,8 +26,17 @@ namespace SonOfRobin
             this.vertices = vertices;
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
-            this.boundsRect = GetBoundsRect(vertices);
+            Rectangle boundsRect = GetBoundsRect(vertices);
+            this.boundsRect = boundsRect;
             this.drawPriority = drawPriority;
+
+            var overlappingCells = grid.GetCellsInsideRect(rectangle: boundsRect, addPadding: false);
+            var assignedCellsIndexes = new int[overlappingCells.Count];
+
+            for (int i = 0; i < overlappingCells.Count; i++)
+            {
+                assignedCellsIndexes[i] = overlappingCells[i].cellIndex;
+            }
         }
 
         public Mesh(object meshData)
@@ -82,7 +91,7 @@ namespace SonOfRobin
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
-                { "drawPriority", drawPriority },
+                { "drawPriority", this.drawPriority },
                 { "vertXPos", vertXPos },
                 { "vertYPos", vertYPos },
                 { "vertTexCoordX", vertTexCoordX },
@@ -114,6 +123,85 @@ namespace SonOfRobin
         {
             SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
                 PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+        }
+    }
+
+    public readonly struct MeshGrid
+    {
+        public readonly int totalWidth;
+        public readonly int totalHeight;
+        public readonly int blockWidth;
+        public readonly int blockHeight;
+        public readonly int numBlocksX;
+        public readonly int numBlocksY;
+
+        public readonly List<Mesh>[,] meshListGrid;
+
+        public MeshGrid(int totalWidth, int totalHeight, int blockWidth, int blockHeight, List<Mesh> meshList)
+        {
+            if (totalWidth <= 0 || totalWidth <= 0) throw new ArgumentException($"Invalid total size {totalWidth}x{totalWidth}.");
+            if (blockWidth <= 0 || blockHeight <= 0) throw new ArgumentException($"Invalid block size {blockWidth}x{blockHeight}.");
+
+            blockWidth = Math.Min(blockWidth, totalWidth);
+            blockHeight = Math.Min(blockHeight, totalHeight);
+
+            this.totalWidth = totalWidth;
+            this.totalHeight = totalHeight;
+            this.blockWidth = blockWidth;
+            this.blockHeight = blockHeight;
+
+            int numBlocksX = (int)Math.Ceiling((double)totalWidth / (double)blockWidth);
+            int numBlocksY = (int)Math.Ceiling((double)totalHeight / (double)blockHeight);
+
+            this.numBlocksX = numBlocksX;
+            this.numBlocksY = numBlocksY;
+
+            var meshListGrid = new List<Mesh>[numBlocksX, numBlocksY];
+
+            Rectangle blockRect = new(x: 0, y: 0, width: blockWidth, height: blockHeight);
+
+            for (int blockNoX = 0; blockNoX < numBlocksX; blockNoX++)
+            {
+                for (int blockNoY = 0; blockNoY < numBlocksY; blockNoY++)
+                {
+                    blockRect.X = blockNoX * blockWidth;
+                    blockRect.Y = blockNoY * blockHeight;
+
+                    var blockMeshList = meshListGrid[blockNoX, blockNoY];
+
+                    foreach (Mesh mesh in meshList)
+                    {
+                        if (mesh.boundsRect.Intersects(blockRect)) blockMeshList.Add(mesh);
+                    }
+                }
+            }
+
+            this.meshListGrid = meshListGrid;
+        }
+
+        public List<Mesh> GetMeshesForRect(Rectangle rect)
+        {
+            List<Mesh> meshesInRect = new();
+
+            // Calculate the block range that overlaps with the given rectangle.
+            int startBlockX = Math.Max(0, rect.Left / blockWidth);
+            int endBlockX = Math.Min(meshListGrid.GetLength(0) - 1, rect.Right / blockWidth);
+            int startBlockY = Math.Max(0, rect.Top / blockHeight);
+            int endBlockY = Math.Min(meshListGrid.GetLength(1) - 1, rect.Bottom / blockHeight);
+
+            for (int blockNoX = startBlockX; blockNoX <= endBlockX; blockNoX++)
+            {
+                for (int blockNoY = startBlockY; blockNoY <= endBlockY; blockNoY++)
+                {
+                    // Check if the block's meshes intersect with the given rectangle.
+                    foreach (Mesh mesh in meshListGrid[blockNoX, blockNoY])
+                    {
+                        meshesInRect.Add(mesh);
+                    }
+                }
+            }
+
+            return meshesInRect;
         }
     }
 }

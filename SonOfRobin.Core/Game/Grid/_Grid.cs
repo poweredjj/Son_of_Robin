@@ -79,7 +79,7 @@ namespace SonOfRobin
         public Mesh[] meshes;
 
         public readonly Cell[,] cellGrid;
-        public readonly List<Cell> allCells;
+        public readonly Cell[] allCells;
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
@@ -158,7 +158,7 @@ namespace SonOfRobin
         { get { return this.allCells.Where(cell => !cell.VisitedByPlayer); } }
 
         public float VisitedCellsPercentage
-        { get { return (float)this.allCells.Where(cell => cell.VisitedByPlayer).Count() / (float)this.allCells.Count; } }
+        { get { return (float)this.allCells.Where(cell => cell.VisitedByPlayer).Count() / (float)this.allCells.Length; } }
 
         public Dictionary<string, Object> Serialize()
         {
@@ -192,7 +192,7 @@ namespace SonOfRobin
             Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
-            for (int i = 0; i < grid.allCells.Count; i++)
+            for (int i = 0; i < grid.allCells.Length; i++)
             {
                 Cell cell = grid.allCells[i];
                 cell.Deserialize(cellData[i]);
@@ -392,9 +392,9 @@ namespace SonOfRobin
 
                     foreach (Mesh mesh in this.meshes)
                     {
-                        foreach (Cell cell in this.GetCellsInsideRect(rectangle: mesh.boundsRect, addPadding: false))
+                        foreach (int cellIndex in mesh.assignedCellsIndexes)
                         {
-                            cell.meshSet.Add(mesh);
+                            this.allCells[cellIndex].meshSet.Add(mesh);
                         }
                     }
 
@@ -971,14 +971,17 @@ namespace SonOfRobin
             return piecesInCameraView;
         }
 
-        private List<Cell> GetAllCells()
+        private Cell[] GetAllCells()
         {
-            List<Cell> allCells = new();
+            var allCells = new Cell[this.noOfCellsX * this.noOfCellsY];
 
             for (int x = 0; x < this.noOfCellsX; x++)
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
-                { allCells.Add(this.cellGrid[x, y]); }
+                {
+                    Cell cell = this.cellGrid[x, y];
+                    allCells[cell.cellIndex] = cell;
+                }
             }
             return allCells;
         }
@@ -1180,11 +1183,13 @@ namespace SonOfRobin
         {
             Cell[,] cellGrid = new Cell[this.noOfCellsX, this.noOfCellsY];
 
+            int cellIndex = 0;
             for (int x = 0; x < this.noOfCellsX; x++)
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    cellGrid[x, y] = new Cell(grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+                    cellGrid[x, y] = new Cell(grid: this, cellIndex: cellIndex, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+                    cellIndex++;
                 }
             }
 

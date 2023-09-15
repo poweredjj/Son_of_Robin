@@ -270,7 +270,7 @@ namespace SonOfRobin
 
                     int overlap = search.canOverlap ? 2 : 0;
 
-                    int chunkSize = Math.Max(500 / grid.resDivider, 15); // 500
+                    int chunkSize = Math.Max(1000 / grid.resDivider, 15); // 1000
 
                     foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: chunkSize, chunkHeight: chunkSize, xOverlap: overlap, yOverlap: overlap))
                     {
@@ -281,6 +281,7 @@ namespace SonOfRobin
                             scaleX: grid.resDivider, scaleY: grid.resDivider,
                             textureName: $"repeating textures/{search.textureName}",
                             drawPriority: search.drawPriority,
+                            grid: grid,
                             groupedShapes: groupedShapes);
 
                         meshBag.Add(mesh);
@@ -361,7 +362,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority, Grid grid)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
@@ -421,7 +422,7 @@ namespace SonOfRobin
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority);
+            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority, grid: grid);
         }
 
         public readonly struct RawMapDataSearchForTexture
