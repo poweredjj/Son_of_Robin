@@ -54,7 +54,7 @@ namespace SonOfRobin
                 // water_shallow is not listed, because it is just transparent (no mesh needed)
 
                 new(
-                textureName: RepeatingPattern.Name.water_supershallow, canOverlap: false, otherSearchesAllowed: true,
+                textureName: RepeatingPattern.Name.water_supershallow, canOverlap: false, otherSearchesAllowed: false,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax - 3, maxVal: Terrain.waterLevelMax),
                     },
@@ -268,19 +268,24 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    var groupedShapes = BitmapToShapesConverter.GenerateShapes(bitArrayWrapper);
-
-                    Mesh mesh = ConvertShapesToMesh(
-                        offset: new Vector2(xMin * grid.resDivider, yMin * grid.resDivider),
-                        scaleX: grid.resDivider, scaleY: grid.resDivider,
-                        textureName: $"repeating textures/{search.textureName}",
-                        drawPriority: search.drawPriority,
-                        groupedShapes: groupedShapes);
-
-                    List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
-                    foreach (Mesh splitMesh in splitMeshes)
+                    // splitting very large bitmaps into chunks, because triangulation has size limit
+                    // it is a little glitchy, but necessary at this point
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 2, yOverlap: 2)) // 2500, 2500
                     {
-                        meshBag.Add(splitMesh);
+                        var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
+
+                        Mesh mesh = ConvertShapesToMesh(
+                            offset: new Vector2((xMin + chunk.xOffset) * grid.resDivider, (yMin + chunk.yOffset) * grid.resDivider),
+                            scaleX: grid.resDivider, scaleY: grid.resDivider,
+                            textureName: $"repeating textures/{search.textureName}",
+                            drawPriority: search.drawPriority,
+                            groupedShapes: groupedShapes);
+
+                        List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
+                        foreach (Mesh splitMesh in splitMeshes)
+                        {
+                            meshBag.Add(splitMesh);
+                        }
                     }
                 }
                 //} // for profiling in debugger

@@ -152,25 +152,33 @@ namespace SonOfRobin
 
             for (int i = 0; i < this.indices.Length; i += 3)
             {
-                VertexPositionTexture vertex1 = this.vertices[indices[i]];
-                VertexPositionTexture vertex2 = this.vertices[indices[i + 1]];
-                VertexPositionTexture vertex3 = this.vertices[indices[i + 2]];
+                try
+                {
+                    VertexPositionTexture vertex1 = this.vertices[indices[i]];
+                    VertexPositionTexture vertex2 = this.vertices[indices[i + 1]];
+                    VertexPositionTexture vertex3 = this.vertices[indices[i + 2]];
 
-                float xMin = Math.Min(Math.Min(vertex1.Position.X, vertex2.Position.X), vertex3.Position.X);
-                float yMin = Math.Min(Math.Min(vertex1.Position.Y, vertex2.Position.Y), vertex3.Position.Y);
+                    float xMin = Math.Min(Math.Min(vertex1.Position.X, vertex2.Position.X), vertex3.Position.X);
+                    float yMin = Math.Min(Math.Min(vertex1.Position.Y, vertex2.Position.Y), vertex3.Position.Y);
 
-                int xBlockNo = (int)((xMin - this.boundsRect.X) / maxChunkSize);
-                int yBlockNo = (int)((yMin - this.boundsRect.Y) / maxChunkSize);
+                    int xBlockNo = (int)((xMin - this.boundsRect.X) / maxChunkSize);
+                    int yBlockNo = (int)((yMin - this.boundsRect.Y) / maxChunkSize);
 
-                short currentVecticesCount = (short)newVerticesArray[xBlockNo, yBlockNo].Count;
+                    short currentVecticesCount = (short)newVerticesArray[xBlockNo, yBlockNo].Count;
 
-                newVerticesArray[xBlockNo, yBlockNo].Add(vertex1);
-                newVerticesArray[xBlockNo, yBlockNo].Add(vertex2);
-                newVerticesArray[xBlockNo, yBlockNo].Add(vertex3);
+                    newVerticesArray[xBlockNo, yBlockNo].Add(vertex1);
+                    newVerticesArray[xBlockNo, yBlockNo].Add(vertex2);
+                    newVerticesArray[xBlockNo, yBlockNo].Add(vertex3);
 
-                newIndicesArray[xBlockNo, yBlockNo].Add(currentVecticesCount);
-                newIndicesArray[xBlockNo, yBlockNo].Add((short)(currentVecticesCount + 1));
-                newIndicesArray[xBlockNo, yBlockNo].Add((short)(currentVecticesCount + 2));
+                    newIndicesArray[xBlockNo, yBlockNo].Add(currentVecticesCount);
+                    newIndicesArray[xBlockNo, yBlockNo].Add((short)(currentVecticesCount + 1));
+                    newIndicesArray[xBlockNo, yBlockNo].Add((short)(currentVecticesCount + 2));
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    MessageLog.AddMessage(debugMessage: true, message: $"Mesh {this.textureName} - index {i} out of bounds", color: Color.Orange);
+                    continue;
+                }
             }
 
             var chunkMeshes = new List<Mesh>();

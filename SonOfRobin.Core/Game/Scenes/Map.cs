@@ -429,12 +429,13 @@ namespace SonOfRobin
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
 
-                foreach (Mesh mesh in this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
-
-                    // TODO add intersects check with all cells
-
+                HashSet<Mesh> meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
                     .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
-                    .OrderBy(mesh => mesh.drawPriority))
+                    .OrderBy(mesh => mesh.drawPriority).ToHashSet();
+
+
+                foreach (Mesh mesh in meshesToDraw)
+                // TODO add intersects check with all cells
                 {
                     basicEffect.Texture = mesh.texture;
 
