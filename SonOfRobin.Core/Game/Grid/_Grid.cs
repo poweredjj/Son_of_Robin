@@ -389,6 +389,15 @@ namespace SonOfRobin
 
                 case Stage.GenerateMeshes:
                     this.meshes = BoardMeshGenerator.GenerateMeshes(this);
+
+                    foreach (Mesh mesh in this.meshes)
+                    {
+                        foreach (Cell cell in this.GetCellsInsideRect(rectangle: mesh.boundsRect, addPadding: false))
+                        {
+                            cell.meshSet.Add(mesh);
+                        }
+                    }
+
                     MessageLog.AddMessage(debugMessage: true, message: $"{this.meshes.Length} meshes added.");
 
                     break;
@@ -1045,9 +1054,11 @@ namespace SonOfRobin
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
 
-            foreach (Cell cell in this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: false))
+            var meshSet = new HashSet<Mesh>();
+
+            foreach (Cell cell in this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false))
             {
-                cell.DrawBackground();
+                meshSet.UnionWith(cell.meshSet);
 
                 if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
@@ -1057,27 +1068,18 @@ namespace SonOfRobin
             }
 
             if (updateFog) this.world.map.dirtyFog = true;
-        }
-
-        public void DrawMeshes()
-        {
-            Rectangle cameraRect = this.world.camera.viewRect;
 
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
 
-            var meshesToDraw = this.meshes.Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority);
-            foreach (Mesh mesh in meshesToDraw)
+            foreach (Mesh mesh in meshSet.OrderBy(mesh => mesh.drawPriority))
             {
-                if (mesh.boundsRect.Intersects(cameraRect))
-                {
-                    basicEffect.Texture = mesh.texture;
+                basicEffect.Texture = mesh.texture;
 
-                    foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
-                    {
-                        effectPass.Apply();
-                        mesh.Draw();
-                    }
+                foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                {
+                    effectPass.Apply();
+                    mesh.Draw();
                 }
             }
         }

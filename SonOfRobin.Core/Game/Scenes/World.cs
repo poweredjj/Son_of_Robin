@@ -1358,18 +1358,11 @@ namespace SonOfRobin
             // drawing water surface
             this.scrollingSurfaceManager.DrawAllWater();
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-
             // drawing background (ground, leaving "holes" for water)
-            if (Preferences.debugDrawBitmapBackground) this.Grid.DrawBackground();
+            this.SetupPolygonDrawing(allowRepeat: true);
+            this.Grid.DrawBackground();
 
-            if (Preferences.debugDrawPolygonBackground)
-            {
-                SonOfRobinGame.SpriteBatch.End(); // ending before drawing polygons
-                this.SetupPolygonDrawing(allowRepeat: true);
-                this.Grid.DrawMeshes(); // meshes must be drawn without SpriteBatch started (glitches will occur otherwise)
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spritebatch
-            }
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing sprites
             var drawnPieces = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);

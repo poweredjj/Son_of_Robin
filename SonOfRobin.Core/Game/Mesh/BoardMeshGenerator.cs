@@ -268,7 +268,11 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 100, chunkHeight: 100, xOverlap: 0, yOverlap: 0)) // 500, 500
+                    int overlap = search.canOverlap ? 2 : 0;
+
+                    int chunkSize = Math.Max(500 / grid.resDivider, 15); // 500
+
+                    foreach (var chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: chunkSize, chunkHeight: chunkSize, xOverlap: overlap, yOverlap: overlap))
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 

@@ -516,7 +516,7 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
 
-        protected void SetupPolygonDrawing(bool allowRepeat)
+        protected void SetupPolygonDrawing(bool allowRepeat, BlendState blendState = null)
         {
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
@@ -525,6 +525,7 @@ namespace SonOfRobin
 
             // SpriteBatch resets this
             SonOfRobinGame.GfxDev.RasterizerState = Preferences.debugShowWireframe ? SonOfRobinGame.RasterizeStateNoCullingWireframe : SonOfRobinGame.RasterizeStateNoCulling;
+            SonOfRobinGame.GfxDev.BlendState = blendState == null ? BlendState.AlphaBlend : blendState;
 
             // will not show anything unless CullMode.None is set
             basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
