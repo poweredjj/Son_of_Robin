@@ -76,7 +76,7 @@ namespace SonOfRobin
         public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
-        private MeshGrid meshGrid;
+        public MeshGrid MeshGrid { get; private set; }
 
         public readonly Cell[,] cellGrid;
         public readonly Cell[] allCells;
@@ -261,7 +261,7 @@ namespace SonOfRobin
             this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
 
             // copying meshes
-            this.meshGrid = templateGrid.meshGrid;
+            this.MeshGrid = templateGrid.MeshGrid;
 
             // copying cell data
 
@@ -389,7 +389,7 @@ namespace SonOfRobin
 
                 case Stage.GenerateMeshes:
                     Mesh[] meshArray = BoardMeshGenerator.GenerateMeshes(this);
-                    this.meshGrid = new(totalWidth: this.width, totalHeight: this.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
+                    this.MeshGrid = new(totalWidth: this.width, totalHeight: this.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
 
                     break;
 
@@ -1062,7 +1062,7 @@ namespace SonOfRobin
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
 
-            foreach (Mesh mesh in this.meshGrid.GetMeshesForRect(cameraRect).Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority))
+            foreach (Mesh mesh in this.MeshGrid.GetMeshesForRect(cameraRect).Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority))
             {
                 basicEffect.Texture = mesh.texture;
 
@@ -1221,65 +1221,6 @@ namespace SonOfRobin
             }
 
             return cellsWithinDistance;
-        }
-
-        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, int maxNoToLoad)
-        {
-            if (SonOfRobinGame.LastUpdateDelay > 20 || SonOfRobinGame.fps.FPS < 20) return;
-
-            var cellsInCameraViewWithNoTexturesSearch = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
-            if (visitedByPlayerOnly) cellsInCameraViewWithNoTexturesSearch = cellsInCameraViewWithNoTexturesSearch.Where(cell => cell.VisitedByPlayer);
-
-            var cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTexturesSearch.ToList();
-            if (cellsInCameraViewWithNoTextures.Count == 0) return;
-
-            if (SonOfRobinGame.BoardTextureProcessor.CanTakeNewCellsNow)
-            {
-                var cellsToProcess = cellsInCameraViewWithNoTextures.Where(cell => !cell.boardGraphics.PNGTemplateExists);
-                SonOfRobinGame.BoardTextureProcessor.AddCellsToProcess(cellsToProcess);
-            }
-
-            Vector2 cameraCenter = camera.CurrentPos;
-
-            var cellsWithPNGByDistance = cellsInCameraViewWithNoTextures
-                .Where(cell => cell.boardGraphics.PNGTemplateExists)
-                .OrderBy(cell => cell.GetDistance(cameraCenter));
-
-            int noOfLoadedTexturesAtTheStart = this.loadedTexturesCount;
-            foreach (Cell cell in cellsWithPNGByDistance)
-            {
-                cell.boardGraphics.LoadTexture();
-                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || this.world.WorldElapsedUpdateTime.Milliseconds > 14 || SonOfRobinGame.fps.FPS < 20) return;
-            }
-        }
-
-        public void UnloadTexturesIfMemoryLow(Camera camera)
-        {
-            if (SonOfRobinGame.CurrentUpdate % 60 != 0 || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
-
-            if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
-
-            var cellsInCameraView = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
-            var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null);
-
-            foreach (Cell cell in cellsToUnload)
-            {
-                cell.boardGraphics.UnloadTexture();
-                MessageLog.AddMessage(debugMessage: true, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
-            }
-            MessageLog.AddMessage(debugMessage: true, message: "Finished unloading textures.", color: Color.Pink);
-            this.lastUnloadedTime = DateTime.Now;
-        }
-
-        public void UnloadAllTextures()
-        {
-            foreach (Cell cell in this.allCells)
-            {
-                cell.boardGraphics.UnloadTexture();
-                MessageLog.AddMessage(debugMessage: true, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
-            }
-            GC.Collect();
-            this.lastUnloadedTime = DateTime.Now;
         }
     }
 }

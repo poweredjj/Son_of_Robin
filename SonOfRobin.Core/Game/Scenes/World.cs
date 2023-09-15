@@ -934,9 +934,6 @@ namespace SonOfRobin
                 this.soundPaused = false;
             }
 
-            this.Grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, maxNoToLoad: 3);
-
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
             this.recentParticlesManager.Update();
 

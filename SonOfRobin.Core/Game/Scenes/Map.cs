@@ -233,7 +233,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    MessageLog.AddMessage( message: "Too dark to read the map.", avoidDuplicates: true);
+                    MessageLog.AddMessage(message: "Too dark to read the map.", avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -343,7 +343,7 @@ namespace SonOfRobin
                 {
                     if (analogZoom != 0) analogZoom = -analogZoom * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
 
-                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) * currentZoom * 1.5f; 
+                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) * currentZoom * 1.5f;
 
                     currentZoom += analogZoom;
                 }
@@ -406,33 +406,15 @@ namespace SonOfRobin
             bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
             // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
-            var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
-            bool foundCellsWithMissingTextures = false;
+            var cellsToErase = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
 
             if (showDetailedMap)
             {
-                cellsToDraw = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, addPadding: false);
-                if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer);
-
-                foreach (Cell cell in cellsToDraw)
-                {
-                    if (cell.boardGraphics.Texture == null)
-                    {
-                        foundCellsWithMissingTextures = true;
-                        break;
-                    }
-                }
-
-                if (foundCellsWithMissingTextures)
-                {
-                    // loading and unloading textures should be done during "foundCellsWithMissingTextures" only, to avoid unnecessary texture loading
-
-                    this.world.Grid.UnloadTexturesIfMemoryLow(this.camera);
-                    this.world.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, maxNoToLoad: 6);
-                }
+                cellsToErase = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, addPadding: false);
+                if (!Preferences.DebugShowWholeMap) cellsToErase = cellsToErase.Where(cell => !cell.VisitedByPlayer);
             }
 
-            if (!showDetailedMap || foundCellsWithMissingTextures)
+            if (!showDetailedMap)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
@@ -443,25 +425,46 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
+                this.SetupPolygonDrawing(allowRepeat: true);
+                BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+                basicEffect.TextureEnabled = true;
+
+                foreach (Mesh mesh in this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
+
+                    // TODO add intersects check with all cells
+
+                    .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
+                    .OrderBy(mesh => mesh.drawPriority))
+                {
+                    basicEffect.Texture = mesh.texture;
+
+                    foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                    {
+                        effectPass.Apply();
+                        mesh.Draw();
+                    }
+                }
+
                 // Water have to be drawn without the shader (will not display correctly otherwise),
                 // but have to retain lowResWholeCombinedGfx water color (changed by shader).
-                Color waterColorWithShader = new Color(89, 99, 81);
 
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spriteBatch, to turn off effects for drawing water rectangles
-                foreach (Cell cell in cellsToDraw)
+                foreach (Cell cell in cellsToErase)
                 {
-                    cell.DrawBackgroundWaterSimulation(waterColor: waterColorWithShader);
+                    // TODO replace with drawing over with empty map graphics
+
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, Color.White);
                 }
                 SonOfRobinGame.SpriteBatch.End();
 
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
-                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
-                foreach (Cell cell in cellsToDraw)
-                {
-                    if (cell.boardGraphics.Texture != null) cell.DrawBackground(opacity: 1f);
-                }
+                //SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
+                //this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
+                //foreach (Cell cell in cellsToDraw)
+                //{
+                //    if (cell.boardGraphics.Texture != null) cell.DrawBackground(opacity: 1f);
+                //}
 
-                SonOfRobinGame.SpriteBatch.End();
+                //SonOfRobinGame.SpriteBatch.End();
             }
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
