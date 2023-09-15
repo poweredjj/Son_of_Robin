@@ -14,11 +14,11 @@ namespace SonOfRobin
     {
         private const string meshesFileName = "meshes.json";
 
-        public static MeshGrid GenerateMeshes(Grid grid)
+        public static Mesh[] GenerateMeshes(Grid grid)
         {
             string meshesFilePath = Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
-            MeshGrid loadedMeshGrid = LoadFromTemplate(meshesFilePath);
-            if (loadedMeshGrid != null) return loadedMeshGrid;
+            Mesh[] loadedMeshArray = LoadFromTemplate(meshesFilePath);
+            if (loadedMeshArray != null) return loadedMeshArray;
 
             List<RawMapDataSearchForTexture> searchesUnsorted = new()
             {
@@ -277,7 +277,7 @@ namespace SonOfRobin
                         drawPriority: search.drawPriority,
                         groupedShapes: groupedShapes);
 
-                    List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 100);
+                    List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
                     foreach (Mesh splitMesh in splitMeshes)
                     {
                         meshBag.Add(splitMesh);
@@ -294,10 +294,8 @@ namespace SonOfRobin
 
             var meshArray = meshByID.Values.ToArray();
 
-            MeshGrid meshGrid = new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, meshArray: meshArray);
-
-            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray, meshGrid: meshGrid);
-            return meshGrid;
+            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray);
+            return meshArray;
         }
 
         public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
@@ -329,7 +327,7 @@ namespace SonOfRobin
             return pixelBagsForPatterns;
         }
 
-        public static MeshGrid LoadFromTemplate(string meshesFilePath)
+        public static Mesh[] LoadFromTemplate(string meshesFilePath)
         {
             var loadedData = FileReaderWriter.Load(path: meshesFilePath);
             if (loadedData == null) return null;
@@ -347,10 +345,10 @@ namespace SonOfRobin
                 meshBag.Add(new Mesh(meshData));
             });
 
-            return new MeshGrid(meshGridData: loadedDict["meshGrid"], meshList: meshBag.ToList());
+            return meshBag.ToArray();
         }
 
-        public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray, MeshGrid meshGrid)
+        public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray)
         {
             var meshBagSerialized = new List<Object> { };
             foreach (Mesh mesh in meshArray)
@@ -361,7 +359,6 @@ namespace SonOfRobin
             Dictionary<string, Object> meshData = new()
             {
                 { "version", Mesh.currentVersion },
-                { "meshGrid", meshGrid.Serialize() },
                 { "meshList", meshBagSerialized },
             };
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -146,16 +145,14 @@ namespace SonOfRobin
                 }
             }
 
+            //var addedVertices = new HashSet(VertexPositionTexture);
+
             // iterating over triangles
             for (int i = 0; i < this.indices.Length; i += 3)
             {
-                short index1 = indices[i];
-                short index2 = indices[i + 1];
-                short index3 = indices[i + 2];
-
-                VertexPositionTexture vertex1 = this.vertices[index1];
-                VertexPositionTexture vertex2 = this.vertices[index2];
-                VertexPositionTexture vertex3 = this.vertices[index3];
+                VertexPositionTexture vertex1 = this.vertices[indices[i]];
+                VertexPositionTexture vertex2 = this.vertices[indices[i + 1]];
+                VertexPositionTexture vertex3 = this.vertices[indices[i + 2]];
 
                 float xMin = Math.Min(Math.Min(vertex1.Position.X, vertex2.Position.X), vertex3.Position.X);
                 float yMin = Math.Min(Math.Min(vertex1.Position.Y, vertex2.Position.Y), vertex3.Position.Y);
@@ -191,7 +188,7 @@ namespace SonOfRobin
         }
     }
 
-    public class MeshGrid
+    public readonly struct MeshGrid
     {
         public readonly int totalWidth;
         public readonly int totalHeight;
@@ -199,7 +196,7 @@ namespace SonOfRobin
         public readonly int blockHeight;
         public readonly int numBlocksX;
         public readonly int numBlocksY;
-        public readonly List<Mesh>[,] meshListGrid;
+        public readonly Mesh[,][] meshArray;
 
         public MeshGrid(int totalWidth, int totalHeight, int blockWidth, int blockHeight, Mesh[] meshArray)
         {
@@ -214,10 +211,9 @@ namespace SonOfRobin
             this.numBlocksX = (int)Math.Ceiling((double)totalWidth / (double)blockWidth);
             this.numBlocksY = (int)Math.Ceiling((double)totalHeight / (double)blockHeight);
 
-            this.meshListGrid = new List<Mesh>[this.numBlocksX, this.numBlocksY];
+            this.meshArray = new Mesh[this.numBlocksX, this.numBlocksY][];
 
             Rectangle blockRect = new(x: 0, y: 0, width: blockWidth, height: blockHeight);
-
             for (int blockNoX = 0; blockNoX < this.numBlocksX; blockNoX++)
             {
                 for (int blockNoY = 0; blockNoY < this.numBlocksY; blockNoY++)
@@ -226,78 +222,14 @@ namespace SonOfRobin
                     blockRect.Y = blockNoY * blockHeight;
 
                     var blockMeshList = new List<Mesh>();
-                    meshListGrid[blockNoX, blockNoY] = blockMeshList;
-
                     foreach (Mesh mesh in meshArray)
                     {
                         if (mesh.boundsRect.Intersects(blockRect)) blockMeshList.Add(mesh);
                     }
+
+                    this.meshArray[blockNoX, blockNoY] = blockMeshList.ToArray();
                 }
             }
-        }
-
-        public MeshGrid(object meshGridData, List<Mesh> meshList)
-        {
-            var meshGridDict = (Dictionary<string, Object>)meshGridData;
-
-            this.totalWidth = (int)(Int64)meshGridDict["totalWidth"];
-            this.totalHeight = (int)(Int64)meshGridDict["totalHeight"];
-            this.blockWidth = (int)(Int64)meshGridDict["blockWidth"];
-            this.blockHeight = (int)(Int64)meshGridDict["blockHeight"];
-            this.numBlocksX = (int)(Int64)meshGridDict["numBlocksX"];
-            this.numBlocksY = (int)(Int64)meshGridDict["numBlocksY"];
-            var meshIDByBlocks = (List<string>[,])meshGridDict["meshIDByBlocks"];
-
-            var meshByID = meshList.ToDictionary(mesh => mesh.meshID, mesh => mesh);
-
-            this.meshListGrid = new List<Mesh>[this.numBlocksX, this.numBlocksY];
-
-            for (int blockNoX = 0; blockNoX < this.numBlocksX; blockNoX++)
-            {
-                for (int blockNoY = 0; blockNoY < this.numBlocksY; blockNoY++)
-                {
-                    var blockMeshList = new List<Mesh>();
-                    this.meshListGrid[blockNoX, blockNoY] = blockMeshList;
-
-                    foreach (string meshID in meshIDByBlocks[blockNoX, blockNoY])
-                    {
-                        blockMeshList.Add(meshByID[meshID]);
-                    }
-                }
-            }
-        }
-
-        public Object Serialize()
-        {
-            var meshIDByBlocks = new List<string>[this.numBlocksX, this.numBlocksY];
-
-            for (int blockNoX = 0; blockNoX < this.numBlocksX; blockNoX++)
-            {
-                for (int blockNoY = 0; blockNoY < this.numBlocksY; blockNoY++)
-                {
-                    var blockMeshList = this.meshListGrid[blockNoX, blockNoY];
-                    var meshIDList = new List<string>();
-                    meshIDByBlocks[blockNoX, blockNoY] = meshIDList;
-
-                    foreach (Mesh mesh in blockMeshList)
-                    {
-                        meshIDList.Add(mesh.meshID);
-                    }
-                }
-            }
-
-            Dictionary<string, Object> meshData = new()
-            {
-                { "totalWidth", this.totalWidth },
-                { "totalHeight", this.totalHeight },
-                { "blockWidth", this.blockWidth },
-                { "blockHeight", this.blockHeight },
-                { "numBlocksX", this.numBlocksX },
-                { "numBlocksY", this.numBlocksY },
-                { "meshIDByBlocks", meshIDByBlocks },
-            };
-
-            return meshData;
         }
 
         public List<Mesh> GetMeshesForRect(Rectangle rect)
@@ -306,19 +238,15 @@ namespace SonOfRobin
 
             // Calculate the block range that overlaps with the given rectangle.
             int startBlockX = Math.Max(0, rect.Left / blockWidth);
-            int endBlockX = Math.Min(meshListGrid.GetLength(0) - 1, rect.Right / blockWidth);
+            int endBlockX = Math.Min(this.meshArray.GetLength(0) - 1, rect.Right / blockWidth);
             int startBlockY = Math.Max(0, rect.Top / blockHeight);
-            int endBlockY = Math.Min(meshListGrid.GetLength(1) - 1, rect.Bottom / blockHeight);
+            int endBlockY = Math.Min(this.meshArray.GetLength(1) - 1, rect.Bottom / blockHeight);
 
             for (int blockNoX = startBlockX; blockNoX <= endBlockX; blockNoX++)
             {
                 for (int blockNoY = startBlockY; blockNoY <= endBlockY; blockNoY++)
                 {
-                    // Check if the block's meshes intersect with the given rectangle.
-                    foreach (Mesh mesh in meshListGrid[blockNoX, blockNoY])
-                    {
-                        meshesInRect.Add(mesh);
-                    }
+                    meshesInRect.AddRange(meshArray[blockNoX, blockNoY]);
                 }
             }
 
