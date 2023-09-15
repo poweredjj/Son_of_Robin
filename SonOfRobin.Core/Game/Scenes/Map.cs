@@ -397,9 +397,10 @@ namespace SonOfRobin
             // drawing paper map background texture
 
             Rectangle extendedMapRect = this.world.worldRect;
+
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
-            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedMapRect, new Color(89, 99, 81)); // simulating water color with shader on
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
@@ -437,7 +438,7 @@ namespace SonOfRobin
                 foreach (Mesh mesh in meshesToDraw)
                 // TODO add intersects check with all cells
                 {
-                    basicEffect.Texture = mesh.texture;
+                    basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {

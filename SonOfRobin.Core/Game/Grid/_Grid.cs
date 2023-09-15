@@ -1042,7 +1042,7 @@ namespace SonOfRobin
             return countByName;
         }
 
-        public void DrawBackground()
+        public int DrawBackground()
         {
             bool updateFog = false;
             Camera camera = this.world.camera;
@@ -1062,6 +1062,8 @@ namespace SonOfRobin
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
 
+            int trianglesDrawn = 0;
+
             HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect).Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority).ToHashSet();
             foreach (Mesh mesh in meshesToDraw)
             {
@@ -1071,8 +1073,10 @@ namespace SonOfRobin
                 {
                     effectPass.Apply();
                     mesh.Draw();
+                    trianglesDrawn += mesh.triangleCount;
                 }
             }
+            return trianglesDrawn;
         }
 
         public List<BoardPiece> DrawSprites(List<Sprite> blockingLightSpritesList)

@@ -1357,7 +1357,7 @@ namespace SonOfRobin
 
             // drawing background (ground, leaving "holes" for water)
             this.SetupPolygonDrawing(allowRepeat: true);
-            this.Grid.DrawBackground();
+            int trianglesDrawn = this.Grid.DrawBackground();
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
@@ -1365,7 +1365,7 @@ namespace SonOfRobin
             var drawnPieces = this.Grid.DrawSprites(blockingLightSpritesList: this.blockingLightSpritesList);
 
             // updating debugText
-            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count}";
+            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count} tris {trianglesDrawn}";
 
             // drawing debug cell data
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
