@@ -586,6 +586,9 @@ namespace SonOfRobin
             int resDivider = (int)(Int64)this.headerData["resDivider"];
             PieceTemplate.Name playerName = (PieceTemplate.Name)(Int64)this.headerData["playerName"];
 
+            var possibleResDividers = Preferences.namesForResDividers.Select(t => (int)t.Key).ToList();
+            if (!possibleResDividers.Contains(resDivider)) resDivider = possibleResDividers.Min();
+
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerName: playerName, resDivider: resDivider);
             this.MoveToTop();
 
