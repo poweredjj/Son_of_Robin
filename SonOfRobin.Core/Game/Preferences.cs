@@ -63,7 +63,7 @@ namespace SonOfRobin
                 if (!customizeWorld)
                 {
                     SelectedWorldSize = selectedWorldSize;  // to restore base values
-                    newWorldResDivider = 5;
+                    newWorldResDivider = 20;
                     randomSeed = true;
                 }
             }
