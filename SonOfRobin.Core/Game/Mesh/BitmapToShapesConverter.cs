@@ -23,20 +23,19 @@ namespace SonOfRobin
         {
             public readonly Vector2 start;
             public readonly Vector2 end;
-            public readonly double angle;
+            public readonly float angleRadians;
 
             public Edge(Vector2 start, Vector2 end)
             {
                 this.start = start;
                 this.end = end;
-                this.angle = GetAngleDegrees(start: start, end: end);
+                this.angleRadians = GetAngleDegrees(start: start, end: end);
             }
 
-            private static double GetAngleDegrees(Vector2 start, Vector2 end)
+            private static float GetAngleDegrees(Vector2 start, Vector2 end)
             {
                 Vector2 delta = end - start;
-                double angleInRadians = Math.Atan2(delta.Y, delta.X);
-                return Math.Round(angleInRadians * 180 / Math.PI);
+                return (float)Math.Atan2(delta.Y, delta.X);
             }
 
             public static Edge ReversedEdge(Edge edge)
@@ -173,7 +172,7 @@ namespace SonOfRobin
 
                             if (nextEdge.end == currentEdge.end) nextEdge = Edge.ReversedEdge(nextEdge);
 
-                            if (currentEdge.angle == nextEdge.angle)
+                            if (currentEdge.angleRadians == nextEdge.angleRadians)
                             {
                                 nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
                                 currentShape.pointList.Remove(currentEdge.end);
