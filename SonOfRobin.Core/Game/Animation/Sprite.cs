@@ -861,7 +861,7 @@ namespace SonOfRobin
                 int submergeCorrection = 0;
                 if (!this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
                 {
-                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
                 }
 
                 this.AnimFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
