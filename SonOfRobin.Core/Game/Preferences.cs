@@ -608,7 +608,6 @@ namespace SonOfRobin
             prefsData["vSync"] = vSync;
             prefsData["progressBarShowDetails"] = progressBarShowDetails;
             prefsData["swapMouseButtons"] = swapMouseButtons;
-            prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
             prefsData["rumbleEnabled"] = rumbleEnabled;
@@ -682,7 +681,6 @@ namespace SonOfRobin
                     vSync = (bool)prefsData["vSync"];
                     progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
                     swapMouseButtons = (bool)prefsData["swapMouseButtons"];
-                    maxTexturesToLoad = (int)(Int64)prefsData["maxTexturesToLoad"];
                     highQualityWater = (bool)prefsData["highQualityWater"];
                     plantsSway = (bool)prefsData["plantsSway"];
                     halfFramerate = (bool)prefsData["cap30FPS"];
