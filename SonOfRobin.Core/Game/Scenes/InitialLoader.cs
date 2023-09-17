@@ -212,7 +212,7 @@ namespace SonOfRobin
                 case Step.MakeDemoWorld:
                     if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
                     {
-                        if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 4000, height: 4000, resDivider: 5, demoMode: true, playerName: PieceTemplate.Name.PlayerBoy); // playerName is not used in demoWorld
+                        if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 10000, height: 10000, resDivider: 20, demoMode: true, playerName: PieceTemplate.Name.PlayerBoy); // playerName is not used in demoWorld
 
                         World demoWorld = World.GetTopWorld();
 

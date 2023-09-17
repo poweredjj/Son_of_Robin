@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
@@ -15,6 +16,7 @@ namespace SonOfRobin
         private int lastUpdateFrame;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
+        private int spriteTrackedSince;
         private bool trackedSpriteReached;
         private Vector2 trackedPos;
         private Tweener tweener;
@@ -22,6 +24,9 @@ namespace SonOfRobin
 
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
+
+        public int CurrentSpriteTrackingDuration
+        { get { return this.trackedSprite == null ? 0 : this.world.CurrentUpdate - this.spriteTrackedSince; } }
 
         public Vector2 CurrentPos { get; private set; }
         public float TargetZoom { get; private set; }
@@ -157,6 +162,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Undefined;
             this.TargetZoom = 1f;
             this.CurrentZoom = 1f;
+            this.spriteTrackedSince = 0;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = Vector2.One;
@@ -268,6 +274,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpriteReached = false;
+            this.spriteTrackedSince = this.world.CurrentUpdate;
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
 
@@ -276,6 +283,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Position;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
+            this.spriteTrackedSince = 0;
             this.trackedPos = new Vector2(position.X, position.Y);
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
@@ -324,15 +332,43 @@ namespace SonOfRobin
             }
         }
 
-        public void TrackLiveAnimal(bool fluidMotion)
+        public void TrackDemoModeTarget(bool firstRun)
         {
-            if (this.TrackedSpriteExists) return;
+            if (this.TrackedSpriteExists && this.CurrentSpriteTrackingDuration < 60 * 30) return;
 
-            var allSprites = this.world.Grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
-            var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive);
-            if (animals.Count() == 0) return;
-            var index = BoardPiece.Random.Next(animals.Count());
-            this.TrackPiece(trackedPiece: animals.ElementAt(index).boardPiece, moveInstantly: !fluidMotion);
+            if (firstRun)
+            {
+                this.SetZoom(zoom: 2f, setInstantly: firstRun);
+                this.SetMovementSpeed(0.25f);
+            }
+
+            Rectangle searchRect = firstRun ?
+                new Rectangle(
+                x: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.width), min: 0, max: this.world.width - 2000),
+                y: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.height), min: 0, max: this.world.height - 1000),
+                width: SonOfRobinGame.VirtualWidth,
+                height: SonOfRobinGame.VirtualHeight)
+                : this.viewRect;
+
+            for (int searchNo = 0; searchNo < 4; searchNo++)
+            {
+                var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: searchRect, addPadding: false);
+
+                var namesToSearch = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox };
+
+                var cameraTargets = spritesForRect.Where(sprite => sprite.boardPiece.alive && namesToSearch.Contains(sprite.boardPiece.name)).ToList();
+                if (cameraTargets.Count == 0)
+                {
+                    searchRect.Inflate(searchRect.Width / 2, searchRect.Height / 2);
+                    continue;
+                }
+                else
+                {
+                    var index = this.world.random.Next(cameraTargets.Count);
+                    this.TrackPiece(trackedPiece: cameraTargets[index].boardPiece, moveInstantly: firstRun);
+                    return;
+                }
+            }
         }
     }
 }

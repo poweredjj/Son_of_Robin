@@ -333,7 +333,7 @@ namespace SonOfRobin
 
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToPickUp = new List<BoardPiece>();

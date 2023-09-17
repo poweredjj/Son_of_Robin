@@ -461,7 +461,7 @@ namespace SonOfRobin
 
             if (newGameStarted)
             {
-                if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: false);
+                if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: true);
                 else
                 {
                     this.CreateAndPlacePlayer();
@@ -921,8 +921,6 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.demoMode) this.camera.SetZoom(zoom: 2f, setInstantly: true);
-
             this.ProcessInput();
             this.UpdateViewParams();
             this.weather.Update();
@@ -937,7 +935,7 @@ namespace SonOfRobin
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
             this.recentParticlesManager.Update();
 
-            if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
+            if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: false);
 
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
