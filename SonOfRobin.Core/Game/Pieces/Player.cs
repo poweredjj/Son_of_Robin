@@ -216,7 +216,7 @@ namespace SonOfRobin
 
         public List<PieceStorage> GetCraftStoragesToTakeFrom(bool showCraftMarker)
         {
-            var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage };
+            var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
 
             if (this.ResourcefulCrafter)
             {
