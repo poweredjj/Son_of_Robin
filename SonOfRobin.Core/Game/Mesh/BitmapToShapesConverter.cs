@@ -29,10 +29,10 @@ namespace SonOfRobin
             {
                 this.start = start;
                 this.end = end;
-                this.angleRadians = GetAngleDegrees(start: start, end: end);
+                this.angleRadians = GetAngleRadians(start: start, end: end);
             }
 
-            private static float GetAngleDegrees(Vector2 start, Vector2 end)
+            private static float GetAngleRadians(Vector2 start, Vector2 end)
             {
                 Vector2 delta = end - start;
                 return (float)Math.Atan2(delta.Y, delta.X);
