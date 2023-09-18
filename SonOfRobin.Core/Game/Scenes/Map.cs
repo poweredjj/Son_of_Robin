@@ -88,7 +88,7 @@ namespace SonOfRobin
             if (force || this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
                 if (this.lowResGround != null) this.lowResGround.Dispose();
-                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, true, SurfaceFormat.Color, DepthFormat.None);
                 if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
 
                 this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
@@ -113,6 +113,8 @@ namespace SonOfRobin
                 this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
+            this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
+
             SetRenderTarget(this.lowResGround);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
@@ -122,17 +124,20 @@ namespace SonOfRobin
             int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
             int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
 
-            this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
+            float sourceMultiplier = 1f / (float)this.world.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
+
+            Rectangle srcRect = new Rectangle(0, 0, (int)(cellWidth * sourceMultiplier), (int)(cellHeight * sourceMultiplier));
+            Rectangle destRect = new Rectangle(0, 0, destCellWidth, destCellHeight);
 
             foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.Grid.allCells : this.world.Grid.CellsVisitedByPlayer)
             {
-                Rectangle srcDestRect = new Rectangle(
-                    (int)Math.Floor(cell.xMin * this.scaleMultiplier),
-                    (int)Math.Floor(cell.yMin * this.scaleMultiplier),
-                    destCellWidth,
-                    destCellHeight);
+                srcRect.X = (int)Math.Floor(cell.xMin * sourceMultiplier);
+                srcRect.Y = (int)Math.Floor(cell.yMin * sourceMultiplier);
 
-                SonOfRobinGame.SpriteBatch.Draw(this.world.Grid.WholeIslandPreviewTexture, this.world.Grid.WholeIslandPreviewTexture.Bounds, srcDestRect, Color.White);
+                destRect.X = (int)Math.Floor(cell.xMin * this.scaleMultiplier);
+                destRect.Y = (int)Math.Floor(cell.yMin * this.scaleMultiplier);
+
+                SonOfRobinGame.SpriteBatch.Draw(texture: this.world.Grid.WholeIslandPreviewTexture, destinationRectangle: destRect, sourceRectangle: srcRect, color: Color.White);
             }
 
             SonOfRobinGame.SpriteBatch.End();

@@ -1035,10 +1035,16 @@ namespace SonOfRobin
         {
             if (this.WholeIslandPreviewTexture != null) return;
 
-            RenderTarget2D previewTexture = new RenderTarget2D(graphicsDevice: SonOfRobinGame.GfxDev, width: this.wholeIslandPreviewSize.X, height: this.wholeIslandPreviewSize.Y, mipMap: false, preferredFormat: SurfaceFormat.Color, preferredDepthFormat: DepthFormat.None);
+            RenderTarget2D previewRenderTarget = new RenderTarget2D(
+                graphicsDevice: SonOfRobinGame.GfxDev,
+                width: this.wholeIslandPreviewSize.X,
+                height: this.wholeIslandPreviewSize.Y,
+                mipMap: false,
+                preferredFormat: SurfaceFormat.Color, preferredDepthFormat: DepthFormat.None);
 
-            Scene.SetRenderTarget(previewTexture);
-            Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale((float)this.WholeIslandPreviewTexture.Width * (float)this.width));
+            Scene.SetRenderTarget(previewRenderTarget);
+
+            Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale(1f / (float)this.width * (float)this.wholeIslandPreviewSize.X));
 
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
@@ -1055,7 +1061,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.WholeIslandPreviewTexture = previewTexture;
+            this.WholeIslandPreviewTexture = previewRenderTarget;
 
             GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, $"whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
