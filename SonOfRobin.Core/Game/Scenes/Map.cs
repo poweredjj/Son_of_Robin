@@ -103,6 +103,8 @@ namespace SonOfRobin
         {
             if (this.lowResGround != null && this.dirtyFog == false) return;
 
+            this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
+
             this.SetViewParamsForMiniature();
 
             MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
@@ -112,8 +114,6 @@ namespace SonOfRobin
                 if (this.lowResGround != null) this.lowResGround.Dispose();
                 this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
-
-            this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
 
             SetRenderTarget(this.lowResGround);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);

@@ -70,8 +70,6 @@ namespace SonOfRobin
             this.yMax = this.yMin + this.height - 1;
 
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
-            float scale = this.grid.wholeIslandPreviewScale;
-            this.previewRect = new Rectangle((int)(this.rect.X * scale), (int)(this.rect.Y * scale), width: (int)(this.width * scale), height: (int)(this.height * scale));
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
 
             this.xCenter = this.xMin + (this.width / 2);

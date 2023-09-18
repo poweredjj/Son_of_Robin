@@ -69,9 +69,6 @@ namespace SonOfRobin
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
-
-        public readonly Point wholeIslandPreviewSize;
-        public readonly float wholeIslandPreviewScale;
         public Texture2D WholeIslandPreviewTexture { get; private set; }
 
         public readonly Dictionary<Terrain.Name, Terrain> terrainByName;
@@ -99,9 +96,6 @@ namespace SonOfRobin
             this.height = this.world.height;
             this.dividedWidth = (int)Math.Ceiling((double)this.width / (double)this.resDivider);
             this.dividedHeight = (int)Math.Ceiling((double)this.height / (double)this.resDivider);
-
-            this.wholeIslandPreviewSize = new Point(Math.Min(this.width / this.resDivider, 2000), Math.Min(this.height / this.resDivider, 2000));
-            this.wholeIslandPreviewScale = (float)wholeIslandPreviewSize.X / (float)this.width;
 
             if (cellWidth == 0 && cellHeight == 0)
             {
@@ -1035,24 +1029,25 @@ namespace SonOfRobin
         {
             if (this.WholeIslandPreviewTexture != null) return;
 
+            Point wholeIslandPreviewSize = new Point(Math.Min(this.width / this.resDivider, 2000), Math.Min(this.height / this.resDivider, 2000));
+
             RenderTarget2D previewRenderTarget = new RenderTarget2D(
                 graphicsDevice: SonOfRobinGame.GfxDev,
-                width: this.wholeIslandPreviewSize.X,
-                height: this.wholeIslandPreviewSize.Y,
+                width: wholeIslandPreviewSize.X,
+                height: wholeIslandPreviewSize.Y,
                 mipMap: false,
                 preferredFormat: SurfaceFormat.Color, preferredDepthFormat: DepthFormat.None);
 
             Scene.SetRenderTarget(previewRenderTarget);
-
-            Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale(1f / (float)this.width * (float)this.wholeIslandPreviewSize.X));
-
+            Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale(1f / (float)this.width * (float)wholeIslandPreviewSize.X));
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
             SonOfRobinGame.GfxDev.Clear(Map.waterColor);
 
+
             foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.drawPriority).Distinct())
             {
-                basicEffect.Texture = mesh.texture;
+                basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1063,7 +1058,7 @@ namespace SonOfRobin
 
             this.WholeIslandPreviewTexture = previewRenderTarget;
 
-            GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, $"whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
+            GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
 
         public int DrawBackground()

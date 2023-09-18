@@ -2,11 +2,9 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -83,96 +81,6 @@ namespace SonOfRobin
             return Path.Combine(grid.gridTemplate.templatePath, "whole_island.png");
         }
 
-        public static Image<Rgba32> CreateAndSaveEntireMapImage(Grid grid)
-        {
-            string mapImagePath = GetWholeIslandMapPath(grid);
-
-            // trying to load saved image
-
-            try
-            {
-                var loadedImage = Image.Load<Rgba32>(mapImagePath); // not "using", because it would return a disposed image
-                return loadedImage;
-            }
-            catch (FileNotFoundException) { }
-            catch (UnknownImageFormatException) { } // file corrupted
-
-            // trying to delete old image (in case of corruption)
-
-            try
-            {
-                if (File.Exists(mapImagePath)) File.Delete(mapImagePath);
-            }
-            catch (Exception ex)
-            { MessageLog.AddMessage(debugMessage: true, message: $"Error deleting file {mapImagePath}: {ex.Message}"); }
-
-            // generating new image
-
-            Point imageSize = Helpers.FitIntoSize(sourceWidth: grid.width, sourceHeight: grid.height, targetWidth: grid.wholeIslandPreviewSize.X, targetHeight: grid.wholeIslandPreviewSize.Y);
-            int width = imageSize.X;
-            int height = imageSize.Y;
-
-            float multiplierX = (float)width / (float)grid.width;
-            float multiplierY = (float)height / (float)grid.height;
-            float scaleMultiplier = Math.Min(multiplierX, multiplierY);
-
-            var imageWithTransparency = new Image<Rgba32>(width, height);
-
-            Parallel.For(0, height, y =>
-            {
-                int sourceY = (int)(y / scaleMultiplier);
-                Color[] rowColors = new Color[width];
-
-                for (int x = 0; x < width; x++)
-                {
-                    rowColors[x] = CreateTexturedPixel(grid: grid, x: (int)(x / scaleMultiplier), y: sourceY);
-                }
-
-                for (int x = 0; x < width; x++)
-                {
-                    imageWithTransparency[x, y] = new Rgba32(rowColors[x].R, rowColors[x].G, rowColors[x].B, rowColors[x].A);
-                }
-            });
-
-            // saving image
-
-            using (var fileStreamToSave = new FileStream(mapImagePath, FileMode.Create))
-            {
-                try
-                {
-                    imageWithTransparency.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
-                }
-                catch (IOException ex) { MessageLog.AddMessage(debugMessage: true, message: $"Error saving image {mapImagePath}: {ex.Message}"); } // write error
-            }
-
-            return imageWithTransparency;
-        }
-
-        public static Texture2D GetMapTextureScaledForScreenSize(Grid grid, int width, int height)
-        {
-            var colorArray = new Color[width * height];
-
-            using (Image<Rgba32> mapImage = CreateAndSaveEntireMapImage(grid))
-            {
-                var backgroundImage = new Image<Rgba32>(width, height, new Rgba32(Map.waterColor.R, Map.waterColor.G, Map.waterColor.B, Map.waterColor.A));
-                mapImage.Mutate(x => x.Resize(width, height));
-                backgroundImage.Mutate(ctx => ctx.DrawImage(mapImage, 1f)); // must be merged with water color, otherwise it will not look good (because of shaders)
-
-                Parallel.For(0, height, y =>
-                {
-                    int yFactor = y * width;
-
-                    for (int x = 0; x < width; x++)
-                    {
-                        colorArray[yFactor + x] = new Color(r: backgroundImage[x, y].R, g: backgroundImage[x, y].G, b: backgroundImage[x, y].B, alpha: backgroundImage[x, y].A);
-                    }
-                });
-            }
-
-            Texture2D texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
-            texture.SetData(colorArray);
-            return texture;
-        }
 
         public void CreateBitmapFromTerrainAndSaveAsPNG()
         {
