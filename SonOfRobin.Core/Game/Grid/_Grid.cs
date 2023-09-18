@@ -4,6 +4,7 @@ using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
@@ -29,7 +30,6 @@ namespace SonOfRobin
             LoadMeshes,
             GenerateMeshes,
             FillAllowedNames,
-            MakeEntireMapImage,
         }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
@@ -49,7 +49,6 @@ namespace SonOfRobin
             { Stage.LoadMeshes, "loading meshes" },
             { Stage.GenerateMeshes, "generating meshes" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
-            { Stage.MakeEntireMapImage, "making entire map image" },
         };
 
         private Task backgroundTask;
@@ -86,14 +85,10 @@ namespace SonOfRobin
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
-        public int loadedTexturesCount;
-        private DateTime lastUnloadedTime;
-
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.CreationInProgress = true;
             this.currentStage = 0;
-            this.lastUnloadedTime = DateTime.Now;
 
             this.world = world;
             this.resDivider = resDivider;
@@ -277,8 +272,6 @@ namespace SonOfRobin
 
             // finishing
 
-            this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).Count();
-
             this.FillCellListsForPieceNames();
 
             return true;
@@ -415,24 +408,7 @@ namespace SonOfRobin
 
                     this.FillCellListsForPieceNames();
 
-                    break;
-
-                case Stage.MakeEntireMapImage:
-                    string mapImagePath = BoardGraphics.GetWholeIslandMapPath(this);
-
-                    try
-                    { this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath); }
-                    catch (AggregateException)
-                    { }
-
-                    if (this.WholeIslandPreviewTexture == null)
-                    {
-                        BoardGraphics.CreateAndSaveEntireMapImage(this);
-                        this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
-                    }
-
                     this.CreationInProgress = false;
-
                     break;
 
                 default:
@@ -1055,6 +1031,35 @@ namespace SonOfRobin
             return countByName;
         }
 
+        public void GenerateWholeIslandPreviewTextureIfMissing()
+        {
+            if (this.WholeIslandPreviewTexture != null) return;
+
+            RenderTarget2D previewTexture = new RenderTarget2D(graphicsDevice: SonOfRobinGame.GfxDev, width: this.wholeIslandPreviewSize.X, height: this.wholeIslandPreviewSize.Y, mipMap: false, preferredFormat: SurfaceFormat.Color, preferredDepthFormat: DepthFormat.None);
+
+            Scene.SetRenderTarget(previewTexture);
+            Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale((float)this.WholeIslandPreviewTexture.Width * (float)this.width));
+
+            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
+
+            SonOfRobinGame.GfxDev.Clear(Map.waterColor);
+
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.drawPriority).Distinct())
+            {
+                basicEffect.Texture = mesh.texture;
+
+                foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                {
+                    effectPass.Apply();
+                    mesh.Draw();
+                }
+            }
+
+            this.WholeIslandPreviewTexture = previewTexture;
+
+            GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, $"whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
+        }
+
         public int DrawBackground()
         {
             bool updateFog = false;
@@ -1077,7 +1082,11 @@ namespace SonOfRobin
 
             int trianglesDrawn = 0;
 
-            HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect).Where(mesh => mesh.boundsRect.Intersects(cameraRect)).OrderBy(mesh => mesh.drawPriority).ToHashSet();
+            HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
+                .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
+                .OrderBy(mesh => mesh.drawPriority)
+                .ToHashSet();
+
             foreach (Mesh mesh in meshesToDraw)
             {
                 basicEffect.Texture = mesh.texture;

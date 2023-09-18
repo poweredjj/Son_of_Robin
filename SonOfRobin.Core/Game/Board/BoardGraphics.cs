@@ -62,7 +62,6 @@ namespace SonOfRobin
             }
 
             if (this.Texture == null) SonOfRobinGame.BoardTextureProcessor.AddCellToProcess(this.cell);
-            else this.cell.grid.loadedTexturesCount++;
         }
 
         public void ReplaceTexture(Texture2D texture)
@@ -77,7 +76,6 @@ namespace SonOfRobin
 
             this.Texture.Dispose();
             this.Texture = null;
-            this.cell.grid.loadedTexturesCount--;
         }
 
         public static string GetWholeIslandMapPath(Grid grid)

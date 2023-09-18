@@ -516,7 +516,7 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
 
-        protected void SetupPolygonDrawing(bool allowRepeat, BlendState blendState = null)
+        public static void SetupPolygonDrawing(bool allowRepeat, Matrix transformMatrix, BlendState blendState = null)
         {
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
@@ -530,8 +530,8 @@ namespace SonOfRobin
             // will not show anything unless CullMode.None is set
             basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
 
-            basicEffect.World = this.TransformMatrix;
-            // basicEffect.View *= this.TransformMatrix; // alternative to setting basicEffect.World
+            basicEffect.World = transformMatrix;
+            // basicEffect.View *= transformMatrix; // alternative to setting basicEffect.World
 
             if (allowRepeat) SonOfRobinGame.GfxDev.SamplerStates[0] = SamplerState.LinearWrap;
         }

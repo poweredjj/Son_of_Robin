@@ -27,10 +27,8 @@ namespace SonOfRobin
 
         private MapMode mode;
         private float scaleMultiplier;
-        private bool dirtyBackground;
         public bool dirtyFog;
-        private RenderTarget2D lowResWholeTerrainGfx;
-        private RenderTarget2D lowResWholeCombinedGfx;
+        private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         public BoardPiece MapMarker { get; private set; }
 
@@ -56,8 +54,7 @@ namespace SonOfRobin
         {
             base.Remove();
 
-            if (this.lowResWholeTerrainGfx != null) this.lowResWholeTerrainGfx.Dispose();
-            if (this.lowResWholeCombinedGfx != null) this.lowResWholeCombinedGfx.Dispose();
+            if (this.lowResGround != null) this.lowResGround.Dispose();
             if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
         }
 
@@ -74,7 +71,6 @@ namespace SonOfRobin
 
         public void ForceRender()
         {
-            this.dirtyBackground = true;
             this.dirtyFog = true;
 
             this.UpdateResolution(force: true);
@@ -89,65 +85,35 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            if (force || this.lowResWholeTerrainGfx == null || this.lowResWholeTerrainGfx.Width != this.viewParams.Width || this.lowResWholeTerrainGfx.Height != this.viewParams.Height)
+            if (force || this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
-                if (this.lowResWholeTerrainGfx != null) this.lowResWholeTerrainGfx.Dispose();
-                this.lowResWholeTerrainGfx = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.lowResGround != null) this.lowResGround.Dispose();
+                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
 
                 this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
-                this.dirtyBackground = true;
                 this.dirtyFog = true;
             }
 
-            this.UpdateCombinedGfx();
+            this.UpdateBackground();
         }
 
         public void UpdateBackground()
         {
-            if (this.dirtyBackground)
-            {
-                this.SetViewParamsForMiniature();
-
-                SetRenderTarget(this.lowResWholeTerrainGfx);
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-
-                int width = (int)(this.world.width * this.scaleMultiplier);
-                int height = (int)(this.world.height * this.scaleMultiplier);
-
-                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map background {width}x{height} (fullscreen {this.FullScreen})");
-
-                Texture2D mapTexture = BoardGraphics.GetMapTextureScaledForScreenSize(grid: this.world.Grid, width: width, height: height);
-
-                Rectangle sourceRectangle = new(0, 0, width, height);
-                SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
-                SonOfRobinGame.SpriteBatch.End();
-                mapTexture.Dispose();
-
-                this.dirtyBackground = false;
-                this.dirtyFog = true;
-                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
-            }
-
-            this.UpdateCombinedGfx();
-        }
-
-        private void UpdateCombinedGfx()
-        {
-            if (this.lowResWholeCombinedGfx != null && this.dirtyFog == false) return;
+            if (this.lowResGround != null && this.dirtyFog == false) return;
 
             this.SetViewParamsForMiniature();
 
             MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
 
-            if (this.lowResWholeCombinedGfx == null || this.lowResWholeCombinedGfx.Width != this.viewParams.Width || this.lowResWholeCombinedGfx.Height != this.viewParams.Height)
+            if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
-                if (this.lowResWholeCombinedGfx != null) this.lowResWholeCombinedGfx.Dispose();
-                this.lowResWholeCombinedGfx = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.lowResGround != null) this.lowResGround.Dispose();
+                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
-            SetRenderTarget(this.lowResWholeCombinedGfx);
+            SetRenderTarget(this.lowResGround);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
@@ -155,6 +121,8 @@ namespace SonOfRobin
             int cellHeight = this.world.Grid.allCells[0].height;
             int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
             int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
+
+            this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
 
             foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.Grid.allCells : this.world.Grid.CellsVisitedByPlayer)
             {
@@ -164,7 +132,7 @@ namespace SonOfRobin
                     destCellWidth,
                     destCellHeight);
 
-                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeTerrainGfx, srcDestRect, srcDestRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.world.Grid.WholeIslandPreviewTexture, this.world.Grid.WholeIslandPreviewTexture.Bounds, srcDestRect, Color.White);
             }
 
             SonOfRobinGame.SpriteBatch.End();
@@ -384,8 +352,6 @@ namespace SonOfRobin
         {
             if (this.Mode == MapMode.Off) return;
 
-            Rectangle viewRect = this.camera.viewRect;
-
             this.UpdateBackground();
 
             this.SetViewParamsForTargetRender();
@@ -398,10 +364,13 @@ namespace SonOfRobin
 
             // drawing paper map background texture
 
+            Texture2D mapTexture = AnimData.framesForPkgs[AnimData.PkgName.Map].texture;
+            Rectangle viewRect = this.camera.viewRect;
             Rectangle worldRect = this.world.worldRect;
             Rectangle extendedMapRect = this.world.worldRect;
+
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
-            Texture2D mapTexture = AnimData.framesForPkgs[AnimData.PkgName.Map].texture;
+
             SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White); // should always be drawn (edges transparency is not perfect and blue background would be showing a little otherwise)
 
             // drawing ground
@@ -412,8 +381,8 @@ namespace SonOfRobin
             {
                 var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
 
-                List<Cell> cellsToDraw = new List<Cell>();
-                List<Cell> cellsToErase = new List<Cell>();
+                var cellsToDraw = new List<Cell>();
+                var cellsToErase = new List<Cell>();
 
                 if (!Preferences.DebugShowWholeMap)
                 {
@@ -432,14 +401,12 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.End();
 
-                this.SetupPolygonDrawing(allowRepeat: true);
+                SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
 
-                var viewRectMeshes = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect);
                 var meshesToDraw = new List<Mesh>();
-
-                foreach (Mesh mesh in viewRectMeshes)
+                foreach (Mesh mesh in this.world.Grid.MeshGrid.GetMeshesForRect(viewRect))
                 {
                     foreach (Cell cell in cellsToDraw)
                     {
@@ -484,7 +451,7 @@ namespace SonOfRobin
             }
             else // !showDetailedMap
             {
-                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResGround, worldRect, Color.White);
             }
 
             // drawing last steps

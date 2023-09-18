@@ -207,6 +207,7 @@ namespace SonOfRobin
         public readonly int numBlocksX;
         public readonly int numBlocksY;
         public readonly Mesh[,][] meshArray;
+        public readonly Mesh[] allMeshes;
 
         public MeshGrid(int totalWidth, int totalHeight, int blockWidth, int blockHeight, Mesh[] inputMeshArray)
         {
@@ -221,6 +222,7 @@ namespace SonOfRobin
             int numBlocksX = (int)Math.Ceiling((double)totalWidth / (double)blockWidth);
             int numBlocksY = (int)Math.Ceiling((double)totalHeight / (double)blockHeight);
 
+            this.allMeshes = inputMeshArray;
             var meshArray = new Mesh[numBlocksX, numBlocksY][];
 
             Parallel.For(0, numBlocksX, blockNoX =>
@@ -265,7 +267,7 @@ namespace SonOfRobin
                 }
             }
 
-            return meshesInRect;
+            return meshesInRect; // will output duplicates
         }
     }
 }

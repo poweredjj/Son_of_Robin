@@ -1356,7 +1356,7 @@ namespace SonOfRobin
             this.scrollingSurfaceManager.DrawAllWater();
 
             // drawing background (ground, leaving "holes" for water)
-            this.SetupPolygonDrawing(allowRepeat: true);
+            SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
             int trianglesDrawn = this.Grid.DrawBackground();
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
