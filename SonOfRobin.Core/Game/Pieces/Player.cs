@@ -367,8 +367,6 @@ namespace SonOfRobin
                 float fatigueDifference = value - this.fatigue;
                 fatigueDifference = this.GetFinalFatigueValue(fatigueDifference);
 
-                MessageLog.AddMessage(debugMessage: true, message: $"fatigue {fatigueDifference}");
-
                 this.fatigue = Math.Clamp(value: this.fatigue + fatigueDifference, min: 0, max: this.maxFatigue);
 
                 if (this.IsVeryTired)

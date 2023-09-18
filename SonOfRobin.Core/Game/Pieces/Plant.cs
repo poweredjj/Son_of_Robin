@@ -108,7 +108,6 @@ namespace SonOfRobin
             if (occupiedSlots.Count == 0)
             {
                 if (showMessage) MessageLog.AddMessage(message: $"There is nothing left to shake off from {this.readableName}.", avoidDuplicates: true);
-
                 return false;
             }
 
@@ -122,7 +121,8 @@ namespace SonOfRobin
             Sound.QuickPlay(SoundData.Name.DropPlant);
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
-            if (this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName("default"); // swapping from "has_fruits", if the plant has such animation
+            // swapping from "has_fruits", if the plant has such animation
+            if (this.sprite.AnimName == "has_fruits" && this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName(newAnimName: "default", checkForCollision: false);
 
             return true;
         }
