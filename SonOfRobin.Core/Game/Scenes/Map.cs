@@ -384,6 +384,8 @@ namespace SonOfRobin
         {
             if (this.Mode == MapMode.Off) return;
 
+            Rectangle viewRect = this.camera.viewRect;
+
             this.UpdateBackground();
 
             this.SetViewParamsForTargetRender();
@@ -396,12 +398,10 @@ namespace SonOfRobin
 
             // drawing paper map background texture
 
+            Rectangle worldRect = this.world.worldRect;
             Rectangle extendedMapRect = this.world.worldRect;
-
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
-
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedMapRect, new Color(89, 99, 81)); // simulating water color with shader on
-            SonOfRobinGame.SpriteBatch.End();
+            Texture2D mapTexture = AnimData.framesForPkgs[AnimData.PkgName.Map].texture;
 
             // drawing background
             bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
@@ -411,17 +411,16 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
-                cellsToErase = this.world.Grid.GetCellsInsideRect(rectangle: this.camera.viewRect, addPadding: false);
-                if (!Preferences.DebugShowWholeMap) cellsToErase = cellsToErase.Where(cell => !cell.VisitedByPlayer);
+                if (!Preferences.DebugShowWholeMap)
+                {
+                    cellsToErase = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
+                    cellsToErase = cellsToErase.Where(cell => !cell.VisitedByPlayer);
+                }
             }
-
-            if (!showDetailedMap)
+            else
             {
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
-                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
-
-                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.world.worldRect, Color.White);
-                SonOfRobinGame.SpriteBatch.End();
+                SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, worldRect, Color.White);
             }
 
             if (showDetailedMap)
@@ -430,13 +429,12 @@ namespace SonOfRobin
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
 
-                HashSet<Mesh> meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
-                    .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
+                HashSet<Mesh> meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
+                    .Where(mesh => mesh.boundsRect.Intersects(viewRect))
                     .OrderBy(mesh => mesh.drawPriority).ToHashSet();
 
-
                 foreach (Mesh mesh in meshesToDraw)
-                // TODO add intersects check with all cells
+                // TODO add intersects() check with all cells
                 {
                     basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
 
@@ -447,31 +445,26 @@ namespace SonOfRobin
                     }
                 }
 
-                // Water have to be drawn without the shader (will not display correctly otherwise),
-                // but have to retain lowResWholeCombinedGfx water color (changed by shader).
+                float rectMultiplierX = 1f / (float)extendedMapRect.Width * (float)mapTexture.Width;
+                float rectMultiplierY = 1f / (float)extendedMapRect.Height * (float)mapTexture.Height;
 
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spriteBatch, to turn off effects for drawing water rectangles
+                Point extendedMapRectOffset = new Point(
+                    (int)((float)(extendedMapRect.Width - worldRect.Width) * rectMultiplierX / 2f),
+                    (int)((float)(extendedMapRect.Height - worldRect.Height) * rectMultiplierY / 2f)
+                    );
+
+                Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
+
                 foreach (Cell cell in cellsToErase)
                 {
-                    // TODO replace with drawing over with empty map graphics
+                    sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
+                    sourceRect.Y = (int)(cell.rect.Y * rectMultiplierY) + extendedMapRectOffset.Y;
 
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, Color.White);
+                    SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
-                SonOfRobinGame.SpriteBatch.End();
-
-                //SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
-                //this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
-                //foreach (Cell cell in cellsToDraw)
-                //{
-                //    if (cell.boardGraphics.Texture != null) cell.DrawBackground(opacity: 1f);
-                //}
-
-                //SonOfRobinGame.SpriteBatch.End();
             }
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-
-            // drawing last steps (without effects)
+            // drawing last steps
 
             float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
@@ -483,7 +476,7 @@ namespace SonOfRobin
 
             foreach (Vector2 stepPos in this.world.Player.LastSteps)
             {
-                if (this.camera.viewRect.Contains(stepPos))
+                if (viewRect.Contains(stepPos))
                 {
                     int maxSteps = Player.maxLastStepsCount;
 
@@ -503,9 +496,9 @@ namespace SonOfRobin
                 stepNo++;
             }
 
-            // drawing pieces (without effects)
+            // drawing pieces
 
-            Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
+            Rectangle worldCameraRectForSpriteSearch = viewRect;
             // mini map displays far pieces on the sides
             if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
             else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
@@ -569,12 +562,12 @@ namespace SonOfRobin
                         }
                     }
 
-                    if (this.Mode == MapMode.Mini && !this.camera.viewRect.Contains(destRect))
+                    if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
                     {
-                        destRect.X = Math.Max(this.camera.viewRect.Left, destRect.X);
-                        destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
-                        destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
-                        destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                        destRect.X = Math.Max(viewRect.Left, destRect.X);
+                        destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
+                        destRect.Y = Math.Max(viewRect.Top, destRect.Y);
+                        destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
                         opacity = 0.6f;
                     }
 
@@ -583,7 +576,7 @@ namespace SonOfRobin
                 }
             }
 
-            // drawing named locations (without effects)
+            // drawing named locations
 
             if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
             {
@@ -595,7 +588,7 @@ namespace SonOfRobin
 
                 foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
                 {
-                    if (location.areaRect.Intersects(this.camera.viewRect))
+                    if (location.areaRect.Intersects(viewRect))
                     {
                         if (Preferences.debugShowNamedLocationAreas)
                         {
@@ -641,7 +634,7 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Full)
             {
-                int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
+                int crossHairSize = (int)(viewRect.Width * 0.02f);
                 int crosshairHalfSize = crossHairSize / 2;
 
                 Rectangle crosshairRect = new(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
