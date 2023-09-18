@@ -402,29 +402,36 @@ namespace SonOfRobin
             Rectangle extendedMapRect = this.world.worldRect;
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
             Texture2D mapTexture = AnimData.framesForPkgs[AnimData.PkgName.Map].texture;
+            SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White); // should always be drawn (edges transparency is not perfect and blue background would be showing a little otherwise)
 
-            // drawing background
+            // drawing ground
             bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
             // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
-            var cellsToErase = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
-
             if (showDetailedMap)
             {
+                var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
+
+                List<Cell> cellsToDraw = new List<Cell>();
+                List<Cell> cellsToErase = new List<Cell>();
+
                 if (!Preferences.DebugShowWholeMap)
                 {
-                    cellsToErase = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
-                    cellsToErase = cellsToErase.Where(cell => !cell.VisitedByPlayer);
+                    foreach (Cell cell in visibleCells)
+                    {
+                        if (cell.VisitedByPlayer) cellsToDraw.Add(cell);
+                        else cellsToErase.Add(cell);
+                    }
                 }
-            }
-            else
-            {
-                SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White);
-                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, worldRect, Color.White);
-            }
+                else cellsToErase = visibleCells.ToList();
 
-            if (showDetailedMap)
-            {
+                foreach (Cell cell in cellsToDraw)
+                {
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, waterColor);
+                }
+
+                SonOfRobinGame.SpriteBatch.End();
+
                 this.SetupPolygonDrawing(allowRepeat: true);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
@@ -445,6 +452,8 @@ namespace SonOfRobin
                     }
                 }
 
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
                 float rectMultiplierX = 1f / (float)extendedMapRect.Width * (float)mapTexture.Width;
                 float rectMultiplierY = 1f / (float)extendedMapRect.Height * (float)mapTexture.Height;
 
@@ -455,6 +464,7 @@ namespace SonOfRobin
 
                 Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
 
+
                 foreach (Cell cell in cellsToErase)
                 {
                     sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
@@ -462,6 +472,10 @@ namespace SonOfRobin
 
                     SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
+            }
+            else // !showDetailedMap
+            {
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, worldRect, Color.White);
             }
 
             // drawing last steps
