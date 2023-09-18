@@ -1156,7 +1156,7 @@ namespace SonOfRobin
 
                     optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
 
-                    if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Night) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
+                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
 
                     optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
@@ -1191,6 +1191,7 @@ namespace SonOfRobin
                 case SleepMode.WaitMorning:
                     TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
                     TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
+                    if (timeUntilMorning > maxWaitingTime) timeUntilMorning = maxWaitingTime;
 
                     SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(maxWaitingTime.TotalMinutes - timeUntilMorning.TotalMinutes), maxVal: (int)maxWaitingTime.TotalMinutes, text: sleepModeText, addNumbers: false);
 
@@ -1316,7 +1317,7 @@ namespace SonOfRobin
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
 
-                MessageLog.AddMessage(message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
+                MessageLog.AddMessage(message: $"Inventory full - cannot pick up {closestPiece.readableName}.", avoidDuplicates: true);
             }
         }
 

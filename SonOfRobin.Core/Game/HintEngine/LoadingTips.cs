@@ -36,7 +36,7 @@ namespace SonOfRobin
             "Sometimes you will use less ingredients when crafting - it is called 'smart crafting'.",
             "If you run out of tools, you can acquire wood by using your basic knife.",
             "At noon, you will get tired much faster.",
-            "You can get rid of poison by eating food.",
+            "You can get rid of poison by drinking antidote.",
             "You are immune to heat, while being wet.",
             "You have to use meat workshop to get meat from an animal.",
             "Old equipment can be ripped apart to recover materials.",

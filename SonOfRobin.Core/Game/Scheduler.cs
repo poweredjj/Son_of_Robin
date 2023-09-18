@@ -389,7 +389,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null)
                             {
-                                MessageLog.AddMessage( message: "Could not create selected item, because no world was found.");
+                                MessageLog.AddMessage(message: "Could not create selected item, because no world was found.");
                                 return;
                             }
 
@@ -418,12 +418,12 @@ namespace SonOfRobin
                                 attemptNo++;
                                 if (attemptNo == 1000)
                                 {
-                                    MessageLog.AddMessage( message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                    MessageLog.AddMessage(message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
                                     break;
                                 }
                             }
 
-                            MessageLog.AddMessage( message: $"{piecesCreated} '{templateName}' pieces created.");
+                            MessageLog.AddMessage(message: $"{piecesCreated} '{templateName}' pieces created.");
 
                             return;
                         }
@@ -851,6 +851,13 @@ namespace SonOfRobin
                     case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)this.ExecuteHelper;
+
+                            if (!fruitPlant.world.Player.CanSeeAnything)
+                            {
+                                MessageLog.AddMessage(debugMessage: false, message: $"It is too dark to shake {fruitPlant.readableName}.", avoidDuplicates: true);
+                                return;
+                            }
+
                             bool fruitDropped = fruitPlant.DropFruit(showMessage: true);
 
                             if (fruitDropped)

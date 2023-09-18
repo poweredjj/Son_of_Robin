@@ -371,9 +371,10 @@ namespace SonOfRobin
                     ignoreHintSetting: true,
                     generalHintToActivate: HintEngine.Type.CineSmallBase,
                     piecesCraftedCount: new List<CountComparison> {
-                        new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
-                        new CountComparison(name: PieceTemplate.Name.TentSmall, count: 1)},
-                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 } }, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.WorkshopEssential }),
+                        new CountComparison(name: PieceTemplate.Name.WorkshopBasic, count: 1),
+                        new CountComparison(name: PieceTemplate.Name.TentModern, count: 1)},
+                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopBasic, 1 }, { PieceTemplate.Name.TentModern, 1 } },
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic }),
 
                  new PieceHint(
                     type: PieceHint.Type.CineRuins,

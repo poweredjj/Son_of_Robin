@@ -817,7 +817,7 @@ namespace SonOfRobin
                         this.startingMass = 250;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
-                        this.stackSize = 6;
+                        this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
                         break;

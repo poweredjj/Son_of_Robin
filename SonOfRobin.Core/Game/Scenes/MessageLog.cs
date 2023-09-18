@@ -14,12 +14,11 @@ namespace SonOfRobin
 
     public class MessageLog : Scene
     {
-        private struct Message
+        private readonly struct Message
         {
             public readonly string text;
             public readonly int deletionFrame;
             public readonly Color color;
-            private static int lastDeletionFrame = 0;
 
             public Message(string message, Color color)
             {
@@ -33,9 +32,13 @@ namespace SonOfRobin
             }
         }
 
+        private static int lastDeletionFrame = 0;
         private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
+        private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
+        private static DateTime lastDebugMessageAdded = DateTime.MinValue;
+        private static DateTime lastUserMessageAdded = DateTime.MinValue;
         private static string lastDebugMessage = "";
         private static string lastUserMessage = "";
 
@@ -105,12 +108,21 @@ namespace SonOfRobin
         {
             if (avoidDuplicates)
             {
-                if ((debugMessage && lastDebugMessage == message) || (!debugMessage && lastUserMessage == message)) return;
+                if ((debugMessage && lastDebugMessage == message && DateTime.Now - lastDebugMessageAdded < maxDuplicateCheckDuration) ||
+                    (!debugMessage && lastUserMessage == message && DateTime.Now - lastUserMessageAdded < maxDuplicateCheckDuration)) return;
             }
 
             Console.WriteLine(message); // additional output
-            if (debugMessage) lastDebugMessage = message;
-            else lastUserMessage = message;
+            if (debugMessage)
+            {
+                lastDebugMessage = message;
+                lastDebugMessageAdded = DateTime.Now;
+            }
+            else
+            {
+                lastUserMessage = message;
+                lastUserMessageAdded = DateTime.Now;
+            }
 
             if (debugMessage && !Preferences.DebugMode) return;
 
