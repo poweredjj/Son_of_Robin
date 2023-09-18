@@ -27,7 +27,7 @@ namespace SonOfRobin
 
         private MapMode mode;
         private float scaleMultiplier;
-        public bool dirtyFog;
+        public bool backgroundNeedsUpdating;
         private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         public BoardPiece MapMarker { get; private set; }
@@ -46,7 +46,7 @@ namespace SonOfRobin
             this.world = world;
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
-            this.dirtyFog = true;
+            this.backgroundNeedsUpdating = true;
             this.sketchEffect = new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1);
         }
 
@@ -60,7 +60,7 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
-            this.UpdateResolution(force: true);
+            this.UpdateResolution();
             this.mapOverlay.AddTransition();
         }
 
@@ -71,51 +71,49 @@ namespace SonOfRobin
 
         public void ForceRender()
         {
-            this.dirtyFog = true;
+            this.backgroundNeedsUpdating = true;
 
-            this.UpdateResolution(force: true);
-            this.UpdateBackground();
+            this.UpdateResolution();
         }
 
-        public void UpdateResolution(bool force = false)
+        public void UpdateResolution()
         {
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
+            this.FinalMapToDisplay?.Dispose();
+            this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
+
             this.SetViewParamsForMiniature();
 
-            if (force || this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
+            if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
-                if (this.lowResGround != null) this.lowResGround.Dispose();
+                this.lowResGround?.Dispose();
                 this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, true, SurfaceFormat.Color, DepthFormat.None);
-                if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
-
-                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
-
-                this.dirtyFog = true;
             }
 
-            this.UpdateBackground();
+            this.backgroundNeedsUpdating = true;
         }
 
         public void UpdateBackground()
         {
-            if (this.lowResGround != null && this.dirtyFog == false) return;
+            if (this.lowResGround != null && this.backgroundNeedsUpdating == false) return;
 
             this.world.Grid.GenerateWholeIslandPreviewTextureIfMissing();
 
             this.SetViewParamsForMiniature();
 
-            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
+            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
 
             if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
-                if (this.lowResGround != null) this.lowResGround.Dispose();
+                this.lowResGround?.Dispose();
                 this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
             SetRenderTarget(this.lowResGround);
+
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
@@ -142,7 +140,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.End();
 
-            this.dirtyFog = false;
+            this.backgroundNeedsUpdating = false;
         }
 
         public void SwitchToNextMode()
@@ -410,20 +408,11 @@ namespace SonOfRobin
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
 
-                var meshesToDraw = new List<Mesh>();
-                foreach (Mesh mesh in this.world.Grid.MeshGrid.GetMeshesForRect(viewRect))
-                {
-                    foreach (Cell cell in cellsToDraw)
-                    {
-                        if (cell.rect.Intersects(mesh.boundsRect))
-                        {
-                            meshesToDraw.Add(mesh);
-                            break;
-                        }
-                    }
-                }
+                var meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
+                    .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
+                    .OrderBy(mesh => mesh.drawPriority).Distinct();
 
-                foreach (Mesh mesh in meshesToDraw.Distinct().OrderBy(mesh => mesh.drawPriority))
+                foreach (Mesh mesh in meshesToDraw)
                 {
                     basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
 

@@ -295,7 +295,7 @@ namespace SonOfRobin
                         List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
                         foreach (Mesh splitMesh in splitMeshes)
                         {
-                            meshBag.Add(splitMesh);
+                            if (mesh.indices.Length >= 3) meshBag.Add(splitMesh);
                         }
                     }
                 }
@@ -358,7 +358,8 @@ namespace SonOfRobin
             var meshBag = new ConcurrentBag<Mesh>();
             Parallel.ForEach(meshListSerialized, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshData =>
             {
-                meshBag.Add(new Mesh(meshData));
+                Mesh mesh = new Mesh(meshData);
+                if (mesh.indices.Length >= 3) meshBag.Add(mesh);
             });
 
             return meshBag.ToArray();

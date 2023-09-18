@@ -242,13 +242,15 @@ namespace SonOfRobin
 
             // copying whole island texture
 
-            this.WholeIslandPreviewTexture?.Dispose();
-
-            this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
-
-            Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
-            templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
-            this.WholeIslandPreviewTexture.SetData(pixelData);
+            if (templateGrid.WholeIslandPreviewTexture != null)
+            {
+                this.WholeIslandPreviewTexture?.Dispose(); // just in case
+                this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
+               
+                Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
+                templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
+                this.WholeIslandPreviewTexture.SetData(pixelData);
+            }
 
             // copying named locations
             this.namedLocations.CopyLocationsFromTemplate(templateGrid.namedLocations);
@@ -1044,7 +1046,6 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(Map.waterColor);
 
-
             foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.drawPriority).Distinct())
             {
                 basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
@@ -1058,7 +1059,7 @@ namespace SonOfRobin
 
             this.WholeIslandPreviewTexture = previewRenderTarget;
 
-            GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
+            // GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
 
         public int DrawBackground()
@@ -1076,7 +1077,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (updateFog) this.world.map.dirtyFog = true;
+            if (updateFog) this.world.map.backgroundNeedsUpdating = true;
 
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
             basicEffect.TextureEnabled = true;
