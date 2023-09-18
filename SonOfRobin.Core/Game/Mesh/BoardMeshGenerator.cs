@@ -14,12 +14,23 @@ namespace SonOfRobin
     {
         private const string meshesFileName = "meshes.json";
 
+        private static string GetMeshesFilePath(Grid grid)
+        {
+            return Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
+        }
+
+        public static Mesh[] LoadMeshes(Grid grid)
+        {
+            return LoadFromTemplate(GetMeshesFilePath(grid));
+        }
+
+        public static MeshGrid CreateMeshGrid(Mesh[] meshArray, Grid grid)
+        {
+            return new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
+        }
+
         public static Mesh[] GenerateMeshes(Grid grid)
         {
-            string meshesFilePath = Path.Combine(grid.gridTemplate.templatePath, meshesFileName);
-            Mesh[] loadedMeshArray = LoadFromTemplate(meshesFilePath);
-            if (loadedMeshArray != null) return loadedMeshArray;
-
             List<RawMapDataSearchForTexture> searchesUnsorted = new()
             {
                 new(
@@ -299,7 +310,7 @@ namespace SonOfRobin
 
             var meshArray = meshByID.Values.ToArray();
 
-            SaveToTemplate(meshesFilePath: meshesFilePath, meshArray: meshArray);
+            SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
             return meshArray;
         }
 

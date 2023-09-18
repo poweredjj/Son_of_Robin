@@ -26,6 +26,7 @@ namespace SonOfRobin
             SetExtDataPropertiesGrid,
             SetExtDataFinish,
             GenerateNamedLocations,
+            LoadMeshes,
             GenerateMeshes,
             FillAllowedNames,
             MakeEntireMapImage,
@@ -45,6 +46,7 @@ namespace SonOfRobin
             { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.GenerateNamedLocations, "generating named locations" },
+            { Stage.LoadMeshes, "loading meshes" },
             { Stage.GenerateMeshes, "generating meshes" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.MakeEntireMapImage, "making entire map image" },
@@ -77,6 +79,7 @@ namespace SonOfRobin
         public ExtBoardProps ExtBoardProps { get; private set; }
         public readonly NamedLocations namedLocations;
         public MeshGrid MeshGrid { get; private set; }
+        private bool meshGridLoaded;
 
         public readonly Cell[,] cellGrid;
         public readonly Cell[] allCells;
@@ -129,6 +132,7 @@ namespace SonOfRobin
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
+            this.meshGridLoaded = false;
 
             if (this.CopyBoardFromTemplate())
             {
@@ -387,9 +391,18 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.LoadMeshes:
+                    Mesh[] meshArray = BoardMeshGenerator.LoadMeshes(this);
+                    if (meshArray != null)
+                    {
+                        this.MeshGrid = BoardMeshGenerator.CreateMeshGrid(meshArray: meshArray, grid: this);
+                        this.meshGridLoaded = true;
+                    }
+
+                    break;
+
                 case Stage.GenerateMeshes:
-                    Mesh[] meshArray = BoardMeshGenerator.GenerateMeshes(this);
-                    this.MeshGrid = new(totalWidth: this.width, totalHeight: this.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
+                    if (!this.meshGridLoaded) this.MeshGrid = BoardMeshGenerator.CreateMeshGrid(meshArray: BoardMeshGenerator.GenerateMeshes(this), grid: this);
 
                     break;
 
