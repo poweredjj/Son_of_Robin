@@ -655,6 +655,8 @@ namespace SonOfRobin
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
                     BoardPiece startingItem = PieceTemplate.CreatePiece(world: this, templateName: Preferences.newWorldStartingItem);
+                    startingItem.createdByPlayer = true;
+                    startingItem.canBeHit = false;
                     this.Player.PieceStorage.AddPiece(piece: startingItem, dropIfDoesNotFit: true); // should not equip the item automatically
 
                     if (playerName == PieceTemplate.Name.PlayerTestDemoness)

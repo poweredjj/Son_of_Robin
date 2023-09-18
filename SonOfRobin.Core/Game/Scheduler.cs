@@ -859,7 +859,6 @@ namespace SonOfRobin
                             }
 
                             bool fruitDropped = fruitPlant.DropFruit(showMessage: true);
-
                             if (fruitDropped)
                             {
                                 World world = fruitPlant.world;
