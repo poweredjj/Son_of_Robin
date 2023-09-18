@@ -183,6 +183,7 @@ namespace SonOfRobin
 
             if (anyTargetHit)
             {
+                player.Fatigue += 3;
                 this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
                 {
