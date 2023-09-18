@@ -367,6 +367,8 @@ namespace SonOfRobin
                 float fatigueDifference = value - this.fatigue;
                 fatigueDifference = this.GetFinalFatigueValue(fatigueDifference);
 
+                MessageLog.AddMessage(debugMessage: true, message: $"fatigue {fatigueDifference}");
+
                 this.fatigue = Math.Clamp(value: this.fatigue + fatigueDifference, min: 0, max: this.maxFatigue);
 
                 if (this.IsVeryTired)
@@ -1072,6 +1074,7 @@ namespace SonOfRobin
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
             if (this.shootingPower < maxShootingPower) new RumbleEvent(force: (float)this.shootingPower / maxShootingPower * 0.1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
 
+            this.Fatigue += 5;
             if (this.visualAid == null) this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Crosshair);
 
             this.Walk(setOrientation: false);
