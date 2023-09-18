@@ -354,13 +354,13 @@ namespace SonOfRobin
 
                         if (Preferences.CustomizeWorld)
                         {
-                            List<Object> sizeList = new() { 10000, 15000, 20000, 25000, 30000, 40000 };
-                            if (SonOfRobinGame.platform == Platform.Desktop) sizeList.AddRange(new List<Object> { 50000, 60000 });
+                            List<Object> sizeList = new() { 15000, 20000, 25000, 30000, 40000, 50000, 60000 };
+                            if (SonOfRobinGame.platform == Platform.Desktop) sizeList.AddRange(new List<Object> { 70000, 80000, 90000, 100000 });
 
                             if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine || Preferences.debugEnableExtremeMapSizes)
                             {
                                 sizeList.InsertRange(0, new List<Object> { 1000, 2000, 4000, 8000 });
-                                sizeList.AddRange(new List<Object> { 70000, 80000, 90000, 100000, 150000, 200000 });
+                                sizeList.AddRange(new List<Object> { 120000, 150000, 200000 });
                             }
 
                             new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: preferences, propertyName: "newWorldSize");

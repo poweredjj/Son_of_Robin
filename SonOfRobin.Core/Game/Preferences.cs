@@ -368,10 +368,10 @@ namespace SonOfRobin
 
                 newWorldSize = selectedWorldSize switch
                 {
-                    WorldSize.small => 10000,
+                    WorldSize.small => 15000,
                     WorldSize.medium => 30000,
-                    WorldSize.large => 40000,
-                    WorldSize.gigantic => 60000,
+                    WorldSize.large => 60000,
+                    WorldSize.gigantic => 80000,
                     _ => throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}."),
                 };
 
