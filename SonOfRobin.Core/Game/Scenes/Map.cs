@@ -423,7 +423,7 @@ namespace SonOfRobin
                         else cellsToErase.Add(cell);
                     }
                 }
-                else cellsToErase = visibleCells.ToList();
+                else cellsToDraw = visibleCells.ToList();
 
                 foreach (Cell cell in cellsToDraw)
                 {
@@ -436,12 +436,22 @@ namespace SonOfRobin
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
                 basicEffect.TextureEnabled = true;
 
-                HashSet<Mesh> meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
-                    .Where(mesh => mesh.boundsRect.Intersects(viewRect))
-                    .OrderBy(mesh => mesh.drawPriority).ToHashSet();
+                var viewRectMeshes = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect);
+                var meshesToDraw = new List<Mesh>();
 
-                foreach (Mesh mesh in meshesToDraw)
-                // TODO add intersects() check with all cells
+                foreach (Mesh mesh in viewRectMeshes)
+                {
+                    foreach (Cell cell in cellsToDraw)
+                    {
+                        if (cell.rect.Intersects(mesh.boundsRect))
+                        {
+                            meshesToDraw.Add(mesh);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (Mesh mesh in meshesToDraw.Distinct().OrderBy(mesh => mesh.drawPriority))
                 {
                     basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
 
@@ -463,7 +473,6 @@ namespace SonOfRobin
                     );
 
                 Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
-
 
                 foreach (Cell cell in cellsToErase)
                 {
