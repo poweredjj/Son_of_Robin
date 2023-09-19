@@ -21,7 +21,7 @@ namespace SonOfRobin
         private readonly Camera camera;
         private Task backgroundTask;
         private Rectangle bgTaskLastCameraRect;
-        private List<Sprite> bgTaskCameraSprites;
+        private List<Sprite> bgTaskSpritesToShow;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
@@ -488,76 +488,45 @@ namespace SonOfRobin
 
             // drawing pieces
 
-            List<Sprite> spritesList = new List<Sprite>(this.bgTaskCameraSprites);
-
-            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
-            var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
-            var typesShownIfDiscovered = new List<Type> { typeof(Container) };
-            var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.Totem };
-
-            if (Preferences.DebugShowWholeMap)
+            foreach (Sprite sprite in this.bgTaskSpritesToShow.ToArray())
             {
-                typesShownAlways.Add(typeof(Animal));
-                typesShownAlways.AddRange(typesShownIfDiscovered);
-                namesShownAlways.AddRange(namesShownIfDiscovered);
-            }
+                float opacity = 1f;
+                Rectangle destRect = sprite.GfxRect;
 
-            if (this.MapMarker != null) spritesList.Add(this.MapMarker.sprite);
+                destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
 
-            foreach (Sprite sprite in spritesList)
-            {
-                BoardPiece piece = sprite.boardPiece;
-                PieceTemplate.Name name = piece.name;
-                Type pieceType = piece.GetType();
+                int maxSize = 300; // to avoid sprites being too large (big tent, for example)
 
-                bool showSprite = false;
-
-                if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
-
-                if (!showSprite && sprite.hasBeenDiscovered &&
-                    (namesShownIfDiscovered.Contains(name) ||
-                    typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
-
-                if (showSprite)
+                if (destRect.Width > destRect.Height)
                 {
-                    float opacity = 1f;
-                    Rectangle destRect = sprite.GfxRect;
-
-                    destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
-
-                    int maxSize = 300; // to avoid sprites being too large (big tent, for example)
-
-                    if (destRect.Width > destRect.Height)
+                    if (destRect.Width > maxSize)
                     {
-                        if (destRect.Width > maxSize)
-                        {
-                            float aspect = (float)destRect.Height / (float)destRect.Width;
-                            int widthReduction = destRect.Width - maxSize;
-                            destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
-                        }
+                        float aspect = (float)destRect.Height / (float)destRect.Width;
+                        int widthReduction = destRect.Width - maxSize;
+                        destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
                     }
-                    else
-                    {
-                        if (destRect.Height > maxSize)
-                        {
-                            float aspect = (float)destRect.Width / (float)destRect.Height;
-                            int heightReduction = destRect.Height - maxSize;
-                            destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
-                        }
-                    }
-
-                    if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
-                    {
-                        destRect.X = Math.Max(viewRect.Left, destRect.X);
-                        destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
-                        destRect.Y = Math.Max(viewRect.Top, destRect.Y);
-                        destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
-                        opacity = 0.6f;
-                    }
-
-                    if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
-                    sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
                 }
+                else
+                {
+                    if (destRect.Height > maxSize)
+                    {
+                        float aspect = (float)destRect.Width / (float)destRect.Height;
+                        int heightReduction = destRect.Height - maxSize;
+                        destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
+                    }
+                }
+
+                if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
+                {
+                    destRect.X = Math.Max(viewRect.Left, destRect.X);
+                    destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
+                    destRect.Y = Math.Max(viewRect.Top, destRect.Y);
+                    destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
+                    opacity = 0.6f;
+                }
+
+                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
+                sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
             }
 
             // drawing named locations
@@ -645,16 +614,23 @@ namespace SonOfRobin
             if (this.backgroundTask == null || this.backgroundTask.IsFaulted) this.backgroundTask = Task.Run(() => this.BackgroundTaskLoop());
         }
 
+        private static readonly List<Type> typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
+        private static readonly List<PieceTemplate.Name> namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
+        private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container) };
+        private static readonly List<PieceTemplate.Name> namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.Totem };
+
         private void BackgroundTaskLoop()
         {
             while (true)
             {
                 Rectangle viewRect = this.camera.viewRect;
+                var showList = new List<Sprite>();
 
                 if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(1); // to avoid high CPU usage
                 else
                 {
                     this.bgTaskLastCameraRect = viewRect;
+                    showList.Clear();
 
                     Rectangle worldCameraRectForSpriteSearch = viewRect;
 
@@ -664,7 +640,33 @@ namespace SonOfRobin
 
                     var cameraSprites = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
 
-                    this.bgTaskCameraSprites = cameraSprites.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+                    if (Preferences.DebugShowWholeMap)
+                    {
+                        typesShownAlways.Add(typeof(Animal));
+                        typesShownAlways.AddRange(typesShownIfDiscovered);
+                        namesShownAlways.AddRange(namesShownIfDiscovered);
+                    }
+
+                    if (this.MapMarker != null) cameraSprites.Add(this.MapMarker.sprite);
+
+                    foreach (Sprite sprite in cameraSprites)
+                    {
+                        BoardPiece piece = sprite.boardPiece;
+                        PieceTemplate.Name name = piece.name;
+                        Type pieceType = piece.GetType();
+
+                        bool showSprite = false;
+
+                        if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
+
+                        if (!showSprite && sprite.hasBeenDiscovered &&
+                            (namesShownIfDiscovered.Contains(name) ||
+                            typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
+
+                        if (showSprite) showList.Add(sprite);
+                    }
+
+                    this.bgTaskSpritesToShow = showList.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
                 }
             }
         }

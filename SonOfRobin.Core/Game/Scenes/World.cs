@@ -1028,7 +1028,7 @@ namespace SonOfRobin
 
                 if (processedPiecesCount > 30 && !this.CanProcessMoreCameraRectPiecesNow) // even in the worst case, some pieces must be processed
                 {
-                    MessageLog.AddMessage(debugMessage: true, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                    // MessageLog.AddMessage(debugMessage: true, message: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                     return;
                 }
             }
@@ -1056,7 +1056,7 @@ namespace SonOfRobin
 
             if (!this.CanProcessMoreOffCameraRectPiecesNow)
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Non-plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                // MessageLog.AddMessage(debugMessage: true, message: $"Non-plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
             }
 
@@ -1125,7 +1125,7 @@ namespace SonOfRobin
 
             if (!this.CanProcessMoreOffCameraRectPiecesNow)
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
+                // MessageLog.AddMessage(debugMessage: true, message: $"Plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
             }
 
