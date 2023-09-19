@@ -39,7 +39,6 @@ namespace SonOfRobin
         private static float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
 
-        private static readonly Color paperColor = new Color(214, 199, 133, 255);
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
         private static readonly Color stepDotColor = new Color(56, 36, 0);
 
@@ -52,6 +51,7 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
             this.bgTaskLastCameraRect = new Rectangle();
+            this.bgTaskSpritesToShow = new List<Sprite>();
         }
 
         public override void Remove()
