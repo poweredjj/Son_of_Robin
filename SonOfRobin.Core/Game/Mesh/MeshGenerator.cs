@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-    public class BoardMeshGenerator
+    public class MeshGenerator
     {
         private const string meshesFileName = "meshes.json";
 
@@ -34,7 +34,7 @@ namespace SonOfRobin
             var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.meshDefBySearchPriority.ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
-            //foreach (RawMapDataSearch search in searches) // for profiling in debugger
+            //foreach (MeshDefinition meshDef in MeshDefinition.meshDefBySearchPriority) // for profiling in debugger
             Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshDef =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
@@ -66,8 +66,8 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    // splitting very large bitmaps into chunks, because triangulation has size limit
-                    // it is a little glitchy, but necessary at this point
+                    // Splitting very large bitmaps into chunks, because triangulation has size limit.
+                    // It is a little glitchy, but necessary at this point.
                     foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 2, yOverlap: 2)) // 2500, 2500
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);

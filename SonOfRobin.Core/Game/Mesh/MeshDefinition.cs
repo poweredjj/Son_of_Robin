@@ -13,7 +13,7 @@ namespace SonOfRobin
 
         public readonly TextureBank.TextureName textureName;
         public readonly TextureBank.TextureName mapTextureName;
-        public readonly BoardMeshGenerator.RawMapDataSearchForTexture search;
+        public readonly MeshGenerator.RawMapDataSearchForTexture search;
         public readonly int drawPriority;
 
         public readonly Tweener tweener;
@@ -22,7 +22,7 @@ namespace SonOfRobin
         public float textureScaleX;
         public float textureScaleY;
 
-        public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, BoardMeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
+        public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
         {
             this.textureName = textureName;
             this.mapTextureName = mapTextureName;

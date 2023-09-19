@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.010f;
+        public const float currentVersion = 1.011f;
 
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;
@@ -56,14 +56,14 @@ namespace SonOfRobin
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
 
-            var vertXPos = (List<float>)meshDict["vertXPos"];
-            var vertYPos = (List<float>)meshDict["vertYPos"];
-            var vertTexCoordX = (List<float>)meshDict["vertTexCoordX"];
-            var vertTexCoordY = (List<float>)meshDict["vertTexCoordY"];
+            var vertXPos = (float[])meshDict["vertXPos"];
+            var vertYPos = (float[])meshDict["vertYPos"];
+            var vertTexCoordX = (float[])meshDict["vertTexCoordX"];
+            var vertTexCoordY = (float[])meshDict["vertTexCoordY"];
 
             var vertList = new List<VertexPositionTexture>();
 
-            for (int i = 0; i < vertXPos.Count; i++)
+            for (int i = 0; i < vertXPos.Length; i++)
             {
                 VertexPositionTexture vertex = new();
                 vertex.Position = new Vector3(vertXPos[i], vertYPos[i], 0);
@@ -98,10 +98,10 @@ namespace SonOfRobin
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
-                { "vertXPos", vertXPos },
-                { "vertYPos", vertYPos },
-                { "vertTexCoordX", vertTexCoordX },
-                { "vertTexCoordY", vertTexCoordY },
+                { "vertXPos", vertXPos.ToArray() },
+                { "vertYPos", vertYPos.ToArray() },
+                { "vertTexCoordX", vertTexCoordX.ToArray() },
+                { "vertTexCoordY", vertTexCoordY.ToArray() },
             };
 
             return meshData;
@@ -139,7 +139,7 @@ namespace SonOfRobin
                 {
                     drawTransformedCopy = true;
                     Vector2 textureOffset = new Vector2(meshDef.textureOffsetX, meshDef.textureOffsetY);
-                    Vector2 textureScale = new Vector2(meshDef.textureScaleX, meshDef.textureScaleY);
+                    Vector2 textureScale = new Vector2(1f / meshDef.textureScaleX, 1f / meshDef.textureScaleY);
 
                     for (int i = 0; i < this.vertices.Length; i++)
                     {

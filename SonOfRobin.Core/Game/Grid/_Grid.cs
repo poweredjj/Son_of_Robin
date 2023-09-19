@@ -375,17 +375,17 @@ namespace SonOfRobin
                     break;
 
                 case Stage.LoadMeshes:
-                    Mesh[] meshArray = BoardMeshGenerator.LoadMeshes(this);
+                    Mesh[] meshArray = MeshGenerator.LoadMeshes(this);
                     if (meshArray != null)
                     {
-                        this.MeshGrid = BoardMeshGenerator.CreateMeshGrid(meshArray: meshArray, grid: this);
+                        this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: meshArray, grid: this);
                         this.meshGridLoaded = true;
                     }
 
                     break;
 
                 case Stage.GenerateMeshes:
-                    if (!this.meshGridLoaded) this.MeshGrid = BoardMeshGenerator.CreateMeshGrid(meshArray: BoardMeshGenerator.GenerateMeshes(this), grid: this);
+                    if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(this), grid: this);
 
                     break;
 
