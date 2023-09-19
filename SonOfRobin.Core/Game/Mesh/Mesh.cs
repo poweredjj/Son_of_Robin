@@ -15,7 +15,7 @@ namespace SonOfRobin
         public readonly Texture2D texture;
         public readonly Texture2D mapTexture;
         private readonly VertexPositionTexture[] vertices;
-        private readonly VertexPositionTexture[] verticesWorkingCopy;
+        private readonly VertexPositionTexture[] verticesTransformedCopy;
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
@@ -27,7 +27,7 @@ namespace SonOfRobin
             this.texture = TextureBank.GetTexture(this.textureName);
             this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
             this.vertices = vertList.ToArray();
-            this.verticesWorkingCopy = vertList.ToArray();
+            this.verticesTransformedCopy = vertList.ToArray();
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
             Rectangle boundsRect = GetBoundsRect(vertices);
@@ -73,7 +73,7 @@ namespace SonOfRobin
             }
 
             this.vertices = vertList.ToArray();
-            this.verticesWorkingCopy = vertList.ToArray();
+            this.verticesTransformedCopy = vertList.ToArray();
 
             this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
@@ -127,6 +127,8 @@ namespace SonOfRobin
 
         public void Draw(bool processTweeners)
         {
+            bool drawTransformedCopy = false;
+
             if (processTweeners)
             {
                 MeshDefinition meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
@@ -135,23 +137,19 @@ namespace SonOfRobin
                     meshDef.textureScaleX != 1f ||
                     meshDef.textureScaleX != 1f)
                 {
+                    drawTransformedCopy = true;
                     Vector2 textureOffset = new Vector2(meshDef.textureOffsetX, meshDef.textureOffsetY);
                     Vector2 textureScale = new Vector2(meshDef.textureScaleX, meshDef.textureScaleY);
 
                     for (int i = 0; i < this.vertices.Length; i++)
                     {
-                        this.verticesWorkingCopy[i].TextureCoordinate = (this.vertices[i].TextureCoordinate * textureScale) + textureOffset;
+                        this.verticesTransformedCopy[i].TextureCoordinate = (this.vertices[i].TextureCoordinate * textureScale) + textureOffset;
                     }
                 }
+            }
 
-                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                    PrimitiveType.TriangleList, this.verticesWorkingCopy, 0, this.verticesWorkingCopy.Length, indices, 0, this.triangleCount);
-            }
-            else
-            {
-                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                    PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
-            }
+            SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                PrimitiveType.TriangleList, drawTransformedCopy ? this.verticesTransformedCopy : this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
         }
 
         public List<Mesh> SplitIntoChunks(int maxChunkSize)
