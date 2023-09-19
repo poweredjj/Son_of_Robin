@@ -275,15 +275,26 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetX, toValue: 0.004f, duration: 0.8f, delay: 0)
-                .RepeatForever(repeatDelay: 8f)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetX, toValue: -0.002f, duration: 2.0f, delay: 0)
+                .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
-                .Easing(EasingFunctions.BounceIn);
+                .Easing(EasingFunctions.CircleInOut);
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetY, toValue: 0.004f, duration: 0.8f, delay: 0)
-                .RepeatForever(repeatDelay: 8f)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetY, toValue: 0.002f, duration: 1.7f, delay: 0)
+                .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
-                .Easing(EasingFunctions.BounceIn);
+                .Easing(EasingFunctions.CircleInOut);
+
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleX, toValue: 0.96f, duration: 120, delay: 3)
+                .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticInOut);
+
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleY, toValue: 1.03f, duration: 60, delay: 0)
+                .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticInOut);
+
 
             MeshDefinition ruins = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingRuins,
