@@ -255,6 +255,16 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetX, toValue: 0.2f, duration: 20, delay: 5)
+                .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticInOut);
+
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetY, toValue: 0.2f, duration: 20, delay: 0)
+                .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticInOut);
+
             MeshDefinition swamp = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingSwamp,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSwamp,
@@ -265,12 +275,12 @@ namespace SonOfRobin
                 );
 
             swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetX, toValue: 0.004f, duration: 0.8f, delay: 0)
-                .RepeatForever(repeatDelay: 8f) // 8
+                .RepeatForever(repeatDelay: 8f)
                 .AutoReverse()
                 .Easing(EasingFunctions.BounceIn);
 
             swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetY, toValue: 0.004f, duration: 0.8f, delay: 0)
-                .RepeatForever(repeatDelay: 8f) // 8
+                .RepeatForever(repeatDelay: 8f)
                 .AutoReverse()
                 .Easing(EasingFunctions.BounceIn);
 
