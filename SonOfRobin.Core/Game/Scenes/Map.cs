@@ -382,11 +382,10 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White); // should always be drawn (edges transparency is not perfect and blue background would be showing a little otherwise)
 
-            // drawing ground
-            bool showDetailedMap = this.camera.CurrentZoom >= 0.1f;
-            // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
+            // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
 
-            if (showDetailedMap)
+            // drawing ground
+            if (this.camera.CurrentZoom >= 0.1f) // show detailed map
             {
                 var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
 
@@ -449,7 +448,7 @@ namespace SonOfRobin
                     SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
             }
-            else // !showDetailedMap
+            else // do not show detailed map
             {
                 SonOfRobinGame.SpriteBatch.Draw(this.lowResGround, worldRect, Color.White);
             }
@@ -531,7 +530,7 @@ namespace SonOfRobin
 
             // drawing named locations
 
-            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full)
+            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.05f)
             {
                 SpriteFont locationFont = SonOfRobinGame.FontTommy20;
                 var drawnNamesRects = new List<Rectangle>();
@@ -625,6 +624,8 @@ namespace SonOfRobin
         {
             while (true)
             {
+                if (this.HasBeenRemoved) return;
+
                 Rectangle viewRect = this.camera.viewRect;
                 var showList = new List<Sprite>();
 
