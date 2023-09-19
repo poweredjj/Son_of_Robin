@@ -35,7 +35,7 @@ namespace SonOfRobin
             {
                 new(
                 // needed to fill small holes, that will occur between other meshes
-                textureName: RepeatingPattern.Name.ground_base, drawPriority: -1, otherSearchesAllowed: true,
+                textureName: TextureBank.TextureName.RepeatingGroundBase, drawPriority: -1, otherSearchesAllowed: true,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 255),
                     },
@@ -44,7 +44,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
 
                 new(
-                textureName: RepeatingPattern.Name.water_deep, canOverlap: false, // transparent textures should not overlap
+                textureName: TextureBank.TextureName.RepeatingWaterDeep, // transparent textures should not overlap
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: (byte)(Terrain.waterLevelMax / 3)),
                     },
@@ -53,7 +53,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
 
                 new(
-                textureName: RepeatingPattern.Name.water_medium, canOverlap: false, // transparent textures should not overlap
+                textureName: TextureBank.TextureName.RepeatingWaterMedium, // transparent textures should not overlap
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: (byte)(Terrain.waterLevelMax / 3) + 1, maxVal: (byte)(Terrain.waterLevelMax / 3 * 2)),
                     },
@@ -65,7 +65,7 @@ namespace SonOfRobin
                 // water_shallow is not listed, because it is just transparent (no mesh needed)
 
                 new(
-                textureName: RepeatingPattern.Name.water_supershallow, canOverlap: false, otherSearchesAllowed: false,
+                textureName: TextureBank.TextureName.RepeatingWaterSuperShallow, otherSearchesAllowed: false,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax - 3, maxVal: Terrain.waterLevelMax),
                     },
@@ -75,7 +75,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.beach_bright,
+                textureName: TextureBank.TextureName.RepeatingBeachBright,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 95),
                     },
@@ -85,7 +85,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.beach_dark,
+                textureName: TextureBank.TextureName.RepeatingBeachDark,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 96, maxVal: 105),
                     },
@@ -95,7 +95,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.sand,
+                textureName: TextureBank.TextureName.RepeatingSand,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
                     new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 75),
@@ -106,7 +106,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.ground_bad,
+                textureName: TextureBank.TextureName.RepeatingGroundBad,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
                     new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 76, maxVal: 115),
@@ -117,7 +117,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.ground_good,
+                textureName: TextureBank.TextureName.RepeatingGroundGood,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
                     new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 116, maxVal: 120),
@@ -128,7 +128,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.grass_bad,
+                textureName: TextureBank.TextureName.RepeatingGrassBad,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
                     new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 121, maxVal: 160),
@@ -139,7 +139,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.grass_good,
+                textureName: TextureBank.TextureName.RepeatingGrassGood,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
                     new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 161, maxVal: 255),
@@ -150,7 +150,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.mountain_low,
+                textureName: TextureBank.TextureName.RepeatingMountainLow,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin, maxVal: 178),
                     },
@@ -160,7 +160,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.mountain_medium,
+                textureName: TextureBank.TextureName.RepeatingMountainMedium,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 179, maxVal: 194),
                     },
@@ -170,7 +170,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.mountain_high,
+                textureName: TextureBank.TextureName.RepeatingMountainHigh,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 195, maxVal: Terrain.volcanoEdgeMin - 1),
                     },
@@ -180,7 +180,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.volcano_edge,
+                textureName: TextureBank.TextureName.RepeatingVolcanoEdge,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.volcanoEdgeMin, maxVal: Terrain.lavaMin - 1),
                     },
@@ -190,7 +190,7 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.lava,
+                textureName: TextureBank.TextureName.RepeatingLava,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin, maxVal: 255),
                     },
@@ -200,38 +200,38 @@ namespace SonOfRobin
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.swamp,
+                textureName: TextureBank.TextureName.RepeatingSwamp,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true),
                 }),
 
                 new(
-                textureName: RepeatingPattern.Name.ruins,
+                textureName: TextureBank.TextureName.RepeatingRuins,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true),
                 }),
             };
 
             // searches should be ordered from most to least common, to speed up search
-            var searchOrder = new List<RepeatingPattern.Name>
+            var searchOrder = new List<TextureBank.TextureName>
             {
-                RepeatingPattern.Name.water_deep,
-                RepeatingPattern.Name.grass_bad,
-                RepeatingPattern.Name.mountain_low,
-                RepeatingPattern.Name.ground_bad,
-                RepeatingPattern.Name.beach_bright,
-                RepeatingPattern.Name.beach_dark,
-                RepeatingPattern.Name.water_medium,
-                RepeatingPattern.Name.swamp,
-                RepeatingPattern.Name.grass_good,
-                RepeatingPattern.Name.mountain_medium,
-                RepeatingPattern.Name.ruins,
-                RepeatingPattern.Name.water_supershallow,
-                RepeatingPattern.Name.ground_good,
-                RepeatingPattern.Name.mountain_high,
-                RepeatingPattern.Name.sand,
-                RepeatingPattern.Name.volcano_edge,
-                RepeatingPattern.Name.lava,
+                TextureBank.TextureName.RepeatingWaterDeep,
+                TextureBank.TextureName.RepeatingGrassBad,
+                TextureBank.TextureName.RepeatingMountainLow,
+                TextureBank.TextureName.RepeatingGroundBad,
+                TextureBank.TextureName.RepeatingBeachBright,
+                TextureBank.TextureName.RepeatingBeachDark,
+                TextureBank.TextureName.RepeatingWaterMedium,
+                TextureBank.TextureName.RepeatingSwamp,
+                TextureBank.TextureName.RepeatingGrassGood,
+                TextureBank.TextureName.RepeatingMountainMedium,
+                TextureBank.TextureName.RepeatingRuins,
+                TextureBank.TextureName.RepeatingWaterSuperShallow,
+                TextureBank.TextureName.RepeatingGroundGood,
+                TextureBank.TextureName.RepeatingMountainHigh,
+                TextureBank.TextureName.RepeatingSand,
+                TextureBank.TextureName.RepeatingVolcanoEdge,
+                TextureBank.TextureName.RepeatingLava,
 
                 // names not specified here will be added at the end
             };
@@ -288,7 +288,7 @@ namespace SonOfRobin
                         Mesh mesh = ConvertShapesToMesh(
                             offset: new Vector2((xMin + chunk.xOffset) * grid.resDivider, (yMin + chunk.yOffset) * grid.resDivider),
                             scaleX: grid.resDivider, scaleY: grid.resDivider,
-                            textureName: $"repeating textures/{search.textureName}",
+                            textureName: search.textureName,
                             drawPriority: search.drawPriority,
                             groupedShapes: groupedShapes);
 
@@ -314,9 +314,9 @@ namespace SonOfRobin
             return meshArray;
         }
 
-        public static Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
+        public static Dictionary<TextureBank.TextureName, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
         {
-            var pixelBagsForPatterns = new Dictionary<RepeatingPattern.Name, ConcurrentBag<Point>>();
+            var pixelBagsForPatterns = new Dictionary<TextureBank.TextureName, ConcurrentBag<Point>>();
             foreach (RawMapDataSearchForTexture search in searches)
             {
                 pixelBagsForPatterns[search.textureName] = new ConcurrentBag<Point>();
@@ -381,7 +381,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, string textureName, int drawPriority)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, TextureBank.TextureName textureName, int drawPriority)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
@@ -446,13 +446,13 @@ namespace SonOfRobin
 
         public readonly struct RawMapDataSearchForTexture
         {
-            public readonly RepeatingPattern.Name textureName;
+            public readonly TextureBank.TextureName textureName;
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
             public readonly List<SearchEntryExtProps> searchEntriesExtProps;
             public readonly bool otherSearchesAllowed;
             public readonly int drawPriority;
 
-            public RawMapDataSearchForTexture(RepeatingPattern.Name textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool canOverlap = true, bool otherSearchesAllowed = true, int drawPriority = 1)
+            public RawMapDataSearchForTexture(TextureBank.TextureName textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool otherSearchesAllowed = true, int drawPriority = 1)
             {
                 this.textureName = textureName;
 

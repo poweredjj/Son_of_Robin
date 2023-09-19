@@ -8,10 +8,10 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.009f;
+        public const float currentVersion = 1.010f;
 
         public readonly string meshID;
-        public readonly string textureName;
+        public readonly TextureBank.TextureName textureName;
         public readonly Texture2D texture;
         public readonly VertexPositionTexture[] vertices;
         public readonly short[] indices;
@@ -19,7 +19,7 @@ namespace SonOfRobin
         public readonly Rectangle boundsRect;
         public readonly int drawPriority;
 
-        public Mesh(string textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
+        public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
         {
             var vertices = vertList.ToArray();
 
@@ -34,7 +34,7 @@ namespace SonOfRobin
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
         }
 
-        private static string GetID(Rectangle boundsRect, string textureName)
+        private static string GetID(Rectangle boundsRect, TextureBank.TextureName textureName)
         {
             // needed to filter out duplicates
             return $"{boundsRect.Left},{boundsRect.Top}_{boundsRect.Width}x{boundsRect.Height}_{textureName}";
@@ -44,7 +44,7 @@ namespace SonOfRobin
         {
             var meshDict = (Dictionary<string, Object>)meshData;
 
-            this.textureName = (string)meshDict["textureName"];
+            this.textureName = (TextureBank.TextureName)(Int64)meshDict["textureName"];
             this.texture = TextureBank.GetTexture(this.textureName);
 
             this.indices = (short[])meshDict["indices"];

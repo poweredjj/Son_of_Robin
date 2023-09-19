@@ -21,7 +21,6 @@ namespace SonOfRobin
         public readonly int yMax;
 
         public readonly Rectangle rect;
-        private readonly Rectangle previewRect; // must match grid.WholeIslandPreviewScale
         public readonly Vector2 center;
 
         public readonly int width;
@@ -32,7 +31,6 @@ namespace SonOfRobin
         public bool temporaryDecorationsCreated;
 
         public readonly Dictionary<Group, HashSet<Sprite>> spriteGroups;
-        public BoardGraphics boardGraphics;
         public bool HasWater { get; private set; }
         public bool IsAllWater { get; private set; }
         public bool HasLava { get; private set; }
@@ -70,7 +68,6 @@ namespace SonOfRobin
             this.yMax = this.yMin + this.height - 1;
 
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
-            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
 
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
@@ -175,9 +172,6 @@ namespace SonOfRobin
 
         public void CopyFromTemplate(Cell templateCell)
         {
-            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
-            this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture);
-            templateCell.boardGraphics.hasBeenCopiedElsewhere = true;
             this.allowedNames.AddRange(templateCell.allowedNames);
 
             this.HasWater = templateCell.HasWater;
@@ -297,17 +291,6 @@ namespace SonOfRobin
 
                 Helpers.DrawTextWithOutline(font: font, text: cellText, pos: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
             }
-        }
-
-        public void DrawBackgroundWaterSimulation(Color waterColor)
-        {
-            if (this.boardGraphics.Texture != null) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, waterColor);
-        }
-
-        public void DrawBackground(float opacity = 1f)
-        {
-            if (this.boardGraphics.Texture != null) SonOfRobinGame.SpriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
-            else SonOfRobinGame.SpriteBatch.Draw(this.grid.WholeIslandPreviewTexture, this.rect, this.previewRect, Color.White * opacity);
         }
     }
 }

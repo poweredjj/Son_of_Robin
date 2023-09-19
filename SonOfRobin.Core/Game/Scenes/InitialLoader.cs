@@ -13,7 +13,6 @@ namespace SonOfRobin
             Initial,
             MobileWait,
             StartBgTasks,
-            CreateSeamless,
             LoadAnimsJson,
             LoadAnimsPlants,
             LoadAnimsChars,
@@ -37,7 +36,6 @@ namespace SonOfRobin
             { Step.Initial, "starting" },
             { Step.StartBgTasks, "starting background tasks" },
             { Step.MobileWait, "adding mobile waiting time" },
-            { Step.CreateSeamless, "creating seamless textures" },
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
             { Step.LoadAnimsChars, "loading animations (characters)" },
@@ -55,7 +53,7 @@ namespace SonOfRobin
             { Step.OpenMainMenu, "opening main menu" },
         };
 
-        private DateTime startTime;
+        private readonly DateTime startTime;
         private Task backgroundTask1;
         private Task backgroundTask2;
         private Step currentStep;
@@ -118,10 +116,6 @@ namespace SonOfRobin
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     }
-                    break;
-
-                case Step.CreateSeamless:
-                    RepeatingPattern.ConvertAllTexturesToPatterns();
                     break;
 
                 case Step.LoadAnimsJson:

@@ -542,6 +542,18 @@ namespace SonOfRobin
             }
         }
 
+        public static string ConvertTimeSpanToString(TimeSpan timeSpan)
+        {
+            string timeLeftString;
+
+            if (timeSpan < TimeSpan.FromMinutes(1)) timeLeftString = timeSpan.ToString("ss");
+            else if (timeSpan < TimeSpan.FromHours(1)) timeLeftString = timeSpan.ToString("mm\\:ss");
+            else if (timeSpan < TimeSpan.FromDays(1)) timeLeftString = timeSpan.ToString("hh\\:mm\\:ss");
+            else timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss");
+
+            return timeLeftString;
+        }
+
         public static List<List<Point>> SlicePointBagIntoConnectedRegions(int width, int height, ConcurrentBag<Point> pointsBag)
         {
             // preparing data

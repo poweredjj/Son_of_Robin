@@ -379,7 +379,7 @@ namespace SonOfRobin
         { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
 
         public bool CanProcessMoreOffCameraRectPiecesNow
-        { get { return !SonOfRobinGame.BoardTextureProcessor.IsProcessingNow && this.WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
+        { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
 
         public float PieceCount
         {

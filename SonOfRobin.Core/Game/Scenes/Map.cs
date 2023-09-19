@@ -18,7 +18,6 @@ namespace SonOfRobin
         public readonly World world;
         private readonly Camera camera;
         private readonly MapOverlay mapOverlay;
-        private readonly EffInstance sketchEffect;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
 
@@ -32,7 +31,7 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         public BoardPiece MapMarker { get; private set; }
 
-        private float InitialZoom
+        private static float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
 
         private static readonly Color paperColor = new Color(214, 199, 133, 255);
@@ -47,7 +46,6 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
-            this.sketchEffect = new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1);
         }
 
         public override void Remove()
@@ -167,7 +165,7 @@ namespace SonOfRobin
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
                         this.camera.TrackCoords(position: this.world.Player.sprite.position, moveInstantly: true);
-                        this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
+                        this.camera.SetZoom(zoom: InitialZoom, setInstantly: true);
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
@@ -319,7 +317,7 @@ namespace SonOfRobin
                     currentZoom += analogZoom;
                 }
 
-                currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                currentZoom = Math.Min(currentZoom, InitialZoom);
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.4f);
 
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
@@ -414,7 +412,7 @@ namespace SonOfRobin
 
                 foreach (Mesh mesh in meshesToDraw)
                 {
-                    basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
+                    basicEffect.Texture = TextureBank.GetTexturePersistent(TextureBank.GetTextureNameString(mesh.textureName).Replace("textures/", "textures/map_"));
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {

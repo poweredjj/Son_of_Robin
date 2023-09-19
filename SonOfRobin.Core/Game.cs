@@ -26,7 +26,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.504f;
-        public static readonly DateTime lastChanged = new(2023, 09, 18);
+        public static readonly DateTime lastChanged = new(2023, 09, 19);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -51,7 +51,6 @@ namespace SonOfRobin
         public static ControlTips ControlTips { get; private set; }
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
-        public static BoardTextureProcessor BoardTextureProcessor { get; private set; }
         public static ErrorLog ErrorLog { get; private set; }
         public static SpriteFont FontPixelMix5 { get; private set; }
         public static SpriteFont FontPressStart2P5 { get; private set; }
@@ -137,7 +136,6 @@ namespace SonOfRobin
             GradientBottom = TextureBank.GetTexturePersistent("gradient_bottom");
 
             SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
-            BoardTextureProcessor = new BoardTextureProcessor();
             ErrorLog = new ErrorLog();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);

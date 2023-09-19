@@ -4,7 +4,6 @@ using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
@@ -137,11 +136,6 @@ namespace SonOfRobin
             // for properly disposing used objects
             this.WholeIslandPreviewTexture?.Dispose();
             this.WholeIslandPreviewTexture = null;
-
-            Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-            {
-                if (!cell.boardGraphics.hasBeenCopiedElsewhere) cell.boardGraphics.UnloadTexture();
-            });
         }
 
         public IEnumerable<Cell> CellsVisitedByPlayer
@@ -246,7 +240,7 @@ namespace SonOfRobin
             {
                 this.WholeIslandPreviewTexture?.Dispose(); // just in case
                 this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
-               
+
                 Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
                 templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
                 this.WholeIslandPreviewTexture.SetData(pixelData);
@@ -1048,7 +1042,7 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.drawPriority).Distinct())
             {
-                basicEffect.Texture = TextureBank.GetTexturePersistent(mesh.textureName.Replace("textures/", "textures/map_"));
+                basicEffect.Texture = TextureBank.GetTexturePersistent(TextureBank.GetTextureNameString(mesh.textureName).Replace("textures/", "textures/map_"));
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1218,17 +1212,6 @@ namespace SonOfRobin
             { cell.surroundingCells = this.GetCellsWithinDistance(cell: cell, distance: 1); }
         }
 
-        private static string TimeSpanToString(TimeSpan timeSpan)
-        {
-            string timeLeftString;
-
-            if (timeSpan < TimeSpan.FromMinutes(1)) timeLeftString = timeSpan.ToString("ss");
-            else if (timeSpan < TimeSpan.FromHours(1)) timeLeftString = timeSpan.ToString("mm\\:ss");
-            else if (timeSpan < TimeSpan.FromDays(1)) timeLeftString = timeSpan.ToString("hh\\:mm\\:ss");
-            else timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss");
-
-            return timeLeftString;
-        }
 
         public List<Cell> GetCellsWithinDistance(Cell cell, int distance)
         {
