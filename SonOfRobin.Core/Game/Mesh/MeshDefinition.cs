@@ -285,12 +285,12 @@ namespace SonOfRobin
                 .AutoReverse()
                 .Easing(EasingFunctions.CircleInOut);
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleX, toValue: 0.96f, duration: 120, delay: 3)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleX, toValue: 0.98f, duration: 240, delay: 3)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleY, toValue: 1.03f, duration: 60, delay: 0)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleY, toValue: 1.01f, duration: 120, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
