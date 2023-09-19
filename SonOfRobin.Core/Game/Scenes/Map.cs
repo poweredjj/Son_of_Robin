@@ -622,18 +622,21 @@ namespace SonOfRobin
 
         private void BackgroundTaskLoop()
         {
+            var showList = new List<Sprite>();
+            var cameraSprites = new List<Sprite>();
+
             while (true)
             {
                 if (this.HasBeenRemoved) return;
 
                 Rectangle viewRect = this.camera.viewRect;
-                var showList = new List<Sprite>();
 
                 if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(10); // to avoid high CPU usage
                 else
                 {
                     this.bgTaskLastCameraRect = viewRect;
                     showList.Clear();
+                    cameraSprites.Clear();
 
                     Rectangle worldCameraRectForSpriteSearch = viewRect;
 
@@ -641,7 +644,12 @@ namespace SonOfRobin
                     if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
                     else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
 
-                    var cameraSprites = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
+                    try
+                    {
+                        cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
+                    }
+                    catch (InvalidOperationException) // collection modified while iterating
+                    { continue; }
 
                     if (Preferences.DebugShowWholeMap)
                     {
