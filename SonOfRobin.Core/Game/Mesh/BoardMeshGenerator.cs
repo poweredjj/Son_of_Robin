@@ -31,226 +31,13 @@ namespace SonOfRobin
 
         public static Mesh[] GenerateMeshes(Grid grid)
         {
-            List<RawMapDataSearchForTexture> searchesUnsorted = new()
-            {
-                new(
-                // needed to fill small holes, that will occur between other meshes
-                textureName: TextureBank.TextureName.RepeatingGroundBase, drawPriority: -1, otherSearchesAllowed: true,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 255),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingWaterDeep, // transparent textures should not overlap
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: (byte)(Terrain.waterLevelMax / 3)),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)}),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingWaterMedium, // transparent textures should not overlap
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: (byte)(Terrain.waterLevelMax / 3) + 1, maxVal: (byte)(Terrain.waterLevelMax / 3 * 2)),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                // water_shallow is not listed, because it is just transparent (no mesh needed)
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingWaterSuperShallow, otherSearchesAllowed: false,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax - 3, maxVal: Terrain.waterLevelMax),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingBeachBright,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 95),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingBeachDark,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 96, maxVal: 105),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingSand,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
-                    new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 75),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingGroundBad,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
-                    new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 76, maxVal: 115),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingGroundGood,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
-                    new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 116, maxVal: 120),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingGrassBad,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
-                    new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 121, maxVal: 160),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingGrassGood,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 106, maxVal: Terrain.rocksLevelMin - 1),
-                    new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 161, maxVal: 255),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingMountainLow,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin, maxVal: 178),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingMountainMedium,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 179, maxVal: 194),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingMountainHigh,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 195, maxVal: Terrain.volcanoEdgeMin - 1),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingVolcanoEdge,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.volcanoEdgeMin, maxVal: Terrain.lavaMin - 1),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingLava,
-                searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin, maxVal: 255),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingSwamp,
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true),
-                }),
-
-                new(
-                textureName: TextureBank.TextureName.RepeatingRuins,
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true),
-                }),
-            };
-
-            // searches should be ordered from most to least common, to speed up search
-            var searchOrder = new List<TextureBank.TextureName>
-            {
-                TextureBank.TextureName.RepeatingWaterDeep,
-                TextureBank.TextureName.RepeatingGrassBad,
-                TextureBank.TextureName.RepeatingMountainLow,
-                TextureBank.TextureName.RepeatingGroundBad,
-                TextureBank.TextureName.RepeatingBeachBright,
-                TextureBank.TextureName.RepeatingBeachDark,
-                TextureBank.TextureName.RepeatingWaterMedium,
-                TextureBank.TextureName.RepeatingSwamp,
-                TextureBank.TextureName.RepeatingGrassGood,
-                TextureBank.TextureName.RepeatingMountainMedium,
-                TextureBank.TextureName.RepeatingRuins,
-                TextureBank.TextureName.RepeatingWaterSuperShallow,
-                TextureBank.TextureName.RepeatingGroundGood,
-                TextureBank.TextureName.RepeatingMountainHigh,
-                TextureBank.TextureName.RepeatingSand,
-                TextureBank.TextureName.RepeatingVolcanoEdge,
-                TextureBank.TextureName.RepeatingLava,
-
-                // names not specified here will be added at the end
-            };
-
-            var searches = searchesUnsorted.OrderBy(search => search.otherSearchesAllowed).ThenBy(search => searchOrder.IndexOf(search.textureName)).ToList();
-
-            // Add any missing items at the end
-            foreach (RawMapDataSearchForTexture search in searchesUnsorted)
-            {
-                if (!searches.Contains(search)) searches.Add(search);
-            }
-
-            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, searches: searches.ToArray());
+            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.meshDefBySearchPriority.ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
             //foreach (RawMapDataSearch search in searches) // for profiling in debugger
-            Parallel.ForEach(searches, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, search =>
+            Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshDef =>
             {
-                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[search.textureName]);
+                var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
 
                 foreach (List<Point> pointList in pixelCoordsByRegion)
                 {
@@ -288,8 +75,7 @@ namespace SonOfRobin
                         Mesh mesh = ConvertShapesToMesh(
                             offset: new Vector2((xMin + chunk.xOffset) * grid.resDivider, (yMin + chunk.yOffset) * grid.resDivider),
                             scaleX: grid.resDivider, scaleY: grid.resDivider,
-                            textureName: search.textureName,
-                            drawPriority: search.drawPriority,
+                            textureName: meshDef.textureName,
                             groupedShapes: groupedShapes);
 
                         List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
@@ -314,12 +100,12 @@ namespace SonOfRobin
             return meshArray;
         }
 
-        public static Dictionary<TextureBank.TextureName, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, RawMapDataSearchForTexture[] searches)
+        public static Dictionary<TextureBank.TextureName, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, MeshDefinition[] meshDefs)
         {
             var pixelBagsForPatterns = new Dictionary<TextureBank.TextureName, ConcurrentBag<Point>>();
-            foreach (RawMapDataSearchForTexture search in searches)
+            foreach (MeshDefinition meshDef in meshDefs)
             {
-                pixelBagsForPatterns[search.textureName] = new ConcurrentBag<Point>();
+                pixelBagsForPatterns[meshDef.textureName] = new ConcurrentBag<Point>();
             }
 
             var rawPixelsBag = new ConcurrentBag<Point>();
@@ -328,13 +114,13 @@ namespace SonOfRobin
             {
                 for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
                 {
-                    for (int i = 0; i < searches.Length; i++)
+                    for (int i = 0; i < meshDefs.Length; i++)
                     {
-                        RawMapDataSearchForTexture search = searches[i];
-                        if (search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
+                        MeshDefinition meshDef = meshDefs[i];
+                        if (meshDef.search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
                         {
-                            pixelBagsForPatterns[search.textureName].Add(new Point(rawX, rawY));
-                            if (!search.otherSearchesAllowed) break;
+                            pixelBagsForPatterns[meshDef.textureName].Add(new Point(rawX, rawY));
+                            if (!meshDef.search.otherSearchesAllowed) break;
                         }
                     }
                 }
@@ -381,7 +167,7 @@ namespace SonOfRobin
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
-        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, TextureBank.TextureName textureName, int drawPriority)
+        public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, TextureBank.TextureName textureName)
         {
             Texture2D texture = TextureBank.GetTexture(textureName);
             Vector2 textureSize = new(texture.Width, texture.Height);
@@ -441,21 +227,17 @@ namespace SonOfRobin
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList, drawPriority: drawPriority);
+            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList);
         }
 
         public readonly struct RawMapDataSearchForTexture
         {
-            public readonly TextureBank.TextureName textureName;
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
             public readonly List<SearchEntryExtProps> searchEntriesExtProps;
             public readonly bool otherSearchesAllowed;
-            public readonly int drawPriority;
 
-            public RawMapDataSearchForTexture(TextureBank.TextureName textureName, List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool otherSearchesAllowed = true, int drawPriority = 1)
+            public RawMapDataSearchForTexture(List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool otherSearchesAllowed = true)
             {
-                this.textureName = textureName;
-
                 if (searchEntriesTerrain == null) searchEntriesTerrain = new List<SearchEntryTerrain>();
                 if (searchEntriesExtProps == null) searchEntriesExtProps = new List<SearchEntryExtProps>();
 
@@ -465,7 +247,6 @@ namespace SonOfRobin
                 this.searchEntriesExtProps = searchEntriesExtProps;
 
                 this.otherSearchesAllowed = otherSearchesAllowed;
-                this.drawPriority = drawPriority;
             }
 
             public bool PixelMeetsCriteria(Grid grid, int rawX, int rawY)

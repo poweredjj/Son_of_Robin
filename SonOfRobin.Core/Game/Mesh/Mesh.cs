@@ -13,24 +13,25 @@ namespace SonOfRobin
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;
         public readonly Texture2D texture;
+        public readonly Texture2D mapTexture;
         public readonly VertexPositionTexture[] vertices;
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
-        public readonly int drawPriority;
+        public int DrawPriority { get { return MeshDefinition.meshDefByTextureName[this.textureName].drawPriority; } }
 
-        public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList, int drawPriority)
+        public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList)
         {
             var vertices = vertList.ToArray();
 
             this.textureName = textureName;
             this.texture = TextureBank.GetTexture(this.textureName);
+            this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
             this.vertices = vertices;
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
             Rectangle boundsRect = GetBoundsRect(vertices);
             this.boundsRect = boundsRect;
-            this.drawPriority = drawPriority;
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
         }
 
@@ -46,14 +47,13 @@ namespace SonOfRobin
 
             this.textureName = (TextureBank.TextureName)(Int64)meshDict["textureName"];
             this.texture = TextureBank.GetTexture(this.textureName);
+            this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
 
             this.indices = (short[])meshDict["indices"];
             this.triangleCount = this.indices.Length / 3;
 
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
-
-            this.drawPriority = (int)(Int64)meshDict["drawPriority"];
 
             var vertXPos = (List<float>)meshDict["vertXPos"];
             var vertYPos = (List<float>)meshDict["vertYPos"];
@@ -94,7 +94,6 @@ namespace SonOfRobin
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
-                { "drawPriority", this.drawPriority },
                 { "vertXPos", vertXPos },
                 { "vertYPos", vertYPos },
                 { "vertTexCoordX", vertTexCoordX },
@@ -189,7 +188,7 @@ namespace SonOfRobin
                 {
                     if (newVerticesArray[blockNoX, blockNoY].Count > 0)
                     {
-                        chunkMeshes.Add(new(textureName: this.textureName, vertList: newVerticesArray[blockNoX, blockNoY], indicesList: newIndicesArray[blockNoX, blockNoY], drawPriority: this.drawPriority));
+                        chunkMeshes.Add(new(textureName: this.textureName, vertList: newVerticesArray[blockNoX, blockNoY], indicesList: newIndicesArray[blockNoX, blockNoY]));
                     }
                 }
             }

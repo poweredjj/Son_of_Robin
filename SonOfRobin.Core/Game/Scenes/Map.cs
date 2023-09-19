@@ -408,11 +408,11 @@ namespace SonOfRobin
 
                 var meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
                     .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
-                    .OrderBy(mesh => mesh.drawPriority).Distinct();
+                    .OrderBy(mesh => mesh.DrawPriority).Distinct();
 
                 foreach (Mesh mesh in meshesToDraw)
                 {
-                    basicEffect.Texture = TextureBank.GetTexturePersistent(TextureBank.GetTextureNameString(mesh.textureName).Replace("textures/", "textures/map_"));
+                    basicEffect.Texture = mesh.mapTexture;
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {

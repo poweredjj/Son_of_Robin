@@ -1040,9 +1040,9 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(Map.waterColor);
 
-            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.drawPriority).Distinct())
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.DrawPriority).Distinct())
             {
-                basicEffect.Texture = TextureBank.GetTexturePersistent(TextureBank.GetTextureNameString(mesh.textureName).Replace("textures/", "textures/map_"));
+                basicEffect.Texture = mesh.mapTexture;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1080,7 +1080,7 @@ namespace SonOfRobin
 
             HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
-                .OrderBy(mesh => mesh.drawPriority)
+                .OrderBy(mesh => mesh.DrawPriority)
                 .ToHashSet();
 
             foreach (Mesh mesh in meshesToDraw)

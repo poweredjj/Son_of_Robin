@@ -13,6 +13,7 @@ namespace SonOfRobin
             Initial,
             MobileWait,
             StartBgTasks,
+            CreateMeshDefinitions,
             LoadAnimsJson,
             LoadAnimsPlants,
             LoadAnimsChars,
@@ -34,8 +35,9 @@ namespace SonOfRobin
 
         private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
-            { Step.StartBgTasks, "starting background tasks" },
             { Step.MobileWait, "adding mobile waiting time" },
+            { Step.StartBgTasks, "starting background tasks" },
+            { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
             { Step.LoadAnimsChars, "loading animations (characters)" },
@@ -116,6 +118,10 @@ namespace SonOfRobin
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     }
+                    break;
+
+                case Step.CreateMeshDefinitions:
+                    MeshDefinition.CreateMeshDefinitions();
                     break;
 
                 case Step.LoadAnimsJson:
