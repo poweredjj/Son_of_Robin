@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.011f;
+        public const float currentVersion = 1.013f;
 
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;

@@ -1,5 +1,4 @@
 ﻿using MonoGame.Extended.Tweening;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +8,6 @@ namespace SonOfRobin
     {
         public static readonly Dictionary<TextureBank.TextureName, MeshDefinition> meshDefByTextureName = new Dictionary<TextureBank.TextureName, MeshDefinition>();
         public static readonly List<MeshDefinition> meshDefBySearchPriority = new List<MeshDefinition>();
-        public static readonly Random random = new Random();
 
         public readonly TextureBank.TextureName textureName;
         public readonly TextureBank.TextureName mapTextureName;
@@ -28,6 +26,9 @@ namespace SonOfRobin
             this.mapTextureName = mapTextureName;
             this.search = search;
             this.drawPriority = drawPriority;
+
+            TextureBank.GetTexture(textureName); // preloading texture, to avoid errors when generating meshes in parallel
+            TextureBank.GetTexture(mapTextureName); // preloading texture, to avoid errors when generating meshes in parallel
 
             this.tweener = new Tweener();
             this.textureOffsetX = 0f;

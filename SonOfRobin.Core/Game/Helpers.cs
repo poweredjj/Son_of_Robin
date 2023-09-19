@@ -569,6 +569,7 @@ namespace SonOfRobin
 
             // Create a HashSet for faster point existence checks
             var pointsSet = new HashSet<Point>(pointsBag);
+            pointsBag.Clear(); // saving memory
 
             // Create a 2D array to track processed points
             bool[,] bitmapPointIsProcessed = new bool[width, height];

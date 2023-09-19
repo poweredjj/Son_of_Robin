@@ -139,13 +139,12 @@ namespace SonOfRobin
             float loadedVersion = (float)(double)loadedDict["version"];
             if (loadedVersion != Mesh.currentVersion) return null;
 
-            var meshListSerialized = (List<Object>)loadedDict["meshList"];
+            var meshListSerialized = (Object[])loadedDict["meshArray"];
 
             var meshBag = new ConcurrentBag<Mesh>();
             Parallel.ForEach(meshListSerialized, SonOfRobinGame.defaultParallelOptions, meshData =>
             {
-                Mesh mesh = new Mesh(meshData);
-                if (mesh.indices.Length >= 3) meshBag.Add(mesh);
+                meshBag.Add(new Mesh(meshData));
             });
 
             return meshBag.ToArray();
@@ -153,16 +152,17 @@ namespace SonOfRobin
 
         public static void SaveToTemplate(string meshesFilePath, Mesh[] meshArray)
         {
-            var meshBagSerialized = new List<Object> { };
-            foreach (Mesh mesh in meshArray)
+            var meshBagSerialized = new ConcurrentBag<Object> { };
+
+            Parallel.ForEach(meshArray, SonOfRobinGame.defaultParallelOptions, mesh =>
             {
-                meshBagSerialized.Add(mesh.Serialize());
-            }
+                if (mesh.indices.Length >= 3) meshBagSerialized.Add(mesh.Serialize());
+            });
 
             Dictionary<string, Object> meshData = new()
             {
                 { "version", Mesh.currentVersion },
-                { "meshList", meshBagSerialized },
+                { "meshArray", meshBagSerialized.ToArray() },
             };
             FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
         }
