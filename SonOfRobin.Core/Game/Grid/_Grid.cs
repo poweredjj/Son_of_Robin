@@ -1040,14 +1040,14 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(Map.waterColor);
 
-            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.DrawPriority).Distinct())
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.meshDef.drawPriority).Distinct())
             {
                 basicEffect.Texture = mesh.mapTexture;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
-                    mesh.Draw();
+                    mesh.Draw(processTweeners: false);
                 }
             }
 
@@ -1080,7 +1080,7 @@ namespace SonOfRobin
 
             HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
-                .OrderBy(mesh => mesh.DrawPriority)
+                .OrderBy(mesh => mesh.meshDef.drawPriority)
                 .ToHashSet();
 
             foreach (Mesh mesh in meshesToDraw)
@@ -1090,7 +1090,7 @@ namespace SonOfRobin
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
-                    mesh.Draw();
+                    mesh.Draw(processTweeners: true);
                     trianglesDrawn += mesh.triangleCount;
                 }
             }

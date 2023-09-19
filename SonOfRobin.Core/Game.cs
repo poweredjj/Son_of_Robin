@@ -260,6 +260,7 @@ namespace SonOfRobin
             CurrentUpdateAdvance();
             LastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
 
+            MeshDefinition.UpdateTweeners();
             Scene.AllScenesInStackUpdate();
 
             base.Update(gameTime);

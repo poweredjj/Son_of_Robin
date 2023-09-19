@@ -234,9 +234,10 @@ namespace SonOfRobin
         {
             public readonly List<SearchEntryTerrain> searchEntriesTerrain;
             public readonly List<SearchEntryExtProps> searchEntriesExtProps;
+            public readonly int searchPriority;
             public readonly bool otherSearchesAllowed;
 
-            public RawMapDataSearchForTexture(List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool otherSearchesAllowed = true)
+            public RawMapDataSearchForTexture(List<SearchEntryTerrain> searchEntriesTerrain = null, List<SearchEntryExtProps> searchEntriesExtProps = null, bool otherSearchesAllowed = true, int searchPriority = 0)
             {
                 if (searchEntriesTerrain == null) searchEntriesTerrain = new List<SearchEntryTerrain>();
                 if (searchEntriesExtProps == null) searchEntriesExtProps = new List<SearchEntryExtProps>();
@@ -246,6 +247,7 @@ namespace SonOfRobin
                 this.searchEntriesTerrain = searchEntriesTerrain;
                 this.searchEntriesExtProps = searchEntriesExtProps;
 
+                this.searchPriority = searchPriority;
                 this.otherSearchesAllowed = otherSearchesAllowed;
             }
 

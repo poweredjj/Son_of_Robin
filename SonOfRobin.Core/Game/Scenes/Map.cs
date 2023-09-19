@@ -408,7 +408,7 @@ namespace SonOfRobin
 
                 var meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
                     .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
-                    .OrderBy(mesh => mesh.DrawPriority).Distinct();
+                    .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct();
 
                 foreach (Mesh mesh in meshesToDraw)
                 {
@@ -417,7 +417,7 @@ namespace SonOfRobin
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {
                         effectPass.Apply();
-                        mesh.Draw();
+                        mesh.Draw(processTweeners: false);
                     }
                 }
 

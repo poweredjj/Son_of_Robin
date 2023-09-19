@@ -359,7 +359,7 @@ namespace SonOfRobin
 
                             if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine || Preferences.debugEnableExtremeMapSizes)
                             {
-                                sizeList.InsertRange(0, new List<Object> { 1000, 2000, 4000, 8000 });
+                                sizeList.InsertRange(0, new List<Object> { 1000, 2000, 4000, 8000, 10000 });
                                 sizeList.AddRange(new List<Object> { 120000, 150000, 200000 });
                             }
 

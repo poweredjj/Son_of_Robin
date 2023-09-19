@@ -14,25 +14,26 @@ namespace SonOfRobin
         public readonly TextureBank.TextureName textureName;
         public readonly Texture2D texture;
         public readonly Texture2D mapTexture;
-        public readonly VertexPositionTexture[] vertices;
+        private readonly VertexPositionTexture[] vertices;
+        private readonly VertexPositionTexture[] verticesWorkingCopy;
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
-        public int DrawPriority { get { return MeshDefinition.meshDefByTextureName[this.textureName].drawPriority; } }
+        public readonly MeshDefinition meshDef;
 
         public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList)
         {
-            var vertices = vertList.ToArray();
-
             this.textureName = textureName;
             this.texture = TextureBank.GetTexture(this.textureName);
             this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
-            this.vertices = vertices;
+            this.vertices = vertList.ToArray();
+            this.verticesWorkingCopy = vertList.ToArray();
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
             Rectangle boundsRect = GetBoundsRect(vertices);
             this.boundsRect = boundsRect;
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
+            this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
 
         private static string GetID(Rectangle boundsRect, TextureBank.TextureName textureName)
@@ -72,6 +73,9 @@ namespace SonOfRobin
             }
 
             this.vertices = vertList.ToArray();
+            this.verticesWorkingCopy = vertList.ToArray();
+
+            this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
 
         public Object Serialize()
@@ -121,10 +125,33 @@ namespace SonOfRobin
             return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
         }
 
-        public void Draw()
+        public void Draw(bool processTweeners)
         {
-            SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+            if (processTweeners)
+            {
+                MeshDefinition meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
+                if (meshDef.textureOffsetX != 0f ||
+                    meshDef.textureOffsetY != 0f ||
+                    meshDef.textureScaleX != 1f ||
+                    meshDef.textureScaleX != 1f)
+                {
+                    Vector2 textureOffset = new Vector2(meshDef.textureOffsetX, meshDef.textureOffsetY);
+                    Vector2 textureScale = new Vector2(meshDef.textureScaleX, meshDef.textureScaleY);
+
+                    for (int i = 0; i < this.vertices.Length; i++)
+                    {
+                        this.verticesWorkingCopy[i].TextureCoordinate = (this.vertices[i].TextureCoordinate * textureScale) + textureOffset;
+                    }
+                }
+
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, this.verticesWorkingCopy, 0, this.verticesWorkingCopy.Length, indices, 0, this.triangleCount);
+            }
+            else
+            {
+                SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
+                    PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+            }
         }
 
         public List<Mesh> SplitIntoChunks(int maxChunkSize)
