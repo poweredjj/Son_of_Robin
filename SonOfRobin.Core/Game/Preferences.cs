@@ -114,6 +114,7 @@ namespace SonOfRobin
         public static bool swapMouseButtons = false;
         public static bool rumbleEnabled = true;
         public static bool alwaysRun = false;
+        public static bool destroyMapMarkerWhenReached = true;
         public static bool mapShowLocationNames = true; // not saved
         public static bool pickupsHighlighted = false; // not saved
         public static bool zoomedOut = false; // used to store virtual button value
@@ -611,6 +612,7 @@ namespace SonOfRobin
             prefsData["newWorldStartingSkill"] = newWorldStartingSkill;
             prefsData["StateMachinesDurationFramePercent"] = StateMachinesDurationFramePercent;
             prefsData["alwaysRun"] = alwaysRun;
+            prefsData["destroyMapMarkerWhenReached"] = destroyMapMarkerWhenReached;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -685,6 +687,7 @@ namespace SonOfRobin
                     newWorldStartingItem = (PieceTemplate.Name)(Int64)prefsData["newWorldStartingItem"];
                     newWorldStartingSkill = (Player.SkillName)(Int64)prefsData["newWorldStartingSkill"];
                     alwaysRun = (bool)prefsData["alwaysRun"];
+                    destroyMapMarkerWhenReached = (bool)prefsData["destroyMapMarkerWhenReached"];
 
                     prefsLoaded = true;
                 }
