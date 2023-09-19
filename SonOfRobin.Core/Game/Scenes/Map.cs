@@ -614,6 +614,8 @@ namespace SonOfRobin
             if (this.backgroundTask == null || this.backgroundTask.IsFaulted) this.backgroundTask = Task.Run(() => this.BackgroundTaskLoop());
         }
 
+        // static variables are down here for easier editing
+
         private static readonly List<Type> typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
         private static readonly List<PieceTemplate.Name> namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
         private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container) };
@@ -626,7 +628,7 @@ namespace SonOfRobin
                 Rectangle viewRect = this.camera.viewRect;
                 var showList = new List<Sprite>();
 
-                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(1); // to avoid high CPU usage
+                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(10); // to avoid high CPU usage
                 else
                 {
                     this.bgTaskLastCameraRect = viewRect;
