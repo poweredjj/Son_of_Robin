@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -17,6 +19,9 @@ namespace SonOfRobin
 
         public readonly World world;
         private readonly Camera camera;
+        private Task backgroundTask;
+        private Rectangle bgTaskLastCameraRect;
+        private List<Sprite> bgTaskCameraSprites;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
@@ -46,6 +51,7 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
+            this.bgTaskLastCameraRect = new Rectangle();
         }
 
         public override void Remove()
@@ -213,6 +219,8 @@ namespace SonOfRobin
         public override void Update()
         {
             if (this.Mode == MapMode.Off) return;
+
+            this.KeepBackgroundTaskAlive();
 
             if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
             if (this.MapMarker != null && !this.MapMarker.sprite.IsOnBoard)
@@ -480,12 +488,7 @@ namespace SonOfRobin
 
             // drawing pieces
 
-            Rectangle worldCameraRectForSpriteSearch = viewRect;
-            // mini map displays far pieces on the sides
-            if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
-            else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
-
-            var spritesBag = this.world.Grid.GetSpritesForRectParallel(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
+            List<Sprite> spritesList = new List<Sprite>(this.bgTaskCameraSprites);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
@@ -499,10 +502,9 @@ namespace SonOfRobin
                 namesShownAlways.AddRange(namesShownIfDiscovered);
             }
 
-            if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
+            if (this.MapMarker != null) spritesList.Add(this.MapMarker.sprite);
 
-            // regular "foreach", because SpriteBatch is not thread-safe
-            foreach (Sprite sprite in spritesBag.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom))
+            foreach (Sprite sprite in spritesList)
             {
                 BoardPiece piece = sprite.boardPiece;
                 PieceTemplate.Name name = piece.name;
@@ -630,6 +632,41 @@ namespace SonOfRobin
         public override void Draw()
         {
             // is being drawn in MapOverlay scene
+        }
+
+        private void KeepBackgroundTaskAlive()
+        {
+            if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
+            {
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
+                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
+            }
+
+            if (this.backgroundTask == null || this.backgroundTask.IsFaulted) this.backgroundTask = Task.Run(() => this.BackgroundTaskLoop());
+        }
+
+        private void BackgroundTaskLoop()
+        {
+            while (true)
+            {
+                Rectangle viewRect = this.camera.viewRect;
+
+                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(1); // to avoid high CPU usage
+                else
+                {
+                    this.bgTaskLastCameraRect = viewRect;
+
+                    Rectangle worldCameraRectForSpriteSearch = viewRect;
+
+                    // mini map displays far pieces on the sides
+                    if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
+                    else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
+
+                    var cameraSprites = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false);
+
+                    this.bgTaskCameraSprites = cameraSprites.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+                }
+            }
         }
     }
 }
