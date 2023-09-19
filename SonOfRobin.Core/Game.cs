@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 
 namespace SonOfRobin
@@ -66,6 +67,7 @@ namespace SonOfRobin
         public static Texture2D GradientBottom { get; private set; }
         public static Texture2D SplashScreenTexture { get; private set; }
 
+        public static readonly ParallelOptions defaultParallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
         public static readonly SimpleFps fps = new();

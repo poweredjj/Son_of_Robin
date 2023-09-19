@@ -254,7 +254,7 @@ namespace SonOfRobin
 
             // copying cell data
 
-            Parallel.For(0, templateGrid.noOfCellsX, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
+            Parallel.For(0, templateGrid.noOfCellsX, SonOfRobinGame.defaultParallelOptions, x =>
             {
                 for (int y = 0; y < templateGrid.noOfCellsY; y++)
                     this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
@@ -314,7 +314,7 @@ namespace SonOfRobin
                         this.terrainByName[Terrain.Name.Biome] = new Terrain(
                             grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                        Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
+                        Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                         {
                             terrain.TryToLoadSavedTerrain();
                         });
@@ -332,7 +332,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.SaveTerrain:
-                    Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
+                    Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                     {
                         terrain.SaveTemplate();
                     });
@@ -390,7 +390,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.FillAllowedNames:
-                    Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    Parallel.ForEach(this.allCells, SonOfRobinGame.defaultParallelOptions, cell =>
                     {
                         cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
                         cell.FillMiscProperties();
@@ -477,7 +477,6 @@ namespace SonOfRobin
         {
             // setting up variables
 
-            ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
             var biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
             var pointCollectionsForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
@@ -561,7 +560,7 @@ namespace SonOfRobin
                     if (currentPointBag.Count < minPointCount) continue;
 
                     var constrainedPointBag = new ConcurrentBag<Point>();
-                    Parallel.ForEach(currentPointBag, parallelOptions, point =>
+                    Parallel.ForEach(currentPointBag, SonOfRobinGame.defaultParallelOptions, point =>
                     {
                         if (this.CheckIfPointMeetsSearchCriteria(terrainSearches: ExtBoardProps.biomeConstrains[biomeName], point: point, xyRaw: true)) constrainedPointBag.Add(point);
                     });
@@ -577,7 +576,7 @@ namespace SonOfRobin
                 ExtBoardProps.Name biomeName = kvp.Key;
                 List<ConcurrentBag<Point>> listOfPointBags = kvp.Value;
 
-                Parallel.ForEach(listOfPointBags, parallelOptions, constrainedPointBag =>
+                Parallel.ForEach(listOfPointBags, SonOfRobinGame.defaultParallelOptions, constrainedPointBag =>
                 {
                     foreach (List<Point> slicedPointsList in Helpers.SlicePointBagIntoConnectedRegions(width: maxX, height: maxY, pointsBag: constrainedPointBag))
                     {
@@ -593,7 +592,7 @@ namespace SonOfRobin
                 ExtBoardProps.Name biomeName = kvp.Key;
                 ConcurrentBag<List<Point>> listOfPointBags = kvp.Value;
 
-                Parallel.ForEach(listOfPointBags, parallelOptions, pointList =>
+                Parallel.ForEach(listOfPointBags, SonOfRobinGame.defaultParallelOptions, pointList =>
                 {
                     foreach (Point point in pointList)
                     {
@@ -611,7 +610,7 @@ namespace SonOfRobin
 
             var pointBag = new ConcurrentBag<Point>();
 
-            Parallel.For(0, maxX, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
+            Parallel.For(0, maxX, SonOfRobinGame.defaultParallelOptions, rawX =>
             {
                 for (int rawY = 0; rawY < maxY; rawY++)
                 {
@@ -655,14 +654,13 @@ namespace SonOfRobin
 
             var nextPoints = new ConcurrentBag<Point>(startingPoints);
             var rawPointsInsideRange = new ConcurrentBag<Point>();
-            ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
 
             while (true)
             {
                 HashSet<Point> currentPoints = new(nextPoints); // using HashSet to filter out duplicates
                 nextPoints = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                Parallel.ForEach(currentPoints, parallelOptions, currentPoint =>
+                Parallel.ForEach(currentPoints, SonOfRobinGame.defaultParallelOptions, currentPoint =>
                 {
                     // array can be written to using parallel, if every thread accesses its own indices
 
@@ -963,7 +961,7 @@ namespace SonOfRobin
 
             var allSprites = new ConcurrentBag<Sprite> { };
 
-            Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            Parallel.ForEach(cells, SonOfRobinGame.defaultParallelOptions, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {
@@ -997,7 +995,7 @@ namespace SonOfRobin
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
 
             var allSprites = new ConcurrentBag<Sprite> { };
-            Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            Parallel.ForEach(cells, SonOfRobinGame.defaultParallelOptions, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {

@@ -153,7 +153,6 @@ namespace SonOfRobin
             }
         }
 
-        public static int maxTexturesToLoad = 1000;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showFieldControlTips = true;
@@ -164,7 +163,6 @@ namespace SonOfRobin
         public static bool highQualityWater = true;
         public static bool plantsSway = true;
         public static bool showParticles = true;
-        public static bool useMultipleThreads = true;
         private static int darknessResolution = 1;
         public static int maxFlameLightsPerCell = 3;
 
@@ -413,9 +411,6 @@ namespace SonOfRobin
             }
         }
 
-        public static int MaxThreadsToUse
-        { get { return useMultipleThreads ? Environment.ProcessorCount : 1; } }
-
         public static bool FullScreenMode
         {
             get { return fullScreenMode; }
@@ -586,7 +581,6 @@ namespace SonOfRobin
             prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
             prefsData["mapMarkerScale"] = mapMarkerScale;
             prefsData["showHints"] = showHints;
-            prefsData["useMultipleThreads"] = useMultipleThreads;
             prefsData["darknessResolution"] = darknessResolution;
             prefsData["drawShadows"] = drawShadows;
             prefsData["drawSunShadows"] = drawSunShadows;
@@ -655,7 +649,6 @@ namespace SonOfRobin
                     fieldControlTipsScale = (float)(double)prefsData["fieldControlTipsScale"];
                     mapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
                     showHints = (bool)prefsData["showHints"];
-                    useMultipleThreads = (bool)prefsData["useMultipleThreads"];
                     darknessResolution = (int)(Int64)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];

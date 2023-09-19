@@ -132,7 +132,7 @@ namespace SonOfRobin
 
             int resDivider = this.Grid.resDivider;
 
-            Parallel.For(0, this.Grid.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, this.Grid.dividedHeight, SonOfRobinGame.defaultParallelOptions, y =>
             {
                 int realY = y * resDivider;
 

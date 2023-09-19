@@ -292,7 +292,7 @@ namespace SonOfRobin
 
             Color[,] graphics = new Color[width, height];
 
-            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -335,7 +335,7 @@ namespace SonOfRobin
             Color[,] array2D = new Color[width, height];
 
             // correct order for Texture2D is y,x
-            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -352,7 +352,7 @@ namespace SonOfRobin
 
             // correct order for Texture2D is y,x
 
-            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
                         {
                             for (int x = 0; x < width; x++)
                             { array1D[(y * width) + x] = array2D[x, y]; }
@@ -382,7 +382,7 @@ namespace SonOfRobin
 
             var byteArray = new byte[width, height];
 
-            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
                         {
                             for (int x = 0; x < width; x++)
                             { byteArray[x, y] = colorArray[x, y].G; }

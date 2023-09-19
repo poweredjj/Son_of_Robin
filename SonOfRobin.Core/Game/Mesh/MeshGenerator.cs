@@ -35,7 +35,7 @@ namespace SonOfRobin
             var meshBag = new ConcurrentBag<Mesh>();
 
             //foreach (MeshDefinition meshDef in MeshDefinition.meshDefBySearchPriority) // for profiling in debugger
-            Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshDef =>
+            Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
 
@@ -68,7 +68,7 @@ namespace SonOfRobin
 
                     // Splitting very large bitmaps into chunks, because triangulation has size limit.
                     // It is a little glitchy, but necessary at this point.
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 2, yOverlap: 2)) // 2500, 2500
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 2, yOverlap: 2))
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
@@ -142,7 +142,7 @@ namespace SonOfRobin
             var meshListSerialized = (List<Object>)loadedDict["meshList"];
 
             var meshBag = new ConcurrentBag<Mesh>();
-            Parallel.ForEach(meshListSerialized, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, meshData =>
+            Parallel.ForEach(meshListSerialized, SonOfRobinGame.defaultParallelOptions, meshData =>
             {
                 Mesh mesh = new Mesh(meshData);
                 if (mesh.indices.Length >= 3) meshBag.Add(mesh);

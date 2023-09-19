@@ -627,7 +627,7 @@ namespace SonOfRobin
         {
             var cellCoordsBag = new ConcurrentBag<Point>();
 
-            Parallel.ForEach(this.grid.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            Parallel.ForEach(this.grid.allCells, SonOfRobinGame.defaultParallelOptions, cell =>
             {
                 if (cellSearch.CellMeetsCriteria(cell: cell)) cellCoordsBag.Add(new Point(cell.cellNoX, cell.cellNoY));
             });

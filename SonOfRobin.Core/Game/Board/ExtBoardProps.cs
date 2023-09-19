@@ -195,7 +195,7 @@ namespace SonOfRobin
                 this.containsPropertiesFalseGridCell[name] = null;
             }
 
-            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
+            Parallel.ForEach(allExtPropNames, SonOfRobinGame.defaultParallelOptions, name =>
             {
                 BitArrayWrapper bitArrayWrapper = BitArrayWrapper.LoadFromPNG(extDataPNGPathByName[name]);
                 if (bitArrayWrapper != null) this.extDataByProperty[name] = bitArrayWrapper;
@@ -206,7 +206,7 @@ namespace SonOfRobin
                 if (this.extDataByProperty[name] == null) return false;
             }
 
-            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
+            Parallel.ForEach(allExtPropNames, SonOfRobinGame.defaultParallelOptions, name =>
             {
                 this.containsPropertiesTrueGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
                 this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
@@ -225,12 +225,12 @@ namespace SonOfRobin
         {
             if (this.loadedFromTemplate) return;
 
-            Parallel.ForEach(this.extDataByProperty, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, kvp =>
+            Parallel.ForEach(this.extDataByProperty, SonOfRobinGame.defaultParallelOptions, kvp =>
             {
                 kvp.Value.SaveToPNG(this.extDataPNGPathByName[kvp.Key]);
             });
 
-            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
+            Parallel.ForEach(allExtPropNames, SonOfRobinGame.defaultParallelOptions, name =>
             {
                 this.containsPropertiesTrueGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
                 this.containsPropertiesFalseGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: false));

@@ -342,7 +342,6 @@ namespace SonOfRobin
             // saving pieces data
             {
                 bool piecesSaved = false;
-                ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
 
                 while (true)
                 {
@@ -351,7 +350,7 @@ namespace SonOfRobin
 
                     var packagesToProcess = new List<List<BoardPiece>>();
 
-                    for (int i = 0; i < Preferences.MaxThreadsToUse; i++)
+                    for (int i = 0; i < Environment.ProcessorCount; i++)
                     {
                         packagesToProcess.Add(this.piecePackagesToSave[0]);
                         this.piecePackagesToSave.RemoveAt(0);
@@ -363,7 +362,7 @@ namespace SonOfRobin
                         }
                     }
 
-                    Parallel.For(0, packagesToProcess.Count, parallelOptions, packageIndex =>
+                    Parallel.For(0, packagesToProcess.Count, SonOfRobinGame.defaultParallelOptions, packageIndex =>
                     {
                         var package = packagesToProcess[packageIndex];
 
@@ -534,7 +533,8 @@ namespace SonOfRobin
             // loading pieces
             {
                 bool allPiecesProcessed = false;
-                ParallelOptions parallelOptions = new() { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse };
+
+                int packageSize = Environment.ProcessorCount;
 
                 while (true)
                 {
@@ -547,7 +547,7 @@ namespace SonOfRobin
                         throw new ArgumentException($"Error while reading pieces data for slot {saveSlotName}.");
                     }
 
-                    Parallel.For(0, Preferences.MaxThreadsToUse, parallelOptions, threadNo =>
+                    Parallel.For(0, packageSize, SonOfRobinGame.defaultParallelOptions, threadNo =>
                     {
                         int packageToLoad = this.currentPiecePackageNo + threadNo;
 
@@ -566,8 +566,8 @@ namespace SonOfRobin
                         }
                     });
 
-                    this.currentPiecePackageNo += Preferences.MaxThreadsToUse;
-                    this.processedSteps = Math.Min(this.processedSteps + Preferences.MaxThreadsToUse - 1, this.allSteps);
+                    this.currentPiecePackageNo += packageSize;
+                    this.processedSteps = Math.Min(this.processedSteps + packageSize - 1, this.allSteps);
 
                     if (allPiecesProcessed) break;
                 }
