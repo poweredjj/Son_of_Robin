@@ -295,7 +295,6 @@ namespace SonOfRobin
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
 
-
             MeshDefinition ruins = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingRuins,
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,

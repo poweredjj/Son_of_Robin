@@ -485,49 +485,6 @@ namespace SonOfRobin
                 stepNo++;
             }
 
-            // drawing pieces
-
-            foreach (Sprite sprite in this.bgTaskSpritesToShow.ToArray())
-            {
-                float opacity = 1f;
-                Rectangle destRect = sprite.GfxRect;
-
-                destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
-
-                int maxSize = 300; // to avoid sprites being too large (big tent, for example)
-
-                if (destRect.Width > destRect.Height)
-                {
-                    if (destRect.Width > maxSize)
-                    {
-                        float aspect = (float)destRect.Height / (float)destRect.Width;
-                        int widthReduction = destRect.Width - maxSize;
-                        destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
-                    }
-                }
-                else
-                {
-                    if (destRect.Height > maxSize)
-                    {
-                        float aspect = (float)destRect.Width / (float)destRect.Height;
-                        int heightReduction = destRect.Height - maxSize;
-                        destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
-                    }
-                }
-
-                if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
-                {
-                    destRect.X = Math.Max(viewRect.Left, destRect.X);
-                    destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
-                    destRect.Y = Math.Max(viewRect.Top, destRect.Y);
-                    destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
-                    opacity = 0.6f;
-                }
-
-                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
-                sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
-            }
-
             // drawing named locations
 
             if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.05f)
@@ -576,6 +533,49 @@ namespace SonOfRobin
                         drawnNamesRects.Add(newTextRect);
                     }
                 }
+            }
+
+            // drawing pieces
+
+            foreach (Sprite sprite in this.bgTaskSpritesToShow.ToArray())
+            {
+                float opacity = 1f;
+                Rectangle destRect = sprite.GfxRect;
+
+                destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+
+                int maxSize = 300; // to avoid sprites being too large (big tent, for example)
+
+                if (destRect.Width > destRect.Height)
+                {
+                    if (destRect.Width > maxSize)
+                    {
+                        float aspect = (float)destRect.Height / (float)destRect.Width;
+                        int widthReduction = destRect.Width - maxSize;
+                        destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
+                    }
+                }
+                else
+                {
+                    if (destRect.Height > maxSize)
+                    {
+                        float aspect = (float)destRect.Width / (float)destRect.Height;
+                        int heightReduction = destRect.Height - maxSize;
+                        destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
+                    }
+                }
+
+                if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
+                {
+                    destRect.X = Math.Max(viewRect.Left, destRect.X);
+                    destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
+                    destRect.Y = Math.Max(viewRect.Top, destRect.Y);
+                    destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
+                    opacity = 0.6f;
+                }
+
+                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
+                sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
             }
 
             // drawing map edges over everything
