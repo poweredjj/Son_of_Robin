@@ -68,7 +68,7 @@ namespace SonOfRobin
 
                     // Splitting very large bitmaps into chunks, because triangulation has size limit.
                     // It is a little glitchy, but necessary at this point.
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 2, yOverlap: 2))
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 4, yOverlap: 4))
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
