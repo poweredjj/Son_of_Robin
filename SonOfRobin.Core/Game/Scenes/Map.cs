@@ -22,7 +22,7 @@ namespace SonOfRobin
         private Task backgroundTask;
         private Rectangle bgTaskLastCameraRect;
         private List<Sprite> bgTaskSpritesToShow;
-        private Mesh[] bgTaskMeshesToShow;
+        private List<Mesh> bgTaskMeshesToShow;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
@@ -56,7 +56,7 @@ namespace SonOfRobin
             this.backgroundNeedsUpdating = true;
             this.bgTaskLastCameraRect = new Rectangle();
             this.bgTaskSpritesToShow = new List<Sprite>();
-            this.bgTaskMeshesToShow = Array.Empty<Mesh>();
+            this.bgTaskMeshesToShow = new List<Mesh>();
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
             {
                 { Color.Blue, null },
@@ -484,9 +484,9 @@ namespace SonOfRobin
             {
                 foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
                 {
-                    if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 12f / this.camera.CurrentZoom)
+                    if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 15f / this.camera.CurrentZoom)
                     {
-                        this.camera.TrackCoords(position: mapMarker.sprite.position, moveInstantly: moveInstantly);
+                        this.camera.TrackCoords(position: mapMarker.sprite.position + new Vector2(1f  / this.camera.CurrentZoom, 1f / this.camera.CurrentZoom), moveInstantly: moveInstantly);
                         break;
                     }
                 }
@@ -548,7 +548,7 @@ namespace SonOfRobin
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
-                foreach (Mesh mesh in this.bgTaskMeshesToShow)
+                foreach (Mesh mesh in new List<Mesh>(this.bgTaskMeshesToShow))
                 {
                     basicEffect.Texture = mesh.meshDef.mapTexture;
 
@@ -726,11 +726,8 @@ namespace SonOfRobin
 
                 if (markerPiece != null && markerPiece.exists)
                 {
-                    int markerSize = (int)(viewRect.Width * 0.02f);
-                    int markerHalfSize = markerSize / 2;
-
                     Rectangle markerRect = markerPiece.sprite.GfxRect;
-                    markerRect.Inflate(markerRect.Width * spriteSize, markerRect.Height * spriteSize);
+                    markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 4, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 4);
 
                     markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                     markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
@@ -800,10 +797,14 @@ namespace SonOfRobin
 
                     Rectangle worldCameraRectForSpriteSearch = viewRect;
 
-                    this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
-                        .Where(mesh => mesh.boundsRect.Intersects(viewRect))
-                        .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct().ToArray();
-
+                    if (this.ShowDetailedMap)
+                    {
+                        this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
+                            .Where(mesh => mesh.boundsRect.Intersects(viewRect))
+                            .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct().ToList();
+                    }
+                    else this.bgTaskMeshesToShow.Clear();
+                    
                     // mini map displays far pieces on the sides
                     if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
                     else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
