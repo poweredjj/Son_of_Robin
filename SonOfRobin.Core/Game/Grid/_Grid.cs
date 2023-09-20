@@ -139,30 +139,37 @@ namespace SonOfRobin
         }
 
         public IEnumerable<Cell> CellsVisitedByPlayer
-        { get { return this.allCells.Where(cell => cell.VisitedByPlayer); } }
+        { get { return this.allCells.Where(cell => cell.visitedByPlayer); } }
 
         public IEnumerable<Cell> CellsNotVisitedByPlayer
-        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer); } }
+        { get { return this.allCells.Where(cell => !cell.visitedByPlayer); } }
 
         public float VisitedCellsPercentage
-        { get { return (float)this.allCells.Where(cell => cell.VisitedByPlayer).Count() / (float)this.allCells.Length; } }
+        { get { return (float)this.allCells.Where(cell => cell.visitedByPlayer).Count() / (float)this.allCells.Length; } }
 
         public Dictionary<string, Object> Serialize()
         {
             // this data is included in save file (not in template)
 
-            var cellData = new List<Object> { };
-            foreach (Cell cell in this.allCells)
+            var cellsVisitedByPlayer = new ConcurrentBag<int> { };
+
+            var cellGrid = this.cellGrid; // needed for parallel execution
+            int noOfCellsX = this.noOfCellsX; // needed for parallel execution
+            Parallel.For(0, this.noOfCellsY, SonOfRobinGame.defaultParallelOptions, cellNoY =>
             {
-                cellData.Add(cell.Serialize());
-            }
+                for (int cellNoX = 0; cellNoX < noOfCellsX; cellNoX++)
+                {
+                    Cell cell = cellGrid[cellNoX, cellNoY];
+                    if (cell.visitedByPlayer) cellsVisitedByPlayer.Add(cell.cellIndex);
+                }
+            });
 
             Dictionary<string, Object> gridData = new()
             {
                 { "cellWidth", this.cellWidth },
                 { "cellHeight", this.cellHeight },
                 { "namedLocations", this.namedLocations.Serialize() },
-                { "cellData", cellData },
+                { "cellsVisitedByPlayer", cellsVisitedByPlayer },
             };
 
             return gridData;
@@ -174,15 +181,31 @@ namespace SonOfRobin
 
             int cellWidth = (int)(Int64)gridData["cellWidth"];
             int cellHeight = (int)(Int64)gridData["cellHeight"];
-            var cellData = (List<Object>)gridData["cellData"];
 
             Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
-            for (int i = 0; i < grid.allCells.Length; i++)
+            // for compatibility with older saves
+            if (gridData.ContainsKey("cellData"))
             {
-                Cell cell = grid.allCells[i];
-                cell.Deserialize(cellData[i]);
+                var cellData = (List<Object>)gridData["cellData"];
+
+                for (int i = 0; i < grid.allCells.Length; i++)
+                {
+                    var cellDict = (Dictionary<string, object>)cellData[i];
+                    grid.allCells[i].visitedByPlayer = (bool)cellDict["VisitedByPlayer"];
+                }
+            }
+
+            // current method
+            if (gridData.ContainsKey("cellsVisitedByPlayer"))
+            {
+                var cellsVisitedByPlayer = (ConcurrentBag<int>)gridData["cellsVisitedByPlayer"];
+
+                Parallel.ForEach(cellsVisitedByPlayer, SonOfRobinGame.defaultParallelOptions, cellIndex =>
+                {
+                    grid.allCells[cellIndex].visitedByPlayer = true;
+                });
             }
 
             return grid;
@@ -957,7 +980,7 @@ namespace SonOfRobin
         public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName, bool visitedByPlayerOnly = false)
         {
             var cells = (IEnumerable<Cell>)this.allCells;
-            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.VisitedByPlayer);
+            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.visitedByPlayer);
 
             var allSprites = new ConcurrentBag<Sprite> { };
 
@@ -975,7 +998,7 @@ namespace SonOfRobin
         public List<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToList();
 
             var allSprites = new List<Sprite>();
             foreach (Cell cell in cells)
@@ -992,7 +1015,7 @@ namespace SonOfRobin
         public ConcurrentBag<Sprite> GetSpritesForRectParallel(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToList();
 
             var allSprites = new ConcurrentBag<Sprite> { };
             Parallel.ForEach(cells, SonOfRobinGame.defaultParallelOptions, cell =>
@@ -1062,7 +1085,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false))
             {
-                if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
+                if (this.world.MapEnabled && !cell.visitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
                     cell.SetAsVisited();
                     updateFog = true;
@@ -1210,7 +1233,6 @@ namespace SonOfRobin
             foreach (Cell cell in this.allCells)
             { cell.surroundingCells = this.GetCellsWithinDistance(cell: cell, distance: 1); }
         }
-
 
         public List<Cell> GetCellsWithinDistance(Cell cell, int distance)
         {

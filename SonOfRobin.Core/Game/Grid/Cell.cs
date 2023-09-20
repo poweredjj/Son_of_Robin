@@ -27,7 +27,7 @@ namespace SonOfRobin
         public readonly int height;
 
         public List<Cell> surroundingCells;
-        public bool VisitedByPlayer { get; private set; }
+        public bool visitedByPlayer;
         public bool temporaryDecorationsCreated;
 
         public readonly Dictionary<Group, HashSet<Sprite>> spriteGroups;
@@ -74,7 +74,7 @@ namespace SonOfRobin
             this.center = new Vector2(this.xCenter, this.yCenter);
 
             this.surroundingCells = new List<Cell>();
-            this.VisitedByPlayer = false;
+            this.visitedByPlayer = false;
             this.temporaryDecorationsCreated = false;
 
             this.spriteGroups = new Dictionary<Group, HashSet<Sprite>> { };
@@ -150,24 +150,7 @@ namespace SonOfRobin
 
         public void SetAsVisited()
         {
-            this.VisitedByPlayer = true;
-        }
-
-        public Object Serialize()
-        {
-            var cellData = new Dictionary<string, object>
-            {
-                { "VisitedByPlayer", this.VisitedByPlayer },
-            };
-
-            return cellData;
-        }
-
-        public void Deserialize(Object cellData)
-        {
-            var cellDict = (Dictionary<string, object>)cellData;
-
-            this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
+            this.visitedByPlayer = true;
         }
 
         public void CopyFromTemplate(Cell templateCell)

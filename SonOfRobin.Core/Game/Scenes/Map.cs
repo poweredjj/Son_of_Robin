@@ -313,7 +313,6 @@ namespace SonOfRobin
                 this.ProcessInput();
             }
 
-
             this.camera.Update(cameraCorrection: Vector2.Zero);
         }
 
@@ -531,7 +530,7 @@ namespace SonOfRobin
                 {
                     foreach (Cell cell in visibleCells)
                     {
-                        if (cell.VisitedByPlayer) cellsToDraw.Add(cell);
+                        if (cell.visitedByPlayer) cellsToDraw.Add(cell);
                         else cellsToErase.Add(cell);
                     }
                 }
