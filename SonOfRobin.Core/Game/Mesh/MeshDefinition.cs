@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Tweening;
+﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,8 +18,10 @@ namespace SonOfRobin
         public readonly Tweener tweener;
         public float textureOffsetX;
         public float textureOffsetY;
-        public float textureScaleX;
-        public float textureScaleY;
+        public float textureDeformationOffsetX;
+        public float textureDeformationOffsetY;
+        public bool TweenerActive { get; private set; }
+        public Vector2 TextureOffset { get; private set; }
 
         public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
         {
@@ -33,8 +36,11 @@ namespace SonOfRobin
             this.tweener = new Tweener();
             this.textureOffsetX = 0f;
             this.textureOffsetY = 0f;
-            this.textureScaleX = 1f;
-            this.textureScaleY = 1f;
+            this.textureDeformationOffsetX = 0f;
+            this.textureDeformationOffsetY = 0f;
+
+            this.TweenerActive = false;
+            this.TextureOffset = Vector2.Zero;
 
             meshDefByTextureName[textureName] = this;
         }
@@ -275,25 +281,15 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetX, toValue: -0.002f, duration: 2.0f, delay: 0)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureDeformationOffsetX, toValue: 0.11f, duration: 12, delay: 2)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
-                .Easing(EasingFunctions.CircleInOut);
+                .Easing(EasingFunctions.SineInOut);
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureOffsetY, toValue: 0.002f, duration: 1.7f, delay: 0)
+            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureDeformationOffsetY, toValue: 0.11f, duration: 20, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
-                .Easing(EasingFunctions.CircleInOut);
-
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleX, toValue: 0.98f, duration: 240, delay: 3)
-                .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticInOut);
-
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureScaleY, toValue: 1.01f, duration: 120, delay: 0)
-                .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticInOut);
+                .Easing(EasingFunctions.SineInOut);
 
             MeshDefinition ruins = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingRuins,
@@ -307,12 +303,23 @@ namespace SonOfRobin
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
         }
 
-        public static void UpdateTweeners()
+        public static void UpdateAllDefs()
         {
             foreach (MeshDefinition meshDef in meshDefBySearchPriority)
             {
-                meshDef.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+                meshDef.Update();
             }
+        }
+
+        private void Update()
+        {
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+
+            this.TextureOffset = new Vector2(this.textureOffsetX, this.textureOffsetY);
+
+            this.TweenerActive = this.TextureOffset != Vector2.Zero ||
+                this.textureDeformationOffsetX != 0 ||
+                this.textureDeformationOffsetY != 0;
         }
     }
 }

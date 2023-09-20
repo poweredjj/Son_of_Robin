@@ -925,6 +925,7 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
+            MeshDefinition.UpdateAllDefs();
             this.weather.Update();
             this.swayManager.Update();
 

@@ -127,29 +127,26 @@ namespace SonOfRobin
 
         public void Draw(bool processTweeners)
         {
-            bool drawTransformedCopy = false;
-
             if (processTweeners)
             {
-                MeshDefinition meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
-                if (meshDef.textureOffsetX != 0f ||
-                    meshDef.textureOffsetY != 0f ||
-                    meshDef.textureScaleX != 1f ||
-                    meshDef.textureScaleX != 1f)
+                if (this.meshDef.TweenerActive)
                 {
-                    drawTransformedCopy = true;
-                    Vector2 textureOffset = new Vector2(meshDef.textureOffsetX, meshDef.textureOffsetY);
-                    Vector2 textureScale = new Vector2(1f / meshDef.textureScaleX, 1f / meshDef.textureScaleY);
+                    Vector2 deformationOffset = Vector2.Zero;
 
                     for (int i = 0; i < this.vertices.Length; i++)
                     {
-                        this.verticesTransformedCopy[i].TextureCoordinate = (this.vertices[i].TextureCoordinate * textureScale) + textureOffset;
+                        VertexPositionTexture inputVertex = this.vertices[i];
+
+                        if (meshDef.textureDeformationOffsetX != 0) deformationOffset.X = (float)Math.Sin(inputVertex.TextureCoordinate.X * 3) * meshDef.textureDeformationOffsetX;
+                        if (meshDef.textureDeformationOffsetY != 0) deformationOffset.Y = (float)Math.Cos(inputVertex.TextureCoordinate.Y * 3) * meshDef.textureDeformationOffsetY;
+
+                        this.verticesTransformedCopy[i].TextureCoordinate = inputVertex.TextureCoordinate + this.meshDef.TextureOffset + deformationOffset;
                     }
                 }
             }
 
             SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                PrimitiveType.TriangleList, drawTransformedCopy ? this.verticesTransformedCopy : this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+                PrimitiveType.TriangleList, this.meshDef.TweenerActive ? this.verticesTransformedCopy : this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
         }
 
         public List<Mesh> SplitIntoChunks(int maxChunkSize)
