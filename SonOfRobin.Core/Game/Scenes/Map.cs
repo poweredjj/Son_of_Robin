@@ -787,15 +787,24 @@ namespace SonOfRobin
                     showList.Clear();
                     cameraSprites.Clear();
 
-                    Rectangle worldCameraRectForSpriteSearch = viewRect;
-
                     if (this.ShowDetailedMap)
                     {
-                        this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
-                            .Where(mesh => mesh.boundsRect.Intersects(viewRect))
-                            .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct().ToList();
+                        try
+                        {
+                            this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
+                                .Where(mesh => mesh.boundsRect.Intersects(viewRect))
+                                .OrderBy(mesh => mesh.meshDef.drawPriority)
+                                .Distinct()
+                                .ToList();
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            continue;
+                        }
                     }
-                    
+
+                    Rectangle worldCameraRectForSpriteSearch = viewRect;
+
                     // mini map displays far pieces on the sides
                     if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
                     else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
