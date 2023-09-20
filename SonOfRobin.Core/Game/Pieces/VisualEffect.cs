@@ -50,7 +50,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (Preferences.destroyMapMarkerWhenReached && Vector2.Distance(this.sprite.position, this.world.Player.sprite.position) < 100)
+            if (Preferences.destroyMapMarkerWhenReached && Vector2.Distance(this.sprite.position, this.world.Player.sprite.position) < 50)
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();

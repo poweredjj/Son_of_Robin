@@ -34,7 +34,8 @@ namespace SonOfRobin
         public bool backgroundNeedsUpdating;
         private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
-        public BoardPiece MapMarker { get; private set; }
+
+        public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
 
         private static float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
@@ -52,6 +53,14 @@ namespace SonOfRobin
             this.backgroundNeedsUpdating = true;
             this.bgTaskLastCameraRect = new Rectangle();
             this.bgTaskSpritesToShow = new List<Sprite>();
+            this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
+            {
+                { Color.Blue, null },
+                { new Color(15, 128, 0), null },
+                { Color.Red, null },
+                { new Color(93, 6, 99), null },
+                { new Color(97, 68, 15), null },
+            };
         }
 
         public override void Remove()
@@ -224,11 +233,18 @@ namespace SonOfRobin
 
             this.KeepBackgroundTaskAlive();
 
-            if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
-            if (this.MapMarker != null && !this.MapMarker.sprite.IsOnBoard)
+            foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
             {
-                this.MapMarker.Destroy();
-                this.MapMarker = null;
+                BoardPiece mapMarker = this.mapMarkerByColor[markerColor];
+                if (mapMarker != null && !mapMarker.exists) this.mapMarkerByColor[markerColor] = null; // if marker had destroyed itself
+
+                mapMarker = this.mapMarkerByColor[markerColor]; // refreshing, if changed above
+
+                if (mapMarker != null && !mapMarker.sprite.IsOnBoard)
+                {
+                    mapMarker.Destroy();
+                    this.mapMarkerByColor[markerColor] = null;
+                }
             }
 
             if (!this.CheckIfPlayerCanReadTheMap(showMessage: true))
@@ -271,27 +287,45 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
             {
-                if (this.MapMarker == null)
+                // trying to remove existing marker
+
+                bool markerRemoved = false;
+
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
                 {
-                    this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
-                    soundMarkerPlace.Play();
-                }
-                else
-                {
-                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15 / this.camera.CurrentZoom)
+                    Color markerColor = kvp.Key;
+                    BoardPiece markerPiece = kvp.Value;
+
+                    if (markerPiece != null)
                     {
-                        this.MapMarker.Destroy();
-                        this.MapMarker = null;
-                        soundMarkerRemove.Play();
-                    }
-                    else
-                    {
-                        this.MapMarker.sprite.SetNewPosition(newPos: this.camera.CurrentPos, ignoreCollisions: true);
-                        soundMarkerPlace.Play();
+                        if (Math.Abs(Vector2.Distance(markerPiece.sprite.position, this.camera.CurrentPos)) < 15 / this.camera.CurrentZoom)
+                        {
+                            markerPiece.Destroy();
+                            this.world.map.mapMarkerByColor[markerColor] = null;
+                            soundMarkerRemove.Play();
+                            markerRemoved = true;
+                            break;
+                        }
                     }
                 }
 
-                return;
+                if (markerRemoved) return;
+
+                // placing new marker (if possible)
+
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
+                {
+                    Color markerColor = kvp.Key;
+                    BoardPiece markerPiece = kvp.Value;
+
+                    if (markerPiece == null)
+                    {
+                        markerPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                        this.world.map.mapMarkerByColor[markerColor] = markerPiece;
+                        soundMarkerPlace.Play();
+                        return;
+                    }
+                }
             }
 
             // center on player
@@ -362,9 +396,13 @@ namespace SonOfRobin
             }
             else
             {
-                if (this.MapMarker != null && Vector2.Distance(this.camera.CurrentPos, this.MapMarker.sprite.position) < 10f / this.camera.CurrentZoom)
+                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
                 {
-                    this.camera.TrackCoords(position: this.MapMarker.sprite.position, moveInstantly: moveInstantly);
+                    if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 10f / this.camera.CurrentZoom)
+                    {
+                        this.camera.TrackCoords(position: mapMarker.sprite.position, moveInstantly: moveInstantly);
+                        break;
+                    }
                 }
             }
         }
@@ -464,7 +502,6 @@ namespace SonOfRobin
 
                 float lowResOpacity = 1f - (float)Helpers.ConvertRange(oldMin: showDetailedMapZoom, oldMax: showDetailedMapZoom + 0.04f, newMin: 0, newMax: 1, oldVal: this.camera.CurrentZoom, clampToEdges: true);
                 if (lowResOpacity > 0) SonOfRobinGame.SpriteBatch.Draw(this.lowResGround, worldRect, Color.White * lowResOpacity);
-
             }
             else // do not show detailed map
             {
@@ -601,25 +638,29 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(TextureBank.GetTexture(TextureBank.TextureName.MapEdges), extendedMapRect, Color.White);
 
-            // drawing map marker
+            // drawing map markers
 
-            if (this.MapMarker != null && this.MapMarker.exists)
+            foreach (var kvp in this.world.map.mapMarkerByColor)
             {
-                int markerSize = (int)(viewRect.Width * 0.02f);
-                int markerHalfSize = markerSize / 2;
+                Color markerColor = kvp.Key;
+                BoardPiece markerPiece = kvp.Value;
 
-                Rectangle markerRect = this.MapMarker.sprite.GfxRect;
-                markerRect.Inflate(markerRect.Width * spriteSize, markerRect.Height * spriteSize);
+                if (markerPiece != null && markerPiece.exists)
+                {
+                    int markerSize = (int)(viewRect.Width * 0.02f);
+                    int markerHalfSize = markerSize / 2;
 
-                Color markerColor = Color.Blue; // TODO change to variable
+                    Rectangle markerRect = markerPiece.sprite.GfxRect;
+                    markerRect.Inflate(markerRect.Width * spriteSize, markerRect.Height * spriteSize);
 
-                this.MapMarker.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
-                this.MapMarker.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
+                    markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
+                    markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
 
-                this.MapMarker.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
+                    markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
 
-                SonOfRobinGame.SpriteBatch.End();
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                    SonOfRobinGame.SpriteBatch.End();
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                }
             }
 
             // drawing crosshair

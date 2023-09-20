@@ -961,7 +961,11 @@ namespace SonOfRobin
                 this.Player.UpdateDistanceWalked();
                 this.Player.UpdateLastSteps();
             }
-            if (this.map.MapMarker != null && this.map.MapMarker.sprite.IsOnBoard) this.ProcessOneNonPlant(this.map.MapMarker);
+
+            foreach (BoardPiece mapMarker in this.map.mapMarkerByColor.Values)
+            {
+                if (mapMarker != null && mapMarker.sprite.IsOnBoard) this.ProcessOneNonPlant(mapMarker);
+            }
 
             this.StateMachinesProcessCameraView();
 
