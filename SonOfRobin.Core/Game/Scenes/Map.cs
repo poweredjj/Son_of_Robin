@@ -47,7 +47,7 @@ namespace SonOfRobin
             this.mapOverlay = new MapOverlay(this);
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
-            this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
+            this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: true, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
             this.bgTaskLastCameraRect = new Rectangle();
@@ -170,8 +170,9 @@ namespace SonOfRobin
                 {
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
-                        this.camera.TrackCoords(position: this.world.Player.sprite.position, moveInstantly: true);
+                        this.camera.TrackPiece(trackedPiece: this.world.Player, moveInstantly: true);
                         this.camera.SetZoom(zoom: InitialZoom, setInstantly: true);
+                        this.camera.ResetMovementSpeed();
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
@@ -180,6 +181,7 @@ namespace SonOfRobin
 
                     case MapMode.Full:
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
+                        this.camera.SetMovementSpeed(4f * this.camera.CurrentZoom);
                         this.blocksUpdatesBelow = this.FullScreen && !Preferences.debugAllowMapAnimation;
                         this.InputType = InputTypes.Normal;
                         this.drawActive = true;
@@ -236,7 +238,7 @@ namespace SonOfRobin
             }
 
             if (this.Mode == MapMode.Full) this.ProcessInput();
-            else this.camera.TrackCoords(this.world.Player.sprite.position);
+            //else this.camera.TrackCoords(this.world.Player.sprite.position);
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
         }
@@ -303,24 +305,29 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut) || TouchInput.IsBeingTouchedInAnyWay || analogZoom != 0)
             {
+                bool zoomInstantly = false;
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
                 float zoomMultiplier = zoomByMouse ? 0.4f : 0.035f;
                 float zoomChangeVal = (zoomByMouse ? this.camera.TargetZoom : this.camera.CurrentZoom) * zoomMultiplier;
 
-                float currentZoom = this.camera.CurrentZoom; // value to be replaced
+                float currentZoom = this.camera.TargetZoom; // value to be replaced
 
                 bool zoomButtonPressed = InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut);
                 if (zoomButtonPressed)
                 {
-                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn)) currentZoom = this.camera.CurrentZoom + zoomChangeVal;
-                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut)) currentZoom = this.camera.CurrentZoom - zoomChangeVal;
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn)) currentZoom = this.camera.TargetZoom + zoomChangeVal;
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut)) currentZoom = this.camera.TargetZoom - zoomChangeVal;
                 }
                 else
                 {
                     if (analogZoom != 0) analogZoom = -analogZoom * currentZoom * 0.04f; // "* currentZoom" for proportional zooming
 
-                    if (analogZoom == 0) analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) * currentZoom * 1.5f;
+                    if (analogZoom == 0)
+                    {
+                        analogZoom = TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) * currentZoom * 1.5f;
+                        if (analogZoom != 0f) zoomInstantly = true;
+                    }
 
                     currentZoom += analogZoom;
                 }
@@ -328,7 +335,7 @@ namespace SonOfRobin
                 currentZoom = Math.Min(currentZoom, InitialZoom);
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.4f);
 
-                this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
+                this.camera.SetZoom(zoom: currentZoom, setInstantly: zoomInstantly, zoomSpeedMultiplier: zoomByMouse ? 5f : 2.5f);
             }
 
             // location names toggle
@@ -337,23 +344,22 @@ namespace SonOfRobin
 
             // movement
 
+            bool moveInstantly = false;
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
             if (movement == Vector2.Zero)
             {
                 // using touch
                 movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / Preferences.GlobalScale / this.camera.CurrentZoom;
+                if (movement != Vector2.Zero) moveInstantly = true;
             }
 
             if (movement != Vector2.Zero)
             {
                 Vector2 newPos = this.camera.TrackedPos + movement;
 
-                newPos.X = Math.Max(newPos.X, 0);
-                newPos.X = Math.Min(newPos.X, this.world.width);
-                newPos.Y = Math.Max(newPos.Y, 0);
-                newPos.Y = Math.Min(newPos.Y, this.world.height);
-
-                this.camera.TrackCoords(newPos);
+                newPos.X = Math.Clamp(value: newPos.X, min: 0, max: this.world.width);
+                newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.height);
+                this.camera.TrackCoords(position: newPos, moveInstantly: moveInstantly);
             }
         }
 
