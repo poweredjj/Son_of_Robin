@@ -570,6 +570,7 @@ namespace SonOfRobin
                 this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
                 this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
+                if (headerData.ContainsKey("mapData")) this.map.Deserialize(headerData["mapData"]);
             }
 
             if (this.HasBeenRemoved) return; // to avoid processing if cancelled

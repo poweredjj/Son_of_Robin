@@ -663,12 +663,6 @@ namespace SonOfRobin
                     enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
                     pointToWalk = (bool)prefsData["pointToWalk"];
                     pointToInteract = (bool)prefsData["pointToInteract"];
-                    InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);
-                    InputPackage loadedMappingKeyboard = InputPackage.Deserialize(prefsData["currentMappingKeyboard"]);
-                    if (!loadedMappingGamepad.IsObsolete) InputMapper.currentMappingGamepad = loadedMappingGamepad;
-                    if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
-                    InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
-                    InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
                     Sound.GlobalOn = (bool)prefsData["soundGlobalOn"];
                     Sound.globalVolume = (float)(double)prefsData["soundGlobalVolume"];
                     Sound.menuOn = (bool)prefsData["soundMenuOn"];
@@ -688,6 +682,14 @@ namespace SonOfRobin
                     newWorldStartingSkill = (Player.SkillName)(Int64)prefsData["newWorldStartingSkill"];
                     alwaysRun = (bool)prefsData["alwaysRun"];
                     destroyMapMarkerWhenReached = (bool)prefsData["destroyMapMarkerWhenReached"];
+
+                    // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
+                    InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);
+                    InputPackage loadedMappingKeyboard = InputPackage.Deserialize(prefsData["currentMappingKeyboard"]);
+                    if (!loadedMappingGamepad.IsObsolete) InputMapper.currentMappingGamepad = loadedMappingGamepad;
+                    if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
+                    InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
+                    InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
 
                     prefsLoaded = true;
                 }

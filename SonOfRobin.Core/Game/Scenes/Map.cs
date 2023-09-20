@@ -89,6 +89,51 @@ namespace SonOfRobin
             this.UpdateResolution();
         }
 
+        public Dictionary<string, Object> Serialize()
+        {
+            var markerPosDict = new Dictionary<Vector2, byte[]>();
+            foreach (var kvp in this.mapMarkerByColor)
+            {
+                Color markerColor = kvp.Key;
+                BoardPiece markerPiece = kvp.Value;
+
+                if (markerPiece == null) continue;
+
+                var colorArray = new byte[] { markerColor.R, markerColor.G, markerColor.B, markerColor.A };
+                markerPosDict[markerPiece.sprite.position] = colorArray;
+            }
+
+            var mapDataDict = new Dictionary<string, Object>
+            {
+              { "markerPosDict", markerPosDict },
+            };
+
+            return mapDataDict;
+        }
+
+        public void Deserialize(Object mapData)
+        {
+            var mapDataDict = (Dictionary<string, Object>)mapData;
+
+            var markerPosDict = (Dictionary<Vector2, byte[]>)mapDataDict["markerPosDict"];
+            foreach (var kvp in markerPosDict)
+            {
+                Vector2 markerPos = kvp.Key;
+                var colorArray = (byte[])kvp.Value;
+
+                Color markerColor = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
+
+                if (this.mapMarkerByColor.ContainsKey(markerColor))
+                {
+                    this.mapMarkerByColor[markerColor] = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: markerPos, templateName: PieceTemplate.Name.MapMarker);
+                }
+                else
+                {
+                    MessageLog.AddMessage(debugMessage: true, message: $"Cannot deserialize marker - color not found: {colorArray}.");
+                }
+            }
+        }
+
         public void UpdateResolution()
         {
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
