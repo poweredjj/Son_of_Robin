@@ -167,8 +167,8 @@ namespace SonOfRobin
             }
 
             Rectangle textRect = new Rectangle(
-                x: progressRect.X, y: progressRect.Y + (int)(progressRect.Height * 0.36f),
-                width: progressRect.Width, height: (int)(progressRect.Height * 0.25f));
+                x: progressRect.X + wheelRect.Width, y: progressRect.Y + (int)(progressRect.Height * 0.36f),
+                width: progressRect.Width - wheelRect.Width, height: (int)(progressRect.Height * 0.25f));
 
             if (SonOfRobinGame.platform == Platform.Desktop) textRect.Inflate(0, -textRect.Height * 0.22f);
 
