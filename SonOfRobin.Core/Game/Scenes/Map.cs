@@ -238,7 +238,6 @@ namespace SonOfRobin
             }
 
             if (this.Mode == MapMode.Full) this.ProcessInput();
-            //else this.camera.TrackCoords(this.world.Player.sprite.position);
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
         }
