@@ -1095,7 +1095,6 @@ namespace SonOfRobin
             if (updateFog) this.world.map.backgroundNeedsUpdating = true;
 
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-            basicEffect.TextureEnabled = true;
 
             int trianglesDrawn = 0;
 

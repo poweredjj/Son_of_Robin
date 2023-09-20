@@ -522,6 +522,7 @@ namespace SonOfRobin
 
             Viewport viewport = SonOfRobinGame.GfxDev.Viewport;
             basicEffect.View = Matrix.Identity;
+            basicEffect.TextureEnabled = true;
 
             // SpriteBatch resets this
             SonOfRobinGame.GfxDev.RasterizerState = Preferences.debugShowWireframe ? SonOfRobinGame.RasterizeStateNoCullingWireframe : SonOfRobinGame.RasterizeStateNoCulling;

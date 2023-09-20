@@ -22,6 +22,7 @@ namespace SonOfRobin
         private Task backgroundTask;
         private Rectangle bgTaskLastCameraRect;
         private List<Sprite> bgTaskSpritesToShow;
+        private Mesh[] bgTaskMeshesToShow;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
@@ -39,7 +40,9 @@ namespace SonOfRobin
 
         private static float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
+        private bool ShowDetailedMap { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
 
+        private const float showDetailedMapZoom = 0.07f;
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
         private static readonly Color stepDotColor = new Color(56, 36, 0);
 
@@ -53,6 +56,7 @@ namespace SonOfRobin
             this.backgroundNeedsUpdating = true;
             this.bgTaskLastCameraRect = new Rectangle();
             this.bgTaskSpritesToShow = new List<Sprite>();
+            this.bgTaskMeshesToShow = Array.Empty<Mesh>();
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
             {
                 { Color.Blue, null },
@@ -516,10 +520,8 @@ namespace SonOfRobin
 
             // MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
 
-            float showDetailedMapZoom = 0.07f;
-
             // drawing ground
-            if (this.camera.CurrentZoom >= showDetailedMapZoom) // show detailed map
+            if (this.ShowDetailedMap)
             {
                 var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
 
@@ -545,13 +547,8 @@ namespace SonOfRobin
 
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-                basicEffect.TextureEnabled = true;
 
-                var meshesToDraw = this.world.Grid.MeshGrid.GetMeshesForRect(this.camera.viewRect)
-                    .Where(mesh => mesh.boundsRect.Intersects(this.camera.viewRect))
-                    .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct();
-
-                foreach (Mesh mesh in meshesToDraw)
+                foreach (Mesh mesh in this.bgTaskMeshesToShow)
                 {
                     basicEffect.Texture = mesh.meshDef.mapTexture;
 
@@ -802,6 +799,10 @@ namespace SonOfRobin
                     cameraSprites.Clear();
 
                     Rectangle worldCameraRectForSpriteSearch = viewRect;
+
+                    this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
+                        .Where(mesh => mesh.boundsRect.Intersects(viewRect))
+                        .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct().ToArray();
 
                     // mini map displays far pieces on the sides
                     if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
