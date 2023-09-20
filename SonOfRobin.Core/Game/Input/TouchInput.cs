@@ -535,6 +535,7 @@ namespace SonOfRobin
                         float xPos = 0.76f;
                         float yPos = 0.12f;
                         float xShift = 0.09f;
+                        float yShift = 0.20f;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
@@ -545,6 +546,10 @@ namespace SonOfRobin
                         xPos += xShift;
 
                         new VirtButton(name: VButName.MapToggleMarker, label: "TOGGLE\nMARKER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        yPos += yShift;
+
+                        new VirtButton(name: VButName.MapDeleteMarkers, label: "DELETE\nMARKERS", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         xPos = 0.06f;
                         yPos = 0.12f;

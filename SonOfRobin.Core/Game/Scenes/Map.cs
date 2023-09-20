@@ -283,6 +283,25 @@ namespace SonOfRobin
                 return;
             }
 
+            // removing all markers
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapDeleteMarkers))
+            {
+                bool anyMarkerRemoved = false;
+                foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
+                {
+                    if (this.mapMarkerByColor[markerColor] != null)
+                    {
+                        this.mapMarkerByColor[markerColor].Destroy();
+                        this.world.map.mapMarkerByColor[markerColor] = null;
+                        anyMarkerRemoved = true;
+                    }
+                }
+
+                if (anyMarkerRemoved) soundMarkerRemove.Play();
+                return;
+            }
+
             // place or remove marker
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
@@ -326,6 +345,10 @@ namespace SonOfRobin
                         return;
                     }
                 }
+
+                Sound.QuickPlay(SoundData.Name.Error);
+                MessageLog.AddMessage(message: "Cannot place new marker - all markers are in use.", avoidDuplicates: true);
+                return;
             }
 
             // center on player
@@ -394,11 +417,12 @@ namespace SonOfRobin
                 newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.height);
                 this.camera.TrackCoords(position: newPos, moveInstantly: moveInstantly);
             }
-            else
+
+            if (!TouchInput.IsBeingTouchedInAnyWay && movement == Vector2.Zero)
             {
                 foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
                 {
-                    if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 10f / this.camera.CurrentZoom)
+                    if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 12f / this.camera.CurrentZoom)
                     {
                         this.camera.TrackCoords(position: mapMarker.sprite.position, moveInstantly: moveInstantly);
                         break;

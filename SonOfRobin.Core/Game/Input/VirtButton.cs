@@ -27,6 +27,7 @@ namespace SonOfRobin
         InvSort,
 
         MapToggleMarker,
+        MapDeleteMarkers,
         MapCenterPlayer,
         MapToggleLocations,
 
@@ -60,6 +61,7 @@ namespace SonOfRobin
             { VButName.InvDragSingle, "drag_single" },
             { VButName.InvSort, "sort" },
             { VButName.MapToggleMarker, "create_marker" },
+            { VButName.MapDeleteMarkers, "delete_markers" },
             { VButName.MapCenterPlayer, "go_to_player" },
             { VButName.MapToggleLocations, "location_names" },
         };
