@@ -304,7 +304,7 @@ namespace SonOfRobin
                         if (zoomTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "zoom", textures: zoomTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom in", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomIn));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomOut));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "delete all markers", textures: InputMapper.GetTextures(InputMapper.Action.MapDeleteMarkers));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "delete all markers", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.MapDeleteMarkers));
                         new ButtonTip(tipCollection: this.tipCollection, text: "toggle marker", textures: InputMapper.GetTextures(InputMapper.Action.MapToggleMarker));
                         new ButtonTip(tipCollection: this.tipCollection, text: "center on player", textures: InputMapper.GetTextures(InputMapper.Action.MapCenterPlayer));
                         new ButtonTip(tipCollection: this.tipCollection, text: "show names", textures: InputMapper.GetTextures(InputMapper.Action.MapToggleLocations));

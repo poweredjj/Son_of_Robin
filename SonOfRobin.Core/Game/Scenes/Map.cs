@@ -298,7 +298,21 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.Mode == MapMode.Full) this.ProcessInput();
+            if (this.Mode == MapMode.Full)
+            {
+                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
+                {
+                    if (mapMarker != null)
+                    {
+                        VirtButton.ButtonHighlightOnNextFrame(VButName.MapDeleteMarkers);
+                        ControlTips.TipHighlightOnNextFrame(tipName: "delete all markers");
+                        break;
+                    }
+                }
+
+                this.ProcessInput();
+            }
+
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
         }
