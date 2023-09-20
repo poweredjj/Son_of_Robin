@@ -789,10 +789,13 @@ namespace SonOfRobin
 
                     if (this.ShowDetailedMap)
                     {
+                        Rectangle meshSearchRect = viewRect;
+                        meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
+
                         try
                         {
-                            this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(viewRect)
-                                .Where(mesh => mesh.boundsRect.Intersects(viewRect))
+                            this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
+                                .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
                                 .OrderBy(mesh => mesh.meshDef.drawPriority)
                                 .Distinct()
                                 .ToList();
