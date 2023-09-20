@@ -40,7 +40,9 @@ namespace SonOfRobin
 
         private static float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
-        private bool ShowDetailedMap { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
+
+        private bool ShowDetailedMap
+        { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
 
         private const float showDetailedMapZoom = 0.08f;
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
@@ -486,7 +488,7 @@ namespace SonOfRobin
                 {
                     if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 15f / this.camera.CurrentZoom)
                     {
-                        this.camera.TrackCoords(position: mapMarker.sprite.position + new Vector2(1f  / this.camera.CurrentZoom, 1f / this.camera.CurrentZoom), moveInstantly: moveInstantly);
+                        this.camera.TrackCoords(position: mapMarker.sprite.position + new Vector2(1f / this.camera.CurrentZoom, 1f / this.camera.CurrentZoom), moveInstantly: moveInstantly);
                         break;
                     }
                 }
@@ -778,72 +780,67 @@ namespace SonOfRobin
             {
                 if (this.HasBeenRemoved) return;
 
-                Rectangle viewRect = this.camera.viewRect;
-
-                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(4); // to avoid high CPU usage
-                else
+                if (this.Mode == MapMode.Off || this.bgTaskLastCameraRect == this.camera.viewRect)
                 {
-                    this.bgTaskLastCameraRect = viewRect;
-                    showList.Clear();
-                    cameraSprites.Clear();
+                    Thread.Sleep(1); // to avoid high CPU usage
+                    continue;
+                }
 
-                    if (this.ShowDetailedMap)
-                    {
-                        Rectangle meshSearchRect = viewRect;
-                        meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
+                Rectangle viewRect = this.camera.viewRect;
+                this.bgTaskLastCameraRect = viewRect;
+                showList.Clear();
+                cameraSprites.Clear();
 
-                        try
-                        {
-                            this.bgTaskMeshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
-                                .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
-                                .OrderBy(mesh => mesh.meshDef.drawPriority)
-                                .Distinct()
-                                .ToList();
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            continue;
-                        }
-                    }
-
-                    Rectangle worldCameraRectForSpriteSearch = viewRect;
-
-                    // mini map displays far pieces on the sides
-                    if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
-                    else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
+                if (this.ShowDetailedMap)
+                {
+                    Rectangle meshSearchRect = viewRect;
+                    meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
 
                     try
                     {
-                        cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
+                        var meshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
+                            .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
+                            .OrderBy(mesh => mesh.meshDef.drawPriority)
+                            .Distinct()
+                            .ToList();
+
+                        this.bgTaskMeshesToShow = meshesToShow;
                     }
-                    catch (InvalidOperationException) // collection modified while iterating
+                    catch (InvalidOperationException)
                     { continue; }
+                }
 
-                    if (Preferences.DebugShowWholeMap)
-                    {
-                        typesShownAlways.Add(typeof(Animal));
-                        typesShownAlways.AddRange(typesShownIfDiscovered);
-                        namesShownAlways.AddRange(namesShownIfDiscovered);
-                    }
+                Rectangle worldCameraRectForSpriteSearch = viewRect;
 
-                    foreach (Sprite sprite in cameraSprites)
-                    {
-                        BoardPiece piece = sprite.boardPiece;
-                        PieceTemplate.Name name = piece.name;
-                        Type pieceType = piece.GetType();
+                // mini map displays far pieces on the sides
+                if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
+                else worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width / 8, worldCameraRectForSpriteSearch.Height / 8);
 
-                        bool showSprite = false;
+                try
+                {
+                    cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
+                }
+                catch (InvalidOperationException) // collection modified while iterating
+                { continue; }
 
-                        if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
+                foreach (Sprite sprite in cameraSprites)
+                {
+                    BoardPiece piece = sprite.boardPiece;
+                    PieceTemplate.Name name = piece.name;
+                    Type pieceType = piece.GetType();
 
-                        if (!showSprite && sprite.hasBeenDiscovered &&
-                            (namesShownIfDiscovered.Contains(name) ||
-                            typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
+                    bool showSprite = false;
 
-                        if (showSprite) showList.Add(sprite);
-                    }
+                    if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
 
-                    this.bgTaskSpritesToShow = showList.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+                    if (!showSprite && sprite.hasBeenDiscovered &&
+                        (namesShownIfDiscovered.Contains(name) ||
+                        typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
+
+                    if (showSprite) showList.Add(sprite);
+
+                    var spritesToShow = showList.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+                    this.bgTaskSpritesToShow = spritesToShow;
                 }
             }
         }
