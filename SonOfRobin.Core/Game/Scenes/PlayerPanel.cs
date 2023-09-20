@@ -312,6 +312,11 @@ namespace SonOfRobin
 
                 float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
 
+                Color markerColor = Color.Blue; // TODO change to variable
+
+                markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
+                markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
+
                 SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White * markerPiece.sprite.opacity, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
             }
 
