@@ -42,7 +42,7 @@ namespace SonOfRobin
         { get { return Preferences.WorldScale / 2; } }
         private bool ShowDetailedMap { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
 
-        private const float showDetailedMapZoom = 0.07f;
+        private const float showDetailedMapZoom = 0.08f;
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
         private static readonly Color stepDotColor = new Color(56, 36, 0);
 
@@ -521,28 +521,9 @@ namespace SonOfRobin
             // MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
 
             // drawing ground
-            if (this.ShowDetailedMap)
+            if (this.ShowDetailedMap && this.bgTaskMeshesToShow.Count > 0) // checking bgTaskMeshesToShow, in case backgroundTask wasn't fast enough
             {
-                var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
-
-                var cellsToDraw = new List<Cell>();
-                var cellsToErase = new List<Cell>();
-
-                if (!Preferences.DebugShowWholeMap)
-                {
-                    foreach (Cell cell in visibleCells)
-                    {
-                        if (cell.visitedByPlayer) cellsToDraw.Add(cell);
-                        else cellsToErase.Add(cell);
-                    }
-                }
-                else cellsToDraw = visibleCells.ToList();
-
-                foreach (Cell cell in cellsToDraw)
-                {
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, waterColor);
-                }
-
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, waterColor);
                 SonOfRobinGame.SpriteBatch.End();
 
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
@@ -571,6 +552,17 @@ namespace SonOfRobin
 
                 Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
 
+                var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
+                var cellsToErase = new List<Cell>();
+
+                if (!Preferences.DebugShowWholeMap)
+                {
+                    foreach (Cell cell in visibleCells)
+                    {
+                        if (!cell.visitedByPlayer) cellsToErase.Add(cell);
+                    }
+                }
+
                 foreach (Cell cell in cellsToErase)
                 {
                     sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
@@ -579,7 +571,7 @@ namespace SonOfRobin
                     SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
 
-                float lowResOpacity = 1f - (float)Helpers.ConvertRange(oldMin: showDetailedMapZoom, oldMax: showDetailedMapZoom + 0.04f, newMin: 0, newMax: 1, oldVal: this.camera.CurrentZoom, clampToEdges: true);
+                float lowResOpacity = 1f - (float)Helpers.ConvertRange(oldMin: showDetailedMapZoom, oldMax: showDetailedMapZoom + 0.02f, newMin: 0, newMax: 1, oldVal: this.camera.CurrentZoom, clampToEdges: true);
                 if (lowResOpacity > 0) SonOfRobinGame.SpriteBatch.Draw(this.lowResGround, worldRect, Color.White * lowResOpacity);
             }
             else // do not show detailed map
@@ -727,7 +719,7 @@ namespace SonOfRobin
                 if (markerPiece != null && markerPiece.exists)
                 {
                     Rectangle markerRect = markerPiece.sprite.GfxRect;
-                    markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 4, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 4);
+                    markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 6, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 6);
 
                     markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                     markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
@@ -788,7 +780,7 @@ namespace SonOfRobin
 
                 Rectangle viewRect = this.camera.viewRect;
 
-                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(10); // to avoid high CPU usage
+                if (this.bgTaskLastCameraRect == viewRect) Thread.Sleep(4); // to avoid high CPU usage
                 else
                 {
                     this.bgTaskLastCameraRect = viewRect;
@@ -803,7 +795,6 @@ namespace SonOfRobin
                             .Where(mesh => mesh.boundsRect.Intersects(viewRect))
                             .OrderBy(mesh => mesh.meshDef.drawPriority).Distinct().ToList();
                     }
-                    else this.bgTaskMeshesToShow.Clear();
                     
                     // mini map displays far pieces on the sides
                     if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
