@@ -262,13 +262,23 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetX, toValue: 0.2f, duration: 20, delay: 5)
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetX, toValue: 0.1f, duration: 20, delay: 5)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
 
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetY, toValue: 0.2f, duration: 20, delay: 0)
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetY, toValue: 0.1f, duration: 20, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticInOut);
+
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureDeformationOffsetX, toValue: 0.2f, duration: 20, delay: 0)
+                .RepeatForever(repeatDelay: 0f)
+                .AutoReverse()
+                .Easing(EasingFunctions.SineInOut);
+
+            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureDeformationOffsetY, toValue: 0.07f, duration: 5.0f, delay: 0)
+                .RepeatForever(repeatDelay: 2.3f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
 
