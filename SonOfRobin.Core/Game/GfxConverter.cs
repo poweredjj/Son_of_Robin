@@ -238,11 +238,11 @@ namespace SonOfRobin
                 return fileStream;
             }
             catch (FileNotFoundException)
-            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
+            { MessageLog.AddMessage(debugMessage: true, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
             catch (IOException) // png file corrupted
-            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
+            { MessageLog.AddMessage(debugMessage: true, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted
-            { if (!path.Contains("background")) MessageLog.AddMessage(debugMessage: true, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
+            { MessageLog.AddMessage(debugMessage: true, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 
             return null;
         }
