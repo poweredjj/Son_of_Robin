@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,12 @@ namespace SonOfRobin
 
         public readonly TextureBank.TextureName textureName;
         public readonly TextureBank.TextureName mapTextureName;
+        public readonly Texture2D texture;
+        public readonly Texture2D mapTexture;
+
         public readonly MeshGenerator.RawMapDataSearchForTexture search;
         public readonly int drawPriority;
+        public readonly BlendState blendState;
 
         public readonly Tweener tweener;
         public float textureOffsetX;
@@ -23,15 +28,16 @@ namespace SonOfRobin
         public bool TweenerActive { get; private set; }
         public Vector2 TextureOffset { get; private set; }
 
-        public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
+        public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, BlendState blendState, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
         {
             this.textureName = textureName;
             this.mapTextureName = mapTextureName;
+            this.texture = TextureBank.GetTexture(textureName);
+            this.mapTexture = TextureBank.GetTexture(mapTextureName);
+
+            this.blendState = blendState;
             this.search = search;
             this.drawPriority = drawPriority;
-
-            TextureBank.GetTexture(textureName); // preloading texture, to avoid errors when generating meshes in parallel
-            TextureBank.GetTexture(mapTextureName); // preloading texture, to avoid errors when generating meshes in parallel
 
             this.tweener = new Tweener();
             this.textureOffsetX = 0f;
@@ -51,6 +57,7 @@ namespace SonOfRobin
             MeshDefinition groundBase = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingGroundBase,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBase,
+                blendState: BlendState.AlphaBlend,
                 drawPriority: -1,
                 search: new(
                 searchPriority: 0,
@@ -65,6 +72,7 @@ namespace SonOfRobin
             MeshDefinition waterDeep = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingWaterDeep,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterDeep,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 1,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -78,6 +86,7 @@ namespace SonOfRobin
             MeshDefinition waterMedium = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingWaterMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterMedium,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 7,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -91,6 +100,16 @@ namespace SonOfRobin
             MeshDefinition waterSuperShallow = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingWaterSuperShallow,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterSuperShallow,
+                blendState: new BlendState
+                {
+                    AlphaBlendFunction = BlendFunction.ReverseSubtract,
+                    AlphaSourceBlend = Blend.One,
+                    AlphaDestinationBlend = Blend.One,
+
+                    ColorBlendFunction = BlendFunction.Add,
+                    ColorSourceBlend = Blend.One,
+                    ColorDestinationBlend = Blend.One,
+                },
                 search: new(
                 searchPriority: 12,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -104,6 +123,7 @@ namespace SonOfRobin
             MeshDefinition beachBright = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingBeachBright,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachBright,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 5,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -117,6 +137,7 @@ namespace SonOfRobin
             MeshDefinition beachDark = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingBeachDark,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachDark,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 6,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -130,6 +151,7 @@ namespace SonOfRobin
             MeshDefinition sand = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingSand,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSand,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 15,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -144,6 +166,7 @@ namespace SonOfRobin
             MeshDefinition groundBad = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingGroundBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBad,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 4,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -158,6 +181,7 @@ namespace SonOfRobin
             MeshDefinition groundGood = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingGroundGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundGood,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 13,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -172,6 +196,7 @@ namespace SonOfRobin
             MeshDefinition grassBad = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingGrassBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassBad,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 2,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -186,6 +211,7 @@ namespace SonOfRobin
             MeshDefinition grassGood = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingGrassGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassGood,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 9,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -200,6 +226,7 @@ namespace SonOfRobin
             MeshDefinition mountainLow = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingMountainLow,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainLow,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 3,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -213,6 +240,7 @@ namespace SonOfRobin
             MeshDefinition mountainMedium = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingMountainMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainMedium,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 10,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -226,6 +254,7 @@ namespace SonOfRobin
             MeshDefinition mountainHigh = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingMountainHigh,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainHigh,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 14,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -239,6 +268,7 @@ namespace SonOfRobin
             MeshDefinition volcanoEdge = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingVolcanoEdge,
                 mapTextureName: TextureBank.TextureName.RepeatingMapVolcanoEdge,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 16,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -252,6 +282,7 @@ namespace SonOfRobin
             MeshDefinition lava = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingLava,
                 mapTextureName: TextureBank.TextureName.RepeatingMapLava,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 17,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -285,6 +316,7 @@ namespace SonOfRobin
             MeshDefinition swamp = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingSwamp,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSwamp,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 8,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
@@ -304,6 +336,7 @@ namespace SonOfRobin
             MeshDefinition ruins = new MeshDefinition(
                 textureName: TextureBank.TextureName.RepeatingRuins,
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,
+                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 11,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {

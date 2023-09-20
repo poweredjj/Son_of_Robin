@@ -12,8 +12,6 @@ namespace SonOfRobin
 
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;
-        public readonly Texture2D texture;
-        public readonly Texture2D mapTexture;
         private readonly VertexPositionTexture[] vertices;
         private readonly VertexPositionTexture[] verticesTransformedCopy;
         public readonly short[] indices;
@@ -24,8 +22,6 @@ namespace SonOfRobin
         public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList)
         {
             this.textureName = textureName;
-            this.texture = TextureBank.GetTexture(this.textureName);
-            this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
             this.vertices = vertList.ToArray();
             this.verticesTransformedCopy = vertList.ToArray();
             this.indices = indicesList.ToArray();
@@ -47,8 +43,6 @@ namespace SonOfRobin
             var meshDict = (Dictionary<string, Object>)meshData;
 
             this.textureName = (TextureBank.TextureName)(Int64)meshDict["textureName"];
-            this.texture = TextureBank.GetTexture(this.textureName);
-            this.mapTexture = TextureBank.GetTexture(MeshDefinition.meshDefByTextureName[this.textureName].mapTextureName);
 
             this.indices = (short[])meshDict["indices"];
             this.triangleCount = this.indices.Length / 3;

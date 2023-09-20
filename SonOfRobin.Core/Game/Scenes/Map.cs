@@ -419,7 +419,7 @@ namespace SonOfRobin
 
                 foreach (Mesh mesh in meshesToDraw)
                 {
-                    basicEffect.Texture = mesh.mapTexture;
+                    basicEffect.Texture = mesh.meshDef.mapTexture;
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {

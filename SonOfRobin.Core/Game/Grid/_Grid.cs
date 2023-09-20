@@ -1040,7 +1040,7 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.meshDef.drawPriority).Distinct())
             {
-                basicEffect.Texture = mesh.mapTexture;
+                basicEffect.Texture = mesh.meshDef.mapTexture;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1083,7 +1083,8 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                basicEffect.Texture = mesh.texture;
+                basicEffect.Texture = mesh.meshDef.texture;
+                SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
