@@ -355,7 +355,7 @@ namespace SonOfRobin
                         if (Preferences.CustomizeWorld)
                         {
                             List<Object> sizeList = new() { 15000, 20000, 25000, 30000, 40000, 50000, 60000 };
-                            if (SonOfRobinGame.platform == Platform.Desktop) sizeList.AddRange(new List<Object> { 70000, 80000, 90000, 100000 });
+                            if (SonOfRobinGame.platform == Platform.Desktop || Preferences.debugEnableExtremeMapSizes) sizeList.AddRange(new List<Object> { 70000, 80000, 90000, 100000 });
 
                             if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine || Preferences.debugEnableExtremeMapSizes)
                             {
