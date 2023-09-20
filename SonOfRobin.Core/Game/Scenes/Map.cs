@@ -278,7 +278,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
+                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15 / this.camera.CurrentZoom)
                     {
                         this.MapMarker.Destroy();
                         this.MapMarker = null;
@@ -360,6 +360,13 @@ namespace SonOfRobin
                 newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.height);
                 this.camera.TrackCoords(position: newPos, moveInstantly: moveInstantly);
             }
+            else
+            {
+                if (this.MapMarker != null && Vector2.Distance(this.camera.CurrentPos, this.MapMarker.sprite.position) < 10f / this.camera.CurrentZoom)
+                {
+                    this.camera.TrackCoords(position: this.MapMarker.sprite.position, moveInstantly: moveInstantly);
+                }
+            }
         }
 
         public override void RenderToTarget()
@@ -387,10 +394,12 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White); // should always be drawn (edges transparency is not perfect and blue background would be showing a little otherwise)
 
-            // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
+            // MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
+
+            float showDetailedMapZoom = 0.07f;
 
             // drawing ground
-            if (this.camera.CurrentZoom >= 0.1f) // show detailed map
+            if (this.camera.CurrentZoom >= showDetailedMapZoom) // show detailed map
             {
                 var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
 
@@ -452,6 +461,10 @@ namespace SonOfRobin
 
                     SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
+
+                float lowResOpacity = 1f - (float)Helpers.ConvertRange(oldMin: showDetailedMapZoom, oldMax: showDetailedMapZoom + 0.04f, newMin: 0, newMax: 1, oldVal: this.camera.CurrentZoom, clampToEdges: true);
+                if (lowResOpacity > 0) SonOfRobinGame.SpriteBatch.Draw(this.lowResGround, worldRect, Color.White * lowResOpacity);
+
             }
             else // do not show detailed map
             {
