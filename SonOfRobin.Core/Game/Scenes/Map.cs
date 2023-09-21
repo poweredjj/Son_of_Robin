@@ -19,8 +19,10 @@ namespace SonOfRobin
 
         public readonly World world;
         private readonly Camera camera;
-        private Task backgroundTask;
-        private Rectangle bgTaskLastCameraRect;
+        private Task bgTaskForMeshes;
+        private Task bgTaskForPieces;
+        private Rectangle bgTaskMeshesLastCameraRect;
+        private Rectangle bgTaskPiecesLastCameraRect;
         private List<Sprite> bgTaskSpritesToShow;
         private List<Mesh> bgTaskMeshesToShow;
         private readonly MapOverlay mapOverlay;
@@ -56,7 +58,8 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: true, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
-            this.bgTaskLastCameraRect = new Rectangle();
+            this.bgTaskMeshesLastCameraRect = new Rectangle();
+            this.bgTaskPiecesLastCameraRect = new Rectangle();
             this.bgTaskSpritesToShow = new List<Sprite>();
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
@@ -282,7 +285,7 @@ namespace SonOfRobin
         {
             if (this.Mode == MapMode.Off) return;
 
-            this.KeepBackgroundTaskAlive();
+            this.KeepBackgroundTasksAlive();
 
             foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
             {
@@ -713,23 +716,26 @@ namespace SonOfRobin
 
             // drawing map markers
 
-            foreach (var kvp in this.world.map.mapMarkerByColor)
+            if (this.Mode == MapMode.Full)
             {
-                Color markerColor = kvp.Key;
-                BoardPiece markerPiece = kvp.Value;
-
-                if (markerPiece != null && markerPiece.exists)
+                foreach (var kvp in this.world.map.mapMarkerByColor)
                 {
-                    Rectangle markerRect = markerPiece.sprite.GfxRect;
-                    markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 6, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 6);
+                    Color markerColor = kvp.Key;
+                    BoardPiece markerPiece = kvp.Value;
 
-                    markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
-                    markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
+                    if (markerPiece != null && markerPiece.exists)
+                    {
+                        Rectangle markerRect = markerPiece.sprite.GfxRect;
+                        markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 6, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 6);
 
-                    markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
+                        markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
+                        markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
 
-                    SonOfRobinGame.SpriteBatch.End();
-                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                        markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
+
+                        SonOfRobinGame.SpriteBatch.End();
+                        SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                    }
                 }
             }
 
@@ -753,15 +759,53 @@ namespace SonOfRobin
             // is being drawn in MapOverlay scene
         }
 
-        private void KeepBackgroundTaskAlive()
+        private void KeepBackgroundTasksAlive()
         {
-            if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
+            if (this.bgTaskForMeshes != null && this.bgTaskForMeshes.IsFaulted)
             {
-                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
-                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForMeshes.Exception, showTextWindow: false);
+                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task (meshes). Restarting task.", color: Color.Orange);
             }
+            if (this.bgTaskForMeshes == null || this.bgTaskForMeshes.IsFaulted) this.bgTaskForMeshes = Task.Run(() => this.BGMeshesTaskLoop());
 
-            if (this.backgroundTask == null || this.backgroundTask.IsFaulted) this.backgroundTask = Task.Run(() => this.BackgroundTaskLoop());
+            if (this.bgTaskForPieces != null && this.bgTaskForPieces.IsFaulted)
+            {
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForPieces.Exception, showTextWindow: false);
+                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task (pieces). Restarting task.", color: Color.Orange);
+            }
+            if (this.bgTaskForPieces == null || this.bgTaskForPieces.IsFaulted) this.bgTaskForPieces = Task.Run(() => this.BGPiecesTaskLoop());
+        }
+
+        private void BGMeshesTaskLoop()
+        {
+            while (true)
+            {
+                if (this.HasBeenRemoved) return;
+
+                // ShowDetailedMap is not checked, to allow for early meshes preparation in case of a rapid zoom
+                if (this.Mode == MapMode.Off || this.bgTaskMeshesLastCameraRect == this.camera.viewRect)
+                {
+                    Thread.Sleep(1); // to avoid high CPU usage
+                    continue;
+                }
+
+                Rectangle meshSearchRect = this.camera.viewRect;
+                this.bgTaskMeshesLastCameraRect = meshSearchRect;
+
+                meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
+
+                try
+                {
+                    var meshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
+                        .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
+                        .OrderBy(mesh => mesh.meshDef.drawPriority)
+                        .Distinct()
+                        .ToList();
+
+                    this.bgTaskMeshesToShow = meshesToShow;
+                }
+                catch (InvalidOperationException) { }
+            }
         }
 
         // static variables are down here for easier editing
@@ -771,7 +815,7 @@ namespace SonOfRobin
         private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container) };
         private static readonly List<PieceTemplate.Name> namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.Totem };
 
-        private void BackgroundTaskLoop()
+        private void BGPiecesTaskLoop()
         {
             var showList = new List<Sprite>();
             var cameraSprites = new List<Sprite>();
@@ -780,35 +824,16 @@ namespace SonOfRobin
             {
                 if (this.HasBeenRemoved) return;
 
-                if (this.Mode == MapMode.Off || this.bgTaskLastCameraRect == this.camera.viewRect)
+                if (this.Mode == MapMode.Off || this.bgTaskPiecesLastCameraRect == this.camera.viewRect)
                 {
                     Thread.Sleep(1); // to avoid high CPU usage
                     continue;
                 }
 
                 Rectangle viewRect = this.camera.viewRect;
-                this.bgTaskLastCameraRect = viewRect;
+                this.bgTaskPiecesLastCameraRect = viewRect;
                 showList.Clear();
                 cameraSprites.Clear();
-
-                if (this.ShowDetailedMap)
-                {
-                    Rectangle meshSearchRect = viewRect;
-                    meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
-
-                    try
-                    {
-                        var meshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
-                            .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
-                            .OrderBy(mesh => mesh.meshDef.drawPriority)
-                            .Distinct()
-                            .ToList();
-
-                        this.bgTaskMeshesToShow = meshesToShow;
-                    }
-                    catch (InvalidOperationException)
-                    { continue; }
-                }
 
                 Rectangle worldCameraRectForSpriteSearch = viewRect;
 
