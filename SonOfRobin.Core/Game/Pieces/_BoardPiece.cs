@@ -607,11 +607,16 @@ namespace SonOfRobin
             // processing state machine
 
             bool passiveMovementOccured = this.ProcessPassiveMovement();
-
             if (passiveMovementOccured) // passive movement blocks the state machine until the movement stops
             {
                 this.lastFrameSMProcessed = this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // has to be updated here, to prevent from processing passive movement multiple times
                 return;
+            }
+            else
+            {
+                // resetting passive movement params
+                this.passiveMovement = Vector2.Zero;
+                this.passiveRotation = 0;
             }
 
             if (!this.world.stateMachineTypesManager.CanBeProcessed(this)) return;

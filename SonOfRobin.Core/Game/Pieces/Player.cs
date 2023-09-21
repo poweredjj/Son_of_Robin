@@ -339,7 +339,9 @@ namespace SonOfRobin
                 var piecesToPickUp = new List<BoardPiece>();
                 foreach (Sprite sprite in spritesForRect)
                 {
-                    if (sprite.boardPiece.pieceInfo.canBePickedUp && !sprite.boardPiece.IsBurning && (sprite.boardPiece.GetType() != typeof(Animal) || !sprite.boardPiece.alive))
+                    if (sprite.boardPiece.pieceInfo.canBePickedUp &&
+                        !sprite.boardPiece.IsBurning && (sprite.boardPiece.GetType() != typeof(Animal) || !sprite.boardPiece.alive)
+                        && !sprite.boardPiece.HasPassiveMovement)
                     {
                         piecesToPickUp.Add(sprite.boardPiece);
                     }
