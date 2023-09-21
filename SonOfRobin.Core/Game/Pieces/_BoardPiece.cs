@@ -959,7 +959,7 @@ namespace SonOfRobin
                 return false;
             }
 
-            if (this.sprite.Move(movement: this.passiveMovement / passiveMovementMultiplier))
+            if (this.sprite.Move(movement: this.passiveMovement / passiveMovementMultiplier, splitXY: false))
             {
                 this.passiveMovement *= 0.94f;
                 this.sprite.rotation += this.passiveRotation / 300f;

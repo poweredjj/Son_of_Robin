@@ -524,13 +524,13 @@ namespace SonOfRobin
             return groupNames;
         }
 
-        public bool Move(Vector2 movement)
+        public bool Move(Vector2 movement, bool splitXY = true)
         {
             List<Vector2> movesToTest = new() { movement };
 
             float moveDelta = Vector2.Distance(movement, Vector2.Zero);
             movesToTest.Add(new Vector2(movement.X / 2, movement.Y / 2));
-            if (moveDelta > 1) movesToTest.Add(new Vector2(Math.Max(Math.Min(movement.X, 1), -1), Math.Max(Math.Min(movement.Y, 1), -1)));
+            if (moveDelta > 1 && splitXY) movesToTest.Add(new Vector2(Math.Clamp(value: movement.X, min: -1, max: 1), Math.Clamp(value: movement.Y, min: -1, max: 1)));
 
             foreach (Vector2 testMove in movesToTest)
             {

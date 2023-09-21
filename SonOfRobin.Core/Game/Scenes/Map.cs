@@ -565,16 +565,14 @@ namespace SonOfRobin
                 {
                     foreach (Cell cell in visibleCells)
                     {
-                        if (!cell.visitedByPlayer) cellsToErase.Add(cell);
+                        if (!cell.visitedByPlayer)
+                        {
+                            sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
+                            sourceRect.Y = (int)(cell.rect.Y * rectMultiplierY) + extendedMapRectOffset.Y;
+
+                            SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
+                        }
                     }
-                }
-
-                foreach (Cell cell in cellsToErase)
-                {
-                    sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
-                    sourceRect.Y = (int)(cell.rect.Y * rectMultiplierY) + extendedMapRectOffset.Y;
-
-                    SonOfRobinGame.SpriteBatch.Draw(texture: mapTexture, sourceRectangle: sourceRect, destinationRectangle: cell.rect, color: Color.White);
                 }
 
                 float lowResOpacity = 1f - (float)Helpers.ConvertRange(oldMin: showDetailedMapZoom, oldMax: showDetailedMapZoom + 0.02f, newMin: 0, newMax: 1, oldVal: this.camera.CurrentZoom, clampToEdges: true);
