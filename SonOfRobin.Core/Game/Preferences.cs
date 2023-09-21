@@ -20,7 +20,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 50, "low" }, { 40, "medium" }, { 20, "high" }, { 10, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.1f, "huge" }, { 0.2f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.075f, "huge" }, { 0.1f, "gigantic" } };
 
         public static readonly List<PieceTemplate.Name> startingItemNames = new() { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
