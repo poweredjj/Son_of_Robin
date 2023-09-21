@@ -113,6 +113,23 @@ namespace SonOfRobin
             this.boardPiece = boardPieceToAssign;
         }
 
+        public Sound MakeCopyForPiece(BoardPiece boardPiece)
+        {
+            // this constructor must contain all Sound input params
+
+            return new Sound(
+                name: this.Name,
+                nameList: this.SoundNameList,
+                boardPiece: boardPiece,
+                volume: this.volume,
+                isLooped: this.isLooped,
+                cooldown: this.cooldown,
+                ignore3DAlways: this.ignore3DAlways,
+                maxPitchVariation: this.maxPitchVariation,
+                pitchChange: this.pitchChange,
+                volumeFadeFrames: this.volumeFadeFrames);
+        }
+
         public void AdjustVolume(float newVolume)
         {
             // for manual volume control (does not go well with TargetVolume, FadeVolume, etc.)

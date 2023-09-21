@@ -49,7 +49,7 @@ namespace SonOfRobin
 
         public PieceSoundPack()
         {
-            soundDict = new Dictionary<Action, Sound>();
+            this.soundDict = new Dictionary<Action, Sound>();
         }
 
         public object Serialize()
@@ -127,7 +127,7 @@ namespace SonOfRobin
             }
 
             AddAction(action: Action.BurnEnd, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
-            // looped sound would populate all sound channels fast, so non-looped short sound is used instead
+            // looped sound would rapidly populate all sound channels, so non-looped short sound is used instead
             AddAction(action: Action.Burning, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
 
             AddAction(action: Action.IsHit, sound: new Sound(nameList: GetHitSoundNames(boardPiece), boardPiece: this.boardPiece, maxPitchVariation: 0.5f), replaceExisting: false);

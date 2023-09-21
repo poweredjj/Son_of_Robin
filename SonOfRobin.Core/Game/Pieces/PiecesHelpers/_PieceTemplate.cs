@@ -2752,9 +2752,7 @@ namespace SonOfRobin
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.White;
 
@@ -2767,9 +2765,7 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.NoBiome },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, false } });
 
-                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Blue;
 
@@ -2783,9 +2779,7 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Black;
 
@@ -2799,9 +2793,7 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Green;
 
@@ -2814,9 +2806,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        Sound sound = new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lava sound", description: "Ambient sound for lava.", sound: sound, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lava sound", description: "Ambient sound for lava.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Yellow;
 
