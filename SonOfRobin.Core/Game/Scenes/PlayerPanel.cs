@@ -289,7 +289,7 @@ namespace SonOfRobin
                             if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
                         }
 
-                        float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
+                        float markerHeight = Preferences.MapMarkerRealSize * 1.4f;
                         float markerScale = markerHeight / markerTexture.Height;
                         float markerWidth = markerTexture.Width * markerScale;
 
@@ -316,7 +316,7 @@ namespace SonOfRobin
                         markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
                         markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;
 
-                        float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
+                        float markerDrawScale = (markerScreenPosRightBottom.Y - markerScreenPos.Y) / (float)markerTexture.Height;
 
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);

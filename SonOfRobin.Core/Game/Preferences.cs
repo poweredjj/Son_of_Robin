@@ -20,7 +20,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 50, "low" }, { 40, "medium" }, { 20, "high" }, { 10, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.1f, "huge" }, { 0.2f, "gigantic" } };
 
         public static readonly List<PieceTemplate.Name> startingItemNames = new() { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
@@ -159,7 +159,8 @@ namespace SonOfRobin
         public static bool showFieldControlTips = true;
         public static float fieldControlTipsScale = 0.4f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
-        public static float mapMarkerScale = 1f;
+        public static float mapMarkerScale = 0.025f; // screen height percentage used to draw markers
+        public static float MapMarkerRealSize { get { return SonOfRobinGame.VirtualHeight * mapMarkerScale; } }
         public static bool showHints = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;

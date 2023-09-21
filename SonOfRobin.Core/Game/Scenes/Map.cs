@@ -718,6 +718,9 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Full)
             {
+                int markerSizePixels = (int)(Preferences.MapMarkerRealSize / this.camera.CurrentZoom);
+                Rectangle markerRect = new Rectangle(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
+
                 foreach (var kvp in this.world.map.mapMarkerByColor)
                 {
                     Color markerColor = kvp.Key;
@@ -725,8 +728,8 @@ namespace SonOfRobin
 
                     if (markerPiece != null && markerPiece.exists)
                     {
-                        Rectangle markerRect = markerPiece.sprite.GfxRect;
-                        markerRect.Inflate(markerRect.Width * spriteSize * Preferences.mapMarkerScale * 6, markerRect.Height * spriteSize * Preferences.mapMarkerScale * 6);
+                        markerRect.X = (int)markerPiece.sprite.position.X - (markerRect.Width / 2);
+                        markerRect.Y = (int)markerPiece.sprite.position.Y - (markerRect.Height / 2);
 
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
