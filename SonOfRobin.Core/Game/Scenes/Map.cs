@@ -491,6 +491,7 @@ namespace SonOfRobin
                 {
                     if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 15f / this.camera.CurrentZoom)
                     {
+                        new RumbleEvent(force: 0.015f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.04f);
                         this.camera.TrackCoords(position: mapMarker.sprite.position + new Vector2(1f / this.camera.CurrentZoom, 1f / this.camera.CurrentZoom), moveInstantly: moveInstantly);
                         break;
                     }
