@@ -51,6 +51,7 @@ namespace SonOfRobin
                 return;
             }
 
+            this.world.Player.Fatigue += 5;
             this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
             new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.22f);
 
