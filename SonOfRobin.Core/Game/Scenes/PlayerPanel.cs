@@ -289,7 +289,7 @@ namespace SonOfRobin
                             if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
                         }
 
-                        float markerHeight = Preferences.MapMarkerRealSize * 1.4f;
+                        float markerHeight = Preferences.MapMarkerRealSize * this.world.viewParams.ScaleY;
                         float markerScale = markerHeight / markerTexture.Height;
                         float markerWidth = markerTexture.Width * markerScale;
 
