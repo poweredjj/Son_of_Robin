@@ -754,6 +754,9 @@ namespace SonOfRobin
                 AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }
+            
+            // drawing camera rect (debug)
+            if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 3);
 
             SonOfRobinGame.SpriteBatch.End();
         }
