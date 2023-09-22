@@ -13,7 +13,7 @@ namespace SonOfRobin
         {
             this.boardPiece = boardPiece;
             this.activeSoundDict = new Dictionary<PieceSoundPackTemplate.Action, Sound>();
-            this.template = boardPiece.pieceInfo.pieceSoundPackTemplate;
+            if (boardPiece.pieceInfo != null) this.template = boardPiece.pieceInfo.pieceSoundPackTemplate;
         }
 
         public object Serialize()
