@@ -173,7 +173,7 @@ namespace SonOfRobin
             Position = 2,
         }
 
-        public void Update(Vector2 cameraCorrection)
+        public void Update(Vector2 cameraCorrection, bool calculateFollowCorrection)
         {
             if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
 
@@ -192,14 +192,13 @@ namespace SonOfRobin
 
             Vector2 currentTargetPos = this.GetTargetCoords();
 
-            if (this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
+            if (calculateFollowCorrection && this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
             {
                 Vector2 spriteMovement = currentTargetPos - this.trackedSpritePrevPos;
-
                 Vector2 normalizedMovement = spriteMovement == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(spriteMovement); // Vector2.Zero cannot be normalized correctly
-                Vector2 forwardCorrectionTarget = new Vector2(this.viewRect.Width / 2, this.viewRect.Height / 2) * normalizedMovement;
+                Vector2 forwardCorrectionTarget = new Vector2(this.viewRect.Width * 0.4f, this.viewRect.Height * 0.4f) * normalizedMovement;
 
-                float movementSlowdownForCorrection = 40;
+                float movementSlowdownForCorrection = normalizedMovement == Vector2.Zero ? 110 : 40;
 
                 this.followCorrection.X += (forwardCorrectionTarget.X - this.followCorrection.X) / movementSlowdownForCorrection;
                 this.followCorrection.Y += (forwardCorrectionTarget.Y - this.followCorrection.Y) / movementSlowdownForCorrection;
@@ -234,15 +233,6 @@ namespace SonOfRobin
             }
 
             viewCenter += cameraCorrection + this.shakeVal;
-
-            if (this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
-            {
-
-                // TODO add keeping tracked sprite in bounds
-
-            }
-
-
 
             float screenWidth = this.ScreenWidth;
             float screenHeight = this.ScreenHeight;

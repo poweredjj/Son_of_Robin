@@ -322,7 +322,7 @@ namespace SonOfRobin
                 this.ProcessInput();
             }
 
-            this.camera.Update(cameraCorrection: Vector2.Zero);
+            this.camera.Update(cameraCorrection: Vector2.Zero, calculateFollowCorrection: false);
         }
 
         private void SetViewParamsForMiniature()

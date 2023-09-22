@@ -910,7 +910,7 @@ namespace SonOfRobin
                 analogCameraCorrection *= 10;
             }
 
-            this.camera.Update(cameraCorrection: analogCameraCorrection);
+            this.camera.Update(cameraCorrection: analogCameraCorrection, calculateFollowCorrection: true);
             this.camera.SetViewParams(this);
 
             // width and height are set once in constructor
