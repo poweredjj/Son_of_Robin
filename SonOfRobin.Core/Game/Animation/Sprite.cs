@@ -777,8 +777,8 @@ namespace SonOfRobin
             }
         }
 
-        public void CharacterStand(bool setEvenIfMissing = true)
-        { this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
+        public void CharacterStand(bool setEvenIfMissing = true, bool checkForCollision = true)
+        { this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision); }
 
         public void CharacterWalk(bool setEvenIfMissing = true)
         { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
