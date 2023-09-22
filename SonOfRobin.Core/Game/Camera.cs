@@ -16,6 +16,8 @@ namespace SonOfRobin
         private int lastUpdateFrame;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
+        private Vector2 trackedSpritePrevPos;
+        private Vector2 followCorrection;
         private int spriteTrackedSince;
         private bool trackedSpriteReached;
         private Vector2 trackedPos;
@@ -31,6 +33,34 @@ namespace SonOfRobin
         public Vector2 CurrentPos { get; private set; }
         public float TargetZoom { get; private set; }
         public float CurrentZoom { get; private set; }
+
+        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
+        {
+            this.ResetMovementSpeed();
+            this.ResetZoom();
+
+            this.world = world;
+            this.tweener = new Tweener();
+            this.shakeVal = Vector2.Zero;
+            this.keepInWorldBounds = keepInWorldBounds;
+            this.useFluidMotionForMove = useFluidMotionForMove;
+            this.useFluidMotionForZoom = useFluidMotionForZoom;
+            this.useWorldScale = useWorldScale;
+            this.CurrentPos = new Vector2(0, 0);
+
+            this.viewRect = new Rectangle(0, 0, 0, 0);
+            this.disableFluidMotionMoveForOneFrame = false;
+            this.trackingMode = TrackingMode.Undefined;
+            this.TargetZoom = 1f;
+            this.CurrentZoom = 1f;
+            this.spriteTrackedSince = 0;
+            this.trackedSprite = null;
+            this.trackedSpritePrevPos = Vector2.Zero;
+            this.followCorrection = Vector2.Zero;
+            this.trackedSpriteReached = false;
+            this.trackedPos = Vector2.One;
+            this.lastUpdateFrame = 0;
+        }
 
         public void SetViewParams(Scene scene)
         {
@@ -143,32 +173,6 @@ namespace SonOfRobin
             Position = 2,
         }
 
-        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
-        {
-            this.ResetMovementSpeed();
-            this.ResetZoom();
-
-            this.world = world;
-            this.tweener = new Tweener();
-            this.shakeVal = Vector2.Zero;
-            this.keepInWorldBounds = keepInWorldBounds;
-            this.useFluidMotionForMove = useFluidMotionForMove;
-            this.useFluidMotionForZoom = useFluidMotionForZoom;
-            this.useWorldScale = useWorldScale;
-            this.CurrentPos = new Vector2(0, 0);
-
-            this.viewRect = new Rectangle(0, 0, 0, 0);
-            this.disableFluidMotionMoveForOneFrame = false;
-            this.trackingMode = TrackingMode.Undefined;
-            this.TargetZoom = 1f;
-            this.CurrentZoom = 1f;
-            this.spriteTrackedSince = 0;
-            this.trackedSprite = null;
-            this.trackedSpriteReached = false;
-            this.trackedPos = Vector2.One;
-            this.lastUpdateFrame = 0;
-        }
-
         public void Update(Vector2 cameraCorrection)
         {
             if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
@@ -187,6 +191,22 @@ namespace SonOfRobin
             }
 
             Vector2 currentTargetPos = this.GetTargetCoords();
+
+            if (this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
+            {
+                Vector2 spriteMovement = currentTargetPos - this.trackedSpritePrevPos;
+
+                Vector2 normalizedMovement = spriteMovement == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(spriteMovement); // Vector2.Zero cannot be normalized correctly
+                Vector2 forwardCorrectionTarget = new Vector2(this.viewRect.Width / 2, this.viewRect.Height / 2) * normalizedMovement;
+
+                float movementSlowdownForCorrection = 40;
+
+                this.followCorrection.X += (forwardCorrectionTarget.X - this.followCorrection.X) / movementSlowdownForCorrection;
+                this.followCorrection.Y += (forwardCorrectionTarget.Y - this.followCorrection.Y) / movementSlowdownForCorrection;
+
+                currentTargetPos += followCorrection;
+            }
+
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
             if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame && this.shakeVal == Vector2.Zero)
@@ -214,6 +234,15 @@ namespace SonOfRobin
             }
 
             viewCenter += cameraCorrection + this.shakeVal;
+
+            if (this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
+            {
+
+                // TODO add keeping tracked sprite in bounds
+
+            }
+
+
 
             float screenWidth = this.ScreenWidth;
             float screenHeight = this.ScreenHeight;
@@ -248,6 +277,7 @@ namespace SonOfRobin
             this.viewPos = new Vector2(-xMin, -yMin);
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
+            if (this.trackingMode == TrackingMode.Sprite) this.trackedSpritePrevPos = this.trackedSprite.position;
             this.lastUpdateFrame = SonOfRobinGame.CurrentUpdate;
         }
 
@@ -273,6 +303,8 @@ namespace SonOfRobin
         {
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
+            this.trackedSpritePrevPos = trackedPiece.sprite.position;
+            this.followCorrection = Vector2.Zero;
             this.trackedSpriteReached = false;
             this.spriteTrackedSince = this.world.CurrentUpdate;
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
@@ -283,6 +315,8 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Position;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
+            this.trackedSpritePrevPos = Vector2.Zero;
+            this.followCorrection = Vector2.Zero;
             this.spriteTrackedSince = 0;
             this.trackedPos = new Vector2(position.X, position.Y);
             this.disableFluidMotionMoveForOneFrame = moveInstantly;

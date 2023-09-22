@@ -158,7 +158,7 @@ namespace SonOfRobin
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
             this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
-            this.camera.TrackCoords(new Vector2(0, 0));
+            this.camera.TrackCoords(Vector2.Zero);
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
