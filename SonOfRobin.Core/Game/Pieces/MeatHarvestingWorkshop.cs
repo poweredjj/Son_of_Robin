@@ -17,9 +17,9 @@ namespace SonOfRobin
         private List<StorageSlot> meatSlots;
 
         public MeatHarvestingWorkshop(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
-            byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty)
         {
             this.PieceStorage = new PieceStorage(width: 4, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Processing);
 

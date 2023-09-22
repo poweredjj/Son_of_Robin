@@ -145,23 +145,23 @@ namespace SonOfRobin
         public bool IsDeepInBiome
         { get { return this.GetFieldValue(Terrain.Name.Biome) > Terrain.biomeDeep; } }
 
-        public PieceSoundPack.Action WalkSoundAction
+        public PieceSoundPackTemplate.Action WalkSoundAction
         {
             get
             {
-                if (this.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp)) return PieceSoundPack.Action.StepMud;
-                if (this.IsOnLava) return PieceSoundPack.Action.StepLava;
-                if (this.IsOnRocks) return PieceSoundPack.Action.StepRock;
+                if (this.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp)) return PieceSoundPackTemplate.Action.StepMud;
+                if (this.IsOnLava) return PieceSoundPackTemplate.Action.StepLava;
+                if (this.IsOnRocks) return PieceSoundPackTemplate.Action.StepRock;
                 if (this.IsInWater)
                 {
-                    if (this.CanDrownHere) return PieceSoundPack.Action.SwimDeep;
-                    else if (this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax - 5) return PieceSoundPack.Action.SwimShallow;
-                    else return PieceSoundPack.Action.StepWater;
+                    if (this.CanDrownHere) return PieceSoundPackTemplate.Action.SwimDeep;
+                    else if (this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax - 5) return PieceSoundPackTemplate.Action.SwimShallow;
+                    else return PieceSoundPackTemplate.Action.StepWater;
                 }
 
-                if (this.IsOnSand) return PieceSoundPack.Action.StepSand;
+                if (this.IsOnSand) return PieceSoundPackTemplate.Action.StepSand;
 
-                return PieceSoundPack.Action.StepGrass;
+                return PieceSoundPackTemplate.Action.StepGrass;
             }
         }
 

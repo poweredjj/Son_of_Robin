@@ -30,11 +30,6 @@ namespace SonOfRobin
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
         {
-            this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove2, ignore3DAlways: true));
-
             this.scareRange = scareRange;
             this.isOn = false;
             this.burnStartFrame = 0;
@@ -93,8 +88,8 @@ namespace SonOfRobin
                     this.sprite.lightEngine.Activate();
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
-                    this.soundPack.Play(PieceSoundPack.Action.TurnOn);
-                    this.soundPack.Play(PieceSoundPack.Action.IsOn);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
                 }
                 else
                 {
@@ -104,8 +99,8 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.sprite.lightEngine.Deactivate();
                     ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
-                    this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-                    this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+                    this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
                 }
 
                 if (Inventory.Layout == Inventory.LayoutType.FieldStorage) Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
@@ -127,7 +122,7 @@ namespace SonOfRobin
             if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                else MessageLog.AddMessage( message: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");
+                else MessageLog.AddMessage(message: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");
                 return false;
             }
 

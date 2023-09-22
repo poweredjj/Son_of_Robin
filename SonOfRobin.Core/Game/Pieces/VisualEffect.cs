@@ -13,9 +13,9 @@ namespace SonOfRobin
         private Vector2 rainStep;
 
         public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine)
         {
         }
 
@@ -152,13 +152,13 @@ namespace SonOfRobin
                 this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0.7f, duration: duration / 5, delay: delay)
                     .Easing(EasingFunctions.QuadraticIn);
 
-                this.soundPack.Play(PieceSoundPack.Action.Ambient);
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Ambient);
             }
             else
             {
                 if (tweenPos.Completion >= 0.7f || !this.sprite.IsInWater)
                 {
-                    this.soundPack.Play(PieceSoundPack.Action.Ambient);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Ambient);
 
                     Tween tweenOpacity = this.tweener.FindTween(target: this.sprite, memberName: "opacity");
                     if (tweenOpacity == null || tweenOpacity.IsComplete)
@@ -188,7 +188,7 @@ namespace SonOfRobin
 
                     if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement && Vector2.Distance(this.sprite.position, collidingSprite.position) <= 50)
                     {
-                        collidingPiece.soundPack.Play(PieceSoundPack.Action.SwimShallow);
+                        collidingPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.SwimShallow);
 
                         float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
                         int pushDistance = this.world.random.Next(400, 800);

@@ -89,7 +89,7 @@ namespace SonOfRobin
         public readonly PieceTemplate.Name name;
         public Sprite sprite;
         public State activeState;
-        public PieceSoundPack soundPack;
+        public ActiveSoundPack activeSoundPack;
         public int lastFrameSMProcessed;
         public float speed;
         private float mass;
@@ -120,7 +120,7 @@ namespace SonOfRobin
         private float hitPoints;
 
         public BoardPiece(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null, PieceSoundPack soundPack = null)
+            byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null)
         {
             this.world = world;
             this.name = name;
@@ -129,9 +129,7 @@ namespace SonOfRobin
 
             this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
 
-            this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
-            this.soundPack.Activate(this);
-
+            this.activeSoundPack = new ActiveSoundPack(this);
             this.activeState = activeState;
             this.lastFrameSMProcessed = this.world != null ? this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) : 0;
             this.maxHitPoints = maxHitPoints;
@@ -416,8 +414,8 @@ namespace SonOfRobin
             if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
             if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
             if (this.heatLevel > 0) pieceData["base_heatLevel"] = this.heatLevel;
-            var soundPackSerialized = this.soundPack.Serialize();
-            if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
+            var soundPackSerialized = this.activeSoundPack.Serialize();
+            if (soundPackSerialized != null) pieceData["base_activeSoundPack"] = soundPackSerialized;
             if (this.buffList.Count > 0) pieceData["base_buffList"] = this.buffList;
             if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
             if (this.createdByPlayer != pieceInfo.createdByPlayer) pieceData["base_createdByPlayer"] = this.createdByPlayer;
@@ -445,7 +443,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_pieceStorage")) this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
             if (pieceData.ContainsKey("base_buffEngine")) this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             if (pieceData.ContainsKey("base_buffList")) this.buffList = (List<Buff>)pieceData["base_buffList"];
-            if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
+            if (pieceData.ContainsKey("base_activeSoundPack")) this.activeSoundPack.Deserialize(pieceData["base_activeSoundPack"]);
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_createdByPlayer")) this.createdByPlayer = (bool)pieceData["base_createdByPlayer"];
             if (pieceData.ContainsKey("base_heatLevel")) this.heatLevel = (float)(double)pieceData["base_heatLevel"];
@@ -506,7 +504,7 @@ namespace SonOfRobin
         {
             if (!this.alive) return;
 
-            this.soundPack.Play(PieceSoundPack.Action.Die);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Die);
 
             if (this.IsAnimalOrPlayer)
             {
@@ -527,7 +525,7 @@ namespace SonOfRobin
         {
             if (!this.exists) return;
             if (this.alive) this.Kill(addDestroyEvent: false);
-            this.soundPack.StopAll(ignoredAction: PieceSoundPack.Action.IsDestroyed);
+            this.activeSoundPack.StopAll(ignoredAction: PieceSoundPackTemplate.Action.IsDestroyed);
             this.sprite.Destroy();
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();
@@ -777,7 +775,7 @@ namespace SonOfRobin
             this.HeatLevel -= isRaining ? 0.012f : 0.0028f;
             if (this.sprite.IsInWater)
             {
-                if (this.IsBurning) this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
+                if (this.IsBurning) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff); // only when is put out by water
                 this.HeatLevel = 0;
             }
 
@@ -791,7 +789,7 @@ namespace SonOfRobin
 
             // processing burning
 
-            if (!this.soundPack.IsPlaying(PieceSoundPack.Action.Burning)) this.soundPack.Play(PieceSoundPack.Action.Burning);
+            if (!this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Burning)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Burning);
 
             // affecting this piece
 
@@ -810,7 +808,7 @@ namespace SonOfRobin
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
                 }
 
-                if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry)) this.soundPack.Play(PieceSoundPack.Action.Cry);
+                if (this.IsAnimalOrPlayer && this.alive && !this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Cry)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                 if (this.GetType() == typeof(Player))
                 {
@@ -828,7 +826,7 @@ namespace SonOfRobin
                 if (isInCameraRect)
                 {
                     bool isAnimal = this.GetType() == typeof(Animal);
-                    if (isAnimal) this.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                    if (isAnimal) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDestroyed);
 
                     ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
                     this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
@@ -868,7 +866,7 @@ namespace SonOfRobin
 
                         if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(4) == 0)
                         {
-                            if (heatedPiece.sprite.IsInCameraRect) heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+                            if (heatedPiece.sprite.IsInCameraRect) heatedPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                             if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
                             {
@@ -981,8 +979,8 @@ namespace SonOfRobin
 
         private void PlayPassiveMovementSound()
         {
-            if (this.sprite.IsInWater) this.soundPack.Play(PieceSoundPack.Action.StepWater);
-            else this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+            if (this.sprite.IsInWater) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.StepWater);
+            else this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDropped);
         }
 
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
@@ -1046,7 +1044,7 @@ namespace SonOfRobin
 
                 if (this.sprite.IsInCameraRect)
                 {
-                    this.soundPack.Play(action: this.sprite.WalkSoundAction);
+                    this.activeSoundPack.Play(action: this.sprite.WalkSoundAction);
                     this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
 
                     if (isInWater && !this.sprite.IgnoresCollisions)

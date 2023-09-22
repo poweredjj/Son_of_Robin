@@ -85,9 +85,9 @@ namespace SonOfRobin
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
         public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default") :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -1020,7 +1020,7 @@ namespace SonOfRobin
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.HitPoints -= 0.5f;
                 this.HeatLevel += 0.12f;
-                this.soundPack.Play(PieceSoundPack.Action.StepLava);
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.StepLava);
                 new RumbleEvent(force: 1f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
             }
 
@@ -1037,7 +1037,7 @@ namespace SonOfRobin
             {
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
-                    this.soundPack.Play(PieceSoundPack.Action.Cry);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
                     this.world.camera.AddRandomShake();
                     this.world.FlashRedOverlay();
                 }
@@ -1110,7 +1110,7 @@ namespace SonOfRobin
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
-                this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
             }
 
             if (!this.ShootingModeInputPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
@@ -1122,7 +1122,7 @@ namespace SonOfRobin
                 this.activeState = State.PlayerControlledWalking;
                 this.ShootingAngle = -100;
                 this.shootingPower = 0;
-                this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
             }
         }
 
@@ -1147,7 +1147,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.Sleep && this.FatiguePercent <= this.sleepEngine.minFatiguePercentPossibleToGet)
             {
                 this.sleepMode = SleepMode.WaitIndefinitely;
-                this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
 
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -1235,7 +1235,7 @@ namespace SonOfRobin
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
             this.sprite.CharacterStand();
             this.activeState = State.PlayerControlledSleep;
-            this.soundPack.Play(PieceSoundPack.Action.PlayerSnore);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerSnore);
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: this.sleepEngine.updateMultiplier);
 
@@ -1269,7 +1269,7 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
-            this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
+            this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
             this.sleepMode = SleepMode.Awake;
 
             this.world.updateMultiplier = 1;
@@ -1357,7 +1357,7 @@ namespace SonOfRobin
                 this.world.touchLayout = TouchLayout.WorldShoot;
                 this.world.tipsLayout = ControlTips.TipsLayout.WorldShoot;
                 this.activeState = State.PlayerControlledShooting;
-                this.soundPack.Play(PieceSoundPack.Action.PlayerBowDraw);
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerBowDraw);
                 return true;
             }
 

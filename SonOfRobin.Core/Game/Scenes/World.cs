@@ -225,7 +225,7 @@ namespace SonOfRobin
         }
 
         public Sound DialogueSound
-        { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
+        { get { return this.Player.pieceInfo.pieceSoundPackTemplate.GetSound(PieceSoundPackTemplate.Action.PlayerSpeak); } }
 
         public bool CineMode
         {

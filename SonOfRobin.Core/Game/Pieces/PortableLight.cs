@@ -11,15 +11,11 @@ namespace SonOfRobin
         private readonly LightEngine storedLightEngine;
 
         public PortableLight(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool canBeUsedDuringRain, LightEngine storedLightEngine,
-            byte animSize = 0, string animName = "off", int maxHitPoints = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,   maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty)
         {
             this.storedLightEngine = storedLightEngine;
-
-            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireSmall, ignore3DAlways: true));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, ignore3DAlways: true));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Torch, maxPitchVariation: 0.5f, isLooped: true, ignore3DAlways: true));
 
             this.isOn = false;
             this.canBeUsedDuringRain = canBeUsedDuringRain;
@@ -55,8 +51,8 @@ namespace SonOfRobin
                     playerSprite.lightEngine = this.storedLightEngine;
                     playerSprite.lightEngine.AssignSprite(playerSprite);
                     playerSprite.lightEngine.Activate();
-                    this.soundPack.Play(PieceSoundPack.Action.TurnOn);
-                    this.soundPack.Play(action: PieceSoundPack.Action.IsOn);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
+                    this.activeSoundPack.Play(action: PieceSoundPackTemplate.Action.IsOn);
 
                     var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
                     new WorldEvent(eventName: WorldEvent.EventName.BurnOutLightSource, world: world, delay: 60, boardPiece: this, eventHelper: damageData);
@@ -65,8 +61,8 @@ namespace SonOfRobin
                 {
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.world.Player.sprite.lightEngine.Deactivate();
-                    this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-                    this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+                    this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
                 }
             }
         }

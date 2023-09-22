@@ -99,9 +99,9 @@ namespace SonOfRobin
         private List<SlotExtensionDrying> slotExtensionList; // slots extended with drying data
 
         public MeatDryingRack(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, byte storageWidth, byte storageHeight,
-            byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.DryMeat, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.DryMeat)
         {
             this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Drying);
             this.slotExtensionList = new List<SlotExtensionDrying>();

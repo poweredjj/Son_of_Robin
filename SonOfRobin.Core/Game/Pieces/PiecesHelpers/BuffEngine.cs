@@ -384,8 +384,8 @@ namespace SonOfRobin
 
                         Player player = (Player)this.piece;
 
-                        if (add) player.soundPack.Play(PieceSoundPack.Action.PlayerPulse);
-                        else player.soundPack.Stop(PieceSoundPack.Action.PlayerPulse);
+                        if (add) player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerPulse);
+                        else player.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerPulse);
 
                         return true;
                     }
@@ -471,13 +471,13 @@ namespace SonOfRobin
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
                             player.speed += (float)buff.value;
                             player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, borderThickness: 1, textureSize: player.sprite.AnimFrame.textureSize, priority: 0, framesLeft: -1));
-                            player.soundPack.Play(PieceSoundPack.Action.PlayerSprint);
+                            player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerSprint);
                         }
                         else
                         {
                             player.speed -= (float)buff.value;
                             player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBorder);
-                            player.soundPack.Play(PieceSoundPack.Action.PlayerPant);
+                            player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerPant);
                             player.buffEngine.AddBuff(buff: new Buff(type: BuffType.SprintCooldown, autoRemoveDelay: 15 * 60, value: null), world: player.world);
                         }
 

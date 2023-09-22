@@ -413,7 +413,7 @@ namespace SonOfRobin
                             SolidColor redOverlay = new SolidColor(color: Color.Red * 0.8f, viewOpacity: 0.0f);
                             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 16, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                             world.solidColorManager.Add(redOverlay);
-                            this.boardPiece.soundPack.Play(PieceSoundPack.Action.IsHit);
+                            this.boardPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
                         }
 
                         // changing target hit points

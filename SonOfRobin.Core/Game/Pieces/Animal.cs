@@ -27,9 +27,9 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
         public Animal(World world, int id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
-            byte animSize = 0, string animName = "default", float speed = 1, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", float speed = 1) :
 
-            base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation, soundPack: soundPack)
+            base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation)
         {
             this.IsFemale = Random.Next(2) == 1;
             if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
@@ -571,10 +571,10 @@ namespace SonOfRobin
 
                 this.target.pieceInfo.Yield?.DropDebris(piece: this.target);
 
-                this.soundPack.Play(PieceSoundPack.Action.Cry);
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
-                target.soundPack.Play(PieceSoundPack.Action.IsHit);
-                if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+                target.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
+                if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                 int attackStrength = Convert.ToInt32(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
                 this.target.HitPoints = Math.Max(0, this.target.HitPoints - attackStrength);
@@ -620,7 +620,7 @@ namespace SonOfRobin
                 return;
             }
 
-            this.soundPack.Play(PieceSoundPack.Action.Eat);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Eat);
 
             if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && this.world.random.Next(25) == 0)
             {
@@ -648,7 +648,7 @@ namespace SonOfRobin
             {
                 if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && isInCameraRect)
                 {
-                    target.soundPack.Play(PieceSoundPack.Action.IsHit);
+                    target.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
 
                     PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     this.target.pieceInfo.Yield.DropDebris(this.target);
@@ -874,7 +874,7 @@ namespace SonOfRobin
 
         public override void SM_AnimalCallForHelp()
         {
-            this.soundPack.Play(PieceSoundPack.Action.Cry);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
             var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);

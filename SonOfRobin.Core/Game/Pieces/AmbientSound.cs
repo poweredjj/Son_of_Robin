@@ -12,13 +12,11 @@ namespace SonOfRobin
         private int currentDelay;
         private int waitUntilFrame;
 
-        public AmbientSound(World world, int id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound,
+        public AmbientSound(World world, int id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
            bool visible = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
         {
-            this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
-
             this.waitUntilFrame = 0;
 
             this.checkDelay = 100 + Random.Next(60); // to avoid playing all ambient sound in the same frame
@@ -36,7 +34,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            Sound sound = this.soundPack.GetSound(PieceSoundPack.Action.Ambient);
+            Sound sound = this.activeSoundPack.GetPlayingSound(PieceSoundPackTemplate.Action.Ambient);
             if (sound == null) return;
 
             if (sound.isLooped) new StatBar(label: "vol", value: (int)(sound.FadeVolume * 100), valueMax: 100, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false);
@@ -50,13 +48,13 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % checkDelay != 0) return;
 
             bool isInCameraRect = this.sprite.IsInCameraRect;
-            bool isLooped = this.soundPack.IsLooped(PieceSoundPack.Action.Ambient);
+            bool isLooped = this.pieceInfo.pieceSoundPackTemplate.IsLooped(PieceSoundPackTemplate.Action.Ambient);
 
-            if (this.soundPack.IsPlaying(PieceSoundPack.Action.Ambient))
+            if (this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Ambient))
             {
                 if (isLooped && (!isInCameraRect || !this.CanBePlayedNow))
                 {
-                    this.soundPack.Stop(PieceSoundPack.Action.Ambient);
+                    this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
                 }
                 if (this.pieceInfo.ambsoundGeneratesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
@@ -75,7 +73,7 @@ namespace SonOfRobin
                 this.showStatBarsTillFrame = this.waitUntilFrame;
             }
 
-            this.soundPack.Play(PieceSoundPack.Action.Ambient);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Ambient);
 
             if (Preferences.debugShowSounds)
             {
