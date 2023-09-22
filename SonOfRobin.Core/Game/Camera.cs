@@ -310,7 +310,7 @@ namespace SonOfRobin
             this.movementSlowdown = (int)(defaultMovementSlowdown / speedMultiplier);
         }
 
-        private Vector2 GetTargetCoords()
+        public Vector2 GetTargetCoords()
         {
             switch (this.trackingMode)
             {
