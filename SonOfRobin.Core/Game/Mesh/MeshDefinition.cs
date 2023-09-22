@@ -51,6 +51,25 @@ namespace SonOfRobin
             meshDefByTextureName[textureName] = this;
         }
 
+        public static void UpdateAllDefs()
+        {
+            foreach (MeshDefinition meshDef in meshDefBySearchPriority)
+            {
+                meshDef.Update();
+            }
+        }
+
+        private void Update()
+        {
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+
+            this.TextureOffset = new Vector2(this.textureOffsetX, this.textureOffsetY);
+
+            this.TweenerActive = this.TextureOffset != Vector2.Zero ||
+                this.textureDeformationOffsetX != 0 ||
+                this.textureDeformationOffsetY != 0;
+        }
+
         public static void CreateMeshDefinitions()
         {
             // needed to fill small holes, that will occur between other meshes
@@ -344,25 +363,6 @@ namespace SonOfRobin
                 );
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
-        }
-
-        public static void UpdateAllDefs()
-        {
-            foreach (MeshDefinition meshDef in meshDefBySearchPriority)
-            {
-                meshDef.Update();
-            }
-        }
-
-        private void Update()
-        {
-            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-
-            this.TextureOffset = new Vector2(this.textureOffsetX, this.textureOffsetY);
-
-            this.TweenerActive = this.TextureOffset != Vector2.Zero ||
-                this.textureDeformationOffsetX != 0 ||
-                this.textureDeformationOffsetY != 0;
         }
     }
 }
