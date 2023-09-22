@@ -385,7 +385,7 @@ namespace SonOfRobin
                         Player player = (Player)this.piece;
 
                         if (add) player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerPulse);
-                        else player.soundPack.Stop(PieceSoundPackTemplate.Action.PlayerPulse);
+                        else player.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerPulse);
 
                         return true;
                     }

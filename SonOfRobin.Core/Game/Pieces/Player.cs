@@ -1108,7 +1108,7 @@ namespace SonOfRobin
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
-                this.soundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
             }
 
             if (!this.ShootingModeInputPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
@@ -1120,7 +1120,7 @@ namespace SonOfRobin
                 this.activeState = State.PlayerControlledWalking;
                 this.ShootingAngle = -100;
                 this.shootingPower = 0;
-                this.soundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerBowDraw);
             }
         }
 
@@ -1145,7 +1145,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.Sleep && this.FatiguePercent <= this.sleepEngine.minFatiguePercentPossibleToGet)
             {
                 this.sleepMode = SleepMode.WaitIndefinitely;
-                this.soundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
 
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -1267,7 +1267,7 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
-            this.soundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
+            this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
             this.sleepMode = SleepMode.Awake;
 
             this.world.updateMultiplier = 1;

@@ -818,7 +818,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.placeMaxDistance = 1000;
+                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
@@ -829,6 +829,7 @@ namespace SonOfRobin
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -839,6 +840,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.Fat:
@@ -848,6 +850,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.placeMaxDistance = 1000;
+                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.Leather:
@@ -894,6 +897,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.1f;
                         this.animalSightRange = 400;
                         this.canBePickedUp = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -922,6 +927,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.6f;
                         this.animalSightRange = 500;
                         this.canBePickedUp = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f, pitchChange: -0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -950,6 +957,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 1f;
                         this.animalSightRange = 700;
                         this.canBePickedUp = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -977,6 +986,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.05f;
                         this.animalSightRange = 250;
                         this.canBePickedUp = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryFrog1, SoundData.Name.CryFrog2, SoundData.Name.CryFrog3, SoundData.Name.CryFrog4, }, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisBlood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1856,6 +1867,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.ShootFire, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
@@ -2337,6 +2349,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.PlasticDrop, cooldown: 15, maxPitchVariation: 0.1f);
                         break;
 
                     case PieceTemplate.Name.TorchSmall:
@@ -2364,6 +2377,8 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f);
+
                         break;
 
                     case PieceTemplate.Name.LanternEmpty:
@@ -2372,6 +2387,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
                     case PieceTemplate.Name.Candle:
@@ -2379,6 +2395,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f);
                         break;
 
                     case PieceTemplate.Name.HumanSkeleton:
@@ -2539,6 +2556,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyStump);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -2627,6 +2645,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.floatsOnWater = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f);
                         break;
 
                     case PieceTemplate.Name.ParticleEmitter:

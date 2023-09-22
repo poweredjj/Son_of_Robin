@@ -81,7 +81,7 @@ namespace SonOfRobin
 
             if (!this.sprite.Move(movement: movement))
             {
-                this.soundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
 
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
                 var collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece);
@@ -156,7 +156,7 @@ namespace SonOfRobin
 
             if (this.exists && Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier * 4.5f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier * 4.5f))
             {
-                this.soundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
+                this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
                 this.shootMode = false;
                 this.passiveMovement = Vector2.Zero;
                 if (this.sprite.IsInWater || this.pieceInfo.projectileCanExplode) this.Destroy();

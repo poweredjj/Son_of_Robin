@@ -44,7 +44,7 @@ namespace SonOfRobin
             BurnEnd = 34,
         }
 
-        public readonly Dictionary<Action, Sound> staticSoundDict;
+        private readonly Dictionary<Action, Sound> staticSoundDict;
 
         public PieceSoundPackTemplate(PieceInfo.Info pieceInfo)
         {
@@ -147,6 +147,16 @@ namespace SonOfRobin
         public void RemoveAction(Action action)
         {
             if (this.staticSoundDict.ContainsKey(action)) this.staticSoundDict.Remove(action);
+        }
+
+        public Sound GetSound(Action action)
+        {
+            return this.staticSoundDict.ContainsKey(action) ? this.staticSoundDict[action] : null;
+        }
+
+        public bool IsLooped(Action action)
+        {
+            return this.staticSoundDict.ContainsKey(action) ? this.staticSoundDict[action].isLooped : false;
         }
 
         private static List<SoundData.Name> GetHitSoundNames(BoardPiece.Category category)

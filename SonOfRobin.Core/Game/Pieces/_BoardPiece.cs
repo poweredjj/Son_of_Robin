@@ -414,8 +414,8 @@ namespace SonOfRobin
             if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
             if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
             if (this.heatLevel > 0) pieceData["base_heatLevel"] = this.heatLevel;
-            var soundPackSerialized = this.soundPack.Serialize();
-            if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
+            var soundPackSerialized = this.activeSoundPack.Serialize();
+            if (soundPackSerialized != null) pieceData["base_activeSoundPack"] = soundPackSerialized;
             if (this.buffList.Count > 0) pieceData["base_buffList"] = this.buffList;
             if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
             if (this.createdByPlayer != pieceInfo.createdByPlayer) pieceData["base_createdByPlayer"] = this.createdByPlayer;
@@ -443,7 +443,7 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_pieceStorage")) this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
             if (pieceData.ContainsKey("base_buffEngine")) this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             if (pieceData.ContainsKey("base_buffList")) this.buffList = (List<Buff>)pieceData["base_buffList"];
-            if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
+            if (pieceData.ContainsKey("base_activeSoundPack")) this.activeSoundPack.Deserialize(pieceData["base_activeSoundPack"]);
             if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_createdByPlayer")) this.createdByPlayer = (bool)pieceData["base_createdByPlayer"];
             if (pieceData.ContainsKey("base_heatLevel")) this.heatLevel = (float)(double)pieceData["base_heatLevel"];
@@ -525,7 +525,7 @@ namespace SonOfRobin
         {
             if (!this.exists) return;
             if (this.alive) this.Kill(addDestroyEvent: false);
-            this.soundPack.StopAll(ignoredAction: PieceSoundPack.Action.IsDestroyed);
+            this.activeSoundPack.StopAll(ignoredAction: PieceSoundPackTemplate.Action.IsDestroyed);
             this.sprite.Destroy();
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();
@@ -784,7 +784,7 @@ namespace SonOfRobin
 
             // processing burning
 
-            if (!this.soundPack.IsPlaying(PieceSoundPack.Action.Burning)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Burning);
+            if (!this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Burning)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Burning);
 
             // affecting this piece
 
@@ -803,7 +803,7 @@ namespace SonOfRobin
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
                 }
 
-                if (this.IsAnimalOrPlayer && !this.soundPack.IsPlaying(PieceSoundPack.Action.Cry)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
+                if (this.IsAnimalOrPlayer && this.alive && !this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Cry)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                 if (this.GetType() == typeof(Player))
                 {

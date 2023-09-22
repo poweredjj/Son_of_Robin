@@ -52,7 +52,7 @@ namespace SonOfRobin
                     playerSprite.lightEngine.AssignSprite(playerSprite);
                     playerSprite.lightEngine.Activate();
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
-                    this.activeSoundPack.Play(action: PieceSoundPack.Action.IsOn);
+                    this.activeSoundPack.Play(action: PieceSoundPackTemplate.Action.IsOn);
 
                     var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
                     new WorldEvent(eventName: WorldEvent.EventName.BurnOutLightSource, world: world, delay: 60, boardPiece: this, eventHelper: damageData);
@@ -61,7 +61,7 @@ namespace SonOfRobin
                 {
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.world.Player.sprite.lightEngine.Deactivate();
-                    this.soundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
+                    this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
                 }
             }

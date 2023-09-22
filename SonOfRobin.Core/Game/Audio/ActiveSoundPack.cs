@@ -47,8 +47,10 @@ namespace SonOfRobin
         {
             if (!this.activeSoundDict.ContainsKey(action))
             {
-                if (!this.template.staticSoundDict.ContainsKey(action)) return;
-                this.activeSoundDict[action] = this.template.staticSoundDict[action].MakeCopyForPiece(this.boardPiece);
+                Sound templateSound = this.template.GetSound(action);
+                if (templateSound == null) return;
+
+                this.activeSoundDict[action] = templateSound.MakeCopyForPiece(this.boardPiece);
             }
 
             this.activeSoundDict[action].Play(ignore3DThisPlay: ignore3D, ignoreCooldown: ignoreCooldown);

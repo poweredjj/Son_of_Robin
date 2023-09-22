@@ -34,7 +34,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            Sound sound = this.soundPack.GetSound(PieceSoundPack.Action.Ambient);
+            Sound sound = this.activeSoundPack.GetPlayingSound(PieceSoundPackTemplate.Action.Ambient);
             if (sound == null) return;
 
             if (sound.isLooped) new StatBar(label: "vol", value: (int)(sound.FadeVolume * 100), valueMax: 100, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false);
@@ -48,13 +48,13 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % checkDelay != 0) return;
 
             bool isInCameraRect = this.sprite.IsInCameraRect;
-            bool isLooped = this.soundPack.IsLooped(PieceSoundPack.Action.Ambient);
+            bool isLooped = this.pieceInfo.pieceSoundPackTemplate.IsLooped(PieceSoundPackTemplate.Action.Ambient);
 
-            if (this.soundPack.IsPlaying(PieceSoundPack.Action.Ambient))
+            if (this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Ambient))
             {
                 if (isLooped && (!isInCameraRect || !this.CanBePlayedNow))
                 {
-                    this.soundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
+                    this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
                 }
                 if (this.pieceInfo.ambsoundGeneratesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
