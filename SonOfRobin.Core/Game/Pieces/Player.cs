@@ -742,7 +742,7 @@ namespace SonOfRobin
             }
         }
 
-        private bool PointWalkTargetReached
+        public bool PointWalkTargetReached
         { get { return this.pointWalkTarget == Vector2.Zero || Vector2.Distance(this.sprite.position, this.pointWalkTarget) <= 1f * this.speed; } }
 
         public override void SM_PlayerControlledWalking()

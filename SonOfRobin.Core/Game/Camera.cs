@@ -17,7 +17,7 @@ namespace SonOfRobin
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
         private Vector2 trackedSpritePrevPos;
-        private Vector2 followCorrection;
+        private Vector2 aheadCorrection;
         private int spriteTrackedSince;
         private bool trackedSpriteReached;
         private Vector2 trackedPos;
@@ -56,7 +56,7 @@ namespace SonOfRobin
             this.spriteTrackedSince = 0;
             this.trackedSprite = null;
             this.trackedSpritePrevPos = Vector2.Zero;
-            this.followCorrection = Vector2.Zero;
+            this.aheadCorrection = Vector2.Zero;
             this.trackedSpriteReached = false;
             this.trackedPos = Vector2.One;
             this.lastUpdateFrame = 0;
@@ -173,7 +173,7 @@ namespace SonOfRobin
             Position = 2,
         }
 
-        public void Update(Vector2 cameraCorrection, bool calculateFollowCorrection)
+        public void Update(Vector2 cameraCorrection, bool calculateAheadCorrection)
         {
             if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
 
@@ -192,18 +192,31 @@ namespace SonOfRobin
 
             Vector2 currentTargetPos = this.GetTargetCoords();
 
-            if (calculateFollowCorrection && this.trackingMode == TrackingMode.Sprite && this.trackedSpriteReached)
+            if (this.trackingMode == TrackingMode.Sprite && calculateAheadCorrection && this.trackedSpriteReached && this.trackedSprite.boardPiece.GetType() == typeof(Player))
             {
-                Vector2 spriteMovement = currentTargetPos - this.trackedSpritePrevPos;
-                Vector2 normalizedMovement = spriteMovement == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(spriteMovement); // Vector2.Zero cannot be normalized correctly
-                Vector2 forwardCorrectionTarget = new Vector2(this.viewRect.Width * 0.4f, this.viewRect.Height * 0.4f) * normalizedMovement;
+                bool moveBackToPlayer;
+                Vector2 aheadCorrectionTarget;
 
-                float movementSlowdownForCorrection = normalizedMovement == Vector2.Zero ? 110 : 40;
+                if (this.world.Player.pointWalkTarget != Vector2.Zero)
+                {
+                    aheadCorrectionTarget = this.world.Player.pointWalkTarget - currentTargetPos;
+                    moveBackToPlayer = this.world.Player.PointWalkTargetReached;
+                }
+                else
+                {
+                    Vector2 spriteMovement = currentTargetPos - this.trackedSpritePrevPos;
+                    Vector2 normalizedMovement = spriteMovement == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(spriteMovement); // Vector2.Zero cannot be normalized correctly
+                    aheadCorrectionTarget = new Vector2(this.viewRect.Width * 0.35f, this.viewRect.Height * 0.35f) * normalizedMovement;
+                    moveBackToPlayer = normalizedMovement == Vector2.Zero;
+                }
 
-                this.followCorrection.X += (forwardCorrectionTarget.X - this.followCorrection.X) / movementSlowdownForCorrection;
-                this.followCorrection.Y += (forwardCorrectionTarget.Y - this.followCorrection.Y) / movementSlowdownForCorrection;
+                float movementSlowdownForCorrection = moveBackToPlayer ? 110 : 70;
+                if (!this.viewRect.Contains(this.world.Player.sprite.position)) movementSlowdownForCorrection = 1;
 
-                currentTargetPos += followCorrection;
+                this.aheadCorrection.X += (aheadCorrectionTarget.X - this.aheadCorrection.X) / movementSlowdownForCorrection;
+                this.aheadCorrection.Y += (aheadCorrectionTarget.Y - this.aheadCorrection.Y) / movementSlowdownForCorrection;
+
+                currentTargetPos += aheadCorrection;
             }
 
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
@@ -294,7 +307,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpritePrevPos = trackedPiece.sprite.position;
-            this.followCorrection = Vector2.Zero;
+            this.aheadCorrection = Vector2.Zero;
             this.trackedSpriteReached = false;
             this.spriteTrackedSince = this.world.CurrentUpdate;
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
@@ -306,7 +319,7 @@ namespace SonOfRobin
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedSpritePrevPos = Vector2.Zero;
-            this.followCorrection = Vector2.Zero;
+            this.aheadCorrection = Vector2.Zero;
             this.spriteTrackedSince = 0;
             this.trackedPos = new Vector2(position.X, position.Y);
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
