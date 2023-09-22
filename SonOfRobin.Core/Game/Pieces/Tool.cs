@@ -262,7 +262,7 @@ namespace SonOfRobin
                     target.PieceStorage?.DropAllPiecesToTheGround(addMovement: true); // plants do not drop their contents (fruits) by themselves
                 }
 
-                target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                target.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDestroyed);
                 new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
 
                 if (target.GetType() != typeof(Animal)) target.Destroy();
@@ -280,14 +280,14 @@ namespace SonOfRobin
             }
             else
             {
-                target.soundPack.Play(PieceSoundPack.Action.IsHit);
+                target.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
                 new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.2f);
 
                 target.showStatBarsTillFrame = world.CurrentUpdate + 1200;
 
                 if (target.GetType() == typeof(Animal))
                 {
-                    if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+                    if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                     Animal animalTarget = (Animal)target;
 

@@ -100,7 +100,7 @@ namespace SonOfRobin
                 var container = (Container)piece;
                 container.Open();
             }
-            else this.piece.soundPack.Play(PieceSoundPack.Action.Open);
+            else this.piece.activeSoundPack.Play(PieceSoundPackTemplate.Action.Open);
 
             if (!this.transManager.HasAnyTransition) this.transManager.AddMultipleTransitions(paramsToChange: this.GetTransitionsParams(), outTrans: false, duration: 12, refreshBaseVal: false);
         }
@@ -1164,7 +1164,7 @@ namespace SonOfRobin
             foreach (BoardPiece piece in this.draggedPieces)
             { slot.AddPiece(piece); }
 
-            this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+            this.draggedPieces[0].activeSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
             new RumbleEvent(force: 0.12f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.035f, fadeOutSeconds: 0.035f);
 
             this.draggedPieces = slotPieces;

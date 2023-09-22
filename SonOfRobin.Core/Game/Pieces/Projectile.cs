@@ -26,10 +26,6 @@ namespace SonOfRobin
         {
             this.realHitPower = 0; // calculated each shooting time
             this.shootMode = false;
-
-            this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowFly, sound: new Sound(name: SoundData.Name.ArrowFly, maxPitchVariation: 0.3f));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowHit, sound: new Sound(name: SoundData.Name.ArrowHit, maxPitchVariation: 0.3f));
-            this.soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropArrow, maxPitchVariation: 0.3f, cooldown: 20));
         }
 
         public override void Destroy()
@@ -52,7 +48,7 @@ namespace SonOfRobin
             }
 
             this.world.Player.Fatigue += 5;
-            this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
+            this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerBowRelease);
             new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.22f);
 
             float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: this.sprite.position + movement);
@@ -68,7 +64,7 @@ namespace SonOfRobin
                 ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame);
             }
 
-            this.soundPack.Play(PieceSoundPack.Action.ArrowFly);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.ArrowFly);
 
             this.world.HintEngine.Disable(Tutorials.Type.ShootProjectile);
             this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
@@ -85,7 +81,7 @@ namespace SonOfRobin
 
             if (!this.sprite.Move(movement: movement))
             {
-                this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
+                this.soundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
 
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
                 var collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece);
@@ -144,13 +140,13 @@ namespace SonOfRobin
 
                 if (attachedToTarget || (this.pieceInfo.projectileCanBeStuck && this.world.random.Next(2) == 1))
                 {
-                    this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;
                     this.passiveRotation = 0;
                 }
                 else
                 {
-                    this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDropped);
                     this.passiveMovement *= -0.5f;
                     this.passiveMovement.X += (float)((this.world.random.NextSingle() - 0.5f) * 500f);
                     this.passiveMovement.Y += (float)((this.world.random.NextSingle() - 0.5f) * 500f);
@@ -160,13 +156,13 @@ namespace SonOfRobin
 
             if (this.exists && Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier * 4.5f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier * 4.5f))
             {
-                this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
+                this.soundPack.Stop(PieceSoundPackTemplate.Action.ArrowFly);
                 this.shootMode = false;
                 this.passiveMovement = Vector2.Zero;
                 if (this.sprite.IsInWater || this.pieceInfo.projectileCanExplode) this.Destroy();
                 else
                 {
-                    this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                    this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDropped);
                     if (this.sprite.IsOnLava)
                     {
                         this.HeatLevel = 1;

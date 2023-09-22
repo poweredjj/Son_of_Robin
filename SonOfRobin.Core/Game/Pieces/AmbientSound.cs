@@ -54,7 +54,7 @@ namespace SonOfRobin
             {
                 if (isLooped && (!isInCameraRect || !this.CanBePlayedNow))
                 {
-                    this.soundPack.Stop(PieceSoundPack.Action.Ambient);
+                    this.soundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
                 }
                 if (this.pieceInfo.ambsoundGeneratesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
@@ -73,7 +73,7 @@ namespace SonOfRobin
                 this.showStatBarsTillFrame = this.waitUntilFrame;
             }
 
-            this.soundPack.Play(PieceSoundPack.Action.Ambient);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Ambient);
 
             if (Preferences.debugShowSounds)
             {

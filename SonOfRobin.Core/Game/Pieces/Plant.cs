@@ -26,7 +26,7 @@ namespace SonOfRobin
 
         public Plant(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 10, FruitEngine fruitEngine = null, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 10, FruitEngine fruitEngine = null, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, name: name, allowedTerrain: allowedTerrain, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack)
         {

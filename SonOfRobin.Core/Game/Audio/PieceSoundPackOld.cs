@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    public class PieceSoundPack
+    public class PieceSoundPackObsolete
     {
         public enum Action : byte
         {
@@ -47,7 +47,7 @@ namespace SonOfRobin
         private readonly Dictionary<Action, Sound> soundDict;
         private BoardPiece boardPiece;
 
-        public PieceSoundPack()
+        public PieceSoundPackObsolete()
         {
             this.soundDict = new Dictionary<Action, Sound>();
         }

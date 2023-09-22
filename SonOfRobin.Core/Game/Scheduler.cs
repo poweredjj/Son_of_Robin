@@ -656,7 +656,7 @@ namespace SonOfRobin
 
                             World world = World.GetTopWorld();
 
-                            player.soundPack.Play(action: PieceSoundPack.Action.Eat, ignore3D: true);
+                            player.activeSoundPack.Play(action: PieceSoundPack.Action.Eat, ignore3D: true);
 
                             // adding "generic" regen based on mass (if meal does not contain poison or regen)
                             if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
@@ -1887,7 +1887,7 @@ namespace SonOfRobin
                             bool hasJumped = player.sprite.MoveToClosestFreeSpot(startPosition: playerPos, maxDistance: 15);
                             if (hasJumped)
                             {
-                                player.soundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);
+                                player.activeSoundPack.Play(action: PieceSoundPack.Action.PlayerJump, ignore3D: true);
                                 player.Fatigue += 10;
                             }
                             else Sound.QuickPlay(SoundData.Name.Error);

@@ -220,7 +220,6 @@ namespace SonOfRobin
                 this.animalMaxChildren = 0;
                 this.animalRetaliateChance = -1;
                 this.animalSightRange = 0;
-                this.pieceSoundPackTemplate = new PieceSoundPackTemplate(pieceName: this.name);
                 this.ambsoundPlayDelay = -1;
                 this.ambsoundPlayDelayMaxVariation = 0;
                 this.ambsoundPartOfDayList = null;
@@ -236,6 +235,8 @@ namespace SonOfRobin
                 this.projectileCanBeStuck = false;
                 this.projectileCanExplode = false;
                 this.interactVirtButtonName = TextureBank.TextureName.Empty;
+
+                var customSoundsForActions = new Dictionary<PieceSoundPackTemplate.Action, Sound>();
 
                 // setting values for names
 
@@ -279,6 +280,12 @@ namespace SonOfRobin
                         this.placeMaxDistance = 65535;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
+
+                        foreach (PieceSoundPackTemplate.Action action in new List<PieceSoundPackTemplate.Action> { PieceSoundPackTemplate.Action.StepGrass, PieceSoundPackTemplate.Action.StepWater, PieceSoundPackTemplate.Action.StepSand, PieceSoundPackTemplate.Action.StepRock, PieceSoundPackTemplate.Action.SwimShallow, PieceSoundPackTemplate.Action.SwimDeep, PieceSoundPackTemplate.Action.StepLava, PieceSoundPackTemplate.Action.StepMud })
+                        {
+                            customSoundsForActions[action] = new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f);
+                        }
+
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
@@ -539,6 +546,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 300;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -564,6 +572,8 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
+
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -592,6 +602,8 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
+
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -619,6 +631,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -646,6 +659,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -671,6 +685,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -698,6 +713,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1284,8 +1300,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
                         break;
 
                     case PieceTemplate.Name.AlchemyLabAdvanced:
@@ -1296,8 +1310,6 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
                         break;
 
                     case PieceTemplate.Name.Furnace:
@@ -2515,7 +2527,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 300;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.Ambient, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f));
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
                         break;
 
                     case PieceTemplate.Name.SoundSeaWind:
@@ -2525,7 +2537,7 @@ namespace SonOfRobin
                         this.ambsoundPlayDelay = 0;
                         this.ambsoundPlayDelayMaxVariation = 200;
                         this.ambsoundGeneratesWind = true;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.Ambient, sound: new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60));
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
                         break;
 
                     case PieceTemplate.Name.SoundNightCrickets:
@@ -2534,7 +2546,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
                         this.ambsoundPartOfDayList = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night };
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.Ambient, sound: new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60));
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
                         break;
 
                     case PieceTemplate.Name.SoundNoonCicadas:
@@ -2544,7 +2556,7 @@ namespace SonOfRobin
                         this.ambsoundPlayDelay = 0;
                         this.ambsoundPartOfDayList = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon };
                         this.ambsoundPlayOnlyWhenIsSunny = true;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.Ambient, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60));
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60);
                         break;
 
                     case PieceTemplate.Name.SoundLava:
@@ -2552,7 +2564,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
-                        this.pieceSoundPackTemplate.AddAction(action: PieceSoundPackTemplate.Action.Ambient, sound: new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60));
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60);
                         break;
 
                     case PieceTemplate.Name.SeaWave:
@@ -2660,6 +2672,16 @@ namespace SonOfRobin
 
                     default:
                         throw new ArgumentException($"Unsupported name - {this.name}.");
+                }
+
+                // setting pieceSoundTemplate
+
+                this.pieceSoundPackTemplate = new PieceSoundPackTemplate(pieceInfo: this);
+                foreach (var kvp in customSoundsForActions)
+                {
+                    PieceSoundPackTemplate.Action action = kvp.Key;
+                    Sound sound = kvp.Value;
+                    this.pieceSoundPackTemplate.AddAction(action: action, sound: sound, replaceExisting: true);
                 }
 
                 // setting some variables, that need params non-present in boardPiece

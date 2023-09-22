@@ -198,7 +198,7 @@ namespace SonOfRobin
                         droppedPiecesCount++;
 
                         // duplicated in PieceTemplate
-                        yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
+                        yieldPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.HasAppeared);
                         yieldPiece.pieceInfo.appearDebris?.DropDebris(piece: piece);
 
                         // if (yieldPiece.GetType() != typeof(Debris)) MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} yield: {yieldPiece.readableName} - {yieldPiece.readableName} dropped.");

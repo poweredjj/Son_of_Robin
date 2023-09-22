@@ -46,49 +46,78 @@ namespace SonOfRobin
 
         public readonly Dictionary<Action, Sound> staticSoundDict;
 
-        public PieceSoundPackTemplate(PieceTemplate.Name pieceName)
+        public PieceSoundPackTemplate(PieceInfo.Info pieceInfo)
         {
-            // !!!!!!!!!!
-            // TODO resolve circular PieceInfo dependency on category
-            // !!!!!!!!!
-
             this.staticSoundDict = new Dictionary<Action, Sound>();
 
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
             BoardPiece.Category category = pieceInfo.category;
             bool isPlayer = pieceInfo.type == typeof(Player);
             bool isAnimal = pieceInfo.type == typeof(Animal);
 
             // looped sound would rapidly populate all sound channels, so non-looped short sound is used instead
-            AddAction(action: Action.Burning, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
-            AddAction(action: Action.BurnEnd, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
-            AddAction(action: Action.IsHit, sound: new Sound(nameList: GetHitSoundNames(category), maxPitchVariation: 0.5f), replaceExisting: false);
-            AddAction(action: Action.IsDestroyed, sound: new Sound(nameList: GetIsDestroyedNamesList(category), maxPitchVariation: 0.4f), replaceExisting: false);
-            AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(category), maxPitchVariation: 0.25f, cooldown: 30), replaceExisting: false);
+            this.AddAction(action: Action.Burning, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
+            this.AddAction(action: Action.BurnEnd, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
+            this.AddAction(action: Action.IsHit, sound: new Sound(nameList: GetHitSoundNames(category), maxPitchVariation: 0.5f));
+            this.AddAction(action: Action.IsDestroyed, sound: new Sound(nameList: GetIsDestroyedNamesList(category), maxPitchVariation: 0.4f));
+            this.AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(category), maxPitchVariation: 0.25f, cooldown: 30));
 
             if (isPlayer || isAnimal)
             {
                 float volumeMultiplier = isPlayer ? 1f : 0.35f;
 
-                AddAction(action: Action.StepGrass, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepGrass1, SoundData.Name.StepGrass2, SoundData.Name.StepGrass3, SoundData.Name.StepGrass4, SoundData.Name.StepGrass5, SoundData.Name.StepGrass6 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: isPlayer ? 1f : 0.35f, maxPitchVariation: 0.6f), replaceExisting: false);
+                this.AddAction(action: Action.StepGrass, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepGrass1, SoundData.Name.StepGrass2, SoundData.Name.StepGrass3, SoundData.Name.StepGrass4, SoundData.Name.StepGrass5, SoundData.Name.StepGrass6 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: isPlayer ? 1f : 0.35f, maxPitchVariation: 0.6f));
 
-                AddAction(action: Action.StepSand, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepSand1, SoundData.Name.StepSand2, SoundData.Name.StepSand3, SoundData.Name.StepSand4 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f), replaceExisting: false);
+                this.AddAction(action: Action.StepSand, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepSand1, SoundData.Name.StepSand2, SoundData.Name.StepSand3, SoundData.Name.StepSand4 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f));
 
-                AddAction(action: Action.StepMud, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepMud1, SoundData.Name.StepMud2, SoundData.Name.StepMud3, SoundData.Name.StepMud4, SoundData.Name.StepMud5, SoundData.Name.StepMud6, SoundData.Name.StepMud7 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f), replaceExisting: false);
+                this.AddAction(action: Action.StepMud, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepMud1, SoundData.Name.StepMud2, SoundData.Name.StepMud3, SoundData.Name.StepMud4, SoundData.Name.StepMud5, SoundData.Name.StepMud6, SoundData.Name.StepMud7 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f));
 
-                AddAction(action: Action.StepRock, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepRock1, SoundData.Name.StepRock2, SoundData.Name.StepRock3 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 0.7f, maxPitchVariation: 0.2f), replaceExisting: false);
+                this.AddAction(action: Action.StepRock, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepRock1, SoundData.Name.StepRock2, SoundData.Name.StepRock3 }, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 0.7f, maxPitchVariation: 0.2f));
 
-                AddAction(action: Action.StepLava, sound: new Sound(name: SoundData.Name.StepLava, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f), replaceExisting: false);
+                this.AddAction(action: Action.StepLava, sound: new Sound(name: SoundData.Name.StepLava, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f));
 
-                AddAction(action: Action.StepWater, sound: new Sound(name: SoundData.Name.StepWater, maxPitchVariation: 0.5f, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f), replaceExisting: false);
+                this.AddAction(action: Action.StepWater, sound: new Sound(name: SoundData.Name.StepWater, maxPitchVariation: 0.5f, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f));
 
-                AddAction(action: Action.SwimShallow, sound: new Sound(name: SoundData.Name.SwimShallow, maxPitchVariation: 0.5f, cooldown: isPlayer ? 60 : 25, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f), replaceExisting: false);
+                this.AddAction(action: Action.SwimShallow, sound: new Sound(name: SoundData.Name.SwimShallow, maxPitchVariation: 0.5f, cooldown: isPlayer ? 60 : 25, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f));
 
-                AddAction(action: Action.SwimDeep, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SwimDeep1, SoundData.Name.SwimDeep2, SoundData.Name.SwimDeep3, SoundData.Name.SwimDeep4, SoundData.Name.SwimDeep5 }, cooldown: isPlayer ? 60 : 25, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.6f), replaceExisting: false);
+                this.AddAction(action: Action.SwimDeep, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SwimDeep1, SoundData.Name.SwimDeep2, SoundData.Name.SwimDeep3, SoundData.Name.SwimDeep4, SoundData.Name.SwimDeep5 }, cooldown: isPlayer ? 60 : 25, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.6f));
+            }
+            else if (pieceInfo.type == typeof(AlchemyLab))
+            {
+                this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
+                this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
+            }
+            else if (pieceInfo.type == typeof(Container))
+            {
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.ChestOpen));
+                this.AddAction(action: Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
+            }
+            else if (pieceInfo.type == typeof(Cooker))
+            {
+                this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
+                this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.SteamHit));
+            }
+            else if (pieceInfo.type == typeof(Fireplace))
+            {
+                this.AddAction(action: Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
+                this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
+                this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.StoneMove2, ignore3DAlways: true));
+            }
+            else if (pieceInfo.type == typeof(PortableLight))
+            {
+                this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireSmall, ignore3DAlways: true));
+                this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, ignore3DAlways: true));
+                this.AddAction(action: Action.IsOn, sound: new Sound(name: SoundData.Name.Torch, maxPitchVariation: 0.5f, isLooped: true, ignore3DAlways: true));
+            }
+            else if (pieceInfo.type == typeof(Projectile))
+            {
+                this.AddAction(action: Action.ArrowFly, sound: new Sound(name: SoundData.Name.ArrowFly, maxPitchVariation: 0.3f));
+                this.AddAction(action: Action.ArrowHit, sound: new Sound(name: SoundData.Name.ArrowHit, maxPitchVariation: 0.3f));
+                this.AddAction(action: Action.IsDropped, sound: new Sound(name: SoundData.Name.DropArrow, maxPitchVariation: 0.3f, cooldown: 20));
             }
         }
 
-        public void AddAction(Action action, Sound sound, bool replaceExisting = true)
+        public void AddAction(Action action, Sound sound, bool replaceExisting = false)
         {
             if (sound.isEmpty) return;
 

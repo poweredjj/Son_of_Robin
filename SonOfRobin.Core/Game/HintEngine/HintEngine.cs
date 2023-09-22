@@ -107,7 +107,7 @@ namespace SonOfRobin
                             new HintMessage(text: "Hmm... | Dinner time?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal) }, blockInput: true),
                         };
 
-                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -122,7 +122,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm really | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
-                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -138,7 +138,7 @@ namespace SonOfRobin
                             new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
-                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -154,7 +154,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm exhausted |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
                         };
 
-                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
+                        this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerYawn);
 
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -171,7 +171,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm gonna collapse if I don't go to sleep | now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
                         };
 
-                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
+                        this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerYawn);
 
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);

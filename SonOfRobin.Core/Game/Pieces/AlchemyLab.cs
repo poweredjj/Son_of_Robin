@@ -26,7 +26,7 @@ namespace SonOfRobin
         { get { return TimeSpan.FromSeconds((int)Math.Ceiling((float)(this.brewingDoneFrame - (float)this.world.CurrentUpdate) / 60f)); } }
 
         public AlchemyLab(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, int boosterSpace,
-            byte animSize = 0, string animName = "off", int maxHitPoints = 1, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)
         {
@@ -128,8 +128,8 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
-            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
-            this.soundPack.Play(PieceSoundPack.Action.IsOn);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
         }
 
         public void TurnOff()
@@ -138,8 +138,8 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
             ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
-            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-            this.soundPack.Play(PieceSoundPack.Action.TurnOff);
+            this.soundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BrewingFinish, duration: 8);
         }
 
