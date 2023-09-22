@@ -543,10 +543,12 @@ namespace SonOfRobin
                 showControlTips = false;
                 enableTouchJoysticks = true;
                 rumbleEnabled = false;
+                mapMarkerScale = 0.05f;
             }
             else
             {
                 showControlTips = true;
+                mapMarkerScale = 0.025f;
             }
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
@@ -650,7 +652,8 @@ namespace SonOfRobin
                     showControlTips = (bool)prefsData["showControlTips"];
                     showFieldControlTips = (bool)prefsData["showFieldControlTips"];
                     fieldControlTipsScale = (float)(double)prefsData["fieldControlTipsScale"];
-                    mapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
+                    float loadedMapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
+                    if (namesForMapMarkerScale.ContainsKey(loadedMapMarkerScale)) mapMarkerScale = loadedMapMarkerScale;
                     showHints = (bool)prefsData["showHints"];
                     darknessResolution = (int)(Int64)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
