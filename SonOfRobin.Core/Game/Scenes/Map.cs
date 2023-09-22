@@ -494,7 +494,7 @@ namespace SonOfRobin
                         Vector2 coordsToTrack = mapMarker.sprite.position + new Vector2(1f / this.camera.CurrentZoom, 1f / this.camera.CurrentZoom);
                         if (this.camera.GetTargetCoords() != coordsToTrack)
                         {
-                            new RumbleEvent(force: 0.015f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.04f, minSecondsSinceLastRumble: 0.5f);
+                            new RumbleEvent(force: 0.02f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.08f, minSecondsSinceLastRumble: 0.5f);
                             this.camera.TrackCoords(position: coordsToTrack, moveInstantly: moveInstantly);
                         }
 
