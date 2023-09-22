@@ -18,18 +18,16 @@ namespace SonOfRobin
 
         public object Serialize()
         {
+            if (this.activeSoundDict.Count == 0) return null;
+
             var playingLoopsList = new List<object>();
 
             foreach (var kvp in this.activeSoundDict)
             {
-                PieceSoundPackTemplate.Action action = kvp.Key;
-                Sound sound = kvp.Value;
-
-                if (sound.isLooped && sound.IsPlaying) playingLoopsList.Add(action);
+                if (kvp.Value.isLooped && kvp.Value.IsPlaying) playingLoopsList.Add(kvp.Key);
             }
 
-            if (playingLoopsList.Count == 0) return null;
-            return playingLoopsList;
+            return playingLoopsList.Count == 0 ? null : playingLoopsList;
         }
 
         public void Deserialize(Object soundPackData)
