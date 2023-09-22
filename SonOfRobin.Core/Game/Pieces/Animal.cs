@@ -828,6 +828,7 @@ namespace SonOfRobin
         {
             if (!this.IsBurning)
             {
+                if (this.sprite.IsInWater) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.BurnEnd);
                 this.activeState = State.AnimalRest;
                 this.aiData.Reset();
                 return;
