@@ -255,6 +255,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.Yield = CreatePlayerYield();
+                        AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: false);
                         break;
 
                     case PieceTemplate.Name.PlayerGirl:
@@ -264,6 +265,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.Yield = CreatePlayerYield();
+                        AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: true);
                         break;
 
                     case PieceTemplate.Name.PlayerTestDemoness:
@@ -272,6 +274,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
                         this.Yield = CreatePlayerYield();
+                        AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: true);
                         break;
 
                     case PieceTemplate.Name.PlayerGhost:
@@ -574,7 +577,6 @@ namespace SonOfRobin
                         this.isAffectedByWind = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
-
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
@@ -603,7 +605,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
-
 
                         this.Yield = new Yield(debrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1053,6 +1054,10 @@ namespace SonOfRobin
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Ding1);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f);
+
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1077,6 +1082,9 @@ namespace SonOfRobin
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Ding1);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1099,6 +1107,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisCeramic,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1111,6 +1121,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1133,6 +1144,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(debrisType: ParticleEngine.Preset.DebrisWood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1160,6 +1172,9 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
+
                         break;
 
                     case PieceTemplate.Name.ChestStone:
@@ -1171,6 +1186,9 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
+
                         break;
 
                     case PieceTemplate.Name.ChestIron:
@@ -1181,6 +1199,9 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
+
                         break;
 
                     case PieceTemplate.Name.ChestCrystal:
@@ -1192,6 +1213,9 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         this.containerStorageIsGlobal = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
+
                         break;
 
                     case PieceTemplate.Name.ChestTreasureNormal:
@@ -1203,6 +1227,8 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.appearDebris = new Yield(debrisType: ParticleEngine.Preset.DebrisStar);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
+
                         break;
 
                     case PieceTemplate.Name.ChestTreasureBig:
@@ -1214,6 +1240,7 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.appearDebris = new Yield(debrisType: ParticleEngine.Preset.DebrisStar);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
                         break;
 
                     case PieceTemplate.Name.CampfireSmall:
@@ -1333,6 +1360,9 @@ namespace SonOfRobin
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.FryingPan, isLooped: true);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true);
+
                         break;
 
                     case PieceTemplate.Name.CookingPot:
@@ -1342,6 +1372,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Cooking, isLooped: true);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.PotLid, ignore3DAlways: true);
                         break;
 
                     case PieceTemplate.Name.WorkshopMeatHarvesting:
@@ -1429,6 +1461,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.WoodLogRegular:
@@ -1485,6 +1518,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
                         this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropMud, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.Rope:
@@ -1492,6 +1526,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropRope, cooldown: 15, maxPitchVariation: 0.4f);
                         break;
 
                     case PieceTemplate.Name.Clam:
@@ -1647,12 +1682,14 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
                         this.stackSize = 8;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.IronOre:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 8;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.IronBar:
@@ -1661,12 +1698,14 @@ namespace SonOfRobin
                         this.stackSize = 5;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronBar, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.IronRod:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 18;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronRod, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.IronNail:
@@ -1679,6 +1718,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 18;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronPlate, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.GlassSand:
@@ -1686,6 +1726,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 8;
                         this.placeMaxDistance = 1000;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.Crystal:
@@ -1694,6 +1735,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropCrystal, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
                     case PieceTemplate.Name.Backlight:
@@ -2364,6 +2406,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsBrown:
@@ -2373,6 +2416,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsDarkViolet:
@@ -2382,6 +2426,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsDarkGreen:
@@ -2391,6 +2436,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsBlue:
@@ -2400,6 +2446,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsCyan:
@@ -2409,6 +2456,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsGreen:
@@ -2418,6 +2466,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsYellow:
@@ -2427,6 +2476,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsRed:
@@ -2436,6 +2486,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.HerbsViolet:
@@ -2445,6 +2496,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
@@ -2453,6 +2505,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.placeMaxDistance = 1000;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:
@@ -2460,6 +2513,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
                     case PieceTemplate.Name.BottleOfOil:
@@ -2467,6 +2521,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
                     case PieceTemplate.Name.Hole:
@@ -2715,6 +2770,36 @@ namespace SonOfRobin
                 {
                     if (this.ambsoundPlayDelay == -1) throw new ArgumentNullException($"{this.name} - ambsoundPlayDelay not set.");
                 }
+            }
+
+            private static void AddPlayerCommonSounds(Dictionary<PieceSoundPackTemplate.Action, Sound> customSoundsForActions, bool female)
+            {
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerBowDraw] = new Sound(name: SoundData.Name.BowDraw, maxPitchVariation: 0.15f, volume: 0.6f, ignore3DAlways: true);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerBowRelease] = new Sound(name: SoundData.Name.BowRelease, maxPitchVariation: 0.3f, ignore3DAlways: true);
+                customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPlayer1, SoundData.Name.EatPlayer2, SoundData.Name.EatPlayer3, SoundData.Name.EatPlayer4 }, maxPitchVariation: 0.3f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerSnore] = new Sound(name: female ? SoundData.Name.SnoringFemale : SoundData.Name.SnoringMale, maxPitchVariation: 0.3f, ignore3DAlways: true, isLooped: true, volume: 0.5f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerPant] = new Sound(name: female ? SoundData.Name.PantFemale : SoundData.Name.PantMale, maxPitchVariation: 0.2f, ignore3DAlways: true, volume: 0.8f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerYawn] = new Sound(name: female ? SoundData.Name.YawnFemale : SoundData.Name.YawnMale, maxPitchVariation: 0.2f, ignore3DAlways: true, volume: 1f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerStomachGrowl] = new Sound(name: SoundData.Name.StomachGrowl, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 1f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerSprint] = new Sound(name: SoundData.Name.Sprint, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.5f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerJump] = new Sound(name: SoundData.Name.Jump, pitchChange: female ? 0.4f : -0.18f, maxPitchVariation: 0.15f, ignore3DAlways: true, volume: 0.5f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerSpeak] = new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.PlayerPulse] = new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.Die] = new Sound(name: female ? SoundData.Name.DeathPlayerFemale : SoundData.Name.DeathPlayerMale);
+
+                customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = female ?
+                    new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerFemale1, SoundData.Name.CryPlayerFemale2, SoundData.Name.CryPlayerFemale3, SoundData.Name.CryPlayerFemale4 }, maxPitchVariation: 0.2f) :
+                    new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f);
             }
 
             public static void GetYieldForAntiCraft()

@@ -13,7 +13,7 @@ namespace SonOfRobin
         public Totem(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
              int maxHitPoints = 1) :
 
-            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, soundPack: soundPack, lightEngine: new LightEngine(size: 410, opacity: 0.7f, colorActive: true, color: new Color(71, 255, 255) * 1.2f, isActive: false, castShadows: true))
+            base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, lightEngine: new LightEngine(size: 410, opacity: 0.7f, colorActive: true, color: new Color(71, 255, 255) * 1.2f, isActive: false, castShadows: true))
         {
             this.PieceStorage = new PieceStorage(width: 3, height: 4, storagePiece: this, storageType: PieceStorage.StorageType.Totem);
             this.lockedUntilIslandDateTime = DateTime.MinValue;

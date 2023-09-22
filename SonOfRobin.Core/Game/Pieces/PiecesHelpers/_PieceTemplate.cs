@@ -330,8 +330,6 @@ namespace SonOfRobin
 
                 case Name.PlayerBoy:
                     {
-                        AddPlayerCommonSounds(soundPack: soundPack, female: false);
-
                         BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "boy", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
 
                         return boardPiece;
@@ -339,8 +337,6 @@ namespace SonOfRobin
 
                 case Name.PlayerGirl:
                     {
-                        AddPlayerCommonSounds(soundPack: soundPack, female: true);
-
                         BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "girl", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
 
                         return boardPiece;
@@ -348,8 +344,6 @@ namespace SonOfRobin
 
                 case Name.PlayerTestDemoness:
                     {
-                        AddPlayerCommonSounds(soundPack: soundPack, female: true);
-
                         Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "demoness", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking)
                         {
                             maxFatigue = 50000,
@@ -908,8 +902,6 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
                               maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.");
 
@@ -922,8 +914,6 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.");
 
@@ -932,8 +922,6 @@ namespace SonOfRobin
 
                 case Name.ChestWooden:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         byte storageWidth = 3;
                         byte storageHeight = 2;
 
@@ -945,8 +933,6 @@ namespace SonOfRobin
 
                 case Name.ChestStone:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         byte storageWidth = 4;
                         byte storageHeight = 4;
 
@@ -958,9 +944,6 @@ namespace SonOfRobin
 
                 case Name.ChestIron:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         byte storageWidth = 6;
                         byte storageHeight = 4;
 
@@ -971,9 +954,6 @@ namespace SonOfRobin
 
                 case Name.ChestCrystal:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: AllowedTerrain.GetFieldCraft(), storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.");
 
                         return boardPiece;
@@ -981,9 +961,6 @@ namespace SonOfRobin
 
                 case Name.ChestTreasureNormal:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
 
                         // this yield is used to randomize chest contents every time
@@ -1021,9 +998,6 @@ namespace SonOfRobin
 
                 case Name.ChestTreasureBig:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Chime));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
-
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
 
                         // this yield is used to randomize chest contents every time
@@ -1062,10 +1036,6 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding1));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
-
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.");
 
@@ -1076,10 +1046,6 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding1));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
-
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.");
 
@@ -1089,9 +1055,6 @@ namespace SonOfRobin
                 case Name.JarBroken:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain,
                               maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.");
@@ -1165,9 +1128,6 @@ namespace SonOfRobin
 
                 case Name.HotPlate:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FryingPan, isLooped: true));
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true));
-
                         var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, canBeUsedDuringRain: false);
 
                         hotPlate.sprite.AssignNewName("off");
@@ -1176,9 +1136,6 @@ namespace SonOfRobin
 
                 case Name.CookingPot:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Cooking, isLooped: true));
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.PotLid, ignore3DAlways: true));
-
                         var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, canBeUsedDuringRain: true);
 
                         cookingPot.sprite.AssignNewName("off");
@@ -1187,9 +1144,6 @@ namespace SonOfRobin
 
                 case Name.AlchemyLabStandard:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
-
                         var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1);
 
                         alchemyLab.sprite.AssignNewName("off");
@@ -1198,9 +1152,6 @@ namespace SonOfRobin
 
                 case Name.AlchemyLabAdvanced:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
-
                         var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3);
 
                         alchemyLab.sprite.AssignNewName("off");
@@ -1209,7 +1160,6 @@ namespace SonOfRobin
 
                 case Name.WorkshopMeatHarvesting:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.KnifeSharpen, ignore3DAlways: true));
 
                         var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat workshop", description: "For animal processing.");
 
@@ -1219,8 +1169,6 @@ namespace SonOfRobin
 
                 case Name.MeatDryingRackRegular:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
-
                         var meatDryingRack = new MeatDryingRack(name: templateName, storageWidth: 2, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackRegular, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat drying rack", description: "Regular rack for meat drying.");
 
                         meatDryingRack.sprite.AssignNewName("off");
@@ -1229,8 +1177,6 @@ namespace SonOfRobin
 
                 case Name.MeatDryingRackWide:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
-
                         var meatDryingRack = new MeatDryingRack(name: templateName, storageWidth: 3, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackWide, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 50, readableName: "meat drying rack (wide)", description: "Wide rack for meat drying.");
 
                         meatDryingRack.sprite.AssignNewName("off");
@@ -1239,8 +1185,6 @@ namespace SonOfRobin
 
                 case Name.Totem:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.Rattle, ignore3DAlways: true));
-
                         var allowedTerrain = new AllowedTerrain(
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                                 { Terrain.Name.Biome, new AllowedRange(min: (byte)(Terrain.biomeMin + (255 - Terrain.biomeMin) / 2), max:255 ) },
@@ -1304,8 +1248,6 @@ namespace SonOfRobin
 
                 case Name.Stick:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stick, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.");
 
                         return boardPiece;
@@ -1336,8 +1278,6 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropMud, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clay, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "clay", description: "Crafting material.");
 
                         return boardPiece;
@@ -1347,8 +1287,6 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropRope, cooldown: 15, maxPitchVariation: 0.4f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.");
 
@@ -1510,8 +1448,6 @@ namespace SonOfRobin
 
                 case Name.Coal:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "coal", description: "Crafting material and fuel.");
 
@@ -1520,8 +1456,6 @@ namespace SonOfRobin
 
                 case Name.Crystal:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropCrystal, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crystal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                             rotatesWhenDropped: true, readableName: "crystal", description: "Crafting material.");
 
@@ -1530,8 +1464,6 @@ namespace SonOfRobin
 
                 case Name.IronOre:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "iron ore", description: "Can be used to make iron bars.");
 
@@ -1540,8 +1472,6 @@ namespace SonOfRobin
 
                 case Name.GlassSand:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "glass sand", description: "Can be used to make glass.");
 
@@ -1550,8 +1480,6 @@ namespace SonOfRobin
 
                 case Name.IronBar:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronBar, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronBar,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron bar", description: "Crafting material.");
 
@@ -1560,8 +1488,6 @@ namespace SonOfRobin
 
                 case Name.IronRod:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronRod, cooldown: 15, maxPitchVariation: 0.6f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronRod,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron rod", description: "Crafting material.");
 
@@ -1570,8 +1496,6 @@ namespace SonOfRobin
 
                 case Name.IronPlate:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropIronPlate, cooldown: 15, maxPitchVariation: 0.8f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron plate", description: "Crafting material.");
 
@@ -1662,8 +1586,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", buffList: buffList);
 
@@ -1674,8 +1596,6 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true)};
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1688,8 +1608,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-15, autoRemoveDelay: 60 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "black herbs", description: "Contain poison.", buffList: buffList);
 
@@ -1700,8 +1618,6 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Strength, value: (int)-1, autoRemoveDelay: 60 * 60 * 3)};
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBrown, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "brown herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1714,8 +1630,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Speed, value: -0.5f, autoRemoveDelay: 60 * 60 * 3)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark violet herbs", description: "Potion ingredient.", buffList: buffList);
 
@@ -1726,8 +1640,6 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Speed, value: 0.5f, autoRemoveDelay: 60 * 60 * 3)};
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark green herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1740,8 +1652,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.RemovePoison, value: null, isPermanent: true)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion ingredient.", buffList: buffList);
 
@@ -1752,8 +1662,6 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30)};
-
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1766,8 +1674,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "red herbs", description: "Potion ingredient.", buffList: buffList);
 
@@ -1779,8 +1685,6 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3)};
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion ingredient.", buffList: buffList);
 
@@ -1789,8 +1693,6 @@ namespace SonOfRobin
 
                 case Name.EmptyBottle:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "empty bottle", description: "Can be used to make a potion.");
 
@@ -1801,8 +1703,6 @@ namespace SonOfRobin
                     {
                         // A generic potion, which animPackage and buffs will be set later.
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle);
 
@@ -1811,8 +1711,6 @@ namespace SonOfRobin
 
                 case Name.BottleOfOil:
                     {
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle);
 
@@ -2807,42 +2705,6 @@ namespace SonOfRobin
                     }
 
                 default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
-            }
-        }
-
-        private static void AddPlayerCommonSounds(PieceSoundPack soundPack, bool female)
-        {
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerBowDraw, sound: new Sound(name: SoundData.Name.BowDraw, maxPitchVariation: 0.15f, volume: 0.6f, ignore3DAlways: true));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerBowRelease, sound: new Sound(name: SoundData.Name.BowRelease, maxPitchVariation: 0.3f, ignore3DAlways: true));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPlayer1, SoundData.Name.EatPlayer2, SoundData.Name.EatPlayer3, SoundData.Name.EatPlayer4 }, maxPitchVariation: 0.3f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerSnore, sound: new Sound(name: female ? SoundData.Name.SnoringFemale : SoundData.Name.SnoringMale, maxPitchVariation: 0.3f, ignore3DAlways: true, isLooped: true, volume: 0.5f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerPant, sound: new Sound(name: female ? SoundData.Name.PantFemale : SoundData.Name.PantMale, maxPitchVariation: 0.2f, ignore3DAlways: true, volume: 0.8f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerYawn, sound: new Sound(name: female ? SoundData.Name.YawnFemale : SoundData.Name.YawnMale, maxPitchVariation: 0.2f, ignore3DAlways: true, volume: 1f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerStomachGrowl, sound: new Sound(name: SoundData.Name.StomachGrowl, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 1f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerSprint, sound: new Sound(name: SoundData.Name.Sprint, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.5f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerJump, sound: new Sound(name: SoundData.Name.Jump, pitchChange: female ? 0.4f : -0.18f, maxPitchVariation: 0.15f, ignore3DAlways: true, volume: 0.5f));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerSpeak, sound: new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true));
-
-            soundPack.AddAction(action: PieceSoundPack.Action.PlayerPulse, sound: new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f));
-
-            if (female)
-            {
-                soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerFemale1, SoundData.Name.CryPlayerFemale2, SoundData.Name.CryPlayerFemale3, SoundData.Name.CryPlayerFemale4 }, maxPitchVariation: 0.2f));
-                soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerFemale));
-            }
-            else
-            {
-                soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f));
-                soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerMale));
             }
         }
 

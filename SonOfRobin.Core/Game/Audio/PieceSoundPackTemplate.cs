@@ -85,6 +85,8 @@ namespace SonOfRobin
             {
                 this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
                 this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
+                this.AddAction(action: Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
             }
             else if (pieceInfo.type == typeof(Container))
             {
@@ -102,6 +104,18 @@ namespace SonOfRobin
                 this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
                 this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
                 this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.StoneMove2, ignore3DAlways: true));
+            }
+            else if (pieceInfo.type == typeof(MeatHarvestingWorkshop))
+            {
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.KnifeSharpen, ignore3DAlways: true));
+            }
+            else if (pieceInfo.type == typeof(MeatDryingRack))
+            {
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.HitSmallPlant2, ignore3DAlways: true));
+            }
+            else if (pieceInfo.type == typeof(Totem))
+            {
+                this.AddAction(action: Action.Open, sound: new Sound(name: SoundData.Name.Rattle, ignore3DAlways: true));
             }
             else if (pieceInfo.type == typeof(PortableLight))
             {

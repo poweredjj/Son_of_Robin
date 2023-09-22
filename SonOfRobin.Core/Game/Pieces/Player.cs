@@ -87,7 +87,7 @@ namespace SonOfRobin
         public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default") :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
