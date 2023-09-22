@@ -20,9 +20,9 @@ namespace SonOfRobin
         public readonly World world;
         private readonly Camera camera;
         private Task bgTaskForMeshes;
-        private Task bgTaskForPieces;
+        private Task bgTaskForSprites;
         private Rectangle bgTaskMeshesLastCameraRect;
-        private Rectangle bgTaskPiecesLastCameraRect;
+        private Rectangle bgTaskSpritesLastCameraRect;
         private List<Sprite> bgTaskSpritesToShow;
         private List<Mesh> bgTaskMeshesToShow;
         private readonly MapOverlay mapOverlay;
@@ -59,9 +59,9 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.backgroundNeedsUpdating = true;
             this.bgTaskMeshesLastCameraRect = new Rectangle();
-            this.bgTaskPiecesLastCameraRect = new Rectangle();
-            this.bgTaskSpritesToShow = new List<Sprite>();
+            this.bgTaskSpritesLastCameraRect = new Rectangle();
             this.bgTaskMeshesToShow = new List<Mesh>();
+            this.bgTaskSpritesToShow = new List<Sprite>();
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
             {
                 { Color.Blue, null },
@@ -527,7 +527,7 @@ namespace SonOfRobin
             // MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
 
             // drawing ground
-            if (this.ShowDetailedMap && this.bgTaskMeshesToShow.Count > 0) // checking bgTaskMeshesToShow, in case backgroundTask wasn't fast enough
+            if (this.ShowDetailedMap)
             {
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, waterColor);
                 SonOfRobinGame.SpriteBatch.End();
@@ -559,7 +559,6 @@ namespace SonOfRobin
                 Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
 
                 var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
-                var cellsToErase = new List<Cell>();
 
                 if (!Preferences.DebugShowWholeMap)
                 {
@@ -752,7 +751,7 @@ namespace SonOfRobin
                 AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }
-            
+
             // drawing camera rect (debug)
             if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 3);
 
@@ -773,16 +772,19 @@ namespace SonOfRobin
             }
             if (this.bgTaskForMeshes == null || this.bgTaskForMeshes.IsFaulted) this.bgTaskForMeshes = Task.Run(() => this.BGMeshesTaskLoop());
 
-            if (this.bgTaskForPieces != null && this.bgTaskForPieces.IsFaulted)
+            if (this.bgTaskForSprites != null && this.bgTaskForSprites.IsFaulted)
             {
-                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForPieces.Exception, showTextWindow: false);
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForSprites.Exception, showTextWindow: false);
                 MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task (pieces). Restarting task.", color: Color.Orange);
             }
-            if (this.bgTaskForPieces == null || this.bgTaskForPieces.IsFaulted) this.bgTaskForPieces = Task.Run(() => this.BGPiecesTaskLoop());
+            if (this.bgTaskForSprites == null || this.bgTaskForSprites.IsFaulted) this.bgTaskForSprites = Task.Run(() => this.BGSpritesTaskLoop());
         }
 
         private void BGMeshesTaskLoop()
         {
+            var meshesToShow = new List<Mesh>();
+            Rectangle meshSearchRect;
+
             while (true)
             {
                 if (this.HasBeenRemoved) return;
@@ -794,22 +796,30 @@ namespace SonOfRobin
                     continue;
                 }
 
-                Rectangle meshSearchRect = this.camera.viewRect;
+                meshSearchRect = this.camera.viewRect;
                 this.bgTaskMeshesLastCameraRect = meshSearchRect;
 
                 meshSearchRect.Inflate(meshSearchRect.Width / 8, meshSearchRect.Height / 8); // to allow some overlap for scrolling
 
+                meshesToShow.Clear();
                 try
                 {
-                    var meshesToShow = this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
+                    meshesToShow.AddRange(this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
                         .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
                         .OrderBy(mesh => mesh.meshDef.drawPriority)
                         .Distinct()
-                        .ToList();
-
-                    this.bgTaskMeshesToShow = meshesToShow;
+                        .ToList());
                 }
-                catch (InvalidOperationException) { }
+                catch (InvalidOperationException) { continue; }
+
+                while (true) // target list should not be replaced when in use
+                {
+                    if (ProcessingMode != ProcessingModes.RenderToTarget)
+                    {
+                        this.bgTaskMeshesToShow = new List<Mesh>(meshesToShow); // making list copy, to safely use Clear() on the local list
+                        break;
+                    }
+                }
             }
         }
 
@@ -820,25 +830,25 @@ namespace SonOfRobin
         private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container) };
         private static readonly List<PieceTemplate.Name> namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.Totem };
 
-        private void BGPiecesTaskLoop()
+        private void BGSpritesTaskLoop()
         {
-            var showList = new List<Sprite>();
             var cameraSprites = new List<Sprite>();
+            var spritesToShow = new List<Sprite>();
 
             while (true)
             {
                 if (this.HasBeenRemoved) return;
 
-                if (this.Mode == MapMode.Off || this.bgTaskPiecesLastCameraRect == this.camera.viewRect)
+                if (this.Mode == MapMode.Off || this.bgTaskSpritesLastCameraRect == this.camera.viewRect)
                 {
                     Thread.Sleep(1); // to avoid high CPU usage
                     continue;
                 }
 
                 Rectangle viewRect = this.camera.viewRect;
-                this.bgTaskPiecesLastCameraRect = viewRect;
-                showList.Clear();
+                this.bgTaskSpritesLastCameraRect = viewRect;
                 cameraSprites.Clear();
+                spritesToShow.Clear();
 
                 Rectangle worldCameraRectForSpriteSearch = viewRect;
 
@@ -867,10 +877,18 @@ namespace SonOfRobin
                         (namesShownIfDiscovered.Contains(name) ||
                         typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
-                    if (showSprite) showList.Add(sprite);
+                    if (showSprite) spritesToShow.Add(sprite);
+                }
 
-                    var spritesToShow = showList.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
-                    this.bgTaskSpritesToShow = spritesToShow;
+                spritesToShow = spritesToShow.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+
+                while (true) // target list should not be replaced when in use
+                {
+                    if (ProcessingMode != ProcessingModes.RenderToTarget)
+                    {
+                        this.bgTaskSpritesToShow = new List<Sprite>(spritesToShow); // making list copy, to safely use Clear() on the local list
+                        break;
+                    }
                 }
             }
         }
