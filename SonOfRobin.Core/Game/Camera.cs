@@ -192,7 +192,11 @@ namespace SonOfRobin
 
             Vector2 currentTargetPos = this.GetTargetCoords();
 
-            if (this.trackingMode == TrackingMode.Sprite && calculateAheadCorrection && this.trackedSpriteReached && this.trackedSprite.boardPiece.GetType() == typeof(Player))
+            if (calculateAheadCorrection &&
+                this.trackingMode == TrackingMode.Sprite &&
+                cameraCorrection == Vector2.Zero &&
+                this.trackedSpriteReached &&
+                this.trackedSprite.boardPiece.GetType() == typeof(Player))
             {
                 bool moveBackToPlayer;
                 Vector2 aheadCorrectionTarget;
@@ -206,7 +210,7 @@ namespace SonOfRobin
                 {
                     Vector2 spriteMovement = currentTargetPos - this.trackedSpritePrevPos;
                     Vector2 normalizedMovement = spriteMovement == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(spriteMovement); // Vector2.Zero cannot be normalized correctly
-                    aheadCorrectionTarget = new Vector2(this.viewRect.Width * 0.35f, this.viewRect.Height * 0.35f) * normalizedMovement;
+                    aheadCorrectionTarget = new Vector2(this.viewRect.Width * (Preferences.enableTouchJoysticks ? 0.25f : 0.35f), this.viewRect.Height * 0.35f) * normalizedMovement;
                     moveBackToPlayer = normalizedMovement == Vector2.Zero;
                 }
 
@@ -216,8 +220,10 @@ namespace SonOfRobin
                 this.aheadCorrection.X += (aheadCorrectionTarget.X - this.aheadCorrection.X) / movementSlowdownForCorrection;
                 this.aheadCorrection.Y += (aheadCorrectionTarget.Y - this.aheadCorrection.Y) / movementSlowdownForCorrection;
 
-                currentTargetPos += aheadCorrection;
+                currentTargetPos += this.aheadCorrection;
             }
+
+            if (cameraCorrection != Vector2.Zero) this.aheadCorrection = Vector2.Zero;
 
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
@@ -232,7 +238,7 @@ namespace SonOfRobin
                 movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
                 movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
 
-                // MessageLog.AddMessage( message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
+                // MessageLog.AddMessage(message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
 
                 viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdownFactorX);
                 viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdownFactorY);
@@ -257,8 +263,8 @@ namespace SonOfRobin
 
             if (this.keepInWorldBounds)
             {
-                xMin = Math.Clamp(value: xMin, min: 0, max: (float)this.world.width - screenWidth - 1f);
-                yMin = Math.Clamp(value: yMin, min: 0, max: (float)this.world.height - screenHeight - 1f);
+                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.width - screenWidth - 1f); // do not use Math.Clamp, it might throw ArgumentException
+                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.height - screenHeight - 1f); // do not use Math.Clamp, it might throw ArgumentException
             }
 
             float xMax = xMin + screenWidth;

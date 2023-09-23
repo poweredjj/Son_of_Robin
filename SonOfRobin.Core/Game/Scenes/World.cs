@@ -906,8 +906,7 @@ namespace SonOfRobin
 
             if (!this.demoMode && this.Player?.activeState != BoardPiece.State.PlayerControlledSleep)
             {
-                analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
-                analogCameraCorrection *= 10;
+                analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove) * new Vector2(this.camera.viewRect.Width, this.camera.viewRect.Height) * new Vector2(0.05f, 0.03f);
             }
 
             this.camera.Update(cameraCorrection: analogCameraCorrection, calculateAheadCorrection: true);
