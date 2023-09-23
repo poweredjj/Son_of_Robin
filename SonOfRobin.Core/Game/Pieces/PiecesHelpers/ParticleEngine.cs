@@ -810,7 +810,7 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 12;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5f), Profile.Point())
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(10.0f), Profile.Point())
                         {
                             Parameters = new ParticleReleaseParameters
                             {
