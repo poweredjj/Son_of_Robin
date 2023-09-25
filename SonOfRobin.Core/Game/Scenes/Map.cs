@@ -876,7 +876,7 @@ namespace SonOfRobin
 
                     bool showSprite = false;
 
-                    if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
+                    if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name) || Preferences.DebugShowWholeMap) showSprite = true;
 
                     if (!showSprite && sprite.hasBeenDiscovered &&
                         (namesShownIfDiscovered.Contains(name) ||
