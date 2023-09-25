@@ -293,9 +293,9 @@ namespace SonOfRobin
                         float markerScale = markerHeight / markerTexture.Height;
                         float markerWidth = markerTexture.Width * markerScale;
 
-                        float cameraLeft = camera.viewPos.X * -1;
+                        float cameraLeft = this.world.viewParams.PosX * -1;
                         float cameraRight = cameraLeft + camera.viewRect.Width;
-                        float cameraTop = camera.viewPos.Y * -1;
+                        float cameraTop = this.world.viewParams.PosY * -1;
                         float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
 
                         Vector2 offset = Vector2.Zero;

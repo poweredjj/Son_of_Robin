@@ -15,36 +15,42 @@ namespace SonOfRobin
     {
         public enum Preset
         {
-            Fireplace = 0,
-            BurnFlame = 1,
-            Cooking = 2,
-            Brewing = 3,
-            WaterWalk = 4,
-            WaterWave = 5,
-            CookingFinish = 6,
-            BrewingFinish = 7,
-            Excavated = 8,
-            MudWalk = 9,
-            LavaFlame = 10,
-            DebrisWood = 11,
-            DebrisLeaf = 12,
-            DebrisGrass = 13,
-            DebrisStone = 14,
-            DebrisCrystal = 15,
-            DebrisCeramic = 16,
-            DebrisBlood = 17,
-            DebrisStar = 18,
-            DebrisHeart = 19,
-            DebrisSoot = 20,
-            SwampGas = 21,
-            Lightning = 22,
-            BloodDripping = 23,
-            MeatDrying = 24,
+            Fireplace,
+            BurnFlame,
+            Cooking,
+            Brewing,
+            CookingFinish,
+            BrewingFinish,
+            BloodDripping,
+            MeatDrying,
+
+            WaterWalk,
+            MudWalk,
+            WaterWave,
+            LavaFlame,
+
+            SwampGas,
+            Lightning,
+            Excavated,
+
+            DebrisWood,
+            DebrisLeaf,
+            DebrisGrass,
+            DebrisStone,
+            DebrisCrystal,
+            DebrisCeramic,
+            DebrisBlood,
+            DebrisStar,
+            DebrisHeart,
+            DebrisSoot,
+
+            WeatherRain,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
                 { Preset.Fireplace, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.BurnFlame, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.WeatherRain, TextureBank.TextureName.ParticleWeatherRain },
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
@@ -96,11 +102,12 @@ namespace SonOfRobin
                 this.IsActive = false;
             }
 
-            public void TurnOn(int particlesToEmit = 0, int duration = 0)
+            public void TurnOn(int particlesToEmit = 0, float rotation = 0, int duration = 0)
             {
                 if (duration > 0) this.framesLeft = duration + 1;
 
                 this.currentParticlesToEmit = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
+                this.particleEmitter.Parameters.Rotation = rotation;
                 this.IsActive = true;
                 this.Update(moveCounters: false);
             }
@@ -1087,6 +1094,41 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Preset.WeatherRain:
+                    {
+                        defaultParticlesToEmit = 2;
+
+                        Profile profile = Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 1.5f, height: this.sprite.world.camera.viewRect.Height / 2);
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 5000, TimeSpan.FromSeconds(3.0), profile: profile)
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(10f, 20f),
+                                Quantity = 0,
+                                Scale = 0.125f,
+                                Rotation = 0f,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 3.0f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 250f },
+                            }
+                        };
+                        break;
+                    }
+
                 default:
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
@@ -1095,14 +1137,14 @@ namespace SonOfRobin
             this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay);
         }
 
-        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false, float rotation = 0)
         {
             if (duration > 0 && !sprite.IsInCameraRect) return;
 
             if (sprite.particleEngine == null) sprite.particleEngine = new ParticleEngine(sprite);
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
-            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
+            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration, rotation: rotation);
             if (update) sprite.particleEngine.Update();
         }
 
@@ -1217,6 +1259,10 @@ namespace SonOfRobin
 
                 case Preset.MeatDrying:
                     this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6));
+                    break;
+
+                case Preset.WeatherRain:
+                    this.particleEffect.Position = new Vector2(this.sprite.position.X, this.sprite.position.Y - this.sprite.world.camera.viewRect.Height);
                     break;
 
                 default:

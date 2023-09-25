@@ -91,8 +91,7 @@ namespace SonOfRobin
         private int zoomSlowdown;
 
         public Rectangle viewRect;
-        public Vector2 viewPos;
-
+        private Vector2 viewPos;
         public Rectangle ExtendedViewRect
         {
             get

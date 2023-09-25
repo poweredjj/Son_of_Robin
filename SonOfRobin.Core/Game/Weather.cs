@@ -83,6 +83,7 @@ namespace SonOfRobin
 
         private readonly World world;
         private readonly IslandClock islandClock;
+        private BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
@@ -111,6 +112,7 @@ namespace SonOfRobin
         {
             this.world = world;
             this.islandClock = islandClock;
+            this.rainEmitter = null;
             this.weatherEvents = new List<WeatherEvent>();
             this.forecastEnd = veryOldDate; // to ensure first update
             this.firstForecastCreated = false;
@@ -187,11 +189,25 @@ namespace SonOfRobin
                 this.LightningPercentage = 0;
             }
 
+            this.UpdateEmitters();
+
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
             this.ProcessLightning();
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+        }
+
+        private void UpdateEmitters()
+        {
+            if (this.rainEmitter == null)
+            {
+                this.rainEmitter = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitter, world: this.world);
+                this.rainEmitter.activeState = BoardPiece.State.Empty; // otherwise it would get destroyed right away (no particles emitted)
+                this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
+            }
+
+            this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
         }
 
         private void ProcessLightning()
@@ -275,6 +291,7 @@ namespace SonOfRobin
             if (this.RainPercentage == 0)
             {
                 this.rainCooldownFramesLeft = -1;
+                ParticleEngine.TurnOff(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
                 return;
             }
 
@@ -292,6 +309,8 @@ namespace SonOfRobin
 
             int leftCameraEdge = Math.Max(extendedViewRect.Left, 0); // clipping to island edges
             int rightCameraEdge = Math.Min(extendedViewRect.Right, this.world.width); // clipping to island edges
+
+            // ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount * 2, rotation: 0.7f);
 
             for (int i = 0; i < raindropsCount; i++)
             {

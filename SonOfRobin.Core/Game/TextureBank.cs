@@ -71,6 +71,7 @@ namespace SonOfRobin
 
             ParticleCircleSharp = 51,
             ParticleCircleSoft = 52,
+            ParticleWeatherRain = 100,
             ParticleBubble = 53,
             ParticleDebrisWood = 54,
             ParticleDebrisLeaf = 55,
@@ -178,6 +179,7 @@ namespace SonOfRobin
 
             { TextureName.ParticleCircleSharp, "particles/circle_16x16_sharp" },
             { TextureName.ParticleCircleSoft, "particles/circle_16x16_soft" },
+            { TextureName.ParticleWeatherRain, "particles/water_drop" },
             { TextureName.ParticleBubble, "particles/bubble_16x16" },
             { TextureName.ParticleDebrisWood, "particles/debris_wood" },
             { TextureName.ParticleDebrisLeaf, "particles/debris_leaf" },
