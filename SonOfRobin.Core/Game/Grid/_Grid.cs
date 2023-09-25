@@ -79,7 +79,7 @@ namespace SonOfRobin
         public readonly Cell[,] cellGrid;
         public readonly Cell[] allCells;
 
-        private readonly Dictionary<PieceTemplate.Name, HashSet<Cell>> cellSetsForPieceNamesMasterDict; // pieces and cells that those pieces can (initially) be placed into
+        private readonly Dictionary<PieceTemplate.Name, Cell[]> cellArraysForPieceNamesMasterDict; // pieces and cells that those pieces can (initially) be placed into
         private readonly Dictionary<PieceTemplate.Name, Queue<Cell>> cellSetsForPieceNamesWorkingQueueDict;
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
@@ -117,7 +117,7 @@ namespace SonOfRobin
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
-            this.cellSetsForPieceNamesMasterDict = new Dictionary<PieceTemplate.Name, HashSet<Cell>>();
+            this.cellArraysForPieceNamesMasterDict = new Dictionary<PieceTemplate.Name, Cell[]>();
             this.cellSetsForPieceNamesWorkingQueueDict = new Dictionary<PieceTemplate.Name, Queue<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
@@ -439,7 +439,7 @@ namespace SonOfRobin
 
         private void FillCellListsForPieceNames()
         {
-            var concurrentCellListsForPieceNames = new ConcurrentDictionary<PieceTemplate.Name, HashSet<Cell>>(); // for parallel processing
+            var concurrentCellSetsForPieceNames = new ConcurrentDictionary<PieceTemplate.Name, Cell[]>(); // for parallel processing
 
             Parallel.ForEach(PieceTemplate.allNames, pieceName =>
             {
@@ -450,12 +450,13 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
 
-                concurrentCellListsForPieceNames[pieceName] = new HashSet<Cell>(cellList.OrderBy(cell => Guid.NewGuid())); // randomly ordered set
+                Random random = new Random(this.world.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
+                concurrentCellSetsForPieceNames[pieceName] = cellList.OrderBy(cell => random.Next()).ToArray();
             });
 
-            foreach (var kvp in concurrentCellListsForPieceNames)
+            foreach (var kvp in concurrentCellSetsForPieceNames)
             {
-                this.cellSetsForPieceNamesMasterDict[kvp.Key] = kvp.Value;
+                this.cellArraysForPieceNamesMasterDict[kvp.Key] = kvp.Value;
             }
         }
 
@@ -722,14 +723,14 @@ namespace SonOfRobin
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
         {
-            return this.cellSetsForPieceNamesMasterDict[pieceName].ToList(); // ToList() - to avoid modifying original list
+            return this.cellArraysForPieceNamesMasterDict[pieceName].ToList(); // ToList() - to avoid modifying original list
         }
 
         public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName, bool returnDummyCellIfInsideCamera) // to avoid calling GetCellsForPieceName() for getting one random cell only
         {
             if (!this.cellSetsForPieceNamesWorkingQueueDict.ContainsKey(pieceName) || this.cellSetsForPieceNamesWorkingQueueDict[pieceName].Count == 0)
             {
-                this.cellSetsForPieceNamesWorkingQueueDict[pieceName] = new Queue<Cell>(this.cellSetsForPieceNamesMasterDict[pieceName]);
+                this.cellSetsForPieceNamesWorkingQueueDict[pieceName] = new Queue<Cell>(this.cellArraysForPieceNamesMasterDict[pieceName]);
             }
 
             var cellQueue = this.cellSetsForPieceNamesWorkingQueueDict[pieceName];
