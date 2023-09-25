@@ -79,7 +79,8 @@ namespace SonOfRobin
         public readonly Cell[,] cellGrid;
         public readonly Cell[] allCells;
 
-        private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
+        private readonly Dictionary<PieceTemplate.Name, HashSet<Cell>> cellSetsForPieceNamesMasterDict; // pieces and cells that those pieces can (initially) be placed into
+        private readonly Dictionary<PieceTemplate.Name, Queue<Cell>> cellSetsForPieceNamesWorkingQueueDict;
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
@@ -116,7 +117,8 @@ namespace SonOfRobin
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
-            this.cellListsForPieceNames = new Dictionary<PieceTemplate.Name, List<Cell>>();
+            this.cellSetsForPieceNamesMasterDict = new Dictionary<PieceTemplate.Name, HashSet<Cell>>();
+            this.cellSetsForPieceNamesWorkingQueueDict = new Dictionary<PieceTemplate.Name, Queue<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
@@ -437,7 +439,7 @@ namespace SonOfRobin
 
         private void FillCellListsForPieceNames()
         {
-            var concurrentCellListsForPieceNames = new ConcurrentDictionary<PieceTemplate.Name, List<Cell>>(); // for parallel processing
+            var concurrentCellListsForPieceNames = new ConcurrentDictionary<PieceTemplate.Name, HashSet<Cell>>(); // for parallel processing
 
             Parallel.ForEach(PieceTemplate.allNames, pieceName =>
             {
@@ -448,12 +450,12 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
 
-                concurrentCellListsForPieceNames[pieceName] = cellList;
+                concurrentCellListsForPieceNames[pieceName] = new HashSet<Cell>(cellList.OrderBy(cell => Guid.NewGuid())); // randomly ordered set
             });
 
             foreach (var kvp in concurrentCellListsForPieceNames)
             {
-                this.cellListsForPieceNames[kvp.Key] = kvp.Value;
+                this.cellSetsForPieceNamesMasterDict[kvp.Key] = kvp.Value;
             }
         }
 
@@ -720,20 +722,31 @@ namespace SonOfRobin
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
         {
-            return this.cellListsForPieceNames[pieceName].ToList(); // ToList() - to avoid modifying original list
+            return this.cellSetsForPieceNamesMasterDict[pieceName].ToList(); // ToList() - to avoid modifying original list
         }
 
-        public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName) // to avoid calling GetCellsForPieceName() for getting one random cell only
+        public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName, bool returnDummyCellIfInsideCamera) // to avoid calling GetCellsForPieceName() for getting one random cell only
         {
-            var cellList = this.cellListsForPieceNames[pieceName];
+            if (!this.cellSetsForPieceNamesWorkingQueueDict.ContainsKey(pieceName) || this.cellSetsForPieceNamesWorkingQueueDict[pieceName].Count == 0)
+            {
+                this.cellSetsForPieceNamesWorkingQueueDict[pieceName] = new Queue<Cell>(this.cellSetsForPieceNamesMasterDict[pieceName]);
+            }
 
-            if (cellList.Count == 0)
+            var cellQueue = this.cellSetsForPieceNamesWorkingQueueDict[pieceName];
+            if (cellQueue.Count == 0)
             {
                 MessageLog.AddMessage(debugMessage: true, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
                 return this.allCells[0]; // to properly return a (useless) cell
             }
-
-            return cellList[this.world.random.Next(cellList.Count)];
+            else
+            {
+                while (true)
+                {
+                    Cell nextCell = cellQueue.Dequeue();
+                    if (returnDummyCellIfInsideCamera && this.world.camera.viewRect.Intersects(nextCell.rect)) return this.allCells[0];
+                    else return nextCell;
+                }
+            }
         }
 
         private void PrepareNextStage(bool incrementCurrentStage)

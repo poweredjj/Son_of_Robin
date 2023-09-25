@@ -526,8 +526,8 @@ namespace SonOfRobin
 
             while (true)
             {
-                bool piecesCreated = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / populatingFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
-                if (!piecesCreated) this.populatingFramesLeft = 0;
+                int piecesCreatedCount = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / populatingFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
+                if (piecesCreatedCount < 500) this.populatingFramesLeft = 0;
 
                 this.populatingFramesLeft--;
                 if (!this.PopulatingInProgress || this.HasBeenRemoved) break;
@@ -747,10 +747,10 @@ namespace SonOfRobin
             throw new DivideByZeroException("Cannot place player sprite.");
         }
 
-        public bool CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
+        public int CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
-            if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return false;
+            if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return 0;
 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
@@ -766,12 +766,12 @@ namespace SonOfRobin
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
-            if (amountToCreateByName.Keys.Count == 0) return false;
+            if (amountToCreateByName.Keys.Count == 0) return 0;
 
             // creating pieces
 
             this.createMissingPiecesOutsideCamera = outsideCamera;
-            int piecesCreated = 0;
+            int piecesCreatedCount = 0;
 
             foreach (var kvp in amountToCreateByName)
             {
@@ -780,7 +780,7 @@ namespace SonOfRobin
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
-                    if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return false;
+                    if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return piecesCreatedCount;
 
                     var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: pieceName);
                     if (newBoardPiece.sprite.IsOnBoard)
@@ -791,7 +791,7 @@ namespace SonOfRobin
                             newPlant.SimulateUnprocessedGrowth();
                         }
 
-                        piecesCreated++;
+                        piecesCreatedCount++;
                         amountLeftToCreate--;
                     }
 
@@ -806,12 +806,12 @@ namespace SonOfRobin
                     }
                 }
 
-                if (piecesCreated >= maxAmountToCreateAtOnce) break;
+                if (piecesCreatedCount >= maxAmountToCreateAtOnce) break;
             }
 
-            if (piecesCreated > 0) MessageLog.AddMessage(debugMessage: true, message: $"Created {piecesCreated} new pieces.");
+            if (piecesCreatedCount > 0) MessageLog.AddMessage(debugMessage: true, message: $"Created {piecesCreatedCount} new pieces.");
             this.createMissingPiecesOutsideCamera = false;
-            return piecesCreated > 0;
+            return piecesCreatedCount;
         }
 
         private void CreateTemporaryDecorations(bool ignoreDuration)

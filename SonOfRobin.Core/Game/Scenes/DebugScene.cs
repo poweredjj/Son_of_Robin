@@ -163,7 +163,11 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D0))
                 {
+                    DateTime startTime = DateTime.Now;
                     world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
+
+                    TimeSpan creationDuration = DateTime.Now - startTime;
+                    MessageLog.AddMessage(debugMessage: true, message: $"Populating - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.OemMinus))

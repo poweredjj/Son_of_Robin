@@ -351,9 +351,11 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 4; tryIndex++)
             {
-                Vector2 newPos = this.GetRandomPosition(outsideCamera: this.world.createMissingPiecesOutsideCamera);
+                Cell randomCell = this.world.Grid.GetRandomCellForPieceName(pieceName: this.boardPiece.name, returnDummyCellIfInsideCamera: this.world.createMissingPiecesOutsideCamera);
 
-                bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+                bool hasBeenMoved = this.SetNewPosition(
+                    newPos: new Vector2(this.world.random.Next(randomCell.xMin, randomCell.xMax), this.world.random.Next(randomCell.yMin, randomCell.yMax)),
+                    ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                 if (hasBeenMoved || ignoreCollisions) return true;
             }
 
@@ -390,38 +392,6 @@ namespace SonOfRobin
             }
 
             return false;
-        }
-
-        public Vector2 GetRandomPosition(bool outsideCamera)
-        {
-            Cell cell = this.world.Grid.GetRandomCellForPieceName(this.boardPiece.name); // random cell for both cases (fast)
-
-            if (outsideCamera) // needs a cell, that is not intersecting with camera
-            {
-                Rectangle cameraViewRect = this.world.camera.viewRect;
-
-                if (cameraViewRect.Intersects(cell.rect)) // checking if initial random cell intersects with camera
-                {
-                    var cellList = this.world.Grid.GetCellsForPieceName(this.boardPiece.name); // getting cell list to find non-intersecting cell (slow)
-
-                    while (true) // looking for first non-intersecting cell
-                    {
-                        if (cellList.Count == 0)
-                        {
-                            MessageLog.AddMessage(debugMessage: true, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
-                            return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there
-                        }
-
-                        int cellNo = this.world.random.Next(cellList.Count);
-
-                        cell = cellList[cellNo];
-                        cellList.RemoveAt(cellNo);
-                        if (!cameraViewRect.Intersects(cell.rect)) break;
-                    }
-                }
-            }
-
-            return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
         }
 
         public void SetOrientationByMovement(Vector2 movement, float orientationAngleOverride = -100f)
