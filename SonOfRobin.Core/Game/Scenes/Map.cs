@@ -540,7 +540,7 @@ namespace SonOfRobin
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
-                foreach (Mesh mesh in new List<Mesh>(this.bgTaskMeshesToShow))
+                foreach (Mesh mesh in this.bgTaskMeshesToShow.ToArray())
                 {
                     basicEffect.Texture = mesh.meshDef.mapTexture;
 
