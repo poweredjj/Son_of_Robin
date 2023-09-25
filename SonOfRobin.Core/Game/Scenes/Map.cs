@@ -824,6 +824,7 @@ namespace SonOfRobin
                         this.bgTaskMeshesToShow = new List<Mesh>(meshesToShow); // making list copy, to safely use Clear() on the local list
                         break;
                     }
+                    else Thread.Sleep(1); // will freeze without this
                 }
             }
         }
@@ -894,6 +895,7 @@ namespace SonOfRobin
                         this.bgTaskSpritesToShow = new List<Sprite>(spritesToShow); // making list copy, to safely use Clear() on the local list
                         break;
                     }
+                    else Thread.Sleep(1); // will freeze without this
                 }
             }
         }
