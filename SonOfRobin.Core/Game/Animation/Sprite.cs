@@ -455,27 +455,24 @@ namespace SonOfRobin
             ParticleEngine.TurnOffAll(this); // every "infinite" preset should end
             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
 
-            switch (this.AnimFrame.layer)
+            AnimData.PkgName newAnimPackage = this.AnimFrame.layer switch
             {
-                case -1:
-                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerMinus1);
-                    break;
+                -1 => AnimData.PkgName.WhiteSpotLayerMinus1,
+                0 => AnimData.PkgName.WhiteSpotLayerZero,
+                1 => AnimData.PkgName.WhiteSpotLayerOne,
+                2 => AnimData.PkgName.WhiteSpotLayerTwo,
+                3 => AnimData.PkgName.WhiteSpotLayerThree,
+                _ => throw new ArgumentException($"Unsupported layer - {this.AnimFrame.layer}."),
+            };
 
-                case 0:
-                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                    break;
-
-                case 1:
-                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerOne);
-                    break;
-
-                case 2:
-                    particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerTwo);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported layer - {this.AnimFrame.layer}.");
+            if (this.particleEngine != null &&
+                (this.particleEngine.HasPreset(ParticleEngine.Preset.DustPuff) || this.particleEngine.HasPreset(ParticleEngine.Preset.SmokePuff)))
+            {
+                // smoke / dust puff should appear above everything else
+                newAnimPackage = AnimData.PkgName.WhiteSpotLayerTwo;
             }
+
+            particleEmitter.sprite.AssignNewPackage(newAnimPackage: newAnimPackage, checkForCollision: false);
 
             this.particleEngine.ReassignSprite(particleEmitter.sprite);
         }

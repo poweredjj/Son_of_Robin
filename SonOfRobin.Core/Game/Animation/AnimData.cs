@@ -22,8 +22,8 @@ namespace SonOfRobin
             Empty = 1,
 
             WhiteSpotLayerMinus1 = 2,
-            WhiteSpotLayerOne = 3,
             WhiteSpotLayerZero = 4,
+            WhiteSpotLayerOne = 3,
             WhiteSpotLayerTwo = 5,
             WhiteSpotLayerThree = 285,
 

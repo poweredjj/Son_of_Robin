@@ -2747,6 +2747,9 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported name - {this.name}.");
                 }
 
+                // adding smoke puff to Yield
+                if (this.blocksMovement && this.Yield != null && this.type != typeof(Animal)) this.Yield.DebrisTypeList.Add(ParticleEngine.Preset.DustPuff);
+
                 // setting pieceSoundTemplate
 
                 this.pieceSoundPackTemplate = new PieceSoundPackTemplate(pieceInfo: this);

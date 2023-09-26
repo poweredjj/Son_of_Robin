@@ -103,6 +103,10 @@ namespace SonOfRobin
                         ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true, particlesToEmit: particlesToEmit);
                         break;
 
+                    case ParticleEngine.Preset.DustPuff:
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DustPuff, duration: 0, update: true, particlesToEmit: SonOfRobinGame.random.Next(1, 6));
+                        break;
+
                     case ParticleEngine.Preset.SmokePuff:
                         ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 0, update: true, particlesToEmit: 1);
                         break;

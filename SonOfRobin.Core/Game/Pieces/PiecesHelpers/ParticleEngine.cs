@@ -32,6 +32,7 @@ namespace SonOfRobin
             SwampGas,
             Lightning,
             Excavated,
+            DustPuff,
             SmokePuff,
 
             DebrisWood,
@@ -59,6 +60,7 @@ namespace SonOfRobin
                 { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
                 { Preset.Excavated, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.DustPuff, TextureBank.TextureName.ParticleDustPuff },
                 { Preset.SmokePuff, TextureBank.TextureName.ParticleSmokePuff },
                 { Preset.MudWalk, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.LavaFlame, TextureBank.TextureName.ParticleCircleSharp },
@@ -175,6 +177,11 @@ namespace SonOfRobin
             if (this.sprite != null) this.sprite.particleEngine = null;
             this.sprite = newSprite;
             newSprite.particleEngine = this;
+        }
+
+        public bool HasPreset(Preset preset)
+        {
+            return this.dataByPreset.ContainsKey(preset);
         }
 
         public void AddPreset(Preset preset)
@@ -530,6 +537,44 @@ namespace SonOfRobin
                                         new OpacityInterpolator
                                         {
                                             StartValue = 0.2f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new DragModifier { Density = 1f, DragCoefficient = 1f },
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.DustPuff:
+                    {
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 5, TimeSpan.FromSeconds(1.0f), profile: Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(12f, 23f),
+                                Quantity = 1,
+                                Rotation = new Range<float>(-2f, 2f),
+                            },
+
+                            Modifiers =
+                            {
+                                new RotationModifier { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 2f) - 1f },
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.5f),
+                                            EndValue = new Vector2(1.0f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1.2f,
                                             EndValue = 0f
                                         },
                                     }
