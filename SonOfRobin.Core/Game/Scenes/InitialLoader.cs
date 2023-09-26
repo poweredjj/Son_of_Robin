@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SonOfRobin
@@ -30,6 +31,16 @@ namespace SonOfRobin
             SetControlTips,
             OpenMainMenu,
         }
+
+        private static readonly List<string> firstWordList = new List<string>
+        {
+            "counting", "placing", "brushing", "sewing", "fixing", "swabbing", "dodging", "taming", "battling", "training", "catching", "solving", "removing", "inserting", "mourning", "burying", "tickling", "scanning", "chasing", "rebuilding", "digitizing", "enumerating", "downloading", "transmitting", "placing", "reading", "indexing", "herding", "checking", "migrating", "resolving", "binding", "initializing", "creating", "making", "preparing", "opening", "closing", "conquering", "moving", "inviting", "importing", "serializing", "polishing", "enumerating", "decompressing", "expanding", "deconstructing", "building", "naming"
+        };
+
+        private static readonly List<string> secondWordList = new List<string>
+        {
+            "foxes", "holes", "pirate ships", "goat horns", "tigers", "rabbits", "puzzles", "pebbles", "healthy meals", "drops of water", "grass blades", "skeletons", "crabs", "seagulls", "mermaids", "goats", "lambs", "treasure chests", "bananas", "apples", "parrots", "seashells", "polygons", "pixels", "waves", "monkeys", "apes", "treasures", "coconuts", "barrels of rum"
+        };
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -62,8 +73,38 @@ namespace SonOfRobin
         private readonly SpriteFont font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
+
         private bool TimeoutReached
         { get { return DateTime.Now - this.startTime > TimeSpan.FromSeconds(15); } }
+
+        private DateTime lastFunnyActionNameCreated;
+        private string lastFunnyActionName;
+        private List<string> usedFunnyWordsList;
+
+        private string FunnyActionName
+        {
+            get
+            {
+                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(0.8f)) return this.lastFunnyActionName;
+
+                this.lastFunnyActionNameCreated = DateTime.Now;
+
+                var tempFirstWordList = firstWordList.Where(word => !usedFunnyWordsList.Contains(word)).ToList();
+                var tempSecondWordList = secondWordList.Where(word => !usedFunnyWordsList.Contains(word)).ToList();
+
+                if (tempFirstWordList.Count == 0) tempFirstWordList = firstWordList;
+                if (tempSecondWordList.Count == 0) tempSecondWordList = secondWordList;
+
+                string firstWord = tempFirstWordList[SonOfRobinGame.random.Next(tempFirstWordList.Count)];
+                string secondWord = tempSecondWordList[SonOfRobinGame.random.Next(tempSecondWordList.Count)];
+
+                this.usedFunnyWordsList.Add(firstWord);
+                this.usedFunnyWordsList.Add(secondWord);
+
+                this.lastFunnyActionName = $"{firstWord} {secondWord}";
+                return this.lastFunnyActionName;
+            }
+        }
 
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
@@ -71,6 +112,9 @@ namespace SonOfRobin
         public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
         {
             this.startTime = DateTime.Now;
+            this.lastFunnyActionNameCreated = DateTime.MinValue;
+            this.lastFunnyActionName = "";
+            this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
@@ -274,7 +318,9 @@ namespace SonOfRobin
 
             Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
 
-            string text = $"{this.NextStepName}...";
+            string text = SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine ? $"{this.NextStepName}..." : $"{this.FunnyActionName}...";
+            // text = $"{this.FunnyActionName}..."; // for testing
+
             Vector2 textSize = this.font.MeasureString(text);
 
             int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
