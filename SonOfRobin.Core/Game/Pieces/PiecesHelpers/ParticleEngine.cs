@@ -1097,9 +1097,8 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 2;
 
-                        particleEmitter = new ParticleEmitter(
-                            textureRegion, 100000, TimeSpan.FromSeconds(1.5),
-                            profile: Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 2f, height: this.sprite.world.camera.viewRect.Height / 2))
+                        particleEmitter = new ParticleEmitter(textureRegion, 100000, TimeSpan.FromSeconds(1.5),
+                            profile: Profile.BoxFill(width: 100, height: 100)) // to be dynamically replaced
                         {
                             Parameters = new ParticleReleaseParameters
                             {

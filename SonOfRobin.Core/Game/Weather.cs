@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
 using MonoGame.Extended.Particles.Profiles;
@@ -87,16 +88,16 @@ namespace SonOfRobin
         private readonly World world;
         private Rectangle lastRainRect;
         private readonly IslandClock islandClock;
-        private readonly BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
-        private readonly LinearGravityModifier rainWindModifier;
-        private readonly LinearGravityModifier rainGravityModifier;
-        private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
         private readonly Dictionary<WeatherType, float> previousIntensityForType;
         private bool firstForecastCreated;
         private readonly Sound windSound;
         private readonly Sound rainSound;
+        private readonly BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
+        private readonly LinearGravityModifier rainWindModifier;
+        private readonly LinearGravityModifier rainGravityModifier;
+        private readonly List<WeatherEvent> weatherEvents;
         public float CloudsPercentage { get; private set; }
         public float FogPercentage { get; private set; }
         public float SunVisibility { get; private set; }
@@ -316,7 +317,9 @@ namespace SonOfRobin
             float targetRotation = 0.9f * this.WindPercentage;
             if (this.WindOriginX == 0) targetRotation *= -1;
             particleEmitter.Parameters.Rotation = targetRotation;
-            particleEmitter.Parameters.Scale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 0.08f, newMax: 0.14f, oldVal: this.RainPercentage, clampToEdges: true);
+
+            float rainBaseScale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 0.08f, newMax: 0.14f, oldVal: this.RainPercentage, clampToEdges: true);
+            particleEmitter.Parameters.Scale = new Range<float>(rainBaseScale * 0.9f, rainBaseScale * 1.05f);
 
             int windFactorX = (int)(this.WindPercentage * 10) + world.random.Next(2);
             if (this.WindOriginX == 1) windFactorX *= -1; // wind blowing from the right
