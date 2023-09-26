@@ -92,8 +92,12 @@ namespace SonOfRobin
             private int framesLeft;
             public int delayFramesLeft { get; private set; }
             public bool IsActive { get; private set; }
-            public bool Serialize { get { return this.IsActive && this.framesLeft == 0; } }
-            public bool HasFinished { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
+
+            public bool Serialize
+            { get { return this.IsActive && this.framesLeft == 0; } }
+
+            public bool HasFinished
+            { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
 
             public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0)
             {
@@ -162,7 +166,8 @@ namespace SonOfRobin
         private readonly ParticleEffect particleEffect;
         private readonly Dictionary<Preset, PresetData> dataByPreset;
 
-        public bool HasAnyParticles { get { return this.ActiveParticlesCount > 0; } }
+        public bool HasAnyParticles
+        { get { return this.ActiveParticlesCount > 0; } }
 
         public int ActiveParticlesCount
         { get { return this.particleEffect.Emitters.Select(x => x.ActiveParticles).Sum(); } }
@@ -554,7 +559,9 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 1;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 5, TimeSpan.FromSeconds(1.0f), profile: Profile.Point())
+                        particleEmitter = new ParticleEmitter(
+                            textureRegion, 5, TimeSpan.FromSeconds(0.7f),
+                            profile: Profile.BoxFill(width: this.sprite.GfxRect.Width * 0.7f, height: this.sprite.GfxRect.Height * 0.7f))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -773,15 +780,15 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 4;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5f),
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(3.0f),
                             profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Speed = new Range<float>(100f, 400f),
+                                Speed = new Range<float>(50f, 600f),
                                 Scale = new Range<float>(0.3f, 0.8f),
                                 Rotation = new Range<float>(-2f, 2f),
-                                Mass = new Range<float>(1f, 2.3f),
+                                Mass = new Range<float>(0.1f, 4.8f),
                             },
 
                             Modifiers =
@@ -796,7 +803,7 @@ namespace SonOfRobin
                                     { StartValue = 2.0f, EndValue = 0f },
                                 },
                             },
-                            new DragModifier { Density = 0.4f, DragCoefficient = 20f },
+                            new DragModifier { Density = 0.4f, DragCoefficient = SonOfRobinGame.random.Next(15,25) },
                           }
                         };
                         break;
@@ -1219,7 +1226,7 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 2;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 100000, TimeSpan.FromSeconds(1.5),
+                        particleEmitter = new ParticleEmitter(textureRegion, 300000, TimeSpan.FromSeconds(2.5),
                             profile: Profile.BoxFill(width: 100, height: 100)) // to be dynamically replaced
                         {
                             Parameters = new ParticleReleaseParameters

@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Particles.Modifiers;
+using MonoGame.Extended.Particles;
+using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MonoGame.Extended;
 
 namespace SonOfRobin
 {
@@ -105,6 +109,7 @@ namespace SonOfRobin
             AddRumble = 91,
             CheckForPieceHints = 43,
             ExecutePieceHintCheckNow = 92,
+            TurnOnWindParticles = 93,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -1912,6 +1917,42 @@ namespace SonOfRobin
                             float minSecondsSinceLastRumbleBigMotor = rumbleData.ContainsKey("minSecondsSinceLastRumbleBigMotor") ? (float)rumbleData["minSecondsSinceLastRumbleBigMotor"] : 0f;
 
                             new RumbleEvent(force: force, smallMotor: smallMotor, bigMotor: bigMotor, fadeInSeconds: fadeInSeconds, durationSeconds: durationSeconds, fadeOutSeconds: fadeOutSeconds, minSecondsSinceLastRumbleSmallMotor: minSecondsSinceLastRumbleSmallMotor, minSecondsSinceLastRumbleBigMotor: minSecondsSinceLastRumbleBigMotor);
+
+                            return;
+                        }
+
+                    case TaskName.TurnOnWindParticles:
+                        {
+                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
+                            Sprite sprite = piece.sprite;
+                            float windOriginX = piece.world.weather.WindOriginX;
+
+                            foreach (ParticleEngine.Preset preset in piece.pieceInfo.windParticlesList)
+                            {
+                                bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
+                                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: 5, duration: 2);
+
+                                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
+                                if (!hasPreset && particleEmitter != null)
+                                {
+                                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, Strength = piece.world.random.Next(1800, 5000) });
+
+                                    int vortexCount = piece.world.random.Next(1, 4);
+
+                                    for (int i = 0; i < vortexCount; i++)
+                                    {
+                                        int vortexX = (i * 250) + piece.world.random.Next(60, 180) * (windOriginX == 0 ? 1 : -1);
+                                        int vortexY = piece.world.random.Next(20, 100) * (piece.world.random.Next(2) == 0 ? 1 : -1);
+
+                                        particleEmitter.Modifiers.Add(new VortexModifier
+                                        {
+                                            Mass = 25f,
+                                            MaxSpeed = 0.35f,
+                                            Position = new Vector2(vortexX, vortexY)
+                                        });
+                                    }
+                                }
+                            }
 
                             return;
                         }

@@ -91,6 +91,8 @@ namespace SonOfRobin
             {
                 switch (debrisType)
                 {
+                    // duration must be >= 1, because duration == 0 will drop debris forever
+
                     case ParticleEngine.Preset.DebrisStar:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
@@ -104,11 +106,11 @@ namespace SonOfRobin
                         break;
 
                     case ParticleEngine.Preset.DustPuff:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DustPuff, duration: 0, update: true, particlesToEmit: SonOfRobinGame.random.Next(1, 6));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DustPuff, duration: 1, update: true, particlesToEmit: SonOfRobinGame.random.Next(1, 6));
                         break;
 
                     case ParticleEngine.Preset.SmokePuff:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 0, update: true, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 1, update: true, particlesToEmit: 1);
                         break;
 
                     case ParticleEngine.Preset.DebrisHeart:

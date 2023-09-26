@@ -321,12 +321,12 @@ namespace SonOfRobin
             float rainBaseScale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 0.08f, newMax: 0.14f, oldVal: this.RainPercentage, clampToEdges: true);
             particleEmitter.Parameters.Scale = new Range<float>(rainBaseScale * 0.9f, rainBaseScale * 1.05f);
 
-            int windFactorX = (int)(this.WindPercentage * 10) + world.random.Next(2);
+            int windFactorX = (int)(this.WindPercentage * 10) + this.world.random.Next(2);
             if (this.WindOriginX == 1) windFactorX *= -1; // wind blowing from the right
             this.rainWindModifier.Direction = new Vector2(windFactorX, 0);
             this.rainWindModifier.Strength = this.WindPercentage * 160f;
 
-            this.rainGravityModifier.Strength = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 100f, newMax: 1200f, oldVal: this.RainPercentage, clampToEdges: true);
+            this.rainGravityModifier.Strength = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 500f, newMax: 1800f, oldVal: this.RainPercentage, clampToEdges: true);
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
@@ -386,27 +386,16 @@ namespace SonOfRobin
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
                     if (sprite.BlocksMovement) finalRotation *= 0.3f;
 
-                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: rotationSlowdown);
+                    int delayFrames = (int)distance / 20;
 
-                    if (piece.pieceInfo.windParticlesList.Count > 0 && sprite.IsInCameraRect)
+                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: delayFrames, rotationSlowdown: rotationSlowdown);
+
+                    if (piece.pieceInfo.windParticlesList.Count > 0 &&
+                        (piece.pieceInfo.plantAdultSizeMass == 0 || sprite.AnimSize > 0) && 
+                        this.world.random.Next(3) == 0
+                        )
                     {
-                        foreach (ParticleEngine.Preset preset in piece.pieceInfo.windParticlesList)
-                        {
-                            bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
-                            ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: 5, duration: 2);
-
-                            ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
-                            if (!hasPreset && particleEmitter != null)
-                            {
-                                particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = this.WindOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, Strength = SonOfRobinGame.random.Next(1800, 5000) });
-                                particleEmitter.Modifiers.Add(new VortexModifier
-                                {
-                                    Mass = 35f,
-                                    MaxSpeed = 0.2f,
-                                    Position = new Vector2(140 * (this.WindOriginX == 0 ? 1 : -1), SonOfRobinGame.random.Next(1, 4) * 80)
-                                });
-                            }
-                        }
+                        new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);                     
                     }
                 }
             }
