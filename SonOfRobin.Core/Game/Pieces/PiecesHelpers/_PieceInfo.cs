@@ -2748,7 +2748,12 @@ namespace SonOfRobin
                 }
 
                 // adding smoke puff to Yield
-                if (this.blocksMovement && this.Yield != null && this.type != typeof(Animal)) this.Yield.DebrisTypeList.Add(ParticleEngine.Preset.DustPuff);
+                if (this.blocksMovement &&
+                    this.Yield != null &&
+                    this.type != typeof(Animal) &&
+                    this.type != typeof(Player)
+                    )
+                    this.Yield.DebrisTypeList.Add(ParticleEngine.Preset.DustPuff);
 
                 // setting pieceSoundTemplate
 
