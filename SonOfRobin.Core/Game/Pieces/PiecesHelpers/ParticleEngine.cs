@@ -78,7 +78,7 @@ namespace SonOfRobin
 
         public class PresetData
         {
-            private readonly ParticleEmitter particleEmitter;
+            public readonly ParticleEmitter particleEmitter;
             public readonly int defaultParticlesToEmit;
             public readonly int particleToEmitMaxVariation;
             private int currentParticlesToEmit;
@@ -102,12 +102,11 @@ namespace SonOfRobin
                 this.IsActive = false;
             }
 
-            public void TurnOn(int particlesToEmit = 0, float rotation = 0, int duration = 0)
+            public void TurnOn(int particlesToEmit = 0, int duration = 0)
             {
                 if (duration > 0) this.framesLeft = duration + 1;
 
                 this.currentParticlesToEmit = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
-                this.particleEmitter.Parameters.Rotation = rotation;
                 this.IsActive = true;
                 this.Update(moveCounters: false);
             }
@@ -1098,9 +1097,9 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 2;
 
-                        Profile profile = Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 1.5f, height: this.sprite.world.camera.viewRect.Height / 2);
-
-                        particleEmitter = new ParticleEmitter(textureRegion, 5000, TimeSpan.FromSeconds(3.0), profile: profile)
+                        particleEmitter = new ParticleEmitter(
+                            textureRegion, 50000, TimeSpan.FromSeconds(3.0),
+                            profile: Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 2f, height: this.sprite.world.camera.viewRect.Height / 2))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -1137,14 +1136,20 @@ namespace SonOfRobin
             this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay);
         }
 
-        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false, float rotation = 0)
+        public static ParticleEmitter GetEmitterForPreset(Sprite sprite, Preset preset)
+        {
+            return sprite.particleEngine != null && sprite.particleEngine.dataByPreset.ContainsKey(preset) ?
+                sprite.particleEngine.dataByPreset[preset].particleEmitter : null;
+        }
+
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
         {
             if (duration > 0 && !sprite.IsInCameraRect) return;
 
             if (sprite.particleEngine == null) sprite.particleEngine = new ParticleEngine(sprite);
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
-            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration, rotation: rotation);
+            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
             if (update) sprite.particleEngine.Update();
         }
 

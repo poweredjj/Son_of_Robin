@@ -396,12 +396,12 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
             //}
 
-            //if (Keyboard.HasBeenPressed(Keys.F2))
-            //{
-            //    if (world == null) return;
+            if (Keyboard.HasBeenPressed(Keys.F1))
+            {
+                if (world == null) return;
 
-            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.05f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(3)));
-            //}
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {

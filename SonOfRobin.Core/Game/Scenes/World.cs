@@ -120,7 +120,6 @@ namespace SonOfRobin
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.worldEventManager = new WorldEventManager(this);
             this.trackingManager = new TrackingManager(this);
-            this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -174,6 +173,7 @@ namespace SonOfRobin
 
             this.solidColorManager = new SolidColorManager(this);
             this.stateMachineTypesManager = new SMTypesManager(this);
+            this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.craftStats = new CraftStats();
             this.cookStats = new KitchenStats();
             this.brewStats = new KitchenStats();

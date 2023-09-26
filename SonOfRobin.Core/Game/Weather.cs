@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Particles;
+using MonoGame.Extended.Particles.Profiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,8 +84,9 @@ namespace SonOfRobin
         public static readonly Sound thunderSound = new Sound(nameList: thunderNames, cooldown: 60, ignore3DAlways: true, maxPitchVariation: 0.5f);
 
         private readonly World world;
+        private Rectangle lastRainRect;
         private readonly IslandClock islandClock;
-        private BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
+        private readonly BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
@@ -111,8 +114,10 @@ namespace SonOfRobin
         public Weather(World world, IslandClock islandClock)
         {
             this.world = world;
+            this.lastRainRect = new Rectangle();
             this.islandClock = islandClock;
-            this.rainEmitter = null;
+            this.rainEmitter = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitter, world: this.world);
+            this.rainEmitter.activeState = BoardPiece.State.Empty; // otherwise it would get destroyed right away
             this.weatherEvents = new List<WeatherEvent>();
             this.forecastEnd = veryOldDate; // to ensure first update
             this.firstForecastCreated = false;
@@ -200,12 +205,7 @@ namespace SonOfRobin
 
         private void UpdateEmitters()
         {
-            if (this.rainEmitter == null)
-            {
-                this.rainEmitter = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitter, world: this.world);
-                this.rainEmitter.activeState = BoardPiece.State.Empty; // otherwise it would get destroyed right away (no particles emitted)
-                this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
-            }
+            if (!this.rainEmitter.sprite.IsOnBoard) this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
 
             this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
         }
@@ -310,15 +310,32 @@ namespace SonOfRobin
             int leftCameraEdge = Math.Max(extendedViewRect.Left, 0); // clipping to island edges
             int rightCameraEdge = Math.Min(extendedViewRect.Right, this.world.width); // clipping to island edges
 
-            // ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount * 2, rotation: 0.7f);
 
-            for (int i = 0; i < raindropsCount; i++)
+
+            ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount * 2);
+            ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
+            // particleEmitter.Parameters.Rotation = 0.8f;
+
+            Rectangle cameraRect = this.world.camera.viewRect;
+
+            if (SonOfRobinGame.CurrentUpdate % 10 == 0 && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10))
             {
-                Vector2 position = new Vector2(this.world.random.Next(leftCameraEdge, rightCameraEdge), world.camera.viewRect.Top);
-                BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
+                this.lastRainRect = cameraRect;
 
-                rainDrop.sprite.AssignNewSize(dropSize);
+                particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2f, height: cameraRect.Height / 2);
+
+                MessageLog.AddMessage(debugMessage: false, message: $"{SonOfRobinGame.CurrentUpdate} rain rect {cameraRect.Width}x{cameraRect.Height}", color: Color.Orange);
             }
+
+
+
+            //for (int i = 0; i < raindropsCount; i++)
+            //{
+            //    Vector2 position = new Vector2(this.world.random.Next(leftCameraEdge, rightCameraEdge), world.camera.viewRect.Top);
+            //    BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
+
+            //    rainDrop.sprite.AssignNewSize(dropSize);
+            //}
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
