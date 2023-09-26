@@ -346,10 +346,6 @@ namespace SonOfRobin
             Fog2 = 265,
             Fog3 = 266,
             Fog4 = 267,
-            Fog5 = 268,
-            Fog6 = 269,
-            Fog7 = 270,
-            Fog8 = 271,
 
             BubbleExclamationRed = 272,
             BubbleExclamationBlue = 273,
@@ -657,12 +653,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Heart, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
             AddFrameList(animPackage: PkgName.Fog1, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Fog2, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog3, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog4, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog5, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog6, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog7, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog8, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog3, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog4, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Empty, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
             AddFrameList(animPackage: PkgName.Star, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Crosshair, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
