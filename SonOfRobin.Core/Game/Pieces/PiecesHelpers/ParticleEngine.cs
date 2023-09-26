@@ -1098,7 +1098,7 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 2;
 
                         particleEmitter = new ParticleEmitter(
-                            textureRegion, 100000, TimeSpan.FromSeconds(2.0),
+                            textureRegion, 100000, TimeSpan.FromSeconds(1.5),
                             profile: Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 2f, height: this.sprite.world.camera.viewRect.Height / 2))
                         {
                             Parameters = new ParticleReleaseParameters
@@ -1108,11 +1108,6 @@ namespace SonOfRobin
                                 Scale = 0.125f,
                                 Rotation = 0f,
                             },
-
-                            Modifiers =
-                            {
-                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 250f },
-                            }
                         };
                         break;
                     }

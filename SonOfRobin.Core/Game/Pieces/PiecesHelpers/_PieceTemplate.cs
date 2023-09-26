@@ -280,9 +280,7 @@ namespace SonOfRobin
             ParticleEmitterWeather = 218,
             EmptyVisualEffect = 215,
 
-            // obsolete below
-
-            RainDropObsolete = 129,
+            // obsolete below (kept for compatibility with old saves)
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1164,7 +1162,6 @@ namespace SonOfRobin
 
                 case Name.WorkshopMeatHarvesting:
                     {
-
                         var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat workshop", description: "For animal processing.");
 
                         meatHarvestingWorkshop.sprite.AssignNewName("off");
@@ -2492,15 +2489,6 @@ namespace SonOfRobin
 
                         visualEffect.sprite.color = new Color(255, 206, 28);
                         visualEffect.sprite.opacity = 0.45f;
-
-                        return visualEffect;
-                    }
-
-                case Name.RainDropObsolete:
-                    {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDropsObsolete, allowedTerrain: new AllowedTerrain(), readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, visible: true);
-
-                        visualEffect.sprite.opacity = 0.75f;
 
                         return visualEffect;
                     }

@@ -89,6 +89,7 @@ namespace SonOfRobin
         private readonly IslandClock islandClock;
         private readonly BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
         private readonly LinearGravityModifier rainWindModifier;
+        private readonly LinearGravityModifier rainGravityModifier;
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
@@ -110,7 +111,6 @@ namespace SonOfRobin
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
         public DateTime NextLocalizedWindBlow { get; private set; }
-        private int rainCooldownFramesLeft;
         public Vector2 LightningPosMultiplier { get; private set; } // to be multiplied by sunPos
 
         public Weather(World world, IslandClock islandClock)
@@ -120,6 +120,7 @@ namespace SonOfRobin
             this.islandClock = islandClock;
             this.rainEmitter = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitterWeather, world: this.world);
             this.rainWindModifier = new LinearGravityModifier();
+            this.rainGravityModifier = new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 0f };
             this.weatherEvents = new List<WeatherEvent>();
             this.forecastEnd = veryOldDate; // to ensure first update
             this.firstForecastCreated = false;
@@ -131,7 +132,6 @@ namespace SonOfRobin
             this.WindOriginY = 0f;
             this.NextGlobalWindBlow = veryOldDate;
             this.NextLocalizedWindBlow = veryOldDate;
-            this.rainCooldownFramesLeft = -1;
             this.WindPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
@@ -213,6 +213,7 @@ namespace SonOfRobin
                 ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: 0);
                 ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
                 particleEmitter.Modifiers.Add(this.rainWindModifier);
+                particleEmitter.Modifiers.Add(this.rainGravityModifier);
             }
 
             this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
@@ -289,27 +290,18 @@ namespace SonOfRobin
 
         private void ProcessRain()
         {
-            if (this.RainPercentage == 0 && this.rainSound.IsPlaying) this.rainSound.Stop();
-            else
-            {
-                if (!this.rainSound.IsPlaying) this.rainSound.Play();
-                this.rainSound.AdjustVolume(this.RainPercentage);
-            }
-
             if (this.RainPercentage == 0)
             {
-                this.rainCooldownFramesLeft = -1;
+                if (this.rainSound.IsPlaying) this.rainSound.Stop();
                 ParticleEngine.TurnOff(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
                 return;
             }
 
-            this.rainCooldownFramesLeft--;
-            if (this.rainCooldownFramesLeft > 0) return;
-
-            this.rainCooldownFramesLeft = this.world.random.Next(2, 6) - (int)(this.RainPercentage * 5);
+            if (!this.rainSound.IsPlaying) this.rainSound.Play();
+            this.rainSound.AdjustVolume(this.RainPercentage);
 
             Rectangle cameraRect = this.world.camera.viewRect;
-            int raindropsCount = 2 + (int)(this.RainPercentage * 3) * (cameraRect.Width * cameraRect.Height / 50000);
+            int raindropsCount = (int)(this.RainPercentage * 2) * (cameraRect.Width * cameraRect.Height / 20000);
 
             ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount);
             ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
@@ -318,19 +310,20 @@ namespace SonOfRobin
             {
                 this.lastRainRect = cameraRect;
                 particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2f, height: cameraRect.Height / 2);
-                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} rain rect {cameraRect.Width}x{cameraRect.Height}", color: Color.Orange);
+                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
             }
 
             float targetRotation = 0.9f * this.WindPercentage;
             if (this.WindOriginX == 0) targetRotation *= -1;
             particleEmitter.Parameters.Rotation = targetRotation;
-            particleEmitter.Parameters.Scale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 0.125f, newMin: 0.08f, newMax: 0.125f, oldVal: 0.125f * this.RainPercentage, clampToEdges: true);
+            particleEmitter.Parameters.Scale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 0.08f, newMax: 0.14f, oldVal: this.RainPercentage, clampToEdges: true);
 
-            int windModifier = (int)(this.WindPercentage * 10) + world.random.Next(2);
-            if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
+            int windFactorX = (int)(this.WindPercentage * 10) + world.random.Next(2);
+            if (this.WindOriginX == 1) windFactorX *= -1; // wind blowing from the right
+            this.rainWindModifier.Direction = new Vector2(windFactorX, 0);
+            this.rainWindModifier.Strength = this.WindPercentage * 160f;
 
-            this.rainWindModifier.Direction = new Vector2(windModifier, 0);
-            this.rainWindModifier.Strength = this.WindPercentage * 60f;
+            this.rainGravityModifier.Strength = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 100f, newMax: 1200f, oldVal: this.RainPercentage, clampToEdges: true);
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
@@ -631,7 +624,6 @@ namespace SonOfRobin
                 { "RainPercentage", this.RainPercentage },
                 { "NextGlobalWindBlow", this.NextGlobalWindBlow },
                 { "NextLocalizedWindBlow", this.NextLocalizedWindBlow },
-                { "rainCooldownFramesLeft", this.rainCooldownFramesLeft },
             };
 
             return weatherData;
@@ -666,7 +658,6 @@ namespace SonOfRobin
             this.RainPercentage = (float)(double)weatherData["RainPercentage"];
             this.NextGlobalWindBlow = (DateTime)weatherData["NextGlobalWindBlow"];
             this.NextLocalizedWindBlow = (DateTime)weatherData["NextLocalizedWindBlow"];
-            this.rainCooldownFramesLeft = (int)(Int64)weatherData["rainCooldownFramesLeft"];
         }
 
         public void AddEvent(WeatherEvent weatherEvent)

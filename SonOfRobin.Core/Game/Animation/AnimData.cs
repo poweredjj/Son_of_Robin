@@ -366,8 +366,6 @@ namespace SonOfRobin
             FenceVerticalLong = 282,
 
             // obsolete below (kept for compatibility with old saves)
-
-            RainDropsObsolete = 260,
         }
 
         public static void AddFrameList(PkgName animPackage, List<AnimFrame> frameList, int animSize = 0, string animName = "default")

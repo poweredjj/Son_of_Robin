@@ -408,8 +408,16 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(2), transitionLength: TimeSpan.FromMinutes(0.3f)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.35f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.2f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    if (world == null) return;
+
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(2), transitionLength: TimeSpan.FromMinutes(0.3f)));
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F3))
             //{
@@ -419,12 +427,12 @@ namespace SonOfRobin
             //} 
 
 
-            if (Keyboard.HasBeenPressed(Keys.F3))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F3))
+            //{
+            //    if (world == null) return;
 
-                new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
-            }
+            //    new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{
