@@ -728,14 +728,6 @@ namespace SonOfRobin
                     this.SM_FogMoveRandomly();
                     break;
 
-                case State.RainInitialize:
-                    this.SM_RainInitialize();
-                    break;
-
-                case State.RainFall:
-                    this.SM_RainFall();
-                    break;
-
                 case State.FlameBurn:
                     this.SM_FlameBurn();
                     break;
@@ -1099,12 +1091,6 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FogMoveRandomly()
-        { throw new DivideByZeroException("This method should not be executed."); }
-
-        public virtual void SM_RainInitialize()
-        { throw new DivideByZeroException("This method should not be executed."); }
-
-        public virtual void SM_RainFall()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FlameBurn()

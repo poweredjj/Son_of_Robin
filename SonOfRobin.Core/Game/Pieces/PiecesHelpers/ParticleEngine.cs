@@ -1098,7 +1098,7 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 2;
 
                         particleEmitter = new ParticleEmitter(
-                            textureRegion, 50000, TimeSpan.FromSeconds(3.0),
+                            textureRegion, 100000, TimeSpan.FromSeconds(2.0),
                             profile: Profile.BoxFill(width: this.sprite.world.camera.viewRect.Width * 2f, height: this.sprite.world.camera.viewRect.Height / 2))
                         {
                             Parameters = new ParticleReleaseParameters
@@ -1111,17 +1111,6 @@ namespace SonOfRobin
 
                             Modifiers =
                             {
-                                new AgeModifier
-                                {
-                                    Interpolators =
-                                    {
-                                        new OpacityInterpolator
-                                        {
-                                            StartValue = 3.0f,
-                                            EndValue = 0f
-                                        },
-                                    }
-                                },
                                 new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 250f },
                             }
                         };

@@ -168,7 +168,6 @@ namespace SonOfRobin
             BubbleExclamationBlue = 127,
             BubbleCraftGreen = 128,
 
-            RainDrop = 129,
             Explosion = 130,
 
             CookingTrigger = 131,
@@ -277,8 +276,13 @@ namespace SonOfRobin
             SeaWave = 212,
             PredatorRepellant = 213,
 
-            ParticleEmitter = 214,
+            ParticleEmitterEnding = 214,
+            ParticleEmitterWeather = 218,
             EmptyVisualEffect = 215,
+
+            // obsolete below
+
+            RainDropObsolete = 129,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2492,9 +2496,9 @@ namespace SonOfRobin
                         return visualEffect;
                     }
 
-                case Name.RainDrop:
+                case Name.RainDropObsolete:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, allowedTerrain: new AllowedTerrain(), readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDropsObsolete, allowedTerrain: new AllowedTerrain(), readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, visible: true);
 
                         visualEffect.sprite.opacity = 0.75f;
 
@@ -2589,9 +2593,18 @@ namespace SonOfRobin
                         return ambientSound;
                     }
 
-                case Name.ParticleEmitter:
+                case Name.ParticleEmitterEnding:
                     {
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: new AllowedTerrain(), readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
+
+                        visualEffect.sprite.opacity = 0f;
+
+                        return visualEffect;
+                    }
+
+                case Name.ParticleEmitterWeather:
+                    {
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerTwo, allowedTerrain: new AllowedTerrain(), readableName: "weather particle emitter", description: "Emits particles (for weather effects).", activeState: BoardPiece.State.Empty, visible: true);
 
                         visualEffect.sprite.opacity = 0f;
 

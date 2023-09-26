@@ -1852,7 +1852,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
-                    case PieceTemplate.Name.RainDrop:
+                    case PieceTemplate.Name.RainDropObsolete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;
@@ -2648,7 +2648,14 @@ namespace SonOfRobin
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f);
                         break;
 
-                    case PieceTemplate.Name.ParticleEmitter:
+                    case PieceTemplate.Name.ParticleEmitterEnding:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
+                        break;
+
+                    case PieceTemplate.Name.ParticleEmitterWeather:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 0;

@@ -58,58 +58,6 @@ namespace SonOfRobin
             }
         }
 
-        public override void SM_RainInitialize()
-        {
-            int distance = this.world.random.Next(this.world.camera.viewRect.Height / 2, this.world.camera.viewRect.Height);
-
-            Vector2 rainTargetPos = new Vector2(this.sprite.position.X, this.sprite.position.Y + distance);
-
-            float rainPercentage = this.world.weather.RainPercentage;
-            if (rainPercentage == 0)
-            {
-                // if the raindrop is processed after the rain has stopped
-                this.Destroy();
-                return;
-            }
-
-            this.rainStepsLeft = (int)(this.world.random.Next(15, 100) / (4 * rainPercentage));
-            this.rainStepsLeft = Math.Max(this.rainStepsLeft, 5); // to avoid value 0, that would make the rain stay forever
-            this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
-
-            if (this.rainStep.Y < 1f) this.rainStep.Y = 1f; // to ensure minimal movement (otherwise some raindrops will just sit there for a while)
-
-            this.activeState = State.RainFall;
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.rainStepsLeft, boardPiece: this); // to ensure eventual destruction
-        }
-
-        public override void SM_RainFall()
-        {
-            int timeDelta = this.FramesSinceLastProcessed;
-
-            Vector2 currentStep = this.rainStep;
-            float windPercentage = this.world.weather.WindPercentage;
-            if (windPercentage > 0)
-            {
-                int windModifier = (int)(windPercentage * 10) + world.random.Next(2);
-                if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
-                currentStep.X += Math.Min(windModifier, currentStep.Y);
-
-                float targetRotation = 0.9f * windPercentage;
-                if (this.world.weather.WindOriginX == 0) targetRotation *= -1;
-
-                if (Math.Abs(this.sprite.rotation) < Math.Abs(targetRotation)) this.sprite.rotation = targetRotation;
-            }
-
-            this.sprite.Move(currentStep * timeDelta);
-
-            this.rainStepsLeft -= timeDelta;
-            if (this.rainStepsLeft <= 0 || this.world.weather.RainPercentage == 0)
-            {
-                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 20, destroyPiece: true);
-                this.RemoveFromStateMachines();
-            }
-        }
-
         public override void SM_SeaWaveMove()
         {
             if (!this.sprite.IsInCameraRect) return;

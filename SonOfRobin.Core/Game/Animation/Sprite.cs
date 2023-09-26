@@ -453,7 +453,7 @@ namespace SonOfRobin
         private void ReplaceWithParticleEmitter()
         {
             ParticleEngine.TurnOffAll(this); // every "infinite" preset should end
-            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitter, precisePlacement: true);
+            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
 
             switch (this.AnimFrame.layer)
             {

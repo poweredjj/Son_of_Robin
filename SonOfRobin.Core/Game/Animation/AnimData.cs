@@ -25,6 +25,7 @@ namespace SonOfRobin
             WhiteSpotLayerOne = 3,
             WhiteSpotLayerZero = 4,
             WhiteSpotLayerTwo = 5,
+            WhiteSpotLayerThree = 285,
 
             FlowersWhite = 6,
             FlowersYellow1 = 7,
@@ -337,7 +338,6 @@ namespace SonOfRobin
             Flame = 257,
             Upgrade = 258,
             WaterDrop = 259,
-            RainDrops = 260,
             Star = 261,
             Zzz = 262,
             Heart = 263,
@@ -366,7 +366,8 @@ namespace SonOfRobin
             FenceVerticalLong = 282,
 
             // obsolete below (kept for compatibility with old saves)
-            // (empty right now)
+
+            RainDropsObsolete = 260,
         }
 
         public static void AddFrameList(PkgName animPackage, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
@@ -640,16 +641,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionBrown, frameList: ConvertImageToFrameList(atlasName: "potion_brown", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionTransparent, frameList: ConvertImageToFrameList(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.WaterDrop, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.WaterDrop, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SeaWave, frameList: ConvertImageToFrameList(atlasName: "wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.RainDrops, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 2, scale: 0.06f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x2", layer: 2, scale: 0.28f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x3", layer: 2, scale: 0.28f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 3, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x4", layer: 2, scale: 0.29f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 4, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x5", layer: 2, scale: 0.3f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 5, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x6", layer: 2, scale: 0.31f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 6, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x7", layer: 2, scale: 0.32f));
-            AddFrameList(animPackage: PkgName.RainDrops, animSize: 7, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x8", layer: 2, scale: 0.33f));
             AddFrameList(animPackage: PkgName.BubbleExclamationRed, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_red", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BubbleExclamationBlue, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_blue", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BubbleCraftGreen, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
@@ -742,6 +735,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.WhiteSpotLayerZero, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.WhiteSpotLayerOne, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.WhiteSpotLayerTwo, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
+            AddFrameList(animPackage: PkgName.WhiteSpotLayerThree, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 3, scale: 1f));
             AddFrameList(animPackage: PkgName.Upgrade, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Rope, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.MapMarker, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
