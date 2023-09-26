@@ -47,6 +47,8 @@ namespace SonOfRobin
             DebrisSoot,
 
             WeatherRain,
+
+            WindLeaf,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -66,6 +68,7 @@ namespace SonOfRobin
                 { Preset.LavaFlame, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.DebrisWood, TextureBank.TextureName.ParticleDebrisWood },
                 { Preset.DebrisLeaf, TextureBank.TextureName.ParticleDebrisLeaf },
+                { Preset.WindLeaf, TextureBank.TextureName.ParticleDebrisLeaf },
                 { Preset.DebrisGrass, TextureBank.TextureName.ParticleDebrisGrass },
                 { Preset.DebrisStone, TextureBank.TextureName.ParticleDebrisStone },
                 { Preset.DebrisCrystal, TextureBank.TextureName.ParticleDebrisCrystal },
@@ -766,6 +769,39 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Preset.WindLeaf:
+                    {
+                        defaultParticlesToEmit = 4;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(2.5f),
+                            profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(100f, 400f),
+                                Scale = new Range<float>(0.3f, 0.8f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(1f, 2.3f),
+                            },
+
+                            Modifiers =
+                        {
+                            new RotationModifier
+                            { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 8f) - 4f },
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 2.0f, EndValue = 0f },
+                                },
+                            },
+                            new DragModifier { Density = 0.4f, DragCoefficient = 20f },
+                          }
+                        };
+                        break;
+                    }
+
                 case Preset.DebrisGrass:
                     {
                         defaultParticlesToEmit = 7;
@@ -1320,6 +1356,18 @@ namespace SonOfRobin
                     break;
 
                 case Preset.DebrisSoot:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.DustPuff:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.SmokePuff:
+                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.WindLeaf:
                     this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 

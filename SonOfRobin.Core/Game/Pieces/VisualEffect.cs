@@ -9,8 +9,6 @@ namespace SonOfRobin
     public class VisualEffect : BoardPiece
     {
         private Tweener tweener;
-        private int rainStepsLeft;
-        private Vector2 rainStep;
 
         public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null) :

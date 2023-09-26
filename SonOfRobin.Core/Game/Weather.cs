@@ -387,6 +387,27 @@ namespace SonOfRobin
                     if (sprite.BlocksMovement) finalRotation *= 0.3f;
 
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: rotationSlowdown);
+
+                    if (piece.pieceInfo.windParticlesList.Count > 0 && sprite.IsInCameraRect)
+                    {
+                        foreach (ParticleEngine.Preset preset in piece.pieceInfo.windParticlesList)
+                        {
+                            bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
+                            ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: 5, duration: 2);
+
+                            ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
+                            if (!hasPreset && particleEmitter != null)
+                            {
+                                particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = this.WindOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, Strength = SonOfRobinGame.random.Next(1800, 5000) });
+                                particleEmitter.Modifiers.Add(new VortexModifier
+                                {
+                                    Mass = 35f,
+                                    MaxSpeed = 0.2f,
+                                    Position = new Vector2(140 * (this.WindOriginX == 0 ? 1 : -1), SonOfRobinGame.random.Next(1, 4) * 80)
+                                });
+                            }
+                        }
+                    }
                 }
             }
 
