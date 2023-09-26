@@ -32,6 +32,7 @@ namespace SonOfRobin
             SwampGas,
             Lightning,
             Excavated,
+            SmokePuff,
 
             DebrisWood,
             DebrisLeaf,
@@ -58,6 +59,7 @@ namespace SonOfRobin
                 { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
                 { Preset.Excavated, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.SmokePuff, TextureBank.TextureName.ParticleSmokePuff },
                 { Preset.MudWalk, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.LavaFlame, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.DebrisWood, TextureBank.TextureName.ParticleDebrisWood },
@@ -538,6 +540,46 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Preset.SmokePuff:
+                    {
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(
+                            textureRegion, 5, TimeSpan.FromSeconds(2.0f),
+                            profile: Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(12f, 18f),
+                                Quantity = 1,
+                                Rotation = new Range<float>(-2f, 2f),
+                            },
+
+                            Modifiers =
+                            {
+                                new RotationModifier { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 2.0f) - 1f },
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.7f),
+                                            EndValue = new Vector2(1.4f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 2.0f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new DragModifier { Density = 1f, DragCoefficient = 1f },
+                            }
+                        };
+                        break;
+                    }
+
                 case Preset.MudWalk:
                     {
                         defaultParticlesToEmit = 3;
@@ -630,8 +672,7 @@ namespace SonOfRobin
 
                             Modifiers =
                         {
-                            new RotationModifier
-                            { RotationRate = 3.0f },
+                            new RotationModifier { RotationRate = 3.0f },
                             new VelocityModifier()
                             {
                                 Interpolators =
@@ -906,7 +947,7 @@ namespace SonOfRobin
                 case Preset.DebrisSoot:
                     {
                         int gfxArea = this.sprite.GfxRect.Width * this.sprite.GfxRect.Height;
-                        defaultParticlesToEmit = gfxArea / 10;
+                        defaultParticlesToEmit = gfxArea / 15;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(1.8f),
                             profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
@@ -932,7 +973,7 @@ namespace SonOfRobin
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.9f,
+                                            StartValue = 0.7f,
                                             EndValue = 0f
                                         },
                                     }

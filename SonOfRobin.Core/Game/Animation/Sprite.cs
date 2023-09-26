@@ -793,7 +793,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.particleEngine != null && Preferences.showParticles)
+            if (this.particleEngine != null && !Preferences.debugDisableParticles)
             {
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
                 if (this.particleEngine.HasAnyParticles)

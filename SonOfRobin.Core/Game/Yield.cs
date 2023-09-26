@@ -103,11 +103,15 @@ namespace SonOfRobin
                         ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true, particlesToEmit: particlesToEmit);
                         break;
 
+                    case ParticleEngine.Preset.SmokePuff:
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 0, update: true, particlesToEmit: 1);
+                        break;
+
                     case ParticleEngine.Preset.DebrisHeart:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true, particlesToEmit: particlesToEmit);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true, particlesToEmit: 1);
                             break;
                         }
 
@@ -145,7 +149,7 @@ namespace SonOfRobin
             foreach (DroppedPiece droppedPiece in droppedPieceList)
             {
                 if (random.Next(100) <= droppedPiece.chanceToDrop * chanceMultiplier)
-                {                  
+                {
                     int dropCount = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
                     int bonusCount = 0;
                     if (countMultiplier != 1 && !piecesNotMultipliedByBonus.Contains(droppedPiece.pieceName))
@@ -156,7 +160,7 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            MessageLog.AddMessage( message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.Yellow);
+                            MessageLog.AddMessage(message: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", color: Color.Yellow);
                             Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }

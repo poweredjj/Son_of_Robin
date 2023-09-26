@@ -820,8 +820,14 @@ namespace SonOfRobin
                     bool isAnimal = this.GetType() == typeof(Animal);
                     if (isAnimal) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDestroyed);
 
-                    ParticleEngine.Preset debrisType = isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot;
-                    this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { debrisType });
+                    var debrisTypeList = new List<ParticleEngine.Preset>
+                    {
+                        isAnimal ? ParticleEngine.Preset.DebrisBlood : ParticleEngine.Preset.DebrisSoot
+                    };
+
+                    if (this.sprite.BlocksMovement) debrisTypeList.Add(ParticleEngine.Preset.SmokePuff);
+
+                    this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: debrisTypeList);
                 }
 
                 this.Destroy();

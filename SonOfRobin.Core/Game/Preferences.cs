@@ -164,7 +164,6 @@ namespace SonOfRobin
         public static bool showHints = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;
-        public static bool showParticles = true;
         private static int darknessResolution = 1;
         public static int maxFlameLightsPerCell = 3;
 
@@ -342,6 +341,8 @@ namespace SonOfRobin
         public static bool debugShowFocusRect = false;
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugShowWireframe = false;
+        public static bool debugDisableParticles = false;
+
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
 
         public static bool DebugShowWholeMap
@@ -609,7 +610,6 @@ namespace SonOfRobin
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
             prefsData["rumbleEnabled"] = rumbleEnabled;
-            prefsData["showParticles"] = showParticles;
             prefsData["maxFlameLightsPerCell"] = maxFlameLightsPerCell;
             prefsData["newWorldStartingItem"] = newWorldStartingItem;
             prefsData["newWorldStartingSkill"] = newWorldStartingSkill;
@@ -679,7 +679,6 @@ namespace SonOfRobin
                     halfFramerate = (bool)prefsData["cap30FPS"];
                     debugMode = (bool)prefsData["debugMode"];
                     rumbleEnabled = (bool)prefsData["rumbleEnabled"];
-                    showParticles = (bool)prefsData["showParticles"];
                     maxFlameLightsPerCell = (int)(Int64)prefsData["maxFlameLightsPerCell"];
                     StateMachinesDurationFramePercent = (float)(double)prefsData["StateMachinesDurationFramePercent"];
                     newWorldStartingItem = (PieceTemplate.Name)(Int64)prefsData["newWorldStartingItem"];
