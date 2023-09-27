@@ -26,52 +26,30 @@ namespace SonOfRobin
             }
         }
 
-        public List<ParticleEngine.Preset> DebrisTypeList
-        { get { return this.debrisTypeList; } }
+        public List<ParticleEngine.Preset> FirstDebrisTypeList { get; private set; }  // during hitting piece
+        public List<ParticleEngine.Preset> FinalDebrisTypeList { get; private set; }  // after destroying piece
+        private readonly List<DroppedPiece> firstDroppedPieces; // during hitting piece
+        private readonly List<DroppedPiece> finalDroppedPieces; // after destroying piece
 
-        private readonly List<ParticleEngine.Preset> debrisTypeList;
-        private readonly List<DroppedPiece> firstDroppedPieces; // during hitting the piece
-        private readonly List<DroppedPiece> finalDroppedPieces; // after destroying the piece
-
-        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, List<ParticleEngine.Preset> debrisTypeList)
+        public Yield(List<DroppedPiece> firstDroppedPieces = null, List<DroppedPiece> finalDroppedPieces = null, List<ParticleEngine.Preset> firstDebrisTypeList = null, List<ParticleEngine.Preset> finalDebrisTypeList = null)
         {
-            this.firstDroppedPieces = firstDroppedPieces;
-            this.finalDroppedPieces = finalDroppedPieces;
-            this.debrisTypeList = debrisTypeList == null ? new List<ParticleEngine.Preset>() : debrisTypeList;
-        }
-
-        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, ParticleEngine.Preset debrisType)
-        {
-            this.firstDroppedPieces = firstDroppedPieces;
-            this.finalDroppedPieces = finalDroppedPieces;
-            this.debrisTypeList = new List<ParticleEngine.Preset> { debrisType };
-        }
-
-        public Yield(ParticleEngine.Preset debrisType)
-        {
-            // for dropping debris only
-
-            this.debrisTypeList = new List<ParticleEngine.Preset> { debrisType };
-        }
-
-        public Yield(List<ParticleEngine.Preset> debrisTypeList)
-        {
-            // for dropping debris only
-
-            this.debrisTypeList = debrisTypeList;
+            this.firstDroppedPieces = firstDroppedPieces == null ? new List<DroppedPiece>() : firstDroppedPieces;
+            this.finalDroppedPieces = finalDroppedPieces == null ? new List<DroppedPiece>() : finalDroppedPieces;
+            this.FirstDebrisTypeList = firstDebrisTypeList == null ? new List<ParticleEngine.Preset>() : firstDebrisTypeList;
+            this.FinalDebrisTypeList = finalDebrisTypeList == null ? new List<ParticleEngine.Preset>() : finalDebrisTypeList;
         }
 
         public int DropFirstPieces(int hitPower, BoardPiece piece)
         {
             int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
-            this.DropDebris(piece: piece);
+            this.DropDebris(piece: piece, firstDebris: true, finalDebris: false);
             return droppedPiecesCount;
         }
 
         public int DropFinalPieces(BoardPiece piece, float chanceMultiplier = 1f, float countMultiplier = 1f)
         {
             int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces);
-            this.DropDebris(piece: piece);
+            this.DropDebris(piece: piece, firstDebris: false, finalDebris: true);
             return droppedPiecesCount;
         }
 
@@ -82,10 +60,17 @@ namespace SonOfRobin
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(BoardPiece piece, List<ParticleEngine.Preset> debrisTypeListOverride = null, int particlesToEmit = 0)
+        public void DropDebris(BoardPiece piece, List<ParticleEngine.Preset> debrisTypeListOverride = null, int particlesToEmit = 0, bool firstDebris = true, bool finalDebris = false)
         {
             if (!piece.sprite.IsInCameraRect) return;
-            var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
+
+            var debrisTypeListToUse = new List<ParticleEngine.Preset>();
+            if (debrisTypeListOverride != null) debrisTypeListToUse = debrisTypeListOverride;
+            else
+            {
+                if (firstDebris) debrisTypeListToUse.AddRange(this.FirstDebrisTypeList);
+                if (finalDebris) debrisTypeListToUse.AddRange(this.FinalDebrisTypeList);
+            }
 
             foreach (ParticleEngine.Preset debrisType in debrisTypeListToUse)
             {

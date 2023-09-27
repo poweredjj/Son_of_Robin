@@ -116,7 +116,7 @@ namespace SonOfRobin
             if (this.name == PieceTemplate.Name.CarrotPlant) this.world.HintEngine.Disable(PieceHint.Type.CarrotPlant);
             if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.HintEngine.Disable(PieceHint.Type.FruitTree);
 
-            Yield debrisYield = new Yield(debrisTypeList: this.pieceInfo.Yield.DebrisTypeList);
+            Yield debrisYield = new Yield(firstDebrisTypeList: this.pieceInfo.Yield.FirstDebrisTypeList);
             debrisYield.DropDebris(piece: this);
             Sound.QuickPlay(SoundData.Name.DropPlant);
 

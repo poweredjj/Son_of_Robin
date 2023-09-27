@@ -150,7 +150,7 @@ namespace SonOfRobin
                 };
 
                 Yield.antiCraftRecipes[this.pieceToCreate] = this;
-                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisTypeList: debrisTypeList);
+                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, firstDebrisTypeList: debrisTypeList);
             }
 
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
