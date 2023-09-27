@@ -79,7 +79,7 @@ namespace SonOfRobin
             public readonly int staysAfterDeath;
             public Yield Yield { get; private set; }
             public readonly Yield appearDebris;
-            public readonly List<ParticleEngine.Preset> windParticlesList;
+            public readonly Dictionary<ParticleEngine.Preset, Color> windParticlesDict;
             public readonly int animalMaxMass;
             public readonly float animalMassBurnedMultiplier;
             public readonly int animalAwareness;
@@ -213,7 +213,7 @@ namespace SonOfRobin
                 this.staysAfterDeath = this.type == typeof(Animal) ? 30 * 60 : 0;
                 this.Yield = null;
                 this.appearDebris = null; // yield that is used to make debris when placing this piece
-                this.windParticlesList = new List<ParticleEngine.Preset>();
+                this.windParticlesDict = new Dictionary<ParticleEngine.Preset, Color>();
                 this.animalMaxMass = 0;
                 this.animalMassBurnedMultiplier = 0;
                 this.animalAwareness = 0;
@@ -414,6 +414,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
+                        this.windParticlesDict[ParticleEngine.Preset.WindPetal] = Color.White;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -431,6 +432,7 @@ namespace SonOfRobin
                         this.blocksPlantGrowth = true;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
+                        this.windParticlesDict[ParticleEngine.Preset.WindPetal] = new Color(237, 123, 214);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -449,6 +451,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 250;
                         this.allowedDensity = new AllowedDensity(radius: 240, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
+                        this.windParticlesDict[ParticleEngine.Preset.WindPetal] = new Color(237, 222, 12);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -551,7 +554,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 300;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -578,7 +581,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -608,7 +611,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -637,7 +640,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -666,7 +669,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -693,7 +696,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },
@@ -722,7 +725,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
-                        this.windParticlesList.Add(ParticleEngine.Preset.WindLeaf);
+                        this.windParticlesDict[ParticleEngine.Preset.WindLeaf] = Color.White;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyTree, maxPitchVariation: 1f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisLeaf },

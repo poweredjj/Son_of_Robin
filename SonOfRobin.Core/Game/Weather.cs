@@ -380,7 +380,7 @@ namespace SonOfRobin
 
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: delayFrames, rotationSlowdown: rotationSlowdown);
 
-                    if (piece.pieceInfo.windParticlesList.Count > 0 &&
+                    if (piece.pieceInfo.windParticlesDict.Count > 0 &&
                         (piece.pieceInfo.plantAdultSizeMass == 0 || sprite.AnimSize > 0) &&
                         this.world.random.Next(3) == 0
                         )

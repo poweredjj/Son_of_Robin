@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Particles.Modifiers;
+using MonoGame.Extended;
 using MonoGame.Extended.Particles;
-using MonoGame.Extended.Sprites;
+using MonoGame.Extended.Particles.Modifiers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MonoGame.Extended;
 
 namespace SonOfRobin
 {
@@ -1927,14 +1926,18 @@ namespace SonOfRobin
                             Sprite sprite = piece.sprite;
                             float windOriginX = piece.world.weather.WindOriginX;
 
-                            foreach (ParticleEngine.Preset preset in piece.pieceInfo.windParticlesList)
+                            foreach (var kvp in piece.pieceInfo.windParticlesDict)
                             {
+                                ParticleEngine.Preset preset = kvp.Key;
+                                Color color = kvp.Value;
+
                                 bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
-                                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: 5, duration: 2);
+                                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
 
                                 ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
                                 if (!hasPreset && particleEmitter != null)
                                 {
+                                    particleEmitter.Parameters.Color = HslColor.FromRgb(color);
                                     particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, Strength = piece.world.random.Next(1800, 5000) });
 
                                     int vortexCount = piece.world.random.Next(1, 4);
