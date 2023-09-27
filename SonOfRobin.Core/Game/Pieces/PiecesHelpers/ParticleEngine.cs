@@ -788,7 +788,7 @@ namespace SonOfRobin
                             Parameters = new ParticleReleaseParameters
                             {
                                 Speed = new Range<float>(40f, 800f),
-                                Scale = new Range<float>(0.3f, 0.8f),
+                                Scale = new Range<float>(0.25f, 0.6f),
                                 Rotation = new Range<float>(-2f, 2f),
                                 Mass = new Range<float>(0.1f, 4.8f),
                             },
@@ -821,7 +821,7 @@ namespace SonOfRobin
                             Parameters = new ParticleReleaseParameters
                             {
                                 Speed = new Range<float>(40f, 800f),
-                                Scale = new Range<float>(0.0625f, 0.125f),
+                                Scale = new Range<float>(0.0625f, 0.14f),
                                 Rotation = new Range<float>(-2f, 2f),
                                 Mass = new Range<float>(0.1f, 4.8f),
                             },
@@ -1261,7 +1261,8 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 2;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 300000, TimeSpan.FromSeconds(2.5),
+                        particleEmitter = new ParticleEmitter(textureRegion, 600000,
+                            TimeSpan.FromSeconds(1), // to be dynamically replaced
                             profile: Profile.BoxFill(width: 100, height: 100)) // to be dynamically replaced
                         {
                             Parameters = new ParticleReleaseParameters
@@ -1270,7 +1271,7 @@ namespace SonOfRobin
                                 Quantity = 0,
                                 Scale = 0.125f,
                                 Rotation = 0f,
-                                Opacity = 0.0f,
+                                Opacity = 1.0f,
                             },
                         };
                         break;

@@ -337,30 +337,16 @@ namespace SonOfRobin
             this.rainSound.AdjustVolume(this.RainPercentage);
 
             Rectangle cameraRect = this.world.camera.viewRect;
+
+            bool firstRun = !this.rainEmitter.sprite.IsOnBoard;
+            if (firstRun) this.rainEmitter.sprite.PlaceOnBoard(position: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
+
             int raindropsCount = (int)(this.RainPercentage * 2) * (cameraRect.Width * cameraRect.Height / 20000);
-
-            if (!this.rainEmitter.sprite.IsOnBoard) this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
-            this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
-
-            ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount);
-            ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
-
-            if (!particleEmitter.Modifiers.Contains(this.rainWindModifier)) particleEmitter.Modifiers.Add(this.rainWindModifier);
-            if (!particleEmitter.Modifiers.Contains(this.rainGravityModifier)) particleEmitter.Modifiers.Add(this.rainGravityModifier);
-
-            if (SonOfRobinGame.CurrentUpdate % 5 == 0 && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10))
-            {
-                this.lastRainRect = cameraRect;
-                particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2f, height: cameraRect.Height / 2);
-                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
-            }
 
             float targetRotation = 0.9f * this.WindPercentage;
             if (this.WindOriginX == 0) targetRotation *= -1;
-            particleEmitter.Parameters.Rotation = targetRotation;
 
             float rainBaseScale = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 0.08f, newMax: 0.14f, oldVal: this.RainPercentage, clampToEdges: true);
-            particleEmitter.Parameters.Scale = new Range<float>(rainBaseScale * 0.9f, rainBaseScale * 1.05f);
 
             int windFactorX = (int)(this.WindPercentage * 10) + this.world.random.Next(2);
             if (this.WindOriginX == 1) windFactorX *= -1; // wind blowing from the right
@@ -368,6 +354,23 @@ namespace SonOfRobin
             this.rainWindModifier.Strength = this.WindPercentage * 160f;
 
             this.rainGravityModifier.Strength = (float)Helpers.ConvertRange(oldMin: 0f, oldMax: 1f, newMin: 500f, newMax: 1800f, oldVal: this.RainPercentage, clampToEdges: true);
+            this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y), ignoreCollisions: true);
+
+            ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount, duration: 1);
+            ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
+            if (!particleEmitter.Modifiers.Contains(this.rainWindModifier)) particleEmitter.Modifiers.Add(this.rainWindModifier);
+            if (!particleEmitter.Modifiers.Contains(this.rainGravityModifier)) particleEmitter.Modifiers.Add(this.rainGravityModifier);
+            particleEmitter.Parameters.Rotation = targetRotation;
+            particleEmitter.Offset = new Vector2(this.WindPercentage * ((float)cameraRect.Width * 0.6f) * (this.WindOriginX == 1 ? 1f : -1f), 0);
+            particleEmitter.LifeSpan = TimeSpan.FromSeconds(2.5f / this.RainPercentage);
+            particleEmitter.Parameters.Scale = new Range<float>(rainBaseScale * 0.9f, rainBaseScale * 1.05f);
+
+            if ((firstRun || SonOfRobinGame.CurrentUpdate % 5 == 0) && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10))
+            {
+                this.lastRainRect = cameraRect;
+                particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2.2f, height: cameraRect.Height / 2);
+                MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
+            }
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
@@ -433,7 +436,7 @@ namespace SonOfRobin
 
                     if (piece.pieceInfo.windParticlesDict.Count > 0 &&
                         (piece.pieceInfo.plantAdultSizeMass == 0 || sprite.AnimSize > 0) &&
-                        this.world.random.Next(3) == 0
+                        this.world.random.Next(5) == 0
                         )
                     {
                         new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);

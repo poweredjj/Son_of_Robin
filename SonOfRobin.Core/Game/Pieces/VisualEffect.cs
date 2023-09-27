@@ -11,7 +11,7 @@ namespace SonOfRobin
         private Tweener tweener;
 
         public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null, float fogTargetOpacity = 1f) :
+            byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine)
         {

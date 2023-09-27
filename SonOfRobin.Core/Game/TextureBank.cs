@@ -71,7 +71,7 @@ namespace SonOfRobin
 
             ParticleCircleSharp = 51,
             ParticleCircleSoft = 52,
-            ParticleWeatherRain = 104,
+            ParticleWeatherRain = 100,
             ParticleBubble = 53,
             ParticleSmokePuff = 101,
             ParticleDustPuff = 102,

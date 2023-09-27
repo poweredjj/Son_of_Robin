@@ -2450,7 +2450,7 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.WeatherFog1, AnimData.PkgName.WeatherFog2, AnimData.PkgName.WeatherFog3, AnimData.PkgName.WeatherFog4, AnimData.PkgName.WeatherFog5, AnimData.PkgName.WeatherFog6, AnimData.PkgName.WeatherFog7, AnimData.PkgName.WeatherFog8, AnimData.PkgName.WeatherFog9 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly, fogTargetOpacity: 0.3f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly);
 
                         visualEffect.sprite.opacity = (SonOfRobinGame.random.NextSingle() * 0.2f) + 0.15f;
 
@@ -2605,7 +2605,7 @@ namespace SonOfRobin
 
                 case Name.ParticleEmitterWeather:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerTwo, allowedTerrain: new AllowedTerrain(), readableName: "weather particle emitter", description: "Emits particles (for weather effects).", activeState: BoardPiece.State.Empty, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerThree, allowedTerrain: new AllowedTerrain(), readableName: "weather particle emitter", description: "Emits particles (for weather effects).", activeState: BoardPiece.State.Empty, visible: true);
 
                         visualEffect.sprite.opacity = 0f;
 
