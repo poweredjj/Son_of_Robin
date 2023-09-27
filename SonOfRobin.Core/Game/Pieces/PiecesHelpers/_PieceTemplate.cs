@@ -2452,7 +2452,7 @@ namespace SonOfRobin
 
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly, fogTargetOpacity: 0.3f);
 
-                        visualEffect.sprite.opacity = 0.25f;
+                        visualEffect.sprite.opacity = (SonOfRobinGame.random.NextSingle() * 0.2f) + 0.15f;
 
                         return visualEffect;
                     }

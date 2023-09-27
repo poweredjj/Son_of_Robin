@@ -278,22 +278,22 @@ namespace SonOfRobin
 
         private void ProcessFog()
         {
-            bool canSeeThroughFog = this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog);
+            bool canSeeThroughFog = this.world.Player != null && this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog);
+            Rectangle cameraRect = this.world.camera.viewRect;
 
             if (this.FogPercentage == 0 || canSeeThroughFog)
             {
                 foreach (BoardPiece fogPiece in this.fogPieces)
                 {
-                    if (canSeeThroughFog) fogPiece.Destroy();
+                    if (canSeeThroughFog || !fogPiece.sprite.GfxRect.Intersects(cameraRect)) fogPiece.Destroy();
                     else
                     {
-                        if (fogPiece.sprite.opacityFade != null) new OpacityFade(sprite: fogPiece.sprite, destOpacity: 0, duration: this.world.random.Next(30, 60 * 4), destroyPiece: true);
+                        if (fogPiece.sprite.opacityFade == null) new OpacityFade(sprite: fogPiece.sprite, destOpacity: 0, duration: this.world.random.Next(30, 60 * 4), destroyPiece: true);
                     }
                 }
                 return;
             }
 
-            Rectangle cameraRect = this.world.camera.viewRect;
             Vector2 cameraCenter = new Vector2(cameraRect.Center.X, cameraRect.Center.Y);
             Rectangle extendedCameraRect = cameraRect;
             extendedCameraRect.Inflate(cameraRect.Width / 4, cameraRect.Height / 4);
@@ -306,7 +306,7 @@ namespace SonOfRobin
             }
 
             int fogPiecesInCameraCount = this.fogPieces.Where(fogPiece => fogPiece.sprite.GfxRect.Intersects(cameraRect)).Count();
-            int maxPiecesInCamera = (int)((float)extendedCameraRect.Width * (float)extendedCameraRect.Height / 30000f);
+            int maxPiecesInCamera = (int)((float)extendedCameraRect.Width * (float)extendedCameraRect.Height / 30000f * this.FogPercentage);
 
             int fogPiecesToCreate = maxPiecesInCamera - fogPiecesInCameraCount;
             if (fogPiecesToCreate <= 0) return;

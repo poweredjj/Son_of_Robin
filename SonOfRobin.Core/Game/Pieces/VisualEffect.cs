@@ -154,7 +154,6 @@ namespace SonOfRobin
         public override void SM_FogMoveRandomly()
         {
             // Suitable only for passive temporary decorations, that will never be moved "manually".
-            // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
             // It should only be used for temporary decorations or pieces that will not get saved.
 
             if (this.pieceInfo.visFogExplodesWhenBurns && this.IsBurning)
@@ -221,22 +220,24 @@ namespace SonOfRobin
         public override void SM_WeatherFogMoveRandomly()
         {
             // Suitable only for passive temporary decorations, that will never be moved "manually".
-            // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
             // It should only be used for temporary decorations or pieces that will not get saved.
 
             if (!this.sprite.IsInCameraRect) return;
 
-            this.tweener = new Tweener();
-            int maxDistance = 350;
+            if (this.tweener == null)
+            {
+                this.tweener = new Tweener();
+                int maxDistance = 300;
 
-            Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
-            newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
+                Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
+                newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
 
-            this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos,
-                duration: this.world.random.Next(30, 60), delay: 0)
-                .RepeatForever(repeatDelay: 0.0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticInOut);
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos,
+                    duration: this.world.random.Next(30, 60), delay: 0)
+                    .RepeatForever(repeatDelay: 0.0f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut);
+            }
 
             this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
