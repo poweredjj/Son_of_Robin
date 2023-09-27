@@ -1658,7 +1658,7 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.SpriteBatch.End();
                     this.scrollingSurfaceManager.StartSpriteBatch(waterBlendMode: false);
-                    this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
+                    this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 1.2f, 1f));
                 }
 
                 // drawing lightning

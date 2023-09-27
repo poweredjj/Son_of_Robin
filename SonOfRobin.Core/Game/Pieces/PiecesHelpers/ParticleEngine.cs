@@ -47,6 +47,7 @@ namespace SonOfRobin
             DebrisSoot,
 
             WeatherRain,
+            WeatherFog,
 
             WindLeaf,
             WindPetal,
@@ -56,6 +57,7 @@ namespace SonOfRobin
                 { Preset.Fireplace, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.BurnFlame, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.WeatherRain, TextureBank.TextureName.ParticleWeatherRain },
+                { Preset.WeatherFog, TextureBank.TextureName.ParticleWeatherFog1 },
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
@@ -1270,7 +1272,44 @@ namespace SonOfRobin
                                 Quantity = 0,
                                 Scale = 0.125f,
                                 Rotation = 0f,
+                                Opacity = 0.0f,
                             },
+                        };
+                        break;
+                    }
+
+                case Preset.WeatherFog:
+                    {
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 800, TimeSpan.FromSeconds(20),
+                            profile: Profile.BoxUniform(width: 100, height: 100)) // to be dynamically replaced
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(1f, 5f),
+                                Scale = new Range<float>(1f, 2f),
+                                Rotation = 0f,
+                            },
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.5f,
+                                            EndValue = 0.0f
+                                        },
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = Vector2.Zero,
+                                            EndValue = new Vector2(2,2),
+                                        },
+                                    }
+                                },
+                            }
                         };
                         break;
                     }

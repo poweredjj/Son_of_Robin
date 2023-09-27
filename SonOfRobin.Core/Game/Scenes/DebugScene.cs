@@ -412,6 +412,13 @@ namespace SonOfRobin
                 world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.2f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             }
 
+            if (Keyboard.HasBeenPressed(Keys.F3))
+            {
+                if (world == null) return;
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            }
+
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{
             //    if (world == null) return;
@@ -424,7 +431,7 @@ namespace SonOfRobin
             //    if (world == null) return;
 
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
-            //} 
+            //}
 
 
             //if (Keyboard.HasBeenPressed(Keys.F3))
