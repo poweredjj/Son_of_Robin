@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
+using MonoGame.Extended.Particles.Profiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1934,25 +1935,42 @@ namespace SonOfRobin
                                 bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
                                 ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
 
+                                Random random = piece.world.random;
+
                                 ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
                                 if (!hasPreset && particleEmitter != null)
                                 {
                                     particleEmitter.Parameters.Color = HslColor.FromRgb(color);
-                                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, Strength = piece.world.random.Next(1800, 5000) });
+                                    particleEmitter.Profile = Profile.Spray(direction: windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, spread: 2f);
 
-                                    int vortexCount = piece.world.random.Next(1, 4);
+                                    Vector2 windDirection = new Vector2(windOriginX == 0 ? 1f : -1f, 0.2f);
+                                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windDirection, Strength = random.Next(60, 250) });
 
+                                    int vortexCount = random.Next(1, 4);
                                     for (int i = 0; i < vortexCount; i++)
                                     {
-                                        int vortexX = (i * 250) + piece.world.random.Next(60, 180) * (windOriginX == 0 ? 1 : -1);
-                                        int vortexY = piece.world.random.Next(20, 100) * (piece.world.random.Next(2) == 0 ? 1 : -1);
+                                        int vortexX = (i * 250) + (random.Next(60, 180) * (windOriginX == 0 ? 1 : -1));
+                                        if (i == 0) vortexX = 0;
 
-                                        particleEmitter.Modifiers.Add(new VortexModifier
+                                        float angle1 = random.NextSingle() * (float)Math.PI * 2;
+                                        float angle2 = angle1 - (float)Math.PI;
+                                        int distance = random.Next(100, 300);
+
+                                        Vector2 vortexOffset1 = new((int)Math.Round(distance * Math.Cos(angle1)), (int)Math.Round(distance * Math.Sin(angle1)));
+                                        Vector2 vortexOffset2 = new((int)Math.Round(distance * Math.Cos(angle2)), (int)Math.Round(distance * Math.Sin(angle2)));
+
+                                        vortexOffset1.X += vortexX;
+                                        vortexOffset2.X += vortexX;
+
+                                        foreach (Vector2 offset in new Vector2[] { vortexOffset1, vortexOffset2 })
                                         {
-                                            Mass = 25f,
-                                            MaxSpeed = 0.35f,
-                                            Position = new Vector2(vortexX, vortexY)
-                                        });
+                                            particleEmitter.Modifiers.Add(new VortexModifier
+                                            {
+                                                Mass = random.Next(10, 35),
+                                                MaxSpeed = 0.5f,
+                                                Position = offset,
+                                            });
+                                        }
                                     }
                                 }
                             }

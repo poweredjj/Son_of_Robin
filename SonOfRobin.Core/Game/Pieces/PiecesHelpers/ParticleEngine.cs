@@ -782,31 +782,31 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 4;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(3.0f),
-                            profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                        particleEmitter = new ParticleEmitter(textureRegion, 200, TimeSpan.FromSeconds(3.0f),
+                            profile: Profile.Point()) // to be replaced with Spray()
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Speed = new Range<float>(50f, 600f),
+                                Speed = new Range<float>(40f, 800f),
                                 Scale = new Range<float>(0.3f, 0.8f),
                                 Rotation = new Range<float>(-2f, 2f),
                                 Mass = new Range<float>(0.1f, 4.8f),
                             },
 
                             Modifiers =
-                        {
-                            new RotationModifier
-                            { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 8f) - 4f },
-                            new AgeModifier
                             {
-                                Interpolators =
+                                new RotationModifier
+                                { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 8f) - 4f },
+                                new AgeModifier
                                 {
-                                    new OpacityInterpolator
-                                    { StartValue = 2.0f, EndValue = 0f },
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        { StartValue = 2.0f, EndValue = 0f },
+                                    },
                                 },
-                            },
-                            new DragModifier { Density = 0.4f, DragCoefficient = SonOfRobinGame.random.Next(15,25) },
-                          }
+                                new DragModifier { Density = 1.0f, DragCoefficient = 1 },
+                            }
                         };
                         break;
                     }
@@ -815,31 +815,31 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 1;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(3.0f),
-                            profile: Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                        particleEmitter = new ParticleEmitter(textureRegion, 50, TimeSpan.FromSeconds(2.5f),
+                            profile: Profile.Point()) // to be replaced with Spray()
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Speed = new Range<float>(50f, 600f),
+                                Speed = new Range<float>(40f, 800f),
                                 Scale = new Range<float>(0.0625f, 0.125f),
                                 Rotation = new Range<float>(-2f, 2f),
                                 Mass = new Range<float>(0.1f, 4.8f),
                             },
 
                             Modifiers =
-                        {
-                            new RotationModifier
-                            { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 8f) - 4f },
-                            new AgeModifier
                             {
-                                Interpolators =
+                                new RotationModifier
+                                { RotationRate = (float)(SonOfRobinGame.random.NextDouble() * 8f) - 4f },
+                                new AgeModifier
                                 {
-                                    new OpacityInterpolator
-                                    { StartValue = 2.0f, EndValue = 0f },
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        { StartValue = 2.0f, EndValue = 0f },
+                                    },
                                 },
-                            },
-                            new DragModifier { Density = 0.4f, DragCoefficient = SonOfRobinGame.random.Next(15,25) },
-                          }
+                                new DragModifier { Density = 1.0f, DragCoefficient = 1 },
+                            }
                         };
                         break;
                     }
