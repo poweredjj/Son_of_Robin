@@ -197,27 +197,11 @@ namespace SonOfRobin
                 this.LightningPercentage = 0;
             }
 
-            this.UpdateEmitters();
-
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
             this.ProcessLightning();
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
-        }
-
-        private void UpdateEmitters()
-        {
-            if (!this.rainEmitter.sprite.IsOnBoard)
-            {
-                this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
-                ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: 0);
-                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
-                particleEmitter.Modifiers.Add(this.rainWindModifier);
-                particleEmitter.Modifiers.Add(this.rainGravityModifier);
-            }
-
-            this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
         }
 
         private void ProcessLightning()
@@ -304,8 +288,14 @@ namespace SonOfRobin
             Rectangle cameraRect = this.world.camera.viewRect;
             int raindropsCount = (int)(this.RainPercentage * 2) * (cameraRect.Width * cameraRect.Height / 20000);
 
+            if (!this.rainEmitter.sprite.IsOnBoard) this.rainEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
+            this.rainEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
+
             ParticleEngine.TurnOn(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain, particlesToEmit: raindropsCount);
             ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: this.rainEmitter.sprite, preset: ParticleEngine.Preset.WeatherRain);
+
+            if (!particleEmitter.Modifiers.Contains(this.rainWindModifier)) particleEmitter.Modifiers.Add(this.rainWindModifier);
+            if (!particleEmitter.Modifiers.Contains(this.rainGravityModifier)) particleEmitter.Modifiers.Add(this.rainGravityModifier);
 
             if (SonOfRobinGame.CurrentUpdate % 5 == 0 && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10))
             {
@@ -391,11 +381,11 @@ namespace SonOfRobin
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: delayFrames, rotationSlowdown: rotationSlowdown);
 
                     if (piece.pieceInfo.windParticlesList.Count > 0 &&
-                        (piece.pieceInfo.plantAdultSizeMass == 0 || sprite.AnimSize > 0) && 
+                        (piece.pieceInfo.plantAdultSizeMass == 0 || sprite.AnimSize > 0) &&
                         this.world.random.Next(3) == 0
                         )
                     {
-                        new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);                     
+                        new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);
                     }
                 }
             }
