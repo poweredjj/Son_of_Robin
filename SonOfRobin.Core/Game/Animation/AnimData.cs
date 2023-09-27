@@ -352,6 +352,15 @@ namespace SonOfRobin
             BubbleCraftGreen = 274,
 
             SeaWave = 275,
+            WeatherFog1 = 286,
+            WeatherFog2 = 287,
+            WeatherFog3 = 288,
+            WeatherFog4 = 289,
+            WeatherFog5 = 290,
+            WeatherFog6 = 291,
+            WeatherFog7 = 292,
+            WeatherFog8 = 293,
+            WeatherFog9 = 294,
 
             FertileGroundSmall = 276,
             FertileGroundMedium = 277,
@@ -637,6 +646,15 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionLightYellow, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.WaterDrop, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SeaWave, frameList: ConvertImageToFrameList(atlasName: "wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog1, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog2, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog3, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog4, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog5, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog6, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog7, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog8, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.WeatherFog9, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.BubbleExclamationRed, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_red", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BubbleExclamationBlue, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_blue", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BubbleCraftGreen, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));

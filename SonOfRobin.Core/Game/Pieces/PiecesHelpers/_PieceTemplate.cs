@@ -275,6 +275,7 @@ namespace SonOfRobin
 
             SeaWave = 212,
             PredatorRepellant = 213,
+            WeatherFog = 219,
 
             ParticleEmitterEnding = 214,
             ParticleEmitterWeather = 218,
@@ -2444,6 +2445,18 @@ namespace SonOfRobin
                         return lavaFlame;
                     }
 
+                case Name.WeatherFog:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.WeatherFog1, AnimData.PkgName.WeatherFog2, AnimData.PkgName.WeatherFog3, AnimData.PkgName.WeatherFog4, AnimData.PkgName.WeatherFog5, AnimData.PkgName.WeatherFog6, AnimData.PkgName.WeatherFog7, AnimData.PkgName.WeatherFog8, AnimData.PkgName.WeatherFog9 };
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly, fogTargetOpacity: 0.3f);
+
+                        visualEffect.sprite.opacity = 0.25f;
+
+                        return visualEffect;
+                    }
+
                 case Name.SwampGas:
                     {
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4 };
@@ -2452,7 +2465,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly);
 
                         visualEffect.sprite.color = Color.LimeGreen;
                         visualEffect.sprite.opacity = 0.4f;
@@ -2467,7 +2480,7 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 190, max: 255) }},
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "Swamp geyser.", activeState: BoardPiece.State.Empty, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "Swamp geyser.", activeState: BoardPiece.State.Empty);
 
                         visualEffect.sprite.opacity = 0;
 

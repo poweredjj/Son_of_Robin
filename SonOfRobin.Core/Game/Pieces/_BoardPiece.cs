@@ -40,8 +40,7 @@ namespace SonOfRobin
             PlayAmbientSound = 20,
             MapMarkerShowAndCheck = 21,
             FogMoveRandomly = 22,
-            RainInitialize = 23,
-            RainFall = 24,
+            WeatherFogMoveRandomly = 23,
 
             AnimalRunForClosestWater = 26,
             AnimalCallForHelp = 27,
@@ -728,6 +727,10 @@ namespace SonOfRobin
                     this.SM_FogMoveRandomly();
                     break;
 
+                case State.WeatherFogMoveRandomly:
+                    this.SM_WeatherFogMoveRandomly();
+                    break;
+
                 case State.FlameBurn:
                     this.SM_FlameBurn();
                     break;
@@ -1097,6 +1100,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FogMoveRandomly()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_WeatherFogMoveRandomly()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FlameBurn()

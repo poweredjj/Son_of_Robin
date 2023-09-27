@@ -3,7 +3,6 @@ using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
 using MonoGame.Extended.Particles.Profiles;
-using MonoGame.Extended.TextureAtlases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +87,6 @@ namespace SonOfRobin
 
         private readonly World world;
         private Rectangle lastRainRect;
-        private Rectangle lastFogRect;
         private readonly IslandClock islandClock;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
@@ -99,7 +97,7 @@ namespace SonOfRobin
         private readonly BoardPiece rainEmitter; // every particle effect should have its own emitter, to allow free placement of each effect
         private readonly LinearGravityModifier rainWindModifier;
         private readonly LinearGravityModifier rainGravityModifier;
-        private readonly Dictionary<BoardPiece, TextureRegion2D> texturesByFogEmitters; // every particle effect should have its own emitter
+        private List<BoardPiece> fogPieces;
         private readonly List<WeatherEvent> weatherEvents;
         public float CloudsPercentage { get; private set; }
         public float FogPercentage { get; private set; }
@@ -121,17 +119,11 @@ namespace SonOfRobin
         {
             this.world = world;
             this.lastRainRect = new Rectangle();
-            this.lastFogRect = new Rectangle();
             this.islandClock = islandClock;
             this.rainEmitter = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitterWeather, world: this.world);
-            this.texturesByFogEmitters = new Dictionary<BoardPiece, TextureRegion2D>
-            {
-                { PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ParticleEmitterWeather, world: this.world),
-                    new TextureRegion2D(TextureBank.GetTexture(TextureBank.TextureName.ParticleWeatherFog2)) },
-            };
-
             this.rainWindModifier = new LinearGravityModifier();
             this.rainGravityModifier = new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 0f };
+            this.fogPieces = new List<BoardPiece>();
             this.weatherEvents = new List<WeatherEvent>();
             this.forecastEnd = veryOldDate; // to ensure first update
             this.firstForecastCreated = false;
@@ -207,8 +199,8 @@ namespace SonOfRobin
                 this.LightningPercentage = 0;
             }
 
-            // this.ProcessFog();
             this.ProcessGlobalWind(islandDateTime);
+            this.ProcessFog();
             this.ProcessRain();
             this.ProcessLightning();
 
@@ -286,45 +278,49 @@ namespace SonOfRobin
 
         private void ProcessFog()
         {
-            // if (this.FogPercentage == 0 || this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog))
-            if (this.FogPercentage == 0)
+            bool canSeeThroughFog = this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog);
+
+            if (this.FogPercentage == 0 || canSeeThroughFog)
             {
-                foreach (BoardPiece fogEmitter in this.texturesByFogEmitters.Keys)
+                foreach (BoardPiece fogPiece in this.fogPieces)
                 {
-                    ParticleEngine.TurnOff(sprite: fogEmitter.sprite, preset: ParticleEngine.Preset.WeatherFog);
+                    if (canSeeThroughFog) fogPiece.Destroy();
+                    else
+                    {
+                        if (fogPiece.sprite.opacityFade != null) new OpacityFade(sprite: fogPiece.sprite, destOpacity: 0, duration: this.world.random.Next(30, 60 * 4), destroyPiece: true);
+                    }
                 }
                 return;
             }
 
             Rectangle cameraRect = this.world.camera.viewRect;
+            Vector2 cameraCenter = new Vector2(cameraRect.Center.X, cameraRect.Center.Y);
+            Rectangle extendedCameraRect = cameraRect;
+            extendedCameraRect.Inflate(cameraRect.Width / 4, cameraRect.Height / 4);
 
-            foreach (var kvp in this.texturesByFogEmitters)
+            this.fogPieces = this.fogPieces.Where(fogPiece => fogPiece.exists).ToList();
+
+            foreach (BoardPiece fogPiece in this.fogPieces)
             {
-                BoardPiece fogEmitter = kvp.Key;
-                TextureRegion2D textureRegion = kvp.Value;
+                if (!fogPiece.sprite.GfxRect.Intersects(extendedCameraRect) && Vector2.Distance(cameraCenter, fogPiece.sprite.position) > cameraRect.Width * 2) fogPiece.Destroy();
+            }
 
-                if (!fogEmitter.sprite.IsOnBoard) fogEmitter.sprite.PlaceOnBoard(position: Vector2.One, randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
-                fogEmitter.sprite.SetNewPosition(newPos: new Vector2(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y));
+            int fogPiecesInCameraCount = this.fogPieces.Where(fogPiece => fogPiece.sprite.GfxRect.Intersects(cameraRect)).Count();
+            int maxPiecesInCamera = (int)((float)extendedCameraRect.Width * (float)extendedCameraRect.Height / 30000f);
 
-                int maxCapacity = (int)((float)cameraRect.Width * (float)cameraRect.Height / 5000f);
+            int fogPiecesToCreate = maxPiecesInCamera - fogPiecesInCameraCount;
+            if (fogPiecesToCreate <= 0) return;
 
-                //if (this.world.CurrentUpdate % 10 == 0)
-                {
-                    ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: fogEmitter.sprite, preset: ParticleEngine.Preset.WeatherFog);
+            Random random = this.world.random;
 
-                    if (particleEmitter != null && particleEmitter.ActiveParticles >= maxCapacity) continue;
+            for (int pieceNo = 0; pieceNo < fogPiecesToCreate; pieceNo++)
+            {
+                BoardPiece fogPiece = PieceTemplate.CreateAndPlaceOnBoard(
+                    world: this.world,
+                    position: new Vector2(random.Next(extendedCameraRect.Left, extendedCameraRect.Right), random.Next(extendedCameraRect.Top, extendedCameraRect.Bottom)),
+                    templateName: PieceTemplate.Name.WeatherFog);
 
-                    ParticleEngine.TurnOn(sprite: fogEmitter.sprite, preset: ParticleEngine.Preset.WeatherFog, particlesToEmit: 10, duration: 1);
-                    if (particleEmitter == null) particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: fogEmitter.sprite, preset: ParticleEngine.Preset.WeatherFog);
-
-                    if (particleEmitter.TextureRegion != textureRegion) particleEmitter.TextureRegion = textureRegion;
-
-                    if (Math.Abs(this.lastFogRect.Width - cameraRect.Width) > 5)
-                    {
-                        this.lastFogRect = cameraRect;
-                        particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width + 512, height: cameraRect.Height + 512);
-                    }
-                }
+                this.fogPieces.Add(fogPiece);
             }
         }
 

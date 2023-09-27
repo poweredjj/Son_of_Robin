@@ -1081,7 +1081,6 @@ namespace SonOfRobin
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f);
 
-
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCeramic },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
@@ -2582,6 +2581,15 @@ namespace SonOfRobin
                         this.visFogExplodesWhenBurns = true;
                         this.allowedDensity = new AllowedDensity(radius: 370, maxNoOfPiecesSameName: 3);
                         this.inOpacityFadeDuration = 180;
+                        this.floatsOnWater = true;
+                        break;
+
+                    case PieceTemplate.Name.WeatherFog:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.inOpacityFadeDuration = 60 * 3;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SwampGeyser:
@@ -2597,6 +2605,7 @@ namespace SonOfRobin
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
                         this.inOpacityFadeDuration = 120;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
