@@ -59,7 +59,7 @@ namespace SonOfRobin
             this.AddAction(action: Action.BurnEnd, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
             this.AddAction(action: Action.IsHit, sound: new Sound(nameList: GetHitSoundNames(category), maxPitchVariation: 0.5f));
             this.AddAction(action: Action.IsDestroyed, sound: new Sound(nameList: GetIsDestroyedNamesList(category), maxPitchVariation: 0.4f));
-            this.AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(category), maxPitchVariation: 0.25f, cooldown: 30));
+            if (!isPlayer) this.AddAction(action: Action.IsDropped, sound: new Sound(nameList: GetIsDroppedSoundNames(category), maxPitchVariation: 0.25f, cooldown: 30));
 
             if (isPlayer || isAnimal)
             {
