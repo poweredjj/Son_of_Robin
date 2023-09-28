@@ -23,7 +23,7 @@ namespace SonOfRobin
         };
 
         private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         private const int maxInactiveDuration = 10;
         private const int movementSlowdown = 6;

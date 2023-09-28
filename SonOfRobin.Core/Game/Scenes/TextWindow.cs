@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40); // TODO check why window has correct size only when about 60-80 size
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         private readonly bool autoClose;
         private int blockingFramesLeft;
@@ -153,8 +153,6 @@ namespace SonOfRobin
             if (inTrans) this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: true, duration: 15, playCount: -1, replaceBaseValue: false, baseParamName: "Rot", targetVal: 0.13f, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.17f));
         }
 
-
-
         public override void Update()
         {
             if (this.blockingFramesLeft > 0 && this.textWithImages.AnimationFinished)
@@ -216,10 +214,16 @@ namespace SonOfRobin
             int maxTextWidth = this.MaxWindowWidth - (this.Margin * 2);
             int maxTextHeight = this.MaxWindowHeight - (this.Margin * 2);
 
+            float lineHeightWithoutScaling = this.textWithImages.font.LineHeight;
+            int minHorizontalLines = SonOfRobinGame.platform == Platform.Mobile ? 14 : 20;
+            float maxLineHeight = SonOfRobinGame.VirtualHeight / (float)minHorizontalLines;
+            float maxVertScale = maxLineHeight / lineHeightWithoutScaling;
+
             float scaleX = (float)maxTextWidth / (float)this.textWithImages.textWidth;
-            float scaleY = (float)maxTextHeight / (float)this.textWithImages.textHeight;
+            float scaleY = Math.Min((float)maxTextHeight / (float)this.textWithImages.textHeight, maxVertScale);
+
             this.textScale = Math.Min(scaleX, scaleY);
-            this.textScale = Math.Min(this.textScale, (float)SonOfRobinGame.VirtualWidth / 2000f);
+            this.textScale = Math.Min(this.textScale, (float)SonOfRobinGame.VirtualWidth / 1200f);
 
             int scaledTextWidth = (int)(this.textWithImages.textWidth * this.textScale);
             int scaledTextHeight = (int)(this.textWithImages.textHeight * this.textScale);
@@ -237,7 +241,7 @@ namespace SonOfRobin
 
             int margin = this.Margin;
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
-            int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.003f, 1);
+            int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.002f, 1);
 
             Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.Width, this.viewParams.Height);
             Rectangle bgRect = new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height);

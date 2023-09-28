@@ -669,13 +669,12 @@ namespace SonOfRobin
 
             // drawing named locations
 
-            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.05f)
+            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.04f)
             {
                 var drawnNamesRects = new List<Rectangle>();
 
-                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
-
-                int outlineSize = (int)Math.Clamp(value: locationTextScale * 2, min: 2, max: 4);
+                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 6f;
+                int outlineSize = (int)Math.Ceiling(locationTextScale * 2f);
 
                 foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
                 {
@@ -708,6 +707,11 @@ namespace SonOfRobin
 
                                 break;
                             }
+                        }
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2, drawTestRect: false);
                         }
 
                         HslColor locationColorHSL = location.Color.ToHsl();

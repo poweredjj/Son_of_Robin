@@ -10,9 +10,9 @@ namespace SonOfRobin
 {
     public class PlayerPanel : Scene
     {
-        private static readonly SpriteFontBase itemCounterFont = SonOfRobinGame.FontTommy.GetFont(40);
-        private static readonly SpriteFontBase buffFont = SonOfRobinGame.FontTommy.GetFont(40);
-        private static readonly SpriteFontBase locationFont = SonOfRobinGame.FontTommy.GetFont(40);
+        private static readonly SpriteFontBase itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
+        private static readonly SpriteFontBase buffFont = SonOfRobinGame.FontTommy.GetFont(60);
+        private static readonly SpriteFontBase locationFont = SonOfRobinGame.FontTommy.GetFont(60);
         private const int posY = 4;
         private static readonly Color locationOutlineColor = new(0, 36, 156);
 

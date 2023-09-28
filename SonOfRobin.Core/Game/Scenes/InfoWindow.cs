@@ -80,7 +80,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         private const float maxWindowWidthPercent = 0.35f;
         private const float maxWindowHeightPercent = 0.7f;
@@ -351,7 +351,7 @@ namespace SonOfRobin
             Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
 
             float globalScale = this.GlobalScale;
-            float shadowOffset = Math.Max(4f * globalScale, 1);
+            float shadowOffset = Math.Max(2.5f * globalScale, 1);
 
             int posX = margin;
             int posY = margin;

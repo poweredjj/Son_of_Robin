@@ -27,7 +27,7 @@ namespace SonOfRobin
             Offer,
         }
 
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         private const float marginPercent = 0.03f;
         private const float entryWidthPercent = 0.8f;

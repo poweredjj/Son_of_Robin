@@ -46,7 +46,7 @@ namespace SonOfRobin
 
         public static readonly string imageMarker = "|";
 
-        private readonly SpriteFontBase font;
+        public readonly SpriteFontBase font;
 
         public string TextOriginal
         { get { return this.textOriginal; } }
@@ -277,7 +277,10 @@ namespace SonOfRobin
 
             Vector2 textScaleVector = new Vector2(textScale);
 
-            if (drawShadow) this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: currentText, position: position + shadowOffset, color: shadowColor, scale: textScaleVector);
+            if (drawShadow && shadowColor.A > 0)
+            {
+                this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: currentText, position: position + shadowOffset, color: shadowColor, scale: textScaleVector, effect: FontSystemEffect.Blurry, effectAmount: 3);
+            }
 
             this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: currentText, position: position, color: color, scale: textScaleVector);
 
@@ -294,8 +297,7 @@ namespace SonOfRobin
                     if (drawShadow)
                     {
                         Rectangle imageShadowRect = new Rectangle(x: imageRect.X + (int)shadowOffset.X, y: imageRect.Y + (int)shadowOffset.Y, width: imageRect.Width, height: imageRect.Height);
-
-                        if (shadowColor.A > 0) Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
+                        Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
                     }
 
                     Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageRect, color: Color.White * imageOpacity, drawTestRect: false);
