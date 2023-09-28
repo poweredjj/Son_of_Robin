@@ -573,14 +573,13 @@ namespace SonOfRobin
         public static Vector2 MeasureStringCorrectly(SpriteFontBase font, string stringToMeasure)
         {
             // measures string the same way SpriteFont measures (ignoring the area below baseline)
-            Vector2 stringSize = font.MeasureString(stringToMeasure);
 
             if (stringToMeasure.Length == 0) return Vector2.Zero;
 
-            if (!stringToMeasure.Contains("\n")) stringSize.Y = font.LineHeight;
+            Vector2 stringSize = font.MeasureString(stringToMeasure);
+            stringSize.Y = font.LineHeight * stringToMeasure.Split("\n").Length;
+          
             return stringSize;
-
-            //  return new Vector2(stringSize.X,  font.LineHeight * stringToMeasure.Split("\n").Length); // TODO check if this one is correct
         }
 
         public static string KeepTextLineBelowGivenLength(string text, int maxLength)

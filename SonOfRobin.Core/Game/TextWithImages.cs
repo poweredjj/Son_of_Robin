@@ -38,7 +38,7 @@ namespace SonOfRobin
                     x: (int)(this.rectangle.X * scale) + (int)basePos.X,
                     y: (int)(this.rectangle.Y * scale) + (int)basePos.Y,
                     width: (int)((treatImagesAsSquares ? this.rectangle.Height : this.rectangle.Width) * scale),
-                    height: (int)((this.rectangle.Height) * scale));
+                    height: (int)(this.rectangle.Height * scale));
 
                 return scaledRect;
             }
@@ -295,7 +295,7 @@ namespace SonOfRobin
                     {
                         Rectangle imageShadowRect = new Rectangle(x: imageRect.X + (int)shadowOffset.X, y: imageRect.Y + (int)shadowOffset.Y, width: imageRect.Width, height: imageRect.Height);
 
-                        Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
+                        if (shadowColor.A > 0) Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
                     }
 
                     Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageRect, color: Color.White * imageOpacity, drawTestRect: false);

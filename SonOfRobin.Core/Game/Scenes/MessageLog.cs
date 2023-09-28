@@ -86,10 +86,21 @@ namespace SonOfRobin
 
                 if (this.screenHeight - currentOffsetY >= freePixelsAboveMessages)
                 {
-                    Vector2 txtPos = new(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
+                    Vector2 txtPos = new(this.marginX, (int)(this.screenHeight - (currentOffsetY + this.marginY)));
 
                     float textOpacity = Math.Clamp(value: (float)(message.deletionFrame - currentFrame), min: 0, max: 1);
                     float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        font.DrawText(
+                            batch: SonOfRobinGame.SpriteBatch,
+                            text: currentLineOfText,
+                            position: txtPos,
+                            color: Color.Black * textOpacity,
+                            effect: FontSystemEffect.Blurry,
+                            effectAmount: 3);
+                    }
 
                     font.DrawText(
                         batch: SonOfRobinGame.SpriteBatch,

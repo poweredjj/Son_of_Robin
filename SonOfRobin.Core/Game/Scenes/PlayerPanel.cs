@@ -183,7 +183,7 @@ namespace SonOfRobin
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
+                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 4, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }
