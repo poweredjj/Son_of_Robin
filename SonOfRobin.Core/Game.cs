@@ -215,20 +215,20 @@ namespace SonOfRobin
 
             PixelatedFontSettings = new FontSystemSettings { FontResolutionFactor = 1.0f, KernelWidth = 1, KernelHeight = 1 };
 
-            FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader
-            FontPressStart2P.AddFont(File.ReadAllBytes(@"Content/fonts/PressStart2P.ttf"));
+            FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader      
+            FontPressStart2P.AddFont(TitleContainer.OpenStream("Content/fonts/PressStart2P.ttf"));
         }
 
         public static void LoadFonts()
         {
             FontFreeSansBold = new FontSystem();
-            FontFreeSansBold.AddFont(File.ReadAllBytes(@"Content/fonts/FreeSansBold.ttf"));
+            FontFreeSansBold.AddFont(TitleContainer.OpenStream("Content/fonts/FreeSansBold.ttf"));
 
             FontPixelMix = new FontSystem(PixelatedFontSettings);
-            FontPixelMix.AddFont(File.ReadAllBytes(@"Content/fonts/pixelmix.ttf"));
+            FontPixelMix.AddFont(TitleContainer.OpenStream("Content/fonts/pixelmix.ttf"));
 
             FontTommy = new FontSystem();
-            FontTommy.AddFont(File.ReadAllBytes(@"Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
+            FontTommy.AddFont(TitleContainer.OpenStream("Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
         }
 
         public static void LoadEffects()
