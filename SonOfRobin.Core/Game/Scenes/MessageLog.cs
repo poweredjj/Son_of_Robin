@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace SonOfRobin
         }
 
         private static int lastDeletionFrame = 0;
-        private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontPressStart2P.GetFont(8);
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
         private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
@@ -81,17 +81,34 @@ namespace SonOfRobin
             {
                 string currentLineOfText = message.text;
 
-                Vector2 txtSize = font.MeasureString(currentLineOfText);
+                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: currentLineOfText);
                 currentOffsetY += (int)txtSize.Y + txtSeparator;
 
                 if (this.screenHeight - currentOffsetY >= freePixelsAboveMessages)
                 {
-                    Vector2 txtPos = new(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
+                    Vector2 txtPos = new(this.marginX, (int)(this.screenHeight - (currentOffsetY + this.marginY)));
 
                     float textOpacity = Math.Clamp(value: (float)(message.deletionFrame - currentFrame), min: 0, max: 1);
                     float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
-                    Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);
+                    for (int i = 0; i < 2; i++)
+                    {
+                        font.DrawText(
+                            batch: SonOfRobinGame.SpriteBatch,
+                            text: currentLineOfText,
+                            position: txtPos,
+                            color: Color.Black * textOpacity,
+                            effect: FontSystemEffect.Blurry,
+                            effectAmount: 3);
+                    }
+
+                    font.DrawText(
+                        batch: SonOfRobinGame.SpriteBatch,
+                        text: currentLineOfText,
+                        position: txtPos,
+                        color: message.color * textOpacity,
+                        effect: FontSystemEffect.Stroked,
+                        effectAmount: 1);
                 }
                 else break;
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -49,6 +50,7 @@ namespace SonOfRobin
         public Dictionary<string, ButtonTip> tipCollection;
         public TipsLayout currentLayout;
         private Scene currentScene;
+        private SpriteFontBase debugFont;
 
         public ControlTips() : base(inputType: InputTypes.None, tipsLayout: TipsLayout.Uninitialized, priority: -2, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
@@ -157,7 +159,15 @@ namespace SonOfRobin
 
             if (Preferences.DebugMode)
             {
-                Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                if (this.debugFont == null) this.debugFont = SonOfRobinGame.FontPressStart2P.GetFont(8);
+
+                this.debugFont.DrawText(
+                    batch: SonOfRobinGame.SpriteBatch,
+                    text: $"{this.currentLayout}",
+                    position: Vector2.Zero,
+                    color: Color.White,
+                    effect: FontSystemEffect.Stroked,
+                    effectAmount: 1);
             }
 
             SonOfRobinGame.SpriteBatch.End();

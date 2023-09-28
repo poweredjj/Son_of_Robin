@@ -128,6 +128,7 @@ namespace SonOfRobin
 
         private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
         {
+            { TextureName.Empty, "missing_texture" },
             { TextureName.LoadingWheel, "loading_wheel" },
             { TextureName.LightSphereWhite, "light_white" },
             { TextureName.Cursor, "cursor" },

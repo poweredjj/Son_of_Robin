@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace SonOfRobin
         }
 
         public readonly World world;
+        private readonly SpriteFontBase locationFont;
         private readonly Camera camera;
         private Task bgTaskForMeshes;
         private Task bgTaskForSprites;
@@ -62,6 +65,7 @@ namespace SonOfRobin
             this.bgTaskSpritesLastCameraRect = new Rectangle();
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.bgTaskSpritesToShow = new List<Sprite>();
+            this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
             {
                 { Color.Blue, null },
@@ -665,13 +669,12 @@ namespace SonOfRobin
 
             // drawing named locations
 
-            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.05f)
+            if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.04f)
             {
-                SpriteFont locationFont = SonOfRobinGame.FontTommy20;
                 var drawnNamesRects = new List<Rectangle>();
 
-                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
-                int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
+                float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 6f;
+                int outlineSize = (int)Math.Ceiling(locationTextScale * 2f);
 
                 foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
                 {
@@ -684,7 +687,7 @@ namespace SonOfRobin
                             location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                         }
 
-                        Vector2 textSize = locationFont.MeasureString(location.name);
+                        Vector2 textSize = Helpers.MeasureStringCorrectly(font: locationFont, stringToMeasure: location.name);
 
                         Rectangle newTextRect = new(x: 0, y: 0, width: (int)(textSize.X * locationTextScale), height: (int)(textSize.Y * locationTextScale));
                         newTextRect.X = location.areaRect.Center.X - (newTextRect.Width / 2);
@@ -706,7 +709,15 @@ namespace SonOfRobin
                             }
                         }
 
-                        Helpers.DrawTextInsideRectWithOutline(font: locationFont, rectangle: newTextRect, text: location.name, color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, drawTestRect: false);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2, drawTestRect: false);
+                        }
+
+                        HslColor locationColorHSL = location.Color.ToHsl();
+                        locationColorHSL = new HslColor(h: locationColorHSL.H, s: locationColorHSL.S, l: Math.Max(locationColorHSL.L * 1.5f, 0.85f));
+
+                        Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: locationColorHSL.ToRgb() * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: outlineSize, drawTestRect: false);
 
                         drawnNamesRects.Add(newTextRect);
                     }

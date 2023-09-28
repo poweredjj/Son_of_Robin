@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace SonOfRobin
         private Task backgroundTask1;
         private Task backgroundTask2;
         private Step currentStep;
-        private readonly SpriteFont font;
+        private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
 
@@ -116,7 +117,7 @@ namespace SonOfRobin
             this.lastFunnyActionName = "";
             this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
-            this.font = SonOfRobinGame.FontPressStart2P5;
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
 
@@ -321,12 +322,12 @@ namespace SonOfRobin
             string text = SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine ? $"{this.NextStepName}..." : $"{this.FunnyActionName}...";
             // text = $"{this.FunnyActionName}..."; // for testing
 
-            Vector2 textSize = this.font.MeasureString(text);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: text);
 
             int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
             int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);
 
-            SonOfRobinGame.SpriteBatch.DrawString(this.font, text, position: new Vector2(textPosX, textPosY), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));

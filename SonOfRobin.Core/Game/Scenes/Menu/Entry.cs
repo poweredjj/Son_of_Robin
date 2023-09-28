@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace SonOfRobin
 {
     public abstract class Entry
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         public readonly Menu menu;
         public readonly int index;
@@ -97,18 +98,18 @@ namespace SonOfRobin
         public virtual void NextValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "NextValue", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "NextValue", color: Color.White);
         }
 
         public virtual void PreviousValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "PreviousValue", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "PreviousValue", color: Color.White);
         }
 
         public virtual void Invoke()
         {
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "Invoke", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "Invoke", color: Color.White);
         }
 
         public virtual void ProcessTouch()

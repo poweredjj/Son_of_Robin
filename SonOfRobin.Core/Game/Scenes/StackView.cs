@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class StackView : Scene
     {
-        private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontPressStart2P.GetFont(8);
         private const int margin = 3;
 
         private static List<Scene> DisplayedStack
@@ -55,7 +55,7 @@ namespace SonOfRobin
 
                 foreach (string sceneTxt in textByScene.Values)
                 {
-                    Vector2 txtSize = font.MeasureString(sceneTxt);
+                    Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: sceneTxt);
                     if (txtSize.X > width) width = (int)txtSize.X;
 
                     height += (int)txtSize.Y + margin;
@@ -114,17 +114,16 @@ namespace SonOfRobin
                 Scene scene = textByScene.Keys.ElementAt(i);
                 string sceneTxt = textByScene.Values.ElementAt(i);
 
-                Vector2 txtSize = font.MeasureString(sceneTxt);
+                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: sceneTxt);
                 Vector2 txtPos = new Vector2(0, sceneNo * (txtSize.Y + margin));
 
                 Color color = scene.priority == 0 ? Color.White : Color.LightGreen;
                 if (waitingScenes.Contains(scene)) color = Color.Cyan;
 
-                Helpers.DrawTextWithOutline(font: font, text: sceneTxt, pos: txtPos, color: color * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
+                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: sceneTxt, position: txtPos, color: color * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 1);
 
                 sceneNo++;
             }
-
             SonOfRobinGame.SpriteBatch.End();
         }
 

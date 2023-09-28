@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -885,16 +886,15 @@ namespace SonOfRobin
         private void DrawState()
         {
             string stateTxt = $"{this.boardPiece.activeState}".Replace("Player", "").Replace("Animal", "");
-            var stateFont = SonOfRobinGame.FontPressStart2P5;
+            var stateFont = SonOfRobinGame.FontPressStart2P.GetFont(8);
 
-            Vector2 textSize = stateFont.MeasureString(stateTxt);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: stateFont, stringToMeasure: stateTxt);
             // text position should be integer, otherwise it would get blurry
             Vector2 txtPos = new(
                 (int)(this.position.X - (textSize.X / 2)),
-                (int)(this.position.Y - (textSize.Y / 2)));
+            (int)(this.position.Y - (textSize.Y / 2)));
 
-            SonOfRobinGame.SpriteBatch.DrawString(stateFont, stateTxt, txtPos + new Vector2(1, 1), Color.Black);
-            SonOfRobinGame.SpriteBatch.DrawString(stateFont, stateTxt, txtPos, Color.White);
+            stateFont.DrawText(batch: SonOfRobinGame.SpriteBatch, text: stateTxt, position: txtPos, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
         }
 
         public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -68,6 +69,7 @@ namespace SonOfRobin
             }
         }
 
+        private readonly SpriteFontBase font;
         private Rectangle bgRect;
         private Rectangle textRect;
         private Rectangle graphRect;
@@ -104,6 +106,7 @@ namespace SonOfRobin
 
         public FpsCounter() : base(inputType: InputTypes.None, priority: -2, blocksUpdatesBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
             this.fpsHistory = new FpsHistory(Preferences.FpsCounterGraphLength);
             this.AdaptToNewSize();
             this.transManager.AddTransition(this.GetTransition(inTrans: true));
@@ -176,7 +179,9 @@ namespace SonOfRobin
 
             // text
 
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+            // Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+
+            Helpers.DrawTextInsideRect(font: this.font, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
 
             // graph
 

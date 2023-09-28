@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace SonOfRobin
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
 
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
         private static readonly Color bgColor = new(252, 252, 246);
         private static readonly Color primaryTextColor = new(105, 215, 252);
         private static readonly Color optionalTextColor = new(156, 181, 252);
@@ -184,7 +186,7 @@ namespace SonOfRobin
                 textRect.Offset(0, -textRect.Height); // main text should be moved up
                 optionalTextRect.Offset(0, textRect.Height / 3);
 
-                Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.optionalText, rectangle: optionalTextRect, color: optionalTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+                Helpers.DrawTextInsideRect(font: font, text: this.optionalText, rectangle: optionalTextRect, color: optionalTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
 
                 // Helpers.DrawRectangleOutline(rect: optionalTextRect, color: Color.Cyan, borderWidth: 1); // for testing
             }
@@ -198,7 +200,7 @@ namespace SonOfRobin
             progressBarRect.Inflate(-progressBarRect.Width * 0.05f, -progressBarRect.Height * 0.43f);
             progressBarRect.Width = (int)(progressBarRect.Width * this.ProgressBarPercentage);
 
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.progressBarText, rectangle: textRect, color: primaryTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: font, text: this.progressBarText, rectangle: textRect, color: primaryTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
 
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barColor);
 

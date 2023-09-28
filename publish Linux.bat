@@ -12,8 +12,6 @@ move /Y Publish Son_of_Robin
 
 cd ..
 
-copy /Y "_legacy_fonts\*" "SonOfRobin.DesktopGL\Son_of_Robin\Content\fonts\"
-
 7z.exe a -ttar SonOfRobin_Linux.tar .\SonOfRobin.DesktopGL\Son_of_Robin\ -mx=5
 7z.exe a SonOfRobin_Linux.tar.gz SonOfRobin_Linux.tar -mx=5
 

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,8 @@ namespace SonOfRobin
             Offer,
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
+
         private const float marginPercent = 0.03f;
         private const float entryWidthPercent = 0.8f;
         private const float entryHeightPercent = 0.1f;
@@ -87,7 +88,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    labelSize = font.MeasureString(this.GetActionLabel(action));
+                    labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
                     if (textScale < minScale) minScale = textScale;
                 }
@@ -109,7 +110,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    Vector2 labelSize = font.MeasureString(this.GetActionLabel(action));
+                    Vector2 labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textWidth = labelSize.X * textScale;
                     textHeight = labelSize.Y * textScale;
 
@@ -553,10 +554,11 @@ namespace SonOfRobin
                 Rectangle entryRect = this.GetEntryRect(entryNo);
                 Vector2 textPos = new Vector2(entryRect.X, entryRect.Y);
                 Vector2 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
+                Vector2 textScaleVector = new Vector2(textScale);
 
-                SonOfRobinGame.SpriteBatch.DrawString(font, actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, scale: textScaleVector);
 
-                SonOfRobinGame.SpriteBatch.DrawString(font, actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, scale: textScaleVector);
 
                 entryNo++;
             }

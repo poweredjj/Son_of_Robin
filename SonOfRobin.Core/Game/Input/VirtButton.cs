@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
@@ -169,14 +170,12 @@ namespace SonOfRobin
             }
         }
 
-        private SpriteFont Font
+        private SpriteFontBase Font
         {
             get
             {
-                SpriteFont font = SonOfRobinGame.FontTommy40;
-                if (font == null) font = SonOfRobinGame.FontPressStart2P5;
-
-                return font;
+                return SonOfRobinGame.FontTommy == null ?
+                    SonOfRobinGame.FontPressStart2P.GetFont(8) : SonOfRobinGame.FontFreeSansBold.GetFont(40);
             }
         }
 
@@ -349,13 +348,13 @@ namespace SonOfRobin
                 int labelRectHeight = wholeLabelRect.Height / labelLines.Length;
                 int labelRectYOffset = 0;
 
-                SpriteFont font = this.Font;
+                SpriteFontBase font = this.Font;
 
                 foreach (string currentLabel in labelLines)
                 {
                     Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
 
-                    Helpers.DrawTextInsideRectWithOutline(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, outlineColor: new Color(0, 0, 0, 128), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+                    Helpers.DrawTextInsideRect(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
 
                     labelRectYOffset += labelRectHeight;
                 }

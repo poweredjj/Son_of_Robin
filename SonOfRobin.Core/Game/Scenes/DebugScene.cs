@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using FontStashSharp.RichText;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -9,7 +11,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold10;
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(20);
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -83,7 +85,8 @@ namespace SonOfRobin
 
             debugText = String.Join("\n", debugLines);
 
-            Vector2 txtSize = font.MeasureString(debugText);
+            Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: debugText);
+
             this.viewParams.Width = (int)txtSize.X;
             this.viewParams.Height = (int)txtSize.Y;
         }
@@ -92,9 +95,31 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            Helpers.DrawTextWithOutline(font: font, text: debugText, pos: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
+
+            // this.DrawRichText();
 
             SonOfRobinGame.SpriteBatch.End();
+        }
+
+        private void DrawRichText()
+        {
+            // FontStashSharp rich text sample
+
+            RichTextLayout richTextLayout = new RichTextLayout
+            {
+                Font = SonOfRobinGame.FontTommy.GetFont(20),
+                Text = "Text line 1 /es1 image: -> /i[Animal] <-/nText line 2",
+            };
+
+            RichTextDefaults.ImageResolver = imageName =>
+            {
+                TextureBank.TextureName textureName;
+                Enum.TryParse(imageName, out textureName);
+                return new TextureFragment(TextureBank.GetTexture(textureName));
+            };
+
+            richTextLayout.Draw(SonOfRobinGame.SpriteBatch, new Vector2(80, 80), Color.White, scale: new Vector2(1.5f));
         }
 
         public void ProcessDebugInput()
@@ -432,7 +457,6 @@ namespace SonOfRobin
 
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
             //}
-
 
             //if (Keyboard.HasBeenPressed(Keys.F3))
             //{

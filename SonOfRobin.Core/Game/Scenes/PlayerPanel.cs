@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
@@ -9,8 +10,9 @@ namespace SonOfRobin
 {
     public class PlayerPanel : Scene
     {
-        private static readonly SpriteFont itemCounterFont = SonOfRobinGame.FontTommy40;
-        private static readonly SpriteFont buffFont = SonOfRobinGame.FontTommy40;
+        private static readonly SpriteFontBase itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
+        private static readonly SpriteFontBase buffFont = SonOfRobinGame.FontTommy.GetFont(60);
+        private static readonly SpriteFontBase locationFont = SonOfRobinGame.FontTommy.GetFont(60);
         private const int posY = 4;
         private static readonly Color locationOutlineColor = new(0, 36, 156);
 
@@ -136,7 +138,7 @@ namespace SonOfRobin
                 int posX = 0;
                 int vOffsetCorrection = 4;
 
-                StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.FontFreeSansBold12);
+                StatBar.ChangeBatchFont(spriteFontBase: SonOfRobinGame.FontFreeSansBold.GetFont(12));
 
                 new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: TextureBank.GetTexture(TextureBank.TextureName.Bed));
@@ -181,7 +183,7 @@ namespace SonOfRobin
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRectWithOutline(font: SonOfRobinGame.FontTommy20, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: locationOutlineColor * this.viewParams.drawOpacity, outlineSize: 2, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 4, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }

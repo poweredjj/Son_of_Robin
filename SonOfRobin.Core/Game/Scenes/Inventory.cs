@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
@@ -38,8 +39,7 @@ namespace SonOfRobin
         private const int minFramesToDragByTouch = 15;
         private const float marginPercent = 0.01f;
 
-        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
-
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(40);
         private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
         private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
         private static readonly Sound soundSwitch = new Sound(SoundData.Name.Select);
@@ -997,7 +997,7 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
-            //MessageLog.AddMessage(debugMessage: true, message: $"ReleaseHeldPieces");
+            // MessageLog.AddMessage(debugMessage: true, message: $"ReleaseHeldPieces");
 
             ActiveSoundPack firstPieceSoundPack = this.draggedPieces[0].activeSoundPack;
 
@@ -1006,7 +1006,7 @@ namespace SonOfRobin
 
             var piecesThatDidNotFitIn = new List<BoardPiece> { };
 
-            //MessageLog.AddMessage(debugMessage: true, message: $"forceReleaseAll {forceReleaseAll}");
+            // MessageLog.AddMessage(debugMessage: true, message: $"forceReleaseAll {forceReleaseAll}");
 
             foreach (BoardPiece piece in this.draggedPieces)
             {
@@ -1221,7 +1221,9 @@ namespace SonOfRobin
                 Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPosWithMargin.X + spriteOffset, (int)slotPosWithMargin.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: opacity, drawNewIcon: this.type != Type.SingleBottom);
 
-                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
+                float rectHeightDivider = SonOfRobinGame.platform == Platform.Mobile ? 2f : 3f;
+                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (int)(tileRect.Height / rectHeightDivider * (rectHeightDivider - 1)), width: tileRect.Width, height: (int)(tileRect.Height / rectHeightDivider));                          
+
                 DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: opacity);
             }
 
@@ -1237,7 +1239,7 @@ namespace SonOfRobin
             Rectangle labelRect = tileRect;
             labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, outlineColor: new Color(50, 50, 50) * opacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+            Helpers.DrawTextInsideRect(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 3, drawTestRect: false);
         }
 
         private void DrawMainLabel(float opacity)
@@ -1245,13 +1247,13 @@ namespace SonOfRobin
             if (this.type == Type.SingleBottom) return;
 
             Rectangle bgRect = this.BgRect;
-
             string label = this.storage.Label;
 
-            Vector2 labelSize = font.MeasureString(label);
+            Vector2 labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: label);
             float maxTextWidth = bgRect.Width * 0.3f;
             float maxTextHeight = bgRect.Height * 0.1f;
             float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
+            Vector2 textScaleVector2 = new Vector2(textScale);
 
             float textWidth = labelSize.X * textScale;
             float textHeight = labelSize.Y * textScale;
@@ -1260,8 +1262,9 @@ namespace SonOfRobin
             float shadowOffset = textHeight * 0.06f;
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: labelPos, color: Color.White * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: label, position: shadowPos, scale: textScaleVector2, color: Color.Black * 0.5f * opacity);
+
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: label, position: labelPos, scale: textScaleVector2, color: Color.White * opacity);
         }
 
         public static void DrawQuantity(int pieceCount, Rectangle destRect, float opacity, bool ignoreSingle = true)
@@ -1270,7 +1273,7 @@ namespace SonOfRobin
 
             string countTxt = $"x{pieceCount}";
 
-            Helpers.DrawTextInsideRectWithOutline(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, outlineColor: Color.Black * opacity, outlineSize: 1, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 3, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom, drawTestRect: false);
         }
 
         private Vector2 GetSlotPos(StorageSlot slot, int margin, int tileSize)
