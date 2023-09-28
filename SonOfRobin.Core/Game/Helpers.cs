@@ -63,7 +63,7 @@ namespace SonOfRobin
 
         public static void DrawTextInsideRect(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
-            Vector2 textSize = font.MeasureString(text);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
 
             if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
@@ -568,6 +568,19 @@ namespace SonOfRobin
             }
 
             return pointsByRegion;
+        }
+
+        public static Vector2 MeasureStringCorrectly(SpriteFontBase font, string stringToMeasure)
+        {
+            // measures string the same way SpriteFont measures (ignoring the area below baseline)
+            Vector2 stringSize = font.MeasureString(stringToMeasure);
+
+            if (stringToMeasure.Length == 0) return Vector2.Zero;
+
+            if (!stringToMeasure.Contains("\n")) stringSize.Y = font.LineHeight;
+            return stringSize;
+
+            //  return new Vector2(stringSize.X,  font.LineHeight * stringToMeasure.Split("\n").Length); // TODO check if this one is correct
         }
 
         public static string KeepTextLineBelowGivenLength(string text, int maxLength)

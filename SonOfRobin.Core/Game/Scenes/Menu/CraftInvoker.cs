@@ -302,7 +302,7 @@ namespace SonOfRobin
 
         private void DrawText(string text, Rectangle containingRect, Color txtCol)
         {
-            Vector2 textSize = font.MeasureString(text);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: text);
 
             float maxTextHeight = containingRect.Height;
             float maxTextWidth = containingRect.Width;

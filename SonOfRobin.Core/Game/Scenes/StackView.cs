@@ -55,7 +55,7 @@ namespace SonOfRobin
 
                 foreach (string sceneTxt in textByScene.Values)
                 {
-                    Vector2 txtSize = font.MeasureString(sceneTxt);
+                    Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: sceneTxt);
                     if (txtSize.X > width) width = (int)txtSize.X;
 
                     height += (int)txtSize.Y + margin;
@@ -114,7 +114,7 @@ namespace SonOfRobin
                 Scene scene = textByScene.Keys.ElementAt(i);
                 string sceneTxt = textByScene.Values.ElementAt(i);
 
-                Vector2 txtSize = font.MeasureString(sceneTxt);
+                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: sceneTxt);
                 Vector2 txtPos = new Vector2(0, sceneNo * (txtSize.Y + margin));
 
                 Color color = scene.priority == 0 ? Color.White : Color.LightGreen;

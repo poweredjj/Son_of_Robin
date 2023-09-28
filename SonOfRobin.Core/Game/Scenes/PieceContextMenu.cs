@@ -88,7 +88,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    labelSize = font.MeasureString(this.GetActionLabel(action));
+                    labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
                     if (textScale < minScale) minScale = textScale;
                 }
@@ -110,7 +110,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    Vector2 labelSize = font.MeasureString(this.GetActionLabel(action));
+                    Vector2 labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textWidth = labelSize.X * textScale;
                     textHeight = labelSize.Y * textScale;
 

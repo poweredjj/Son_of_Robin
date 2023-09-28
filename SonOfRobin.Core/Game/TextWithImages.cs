@@ -93,7 +93,7 @@ namespace SonOfRobin
             this.textWithResizedMarkers = tuple.Item1;
             this.imageInfoList = tuple.Item2;
 
-            Vector2 textSize = this.font.MeasureString(this.textWithResizedMarkers);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: this.textWithResizedMarkers);
             this.textWidth = (int)textSize.X;
             this.textHeight = (int)textSize.Y;
             this.noOfLines = this.textWithResizedMarkers.Split('\n').Length;
@@ -192,7 +192,7 @@ namespace SonOfRobin
 
         private static string GetResizedMarker(SpriteFontBase font, Texture2D image, bool treatImagesAsSquares)
         {
-            float imageScale = (float)image.Height / font.MeasureString(" ").Y;
+            float imageScale = (float)image.Height / Helpers.MeasureStringCorrectly(font: font, stringToMeasure: " ").Y;
             int targetWidth = (int)((float)(treatImagesAsSquares ? image.Height : image.Width) / imageScale);
 
             int markerCharCount = 1;
@@ -202,8 +202,7 @@ namespace SonOfRobin
             while (true)
             {
                 string resizedMarker = string.Concat(Enumerable.Repeat(" ", markerCharCount));
-                int delta = (int)Math.Abs(targetWidth - font.MeasureString(resizedMarker).X);
-
+                int delta = (int)Math.Abs(targetWidth - Helpers.MeasureStringCorrectly(font: font, stringToMeasure: resizedMarker).X);
                 if (delta > lastDelta) break;
                 else
                 {
@@ -230,9 +229,10 @@ namespace SonOfRobin
             string thisLineText = textBeforeMarker.Substring(lastNewLineIndex, textBeforeMarker.Length - lastNewLineIndex);
             string textBeforeThisLine = textBeforeMarker.Substring(0, Math.Max(lastNewLineIndex - 1, 0));
 
-            int posX = (int)font.MeasureString(thisLineText).X;
-            int posY = (int)font.MeasureString(textBeforeThisLine).Y;
-            Vector2 rectSize = font.MeasureString(fullMarker);
+            int posX = (int)Helpers.MeasureStringCorrectly(font: font, stringToMeasure: thisLineText).X;
+            int posY = (int)Helpers.MeasureStringCorrectly(font: font, stringToMeasure: textBeforeThisLine).Y;
+
+            Vector2 rectSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: fullMarker);
 
             return new Rectangle(x: posX, y: posY, width: (int)rectSize.X, height: (int)rectSize.Y);
         }

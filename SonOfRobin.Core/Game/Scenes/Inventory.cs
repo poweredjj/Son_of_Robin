@@ -1245,10 +1245,9 @@ namespace SonOfRobin
             if (this.type == Type.SingleBottom) return;
 
             Rectangle bgRect = this.BgRect;
-
             string label = this.storage.Label;
 
-            Vector2 labelSize = font.MeasureString(label);
+            Vector2 labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: label);
             float maxTextWidth = bgRect.Width * 0.3f;
             float maxTextHeight = bgRect.Height * 0.1f;
             float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);

@@ -81,7 +81,7 @@ namespace SonOfRobin
             {
                 string currentLineOfText = message.text;
 
-                Vector2 txtSize = font.MeasureString(currentLineOfText);
+                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: currentLineOfText);
                 currentOffsetY += (int)txtSize.Y + txtSeparator;
 
                 if (this.screenHeight - currentOffsetY >= freePixelsAboveMessages)

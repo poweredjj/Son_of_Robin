@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40); // TODO check why window has correct size only when about 60-80 size
 
         private readonly bool autoClose;
         private int blockingFramesLeft;

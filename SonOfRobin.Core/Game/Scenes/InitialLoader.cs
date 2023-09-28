@@ -322,7 +322,7 @@ namespace SonOfRobin
             string text = SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine ? $"{this.NextStepName}..." : $"{this.FunnyActionName}...";
             // text = $"{this.FunnyActionName}..."; // for testing
 
-            Vector2 textSize = this.font.MeasureString(text);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: text);
 
             int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
             int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);

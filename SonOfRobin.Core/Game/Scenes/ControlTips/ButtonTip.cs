@@ -48,7 +48,7 @@ namespace SonOfRobin
                     sumHeight = Math.Max(textureHeight, sumHeight);
                 }
 
-                Vector2 txtSize = font.MeasureString(this.text) * fontScale;
+                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.text) * fontScale;
                 sumWidth += (int)txtSize.X;
                 sumHeight = Math.Max((int)txtSize.Y, sumHeight);
 
@@ -74,7 +74,7 @@ namespace SonOfRobin
                 textureOffsetX += textureWidth + margin;
             }
 
-            Vector2 txtSize = font.MeasureString(this.text) * fontScale;
+            Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.text) * fontScale;
             Vector2 txtPos = basePos + new Vector2(textureOffsetX, (int)(textureMaxHeight / 2) - (int)(txtSize.Y / 2f));
 
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: new Vector2(fontScale), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 2);

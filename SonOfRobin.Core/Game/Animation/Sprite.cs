@@ -888,7 +888,7 @@ namespace SonOfRobin
             string stateTxt = $"{this.boardPiece.activeState}".Replace("Player", "").Replace("Animal", "");
             var stateFont = SonOfRobinGame.FontPressStart2P.GetFont(8);
 
-            Vector2 textSize = stateFont.MeasureString(stateTxt);
+            Vector2 textSize = Helpers.MeasureStringCorrectly(font: stateFont, stringToMeasure: stateTxt);
             // text position should be integer, otherwise it would get blurry
             Vector2 txtPos = new(
                 (int)(this.position.X - (textSize.X / 2)),

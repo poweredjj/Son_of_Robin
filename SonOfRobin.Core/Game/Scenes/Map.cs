@@ -688,7 +688,7 @@ namespace SonOfRobin
                             location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                         }
 
-                        Vector2 textSize = locationFont.MeasureString(location.name);
+                        Vector2 textSize = Helpers.MeasureStringCorrectly(font: locationFont, stringToMeasure: location.name);
 
                         Rectangle newTextRect = new(x: 0, y: 0, width: (int)(textSize.X * locationTextScale), height: (int)(textSize.Y * locationTextScale));
                         newTextRect.X = location.areaRect.Center.X - (newTextRect.Width / 2);

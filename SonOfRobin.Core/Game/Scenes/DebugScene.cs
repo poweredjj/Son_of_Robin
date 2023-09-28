@@ -85,7 +85,8 @@ namespace SonOfRobin
 
             debugText = String.Join("\n", debugLines);
 
-            Vector2 txtSize = font.MeasureString(debugText);
+            Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: debugText);
+
             this.viewParams.Width = (int)txtSize.X;
             this.viewParams.Height = (int)txtSize.Y;
         }
@@ -103,6 +104,8 @@ namespace SonOfRobin
 
         private void DrawRichText()
         {
+            // FontStashSharp rich text sample
+
             RichTextLayout richTextLayout = new RichTextLayout
             {
                 Font = SonOfRobinGame.FontTommy.GetFont(20),

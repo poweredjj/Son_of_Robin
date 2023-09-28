@@ -78,7 +78,7 @@ namespace SonOfRobin
             this.posY = drawFromTop ? posY + verticalOffset : posY - verticalOffset;
 
             this.label = label;
-            this.labelSize = font.MeasureString(this.label);
+            this.labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.label);
             this.texture = texture;
 
             float labelPosX = this.labelAtLeft ? this.posX - (labelSize.X + 4) : this.posX + this.fullWidth + 4;
