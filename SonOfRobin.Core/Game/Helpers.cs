@@ -141,7 +141,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
-        public static void DrawTextInsideRectNew(SpriteFontBase font, Rectangle rectangle, string text, Color textColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
+        public static void DrawTextInsideRectNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
             Vector2 textSize = font.MeasureString(text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
@@ -168,7 +168,7 @@ namespace SonOfRobin
                         batch: SonOfRobinGame.SpriteBatch,
                         text: text,
                         position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset),
-                        color: textColor,
+                        color: color,
                         scale: new Vector2(scale),
                         effect: effectAmount == 0 ? FontSystemEffect.None : effect,
                         effectAmount: effectAmount);
