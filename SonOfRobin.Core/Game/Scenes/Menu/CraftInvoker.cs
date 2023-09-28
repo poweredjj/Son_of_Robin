@@ -109,7 +109,6 @@ namespace SonOfRobin
 
             // making a set of draw data structs
 
-
             // calculating rects
             int rectWidth = (int)(Math.Min(innerEntryRect.Width / ((float)this.drawParamsList.Count - 0.5f), innerEntryRect.Height * 2));
             int margin = innerEntryRect.Width / this.drawParamsList.Count > rectWidth ? (int)innerMargin * 3 : (int)innerMargin;
@@ -314,7 +313,7 @@ namespace SonOfRobin
                 containingRect.Center.X - (textSize.X / 2 * textScale),
                 containingRect.Center.Y - (textSize.Y / 2 * textScale));
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: textPos, color: txtCol * menu.viewParams.Opacity, scale: new Vector2(textScale));
         }
     }
 }

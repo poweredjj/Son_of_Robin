@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
@@ -8,7 +9,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
 
         private readonly bool autoClose;
         private int blockingFramesLeft;

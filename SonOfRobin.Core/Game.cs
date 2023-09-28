@@ -59,7 +59,6 @@ namespace SonOfRobin
         public static FontSystem FontPressStart2P { get; private set; }
         public static FontSystem FontPixelMix { get; private set; }
         public static FontSystem FontTommy { get; private set; }
-        public static SpriteFont FontTommy40 { get; private set; }
         public static Texture2D WhiteRectangle { get; private set; }
         public static Texture2D GradientLeft { get; private set; }
         public static Texture2D GradientRight { get; private set; }
@@ -230,8 +229,6 @@ namespace SonOfRobin
 
             FontTommy = new FontSystem();
             FontTommy.AddFont(File.ReadAllBytes(@"Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
-
-            FontTommy40 = ContentMgr.Load<SpriteFont>("fonts/Tommy40");
         }
 
         public static void LoadEffects()

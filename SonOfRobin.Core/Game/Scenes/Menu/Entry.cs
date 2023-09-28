@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace SonOfRobin
 {
     public abstract class Entry
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
 
         public readonly Menu menu;
         public readonly int index;

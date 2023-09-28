@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace SonOfRobin
 
         public static readonly string imageMarker = "|";
 
-        private readonly SpriteFont font;
+        private readonly SpriteFontBase font;
 
         public string TextOriginal
         { get { return this.textOriginal; } }
@@ -77,7 +78,7 @@ namespace SonOfRobin
         private string AnimatedText
         { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
 
-        public TextWithImages(SpriteFont font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false)
+        public TextWithImages(SpriteFontBase font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false)
         {
             if (imageList == null) imageList = new List<Texture2D>();
 
@@ -189,7 +190,7 @@ namespace SonOfRobin
             return (newText, newImageInfoList);
         }
 
-        private static string GetResizedMarker(SpriteFont font, Texture2D image, bool treatImagesAsSquares)
+        private static string GetResizedMarker(SpriteFontBase font, Texture2D image, bool treatImagesAsSquares)
         {
             float imageScale = (float)image.Height / font.MeasureString(" ").Y;
             int targetWidth = (int)((float)(treatImagesAsSquares ? image.Height : image.Width) / imageScale);
@@ -215,7 +216,7 @@ namespace SonOfRobin
             return string.Concat(Enumerable.Repeat(" ", lastCharCount));
         }
 
-        private static Rectangle GetImageMarkerRect(SpriteFont font, string text, int start, int length)
+        private static Rectangle GetImageMarkerRect(SpriteFontBase font, string text, int start, int length)
         {
             string textBeforeMarker = text.Substring(0, start);
             string fullMarker = text.Substring(start, length);
@@ -274,9 +275,11 @@ namespace SonOfRobin
         {
             string currentText = this.AnimatedText;
 
-            if (drawShadow) SonOfRobinGame.SpriteBatch.DrawString(font, currentText, position: position + shadowOffset, color: shadowColor, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            Vector2 textScaleVector = new Vector2(textScale);
 
-            SonOfRobinGame.SpriteBatch.DrawString(font, currentText, position: position, color: color, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            if (drawShadow) this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: currentText, position: position + shadowOffset, color: shadowColor, scale: textScaleVector);
+
+            this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: currentText, position: position, color: color, scale: textScaleVector);
 
             int imageNo = 0;
             foreach (ImageInfo imageInfo in this.imageInfoList)

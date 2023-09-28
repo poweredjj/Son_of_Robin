@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -79,7 +80,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
 
         private const float maxWindowWidthPercent = 0.35f;
         private const float maxWindowHeightPercent = 0.7f;
