@@ -71,7 +71,7 @@ namespace SonOfRobin
         private Task backgroundTask1;
         private Task backgroundTask2;
         private Step currentStep;
-        private readonly SpriteFont font;
+        private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
 
@@ -117,7 +117,7 @@ namespace SonOfRobin
             this.lastFunnyActionName = "";
             this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
-            this.font = SonOfRobinGame.FontPressStart2P5;
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
 
@@ -317,12 +317,6 @@ namespace SonOfRobin
             Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
             splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
 
-
-
-            SpriteFontBase fontPressStart2P8 = SonOfRobinGame.FontPressStart2P.GetFont(8);
-            SonOfRobinGame.SpriteBatch.DrawString(fontPressStart2P8, "The quick いろは brown\nfox にほへ jumps over\nt🙌h📦e l👏a👏zy dog", new Vector2(0, 0), Color.White);
-
-
             Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
 
             string text = SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine ? $"{this.NextStepName}..." : $"{this.FunnyActionName}...";
@@ -333,7 +327,7 @@ namespace SonOfRobin
             int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
             int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);
 
-            SonOfRobinGame.SpriteBatch.DrawString(this.font, text, position: new Vector2(textPosX, textPosY), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));

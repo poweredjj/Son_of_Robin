@@ -54,6 +54,7 @@ namespace SonOfRobin
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
         public static ErrorLog ErrorLog { get; private set; }
+        public static FontSystemSettings PixelatedFontSettings { get; private set; } // needed for "pixelated" fonts to be sharp
         public static FontSystem FontFreeSansBold { get; private set; }
         public static FontSystem FontPressStart2P { get; private set; }
         public static FontSystem FontPixelMix { get; private set; }
@@ -216,9 +217,13 @@ namespace SonOfRobin
             ContentMgr = new ContentManager(Services, "Content");
             TextureBank.AssignContentManagers(persistentManager: new ContentManager(Services, "Content"), temporaryManager: new ContentManager(Services, "Content"));
 
-            FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
+            FontSystemDefaults.FontResolutionFactor = 2.0f;
+            FontSystemDefaults.KernelWidth = 2;
+            FontSystemDefaults.KernelHeight = 2;
 
-            FontPressStart2P = new FontSystem();
+            PixelatedFontSettings = new FontSystemSettings { FontResolutionFactor = 1.0f, KernelWidth = 1, KernelHeight = 1 };
+
+            FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader
             FontPressStart2P.AddFont(File.ReadAllBytes(@"Content/fonts/PressStart2P.ttf"));
         }
 
@@ -227,12 +232,13 @@ namespace SonOfRobin
             FontFreeSansBold = new FontSystem();
             FontFreeSansBold.AddFont(File.ReadAllBytes(@"Content/fonts/FreeSansBold.ttf"));
 
-            FontPixelMix = new FontSystem();
+            FontPixelMix = new FontSystem(PixelatedFontSettings);
             FontPixelMix.AddFont(File.ReadAllBytes(@"Content/fonts/pixelmix.ttf"));
 
             FontTommy = new FontSystem();
             FontTommy.AddFont(File.ReadAllBytes(@"Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
 
+            FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P");
             FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
             FontFreeSansBold10 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold10");
             FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");

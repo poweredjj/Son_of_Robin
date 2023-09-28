@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Concurrent;
@@ -138,6 +139,37 @@ namespace SonOfRobin
                 _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
             };
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        public static void DrawTextInsideRectNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
+        {
+            Vector2 textSize = font.MeasureString(text);
+            float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
+
+            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
+
+            var xOffset = alignX switch
+            {
+                AlignX.Left => 0,
+                AlignX.Center => (int)((rectangle.Width - (textSize.X * scale)) / 2),
+                AlignX.Right => (int)(rectangle.Width - (textSize.X * scale)),
+                _ => throw new ArgumentException($"Unsupported alignX - {alignX}."),
+            };
+
+            var yOffset = alignY switch
+            {
+                AlignY.Top => 0,
+                AlignY.Center => (int)((rectangle.Height - (textSize.Y * scale)) / 2),
+                AlignY.Bottom => (int)(rectangle.Height - (textSize.Y * scale)),
+                _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
+            };
+
+            font.DrawText(
+                batch: SonOfRobinGame.SpriteBatch,
+                text: text,
+                position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset),
+                color: color,
+                scale: new Vector2(scale));
         }
 
         public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)

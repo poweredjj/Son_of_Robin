@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace SonOfRobin
         }
 
         private static int lastDeletionFrame = 0;
-        private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
+        private SpriteFontBase font;
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
         private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
@@ -49,6 +49,8 @@ namespace SonOfRobin
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
+
             this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
             this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
         }
@@ -91,7 +93,13 @@ namespace SonOfRobin
                     float textOpacity = Math.Clamp(value: (float)(message.deletionFrame - currentFrame), min: 0, max: 1);
                     float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
-                    Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);
+                    font.DrawText(
+                        batch: SonOfRobinGame.SpriteBatch,
+                        text: currentLineOfText,
+                        position: txtPos,
+                        color: message.color * textOpacity,
+                        effect: FontSystemEffect.Stroked,
+                        effectAmount: 1);
                 }
                 else break;
             }

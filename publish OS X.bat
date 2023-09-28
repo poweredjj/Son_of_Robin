@@ -13,8 +13,6 @@ cd SonOfRobin.DesktopGL
 :: Publish the project - files are output to bin\Release\netcoreapp3.1\$PLATFORM\publish\ 
 dotnet publish -c Release -r osx-x64 /p:PublishReadyToRun=false /p:TieredCompilation=false --self-contained
 
-copy /Y "..\_legacy_fonts\*" "bin\Release\net6.0\osx-x64\publish\Content\fonts\"
-
 :: Remove output directory if it exists
 
 rd /s /q bin\Release\osx-64\
