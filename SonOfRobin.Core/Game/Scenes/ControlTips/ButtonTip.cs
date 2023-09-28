@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace SonOfRobin
     {
         public const int margin = 2;
         public const float textureScale = 0.25f;
-        private static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold24;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
         private const float fontScale = 0.5f; // base font scale (relative to icons); the whole controlTips scene can be scaled down if needed
 
         public readonly string text;
@@ -76,15 +77,7 @@ namespace SonOfRobin
             Vector2 txtSize = font.MeasureString(this.text) * fontScale;
             Vector2 txtPos = basePos + new Vector2(textureOffsetX, (int)(textureMaxHeight / 2) - (int)(txtSize.Y / 2f));
 
-            for (int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
-                {
-                    SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos + new Vector2(x, y), color: Color.Black * controlTips.viewParams.drawOpacity * globalOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-                }
-            }
-
-            SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos, color: Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier * globalOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: new Vector2(fontScale), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 2);
 
             // Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)(font.MeasureString(this.text).X * fontScale), (int)(font.MeasureString(this.text).Y * fontScale)), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }

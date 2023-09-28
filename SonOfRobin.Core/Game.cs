@@ -59,13 +59,6 @@ namespace SonOfRobin
         public static FontSystem FontPressStart2P { get; private set; }
         public static FontSystem FontPixelMix { get; private set; }
         public static FontSystem FontTommy { get; private set; }
-
-        public static SpriteFont FontPixelMix5 { get; private set; }
-        public static SpriteFont FontPressStart2P5 { get; private set; }
-        public static SpriteFont FontFreeSansBold10 { get; private set; }
-        public static SpriteFont FontFreeSansBold12 { get; private set; }
-        public static SpriteFont FontFreeSansBold24 { get; private set; }
-        public static SpriteFont FontTommy20 { get; private set; }
         public static SpriteFont FontTommy40 { get; private set; }
         public static Texture2D WhiteRectangle { get; private set; }
         public static Texture2D GradientLeft { get; private set; }
@@ -238,12 +231,6 @@ namespace SonOfRobin
             FontTommy = new FontSystem();
             FontTommy.AddFont(File.ReadAllBytes(@"Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
 
-            FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P");
-            FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
-            FontFreeSansBold10 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold10");
-            FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");
-            FontFreeSansBold24 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold24");
-            FontTommy20 = ContentMgr.Load<SpriteFont>("fonts/Tommy20");
             FontTommy40 = ContentMgr.Load<SpriteFont>("fonts/Tommy40");
         }
 

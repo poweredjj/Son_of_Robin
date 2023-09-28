@@ -41,31 +41,6 @@ namespace SonOfRobin
             return currentID;
         }
 
-        public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1, bool centered = false, float scale = 1f)
-        {
-            if (centered)
-            {
-                Vector2 textSize = font.MeasureString(text) * scale;
-                pos.X -= textSize.X / 2;
-                pos.Y -= textSize.Y / 2;
-            }
-
-            if (outlineSize > 0)
-            {
-                int step = Math.Max(outlineSize / 2, 1);
-
-                for (int x = -outlineSize; x <= outlineSize; x += step)
-                {
-                    for (int y = -outlineSize; y <= outlineSize; y += step)
-                    {
-                        SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos + new Vector2(x, y), color: outlineColor, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
-                    }
-                }
-            }
-
-            SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos, color: color, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
-        }
-
         public static void DrawTextInsideRectWithShadow(SpriteFontBase font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
             if (shadowOffset != 0)
