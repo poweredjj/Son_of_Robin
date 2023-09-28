@@ -33,7 +33,7 @@ namespace SonOfRobin
         }
 
         private static int lastDeletionFrame = 0;
-        private SpriteFontBase font;
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontPressStart2P.GetFont(8);
         private const int txtSeparator = 3;
         private const int freePixelsAboveMessages = 160;
         private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
@@ -49,8 +49,6 @@ namespace SonOfRobin
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
-
             this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
             this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
         }

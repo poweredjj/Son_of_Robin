@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace SonOfRobin
         };
 
         private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
+        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(40);
+
         private const int maxInactiveDuration = 10;
         private const int movementSlowdown = 6;
         private const int opacitySlowdown = 6;
@@ -168,7 +171,7 @@ namespace SonOfRobin
 
                 Rectangle pieceNameRect = new(x: destRect.X + ((destRect.Width - textWidth) / 2), y: textPosY, width: textWidth, height: textHeight);
 
-                Helpers.DrawTextInsideRectWithShadow(font: SonOfRobinGame.FontTommy40, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
+                Helpers.DrawTextInsideRectWithShadowNew(font: font, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
             }
         }
 

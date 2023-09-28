@@ -97,18 +97,18 @@ namespace SonOfRobin
         public virtual void NextValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "NextValue", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "NextValue", color: Color.White);
         }
 
         public virtual void PreviousValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "PreviousValue", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "PreviousValue", color: Color.White);
         }
 
         public virtual void Invoke()
         {
-            if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "Invoke", color: Color.White);
+            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "Invoke", color: Color.White);
         }
 
         public virtual void ProcessTouch()

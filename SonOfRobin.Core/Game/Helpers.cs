@@ -96,26 +96,6 @@ namespace SonOfRobin
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
         }
 
-        public static void DrawTextInsideRectWithShadow(SpriteFont font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false)
-        {
-            if (shadowOffset != 0)
-            {
-                shadowOffsetX = shadowOffset;
-                shadowOffsetY = shadowOffset;
-            }
-
-            if (shadowOffsetX != 0 && shadowOffsetY != 0)
-            {
-                Rectangle shadowRect = rectangle;
-                shadowRect.X += shadowOffsetX;
-                shadowRect.Y += shadowOffsetY;
-
-                DrawTextInsideRect(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
-            }
-
-            DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
-        }
-
         public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
         {
             Vector2 textSize = font.MeasureString(text);
@@ -139,6 +119,26 @@ namespace SonOfRobin
                 _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
             };
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        public static void DrawTextInsideRectWithShadowNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
+        {
+            if (shadowOffset != 0)
+            {
+                shadowOffsetX = shadowOffset;
+                shadowOffsetY = shadowOffset;
+            }
+
+            if (shadowOffsetX != 0 && shadowOffsetY != 0)
+            {
+                Rectangle shadowRect = rectangle;
+                shadowRect.X += shadowOffsetX;
+                shadowRect.Y += shadowOffsetY;
+
+                DrawTextInsideRectNew(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
+            }
+
+            DrawTextInsideRectNew(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
         }
 
         public static void DrawTextInsideRectNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
@@ -171,7 +171,7 @@ namespace SonOfRobin
                         color: color,
                         scale: new Vector2(scale),
                         effect: effectAmount == 0 ? FontSystemEffect.None : effect,
-                        effectAmount: effectAmount);
+                        effectAmount: (int)(effectAmount / scale));
         }
 
         public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)
