@@ -76,8 +76,13 @@ namespace SonOfRobin
 
             Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.text) * fontScale;
             Vector2 txtPos = basePos + new Vector2(textureOffsetX, (int)(textureMaxHeight / 2) - (int)(txtSize.Y / 2f));
+            Vector2 fontScaleVector = new Vector2(fontScale);
+            Vector2 shadowOffset = new Vector2(txtSize.Y * 0.05f);
+            int outlineSize = (int)(2f * (1f / fontScale));
 
-            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: new Vector2(fontScale), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 2);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos + shadowOffset, scale: fontScaleVector, color: Color.Black, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2);
+
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: fontScaleVector, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: outlineSize);
 
             // Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)(font.MeasureString(this.text).X * fontScale), (int)(font.MeasureString(this.text).Y * fontScale)), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }

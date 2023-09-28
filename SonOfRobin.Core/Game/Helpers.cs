@@ -63,7 +63,7 @@ namespace SonOfRobin
 
         public static void DrawTextInsideRect(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
-            Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: text);
+            Vector2 textSize = MeasureStringCorrectly(font: font, stringToMeasure: text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
 
             if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
@@ -91,7 +91,7 @@ namespace SonOfRobin
                         color: color,
                         scale: new Vector2(scale),
                         effect: effectAmount == 0 ? FontSystemEffect.None : effect,
-                        effectAmount: (int)(effectAmount / scale));
+                        effectAmount: (int)Math.Ceiling(effectAmount / scale));
         }
 
         public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)

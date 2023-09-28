@@ -1221,7 +1221,9 @@ namespace SonOfRobin
                 Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPosWithMargin.X + spriteOffset, (int)slotPosWithMargin.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: opacity, drawNewIcon: this.type != Type.SingleBottom);
 
-                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
+                float rectHeightDivider = SonOfRobinGame.platform == Platform.Mobile ? 2f : 3f;
+                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (int)(tileRect.Height / rectHeightDivider * (rectHeightDivider - 1)), width: tileRect.Width, height: (int)(tileRect.Height / rectHeightDivider));                          
+
                 DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: opacity);
             }
 
@@ -1237,7 +1239,7 @@ namespace SonOfRobin
             Rectangle labelRect = tileRect;
             labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Helpers.DrawTextInsideRect(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
+            Helpers.DrawTextInsideRect(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 3, drawTestRect: false);
         }
 
         private void DrawMainLabel(float opacity)
@@ -1271,7 +1273,7 @@ namespace SonOfRobin
 
             string countTxt = $"x{pieceCount}";
 
-            Helpers.DrawTextInsideRect(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 4, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 3, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom, drawTestRect: false);
         }
 
         private Vector2 GetSlotPos(StorageSlot slot, int margin, int tileSize)
