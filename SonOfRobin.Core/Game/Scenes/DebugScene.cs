@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -9,7 +10,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold10;
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(12);
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -92,7 +93,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            Helpers.DrawTextWithOutline(font: font, text: debugText, pos: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 1);
 
             SonOfRobinGame.SpriteBatch.End();
         }

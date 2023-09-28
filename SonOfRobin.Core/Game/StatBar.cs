@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace SonOfRobin
         private static readonly List<StatBar> barsToDraw = new List<StatBar> { };
         private static int currentBatchCount = 0;
 
-        private static readonly SpriteFont defaultFont = SonOfRobinGame.FontPixelMix5;
-        private static SpriteFont currentBatchFont = SonOfRobinGame.FontPixelMix5;
-        private readonly SpriteFont font;
+        private static readonly SpriteFontBase defaultFont = SonOfRobinGame.FontPixelMix.GetFont(8);
+        private static SpriteFontBase currentBatchFont = SonOfRobinGame.FontPixelMix.GetFont(8);
+        private readonly SpriteFontBase font;
         private readonly Color color;
 
         private readonly bool labelAtLeft;
@@ -89,11 +90,11 @@ namespace SonOfRobin
             currentBatchCount++;
         }
 
-        public static void ChangeBatchFont(SpriteFont spriteFont)
+        public static void ChangeBatchFont(SpriteFontBase spriteFontBase)
         {
             // changes font of next declared stat bars
 
-            currentBatchFont = spriteFont;
+            currentBatchFont = spriteFontBase;
         }
 
         public static void FinishThisBatch()
@@ -104,18 +105,11 @@ namespace SonOfRobin
             currentBatchFont = defaultFont;
         }
 
-        private void DrawTxtOutline()
-        {
-            if (this.texture != null) return;
-
-            // Color.Transparent, because text should be drawn after drawing outlines for all statbars
-            Helpers.DrawTextWithOutline(font: font, text: this.label, pos: this.labelPos, color: Color.Transparent, outlineColor: Color.Black, outlineSize: 1);
-        }
-
         private void DrawTxt()
         {
             if (this.texture != null) return;
-            SonOfRobinGame.SpriteBatch.DrawString(font, this.label, this.labelPos, Color.White);
+
+            this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.label, position: this.labelPos, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
         }
 
         private void DrawBarOutline()
@@ -146,7 +140,6 @@ namespace SonOfRobin
             foreach (StatBar bar in barsToDraw)
             {
                 bar.DrawBarOutline();
-                bar.DrawTxtOutline();
             }
 
             foreach (StatBar bar in barsToDraw)

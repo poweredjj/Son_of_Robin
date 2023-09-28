@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -231,7 +231,7 @@ namespace SonOfRobin
 
         public void DrawDebugData(Group groupName, bool drawCellData, bool drawPieceData)
         {
-            SpriteFont font = SonOfRobinGame.FontPressStart2P5;
+            SpriteFontBase font = SonOfRobinGame.FontPressStart2P.GetFont(8);
 
             // drawing cell ext colors
 
@@ -262,7 +262,8 @@ namespace SonOfRobin
                 foreach (Sprite sprite in this.spriteGroups[groupName])
                 {
                     string spriteText = $"{sprite.AnimPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
-                    Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: new Vector2(sprite.ColRect.Left, sprite.ColRect.Bottom), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+
+                    font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: spriteText, position: new Vector2(sprite.ColRect.Left, sprite.ColRect.Bottom), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
                 }
             }
 
@@ -272,7 +273,7 @@ namespace SonOfRobin
             {
                 string cellText = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
 
-                Helpers.DrawTextWithOutline(font: font, text: cellText, pos: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: cellText, position: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
             }
         }
     }

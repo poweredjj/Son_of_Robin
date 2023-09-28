@@ -713,7 +713,7 @@ namespace SonOfRobin
                         HslColor locationColorHSL = location.Color.ToHsl();
                         locationColorHSL = new HslColor(h: locationColorHSL.H, s: locationColorHSL.S, l: Math.Max(locationColorHSL.L * 1.5f, 0.85f));
 
-                        Helpers.DrawTextInsideRectNew(font: locationFont, text: location.name, rectangle: newTextRect, color: locationColorHSL.ToRgb() * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: outlineSize, drawTestRect: false);
+                        Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: locationColorHSL.ToRgb() * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: outlineSize, drawTestRect: false);
 
                         drawnNamesRects.Add(newTextRect);
                     }

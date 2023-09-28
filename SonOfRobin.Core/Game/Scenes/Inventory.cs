@@ -1237,7 +1237,7 @@ namespace SonOfRobin
             Rectangle labelRect = tileRect;
             labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Helpers.DrawTextInsideRectNew(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
+            Helpers.DrawTextInsideRect(font: font, text: slot.label, rectangle: labelRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
         }
 
         private void DrawMainLabel(float opacity)
@@ -1272,7 +1272,7 @@ namespace SonOfRobin
 
             string countTxt = $"x{pieceCount}";
 
-            Helpers.DrawTextInsideRectNew(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 4, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: font, text: countTxt, rectangle: destRect, color: Color.White * opacity, effect: FontSystemEffect.Stroked, effectAmount: 4, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
         }
 
         private Vector2 GetSlotPos(StorageSlot slot, int margin, int tileSize)

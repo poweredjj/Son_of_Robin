@@ -354,7 +354,7 @@ namespace SonOfRobin
                 {
                     Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
 
-                    Helpers.DrawTextInsideRectNew(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
+                    Helpers.DrawTextInsideRect(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
 
                     labelRectYOffset += labelRectHeight;
                 }

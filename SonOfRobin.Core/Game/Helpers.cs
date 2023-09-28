@@ -66,62 +66,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawString(spriteFont: font, text: text, position: pos, color: color, rotation: 0, origin: Vector2.Zero, scale: scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
-        public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
-        {
-            var outlineRectList = new List<Rectangle>();
-
-            if (outlineSize > 0)
-            {
-                int step = Math.Max(outlineSize / 2, 1);
-
-                for (int x = -outlineSize; x <= outlineSize; x += step)
-                {
-                    for (int y = -outlineSize; y <= outlineSize; y += step)
-                    {
-                        if (x == 0 && y == 0) continue;
-
-                        Rectangle outlineRect = rectangle;
-                        outlineRect.X += x;
-                        outlineRect.Y += y;
-                        outlineRectList.Add(outlineRect);
-                    }
-                }
-            }
-
-            foreach (Rectangle outlineRect in outlineRectList)
-            {
-                DrawTextInsideRect(font: font, rectangle: outlineRect, text: text, color: outlineColor, alignX: alignX, alignY: alignY, drawTestRect: false);
-            }
-
-            DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
-        }
-
-        public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
-        {
-            Vector2 textSize = font.MeasureString(text);
-            float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
-
-            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
-
-            var xOffset = alignX switch
-            {
-                AlignX.Left => 0,
-                AlignX.Center => (int)((rectangle.Width - (textSize.X * scale)) / 2),
-                AlignX.Right => (int)(rectangle.Width - (textSize.X * scale)),
-                _ => throw new ArgumentException($"Unsupported alignX - {alignX}."),
-            };
-
-            var yOffset = alignY switch
-            {
-                AlignY.Top => 0,
-                AlignY.Center => (int)((rectangle.Height - (textSize.Y * scale)) / 2),
-                AlignY.Bottom => (int)(rectangle.Height - (textSize.Y * scale)),
-                _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
-            };
-            SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-        }
-
-        public static void DrawTextInsideRectWithShadowNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
+        public static void DrawTextInsideRectWithShadow(SpriteFontBase font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
             if (shadowOffset != 0)
             {
@@ -135,13 +80,13 @@ namespace SonOfRobin
                 shadowRect.X += shadowOffsetX;
                 shadowRect.Y += shadowOffsetY;
 
-                DrawTextInsideRectNew(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
+                DrawTextInsideRect(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
             }
 
-            DrawTextInsideRectNew(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
+            DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
         }
 
-        public static void DrawTextInsideRectNew(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
+        public static void DrawTextInsideRect(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
         {
             Vector2 textSize = font.MeasureString(text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
