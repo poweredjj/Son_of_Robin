@@ -181,7 +181,7 @@ namespace SonOfRobin
 
             // Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
 
-            Helpers.DrawTextInsideRectNew(font: this.font, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+            Helpers.DrawTextInsideRectNew(font: this.font, text: this.CounterText, rectangle: this.textRect, textColor: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
 
             // graph
 

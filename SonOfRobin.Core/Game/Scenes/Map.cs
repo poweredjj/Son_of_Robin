@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace SonOfRobin
         }
 
         public readonly World world;
+        private readonly SpriteFontBase locationFont;
         private readonly Camera camera;
         private Task bgTaskForMeshes;
         private Task bgTaskForSprites;
@@ -62,6 +65,7 @@ namespace SonOfRobin
             this.bgTaskSpritesLastCameraRect = new Rectangle();
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.bgTaskSpritesToShow = new List<Sprite>();
+            this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
             this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
             {
                 { Color.Blue, null },
@@ -667,11 +671,11 @@ namespace SonOfRobin
 
             if (Preferences.mapShowLocationNames && this.Mode == MapMode.Full && this.camera.CurrentZoom >= 0.05f)
             {
-                SpriteFont locationFont = SonOfRobinGame.FontTommy20;
                 var drawnNamesRects = new List<Rectangle>();
 
                 float locationTextScale = Math.Min(1f / this.camera.CurrentZoom * 0.25f, 2f) * 3f;
-                int outlineSize = Math.Max((int)(4 * locationTextScale), 4);
+
+                int outlineSize = (int)Math.Clamp(value: locationTextScale * 2, min: 2, max: 4);
 
                 foreach (NamedLocations.Location location in this.world.Grid.namedLocations.DiscoveredLocations)
                 {
@@ -706,7 +710,10 @@ namespace SonOfRobin
                             }
                         }
 
-                        Helpers.DrawTextInsideRectWithOutline(font: locationFont, rectangle: newTextRect, text: location.name, color: Color.White, outlineColor: location.Color, outlineSize: outlineSize, drawTestRect: false);
+                        HslColor locationColorHSL = location.Color.ToHsl();
+                        locationColorHSL = new HslColor(h: locationColorHSL.H, s: locationColorHSL.S, l: Math.Max(locationColorHSL.L * 1.5f, 0.85f));
+
+                        Helpers.DrawTextInsideRectNew(font: locationFont, text: location.name, rectangle: newTextRect, textColor: locationColorHSL.ToRgb() * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: outlineSize, drawTestRect: false);
 
                         drawnNamesRects.Add(newTextRect);
                     }
