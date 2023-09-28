@@ -1,3 +1,4 @@
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -53,6 +54,11 @@ namespace SonOfRobin
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
         public static ErrorLog ErrorLog { get; private set; }
+        public static FontSystem FontFreeSansBold { get; private set; }
+        public static FontSystem FontPressStart2P { get; private set; }
+        public static FontSystem FontPixelMix { get; private set; }
+        public static FontSystem FontTommy { get; private set; }
+
         public static SpriteFont FontPixelMix5 { get; private set; }
         public static SpriteFont FontPressStart2P5 { get; private set; }
         public static SpriteFont FontFreeSansBold10 { get; private set; }
@@ -211,10 +217,22 @@ namespace SonOfRobin
             TextureBank.AssignContentManagers(persistentManager: new ContentManager(Services, "Content"), temporaryManager: new ContentManager(Services, "Content"));
 
             FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
+
+            FontPressStart2P = new FontSystem();
+            FontPressStart2P.AddFont(File.ReadAllBytes(@"Content/fonts/PressStart2P.ttf"));
         }
 
         public static void LoadFonts()
         {
+            FontFreeSansBold = new FontSystem();
+            FontFreeSansBold.AddFont(File.ReadAllBytes(@"Content/fonts/FreeSansBold.ttf"));
+
+            FontPixelMix = new FontSystem();
+            FontPixelMix.AddFont(File.ReadAllBytes(@"Content/fonts/pixelmix.ttf"));
+
+            FontTommy = new FontSystem();
+            FontTommy.AddFont(File.ReadAllBytes(@"Content/fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf"));
+
             FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
             FontFreeSansBold10 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold10");
             FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");

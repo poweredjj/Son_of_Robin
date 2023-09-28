@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -315,6 +316,12 @@ namespace SonOfRobin
 
             Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
             splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
+
+
+
+            SpriteFontBase fontPressStart2P8 = SonOfRobinGame.FontPressStart2P.GetFont(8);
+            SonOfRobinGame.SpriteBatch.DrawString(fontPressStart2P8, "The quick いろは brown\nfox にほへ jumps over\nt🙌h📦e l👏a👏zy dog", new Vector2(0, 0), Color.White);
+
 
             Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
 

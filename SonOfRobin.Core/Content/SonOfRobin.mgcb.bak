@@ -58,6 +58,11 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/FreeSansBold24.spritefont
 
+#begin fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf
+/importer:
+/processor:
+/build:fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf
+
 #begin fonts/PixelMix.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -76,9 +81,6 @@
 
 #begin fonts/Ubiquitous.ttf
 /copy:fonts/Ubiquitous.ttf
-
-#begin fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf
-/copy:fonts/MADE_TOMMY_Medium_PERSONAL_USE.otf
 
 #begin fonts/PressStart2P.spritefont
 /importer:FontDescriptionImporter
