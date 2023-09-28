@@ -1,4 +1,5 @@
 ﻿using FontStashSharp;
+using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -94,6 +95,26 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 1);
+
+            RichTextLayout rtl = new RichTextLayout
+            {
+                Font = SonOfRobinGame.FontTommy.GetFont(20),
+                Text = "A small tree: /i[SimpleHeart]",
+            };
+
+            // TODO add dictionary to texturebank, that will autogenerate strings and then retrieve the corresponding texture
+
+
+            // TODO move to Game.cs
+            RichTextDefaults.ImageResolver = imageName =>
+            {
+                TextureBank.TextureName textureName;
+                Enum.TryParse(imageName, out textureName);
+
+                return new TextureFragment(TextureBank.GetTexture(textureName));
+            };
+
+            rtl.Draw(SonOfRobinGame.SpriteBatch, new Vector2(100, 100), Color.White);
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -433,7 +454,6 @@ namespace SonOfRobin
 
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(4), transitionLength: TimeSpan.FromMinutes(1f)));
             //}
-
 
             //if (Keyboard.HasBeenPressed(Keys.F3))
             //{
