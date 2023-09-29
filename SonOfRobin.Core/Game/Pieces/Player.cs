@@ -1239,7 +1239,7 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: this.sleepEngine.updateMultiplier);
 
-            SonOfRobinGame.MessageLog.Add(text: "Going to sleep.");
+            SonOfRobinGame.MessageLog.Add(text: "Going to sleep.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
         }
 
         public void WakeUp(bool force = false)
@@ -1276,7 +1276,7 @@ namespace SonOfRobin
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Waking up.");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Waking up.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
 
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
@@ -1319,7 +1319,7 @@ namespace SonOfRobin
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
 
-                SonOfRobinGame.MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", avoidDuplicates: true);
+                SonOfRobinGame.MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", texture: closestPiece.sprite.AnimFrame.texture, avoidDuplicates: true);
             }
         }
 

@@ -192,7 +192,7 @@ namespace SonOfRobin
                     {
                         // no Disable(), because this hint should be shown every time
 
-                        SonOfRobinGame.MessageLog.Add(text: $"Too dark to use {text}.", avoidDuplicates: true);
+                        SonOfRobinGame.MessageLog.Add(text: $"Too dark to use {text}.", texture: texture, avoidDuplicates: true);
                         break;
                     }
 

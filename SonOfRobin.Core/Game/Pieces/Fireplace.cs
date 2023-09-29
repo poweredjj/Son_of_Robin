@@ -122,7 +122,7 @@ namespace SonOfRobin
             if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                else SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");
+                else SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", texture: this.sprite.AnimFrame.texture);
                 return false;
             }
 

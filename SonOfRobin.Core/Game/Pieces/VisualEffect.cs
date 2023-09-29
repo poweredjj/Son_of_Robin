@@ -52,7 +52,7 @@ namespace SonOfRobin
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();
-                SonOfRobinGame.MessageLog.Add(text: "Map marker has been reached.");
+                SonOfRobinGame.MessageLog.Add(text: "Map marker has been reached.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker));
             }
         }
 

@@ -12,6 +12,7 @@ namespace SonOfRobin
     {
         public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(16);
         public static string debugText = "";
+        public static Vector2 lastTextSize = Vector2.One;
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
@@ -94,7 +95,9 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            //font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
+            lastTextSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: debugText);
+
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
             SonOfRobinGame.SpriteBatch.End();
         }

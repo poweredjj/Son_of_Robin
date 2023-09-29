@@ -88,7 +88,10 @@ namespace SonOfRobin
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentPosY = this.screenHeight - this.marginY;
+
             int maxDrawHeight = (int)(this.screenHeight * 0.2f);
+
+            if (GetTopSceneOfType(typeof(DebugScene)) != null) maxDrawHeight = (int)DebugScene.lastTextSize.Y;
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
@@ -111,12 +114,12 @@ namespace SonOfRobin
 
                     Vector2 txtPos = new(entryPos.X + bgInflateSize * 2, currentPosY + bgInflateSize);
 
-                    Rectangle textureRect = new Rectangle(0, 0, 0, 0);
+                    Rectangle textureRect = Rectangle.Empty;
 
                     if (message.texture != null)
                     {
                         textureRect = new Rectangle(x: (int)txtPos.X, y: (int)entryPos.Y + 1, width: bgRect.Height - 2, height: bgRect.Height - 2);
-                        int textureMargin = bgInflateSize;
+                        int textureMargin = (int)(bgInflateSize * 1.5f);
                         bgRect.Width += textureRect.Width + textureMargin;
                         txtPos.X += textureRect.Width + textureMargin;
                     }
@@ -132,9 +135,15 @@ namespace SonOfRobin
 
                     triSliceBG.Draw(triSliceRect: bgRect, color: message.bgColor * 0.5f * opacity);
 
-                    if (message.texture != null) Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity);
+                    if (message.texture != null)
+                    {
+                        Texture2D bgTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteHorizontalLine);
+                        Rectangle textureHighlightRect = textureRect;
+                        textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
 
-                    // if (message.texture != null) SonOfRobinGame.SpriteBatch.Draw(message.texture, textureRect, message.texture.Bounds, Color.White * opacity);
+                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.8f);
+                        Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity);
+                    }
 
                     font.DrawText(
                     batch: SonOfRobinGame.SpriteBatch,

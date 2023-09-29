@@ -343,7 +343,7 @@ namespace SonOfRobin
                         if (this.boardPiece.HitPoints <= 0)
                         {
                             world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.AnimFrame.texture);
-                            SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", textColor: Color.White);
+                            SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", texture: this.boardPiece.sprite.AnimFrame.texture, textColor: Color.White);
 
                             portableLight.IsOn = false;
 
