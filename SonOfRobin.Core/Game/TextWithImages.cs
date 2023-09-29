@@ -261,17 +261,7 @@ namespace SonOfRobin
             }
         }
 
-        public void Draw(Vector2 position, Color color, float textScale = 1f, float imageOpacity = 1f, float inflatePercent = 0f)
-        {
-            this.DrawWithShadow(position: position, color: color, shadowColor: Color.Transparent, textScale: textScale, drawShadow: false, shadowOffset: Vector2.Zero, imageOpacity: imageOpacity, inflatePercent: inflatePercent);
-        }
-
-        public void Draw(Vector2 position, Color color, Color shadowColor, Vector2 shadowOffset, float textScale = 1f, float imageOpacity = 1f, float inflatePercent = 0f)
-        {
-            this.DrawWithShadow(position: position, color: color, shadowColor: shadowColor, textScale: textScale, drawShadow: true, shadowOffset: shadowOffset, imageOpacity: imageOpacity, inflatePercent: inflatePercent);
-        }
-
-        private void DrawWithShadow(Vector2 position, Color color, Color shadowColor, float textScale, bool drawShadow, Vector2 shadowOffset, float imageOpacity, float inflatePercent)
+        public void Draw(Vector2 position, Color color, bool drawShadow = false, float textScale = 1f, float imageOpacity = 1f, float inflatePercent = 0f, Vector2 shadowOffset = default, Color shadowColor = default)
         {
             string currentText = this.AnimatedText;
 

@@ -398,7 +398,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    entry.textWithImages.Draw(position: textPos, color: entry.color * this.viewParams.drawOpacity, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, shadowOffset: new Vector2(shadowOffset), textScale: globalScale * entry.scale);
+                    entry.textWithImages.Draw(position: textPos, color: entry.color * this.viewParams.drawOpacity, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, drawShadow: true, shadowOffset: new Vector2(shadowOffset), textScale: globalScale * entry.scale);
                 }
 
                 // Helpers.DrawRectangleOutline(rect: new Rectangle(x: (int)basePos.X, y: (int)basePos.Y, width: (int)realEntrySize.X, height: (int)realEntrySize.Y), color: Color.White, borderWidth: 1); // for testing

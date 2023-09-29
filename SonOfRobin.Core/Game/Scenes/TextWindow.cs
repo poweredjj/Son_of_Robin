@@ -252,14 +252,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, this.bgColor * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: this.textColor * this.viewParams.drawOpacity, borderWidth: 2);
 
-            if (this.drawShadow)
-            {
-                this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.Black * 0.5f, shadowOffset: new Vector2(textShadowOffset), textScale: this.textScale);
-            }
-            else
-            {
-                this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, textScale: this.textScale);
-            }
+            this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.Black * 0.5f, shadowOffset: new Vector2(textShadowOffset), textScale: this.textScale, drawShadow: this.drawShadow);
 
             SonOfRobinGame.SpriteBatch.End();
         }
