@@ -34,7 +34,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFontBase fontRegular = SonOfRobinGame.FontVCROSD.GetFont(13);
+        private static readonly SpriteFontBase fontRegular = SonOfRobinGame.FontVCROSD.GetFont(21);
         private static readonly SpriteFontBase fontDebug = SonOfRobinGame.FontPressStart2P.GetFont(8);
 
         private readonly int marginX;
@@ -83,7 +83,8 @@ namespace SonOfRobin
             { messagesToDisplay = this.messages.ToList(); }
             catch (ArgumentException) { return; } // if some background process tries to add message right now
 
-            TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
+            // TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG (turned off for now, because it caused glitches on items' edges)
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentPosY = this.screenHeight - this.marginY;
@@ -100,7 +101,7 @@ namespace SonOfRobin
                     SpriteFontBase font = message.isDebug ? fontDebug : fontRegular;
 
                     Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
-                    int bgInflateSize = message.texture != null ? 8 : 4;
+                    int bgInflateSize = message.texture != null ? 10 : 4;
                     if (message.isDebug) bgInflateSize = 2;
 
                     Vector2 entryPos = new Vector2(this.marginX, currentPosY);
@@ -117,7 +118,7 @@ namespace SonOfRobin
 
                     if (message.texture != null)
                     {
-                        textureRect = new Rectangle(x: (int)txtPos.X, y: (int)entryPos.Y + 1, width: bgRect.Height - 2, height: bgRect.Height - 2);
+                        textureRect = new Rectangle(x: (int)txtPos.X, y: (int)entryPos.Y, width: bgRect.Height, height: bgRect.Height);
                         int textureMargin = (int)(bgInflateSize * 1.5f);
                         bgRect.Width += textureRect.Width + textureMargin;
                         txtPos.X += textureRect.Width + textureMargin;
@@ -142,10 +143,13 @@ namespace SonOfRobin
                     {
                         Texture2D bgTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteHorizontalLine);
                         Rectangle textureHighlightRect = textureRect;
-                        textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
+                        textureRect.Inflate(0, -1); // highlight should be a little smaller than the background
 
-                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.8f);
-                        Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity);
+                        textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
+                        textureRect.Inflate(0,-2); // texture should be a little smaller than the background
+
+                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.9f);
+                        Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity, drawTestRect: false);
                     }
 
                     font.DrawText(

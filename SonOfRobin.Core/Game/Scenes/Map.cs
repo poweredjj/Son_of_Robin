@@ -154,6 +154,7 @@ namespace SonOfRobin
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
             this.FinalMapToDisplay?.Dispose();
+
             this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
             this.SetViewParamsForMiniature();

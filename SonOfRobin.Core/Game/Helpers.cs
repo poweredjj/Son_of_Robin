@@ -128,7 +128,7 @@ namespace SonOfRobin
                 _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
             };
 
-            Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
+            Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));                
             if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
 
             if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
