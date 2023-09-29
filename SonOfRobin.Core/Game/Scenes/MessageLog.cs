@@ -11,20 +11,22 @@ namespace SonOfRobin
     {
         private readonly struct Message
         {
+            public readonly bool isDebug;
             public readonly string text;
             public readonly int deletionFrame;
             public readonly Color textColor;
             public readonly Color bgColor;
             public readonly Texture2D texture;
 
-            public Message(string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D texture = null)
+            public Message(bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D texture = null)
             {
+                this.isDebug = isDebug;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
                 this.texture = texture;
 
-                int delay = (messagesCount == 0) ? 180 : 90 / Math.Min(messagesCount, 3);
+                int delay = messagesCount == 0 ? 60 * 3 : 90 / Math.Min(messagesCount, 3);
 
                 this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + delay;
             }
@@ -86,22 +88,32 @@ namespace SonOfRobin
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentPosY = this.screenHeight - this.marginY;
+            int maxDrawHeight = (int)(this.screenHeight * 0.2f);
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
-                Message message = messagesToDisplay[messageNo];
-
-                Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
-
-                if (currentPosY < this.screenHeight * 0.2f)
+                if (currentPosY >= maxDrawHeight)
                 {
-                    Vector2 txtPos = new(this.marginX + 8, currentPosY);
-                    float opacity = Math.Clamp(value: (float)(message.deletionFrame - currentFrame), min: 0, max: 1);
+                    Message message = messagesToDisplay[messageNo];
+                    Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
+                    int bgInflateSize = message.texture != null ? 8 : 4;
 
-                    Rectangle bgRect = new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)txtSize.X, (int)txtSize.Y);
-                    bgRect.Inflate(8, 8);
+                    Vector2 entryPos = new Vector2(this.marginX, currentPosY);
+                    Vector2 txtPos = new(entryPos.X + (bgInflateSize * 2), currentPosY + bgInflateSize);
 
-                    currentPosY -= bgRect.Height + 2;
+                    Rectangle bgRect = new Rectangle(
+                        x: (int)entryPos.X,
+                        y: (int)entryPos.Y,
+                        width: (int)txtSize.X + (bgInflateSize * 4),
+                        height: (int)txtSize.Y + (bgInflateSize * 2));
+
+                    int entryHeight = bgRect.Height + 2;
+                    currentPosY -= entryHeight;
+
+                    bgRect.Y -= entryHeight; // moving up by the size of one entry
+                    txtPos.Y -= entryHeight; // moving up by the size of one entry
+
+                    float opacity = (float)Helpers.ConvertRange(oldMin: message.deletionFrame, oldMax: message.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: currentFrame, clampToEdges: true);
 
                     triSliceBG.Draw(triSliceRect: bgRect, color: message.bgColor * 0.5f * opacity);
 
@@ -144,14 +156,17 @@ namespace SonOfRobin
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: this.lastDeletionFrame, messagesCount: this.messages.Count);
+            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: this.lastDeletionFrame, messagesCount: this.messages.Count);
             messages.Add(message);
             this.lastDeletionFrame = message.deletionFrame;
         }
 
         private void DeleteOldMessages(int currentFrame)
         {
-            this.messages = messages.Where(message => currentFrame < message.deletionFrame).ToList();
+            var filteredMessages = this.messages.Where(message => currentFrame < message.deletionFrame);
+            if (!Preferences.DebugMode) filteredMessages = filteredMessages.Where(message => !message.isDebug);
+
+            this.messages = filteredMessages.ToList();
         }
     }
 }
