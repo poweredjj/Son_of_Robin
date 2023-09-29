@@ -9,6 +9,20 @@ namespace SonOfRobin
 {
     public class MessageLog : Scene
     {
+        public readonly struct ItemTextureData
+        {
+            public readonly Texture2D texture;
+            public readonly Rectangle rectangle;
+            public readonly Color color;
+
+            public ItemTextureData(Texture2D texture, Rectangle rectangle, Color color)
+            {
+                this.texture = texture;
+                this.rectangle = rectangle;
+                this.color = color;
+            }
+        }
+
         private readonly struct Message
         {
             public readonly bool isDebug;
@@ -83,8 +97,7 @@ namespace SonOfRobin
             { messagesToDisplay = this.messages.ToList(); }
             catch (ArgumentException) { return; } // if some background process tries to add message right now
 
-            // TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG (turned off for now, because it caused glitches on items' edges)
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentPosY = this.screenHeight - this.marginY;
@@ -92,6 +105,8 @@ namespace SonOfRobin
             int maxDrawHeight = (int)(this.screenHeight * 0.2f);
 
             if (GetTopSceneOfType(typeof(DebugScene)) != null) maxDrawHeight = (int)DebugScene.lastTextSize.Y;
+
+            var itemTextureDataList = new List<ItemTextureData>();
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
@@ -148,8 +163,8 @@ namespace SonOfRobin
                         textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
                         textureRect.Inflate(0,-2); // texture should be a little smaller than the background
 
-                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.9f);
-                        Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity, drawTestRect: false);
+                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.85f);
+                        itemTextureDataList.Add(new ItemTextureData(texture: message.texture, rectangle: textureRect, color: Color.White * opacity));
                     }
 
                     font.DrawText(
@@ -161,6 +176,19 @@ namespace SonOfRobin
                     effectAmount: 1);
                 }
                 else break;
+            }
+
+            if (itemTextureDataList.Count > 0)
+            {
+                SonOfRobinGame.SpriteBatch.End();
+
+                // SamplerState.LinearWrap must be turned off first, otherwise it would cause glitches on item texture edges
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                foreach (ItemTextureData itemTextureData in itemTextureDataList)
+                {
+                    Helpers.DrawTextureInsideRect(texture: itemTextureData.texture, rectangle: itemTextureData.rectangle, color: itemTextureData.color, drawTestRect: false);
+                }
             }
 
             SonOfRobinGame.SpriteBatch.End();
