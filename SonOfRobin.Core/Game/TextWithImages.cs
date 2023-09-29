@@ -286,7 +286,7 @@ namespace SonOfRobin
 
                     if (drawShadow)
                     {
-                        Rectangle imageShadowRect = new Rectangle(x: imageRect.X + (int)shadowOffset.X, y: imageRect.Y + (int)shadowOffset.Y, width: imageRect.Width, height: imageRect.Height);
+                        Rectangle imageShadowRect = new Rectangle(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
                         Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
                     }
 
