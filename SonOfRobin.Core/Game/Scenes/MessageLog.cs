@@ -48,9 +48,6 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFontBase fontRegular = SonOfRobinGame.FontVCROSD.GetFont(21);
-        private static readonly SpriteFontBase fontDebug = SonOfRobinGame.FontPressStart2P.GetFont(8);
-
         private readonly int marginX;
         private readonly int marginY;
 
@@ -113,7 +110,8 @@ namespace SonOfRobin
                 if (currentPosY >= maxDrawHeight)
                 {
                     Message message = messagesToDisplay[messageNo];
-                    SpriteFontBase font = message.isDebug ? fontDebug : fontRegular;
+
+                    SpriteFontBase font = message.isDebug ? SonOfRobinGame.FontPressStart2P.GetFont(8) : SonOfRobinGame.FontVCROSD.GetFont(21);
 
                     Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
                     int bgInflateSize = message.texture != null ? 10 : 4;

@@ -10,12 +10,13 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(16);
+        private readonly SpriteFontBase font;
         public static string debugText = "";
         public static Vector2 lastTextSize = Vector2.One;
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
+            this.font = SonOfRobinGame.FontFreeSansBold.GetFont(16);
             this.transManager.AddTransition(this.GetTransition(inTrans: true));
         }
 

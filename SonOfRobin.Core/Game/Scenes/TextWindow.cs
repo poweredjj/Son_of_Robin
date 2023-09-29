@@ -9,8 +9,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
-
+        private readonly SpriteFontBase font;
         private readonly bool autoClose;
         private int blockingFramesLeft;
         private readonly TextWithImages textWithImages;
@@ -49,6 +48,8 @@ namespace SonOfRobin
 
             base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound, waitForOtherScenesOfTypeToEnd: true)
         {
+            this.font = SonOfRobinGame.FontTommy.GetFont(60); 
+
             this.textWithImages = new TextWithImages(font: font, text: Helpers.KeepTextLineBelowGivenLength(text: text, maxLength: maxWidth), imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, animSound: animSound, treatImagesAsSquares: treatImagesAsSquares);
 
             this.textScale = 1f; // to be updated below

@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         public const int margin = 2;
         public const float textureScale = 0.25f;
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
+        private readonly SpriteFontBase font;
         private const float fontScale = 0.5f; // base font scale (relative to icons); the whole controlTips scene can be scaled down if needed
 
         public readonly string text;
@@ -22,6 +22,7 @@ namespace SonOfRobin
         public ButtonTip(Dictionary<string, ButtonTip> tipCollection, string text, List<Texture2D> textures,
             bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null)
         {
+            this.font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
             this.text = text;
             this.textures = textures;
             Vector2 size = this.WholeSize;

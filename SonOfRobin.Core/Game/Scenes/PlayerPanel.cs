@@ -10,11 +10,11 @@ namespace SonOfRobin
 {
     public class PlayerPanel : Scene
     {
-        private static readonly SpriteFontBase itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
-        private static readonly SpriteFontBase buffFont = SonOfRobinGame.FontTommy.GetFont(60);
-        private static readonly SpriteFontBase locationFont = SonOfRobinGame.FontTommy.GetFont(60);
         private const int posY = 4;
 
+        private readonly SpriteFontBase itemCounterFont;
+        private readonly SpriteFontBase buffFont;
+        private readonly SpriteFontBase locationFont;
         private readonly World world;
         private bool isHidden;
 
@@ -87,6 +87,10 @@ namespace SonOfRobin
 
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.buffFont = SonOfRobinGame.FontTommy.GetFont(60);
+            this.locationFont = SonOfRobinGame.FontTommy.GetFont(60);
+            this.itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
+
             this.world = world;
             this.isHidden = false;
             this.AdaptToNewSize();

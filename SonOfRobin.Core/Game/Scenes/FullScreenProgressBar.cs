@@ -14,11 +14,11 @@ namespace SonOfRobin
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
 
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
         private static readonly Color bgColor = new(252, 252, 246);
         private static readonly Color primaryTextColor = new(105, 215, 252);
         private static readonly Color optionalTextColor = new(156, 181, 252);
         public float ProgressBarPercentage { get; private set; }
+        private readonly SpriteFontBase font;
         private bool isActive;
         private string progressBarText;
         private string optionalText;
@@ -30,6 +30,8 @@ namespace SonOfRobin
         public FullScreenProgressBar() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.TurnOff(force: true);
+
+            this.font = SonOfRobinGame.FontFreeSansBold.GetFont(24);
 
             this.loadingWheel = TextureBank.GetTexture(TextureBank.TextureName.LoadingWheel);
             this.loadingWheelRotation = 0;

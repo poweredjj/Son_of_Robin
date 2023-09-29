@@ -8,8 +8,7 @@ namespace SonOfRobin
 {
     public abstract class Entry
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
-
+        public readonly SpriteFontBase font;
         public readonly Menu menu;
         public readonly int index;
         public readonly string name;
@@ -26,6 +25,7 @@ namespace SonOfRobin
 
         public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
         {
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.menu = menu;
             this.name = name;
             this.imageList = imageList;

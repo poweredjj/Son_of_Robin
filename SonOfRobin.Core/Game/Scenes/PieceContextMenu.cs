@@ -27,8 +27,6 @@ namespace SonOfRobin
             Offer,
         }
 
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
-
         private const float marginPercent = 0.03f;
         private const float entryWidthPercent = 0.8f;
         private const float entryHeightPercent = 0.1f;
@@ -37,6 +35,7 @@ namespace SonOfRobin
         private static readonly Sound soundNavigate = new(SoundData.Name.Navigation);
         private static readonly Sound soundReturn = new(SoundData.Name.Navigation);
 
+        private readonly SpriteFontBase font;
         private readonly BoardPiece piece;
         private readonly PieceStorage storage;
         private readonly StorageSlot slot;
@@ -139,6 +138,7 @@ namespace SonOfRobin
 
         public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
@@ -556,7 +556,7 @@ namespace SonOfRobin
                 Vector2 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
                 Vector2 textScaleVector = new Vector2(textScale);
 
-                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, scale: textScaleVector);
+                font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, scale: textScaleVector, effect: FontSystemEffect.Blurry, effectAmount: 3);
 
                 font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, scale: textScaleVector);
 

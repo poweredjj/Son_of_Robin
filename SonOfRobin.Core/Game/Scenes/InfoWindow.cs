@@ -21,6 +21,7 @@ namespace SonOfRobin
             public int Width { get { return (int)(this.textWithImages.textWidth * this.scale); } }
             public int Height { get { return (int)(this.textWithImages.textHeight * this.scale); } }
 
+            private readonly SpriteFontBase font;
             public readonly Color color;
             public readonly TextWithImages textWithImages;
             public readonly float scale;
@@ -35,7 +36,8 @@ namespace SonOfRobin
 
                 if (this.progressBarMode) text = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
-                this.textWithImages = new TextWithImages(font: font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame);
+                this.font = SonOfRobinGame.FontTommy.GetFont(60);
+                this.textWithImages = new TextWithImages(font: this.font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame);
 
                 this.justify = justify;
                 this.color = color;
@@ -79,8 +81,6 @@ namespace SonOfRobin
                 return true;
             }
         }
-
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
 
         private const float maxWindowWidthPercent = 0.35f;
         private const float maxWindowHeightPercent = 0.7f;

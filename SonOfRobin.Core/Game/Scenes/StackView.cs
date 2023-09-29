@@ -8,8 +8,9 @@ namespace SonOfRobin
 {
     public class StackView : Scene
     {
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontPressStart2P.GetFont(8);
         private const int margin = 3;
+
+        private readonly SpriteFontBase font;
 
         private static List<Scene> DisplayedStack
         {
@@ -44,7 +45,7 @@ namespace SonOfRobin
             }
         }
 
-        private static Vector2 TextBlockSize
+        private Vector2 TextBlockSize
         {
             get
             {
@@ -67,6 +68,7 @@ namespace SonOfRobin
 
         public StackView() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
             this.transManager.AddTransition(this.GetTransition(inTrans: true));
         }
 

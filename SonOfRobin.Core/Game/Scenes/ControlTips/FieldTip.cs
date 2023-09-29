@@ -22,9 +22,9 @@ namespace SonOfRobin
             RightOut,
         };
 
-        private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontTommy.GetFont(60);
-
+        private static readonly Alignment[] inAlignment = new Alignment[] { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
+    
+        private readonly SpriteFontBase font;
         private const int maxInactiveDuration = 10;
         private const int movementSlowdown = 6;
         private const int opacitySlowdown = 6;
@@ -55,6 +55,7 @@ namespace SonOfRobin
 
         private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.world = world;
             this.texture = texture;
             this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
