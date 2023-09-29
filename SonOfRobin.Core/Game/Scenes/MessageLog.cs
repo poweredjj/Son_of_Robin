@@ -134,7 +134,7 @@ namespace SonOfRobin
 
                     float flashOpacity = (float)Helpers.ConvertRange(oldMin: message.createdFrame + 20, oldMax: message.createdFrame, newMin: 0, newMax: 0.6, oldVal: currentFrame, clampToEdges: true);
                     Color bgColor = message.bgColor * 0.5f;
-                    if (flashOpacity > 0) bgColor = Helpers.Blend2Colors(firstColor: bgColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
+                    if (flashOpacity > 0 && !message.isDebug) bgColor = Helpers.Blend2Colors(firstColor: bgColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
 
                     triSliceBG.Draw(triSliceRect: bgRect, color: bgColor * opacity);
 
@@ -169,19 +169,13 @@ namespace SonOfRobin
 
             if (avoidDuplicates)
             {
-                if ((debugMessage && this.lastDebugMessage == text && this.displayedStrings.Contains(text)) ||
+                if ((debugMessage && this.lastDebugMessage == text && (!Preferences.DebugMode || this.displayedStrings.Contains(text))) ||
                     (!debugMessage && this.lastUserMessage == text && this.displayedStrings.Contains(text))) return;
             }
 
             Console.WriteLine(text); // additional output
-            if (debugMessage)
-            {
-                this.lastDebugMessage = text;
-            }
-            else
-            {
-                this.lastUserMessage = text;
-            }
+            if (debugMessage) this.lastDebugMessage = text;
+            else this.lastUserMessage = text;
 
             if (debugMessage && !Preferences.DebugMode) return;
 
