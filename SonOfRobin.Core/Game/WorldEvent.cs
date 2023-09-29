@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                 if (!world.piecesByIDForDeserialization.ContainsKey(pieceID))
                 {
-                    MessageLog.AddMessage(debugMessage: true, message: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", color: Color.Orange);
+                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", textColor: Color.Orange);
                     return null;
                 }
                 boardPiece = world.piecesByIDForDeserialization[pieceID];
@@ -263,7 +263,7 @@ namespace SonOfRobin
 
                 case EventName.StopBurning:
                     {
-                        // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} {this.boardPiece.readableName} cooling.", color: Color.LightCyan);
+                        // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} {this.boardPiece.readableName} cooling.", color: Color.LightCyan);
                         this.boardPiece.HeatLevel = Math.Min(this.boardPiece.HeatLevel, BoardPiece.minBurnVal - 0.1f);
 
                         return;
@@ -291,7 +291,7 @@ namespace SonOfRobin
                         var pieceName = (PieceTemplate.Name)Helpers.CastObjectToUshort(this.eventHelper);
                         world.doNotCreatePiecesList.Remove(pieceName);
 
-                        MessageLog.AddMessage(debugMessage: true, message: $"'{pieceName}' creation restored.");
+                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"'{pieceName}' creation restored.");
 
                         return;
                     }
@@ -301,7 +301,7 @@ namespace SonOfRobin
                         var hintType = (HintEngine.Type)Helpers.CastObjectToByte(this.eventHelper);
                         world.HintEngine.Enable(hintType);
 
-                        MessageLog.AddMessage(debugMessage: true, message: $"Hint '{hintType}' restored.");
+                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Hint '{hintType}' restored.");
 
                         return;
                     }
@@ -337,13 +337,13 @@ namespace SonOfRobin
 
                         // inflicting damage
 
-                        // MessageLog.AddMessage( message: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); // for testing
+                        // SonOfRobinGame.messageLog.AddMessage(text: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); // for testing
 
                         this.boardPiece.HitPoints = Math.Max(this.boardPiece.HitPoints - damage, 0);
                         if (this.boardPiece.HitPoints <= 0)
                         {
                             world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.AnimFrame.texture);
-                            MessageLog.AddMessage(message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
+                            SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", textColor: Color.White);
 
                             portableLight.IsOn = false;
 

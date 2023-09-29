@@ -227,7 +227,7 @@ namespace SonOfRobin
         public static bool CheckForHintToShow(HintEngine hintEngine, Player player, bool ignoreInputActive = false, List<Type> typesToCheckOnly = null, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
             if (!player.world.inputActive && !ignoreInputActive) return false;
-            MessageLog.AddMessage(debugMessage: true, message: "Checking piece hints.");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Checking piece hints.");
 
             if (Scheduler.HasTaskChainInQueue || player.sleepMode != Player.SleepMode.Awake) return false;
             // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)

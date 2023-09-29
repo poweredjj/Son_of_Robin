@@ -211,9 +211,6 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateScenes:
-                    SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
-                    solidColor.MoveToBottom();
-                    new MessageLog();
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
@@ -302,7 +299,7 @@ namespace SonOfRobin
             if (finish)
             {
                 TimeSpan loadingDuration = DateTime.Now - this.startTime;
-                MessageLog.AddMessage(debugMessage: true, message: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 
                 this.Remove();
             }

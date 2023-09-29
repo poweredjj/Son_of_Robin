@@ -52,7 +52,7 @@ namespace SonOfRobin
                 {
                     if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: button))
                     {
-                        MessageLog.AddMessage(debugMessage: true, message: $"button grabbed {button}");
+                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"button grabbed {button}");
                         Helpers.SetProperty(targetObj: this.targetObj, propertyName: this.targetPropertyName, newValue: new StoredInput(button));
                         this.Remove();
                         return;
@@ -67,7 +67,7 @@ namespace SonOfRobin
                 {
                     if (Keyboard.HasBeenPressed(key))
                     {
-                        MessageLog.AddMessage(debugMessage: true, message: $"key grabbed {key}");
+                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"key grabbed {key}");
                         Helpers.SetProperty(targetObj: this.targetObj, propertyName: this.targetPropertyName, newValue: new StoredInput(key));
                         this.Remove();
                         return;

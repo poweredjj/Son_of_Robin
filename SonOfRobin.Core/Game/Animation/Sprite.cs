@@ -343,7 +343,7 @@ namespace SonOfRobin
                 }
             }
 
-            MessageLog.AddMessage(debugMessage: true, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Could not move to closest free spot - {this.boardPiece.name}.", textColor: Color.Violet);
 
             return false;
         }
@@ -687,7 +687,7 @@ namespace SonOfRobin
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Anim frame not found {this.CompleteAnimID}.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
                 this.AnimFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
             }
 

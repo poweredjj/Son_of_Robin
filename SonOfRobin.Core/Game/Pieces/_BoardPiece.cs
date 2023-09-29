@@ -282,7 +282,7 @@ namespace SonOfRobin
                         int delay = this.world.random.Next(60 * 2, 25 * 60);
                         if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
 
-                        // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
+                        // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
                         new WorldEvent(eventName: WorldEvent.EventName.StopBurning, world: this.world, delay: delay, boardPiece: this);
                     }
                 }
@@ -534,7 +534,7 @@ namespace SonOfRobin
 
         public void AddToStateMachines()
         {
-            // MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} adding to state machines - '{this.readableName}'.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} adding to state machines - '{this.readableName}'.");
 
             if (this.GetType() == typeof(Plant)) Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
             else Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
@@ -542,7 +542,7 @@ namespace SonOfRobin
 
         public void RemoveFromStateMachines()
         {
-            //  MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} removing from state machines - '{this.readableName}'.");
+            //  SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} removing from state machines - '{this.readableName}'.");
 
             if (this.GetType() == typeof(Plant)) Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
             else Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
@@ -950,7 +950,7 @@ namespace SonOfRobin
         {
             if (!this.HasPassiveMovement) return false;
 
-            //  MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} processing passive movement for {this.readableName}.");
+            //  SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} processing passive movement for {this.readableName}.");
 
             if (Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier / 2f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier / 2f))
             {

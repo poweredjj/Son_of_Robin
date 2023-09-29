@@ -238,11 +238,11 @@ namespace SonOfRobin
                 return fileStream;
             }
             catch (FileNotFoundException)
-            { MessageLog.AddMessage(debugMessage: true, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
+            { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
             catch (IOException) // png file corrupted
-            { MessageLog.AddMessage(debugMessage: true, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
+            { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted
-            { MessageLog.AddMessage(debugMessage: true, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
+            { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 
             return null;
         }
@@ -258,7 +258,7 @@ namespace SonOfRobin
             }
             catch (InvalidOperationException)
             {
-                MessageLog.AddMessage(debugMessage: true, message: "InvalidOperationException while trying to read texture from fileStream.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "InvalidOperationException while trying to read texture from fileStream.");
 
                 fileStream.Dispose();
                 return null;

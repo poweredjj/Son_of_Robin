@@ -184,7 +184,7 @@ namespace SonOfRobin
 
         public void UpdateGroups(Sprite sprite, List<Group> groupNames)
         {
-            // MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - updating group names.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - updating group names.");
 
             foreach (Group currentGroupName in allGroups)
             {
@@ -195,14 +195,14 @@ namespace SonOfRobin
 
         public void AddToGroup(Sprite sprite, Group groupName)
         {
-            // MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - adding to group {groupName}.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - adding to group {groupName}.");
 
             this.spriteGroups[groupName].Add(sprite);
         }
 
         public void RemoveFromGroup(Sprite sprite, Group groupName)
         {
-            // MessageLog.AddMessage(debugMessage: true, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - removing from group {groupName}.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - removing from group {groupName}.");
 
             this.spriteGroups[groupName].Remove(sprite);
         }

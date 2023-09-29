@@ -98,18 +98,18 @@ namespace SonOfRobin
         public virtual void NextValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "NextValue", color: Color.White);
+            // if (Preferences.DebugMode) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: "NextValue", color: Color.White);
         }
 
         public virtual void PreviousValue(bool touchMode)
         {
             this.menu.touchMode = touchMode;
-            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "PreviousValue", color: Color.White);
+            // if (Preferences.DebugMode) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: "PreviousValue", color: Color.White);
         }
 
         public virtual void Invoke()
         {
-            // if (Preferences.DebugMode) MessageLog.AddMessage(debugMessage: true, message: "Invoke", color: Color.White);
+            // if (Preferences.DebugMode) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: "Invoke", color: Color.White);
         }
 
         public virtual void ProcessTouch()
@@ -141,7 +141,7 @@ namespace SonOfRobin
 
             if (this.textWithImages == null || this.textWithImages.TextOriginal != text || !this.textWithImages.ImageListEqual(imageList))
             {
-                // MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.currentUpdate} new menu textWithImages '{text}'");
+                // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{SonOfRobinGame.currentUpdate} new menu textWithImages '{text}'");
                 this.textWithImages = new TextWithImages(font: font, text: text, imageList: imageList);
             }
 

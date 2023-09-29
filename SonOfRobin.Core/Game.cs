@@ -53,10 +53,12 @@ namespace SonOfRobin
         public static ControlTips ControlTips { get; private set; }
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
+        public static MessageLog MessageLog { get; private set; }
         public static ErrorLog ErrorLog { get; private set; }
         public static FontSystemSettings PixelatedFontSettings { get; private set; } // needed for "pixelated" fonts to be sharp
         public static FontSystem FontFreeSansBold { get; private set; }
         public static FontSystem FontPressStart2P { get; private set; }
+        public static FontSystem FontVCROSD { get; private set; }
         public static FontSystem FontPixelMix { get; private set; }
         public static FontSystem FontTommy { get; private set; }
         public static Texture2D WhiteRectangle { get; private set; }
@@ -138,6 +140,9 @@ namespace SonOfRobin
 
             SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
             ErrorLog = new ErrorLog();
+            SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
+            solidColor.MoveToBottom();
+            MessageLog = new MessageLog();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
@@ -217,6 +222,9 @@ namespace SonOfRobin
 
             FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader      
             FontPressStart2P.AddFont(TitleContainer.OpenStream("Content/fonts/PressStart2P.ttf"));
+
+            FontVCROSD = new FontSystem(PixelatedFontSettings); // needed for MessageLog      
+            FontVCROSD.AddFont(TitleContainer.OpenStream("Content/fonts/VCR_OSD_MONO_1.001.ttf"));
         }
 
         public static void LoadFonts()
@@ -275,7 +283,7 @@ namespace SonOfRobin
             base.Update(gameTime);
             fps.Update(gameTime);
 
-            if (LastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(debugMessage: true, message: $"Update delay {LastUpdateDelay}ms.", color: Color.Orange);
+            if (LastUpdateDelay >= 20 && IsFixedTimeStep) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Update delay {LastUpdateDelay}ms.", textColor: Color.Orange);
 
             if (quitGame)
             {
@@ -300,7 +308,7 @@ namespace SonOfRobin
             base.Draw(gameTime);
 
             fps.UpdateFpsCounter();
-            if (LastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(debugMessage: true, message: $"Draw delay {LastDrawDelay}ms.", color: Color.Orange);
+            if (LastDrawDelay >= 20 && IsFixedTimeStep) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Draw delay {LastDrawDelay}ms.", textColor: Color.Orange);
         }
     }
 }

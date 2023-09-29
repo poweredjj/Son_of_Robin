@@ -114,7 +114,7 @@ namespace SonOfRobin
 
             TimeSpan pressReleaseDuration = DateTime.Now - lastPressedTime;
 
-            MessageLog.AddMessage(debugMessage: true, message: $"Press release distance {distance}, max dist {maxDistance}, duration {pressReleaseDuration.Milliseconds} ms, maxDuration {maxDuration.Milliseconds} ms.");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Press release distance {distance}, max dist {maxDistance}, duration {pressReleaseDuration.Milliseconds} ms, maxDuration {maxDuration.Milliseconds} ms.");
 
             return distance <= maxDistance && pressReleaseDuration <= maxDuration;
         }
@@ -281,7 +281,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
+                SonOfRobinGame.MessageLog.Add(text: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
             }
         }
 
@@ -354,7 +354,7 @@ namespace SonOfRobin
         {
             if (stickScale == Preferences.GlobalScale && screenWidth == SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight) return;
 
-            MessageLog.AddMessage(debugMessage: true, message: $"Changing touch sticks scale from {stickScale} to {Preferences.GlobalScale}.", color: Color.White);
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Changing touch sticks scale from {stickScale} to {Preferences.GlobalScale}.", textColor: Color.White);
 
             SetEmulationByMouse();
 

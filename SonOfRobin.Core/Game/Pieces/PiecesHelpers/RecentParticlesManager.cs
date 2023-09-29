@@ -19,7 +19,7 @@ namespace SonOfRobin
         public void AddPiece(BoardPiece piece)
         {
             this.pieceSet.Add(piece);
-            // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {this.pieceDict.Count - 1} -> {this.pieceDict.Count} ({piece.readableName})");
+            // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {this.pieceDict.Count - 1} -> {this.pieceDict.Count} ({piece.readableName})");
         }
 
         public void Update()
@@ -53,7 +53,7 @@ namespace SonOfRobin
             }
 
             // int pieceCountCurrent = this.pieceSet.Count;
-            // if (pieceCountCurrent != pieceCountPrevious) MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {pieceCountPrevious} -> {pieceCountCurrent}");
+            // if (pieceCountCurrent != pieceCountPrevious) SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {pieceCountPrevious} -> {pieceCountCurrent}");
         }
     }
 }

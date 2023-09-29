@@ -117,13 +117,13 @@ namespace SonOfRobin
             bool buffHasBeenApplied = this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
             if (!buffHasBeenApplied)
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Buff id {buff.id} type {buff.type} value {buff.value} could not be applied to '{this.piece.readableName}'.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Buff id {buff.id} type {buff.type} value {buff.value} could not be applied to '{this.piece.readableName}'.");
                 return;
             }
             this.buffDict[buff.id] = buff;
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
-            // MessageLog.AddMessage(debugMessage: true, message: $"Buff added for '{this.piece.readableName}' - id {buff.id} type {buff.type} value {buff.value}.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Buff added for '{this.piece.readableName}' - id {buff.id} type {buff.type} value {buff.value}.");
 
             if (buff.isPermanent) this.RemoveBuff(buff.id); // permanent buff should only change value and not be stored and displayed
         }
@@ -151,7 +151,7 @@ namespace SonOfRobin
             bool stillHasThisBuff = this.HasBuff(typeToCheck);
             if (!buffToRemove.isPermanent) this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
 
-            // MessageLog.AddMessage(debugMessage: true, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
         }
 
         public List<Buff> GetBuffsOfType(BuffType buffType)
@@ -511,7 +511,7 @@ namespace SonOfRobin
         {
             if (this.piece.GetType() != typeof(Player))
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Buff '{buff.type}' cannot target {this.piece.GetType()} - ignoring.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Buff '{buff.type}' cannot target {this.piece.GetType()} - ignoring.");
                 return false;
             }
 

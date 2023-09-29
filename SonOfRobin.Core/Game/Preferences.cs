@@ -376,7 +376,7 @@ namespace SonOfRobin
                     _ => throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}."),
                 };
 
-                //MessageLog.AddMessage(debugMessage: true, message: $"Setting world size to {newWorldSize}x{newWorldSize}");
+                //SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Setting world size to {newWorldSize}x{newWorldSize}");
             }
         }
 
@@ -619,7 +619,7 @@ namespace SonOfRobin
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
-            MessageLog.AddMessage(debugMessage: true, message: "Preferences saved.", color: Color.White);
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Preferences saved.", textColor: Color.White);
         }
 
         public static void Load()
@@ -696,8 +696,8 @@ namespace SonOfRobin
 
                     prefsLoaded = true;
                 }
-                catch (KeyNotFoundException) { MessageLog.AddMessage(debugMessage: true, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
-                catch (InvalidCastException) { MessageLog.AddMessage(debugMessage: true, message: "InvalidCastException while loading preferences.", color: Color.White); }
+                catch (KeyNotFoundException) { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "KeyNotFoundException while loading preferences.", textColor: Color.White); }
+                catch (InvalidCastException) { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "InvalidCastException while loading preferences.", textColor: Color.White); }
             }
 
             if (prefsLoaded)
@@ -716,7 +716,7 @@ namespace SonOfRobin
             }
             if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
-            MessageLog.AddMessage(debugMessage: true, message: "Preferences loaded.", color: Color.White);
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Preferences loaded.", textColor: Color.White);
 
             if (!startingItemNames.Contains(newWorldStartingItem)) newWorldStartingItem = startingItemNames[0];
         }

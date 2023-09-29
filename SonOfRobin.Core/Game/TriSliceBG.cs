@@ -41,7 +41,7 @@ namespace SonOfRobin
             this.midSourceBoundsRect = this.textureMid.Bounds;
         }
 
-        public void StartSpriteBatch(Scene scene)
+        public static void StartSpriteBatch(Scene scene)
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scene.TransformMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.LinearWrap);
         }

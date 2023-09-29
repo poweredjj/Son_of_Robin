@@ -142,7 +142,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    MessageLog.AddMessage(debugMessage: true, message: $"Cannot deserialize marker - color not found: {colorArray}.");
+                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Cannot deserialize marker - color not found: {colorArray}.");
                 }
             }
         }
@@ -175,7 +175,7 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
 
             if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
@@ -277,7 +277,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    MessageLog.AddMessage(message: "Too dark to read the map.", avoidDuplicates: true);
+                    SonOfRobinGame.MessageLog.Add(text: "Too dark to read the map.", avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -418,7 +418,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                MessageLog.AddMessage(message: "Cannot place new marker - all markers are in use.", avoidDuplicates: true);
+                SonOfRobinGame.MessageLog.Add(text: "Cannot place new marker - all markers are in use.", avoidDuplicates: true);
                 return;
             }
 
@@ -533,7 +533,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(mapTexture, extendedMapRect, Color.White); // should always be drawn (edges transparency is not perfect and blue background would be showing a little otherwise)
 
-            // MessageLog.AddMessage(message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
+            // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom}");
 
             // drawing ground
             if (this.ShowDetailedMap)
@@ -781,14 +781,14 @@ namespace SonOfRobin
             if (this.bgTaskForMeshes != null && this.bgTaskForMeshes.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForMeshes.Exception, showTextWindow: false);
-                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task (meshes). Restarting task.", color: Color.Orange);
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (meshes). Restarting task.", textColor: Color.Orange);
             }
             if (this.bgTaskForMeshes == null || this.bgTaskForMeshes.IsFaulted) this.bgTaskForMeshes = Task.Run(() => this.BGMeshesTaskLoop());
 
             if (this.bgTaskForSprites != null && this.bgTaskForSprites.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForSprites.Exception, showTextWindow: false);
-                MessageLog.AddMessage(debugMessage: true, message: "An error occured while processing background task (pieces). Restarting task.", color: Color.Orange);
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (pieces). Restarting task.", textColor: Color.Orange);
             }
             if (this.bgTaskForSprites == null || this.bgTaskForSprites.IsFaulted) this.bgTaskForSprites = Task.Run(() => this.BGSpritesTaskLoop());
         }

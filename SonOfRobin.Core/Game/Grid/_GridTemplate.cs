@@ -227,12 +227,12 @@ namespace SonOfRobin
                     if (scaledWidth > frameMaxWidth)
                     {
                         frameMaxWidth = scaledWidth;
-                        // MessageLog.AddMessage( message: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
+                        // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
                     }
                     if (scaledHeight > frameMaxHeight)
                     {
                         frameMaxHeight = scaledHeight;
-                        // MessageLog.AddMessage( message: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
+                        // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
                     }
                 }
             }

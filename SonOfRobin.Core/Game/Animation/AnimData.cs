@@ -1291,10 +1291,10 @@ namespace SonOfRobin
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException) // handle other I/O errors
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"Failed to purge anim cache: {ex.Message}");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Failed to purge anim cache: {ex.Message}");
             }
 
-            MessageLog.AddMessage(debugMessage: true, message: "Anim cache purged.");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Anim cache purged.");
         }
 
         public static void SaveJsonDict()

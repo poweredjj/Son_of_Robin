@@ -10,7 +10,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(20);
+        public static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(16);
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -94,15 +94,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
-
-            SonOfRobinGame.SpriteBatch.End();
-
-            TriSliceBG triSliceBG = new TriSliceBG(textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft), textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid), textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
-
-            triSliceBG.StartSpriteBatch(this);
-
-            triSliceBG.Draw(triSliceRect: new Rectangle(x: 50, y: 120, width: 100 + (SonOfRobinGame.CurrentDraw % 250), height: 32), color: new Color(0, 0, 0) * 0.5f);
+            //font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -111,9 +103,9 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
 
-            // if (Mouse.LeftIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
-            // if (Mouse.MiddleIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
-            // if (Mouse.RightIsDown) MessageLog.AddMessage(debugMessage: true, message: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
+            // if (Mouse.LeftIsDown) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
+            // if (Mouse.MiddleIsDown) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
+            // if (Mouse.RightIsDown) SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
 
             if (world != null)
             {
@@ -177,7 +169,7 @@ namespace SonOfRobin
                     world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
 
                     TimeSpan creationDuration = DateTime.Now - startTime;
-                    MessageLog.AddMessage(debugMessage: true, message: $"Populating - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Populating - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.OemMinus))
@@ -495,7 +487,7 @@ namespace SonOfRobin
 
             //    if (textureToUpscale == null)
             //    {
-            //        MessageLog.AddMessage(debugMessage: true, message: $"Source filename {sourcePngName} not found.");
+            //        SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Source filename {sourcePngName} not found.");
             //        return;
             //    }
 
@@ -517,7 +509,7 @@ namespace SonOfRobin
                     if (world.weather.RainPercentage > 0.7f) return;
                 }
 
-                MessageLog.AddMessage(debugMessage: true, message: "Weather checking timed out.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Weather checking timed out.");
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F5))

@@ -52,6 +52,9 @@
 #begin fonts/Ubiquitous.ttf
 /copy:fonts/Ubiquitous.ttf
 
+#begin fonts/VCR_OSD_MONO_1.001.ttf
+/copy:fonts/VCR_OSD_MONO_1.001.ttf
+
 #begin gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
 /importer:TextureImporter
 /processor:TextureProcessor

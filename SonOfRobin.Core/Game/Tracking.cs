@@ -53,7 +53,7 @@ namespace SonOfRobin
             this.trackingSet.Remove(tracking);
             if (tracking.bounceWhenRemoved && tracking.followingSprite.boardPiece.exists)
             {
-                MessageLog.AddMessage(debugMessage: true, message: $"'{tracking.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"'{tracking.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
 
                 Vector2 passiveMovement = new(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
                 tracking.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);

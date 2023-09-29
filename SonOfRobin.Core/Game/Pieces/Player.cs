@@ -588,7 +588,7 @@ namespace SonOfRobin
             {
                 float hungerVal = energyAmount * 0.6f;
                 if (this.Skill == SkillName.Survivalist) hungerVal *= 0.7f;
-                // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} hungerVal {hungerVal}");
+                // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} hungerVal {hungerVal}");
 
                 this.fedLevel = Math.Max(this.fedLevel - hungerVal, 0);
 
@@ -924,7 +924,7 @@ namespace SonOfRobin
                 currentSpeed *= analogWalkTiltPower;
                 goalPosition += analogWalk * 250f; // should always be out of reach
 
-                // MessageLog.AddMessage( message: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
+                // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} vector {Math.Round(analogWalk.X, 1)},{Math.Round(analogWalk.Y, 1)} power {analogWalkTiltPower} speed {currentSpeed}");
             }
             else goalPosition = this.pointWalkTarget;
 
@@ -1239,7 +1239,7 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: this.sleepEngine.updateMultiplier);
 
-            MessageLog.AddMessage(message: "Going to sleep.");
+            SonOfRobinGame.MessageLog.Add(text: "Going to sleep.");
         }
 
         public void WakeUp(bool force = false)
@@ -1276,7 +1276,7 @@ namespace SonOfRobin
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            MessageLog.AddMessage(debugMessage: true, message: "Waking up.");
+            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Waking up.");
 
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
@@ -1312,14 +1312,14 @@ namespace SonOfRobin
                 closestPiece.HeatLevel = 0f;
                 if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar
 
-                MessageLog.AddMessage(message: $"Picked up {closestPiece.readableName}.");
+                SonOfRobinGame.MessageLog.Add(text: $"Picked up {closestPiece.readableName}.");
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
 
-                MessageLog.AddMessage(message: $"Inventory full - cannot pick up {closestPiece.readableName}.", avoidDuplicates: true);
+                SonOfRobinGame.MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", avoidDuplicates: true);
             }
         }
 
