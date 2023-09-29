@@ -61,7 +61,7 @@ namespace SonOfRobin
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, effect: effect, effectAmount: effectAmount);
         }
 
-        public static void DrawTextInsideRect(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0)
+        public static void DrawTextInsideRect(SpriteFontBase font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, FontSystemEffect effect = FontSystemEffect.None, int effectAmount = 0, int drawTimes = 1)
         {
             Vector2 textSize = MeasureStringCorrectly(font: font, stringToMeasure: text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
@@ -84,14 +84,17 @@ namespace SonOfRobin
                 _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
             };
 
-            font.DrawText(
-                        batch: SonOfRobinGame.SpriteBatch,
-                        text: text,
-                        position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset),
-                        color: color,
-                        scale: new Vector2(scale),
-                        effect: effectAmount == 0 ? FontSystemEffect.None : effect,
-                        effectAmount: (int)Math.Ceiling(effectAmount / scale));
+            for (int i = 0; i < drawTimes; i++)
+            {
+                font.DrawText(
+                    batch: SonOfRobinGame.SpriteBatch,
+                    text: text,
+                    position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset),
+                    color: color,
+                    scale: new Vector2(scale),
+                    effect: effectAmount == 0 ? FontSystemEffect.None : effect,
+                    effectAmount: (int)Math.Ceiling(effectAmount / scale));
+            }
         }
 
         public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)
@@ -134,7 +137,7 @@ namespace SonOfRobin
                 destRect.X += destRect.Width / 2;
                 destRect.Y += destRect.Height / 2;
 
-                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: new Rectangle(x: 0, y: 0, width: texture.Width, height: texture.Height), origin: new Vector2(texture.Width * 0.5f, texture.Height * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: texture.Bounds, origin: new Vector2(texture.Width * 0.5f, texture.Height * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
             }
 
             return destRect;
@@ -578,7 +581,7 @@ namespace SonOfRobin
 
             Vector2 stringSize = font.MeasureString(stringToMeasure);
             stringSize.Y = font.LineHeight * stringToMeasure.Split("\n").Length;
-          
+
             return stringSize;
         }
 

@@ -709,10 +709,7 @@ namespace SonOfRobin
                             }
                         }
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2, drawTestRect: false);
-                        }
+                        Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: newTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2, drawTestRect: false, drawTimes: 3);
 
                         HslColor locationColorHSL = location.Color.ToHsl();
                         locationColorHSL = new HslColor(h: locationColorHSL.H, s: locationColorHSL.S, l: Math.Max(locationColorHSL.L * 1.5f, 0.85f));

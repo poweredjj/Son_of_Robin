@@ -1,5 +1,4 @@
 ﻿using FontStashSharp;
-using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -97,29 +96,15 @@ namespace SonOfRobin
 
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
-            // this.DrawRichText();
+            SonOfRobinGame.SpriteBatch.End();
+
+            TriSliceBG triSliceBG = new TriSliceBG(textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft), textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid), textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
+
+            triSliceBG.StartSpriteBatch(this);
+
+            triSliceBG.Draw(triSliceRect: new Rectangle(x: 50, y: 120, width: 100 + (SonOfRobinGame.CurrentDraw % 250), height: 32), color: new Color(0, 0, 0) * 0.5f);
 
             SonOfRobinGame.SpriteBatch.End();
-        }
-
-        private void DrawRichText()
-        {
-            // FontStashSharp rich text sample
-
-            RichTextLayout richTextLayout = new RichTextLayout
-            {
-                Font = SonOfRobinGame.FontTommy.GetFont(20),
-                Text = "Text line 1 /es1 image: -> /i[Animal] <-/nText line 2",
-            };
-
-            RichTextDefaults.ImageResolver = imageName =>
-            {
-                TextureBank.TextureName textureName;
-                Enum.TryParse(imageName, out textureName);
-                return new TextureFragment(TextureBank.GetTexture(textureName));
-            };
-
-            richTextLayout.Draw(SonOfRobinGame.SpriteBatch, new Vector2(80, 80), Color.White, scale: new Vector2(1.5f));
         }
 
         public void ProcessDebugInput()

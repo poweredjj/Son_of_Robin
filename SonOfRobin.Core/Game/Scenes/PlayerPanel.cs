@@ -14,7 +14,6 @@ namespace SonOfRobin
         private static readonly SpriteFontBase buffFont = SonOfRobinGame.FontTommy.GetFont(60);
         private static readonly SpriteFontBase locationFont = SonOfRobinGame.FontTommy.GetFont(60);
         private const int posY = 4;
-        private static readonly Color locationOutlineColor = new(0, 36, 156);
 
         private readonly World world;
         private bool isHidden;
@@ -183,7 +182,9 @@ namespace SonOfRobin
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 4, drawTestRect: false);
+                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: 4, drawTestRect: false, drawTimes: 2);
+
+                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }
