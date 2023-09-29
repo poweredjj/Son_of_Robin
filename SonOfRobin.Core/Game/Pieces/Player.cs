@@ -1239,7 +1239,7 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: this.sleepEngine.updateMultiplier);
 
-            SonOfRobinGame.MessageLog.Add(text: "Going to sleep.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
+            MessageLog.Add(text: "Going to sleep.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
         }
 
         public void WakeUp(bool force = false)
@@ -1276,7 +1276,7 @@ namespace SonOfRobin
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Waking up.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
+            MessageLog.Add(debugMessage: true, text: "Waking up.", texture: TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
 
             if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
@@ -1312,14 +1312,14 @@ namespace SonOfRobin
                 closestPiece.HeatLevel = 0f;
                 if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar
 
-                SonOfRobinGame.MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", texture: closestPiece.sprite.AnimFrame.texture);
+                MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", texture: closestPiece.sprite.AnimFrame.texture);
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
 
-                SonOfRobinGame.MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.AnimFrame.texture, avoidDuplicates: true);
+                MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.AnimFrame.texture, avoidDuplicates: true);
             }
         }
 

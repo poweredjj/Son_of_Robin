@@ -173,7 +173,7 @@ namespace SonOfRobin
 
                 if (this.sameAsSourceCount >= 3)
                 {
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Transition removed - target value is the same as source.");
+                    MessageLog.Add(debugMessage: true, text: "Transition removed - target value is the same as source.");
                     this.Finish();
                 }
             }

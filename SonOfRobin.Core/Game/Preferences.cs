@@ -619,7 +619,7 @@ namespace SonOfRobin
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Preferences saved.", textColor: Color.White);
+            MessageLog.Add(debugMessage: true, text: "Preferences saved.", textColor: Color.White);
         }
 
         public static void Load()
@@ -696,8 +696,8 @@ namespace SonOfRobin
 
                     prefsLoaded = true;
                 }
-                catch (KeyNotFoundException) { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "KeyNotFoundException while loading preferences.", textColor: Color.White); }
-                catch (InvalidCastException) { SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "InvalidCastException while loading preferences.", textColor: Color.White); }
+                catch (KeyNotFoundException) { MessageLog.Add(debugMessage: true, text: "KeyNotFoundException while loading preferences.", textColor: Color.White); }
+                catch (InvalidCastException) { MessageLog.Add(debugMessage: true, text: "InvalidCastException while loading preferences.", textColor: Color.White); }
             }
 
             if (prefsLoaded)
@@ -716,7 +716,7 @@ namespace SonOfRobin
             }
             if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Preferences loaded.", textColor: Color.White);
+            MessageLog.Add(debugMessage: true, text: "Preferences loaded.", textColor: Color.White);
 
             if (!startingItemNames.Contains(newWorldStartingItem)) newWorldStartingItem = startingItemNames[0];
         }

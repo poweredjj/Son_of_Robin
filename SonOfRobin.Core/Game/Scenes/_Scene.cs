@@ -495,7 +495,6 @@ namespace SonOfRobin
             foreach (Scene scene in drawStack)
             {
                 currentlyProcessedScene = scene;
-
                 scene.Draw();
             }
 

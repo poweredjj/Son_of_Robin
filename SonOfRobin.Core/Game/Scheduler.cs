@@ -167,7 +167,7 @@ namespace SonOfRobin
 
         public static void ClearQueue()
         {
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Clearing Scheduler queue.");
+            MessageLog.Add(debugMessage: true, text: "Clearing Scheduler queue.");
             queue.Clear();
         }
 
@@ -394,7 +394,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null)
                             {
-                                SonOfRobinGame.MessageLog.Add(text: "Could not create selected item, because no world was found.");
+                                MessageLog.Add(text: "Could not create selected item, because no world was found.");
                                 return;
                             }
 
@@ -423,12 +423,12 @@ namespace SonOfRobin
                                 attemptNo++;
                                 if (attemptNo == 1000)
                                 {
-                                    SonOfRobinGame.MessageLog.Add(text: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                    MessageLog.Add(text: $"Max number of attempts exceeded while trying to create '{templateName}'.");
                                     break;
                                 }
                             }
 
-                            SonOfRobinGame.MessageLog.Add(text: $"{piecesCreated} '{templateName}' pieces created.");
+                            MessageLog.Add(text: $"{piecesCreated} '{templateName}' pieces created.");
 
                             return;
                         }
@@ -859,7 +859,7 @@ namespace SonOfRobin
 
                             if (!fruitPlant.world.Player.CanSeeAnything)
                             {
-                                SonOfRobinGame.MessageLog.Add(debugMessage: false, text: $"It is too dark to shake {fruitPlant.readableName}.", avoidDuplicates: true);
+                                MessageLog.Add(debugMessage: false, text: $"It is too dark to shake {fruitPlant.readableName}.", avoidDuplicates: true);
                                 return;
                             }
 
@@ -1409,7 +1409,7 @@ namespace SonOfRobin
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Skipping cinematics", textColor: Color.White);
+                            MessageLog.Add(debugMessage: true, text: "Skipping cinematics", textColor: Color.White);
 
                             var textWindows = Scene.GetAllScenesOfType(typeof(TextWindow));
                             foreach (var scene in textWindows)
@@ -1800,7 +1800,7 @@ namespace SonOfRobin
                         {
                             if (World.DestroyedNotReleasedWorldCount == 0) return;
 
-                            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", textColor: new Color(255, 180, 66));
+                            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", textColor: new Color(255, 180, 66));
                             GC.Collect();
                             RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
 

@@ -463,7 +463,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                SonOfRobinGame.MessageLog.Add(text: $"An error occurred while compressing files:\n{ex.Message}", textColor: Color.Orange);
+                MessageLog.Add(text: $"An error occurred while compressing files:\n{ex.Message}", textColor: Color.Orange);
                 return false;
             }
         }
@@ -494,7 +494,7 @@ namespace SonOfRobin
             }
             catch (Exception ex)
             {
-                SonOfRobinGame.MessageLog.Add(text: $"An error occurred while extracting files:\n{ex.Message}", textColor: Color.Orange);
+                MessageLog.Add(text: $"An error occurred while extracting files:\n{ex.Message}", textColor: Color.Orange);
                 return false;
             }
         }

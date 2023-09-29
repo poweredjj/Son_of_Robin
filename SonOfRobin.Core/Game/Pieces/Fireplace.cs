@@ -122,7 +122,7 @@ namespace SonOfRobin
             if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                else SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), texture: this.sprite.AnimFrame.texture);
+                else MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), texture: this.sprite.AnimFrame.texture);
                 return false;
             }
 
@@ -168,7 +168,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in animalPieces)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
+                MessageLog.Add(debugMessage: true, text: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
 
                 Animal animal = (Animal)piece;
                 animal.target = this;

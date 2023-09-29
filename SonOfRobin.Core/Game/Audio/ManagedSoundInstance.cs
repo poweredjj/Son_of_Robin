@@ -86,7 +86,7 @@ namespace SonOfRobin
                     try
                     {
                         instance.Play();
-                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Instance stopped correctly.");
+                        MessageLog.Add(debugMessage: true, text: "Instance stopped correctly.");
                         return true;
                     }
                     catch (InstancePlayLimitException)

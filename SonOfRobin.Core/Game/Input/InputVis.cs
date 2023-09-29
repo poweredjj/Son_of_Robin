@@ -130,7 +130,7 @@ namespace SonOfRobin
 
             if (texture == null)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Visual for key '{key}' has not been found.", textColor: Color.LightBlue);
+                MessageLog.Add(debugMessage: true, text: $"Visual for key '{key}' has not been found.", textColor: Color.LightBlue);
                 return SonOfRobinGame.WhiteRectangle;
             }
 
@@ -141,7 +141,7 @@ namespace SonOfRobin
         {
             if (!buttonTextures.ContainsKey(button))
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Visual for button '{button}' has not been found.", textColor: Color.LightBlue);
+                MessageLog.Add(debugMessage: true, text: $"Visual for button '{button}' has not been found.", textColor: Color.LightBlue);
                 return SonOfRobinGame.WhiteRectangle;
             }
 

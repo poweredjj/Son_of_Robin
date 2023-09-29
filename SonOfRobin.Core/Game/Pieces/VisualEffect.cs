@@ -26,7 +26,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in predatorPieces)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
+                MessageLog.Add(debugMessage: true, text: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
 
                 Animal animal = (Animal)piece;
                 animal.target = this;
@@ -52,7 +52,7 @@ namespace SonOfRobin
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();
-                SonOfRobinGame.MessageLog.Add(text: "Map marker has been reached.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker));
+                MessageLog.Add(text: "Map marker has been reached.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker));
             }
         }
 

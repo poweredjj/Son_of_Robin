@@ -96,7 +96,7 @@ namespace SonOfRobin
 
             if (prevControlType != CurrentControlType)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Switching control type to {CurrentControlType}");
+                MessageLog.Add(debugMessage: true, text: $"Switching control type to {CurrentControlType}");
 
                 InputVis.Refresh();
                 Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh everything that is connected to tips type
@@ -111,7 +111,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.CurrentUpdate >= globalInputReactivateUpdate)
             {
                 GlobalInputActive = true;
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "GlobalInputActive had to be restored.", textColor: Color.White);
+                MessageLog.Add(debugMessage: true, text: "GlobalInputActive had to be restored.", textColor: Color.White);
             }
         }
     }

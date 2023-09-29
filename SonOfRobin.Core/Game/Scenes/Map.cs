@@ -142,7 +142,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Cannot deserialize marker - color not found: {colorArray}.");
+                    MessageLog.Add(debugMessage: true, text: $"Cannot deserialize marker - color not found: {colorArray}.");
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
 
             if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
@@ -278,7 +278,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    SonOfRobinGame.MessageLog.Add(text: "Too dark to read the map.", texture: PieceInfo.GetTexture(PieceTemplate.Name.Map), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                    MessageLog.Add(text: "Too dark to read the map.", texture: PieceInfo.GetTexture(PieceTemplate.Name.Map), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -419,7 +419,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                SonOfRobinGame.MessageLog.Add(text: "Cannot place new marker - all markers are in use.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                MessageLog.Add(text: "Cannot place new marker - all markers are in use.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 return;
             }
 
@@ -782,14 +782,14 @@ namespace SonOfRobin
             if (this.bgTaskForMeshes != null && this.bgTaskForMeshes.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForMeshes.Exception, showTextWindow: false);
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (meshes). Restarting task.", textColor: Color.Orange);
+                MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (meshes). Restarting task.", textColor: Color.Orange);
             }
             if (this.bgTaskForMeshes == null || this.bgTaskForMeshes.IsFaulted) this.bgTaskForMeshes = Task.Run(() => this.BGMeshesTaskLoop());
 
             if (this.bgTaskForSprites != null && this.bgTaskForSprites.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.bgTaskForSprites.Exception, showTextWindow: false);
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (pieces). Restarting task.", textColor: Color.Orange);
+                MessageLog.Add(debugMessage: true, text: "An error occured while processing background task (pieces). Restarting task.", textColor: Color.Orange);
             }
             if (this.bgTaskForSprites == null || this.bgTaskForSprites.IsFaulted) this.bgTaskForSprites = Task.Run(() => this.BGSpritesTaskLoop());
         }

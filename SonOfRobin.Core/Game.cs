@@ -283,7 +283,7 @@ namespace SonOfRobin
             base.Update(gameTime);
             fps.Update(gameTime);
 
-            if (LastUpdateDelay >= 20 && IsFixedTimeStep) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Update delay {LastUpdateDelay}ms.", textColor: Color.Orange);
+            if (LastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.Add(debugMessage: true, text: $"Update delay {LastUpdateDelay}ms.", textColor: Color.Orange);
 
             if (quitGame)
             {
@@ -308,7 +308,7 @@ namespace SonOfRobin
             base.Draw(gameTime);
 
             fps.UpdateFpsCounter();
-            if (LastDrawDelay >= 20 && IsFixedTimeStep) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Draw delay {LastDrawDelay}ms.", textColor: Color.Orange);
+            if (LastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.Add(debugMessage: true, text: $"Draw delay {LastDrawDelay}ms.", textColor: Color.Orange);
         }
     }
 }

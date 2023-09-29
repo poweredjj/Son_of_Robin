@@ -163,7 +163,7 @@ namespace SonOfRobin
         {
             if (dateTime > this.forecastEnd)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Forecast exceeded by {(dateTime - this.forecastEnd).TotalHours} hours when trying to get weather for {type}.");
+                MessageLog.Add(debugMessage: true, text: $"Forecast exceeded by {(dateTime - this.forecastEnd).TotalHours} hours when trying to get weather for {type}.");
                 return 0;
             }
 
@@ -369,7 +369,7 @@ namespace SonOfRobin
             {
                 this.lastRainRect = cameraRect;
                 particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2.2f, height: cameraRect.Height / 2);
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
+                MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
             }
         }
 

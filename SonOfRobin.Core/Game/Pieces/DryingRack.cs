@@ -63,7 +63,7 @@ namespace SonOfRobin
                 int duration = (int)(meat.Mass * 180);
                 this.FinishFrame = this.world.CurrentUpdate + duration;
 
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} {this.Meat.readableName} will be dried in {Math.Round((float)duration / 60f / 60f, 1)} minutes.");
+                MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} {this.Meat.readableName} will be dried in {Math.Round((float)duration / 60f / 60f, 1)} minutes.");
             }
 
             private void RemoveMeat()

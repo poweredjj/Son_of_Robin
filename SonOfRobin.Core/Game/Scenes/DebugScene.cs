@@ -172,7 +172,7 @@ namespace SonOfRobin
                     world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
 
                     TimeSpan creationDuration = DateTime.Now - startTime;
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Populating - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+                    MessageLog.Add(debugMessage: true, text: $"Populating - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.OemMinus))
@@ -512,7 +512,7 @@ namespace SonOfRobin
                     if (world.weather.RainPercentage > 0.7f) return;
                 }
 
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "Weather checking timed out.");
+                MessageLog.Add(debugMessage: true, text: "Weather checking timed out.");
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F5))

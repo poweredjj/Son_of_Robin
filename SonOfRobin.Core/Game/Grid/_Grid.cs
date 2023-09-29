@@ -432,7 +432,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+            MessageLog.Add(debugMessage: true, text: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 
             this.PrepareNextStage(incrementCurrentStage: true);
         }
@@ -736,7 +736,7 @@ namespace SonOfRobin
             var cellQueue = this.cellSetsForPieceNamesWorkingQueueDict[pieceName];
             if (cellQueue.Count == 0)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
+                MessageLog.Add(debugMessage: true, text: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
                 return this.allCells[0]; // to properly return a (useless) cell
             }
             else

@@ -151,7 +151,7 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            SonOfRobinGame.MessageLog.Add(text: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", texture: PieceInfo.GetTexture(droppedPiece.pieceName), textColor: Color.Yellow);
+                            MessageLog.Add(text: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", texture: PieceInfo.GetTexture(droppedPiece.pieceName), textColor: Color.Yellow);
                             Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }

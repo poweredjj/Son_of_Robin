@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                 if (!world.piecesByIDForDeserialization.ContainsKey(pieceID))
                 {
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", textColor: Color.Orange);
+                    MessageLog.Add(debugMessage: true, text: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", textColor: Color.Orange);
                     return null;
                 }
                 boardPiece = world.piecesByIDForDeserialization[pieceID];
@@ -291,7 +291,7 @@ namespace SonOfRobin
                         var pieceName = (PieceTemplate.Name)Helpers.CastObjectToUshort(this.eventHelper);
                         world.doNotCreatePiecesList.Remove(pieceName);
 
-                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"'{pieceName}' creation restored.");
+                        MessageLog.Add(debugMessage: true, text: $"'{pieceName}' creation restored.");
 
                         return;
                     }
@@ -301,7 +301,7 @@ namespace SonOfRobin
                         var hintType = (HintEngine.Type)Helpers.CastObjectToByte(this.eventHelper);
                         world.HintEngine.Enable(hintType);
 
-                        SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Hint '{hintType}' restored.");
+                        MessageLog.Add(debugMessage: true, text: $"Hint '{hintType}' restored.");
 
                         return;
                     }
@@ -343,7 +343,7 @@ namespace SonOfRobin
                         if (this.boardPiece.HitPoints <= 0)
                         {
                             world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.AnimFrame.texture);
-                            SonOfRobinGame.MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", texture: this.boardPiece.sprite.AnimFrame.texture, bgColor: new Color(105, 3, 18), textColor: Color.White);
+                            MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", texture: this.boardPiece.sprite.AnimFrame.texture, bgColor: new Color(105, 3, 18), textColor: Color.White);
 
                             portableLight.IsOn = false;
 

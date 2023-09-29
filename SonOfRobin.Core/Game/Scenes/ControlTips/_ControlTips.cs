@@ -63,7 +63,7 @@ namespace SonOfRobin
             var tipsScene = GetTopSceneOfType(typeof(ControlTips));
             if (tipsScene == null)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: "No tips scene was found.");
+                MessageLog.Add(debugMessage: true, text: "No tips scene was found.");
                 return null;
             }
 

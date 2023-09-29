@@ -117,7 +117,7 @@ namespace SonOfRobin
             bool buffHasBeenApplied = this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
             if (!buffHasBeenApplied)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Buff id {buff.id} type {buff.type} value {buff.value} could not be applied to '{this.piece.readableName}'.");
+                MessageLog.Add(debugMessage: true, text: $"Buff id {buff.id} type {buff.type} value {buff.value} could not be applied to '{this.piece.readableName}'.");
                 return;
             }
             this.buffDict[buff.id] = buff;
@@ -511,7 +511,7 @@ namespace SonOfRobin
         {
             if (this.piece.GetType() != typeof(Player))
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Buff '{buff.type}' cannot target {this.piece.GetType()} - ignoring.");
+                MessageLog.Add(debugMessage: true, text: $"Buff '{buff.type}' cannot target {this.piece.GetType()} - ignoring.");
                 return false;
             }
 

@@ -58,7 +58,7 @@ namespace SonOfRobin
         {
             if (!targetSprite.IsOnBoard)
             {
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Cannot add SwayEvent to sprite {targetSprite.boardPiece.name} that is not on board - ignoring.");
+                MessageLog.Add(debugMessage: true, text: $"Cannot add SwayEvent to sprite {targetSprite.boardPiece.name} that is not on board - ignoring.");
                 return;
             }
 

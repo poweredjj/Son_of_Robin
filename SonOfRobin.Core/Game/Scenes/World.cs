@@ -130,7 +130,7 @@ namespace SonOfRobin
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
             this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"maxAnimalsPerName {maxAnimalsPerName}");
+            MessageLog.Add(debugMessage: true, text: $"maxAnimalsPerName {maxAnimalsPerName}");
 
             var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
             this.creationDataListRegular = creationDataList.Where(data => !data.temporaryDecoration).ToList();
@@ -191,13 +191,13 @@ namespace SonOfRobin
             base.Remove();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", textColor: new Color(255, 180, 66));
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", textColor: new Color(255, 180, 66));
         }
 
         ~World()
         {
             DestroyedNotReleasedWorldCount--;
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", textColor: new Color(120, 255, 174));
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", textColor: new Color(120, 255, 174));
         }
 
         public PieceTemplate.Name PlayerName
@@ -503,7 +503,7 @@ namespace SonOfRobin
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+            MessageLog.Add(debugMessage: true, text: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 
             if (!this.demoMode)
             {
@@ -534,7 +534,7 @@ namespace SonOfRobin
             }
 
             TimeSpan populatingDuration = DateTime.Now - startTime;
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+            MessageLog.Add(debugMessage: true, text: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
         }
 
         private void Deserialize(bool gridOnly)
@@ -809,7 +809,7 @@ namespace SonOfRobin
                 if (piecesCreatedCount >= maxAmountToCreateAtOnce) break;
             }
 
-            if (piecesCreatedCount > 0) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Created {piecesCreatedCount} new pieces.");
+            if (piecesCreatedCount > 0) MessageLog.Add(debugMessage: true, text: $"Created {piecesCreatedCount} new pieces.");
             this.createMissingPiecesOutsideCamera = false;
             return piecesCreatedCount;
         }
@@ -865,7 +865,7 @@ namespace SonOfRobin
             if (createdDecorationsCount > 0)
             {
                 TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
+                MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -895,7 +895,7 @@ namespace SonOfRobin
             if (destroyedDecorationsCount > 0)
             {
                 TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
+                MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
             }
             return;
         }
@@ -1432,7 +1432,7 @@ namespace SonOfRobin
             }
             this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, darknessMaskWidth, darknessMaskHeight);
 
-            SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
+            MessageLog.Add(debugMessage: true, text: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
         }
 
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)

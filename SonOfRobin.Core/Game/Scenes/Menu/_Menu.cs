@@ -387,7 +387,7 @@ namespace SonOfRobin
             foreach (Menu menu in GetEveryMenuOfTemplate(templateName: templateName))
             {
                 menu.Remove();
-                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Menu '{menu.templateName}' removed.", textColor: Color.White);
+                MessageLog.Add(debugMessage: true, text: $"Menu '{menu.templateName}' removed.", textColor: Color.White);
             }
         }
 
@@ -398,7 +398,7 @@ namespace SonOfRobin
                 if (menu.templateName != templateName)
                 {
                     menu.Remove();
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Menu '{menu.templateName}' removed.", textColor: Color.White);
+                    MessageLog.Add(debugMessage: true, text: $"Menu '{menu.templateName}' removed.", textColor: Color.White);
                 }
             }
         }

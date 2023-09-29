@@ -191,7 +191,7 @@ namespace SonOfRobin
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"Mesh {this.textureName} - index {i} out of bounds", textColor: Color.Orange);
+                    MessageLog.Add(debugMessage: true, text: $"Mesh {this.textureName} - index {i} out of bounds", textColor: Color.Orange);
                     continue;
                 }
             }

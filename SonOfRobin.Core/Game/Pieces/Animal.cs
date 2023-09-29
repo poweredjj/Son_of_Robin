@@ -767,7 +767,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (childrenBorn > 0) SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{this.name} has been born ({childrenBorn}).");
+            if (childrenBorn > 0) MessageLog.Add(debugMessage: true, text: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.pieceInfo.startingMass)
             {

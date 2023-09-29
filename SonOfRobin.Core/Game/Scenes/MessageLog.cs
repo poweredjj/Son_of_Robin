@@ -161,7 +161,7 @@ namespace SonOfRobin
                         textureRect.Inflate(0, -1); // highlight should be a little smaller than the background
 
                         textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
-                        textureRect.Inflate(0,-2); // texture should be a little smaller than the background
+                        textureRect.Inflate(0, -2); // texture should be a little smaller than the background
 
                         SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.85f);
                         itemTextureDataList.Add(new ItemTextureData(texture: message.texture, rectangle: textureRect, color: Color.White * opacity));
@@ -194,29 +194,37 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        public void Add(string text, bool debugMessage = false, bool avoidDuplicates = false, Color textColor = default, Color bgColor = default, Texture2D texture = null)
+        public static void Add(string text, bool debugMessage = false, bool avoidDuplicates = false, Color textColor = default, Color bgColor = default, Texture2D texture = null)
         {
+            if (SonOfRobinGame.MessageLog == null)
+            {
+                Console.WriteLine(text);
+                return;
+            }
+
+            MessageLog messageLog = SonOfRobinGame.MessageLog;
+
             if (textColor == default) textColor = Color.White;
             if (bgColor == default) bgColor = Color.Black;
 
             if (avoidDuplicates)
             {
-                if ((debugMessage && this.lastDebugMessage == text && (!Preferences.DebugMode || this.displayedStrings.Contains(text))) ||
-                    (!debugMessage && this.lastUserMessage == text && this.displayedStrings.Contains(text))) return;
+                if ((debugMessage && messageLog.lastDebugMessage == text && (!Preferences.DebugMode || messageLog.displayedStrings.Contains(text))) ||
+                    (!debugMessage && messageLog.lastUserMessage == text && messageLog.displayedStrings.Contains(text))) return;
             }
 
             Console.WriteLine(text); // additional output
-            if (debugMessage) this.lastDebugMessage = text;
-            else this.lastUserMessage = text;
+            if (debugMessage) messageLog.lastDebugMessage = text;
+            else messageLog.lastUserMessage = text;
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: this.lastDeletionFrame, messagesCount: this.messages.Count);
+            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
 
-            this.messages.Add(message);
-            this.displayedStrings.Add(text);
+            messageLog.messages.Add(message);
+            messageLog.displayedStrings.Add(text);
 
-            this.lastDeletionFrame = message.deletionFrame;
+            messageLog.lastDeletionFrame = message.deletionFrame;
         }
 
         private void DeleteOldMessages()
