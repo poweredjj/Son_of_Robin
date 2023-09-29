@@ -32,7 +32,8 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFontBase font = SonOfRobinGame.FontVCROSD.GetFont(13);
+        private static readonly SpriteFontBase fontRegular = SonOfRobinGame.FontVCROSD.GetFont(13);
+        private static readonly SpriteFontBase fontDebug = SonOfRobinGame.FontPressStart2P.GetFont(8);
         private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
 
         private readonly int marginX;
@@ -69,8 +70,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            int currentFrame = SonOfRobinGame.CurrentUpdate;
-            this.DeleteOldMessages(currentFrame);
+            this.DeleteOldMessages();
             this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
         }
 
@@ -95,35 +95,54 @@ namespace SonOfRobin
                 if (currentPosY >= maxDrawHeight)
                 {
                     Message message = messagesToDisplay[messageNo];
-                    Vector2 txtSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
+                    SpriteFontBase font = message.isDebug ? fontDebug : fontRegular;
+
+                    Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
                     int bgInflateSize = message.texture != null ? 8 : 4;
+                    if (message.isDebug) bgInflateSize = 2;
 
                     Vector2 entryPos = new Vector2(this.marginX, currentPosY);
-                    Vector2 txtPos = new(entryPos.X + (bgInflateSize * 2), currentPosY + bgInflateSize);
 
                     Rectangle bgRect = new Rectangle(
                         x: (int)entryPos.X,
                         y: (int)entryPos.Y,
-                        width: (int)txtSize.X + (bgInflateSize * 4),
-                        height: (int)txtSize.Y + (bgInflateSize * 2));
+                        width: (int)textSize.X + (bgInflateSize * 4),
+                        height: (int)textSize.Y + (bgInflateSize * 2));
+
+                    Vector2 txtPos = new(entryPos.X + bgInflateSize * 2, currentPosY + bgInflateSize);
+
+                    Rectangle textureRect = new Rectangle(0, 0, 0, 0);
+
+                    if (message.texture != null)
+                    {
+                        textureRect = new Rectangle(x: (int)txtPos.X, y: (int)entryPos.Y + 1, width: bgRect.Height - 2, height: bgRect.Height - 2);
+                        int textureMargin = bgInflateSize;
+                        bgRect.Width += textureRect.Width + textureMargin;
+                        txtPos.X += textureRect.Width + textureMargin;
+                    }
 
                     int entryHeight = bgRect.Height + 2;
                     currentPosY -= entryHeight;
 
+                    float opacity = (float)Helpers.ConvertRange(oldMin: message.deletionFrame, oldMax: message.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: currentFrame, clampToEdges: true);
+
                     bgRect.Y -= entryHeight; // moving up by the size of one entry
                     txtPos.Y -= entryHeight; // moving up by the size of one entry
-
-                    float opacity = (float)Helpers.ConvertRange(oldMin: message.deletionFrame, oldMax: message.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: currentFrame, clampToEdges: true);
+                    textureRect.Y -= entryHeight; // moving up by the size of one entry
 
                     triSliceBG.Draw(triSliceRect: bgRect, color: message.bgColor * 0.5f * opacity);
 
+                    if (message.texture != null) Helpers.DrawTextureInsideRect(texture: message.texture, rectangle: textureRect, color: Color.White * opacity);
+
+                    // if (message.texture != null) SonOfRobinGame.SpriteBatch.Draw(message.texture, textureRect, message.texture.Bounds, Color.White * opacity);
+
                     font.DrawText(
-                        batch: SonOfRobinGame.SpriteBatch,
-                        text: message.text,
-                        position: txtPos,
-                        color: message.textColor * opacity,
-                        effect: FontSystemEffect.Stroked,
-                        effectAmount: 1);
+                    batch: SonOfRobinGame.SpriteBatch,
+                    text: message.text,
+                    position: txtPos,
+                    color: message.textColor * opacity,
+                    effect: FontSystemEffect.Stroked,
+                    effectAmount: 1);
                 }
                 else break;
             }
@@ -161,9 +180,10 @@ namespace SonOfRobin
             this.lastDeletionFrame = message.deletionFrame;
         }
 
-        private void DeleteOldMessages(int currentFrame)
+        private void DeleteOldMessages()
         {
-            var filteredMessages = this.messages.Where(message => currentFrame < message.deletionFrame);
+            int currentUpdate = SonOfRobinGame.CurrentUpdate;
+            var filteredMessages = this.messages.Where(message => currentUpdate < message.deletionFrame);
             if (!Preferences.DebugMode) filteredMessages = filteredMessages.Where(message => !message.isDebug);
 
             this.messages = filteredMessages.ToList();
