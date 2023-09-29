@@ -12,6 +12,7 @@ namespace SonOfRobin
         private readonly struct Message
         {
             public readonly bool isDebug;
+            public readonly int createdFrame;
             public readonly string text;
             public readonly int deletionFrame;
             public readonly Color textColor;
@@ -21,6 +22,7 @@ namespace SonOfRobin
             public Message(bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D texture = null)
             {
                 this.isDebug = isDebug;
+                this.createdFrame = SonOfRobinGame.CurrentUpdate;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
@@ -34,20 +36,18 @@ namespace SonOfRobin
 
         private static readonly SpriteFontBase fontRegular = SonOfRobinGame.FontVCROSD.GetFont(13);
         private static readonly SpriteFontBase fontDebug = SonOfRobinGame.FontPressStart2P.GetFont(8);
-        private static readonly TimeSpan maxDuplicateCheckDuration = TimeSpan.FromSeconds(20);
 
         private readonly int marginX;
         private readonly int marginY;
 
         private int lastDeletionFrame;
-        private DateTime lastDebugMessageAdded;
-        private DateTime lastUserMessageAdded;
         private string lastDebugMessage;
         private string lastUserMessage;
         private int screenHeight;
         private readonly TriSliceBG triSliceBG;
 
         private List<Message> messages;
+        private HashSet<string> displayedStrings;
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -55,8 +55,6 @@ namespace SonOfRobin
             this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
 
             this.lastDeletionFrame = 0;
-            this.lastDebugMessageAdded = DateTime.MinValue;
-            this.lastUserMessageAdded = DateTime.MinValue;
             this.lastDebugMessage = "";
             this.lastUserMessage = "";
 
@@ -66,6 +64,7 @@ namespace SonOfRobin
                 textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
 
             this.messages = new();
+            this.displayedStrings = new();
         }
 
         public override void Update()
@@ -133,7 +132,11 @@ namespace SonOfRobin
                     txtPos.Y -= entryHeight; // moving up by the size of one entry
                     textureRect.Y -= entryHeight; // moving up by the size of one entry
 
-                    triSliceBG.Draw(triSliceRect: bgRect, color: message.bgColor * 0.5f * opacity);
+                    float flashOpacity = (float)Helpers.ConvertRange(oldMin: message.createdFrame + 20, oldMax: message.createdFrame, newMin: 0, newMax: 0.6, oldVal: currentFrame, clampToEdges: true);
+                    Color bgColor = message.bgColor * 0.5f;
+                    if (flashOpacity > 0) bgColor = Helpers.Blend2Colors(firstColor: bgColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
+
+                    triSliceBG.Draw(triSliceRect: bgRect, color: bgColor * opacity);
 
                     if (message.texture != null)
                     {
@@ -166,26 +169,27 @@ namespace SonOfRobin
 
             if (avoidDuplicates)
             {
-                if ((debugMessage && this.lastDebugMessage == text && DateTime.Now - this.lastDebugMessageAdded < maxDuplicateCheckDuration) ||
-                    (!debugMessage && this.lastUserMessage == text && DateTime.Now - this.lastUserMessageAdded < maxDuplicateCheckDuration)) return;
+                if ((debugMessage && this.lastDebugMessage == text && this.displayedStrings.Contains(text)) ||
+                    (!debugMessage && this.lastUserMessage == text && this.displayedStrings.Contains(text))) return;
             }
 
             Console.WriteLine(text); // additional output
             if (debugMessage)
             {
                 this.lastDebugMessage = text;
-                this.lastDebugMessageAdded = DateTime.Now;
             }
             else
             {
                 this.lastUserMessage = text;
-                this.lastUserMessageAdded = DateTime.Now;
             }
 
             if (debugMessage && !Preferences.DebugMode) return;
 
             Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: this.lastDeletionFrame, messagesCount: this.messages.Count);
-            messages.Add(message);
+
+            this.messages.Add(message);
+            this.displayedStrings.Add(text);
+
             this.lastDeletionFrame = message.deletionFrame;
         }
 
@@ -196,6 +200,9 @@ namespace SonOfRobin
             if (!Preferences.DebugMode) filteredMessages = filteredMessages.Where(message => !message.isDebug);
 
             this.messages = filteredMessages.ToList();
+
+            this.displayedStrings.Clear();
+            this.displayedStrings = filteredMessages.Select(m => m.text).ToHashSet();
         }
     }
 }

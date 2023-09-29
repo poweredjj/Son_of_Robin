@@ -281,7 +281,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                SonOfRobinGame.MessageLog.Add(text: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
+                SonOfRobinGame.MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
             }
         }
 

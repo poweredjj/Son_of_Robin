@@ -277,7 +277,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    SonOfRobinGame.MessageLog.Add(text: "Too dark to read the map.", texture: PieceInfo.GetTexture(PieceTemplate.Name.Map), avoidDuplicates: true);
+                    SonOfRobinGame.MessageLog.Add(text: "Too dark to read the map.", texture: PieceInfo.GetTexture(PieceTemplate.Name.Map), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -418,7 +418,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                SonOfRobinGame.MessageLog.Add(text: "Cannot place new marker - all markers are in use.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker), avoidDuplicates: true);
+                SonOfRobinGame.MessageLog.Add(text: "Cannot place new marker - all markers are in use.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 return;
             }
 
