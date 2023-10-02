@@ -216,6 +216,8 @@ namespace SonOfRobin
 
                         if (buff.autoRemoveDelay > 0)
                         {
+                            // float buffProgress = 1f - ((float)buffFramesLeft / (float)buff.autoRemoveDelay); // TODO use buff progress in some way
+
                             int buffFramesLeft = Math.Max(buff.endFrame - this.world.CurrentUpdate, 0);
                             int buffSecondsLeft = (int)Math.Ceiling((float)buffFramesLeft / 60f);
                             string timespanString = Helpers.ConvertTimeSpanToString(TimeSpan.FromSeconds(buffSecondsLeft));
@@ -223,7 +225,7 @@ namespace SonOfRobin
                             if (timespanString.StartsWith("0")) timespanString = timespanString.Remove(0, 1);
                             buffTextFormatted += " /c[#d9d9d9]" + timespanString;
 
-                            opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 60, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
+                            opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 30, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
                         }
 
                         if (buff.iconTexture != null)
@@ -246,7 +248,7 @@ namespace SonOfRobin
                         this.triSliceBG.Draw(triSliceRect: buffBGRect, color: bgColor * 0.7f * opacity);
 
                         richTextLayout.IgnoreColorCommand = true; // otherwise shadow would be colored
-                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + new Vector2(2, 2), Color.Black * opacity);
+                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + new Vector2(2, 2), Color.Black * 0.7f * opacity);
                         richTextLayout.IgnoreColorCommand = false;
                         richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos, Color.White * opacity);
 
