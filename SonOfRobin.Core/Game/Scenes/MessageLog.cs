@@ -22,14 +22,16 @@ namespace SonOfRobin
             private readonly Vector2 textPos;
             private readonly Color bgColor;
             private readonly Rectangle bgRect;
-            public readonly Texture2D image;
+            private readonly Texture2D image;
             private readonly Texture2D highlightTexture;
             private readonly Rectangle highlightRect;
             private readonly Rectangle imageRect;
             public Vector2 basePos;
+            public bool markedForDeletion;
 
             public Message(TriSliceBG triSliceBG, bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D image = null)
             {
+                this.markedForDeletion = false;
                 this.triSliceBG = triSliceBG;
                 this.font = isDebug ?
                      SonOfRobinGame.FontPressStart2P.GetFont(Math.Max(Preferences.messageLogScale, 1f) * 8) :
@@ -68,8 +70,9 @@ namespace SonOfRobin
                     this.imageRect.Inflate(0, -2); // texture should be a little smaller than the background
                 }
 
-                int displayDuration = messagesCount == 0 ? (int)(60 * 3.5f) : 110 / Math.Min(messagesCount, 3);
+                int displayDuration = messagesCount == 0 ? (int)(60 * 3.5f) : 90 / Math.Min(messagesCount, 3);
                 this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + displayDuration;
+                this.deletionFrame = Math.Min(this.deletionFrame, SonOfRobinGame.CurrentUpdate + (60 * 5)); // to make sure that it won't be displayed for too long
             }
 
             private static Rectangle AddOffsetToRect(Rectangle rectangle, Vector2 offset)
@@ -79,7 +82,14 @@ namespace SonOfRobin
                 return rectangleWithOffset;
             }
 
-            private float Opacity { get { return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+
+            private float Opacity
+            {
+                get
+                {
+                    return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true);
+                }
+            }
             private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 30, oldMax: this.createdFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
             private Rectangle ImageRectWithOffset { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
             private Rectangle HighlightRectWithOffset { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
@@ -123,7 +133,6 @@ namespace SonOfRobin
         private const int messageMargin = 2;
         private readonly int leftMargin;
         private readonly int bottomMargin;
-        private int lastDeletionFrame;
         private string lastDebugMessage;
         private string lastUserMessage;
         private int screenHeight;
@@ -132,13 +141,13 @@ namespace SonOfRobin
         private List<Message> messages;
         private HashSet<string> displayedStrings;
         private int baseline;
+        private int MaxDeletionFrame { get { return this.messages.Count > 0 ? this.messages.Select(m => m.deletionFrame).Max() : SonOfRobinGame.CurrentUpdate; } }
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.leftMargin = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
             this.bottomMargin = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
 
-            this.lastDeletionFrame = 0;
             this.lastDebugMessage = "";
             this.lastUserMessage = "";
 
@@ -165,10 +174,12 @@ namespace SonOfRobin
         public override void Update()
         {
             this.DeleteOldMessages();
-            this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
+            this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : SonOfRobinGame.VirtualHeight;
 
-            if (this.baseline > this.screenHeight) this.baseline -= 2;
-            this.baseline = Math.Max(this.baseline - 2, this.screenHeight);
+            int minBaselineVal = this.screenHeight - this.bottomMargin;
+
+            if (this.baseline > minBaselineVal) this.baseline -= 2;
+            this.baseline = Math.Max(this.baseline - 2, minBaselineVal);
         }
 
         public override void Draw()
@@ -183,33 +194,43 @@ namespace SonOfRobin
 
             TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
 
-            int currentPosY = this.baseline;
-            int maxDrawHeight = (int)(this.screenHeight * 0.2f);
+            Vector2 currentPos = new Vector2(this.leftMargin, this.baseline);
+            int maxDrawHeight = 0;
 
-            if (GetTopSceneOfType(typeof(DebugScene)) != null) maxDrawHeight = (int)DebugScene.lastTextSize.Y;
+            bool debugActive = GetTopSceneOfType(typeof(DebugScene)) != null;
+            Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, (int)DebugScene.lastTextSize.Y);
 
-            var drawnMessagesWithTextures = new List<Message>();
+            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.VirtualWidth, this.screenHeight - maxDrawHeight);
+            var drawnMessages = new List<Message>();
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
-                if (currentPosY >= maxDrawHeight)
-                {
-                    Message message = messagesToDisplay[messageNo];
-                    currentPosY -= message.BGRectWithOffset.Height + messageMargin;
-                    message.basePos = new Vector2(this.leftMargin, currentPosY);
+                Message message = messagesToDisplay[messageNo];
+                currentPos.Y -= message.BGRectWithOffset.Height + messageMargin;
+                message.basePos = currentPos;
 
-                    message.DrawBackground();
-                    if (message.image != null) drawnMessagesWithTextures.Add(message);
+                Rectangle messageRect = message.BGRectWithOffset;
+
+                if (messageRect.Bottom < 0 || (debugActive && messageRect.Intersects(debugTextRect)))
+                {
+                    // message is above screen or collides with debug text
+                    message.markedForDeletion = true;
+                    break;
                 }
-                else break;
+                else if (!messageRect.Intersects(drawAreaRect)) continue; // message is (probably) below screen
+                else
+                {
+                    message.DrawBackground();
+                    drawnMessages.Add(message);
+                }
             }
 
-            if (drawnMessagesWithTextures.Count > 0)
+            if (drawnMessages.Count > 0)
             {
                 SonOfRobinGame.SpriteBatch.End();
 
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                foreach (Message message in drawnMessagesWithTextures)
+                foreach (Message message in drawnMessages)
                 {
                     message.DrawEverythingElse();
                 }
@@ -243,19 +264,19 @@ namespace SonOfRobin
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
+            Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.MaxDeletionFrame, messagesCount: messageLog.messages.Count);
 
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
 
-            messageLog.lastDeletionFrame = message.deletionFrame;
             messageLog.baseline += messageMargin + message.BGRectWithOffset.Height;
         }
+
 
         private void DeleteOldMessages()
         {
             int currentUpdate = SonOfRobinGame.CurrentUpdate;
-            var filteredMessages = this.messages.Where(message => currentUpdate < message.deletionFrame);
+            var filteredMessages = this.messages.Where(message => currentUpdate < message.deletionFrame && !message.markedForDeletion);
             if (!Preferences.DebugMode) filteredMessages = filteredMessages.Where(message => !message.isDebug);
 
             this.messages = filteredMessages.ToList();
