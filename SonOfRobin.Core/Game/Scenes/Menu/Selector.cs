@@ -41,7 +41,9 @@ namespace SonOfRobin
             {
                 this.valueDict = new Dictionary<object, object> { };
                 foreach (var value in valueList)
-                { this.valueDict[value] = value.ToString(); }
+                {
+                    this.valueDict[value] = value.ToString();
+                }
             }
             if (valueDict != null) this.valueDict = valueDict;
 
@@ -78,6 +80,10 @@ namespace SonOfRobin
                 }
                 index++;
             }
+
+            // if the property value is not in valueDict, it must be set to current value first
+            // (otherwise property value would not match selector value if not changed by user)
+            this.SetNewValueToTargetObject();
         }
 
         private void SetNewValueToTargetObject()
