@@ -25,26 +25,71 @@ namespace SonOfRobin
 
         private readonly struct Message
         {
+            public readonly SpriteFontBase font;
+            private readonly Vector2 textSize;
+
             public readonly bool isDebug;
             public readonly int createdFrame;
             public readonly string text;
             public readonly int deletionFrame;
             public readonly Color textColor;
+            public readonly Vector2 textPos;
             public readonly Color bgColor;
-            public readonly Texture2D texture;
+            public readonly Rectangle bgRect;
+            public readonly Texture2D image;
+            public readonly Texture2D highlightTexture;
+            public readonly Rectangle highlightRect;
+            public readonly Rectangle imageRect;
 
-            public Message(bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D texture = null)
+            public Message(bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D image = null)
             {
+                this.font = isDebug ?
+                     SonOfRobinGame.FontPressStart2P.GetFont(Math.Max(Preferences.messageLogScale, 1f) * 8) :
+                     SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
+
                 this.isDebug = isDebug;
                 this.createdFrame = SonOfRobinGame.CurrentUpdate;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
-                this.texture = texture;
+                this.image = image;
+                this.textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: this.text);
 
-                int delay = messagesCount == 0 ? 60 * 3 : 90 / Math.Min(messagesCount, 3);
+                int bgInflateSize = this.image != null ? 10 : 4;
+                if (this.isDebug) bgInflateSize = 2;
 
-                this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + delay;
+                this.bgRect = new Rectangle(
+                    x: (int)0,
+                    y: (int)0,
+                    width: (int)textSize.X + (bgInflateSize * 4),
+                    height: (int)textSize.Y + (bgInflateSize * 2));
+
+                this.textPos = new(bgInflateSize * 2, bgInflateSize);
+
+                this.imageRect = Rectangle.Empty;
+
+                if (this.image != null)
+                {
+                    this.imageRect = new Rectangle(x: (int)this.textPos.X, y: 0, width: bgRect.Height, height: bgRect.Height);
+                    int textureMargin = (int)(bgInflateSize * 1.5f);
+                    bgRect.Width += this.imageRect.Width + textureMargin;
+                    this.textPos.X += this.imageRect.Width + textureMargin;
+
+                    this.highlightTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteHorizontalLine);
+                    this.highlightRect = this.imageRect;
+                    this.imageRect.Inflate(0, -1); // highlight should be a little smaller than the background
+
+                    this.highlightRect.Inflate(this.highlightRect.Width / 4, 0);
+                    this.imageRect.Inflate(0, -2); // texture should be a little smaller than the background
+                }
+                else
+                {
+                    this.highlightTexture = null;
+                    this.highlightRect = Rectangle.Empty;
+                }
+
+                int displayDuration = messagesCount == 0 ? 60 * 3 : 90 / Math.Min(messagesCount, 3);
+                this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + displayDuration;
             }
         }
 
@@ -76,6 +121,13 @@ namespace SonOfRobin
 
             this.messages = new();
             this.displayedStrings = new();
+        }
+
+        public static Rectangle GetRectangleCopyWithOffset(Rectangle rectangle, Point offset)
+        {
+            Rectangle rectangleWithOffset = rectangle;
+            rectangleWithOffset.Offset(offset.X, offset.Y);
+            return rectangleWithOffset;
         }
 
         public override void Update()
@@ -111,64 +163,36 @@ namespace SonOfRobin
                 {
                     Message message = messagesToDisplay[messageNo];
 
-                    SpriteFontBase font = message.isDebug ? SonOfRobinGame.FontPressStart2P.GetFont(Math.Max(Preferences.messageLogScale, 1f) * 8) : SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
-
-                    Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
-                    int bgInflateSize = message.texture != null ? 10 : 4;
-                    if (message.isDebug) bgInflateSize = 2;
-
-                    Vector2 entryPos = new Vector2(this.marginX, currentPosY);
-
-                    Rectangle bgRect = new Rectangle(
-                        x: (int)entryPos.X,
-                        y: (int)entryPos.Y,
-                        width: (int)textSize.X + (bgInflateSize * 4),
-                        height: (int)textSize.Y + (bgInflateSize * 2));
-
-                    Vector2 txtPos = new(entryPos.X + bgInflateSize * 2, currentPosY + bgInflateSize);
-
-                    Rectangle textureRect = Rectangle.Empty;
-
-                    if (message.texture != null)
-                    {
-                        textureRect = new Rectangle(x: (int)txtPos.X, y: (int)entryPos.Y, width: bgRect.Height, height: bgRect.Height);
-                        int textureMargin = (int)(bgInflateSize * 1.5f);
-                        bgRect.Width += textureRect.Width + textureMargin;
-                        txtPos.X += textureRect.Width + textureMargin;
-                    }
-
-                    int entryHeight = bgRect.Height + 2;
+                    int entryHeight = message.bgRect.Height + 2;
                     currentPosY -= entryHeight;
+
+                    Point entryPos = new Point(this.marginX, currentPosY);
 
                     float opacity = (float)Helpers.ConvertRange(oldMin: message.deletionFrame, oldMax: message.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: currentFrame, clampToEdges: true);
 
-                    bgRect.Y -= entryHeight; // moving up by the size of one entry
-                    txtPos.Y -= entryHeight; // moving up by the size of one entry
-                    textureRect.Y -= entryHeight; // moving up by the size of one entry
+                    Rectangle bgRectMoved = GetRectangleCopyWithOffset(rectangle: message.bgRect, offset: entryPos);
+                    Rectangle imageRectMoved = GetRectangleCopyWithOffset(rectangle: message.imageRect, offset: entryPos);
+                    Rectangle highlightRectMoved = GetRectangleCopyWithOffset(rectangle: message.highlightRect, offset: entryPos);
+                    Vector2 textPosMoved = message.textPos;
+                    textPosMoved.X += entryPos.X;
+                    textPosMoved.Y += entryPos.Y;
 
                     float flashOpacity = (float)Helpers.ConvertRange(oldMin: message.createdFrame + 20, oldMax: message.createdFrame, newMin: 0, newMax: 0.6, oldVal: currentFrame, clampToEdges: true);
                     Color bgColor = message.bgColor * 0.5f;
                     if (flashOpacity > 0 && !message.isDebug) bgColor = Helpers.Blend2Colors(firstColor: bgColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
 
-                    triSliceBG.Draw(triSliceRect: bgRect, color: bgColor * opacity);
+                    triSliceBG.Draw(triSliceRect: bgRectMoved, color: bgColor * opacity);
 
-                    if (message.texture != null)
+                    if (message.image != null)
                     {
-                        Texture2D bgTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteHorizontalLine);
-                        Rectangle textureHighlightRect = textureRect;
-                        textureRect.Inflate(0, -1); // highlight should be a little smaller than the background
-
-                        textureHighlightRect.Inflate(textureHighlightRect.Width / 4, 0);
-                        textureRect.Inflate(0, -2); // texture should be a little smaller than the background
-
-                        SonOfRobinGame.SpriteBatch.Draw(bgTexture, textureHighlightRect, bgTexture.Bounds, Color.White * opacity * 0.85f);
-                        itemTextureDataList.Add(new ItemTextureData(texture: message.texture, rectangle: textureRect, color: Color.White * opacity));
+                        SonOfRobinGame.SpriteBatch.Draw(message.highlightTexture, highlightRectMoved, message.highlightTexture.Bounds, Color.White * opacity * 0.85f);
+                        itemTextureDataList.Add(new ItemTextureData(texture: message.image, rectangle: imageRectMoved, color: Color.White * opacity));
                     }
 
-                    font.DrawText(
+                    message.font.DrawText(
                     batch: SonOfRobinGame.SpriteBatch,
                     text: message.text,
-                    position: txtPos,
+                    position: textPosMoved,
                     color: message.textColor * opacity,
                     effect: FontSystemEffect.Stroked,
                     effectAmount: 1);
@@ -217,7 +241,7 @@ namespace SonOfRobin
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, texture: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
+            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
 
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
