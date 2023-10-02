@@ -196,8 +196,6 @@ namespace SonOfRobin
 
             // drawing buff bars
             {
-                int bufBarMargin = 2;
-
                 if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Count() > 0)
                 {
                     SonOfRobinGame.SpriteBatch.End();
@@ -205,16 +203,14 @@ namespace SonOfRobin
 
                     foreach (Buff buff in player.buffEngine.BuffList)
                     {
-                        currentPosY += bufBarMargin;
-
                         string buffText = buff.playerPanelText;
                         if (buffText == null) continue;
 
+                        currentPosY += 3; // adding margin (must go first, to add margin before first entry)
                         int bgInflateSize = buff.iconTexture != null ? 10 : 4;
+                        float opacity = this.viewParams.drawOpacity;
 
                         string buffTextFormatted = buffText;
-
-                        float opacity = this.viewParams.drawOpacity;
 
                         if (buff.autoRemoveDelay > 0)
                         {
@@ -223,7 +219,7 @@ namespace SonOfRobin
                             string timespanString = Helpers.ConvertTimeSpanToString(TimeSpan.FromSeconds(buffSecondsLeft));
                             if (timespanString.Length <= 2) timespanString += "s";
                             if (timespanString.StartsWith("0")) timespanString = timespanString.Remove(0, 1);
-                            buffTextFormatted += " " + timespanString;
+                            buffTextFormatted += " /c[#d9d9d9]" + timespanString;
 
                             opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 60, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
                         }
@@ -238,12 +234,13 @@ namespace SonOfRobin
                             height: (int)buffTextSize.Y + (bgInflateSize * 2));
 
                         Vector2 textPos = new(bgInflateSize * 2, currentPosY + bgInflateSize);
-
                         Color bgColor = buff.isPositive ? new Color(4, 92, 27) : new Color(128, 48, 3);
 
                         this.triSliceBG.Draw(triSliceRect: buffBGRect, color: bgColor * 0.7f * opacity);
 
+                        richTextLayout.IgnoreColorCommand = true; // otherwise shadow would be colored
                         richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + new Vector2(2, 2), Color.Black * opacity);
+                        richTextLayout.IgnoreColorCommand = false;
                         richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos, Color.White * opacity);
 
                         currentPosY += buffBGRect.Height;
