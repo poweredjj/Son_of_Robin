@@ -619,6 +619,8 @@ namespace SonOfRobin
                         }
 
                         // general craft stats
+
+                        if (world.craftStats.CraftedPiecesTotal > 0)
                         {
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
@@ -650,6 +652,7 @@ namespace SonOfRobin
                         world.craftStats.CreateMenuEntriesForVegetationPlantedSummary(menu);
 
                         // cooking stats
+                        if (world.cookStats.TotalCookCount > 0)
                         {
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
@@ -675,6 +678,7 @@ namespace SonOfRobin
                         }
 
                         // brewing stats
+                        if (world.brewStats.TotalCookCount > 0)
                         {
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
@@ -702,6 +706,7 @@ namespace SonOfRobin
                         }
 
                         // harvesting stats
+                        if (world.meatHarvestStats.TotalHarvestCount > 0)
                         {
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
