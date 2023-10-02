@@ -267,7 +267,7 @@ namespace SonOfRobin
                     if (messageToCheck.text == text)
                     {
                         messageToCheck.flashFrame = SonOfRobinGame.CurrentUpdate;
-                        messageToCheck.deletionFrame += 60 * 2;
+                        messageToCheck.deletionFrame = SonOfRobinGame.CurrentUpdate + (60 * 2);
                         return;
                     }
                 }
@@ -285,9 +285,10 @@ namespace SonOfRobin
 
             Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.MaxDeletionFrame, messagesCount: messageLog.messages.Count);
 
+            if (messageLog.messages.Count > 0) messageLog.baseline += messageMargin + message.bgRect.Height;
+
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
-            messageLog.baseline += messageMargin + message.bgRect.Height;
         }
 
         private void DeleteOldMessages()
