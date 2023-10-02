@@ -59,15 +59,14 @@ namespace SonOfRobin
                 {
                     this.imageRect = new Rectangle(x: (int)this.textPos.X, y: 0, width: bgRect.Height, height: bgRect.Height);
                     int textureMargin = (int)(bgInflateSize * 1.5f);
-                    bgRect.Width += this.imageRect.Width + textureMargin;
+                    this.bgRect.Width += this.imageRect.Width + textureMargin;
                     this.textPos.X += this.imageRect.Width + textureMargin;
 
                     this.highlightTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteHorizontalLine);
                     this.highlightRect = this.imageRect;
-                    this.imageRect.Inflate(0, -1); // highlight should be a little smaller than the background
+                    this.highlightRect.Inflate(this.highlightRect.Width / 4, -1); // highlight should be a little smaller than the background
 
-                    this.highlightRect.Inflate(this.highlightRect.Width / 4, 0);
-                    this.imageRect.Inflate(0, -2); // texture should be a little smaller than the background
+                    this.imageRect.Inflate(0, -3); // texture should be a little smaller than the background
                 }
 
                 int displayDuration = messagesCount == 0 ? (int)(60 * 3.5f) : 90 / Math.Min(messagesCount, 3);
