@@ -86,6 +86,7 @@ namespace SonOfRobin
         }
 
         public static float menuScale = 0.75f;
+        public static float messageLogScale = 1f;
         private static float worldScale = 1.5f;
 
         public static float WorldScale
@@ -545,11 +546,13 @@ namespace SonOfRobin
                 enableTouchJoysticks = true;
                 rumbleEnabled = false;
                 mapMarkerScale = 0.05f;
+                messageLogScale = 0.7f;
             }
             else
             {
                 showControlTips = true;
                 mapMarkerScale = 0.025f;
+                messageLogScale = 1f;
             }
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
@@ -574,6 +577,7 @@ namespace SonOfRobin
             prefsData["seedDigit4"] = seedDigit4;
             prefsData["globalScale"] = globalScale;
             prefsData["menuScale"] = menuScale;
+            prefsData["messageLogScale"] = messageLogScale;
             prefsData["worldScale"] = worldScale;
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
@@ -685,6 +689,7 @@ namespace SonOfRobin
                     newWorldStartingSkill = (Player.SkillName)(Int64)prefsData["newWorldStartingSkill"];
                     alwaysRun = (bool)prefsData["alwaysRun"];
                     destroyMapMarkerWhenReached = (bool)prefsData["destroyMapMarkerWhenReached"];
+                    messageLogScale = (float)(double)prefsData["messageLogScale"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

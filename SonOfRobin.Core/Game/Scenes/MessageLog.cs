@@ -111,7 +111,7 @@ namespace SonOfRobin
                 {
                     Message message = messagesToDisplay[messageNo];
 
-                    SpriteFontBase font = message.isDebug ? SonOfRobinGame.FontPressStart2P.GetFont(8) : SonOfRobinGame.FontVCROSD.GetFont(21);
+                    SpriteFontBase font = message.isDebug ? SonOfRobinGame.FontPressStart2P.GetFont(Math.Max(Preferences.messageLogScale, 1f) * 8) : SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
 
                     Vector2 textSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: message.text);
                     int bgInflateSize = message.texture != null ? 10 : 4;
