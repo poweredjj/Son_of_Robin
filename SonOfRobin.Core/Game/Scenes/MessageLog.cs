@@ -89,11 +89,20 @@ namespace SonOfRobin
                 }
             }
 
-            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 30, oldMax: this.flashFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
-            private Rectangle ImageRectWithOffset { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
-            private Rectangle HighlightRectWithOffset { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
-            public Rectangle BGRectWithOffset { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
-            private Vector2 TextPosWithOffset { get { return this.textPos + this.basePos; } }
+            private float FlashOpacity
+            { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 30, oldMax: this.flashFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+
+            private Rectangle ImageRectWithOffset
+            { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
+
+            private Rectangle HighlightRectWithOffset
+            { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
+
+            public Rectangle BGRectWithOffset
+            { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
+
+            private Vector2 TextPosWithOffset
+            { get { return this.textPos + this.basePos; } }
 
             public void DrawBackground()
             {
@@ -139,7 +148,9 @@ namespace SonOfRobin
         private List<Message> messages;
         private HashSet<string> displayedStrings;
         private int baseline;
-        private int MaxDeletionFrame { get { return this.messages.Count > 0 ? this.messages.Select(m => m.deletionFrame).Max() : SonOfRobinGame.CurrentUpdate; } }
+
+        private int MaxDeletionFrame
+        { get { return this.messages.Count > 0 ? this.messages.Select(m => m.deletionFrame).Max() : SonOfRobinGame.CurrentUpdate; } }
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -174,8 +185,8 @@ namespace SonOfRobin
 
             int minBaselineVal = this.screenHeight - this.bottomMargin;
 
-            if (this.baseline > minBaselineVal) this.baseline -= 2;
-            this.baseline = Math.Max(this.baseline - 2, minBaselineVal);
+            if (this.baseline > minBaselineVal) this.baseline -= (int)(4f * Preferences.messageLogScale);
+            this.baseline = Math.Max(this.baseline, minBaselineVal);
         }
 
         public override void Draw()
@@ -196,7 +207,7 @@ namespace SonOfRobin
             bool debugActive = GetTopSceneOfType(typeof(DebugScene)) != null;
             Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, (int)DebugScene.lastTextSize.Y);
 
-            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.VirtualWidth, this.screenHeight - maxDrawHeight);
+            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight - maxDrawHeight);
             var drawnMessages = new List<Message>();
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
@@ -276,7 +287,6 @@ namespace SonOfRobin
 
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
-
             messageLog.baseline += messageMargin + message.bgRect.Height;
         }
 

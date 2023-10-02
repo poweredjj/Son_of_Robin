@@ -90,7 +90,6 @@ namespace SonOfRobin
         public static float messageLogScale = 1f;
         public static bool messageLogAtRight = false;
 
-
         public static float WorldScale
         {
             get { return worldScale; }
@@ -556,7 +555,7 @@ namespace SonOfRobin
                 showControlTips = true;
                 mapMarkerScale = 0.025f;
                 messageLogScale = 1f;
-                messageLogAtRight = true;
+                messageLogAtRight = false;
             }
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;

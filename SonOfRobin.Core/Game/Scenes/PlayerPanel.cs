@@ -208,6 +208,8 @@ namespace SonOfRobin
 
                         currentPosY += 3; // adding margin (must go first, to add margin before first entry)
                         int bgInflateSize = buff.iconTexture != null ? 10 : 4;
+                        bgInflateSize = 4; // TODO disable
+
                         float opacity = this.viewParams.drawOpacity;
 
                         string buffTextFormatted = buffText;
