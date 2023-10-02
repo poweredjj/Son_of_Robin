@@ -15,9 +15,9 @@ namespace SonOfRobin
             private readonly Vector2 textSize;
             public readonly bool isDebug;
             private readonly TriSliceBG triSliceBG;
-            private readonly int createdFrame;
+            public int flashFrame;
             public readonly string text;
-            public readonly int deletionFrame;
+            public int deletionFrame;
             private readonly Color textColor;
             private readonly Vector2 textPos;
             private readonly Color bgColor;
@@ -38,7 +38,7 @@ namespace SonOfRobin
                      SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
 
                 this.isDebug = isDebug;
-                this.createdFrame = SonOfRobinGame.CurrentUpdate;
+                this.flashFrame = SonOfRobinGame.CurrentUpdate;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
@@ -90,7 +90,7 @@ namespace SonOfRobin
                 }
             }
 
-            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 30, oldMax: this.createdFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 30, oldMax: this.flashFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
             private Rectangle ImageRectWithOffset { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
             private Rectangle HighlightRectWithOffset { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
             public Rectangle BGRectWithOffset { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
@@ -133,10 +133,9 @@ namespace SonOfRobin
         private const int messageMargin = 2;
         private readonly int leftMargin;
         private readonly int bottomMargin;
-        private string lastDebugMessage;
-        private string lastUserMessage;
         private int screenHeight;
         private readonly TriSliceBG triSliceBG;
+        private string lastDebugMessage;
 
         private List<Message> messages;
         private HashSet<string> displayedStrings;
@@ -148,15 +147,13 @@ namespace SonOfRobin
             this.leftMargin = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
             this.bottomMargin = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
 
-            this.lastDebugMessage = "";
-            this.lastUserMessage = "";
-
             this.triSliceBG = new TriSliceBG(
                 textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
                 textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
                 textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
 
             this.messages = new();
+            this.lastDebugMessage = "";
             this.displayedStrings = new();
             this.ResetBaseline();
         }
@@ -216,7 +213,7 @@ namespace SonOfRobin
                 {
                     // message is above screen or collides with debug text
                     message.markedForDeletion = true;
-                    break;
+                    continue;
                 }
                 else if (!messageRect.Intersects(drawAreaRect)) continue; // message is (probably) below screen
                 else
@@ -253,15 +250,26 @@ namespace SonOfRobin
             if (textColor == default) textColor = Color.White;
             if (bgColor == default) bgColor = Color.Black;
 
-            if (avoidDuplicates)
+            if (avoidDuplicates && messageLog.displayedStrings.Contains(text))
             {
-                if ((debugMessage && messageLog.lastDebugMessage == text && (!Preferences.DebugMode || messageLog.displayedStrings.Contains(text))) ||
-                    (!debugMessage && messageLog.lastUserMessage == text && messageLog.displayedStrings.Contains(text))) return;
+                foreach (Message messageToCheck in messageLog.messages)
+                {
+                    if (messageToCheck.text == text)
+                    {
+                        messageToCheck.flashFrame = SonOfRobinGame.CurrentUpdate;
+                        messageToCheck.deletionFrame += 60 * 2;
+                        return;
+                    }
+                }
+            }
+
+            if (debugMessage)
+            {
+                if (messageLog.lastDebugMessage == text) return;
+                messageLog.lastDebugMessage = text;
             }
 
             Console.WriteLine(text); // additional output
-            if (debugMessage) messageLog.lastDebugMessage = text;
-            else messageLog.lastUserMessage = text;
 
             if (debugMessage && !Preferences.DebugMode) return;
 

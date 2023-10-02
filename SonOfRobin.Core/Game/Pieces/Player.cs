@@ -1317,7 +1317,7 @@ namespace SonOfRobin
             }
             else
             {
-                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
+                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.SmallInventory, ignoreDelay: true);
 
                 MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.AnimFrame.texture, avoidDuplicates: true);
             }
