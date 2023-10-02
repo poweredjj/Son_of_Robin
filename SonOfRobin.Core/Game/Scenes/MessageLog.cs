@@ -13,7 +13,6 @@ namespace SonOfRobin
         {
             public readonly SpriteFontBase font;
             private readonly Vector2 textSize;
-
             public readonly bool isDebug;
             private readonly TriSliceBG triSliceBG;
             private readonly int createdFrame;
@@ -48,15 +47,11 @@ namespace SonOfRobin
                 int bgInflateSize = this.image != null ? 10 : 4;
                 if (this.isDebug) bgInflateSize = 2;
 
-                this.bgRect = new Rectangle(
-                    x: (int)0,
-                    y: (int)0,
-                    width: (int)textSize.X + (bgInflateSize * 4),
-                    height: (int)textSize.Y + (bgInflateSize * 2));
-
+                this.bgRect = new Rectangle(x: 0, y: 0, width: (int)textSize.X + (bgInflateSize * 4), height: (int)textSize.Y + (bgInflateSize * 2));
                 this.textPos = new(bgInflateSize * 2, bgInflateSize);
-
                 this.imageRect = Rectangle.Empty;
+                this.highlightTexture = null;
+                this.highlightRect = Rectangle.Empty;
 
                 if (this.image != null)
                 {
@@ -72,13 +67,8 @@ namespace SonOfRobin
                     this.highlightRect.Inflate(this.highlightRect.Width / 4, 0);
                     this.imageRect.Inflate(0, -2); // texture should be a little smaller than the background
                 }
-                else
-                {
-                    this.highlightTexture = null;
-                    this.highlightRect = Rectangle.Empty;
-                }
 
-                int displayDuration = messagesCount == 0 ? 60 * 3 : 90 / Math.Min(messagesCount, 3);
+                int displayDuration = messagesCount == 0 ? (int)(60 * 3.5f) : 110 / Math.Min(messagesCount, 3);
                 this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + displayDuration;
             }
 
@@ -90,23 +80,22 @@ namespace SonOfRobin
             }
 
             private float Opacity { get { return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
-            private Rectangle ImageRect { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
-            private Rectangle HighlightRect { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
-            public Rectangle BGRect { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
-            private Vector2 TextPos { get { return this.textPos + this.basePos; } }
-            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 20, oldMax: this.createdFrame, newMin: 0, newMax: 0.6, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 30, oldMax: this.createdFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            private Rectangle ImageRectWithOffset { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
+            private Rectangle HighlightRectWithOffset { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
+            public Rectangle BGRectWithOffset { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
+            private Vector2 TextPosWithOffset { get { return this.textPos + this.basePos; } }
 
             public void DrawBackground()
             {
                 // draws background only (SamplerState.LinearWrap must be turned on for proper wrapping)
 
                 float flashOpacity = this.FlashOpacity;
-
                 Color finalBGColor = this.bgColor * 0.5f;
 
                 if (flashOpacity > 0 && !this.isDebug) finalBGColor = Helpers.Blend2Colors(firstColor: finalBGColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
 
-                triSliceBG.Draw(triSliceRect: this.BGRect, color: finalBGColor * this.Opacity);
+                this.triSliceBG.Draw(triSliceRect: this.BGRectWithOffset, color: finalBGColor * this.Opacity);
             }
 
             public void DrawEverythingElse()
@@ -117,23 +106,23 @@ namespace SonOfRobin
 
                 if (this.image != null)
                 {
-                    SonOfRobinGame.SpriteBatch.Draw(this.highlightTexture, this.HighlightRect, this.highlightTexture.Bounds, Color.White * opacity * 0.85f);
-                    Helpers.DrawTextureInsideRect(texture: this.image, rectangle: this.ImageRect, color: Color.White * opacity, drawTestRect: false);
+                    SonOfRobinGame.SpriteBatch.Draw(this.highlightTexture, this.HighlightRectWithOffset, this.highlightTexture.Bounds, Color.White * opacity * 0.85f);
+                    Helpers.DrawTextureInsideRect(texture: this.image, rectangle: this.ImageRectWithOffset, color: Color.White * opacity, drawTestRect: false);
                 }
 
                 this.font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,
                 text: this.text,
-                position: this.TextPos,
+                position: this.TextPosWithOffset,
                 color: this.textColor * opacity,
                 effect: FontSystemEffect.Stroked,
                 effectAmount: 1);
             }
         }
 
-        private readonly int marginX;
-        private readonly int marginY;
-
+        private const int messageMargin = 2;
+        private readonly int leftMargin;
+        private readonly int bottomMargin;
         private int lastDeletionFrame;
         private string lastDebugMessage;
         private string lastUserMessage;
@@ -142,11 +131,12 @@ namespace SonOfRobin
 
         private List<Message> messages;
         private HashSet<string> displayedStrings;
+        private int baseline;
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
-            this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
+            this.leftMargin = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
+            this.bottomMargin = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
 
             this.lastDeletionFrame = 0;
             this.lastDebugMessage = "";
@@ -159,12 +149,26 @@ namespace SonOfRobin
 
             this.messages = new();
             this.displayedStrings = new();
+            this.ResetBaseline();
+        }
+
+        public void ResetBaseline()
+        {
+            this.baseline = this.screenHeight;
+        }
+
+        protected override void AdaptToNewSize()
+        {
+            this.ResetBaseline();
         }
 
         public override void Update()
         {
             this.DeleteOldMessages();
             this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
+
+            if (this.baseline > this.screenHeight) this.baseline -= 2;
+            this.baseline = Math.Max(this.baseline - 2, this.screenHeight);
         }
 
         public override void Draw()
@@ -179,7 +183,7 @@ namespace SonOfRobin
 
             TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
 
-            int currentPosY = this.screenHeight - this.marginY;
+            int currentPosY = this.baseline;
             int maxDrawHeight = (int)(this.screenHeight * 0.2f);
 
             if (GetTopSceneOfType(typeof(DebugScene)) != null) maxDrawHeight = (int)DebugScene.lastTextSize.Y;
@@ -191,8 +195,8 @@ namespace SonOfRobin
                 if (currentPosY >= maxDrawHeight)
                 {
                     Message message = messagesToDisplay[messageNo];
-                    currentPosY -= message.BGRect.Height + 2;
-                    message.basePos = new Vector2(this.marginX, currentPosY);
+                    currentPosY -= message.BGRectWithOffset.Height + messageMargin;
+                    message.basePos = new Vector2(this.leftMargin, currentPosY);
 
                     message.DrawBackground();
                     if (message.image != null) drawnMessagesWithTextures.Add(message);
@@ -245,6 +249,7 @@ namespace SonOfRobin
             messageLog.displayedStrings.Add(text);
 
             messageLog.lastDeletionFrame = message.deletionFrame;
+            messageLog.baseline += messageMargin + message.BGRectWithOffset.Height;
         }
 
         private void DeleteOldMessages()
