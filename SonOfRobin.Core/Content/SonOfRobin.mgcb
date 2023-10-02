@@ -607,6 +607,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/bubble_exclamation_red.png
 
+#begin gfx/buffs/buff_heat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_heat.png
+
+#begin gfx/buffs/buff_poison.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_poison.png
+
 #begin gfx/burger.png
 /importer:TextureImporter
 /processor:TextureProcessor

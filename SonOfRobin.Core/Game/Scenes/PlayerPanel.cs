@@ -224,6 +224,11 @@ namespace SonOfRobin
                             opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 60, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
                         }
 
+                        if (buff.iconTexture != null)
+                        {
+                            // TODO add icon texture drawing
+                        }
+
                         RichTextLayout richTextLayout = new RichTextLayout { Font = this.buffFont, Text = buffTextFormatted };
                         Point buffTextSize = richTextLayout.Measure(100000);
 

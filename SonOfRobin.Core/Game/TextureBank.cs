@@ -36,6 +36,9 @@ namespace SonOfRobin
             SimpleSpeed = 20,
             SimpleStack = 21,
 
+            BuffPoison = 108,
+            BuffHeat = 109,
+
             RepeatingOceanFloor = 22,
             RepeatingWaterCaustics1 = 23,
             RepeatingWaterCaustics2 = 24,
@@ -144,6 +147,9 @@ namespace SonOfRobin
             { TextureName.WhiteCircleSmall, "small_white_circle" },
             { TextureName.Biceps, "biceps" },
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
+
+            { TextureName.BuffPoison, "buffs/buff_poison" },
+            { TextureName.BuffHeat, "buffs/buff_heat" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },

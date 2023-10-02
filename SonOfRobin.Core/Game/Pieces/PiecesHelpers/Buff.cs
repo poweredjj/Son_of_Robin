@@ -10,6 +10,7 @@ namespace SonOfRobin
         public readonly bool increaseIDAtEveryUse;
         public readonly BuffEngine.BuffType type;
         public readonly bool isPositive;
+        [NonSerialized]
         public readonly Texture2D iconTexture;
         public readonly string description;
         public readonly string statMenuText;
@@ -234,7 +235,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.MaxHP => null,
                 BuffEngine.BuffType.MaxFatigue => null,
                 BuffEngine.BuffType.EnableMap => null,
-                BuffEngine.BuffType.RegenPoison => null,
+                BuffEngine.BuffType.RegenPoison => this.isPositive ? null : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
                 BuffEngine.BuffType.Haste => null,
                 BuffEngine.BuffType.Fatigue => null,
                 BuffEngine.BuffType.Sprint => null,
@@ -243,7 +244,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.LowHP => null,
                 BuffEngine.BuffType.Tired => null,
                 BuffEngine.BuffType.Hungry => null,
-                BuffEngine.BuffType.Heat => null,
+                BuffEngine.BuffType.Heat => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
                 BuffEngine.BuffType.HeatProtection => null,
                 BuffEngine.BuffType.SwampProtection => null,
                 BuffEngine.BuffType.Wet => null,
