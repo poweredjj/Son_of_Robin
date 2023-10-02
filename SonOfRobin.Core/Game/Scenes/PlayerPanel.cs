@@ -1,4 +1,5 @@
 ﻿using FontStashSharp;
+using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -17,6 +18,7 @@ namespace SonOfRobin
         private readonly SpriteFontBase locationFont;
         private readonly World world;
         private bool isHidden;
+        private readonly TriSliceBG triSliceBG;
 
         private static int CounterSize
         { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
@@ -57,12 +59,6 @@ namespace SonOfRobin
         private static int BarHeight
         { get { return (int)(BarWidth * 0.03f); } }
 
-        private int IconWidthHeight
-        { get { return (int)(BarWidth * 0.1f); } }
-
-        private int IconMargin
-        { get { return (int)(BarWidth * 0.03f); } }
-
         private bool ShouldBeHidden
         {
             get
@@ -87,9 +83,14 @@ namespace SonOfRobin
 
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.buffFont = SonOfRobinGame.FontTommy.GetFont(60);
+            this.buffFont = SonOfRobinGame.FontVCROSD.GetFont(18);
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(60);
             this.itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
+
+            this.triSliceBG = new TriSliceBG(
+                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
+                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
+                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
 
             this.world = world;
             this.isHidden = false;
@@ -174,9 +175,9 @@ namespace SonOfRobin
                 var alignX = Helpers.AlignX.Center;
                 var alignY = Helpers.AlignY.Center;
 
-                Helpers.DrawTextInsideRectWithShadow(font: itemCounterFont, text: "/", rectangle: counterRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
-                Helpers.DrawTextInsideRectWithShadow(font: itemCounterFont, text: Convert.ToString(occupiedSlotCount), rectangle: occupiedRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
-                Helpers.DrawTextInsideRectWithShadow(font: itemCounterFont, text: Convert.ToString(totalSlotCount), rectangle: totalRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
+                Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: "/", rectangle: counterRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
+                Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: Convert.ToString(occupiedSlotCount), rectangle: occupiedRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
+                Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: Convert.ToString(totalSlotCount), rectangle: totalRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
             }
 
             // drawing location name
@@ -186,86 +187,70 @@ namespace SonOfRobin
             {
                 Rectangle nameRect = new(x: 0, y: currentPosY, width: BarWidth, height: BarHeight * 2);
 
-                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: 4, drawTestRect: false, drawTimes: 2);
+                Helpers.DrawTextInsideRect(font: this.locationFont, text: location.name, rectangle: nameRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: 4, drawTestRect: false, drawTimes: 2);
 
-                Helpers.DrawTextInsideRect(font: locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, drawTestRect: false);
+                Helpers.DrawTextInsideRect(font: this.locationFont, text: location.name, rectangle: nameRect, color: Color.White * this.viewParams.drawOpacity, drawTestRect: false);
 
                 currentPosY += nameRect.Height + 5;
             }
 
-            // drawing status icons
+            // drawing buff bars
             {
-                int iconPosY = currentPosY;
-                int iconPosX = 0;
-                int iconWidthHeight = this.IconWidthHeight;
-                int margin = this.IconMargin;
+                int bufBarMargin = 2;
 
-                foreach (Buff buff in player.buffEngine.BuffList)
+                if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Count() > 0)
                 {
-                    string buffText = buff.iconText;
+                    SonOfRobinGame.SpriteBatch.End();
+                    TriSliceBG.StartSpriteBatch(this);
 
-                    if (buffText == null) continue;
-
-                    Color progressColor, bgColor, frameColor, txtColor;
-
-                    if (buff.isPositive)
+                    foreach (Buff buff in player.buffEngine.BuffList)
                     {
-                        bgColor = Color.Black * 0.8f;
-                        progressColor = Color.Green * 0.8f;
-                        frameColor = Color.GreenYellow;
-                        txtColor = Color.White;
-                    }
-                    else
-                    {
-                        bgColor = Color.Black * 0.4f;
-                        progressColor = Color.Red * 0.8f;
-                        frameColor = Color.OrangeRed;
-                        txtColor = Color.White;
-                    }
+                        currentPosY += bufBarMargin;
 
-                    Rectangle iconRect = new Rectangle(iconPosX, iconPosY, iconWidthHeight, iconWidthHeight);
-                    Rectangle progressRect;
+                        string buffText = buff.playerPanelText;
+                        if (buffText == null) continue;
 
-                    if (buff.autoRemoveDelay > 0)
-                    {
-                        int buffFramesLeft = Math.Max(buff.endFrame - world.CurrentUpdate, 0);
-                        float buffProgress = 1f - ((float)buffFramesLeft / (float)buff.autoRemoveDelay);
-                        int bgRectShrink = (int)((float)iconWidthHeight * buffProgress);
+                        int bgInflateSize = buff.iconTexture != null ? 10 : 4;
 
-                        progressRect = new Rectangle(iconRect.X, iconRect.Y + bgRectShrink, iconWidthHeight, iconWidthHeight - bgRectShrink);
-                    }
-                    else progressRect = iconRect;
+                        string buffTextFormatted = buffText;
 
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, iconRect, bgColor * this.viewParams.drawOpacity);
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressRect, progressColor * this.viewParams.drawOpacity);
+                        float opacity = this.viewParams.drawOpacity;
 
-                    int textMargin = (int)(iconWidthHeight * 0.1f);
-                    Rectangle textRect = new Rectangle(x: iconRect.X + textMargin, y: iconRect.Y + textMargin, width: iconWidthHeight - (textMargin * 2), height: iconWidthHeight - (textMargin * 2));
+                        if (buff.autoRemoveDelay > 0)
+                        {
+                            int buffFramesLeft = Math.Max(buff.endFrame - this.world.CurrentUpdate, 0);
+                            int buffSecondsLeft = (int)Math.Ceiling((float)buffFramesLeft / 60f);
+                            string timespanString = Helpers.ConvertTimeSpanToString(TimeSpan.FromSeconds(buffSecondsLeft));
+                            if (timespanString.Length <= 2) timespanString += "s";
+                            if (timespanString.StartsWith("0")) timespanString = timespanString.Remove(0, 1);
+                            buffTextFormatted += " " + timespanString;
 
-                    if (buffText.Contains("\n"))
-                    {
-                        string topText = buffText.Split('\n')[0];
-                        string bottomText = buffText.Split('\n')[1];
+                            opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 60, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
+                        }
 
-                        Rectangle textRectTop = new Rectangle(x: textRect.X, y: textRect.Y, width: textRect.Width, height: textRect.Height / 2);
-                        Rectangle textRectBottom = new Rectangle(x: textRect.X, y: textRect.Y + (textRect.Height / 2), width: textRect.Width, height: textRect.Height / 2);
+                        RichTextLayout richTextLayout = new RichTextLayout { Font = this.buffFont, Text = buffTextFormatted };
+                        Point buffTextSize = richTextLayout.Measure(100000);
 
-                        Helpers.DrawTextInsideRect(font: buffFont, text: topText, rectangle: textRectTop, color: txtColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
-                        Helpers.DrawTextInsideRect(font: buffFont, text: bottomText, rectangle: textRectBottom, color: txtColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
-                    }
-                    else
-                    {
-                        Helpers.DrawTextInsideRect(font: buffFont, text: buffText, rectangle: textRect, color: txtColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+                        Rectangle buffBGRect = new Rectangle(
+                            x: 0,
+                            y: currentPosY,
+                            width: (int)buffTextSize.X + (bgInflateSize * 4),
+                            height: (int)buffTextSize.Y + (bgInflateSize * 2));
+
+                        Vector2 textPos = new(bgInflateSize * 2, currentPosY + bgInflateSize);
+
+                        Color bgColor = buff.isPositive ? new Color(4, 92, 27) : new Color(128, 48, 3);
+
+                        this.triSliceBG.Draw(triSliceRect: buffBGRect, color: bgColor * 0.7f * opacity);
+
+                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + new Vector2(2, 2), Color.Black * opacity);
+                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos, Color.White * opacity);
+
+                        currentPosY += buffBGRect.Height;
                     }
 
-                    Helpers.DrawRectangleOutline(rect: iconRect, color: frameColor * this.viewParams.drawOpacity, borderWidth: 2);
-
-                    iconPosX += iconWidthHeight + margin;
-                    if (iconPosX > BarWidth)
-                    {
-                        iconPosY += iconWidthHeight + margin;
-                        iconPosX = 0;
-                    }
+                    SonOfRobinGame.SpriteBatch.End();
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 }
             }
 

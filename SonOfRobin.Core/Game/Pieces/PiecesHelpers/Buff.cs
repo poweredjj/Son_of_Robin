@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SonOfRobin
 {
@@ -9,9 +10,10 @@ namespace SonOfRobin
         public readonly bool increaseIDAtEveryUse;
         public readonly BuffEngine.BuffType type;
         public readonly bool isPositive;
+        public readonly Texture2D iconTexture;
         public readonly string description;
         public readonly string statMenuText;
-        public readonly string iconText;
+        public readonly string playerPanelText;
         public object value;
         public readonly bool canKill;
         public readonly int autoRemoveDelay;
@@ -35,9 +37,10 @@ namespace SonOfRobin
             this.isPermanent = isPermanent;
             this.sleepMinutesNeededForActivation = sleepMinutesNeededForActivation;
             this.isPositive = this.GetIsPositive();
+            this.iconTexture = this.GetIconTexture();
             this.description = this.GetDescription();
             this.statMenuText = this.GetStatMenuText();
-            this.iconText = this.GetIconText();
+            this.playerPanelText = this.GetPlayerPanelText();
 
             this.endFrame = 0; // to be assigned during activation
             this.activationFrame = 0; // to be assigned during activation
@@ -214,6 +217,43 @@ namespace SonOfRobin
 
         private string SignString
         { get { return $"{this.value}".StartsWith("-") ? "" : "+"; } }
+
+        private Texture2D GetIconTexture()
+        {
+            // TODO add icons
+
+            return this.type switch
+            {
+                BuffEngine.BuffType.InvWidth => null,
+                BuffEngine.BuffType.InvHeight => null,
+                BuffEngine.BuffType.ToolbarWidth => null,
+                BuffEngine.BuffType.ToolbarHeight => null,
+                BuffEngine.BuffType.Speed => null,
+                BuffEngine.BuffType.Strength => null,
+                BuffEngine.BuffType.HP => null,
+                BuffEngine.BuffType.MaxHP => null,
+                BuffEngine.BuffType.MaxFatigue => null,
+                BuffEngine.BuffType.EnableMap => null,
+                BuffEngine.BuffType.RegenPoison => null,
+                BuffEngine.BuffType.Haste => null,
+                BuffEngine.BuffType.Fatigue => null,
+                BuffEngine.BuffType.Sprint => null,
+                BuffEngine.BuffType.SprintCooldown => null,
+                BuffEngine.BuffType.ExtendSprintDuration => null,
+                BuffEngine.BuffType.LowHP => null,
+                BuffEngine.BuffType.Tired => null,
+                BuffEngine.BuffType.Hungry => null,
+                BuffEngine.BuffType.Heat => null,
+                BuffEngine.BuffType.HeatProtection => null,
+                BuffEngine.BuffType.SwampProtection => null,
+                BuffEngine.BuffType.Wet => null,
+                BuffEngine.BuffType.HeatLevelLocked => null,
+                BuffEngine.BuffType.FastMountainWalking => null,
+                BuffEngine.BuffType.CanSeeThroughFog => null,
+                BuffEngine.BuffType.RemovePoison => null,
+                _ => throw new ArgumentException($"Unsupported buff type - {this.type}."),
+            };
+        }
 
         private string GetDescription()
         {
@@ -494,7 +534,7 @@ namespace SonOfRobin
             }
         }
 
-        private string GetIconText()
+        private string GetPlayerPanelText()
         {
             string sign = this.SignString;
 
@@ -516,31 +556,31 @@ namespace SonOfRobin
                     return null;
 
                 case BuffEngine.BuffType.Speed:
-                    return this.autoRemoveDelay == 0 ? null : $"SPD\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"speed {sign}{this.value}";
 
                 case BuffEngine.BuffType.Strength:
-                    return this.autoRemoveDelay == 0 ? null : $"STR\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"strength {sign}{this.value}";
 
                 case BuffEngine.BuffType.HP:
-                    return $"HP\n{sign}{this.value}";
+                    return $"health\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxHP:
-                    return this.autoRemoveDelay == 0 ? null : $"MAX HP\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"max health {sign}{this.value}";
 
                 case BuffEngine.BuffType.MaxFatigue:
-                    return this.autoRemoveDelay == 0 ? null : $"MAX FATIGUE\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"max fatigue\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.Tired:
-                    return "TIRED";
+                    return "tired";
 
                 case BuffEngine.BuffType.LowHP:
-                    return "LOW\nHEALTH";
+                    return "low health";
 
                 case BuffEngine.BuffType.Hungry:
-                    return "HUNGRY";
+                    return "hungry";
 
                 case BuffEngine.BuffType.Heat:
-                    return "HEAT";
+                    return "heat";
 
                 case BuffEngine.BuffType.HeatProtection:
                     return null;
@@ -549,25 +589,25 @@ namespace SonOfRobin
                     return null;
 
                 case BuffEngine.BuffType.Wet:
-                    return "WET";
+                    return "wet";
 
                 case BuffEngine.BuffType.RegenPoison:
-                    return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
+                    return this.isPositive ? $"regen {sign}{this.value}" : $"poison {sign}{this.value}";
 
                 case BuffEngine.BuffType.RemovePoison:
                     return null;
 
                 case BuffEngine.BuffType.Haste:
-                    return this.autoRemoveDelay == 0 ? null : $"HASTE\n{sign}{this.value}";
+                    return this.autoRemoveDelay == 0 ? null : $"haste {sign}{this.value}";
 
                 case BuffEngine.BuffType.Fatigue:
-                    return $"FATIGUE\n{sign}{this.value}";
+                    return $"fatigue {sign}{this.value}";
 
                 case BuffEngine.BuffType.Sprint:
-                    return $"SPRINT\n{sign}{this.value}";
+                    return $"sprint {sign}{this.value}";
 
                 case BuffEngine.BuffType.SprintCooldown:
-                    return "CANNOT\nSPRINT";
+                    return "cannot sprint";
 
                 case BuffEngine.BuffType.ExtendSprintDuration:
                     return null;
