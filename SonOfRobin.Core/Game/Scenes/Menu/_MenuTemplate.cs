@@ -170,6 +170,8 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
                         new Selector(menu: menu, name: "messages scale", valueDict: new Dictionary<object, object> { { 0.5f, "micro" }, { 0.7f, "small" }, { 1f, "medium" }, { 1.5f, "big" }, { 2f, "huge" } }, targetObj: preferences, propertyName: "messageLogScale");
 
+                        new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
+
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 

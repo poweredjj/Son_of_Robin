@@ -21,7 +21,7 @@ namespace SonOfRobin
             private readonly Color textColor;
             private readonly Vector2 textPos;
             private readonly Color bgColor;
-            private readonly Rectangle bgRect;
+            public readonly Rectangle bgRect;
             private readonly Texture2D image;
             private readonly Texture2D highlightTexture;
             private readonly Rectangle highlightRect;
@@ -82,7 +82,6 @@ namespace SonOfRobin
                 return rectangleWithOffset;
             }
 
-
             private float Opacity
             {
                 get
@@ -90,6 +89,7 @@ namespace SonOfRobin
                     return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true);
                 }
             }
+
             private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 30, oldMax: this.createdFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
             private Rectangle ImageRectWithOffset { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
             private Rectangle HighlightRectWithOffset { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
@@ -207,7 +207,8 @@ namespace SonOfRobin
             {
                 Message message = messagesToDisplay[messageNo];
                 currentPos.Y -= message.BGRectWithOffset.Height + messageMargin;
-                message.basePos = currentPos;
+
+                message.basePos = Preferences.messageLogAtRight ? new Vector2(SonOfRobinGame.VirtualWidth - message.bgRect.Width - currentPos.X, currentPos.Y) : currentPos;
 
                 Rectangle messageRect = message.BGRectWithOffset;
 
@@ -269,9 +270,8 @@ namespace SonOfRobin
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
 
-            messageLog.baseline += messageMargin + message.BGRectWithOffset.Height;
+            messageLog.baseline += messageMargin + message.bgRect.Height;
         }
-
 
         private void DeleteOldMessages()
         {
