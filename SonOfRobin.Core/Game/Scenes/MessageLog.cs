@@ -9,40 +9,29 @@ namespace SonOfRobin
 {
     public class MessageLog : Scene
     {
-        public readonly struct ItemTextureData
-        {
-            public readonly Texture2D texture;
-            public readonly Rectangle rectangle;
-            public readonly Color color;
-
-            public ItemTextureData(Texture2D texture, Rectangle rectangle, Color color)
-            {
-                this.texture = texture;
-                this.rectangle = rectangle;
-                this.color = color;
-            }
-        }
-
-        private readonly struct Message
+        private class Message
         {
             public readonly SpriteFontBase font;
             private readonly Vector2 textSize;
 
             public readonly bool isDebug;
-            public readonly int createdFrame;
+            private readonly TriSliceBG triSliceBG;
+            private readonly int createdFrame;
             public readonly string text;
             public readonly int deletionFrame;
-            public readonly Color textColor;
-            public readonly Vector2 textPos;
-            public readonly Color bgColor;
-            public readonly Rectangle bgRect;
+            private readonly Color textColor;
+            private readonly Vector2 textPos;
+            private readonly Color bgColor;
+            private readonly Rectangle bgRect;
             public readonly Texture2D image;
-            public readonly Texture2D highlightTexture;
-            public readonly Rectangle highlightRect;
-            public readonly Rectangle imageRect;
+            private readonly Texture2D highlightTexture;
+            private readonly Rectangle highlightRect;
+            private readonly Rectangle imageRect;
+            public Vector2 basePos;
 
-            public Message(bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D image = null)
+            public Message(TriSliceBG triSliceBG, bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D image = null)
             {
+                this.triSliceBG = triSliceBG;
                 this.font = isDebug ?
                      SonOfRobinGame.FontPressStart2P.GetFont(Math.Max(Preferences.messageLogScale, 1f) * 8) :
                      SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
@@ -54,6 +43,7 @@ namespace SonOfRobin
                 this.bgColor = bgColor;
                 this.image = image;
                 this.textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: this.text);
+                this.basePos = Vector2.Zero;
 
                 int bgInflateSize = this.image != null ? 10 : 4;
                 if (this.isDebug) bgInflateSize = 2;
@@ -91,6 +81,54 @@ namespace SonOfRobin
                 int displayDuration = messagesCount == 0 ? 60 * 3 : 90 / Math.Min(messagesCount, 3);
                 this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + displayDuration;
             }
+
+            private static Rectangle AddOffsetToRect(Rectangle rectangle, Vector2 offset)
+            {
+                Rectangle rectangleWithOffset = rectangle;
+                rectangleWithOffset.Offset(offset);
+                return rectangleWithOffset;
+            }
+
+            private float Opacity { get { return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            private Rectangle ImageRect { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
+            private Rectangle HighlightRect { get { return AddOffsetToRect(rectangle: this.highlightRect, offset: this.basePos); } }
+            public Rectangle BGRect { get { return AddOffsetToRect(rectangle: this.bgRect, offset: this.basePos); } }
+            private Vector2 TextPos { get { return this.textPos + this.basePos; } }
+            private float FlashOpacity { get { return (float)Helpers.ConvertRange(oldMin: this.createdFrame + 20, oldMax: this.createdFrame, newMin: 0, newMax: 0.6, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+
+            public void DrawBackground()
+            {
+                // draws background only (SamplerState.LinearWrap must be turned on for proper wrapping)
+
+                float flashOpacity = this.FlashOpacity;
+
+                Color finalBGColor = this.bgColor * 0.5f;
+
+                if (flashOpacity > 0 && !this.isDebug) finalBGColor = Helpers.Blend2Colors(firstColor: finalBGColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
+
+                triSliceBG.Draw(triSliceRect: this.BGRect, color: finalBGColor * this.Opacity);
+            }
+
+            public void DrawEverythingElse()
+            {
+                // draws image only (SamplerState.LinearWrap must be turned off, otherwise glitches will occur)
+
+                float opacity = this.Opacity;
+
+                if (this.image != null)
+                {
+                    SonOfRobinGame.SpriteBatch.Draw(this.highlightTexture, this.HighlightRect, this.highlightTexture.Bounds, Color.White * opacity * 0.85f);
+                    Helpers.DrawTextureInsideRect(texture: this.image, rectangle: this.ImageRect, color: Color.White * opacity, drawTestRect: false);
+                }
+
+                this.font.DrawText(
+                batch: SonOfRobinGame.SpriteBatch,
+                text: this.text,
+                position: this.TextPos,
+                color: this.textColor * opacity,
+                effect: FontSystemEffect.Stroked,
+                effectAmount: 1);
+            }
         }
 
         private readonly int marginX;
@@ -123,13 +161,6 @@ namespace SonOfRobin
             this.displayedStrings = new();
         }
 
-        public static Rectangle GetRectangleCopyWithOffset(Rectangle rectangle, Point offset)
-        {
-            Rectangle rectangleWithOffset = rectangle;
-            rectangleWithOffset.Offset(offset.X, offset.Y);
-            return rectangleWithOffset;
-        }
-
         public override void Update()
         {
             this.DeleteOldMessages();
@@ -148,68 +179,35 @@ namespace SonOfRobin
 
             TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
 
-            int currentFrame = SonOfRobinGame.CurrentUpdate;
             int currentPosY = this.screenHeight - this.marginY;
-
             int maxDrawHeight = (int)(this.screenHeight * 0.2f);
 
             if (GetTopSceneOfType(typeof(DebugScene)) != null) maxDrawHeight = (int)DebugScene.lastTextSize.Y;
 
-            var itemTextureDataList = new List<ItemTextureData>();
+            var drawnMessagesWithTextures = new List<Message>();
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
                 if (currentPosY >= maxDrawHeight)
                 {
                     Message message = messagesToDisplay[messageNo];
+                    currentPosY -= message.BGRect.Height + 2;
+                    message.basePos = new Vector2(this.marginX, currentPosY);
 
-                    int entryHeight = message.bgRect.Height + 2;
-                    currentPosY -= entryHeight;
-
-                    Point entryPos = new Point(this.marginX, currentPosY);
-
-                    float opacity = (float)Helpers.ConvertRange(oldMin: message.deletionFrame, oldMax: message.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: currentFrame, clampToEdges: true);
-
-                    Rectangle bgRectMoved = GetRectangleCopyWithOffset(rectangle: message.bgRect, offset: entryPos);
-                    Rectangle imageRectMoved = GetRectangleCopyWithOffset(rectangle: message.imageRect, offset: entryPos);
-                    Rectangle highlightRectMoved = GetRectangleCopyWithOffset(rectangle: message.highlightRect, offset: entryPos);
-                    Vector2 textPosMoved = message.textPos;
-                    textPosMoved.X += entryPos.X;
-                    textPosMoved.Y += entryPos.Y;
-
-                    float flashOpacity = (float)Helpers.ConvertRange(oldMin: message.createdFrame + 20, oldMax: message.createdFrame, newMin: 0, newMax: 0.6, oldVal: currentFrame, clampToEdges: true);
-                    Color bgColor = message.bgColor * 0.5f;
-                    if (flashOpacity > 0 && !message.isDebug) bgColor = Helpers.Blend2Colors(firstColor: bgColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
-
-                    triSliceBG.Draw(triSliceRect: bgRectMoved, color: bgColor * opacity);
-
-                    if (message.image != null)
-                    {
-                        SonOfRobinGame.SpriteBatch.Draw(message.highlightTexture, highlightRectMoved, message.highlightTexture.Bounds, Color.White * opacity * 0.85f);
-                        itemTextureDataList.Add(new ItemTextureData(texture: message.image, rectangle: imageRectMoved, color: Color.White * opacity));
-                    }
-
-                    message.font.DrawText(
-                    batch: SonOfRobinGame.SpriteBatch,
-                    text: message.text,
-                    position: textPosMoved,
-                    color: message.textColor * opacity,
-                    effect: FontSystemEffect.Stroked,
-                    effectAmount: 1);
+                    message.DrawBackground();
+                    if (message.image != null) drawnMessagesWithTextures.Add(message);
                 }
                 else break;
             }
 
-            if (itemTextureDataList.Count > 0)
+            if (drawnMessagesWithTextures.Count > 0)
             {
                 SonOfRobinGame.SpriteBatch.End();
 
-                // SamplerState.LinearWrap must be turned off first, otherwise it would cause glitches on item texture edges
-
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                foreach (ItemTextureData itemTextureData in itemTextureDataList)
+                foreach (Message message in drawnMessagesWithTextures)
                 {
-                    Helpers.DrawTextureInsideRect(texture: itemTextureData.texture, rectangle: itemTextureData.rectangle, color: itemTextureData.color, drawTestRect: false);
+                    message.DrawEverythingElse();
                 }
             }
 
@@ -241,7 +239,7 @@ namespace SonOfRobin
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
+            Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.lastDeletionFrame, messagesCount: messageLog.messages.Count);
 
             messageLog.messages.Add(message);
             messageLog.displayedStrings.Add(text);
