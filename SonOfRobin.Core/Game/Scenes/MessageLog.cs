@@ -90,7 +90,7 @@ namespace SonOfRobin
             }
 
             private float FlashOpacity
-            { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 30, oldMax: this.flashFrame, newMin: 0, newMax: 0.8, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 20, oldMax: this.flashFrame, newMin: 0, newMax: 0.6, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
 
             private Rectangle ImageRectWithOffset
             { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
