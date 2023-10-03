@@ -274,7 +274,7 @@ namespace SonOfRobin
                     missingIngredientsImages.Add(missingPieceInfo.texture);
                 }
 
-                entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2));
+                entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 1.2f, imageAlignX: Helpers.AlignX.Center));
             }
 
             int recipeLevelCurrent = world.craftStats.GetRecipeLevel(this.recipe);

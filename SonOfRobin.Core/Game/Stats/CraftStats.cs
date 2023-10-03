@@ -208,7 +208,7 @@ namespace SonOfRobin
                     var infoTextList = new List<InfoWindow.TextEntry>
                     {
                         new InfoWindow.TextEntry(text: fullHeader, color: Color.White, scale: 1f),
-                        new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f)
+                        new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f, minMarkerWidthMultiplier: 1.4f, imageAlignX: Helpers.AlignX.Left)
                     };
 
                     string nameString = showPageCounter ? $"{header.ToLower()} - page {pageCounter}" : $"{header.ToLower()}";
