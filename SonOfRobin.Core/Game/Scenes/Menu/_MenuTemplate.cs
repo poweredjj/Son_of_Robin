@@ -556,24 +556,34 @@ namespace SonOfRobin
 
                             var positiveBuffTextLines = new List<string>();
                             var negativeBuffTextLines = new List<string>();
+                            var positiveBuffImages = new List<Texture2D>();
+                            var negativeBuffImages = new List<Texture2D>();
 
                             foreach (Buff buff in player.buffEngine.BuffList)
                             {
                                 if (buff.statMenuText != null)
                                 {
-                                    if (buff.isPositive) positiveBuffTextLines.Add(buff.statMenuText);
-                                    else negativeBuffTextLines.Add(buff.statMenuText);
+                                    string buffText = buff.statMenuText;
+                                    if (buff.iconTexture != null)
+                                    {
+                                        buffText = $"| {buffText}";
+                                        if (buff.isPositive) positiveBuffImages.Add(buff.iconTexture);
+                                        else negativeBuffImages.Add(buff.iconTexture);
+                                    }
+
+                                    if (buff.isPositive) positiveBuffTextLines.Add(buffText);
+                                    else negativeBuffTextLines.Add(buffText);
                                 }
                             }
 
                             if (positiveBuffTextLines.Count > 0)
                             {
-                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), color: Color.Cyan, scale: 0.75f));
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), imageList: positiveBuffImages, color: Color.Cyan, scale: 0.75f));
                             }
 
                             if (negativeBuffTextLines.Count > 0)
                             {
-                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), color: new Color(255, 120, 70), scale: 0.75f));
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), imageList: negativeBuffImages, color: new Color(255, 120, 70), scale: 0.75f));
                             }
 
                             Invoker invoker = new(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);

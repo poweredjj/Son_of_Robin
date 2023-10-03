@@ -227,28 +227,28 @@ namespace SonOfRobin
                 BuffEngine.BuffType.InvHeight => null,
                 BuffEngine.BuffType.ToolbarWidth => null,
                 BuffEngine.BuffType.ToolbarHeight => null,
-                BuffEngine.BuffType.Speed => null,
-                BuffEngine.BuffType.Strength => null,
+                BuffEngine.BuffType.Speed => TextureBank.GetTexture(TextureBank.TextureName.BuffSpeed),
+                BuffEngine.BuffType.Strength => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffStrPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffStrMinus),
                 BuffEngine.BuffType.HP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffHPMinus),
                 BuffEngine.BuffType.MaxHP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPMinus),
-                BuffEngine.BuffType.MaxFatigue => null,
-                BuffEngine.BuffType.EnableMap => null,
+                BuffEngine.BuffType.MaxFatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
+                BuffEngine.BuffType.EnableMap => AnimData.framesForPkgs[AnimData.PkgName.Map].texture,
                 BuffEngine.BuffType.RegenPoison => this.isPositive ? null : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
-                BuffEngine.BuffType.Haste => null,
-                BuffEngine.BuffType.Fatigue => null,
-                BuffEngine.BuffType.Sprint => null,
-                BuffEngine.BuffType.SprintCooldown => null,
-                BuffEngine.BuffType.ExtendSprintDuration => null,
-                BuffEngine.BuffType.LowHP => null,
+                BuffEngine.BuffType.Haste => TextureBank.GetTexture(TextureBank.TextureName.BuffHaste),
+                BuffEngine.BuffType.Fatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
+                BuffEngine.BuffType.Sprint => TextureBank.GetTexture(TextureBank.TextureName.BuffSprint),
+                BuffEngine.BuffType.SprintCooldown => TextureBank.GetTexture(TextureBank.TextureName.BuffCannotSprint),
+                BuffEngine.BuffType.ExtendSprintDuration => TextureBank.GetTexture(TextureBank.TextureName.BuffSprint),
+                BuffEngine.BuffType.LowHP => TextureBank.GetTexture(TextureBank.TextureName.BuffLowHP),
                 BuffEngine.BuffType.Tired => TextureBank.GetTexture(TextureBank.TextureName.Bed),
-                BuffEngine.BuffType.Hungry => null,
+                BuffEngine.BuffType.Hungry => AnimData.framesForPkgs[AnimData.PkgName.Burger].texture,
                 BuffEngine.BuffType.Heat => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
-                BuffEngine.BuffType.HeatProtection => null,
-                BuffEngine.BuffType.SwampProtection => null,
+                BuffEngine.BuffType.HeatProtection => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
+                BuffEngine.BuffType.SwampProtection => TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
                 BuffEngine.BuffType.Wet => TextureBank.GetTexture(TextureBank.TextureName.BuffWet),
                 BuffEngine.BuffType.HeatLevelLocked => null,
-                BuffEngine.BuffType.FastMountainWalking => null,
-                BuffEngine.BuffType.CanSeeThroughFog => null,
+                BuffEngine.BuffType.FastMountainWalking => TextureBank.GetTexture(TextureBank.TextureName.BuffMountainWalking),
+                BuffEngine.BuffType.CanSeeThroughFog => AnimData.framesForPkgs[AnimData.PkgName.WeatherFog1].texture,
                 BuffEngine.BuffType.RemovePoison => null,
                 _ => throw new ArgumentException($"Unsupported buff type - {this.type}."),
             };
@@ -606,7 +606,7 @@ namespace SonOfRobin
                     return $"sprint {sign}{this.value}";
 
                 case BuffEngine.BuffType.SprintCooldown:
-                    return "cannot sprint";
+                    return "can't sprint";
 
                 case BuffEngine.BuffType.ExtendSprintDuration:
                     return null;

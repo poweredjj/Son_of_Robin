@@ -607,6 +607,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/bubble_exclamation_red.png
 
+#begin gfx/buffs/buff_cannot_sprint.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_cannot_sprint.png
+
+#begin gfx/buffs/buff_haste.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_haste.png
+
 #begin gfx/buffs/buff_heat.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -643,6 +667,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_hp_plus.png
 
+#begin gfx/buffs/buff_low_hp.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_low_hp.png
+
 #begin gfx/buffs/buff_max_hp_minus.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -667,6 +703,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_max_hp_plus.png
 
+#begin gfx/buffs/buff_mountain_walking.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_mountain_walking.png
+
 #begin gfx/buffs/buff_poison.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -690,6 +738,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_regen.png
+
+#begin gfx/buffs/buff_speed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_speed.png
+
+#begin gfx/buffs/buff_sprint.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_sprint.png
 
 #begin gfx/buffs/buff_str_minus.png
 /importer:TextureImporter
