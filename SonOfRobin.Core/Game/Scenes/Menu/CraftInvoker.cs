@@ -250,7 +250,7 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
             }
 
-            entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
+            entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: Color.White));
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: smallScale);
             entryList.AddRange(affinityEntries);

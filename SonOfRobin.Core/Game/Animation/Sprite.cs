@@ -881,7 +881,8 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
-            this.CroppedAnimFrame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+            AnimFrame frameToDraw = this.AnimFrame.cropped ? this.AnimFrame : this.CroppedAnimFrame;
+            frameToDraw.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
         }
 
         private void DrawState()

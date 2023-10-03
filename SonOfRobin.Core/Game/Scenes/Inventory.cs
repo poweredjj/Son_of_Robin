@@ -402,7 +402,7 @@ namespace SonOfRobin
 
             if (extInfoTextList.Count > 0)
             {
-                entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
+                entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: Color.White));
             }
 
             if (selectedPiece.GetType() == typeof(Seed))
