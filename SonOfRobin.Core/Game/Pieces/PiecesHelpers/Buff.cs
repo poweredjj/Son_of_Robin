@@ -223,17 +223,17 @@ namespace SonOfRobin
         {
             return this.type switch
             {
-                BuffEngine.BuffType.InvWidth => null,
-                BuffEngine.BuffType.InvHeight => null,
-                BuffEngine.BuffType.ToolbarWidth => null,
-                BuffEngine.BuffType.ToolbarHeight => null,
+                BuffEngine.BuffType.InvWidth => TextureBank.GetTexture(TextureBank.TextureName.BuffWidth),
+                BuffEngine.BuffType.InvHeight => TextureBank.GetTexture(TextureBank.TextureName.BuffHeight),
+                BuffEngine.BuffType.ToolbarWidth => TextureBank.GetTexture(TextureBank.TextureName.BuffWidth),
+                BuffEngine.BuffType.ToolbarHeight => TextureBank.GetTexture(TextureBank.TextureName.BuffHeight),
                 BuffEngine.BuffType.Speed => TextureBank.GetTexture(TextureBank.TextureName.BuffSpeed),
                 BuffEngine.BuffType.Strength => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffStrPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffStrMinus),
                 BuffEngine.BuffType.HP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffHPMinus),
                 BuffEngine.BuffType.MaxHP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPMinus),
                 BuffEngine.BuffType.MaxFatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
                 BuffEngine.BuffType.EnableMap => AnimData.framesForPkgs[AnimData.PkgName.Map].texture,
-                BuffEngine.BuffType.RegenPoison => this.isPositive ? null : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
+                BuffEngine.BuffType.RegenPoison => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffRegen) : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
                 BuffEngine.BuffType.Haste => TextureBank.GetTexture(TextureBank.TextureName.BuffHaste),
                 BuffEngine.BuffType.Fatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
                 BuffEngine.BuffType.Sprint => TextureBank.GetTexture(TextureBank.TextureName.BuffSprint),

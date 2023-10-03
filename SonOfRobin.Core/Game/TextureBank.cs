@@ -52,6 +52,8 @@ namespace SonOfRobin
             BuffCannotSprint = 121,
             BuffHaste = 122,
             BuffMountainWalking = 123,
+            BuffWidth = 127,
+            BuffHeight = 128,
 
             RepeatingOceanFloor = 22,
             RepeatingWaterCaustics1 = 23,
@@ -182,6 +184,8 @@ namespace SonOfRobin
             { TextureName.BuffCannotSprint, "buffs/buff_cannot_sprint" },
             { TextureName.BuffHaste, "buffs/buff_haste" },
             { TextureName.BuffMountainWalking, "buffs/buff_mountain_walking" },
+            { TextureName.BuffWidth, "buffs/buff_width" },
+            { TextureName.BuffHeight, "buffs/buff_height" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },

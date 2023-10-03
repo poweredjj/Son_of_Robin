@@ -428,7 +428,9 @@ namespace SonOfRobin
                 if (selectedPiece.pieceInfo.CanHurtAnimals) entryList.Add(new InfoWindow.TextEntry(text: "Target receives:", color: Color.White, scale: smallScale));
 
                 foreach (Buff buff in selectedPiece.buffList)
-                { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f)); }
+                {
+                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f));
+                }
             }
 
             int margin = this.Margin;
@@ -1222,7 +1224,7 @@ namespace SonOfRobin
                 slot.Draw(destRect: destRect, opacity: opacity, drawNewIcon: this.type != Type.SingleBottom);
 
                 float rectHeightDivider = SonOfRobinGame.platform == Platform.Mobile ? 2f : 3f;
-                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (int)(tileRect.Height / rectHeightDivider * (rectHeightDivider - 1)), width: tileRect.Width, height: (int)(tileRect.Height / rectHeightDivider));                          
+                Rectangle quantityRect = new(x: tileRect.X, y: tileRect.Y + (int)(tileRect.Height / rectHeightDivider * (rectHeightDivider - 1)), width: tileRect.Width, height: (int)(tileRect.Height / rectHeightDivider));
 
                 DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: opacity);
             }

@@ -643,6 +643,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_heat.png
 
+#begin gfx/buffs/buff_height.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_height.png
+
 #begin gfx/buffs/buff_hp_minus.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -798,6 +810,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_wet.png
+
+#begin gfx/buffs/buff_width.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_width.png
 
 #begin gfx/burger.png
 /importer:TextureImporter
