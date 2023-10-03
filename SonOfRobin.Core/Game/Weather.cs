@@ -342,6 +342,7 @@ namespace SonOfRobin
             if (firstRun) this.rainEmitter.sprite.PlaceOnBoard(position: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
 
             int raindropsCount = (int)(this.RainPercentage * 2) * (cameraRect.Width * cameraRect.Height / 20000);
+            if (SonOfRobinGame.fps.FPS <= 30) raindropsCount = Math.Max(raindropsCount / 4, 1);
 
             float targetRotation = 0.9f * this.WindPercentage;
             if (this.WindOriginX == 0) targetRotation *= -1;
