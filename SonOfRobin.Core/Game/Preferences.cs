@@ -167,20 +167,7 @@ namespace SonOfRobin
         public static bool showHints = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;
-        private static int darknessResolution = 1;
         public static int maxFlameLightsPerCell = 3;
-
-        public static int DarknessResolution
-        {
-            get { return darknessResolution; }
-            set
-            {
-                if (darknessResolution == value) return;
-                darknessResolution = value;
-                World world = World.GetTopWorld();
-                world?.CreateNewDarknessMask();
-            }
-        }
 
         public static bool drawShadows = true;
         public static bool drawSunShadows = true;
@@ -595,7 +582,6 @@ namespace SonOfRobin
             prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
             prefsData["mapMarkerScale"] = mapMarkerScale;
             prefsData["showHints"] = showHints;
-            prefsData["darknessResolution"] = darknessResolution;
             prefsData["drawShadows"] = drawShadows;
             prefsData["drawSunShadows"] = drawSunShadows;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
@@ -665,7 +651,6 @@ namespace SonOfRobin
                     float loadedMapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
                     if (namesForMapMarkerScale.ContainsKey(loadedMapMarkerScale)) mapMarkerScale = loadedMapMarkerScale;
                     showHints = (bool)prefsData["showHints"];
-                    darknessResolution = (int)(Int64)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
                     controlTipsScheme = (ButtonScheme.Type)(Int64)prefsData["controlTipsScheme"];
