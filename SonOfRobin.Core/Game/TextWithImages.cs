@@ -62,6 +62,8 @@ namespace SonOfRobin
         private readonly bool animate;
         private readonly Sound animSound;
 
+        private readonly float minMarkerWidthMultiplier; // marker width = marker height * multiplier
+        private readonly Helpers.AlignX imageAlignX;
         public readonly int textWidth;
         public readonly int textHeight;
         public readonly int noOfLines;
@@ -78,17 +80,19 @@ namespace SonOfRobin
         private string AnimatedText
         { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
 
-        public TextWithImages(SpriteFontBase font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false)
+        public TextWithImages(SpriteFontBase font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
         {
             if (imageList == null) imageList = new List<Texture2D>();
 
             this.font = font;
             this.textOriginal = text;
             this.treatImagesAsSquares = treatImagesAsSquares;
+            this.minMarkerWidthMultiplier = minMarkerWidthMultiplier;
+            this.imageAlignX = imageAlignX;
+
             this.animate = animate;
             this.animSound = animSound;
             this.ValidateImagesCount(imageList);
-
             var tuple = this.GetTextWithResizedMarkersAndImageInfo(imageList);
             this.textWithResizedMarkers = tuple.Item1;
             this.imageInfoList = tuple.Item2;
@@ -168,7 +172,7 @@ namespace SonOfRobin
                 {
                     Texture2D image = imageList[imageNo];
 
-                    newCharacter = GetResizedMarker(font: font, image: image, treatImagesAsSquares: this.treatImagesAsSquares);
+                    newCharacter = GetResizedMarker(font: font, image: image, treatImagesAsSquares: this.treatImagesAsSquares, minMarkerLength: this.minMarkerWidthMultiplier);
                     newText += newCharacter; // has to go before GetImageMarkerRect()
 
                     int start = resizedTextCharCounter;
@@ -190,10 +194,11 @@ namespace SonOfRobin
             return (newText, newImageInfoList);
         }
 
-        private static string GetResizedMarker(SpriteFontBase font, Texture2D image, bool treatImagesAsSquares)
+        private static string GetResizedMarker(SpriteFontBase font, Texture2D image, bool treatImagesAsSquares, float minMarkerLength = 0)
         {
             float imageScale = (float)image.Height / Helpers.MeasureStringCorrectly(font: font, stringToMeasure: " ").Y;
             int targetWidth = (int)((float)(treatImagesAsSquares ? image.Height : image.Width) / imageScale);
+            if (minMarkerLength != 0) targetWidth = (int)((float)image.Height / imageScale * minMarkerLength);
 
             int markerCharCount = 1;
             int lastCharCount = 1;
@@ -287,10 +292,10 @@ namespace SonOfRobin
                     if (drawShadow)
                     {
                         Rectangle imageShadowRect = new Rectangle(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
-                        Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false);
+                        Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false, alignX: this.imageAlignX);
                     }
 
-                    Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageRect, color: Color.White * imageOpacity, drawTestRect: false);
+                    Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageRect, color: Color.White * imageOpacity, drawTestRect: false, alignX: this.imageAlignX);
                 }
                 imageNo++;
             }

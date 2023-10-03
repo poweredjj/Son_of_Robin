@@ -429,7 +429,7 @@ namespace SonOfRobin
 
                 foreach (Buff buff in selectedPiece.buffList)
                 {
-                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f));
+                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
                 }
             }
 

@@ -44,13 +44,13 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, int maxWidth = 90, bool drawShadow = true) :
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, int maxWidth = 90, bool drawShadow = true, Helpers.AlignX imageAlignX = Helpers.AlignX.Center) :
 
             base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound, waitForOtherScenesOfTypeToEnd: true)
         {
-            this.font = SonOfRobinGame.FontTommy.GetFont(60); 
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
 
-            this.textWithImages = new TextWithImages(font: font, text: Helpers.KeepTextLineBelowGivenLength(text: text, maxLength: maxWidth), imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, animSound: animSound, treatImagesAsSquares: treatImagesAsSquares);
+            this.textWithImages = new TextWithImages(font: font, text: Helpers.KeepTextLineBelowGivenLength(text: text, maxLength: maxWidth), imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, animSound: animSound, treatImagesAsSquares: treatImagesAsSquares, minMarkerWidthMultiplier: minMarkerWidthMultiplier, imageAlignX: imageAlignX);
 
             this.textScale = 1f; // to be updated below
             this.textColor = textColor;

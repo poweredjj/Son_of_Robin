@@ -192,7 +192,7 @@ namespace SonOfRobin
             {
                 foreach (Buff buff in pieceInfo.buffList)
                 {
-                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, animate: true, charsPerFrame: 2));
+                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
                 }
             }
 

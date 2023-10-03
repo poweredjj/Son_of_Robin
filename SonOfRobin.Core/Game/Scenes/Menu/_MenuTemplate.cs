@@ -554,7 +554,7 @@ namespace SonOfRobin
                             textLines.Add($"| Meat harvesting level: {player.HarvestLevel}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             var positiveBuffTextLines = new List<string>();
                             var negativeBuffTextLines = new List<string>();
@@ -580,12 +580,12 @@ namespace SonOfRobin
 
                             if (positiveBuffTextLines.Count > 0)
                             {
-                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), imageList: positiveBuffImages, color: Color.Cyan, scale: 0.75f));
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), imageList: positiveBuffImages, color: Color.Cyan, scale: 0.75f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
                             }
 
                             if (negativeBuffTextLines.Count > 0)
                             {
-                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), imageList: negativeBuffImages, color: new Color(255, 120, 70), scale: 0.75f));
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), imageList: negativeBuffImages, color: new Color(255, 120, 70), scale: 0.75f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
                             }
 
                             Invoker invoker = new(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
@@ -607,7 +607,8 @@ namespace SonOfRobin
                             textLines.Add($"| Size: {world.width}x{world.height}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Map].texture);
 
-                            textLines.Add($"All Objects: {world.PieceCount}");
+                            textLines.Add($"| All Objects: {world.PieceCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Stone].texture);
 
                             textLines.Add($"| Plants: {plantCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.GrassRegular].texture);
@@ -622,7 +623,7 @@ namespace SonOfRobin
                             textLines.Add($"Locations found: {world.Grid.namedLocations.DiscoveredLocationsCount}/{world.Grid.namedLocations.AllLocationsCount}");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(148, 115, 55);
@@ -649,7 +650,7 @@ namespace SonOfRobin
                             textLines.Add($"|  Ingredients saved: {world.craftStats.SmartCraftingReducedIngredientCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(168, 74, 145);
@@ -681,7 +682,7 @@ namespace SonOfRobin
                             textLines.Add($"Unique types: {world.cookStats.IngredientNamesCount}");
                             textLines.Add($"Total: {world.cookStats.AllIngredientsCount}");
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(181, 22, 83);
@@ -709,7 +710,7 @@ namespace SonOfRobin
                             textLines.Add($"Bases: {world.brewStats.BaseCount}");
                             textLines.Add($"Boosters: {world.brewStats.BoosterCount}");
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(102, 212, 157);
@@ -756,7 +757,7 @@ namespace SonOfRobin
                             textLines.Add($"\nTotal animals processed: {world.meatHarvestStats.TotalHarvestCount}");
                             textLines.Add($"Total items obtained: {world.meatHarvestStats.ObtainedTotalPieceCount} ({world.meatHarvestStats.ObtainedBasePieceCount}+{world.meatHarvestStats.ObtainedBonusPieceCount})");
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "meat harvesting stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(245, 140, 245);

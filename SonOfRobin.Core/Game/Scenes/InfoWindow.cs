@@ -30,14 +30,14 @@ namespace SonOfRobin
             public readonly bool progressBarMode;
             public readonly Justify justify;
 
-            public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<Texture2D> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1)
+            public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<Texture2D> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
             {
                 this.progressBarMode = progressCurrentVal > -1 && progressMaxVal > -1;
 
                 if (this.progressBarMode) text = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
                 this.font = SonOfRobinGame.FontTommy.GetFont(60);
-                this.textWithImages = new TextWithImages(font: this.font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame);
+                this.textWithImages = new TextWithImages(font: this.font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame, treatImagesAsSquares: treatImagesAsSquares, minMarkerWidthMultiplier: minMarkerWidthMultiplier, imageAlignX: imageAlignX);
 
                 this.justify = justify;
                 this.color = color;

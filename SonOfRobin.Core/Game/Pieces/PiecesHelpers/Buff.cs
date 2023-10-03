@@ -249,7 +249,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.HeatLevelLocked => null,
                 BuffEngine.BuffType.FastMountainWalking => TextureBank.GetTexture(TextureBank.TextureName.BuffMountainWalking),
                 BuffEngine.BuffType.CanSeeThroughFog => AnimData.framesForPkgs[AnimData.PkgName.WeatherFog1].texture,
-                BuffEngine.BuffType.RemovePoison => null,
+                BuffEngine.BuffType.RemovePoison => TextureBank.GetTexture(TextureBank.TextureName.BuffPoisonRemove),
                 _ => throw new ArgumentException($"Unsupported buff type - {this.type}."),
             };
         }

@@ -54,6 +54,7 @@ namespace SonOfRobin
             BuffMountainWalking = 123,
             BuffWidth = 127,
             BuffHeight = 128,
+            BuffPoisonRemove = 129,
 
             RepeatingOceanFloor = 22,
             RepeatingWaterCaustics1 = 23,
@@ -186,6 +187,7 @@ namespace SonOfRobin
             { TextureName.BuffMountainWalking, "buffs/buff_mountain_walking" },
             { TextureName.BuffWidth, "buffs/buff_width" },
             { TextureName.BuffHeight, "buffs/buff_height" },
+            { TextureName.BuffPoisonRemove, "buffs/buff_poison_remove" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },
