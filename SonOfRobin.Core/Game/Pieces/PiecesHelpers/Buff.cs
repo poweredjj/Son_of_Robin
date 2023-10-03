@@ -247,7 +247,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.Heat => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
                 BuffEngine.BuffType.HeatProtection => null,
                 BuffEngine.BuffType.SwampProtection => null,
-                BuffEngine.BuffType.Wet => null,
+                BuffEngine.BuffType.Wet => TextureBank.GetTexture(TextureBank.TextureName.BuffWet),
                 BuffEngine.BuffType.HeatLevelLocked => null,
                 BuffEngine.BuffType.FastMountainWalking => null,
                 BuffEngine.BuffType.CanSeeThroughFog => null,

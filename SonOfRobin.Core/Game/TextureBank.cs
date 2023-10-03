@@ -38,6 +38,7 @@ namespace SonOfRobin
 
             BuffPoison = 108,
             BuffHeat = 109,
+            BuffWet = 110,
 
             RepeatingOceanFloor = 22,
             RepeatingWaterCaustics1 = 23,
@@ -150,6 +151,7 @@ namespace SonOfRobin
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffHeat, "buffs/buff_heat" },
+            { TextureName.BuffWet, "buffs/buff_wet" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },

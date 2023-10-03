@@ -196,6 +196,9 @@ namespace SonOfRobin
 
             // drawing buff bars
             {
+                Vector2 shadowOffset = new Vector2(2, 2);
+                Color shadowColor = Color.Black * 0.7f;
+
                 if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Count() > 0)
                 {
                     SonOfRobinGame.SpriteBatch.End();
@@ -207,18 +210,17 @@ namespace SonOfRobin
                         if (buffText == null) continue;
 
                         currentPosY += 3; // adding margin (must go first, to add margin before first entry)
-                        int bgInflateSize = buff.iconTexture != null ? 10 : 4;
-                        bgInflateSize = 4; // TODO disable
+                        int bgInflateSize = 8;
 
                         float opacity = this.viewParams.drawOpacity;
 
                         string buffTextFormatted = buffText;
+                        float buffProgress = 1f;
 
                         if (buff.autoRemoveDelay > 0)
                         {
-                            // float buffProgress = 1f - ((float)buffFramesLeft / (float)buff.autoRemoveDelay); // TODO use buff progress in some way
-
                             int buffFramesLeft = Math.Max(buff.endFrame - this.world.CurrentUpdate, 0);
+                            buffProgress = 1f - ((float)buffFramesLeft / (float)buff.autoRemoveDelay);
                             int buffSecondsLeft = (int)Math.Ceiling((float)buffFramesLeft / 60f);
                             string timespanString = Helpers.ConvertTimeSpanToString(TimeSpan.FromSeconds(buffSecondsLeft));
                             if (timespanString.Length <= 2) timespanString += "s";
@@ -226,11 +228,6 @@ namespace SonOfRobin
                             buffTextFormatted += " /c[#d9d9d9]" + timespanString;
 
                             opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 30, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
-                        }
-
-                        if (buff.iconTexture != null)
-                        {
-                            // TODO add icon texture drawing
                         }
 
                         RichTextLayout richTextLayout = new RichTextLayout { Font = this.buffFont, Text = buffTextFormatted };
@@ -243,12 +240,35 @@ namespace SonOfRobin
                             height: (int)buffTextSize.Y + (bgInflateSize * 2));
 
                         Vector2 textPos = new(bgInflateSize * 2, currentPosY + bgInflateSize);
+
+                        Rectangle imageRect = Rectangle.Empty;
+                        if (buff.iconTexture != null)
+                        {
+                            imageRect = new Rectangle(x: (int)textPos.X, y: buffBGRect.Top, width: buffBGRect.Height, height: buffBGRect.Height);
+                            int textureMargin = bgInflateSize / 2;
+                            buffBGRect.Width += imageRect.Width + textureMargin;
+                            textPos.X += imageRect.Width + textureMargin;
+                            textPos.Y -= 2; // making room for progress rect
+                            imageRect.Inflate(0, -3); // texture should be a little smaller than the background
+                        }
+
                         Color bgColor = buff.isPositive ? new Color(4, 92, 27) : new Color(128, 48, 3);
 
                         this.triSliceBG.Draw(triSliceRect: buffBGRect, color: bgColor * 0.7f * opacity);
+                        if (buff.iconTexture != null) Helpers.DrawTextureInsideRect(texture: buff.iconTexture, rectangle: imageRect, color: Color.White * opacity, drawTestRect: false, alignX: Helpers.AlignX.Left);
+
+                        if (buffProgress < 1)
+                        {
+                            Rectangle progressRect = new Rectangle(x: (int)textPos.X, y: (int)(textPos.Y + buffTextSize.Y) + 2, width: (int)(buffTextSize.X * (1f - buffProgress)), height: 2);
+                            Rectangle shadowRect = progressRect;
+                            shadowRect.Offset(shadowOffset.X, shadowOffset.Y);
+
+                            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: shadowRect, color: shadowColor * opacity);
+                            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressRect, color: Color.White * opacity);
+                        }
 
                         richTextLayout.IgnoreColorCommand = true; // otherwise shadow would be colored
-                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + new Vector2(2, 2), Color.Black * 0.7f * opacity);
+                        richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos + shadowOffset, shadowColor * opacity);
                         richTextLayout.IgnoreColorCommand = false;
                         richTextLayout.Draw(SonOfRobinGame.SpriteBatch, textPos, Color.White * opacity);
 
