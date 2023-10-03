@@ -191,7 +191,7 @@ namespace SonOfRobin
 
             Vector2 currentTargetPos = this.GetTargetCoords();
 
-            if (calculateAheadCorrection &&
+            if (calculateAheadCorrection && Preferences.smartCamera &&
                 this.trackingMode == TrackingMode.Sprite &&
                 cameraCorrection == Vector2.Zero &&
                 this.trackedSpriteReached &&
