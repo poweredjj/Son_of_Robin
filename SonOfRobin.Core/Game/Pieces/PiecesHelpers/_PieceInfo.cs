@@ -24,7 +24,7 @@ namespace SonOfRobin
             public readonly Equipment.EquipType equipType;
             public bool isCarnivorous;
             public readonly List<Buff> buffList;
-            public readonly AnimFrame frame;
+            public readonly AnimFrame croppedFrame;
             public readonly Texture2D texture;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
@@ -2788,8 +2788,8 @@ namespace SonOfRobin
 
                 // setting some variables, that need params non-present in boardPiece
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
-                this.frame = piece.sprite.AnimFrame;
-                this.texture = this.frame.texture;
+                this.croppedFrame = piece.sprite.AnimFrame.GetCroppedFrameCopy();
+                this.texture = this.croppedFrame.texture;
 
                 // checking for params, that need to be set
 

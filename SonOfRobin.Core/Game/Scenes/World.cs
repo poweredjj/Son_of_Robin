@@ -1439,7 +1439,11 @@ namespace SonOfRobin
         {
             // searching for light sources
 
-            var lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource).OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom).Select(o => o.sprite).ToList();
+            var lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
+                .OrderBy(o => o.sprite.AnimFrame.layer)
+                .ThenBy(o => o.sprite.GfxRect.Bottom)
+                .Select(o => o.sprite)
+                .ToList();
 
             // returning if darkness is transparent
 

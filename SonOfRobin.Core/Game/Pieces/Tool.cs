@@ -190,9 +190,9 @@ namespace SonOfRobin
                     this.HitPoints -= player.Skill == Player.SkillName.Maintainer ? 0.7f : 1f;
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.texture);
 
-                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.texture);
                 }
             }
         }

@@ -11,7 +11,8 @@ namespace SonOfRobin
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
-        public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new(); // default frames for packages
+        public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new(); // default frames for packages (not always cropped)
+        public static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (always cropped)
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
         public static Dictionary<string, Object> jsonDict = new();
@@ -1302,6 +1303,16 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+        }
+
+        public static void CreateCroppedCopies()
+        {
+            foreach (var kvp in framesForPkgs)
+            {
+                PkgName pkgName = kvp.Key;
+                AnimFrame animFrame = kvp.Value;
+                croppedFramesForPkgs[pkgName] = animFrame.GetCroppedFrameCopy();
+            }
         }
 
         public static void DeleteUsedAtlases()

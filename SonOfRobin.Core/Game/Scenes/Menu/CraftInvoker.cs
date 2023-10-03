@@ -23,7 +23,7 @@ namespace SonOfRobin
                 this.isEmpty = isEmpty;
                 this.name = name;
                 this.text = text;
-                this.frame = PieceInfo.GetInfo(name).frame;
+                this.frame = PieceInfo.GetInfo(name).croppedFrame;
                 this.bgColor = bgColor;
                 this.counter = counter;
             }
@@ -34,7 +34,7 @@ namespace SonOfRobin
                 this.isMain = false;
                 this.isEmpty = true;
                 this.name = PieceTemplate.Name.Empty;
-                this.frame = PieceInfo.GetInfo(name).frame;
+                this.frame = PieceInfo.GetInfo(name).croppedFrame;
                 this.text = "";
                 this.bgColor = Color.White;
                 this.counter = 0;
@@ -282,7 +282,7 @@ namespace SonOfRobin
 
             if (recipeLevelCurrent == recipeLevelMax)
             {
-                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Star].texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
+                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
             }
             else entryList.Add(new InfoWindow.TextEntry(text: $"Level {recipeLevelCurrent + 1}/{recipeLevelMax + 1}", color: Color.GreenYellow, scale: 1f, animate: true, charsPerFrame: 1));
 

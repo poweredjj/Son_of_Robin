@@ -26,6 +26,11 @@ namespace SonOfRobin
         public readonly Vector2 textureSize;
         public readonly Rectangle textureRect;
         public readonly Vector2 rotationOrigin;
+        public readonly bool cropped;
+        public readonly int srcAtlasX;
+        public readonly int srcAtlasY;
+        public readonly int srcWidth;
+        public readonly int srcHeight;
 
         public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
@@ -35,6 +40,13 @@ namespace SonOfRobin
 
             if (AnimData.frameById.ContainsKey(id)) return AnimData.frameById[id];
             else return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
+        }
+
+        public AnimFrame GetCroppedFrameCopy()
+        {
+            if (this.cropped || (this.srcWidth == 1 && this.srcHeight == 1)) return this;
+
+            return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
         }
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent)
@@ -51,6 +63,12 @@ namespace SonOfRobin
 
             AnimData.frameById[this.id] = this;
             string pngPath = Path.Combine(SonOfRobinGame.animCachePath, $"{this.textureID}.png");
+
+            this.cropped = crop;
+            this.srcAtlasX = atlasX;
+            this.srcAtlasY = atlasY;
+            this.srcWidth = width;
+            this.srcHeight = height;
 
             this.depthPercent = depthPercent;
             this.atlasName = atlasName;

@@ -351,7 +351,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.framesForPkgs[selectedPiece.sprite.AnimPackage].texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[selectedPiece.sprite.AnimPackage].texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -1151,7 +1151,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                 // pieceInfo.readableName is used to show original name (before the change)
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.AnimFrame.texture, targetPieces[0].sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.CroppedAnimFrame.texture, targetPieces[0].sprite.CroppedAnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

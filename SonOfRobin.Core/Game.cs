@@ -220,10 +220,10 @@ namespace SonOfRobin
 
             PixelatedFontSettings = new FontSystemSettings { FontResolutionFactor = 1.0f, KernelWidth = 1, KernelHeight = 1 };
 
-            FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader      
+            FontPressStart2P = new FontSystem(PixelatedFontSettings); // needed for InitialLoader
             FontPressStart2P.AddFont(TitleContainer.OpenStream("Content/fonts/PressStart2P.ttf"));
 
-            FontVCROSD = new FontSystem(PixelatedFontSettings); // needed for MessageLog      
+            FontVCROSD = new FontSystem(PixelatedFontSettings); // needed for MessageLog
             FontVCROSD.AddFont(TitleContainer.OpenStream("Content/fonts/VCR_OSD_MONO_1.001.ttf"));
         }
 

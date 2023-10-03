@@ -40,6 +40,7 @@ namespace SonOfRobin
         public float opacity;
         public OpacityFade opacityFade;
         public AnimFrame AnimFrame { get; private set; }
+        public AnimFrame CroppedAnimFrame { get { return AnimData.croppedFramesForPkgs[this.AnimPackage]; } }
         public Color color;
         private bool visible;
 
@@ -688,7 +689,7 @@ namespace SonOfRobin
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
                 MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
+                this.AnimFrame = AnimData.croppedFramesForPkgs[AnimData.PkgName.NoAnim];
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
@@ -880,7 +881,7 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
-            this.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+            this.CroppedAnimFrame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
         }
 
         private void DrawState()

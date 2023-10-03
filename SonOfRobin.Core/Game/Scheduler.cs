@@ -286,7 +286,7 @@ namespace SonOfRobin
 
                             if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
                             {
-                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.AnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
 
                                 return;
                             }
@@ -689,7 +689,7 @@ namespace SonOfRobin
                                 {
                                     new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
 
-                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.AnimFrame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.CroppedAnimFrame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
                                 }
                                 else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
                             }
@@ -991,7 +991,7 @@ namespace SonOfRobin
                                     player.sprite.Visible = false;
                                     player.Kill();
 
-                                    new TextWindow(text: "You have | drowned.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
+                                    new TextWindow(text: "You have | drowned.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WaterDrop].texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
 
                                     return;
                                 }
@@ -1684,7 +1684,7 @@ namespace SonOfRobin
 
                                 HintEngine.ShowMessageDuringPause(new List<HintMessage> {
                                    new HintMessage(text: $"I cannot approach this | {totem.readableName} now.\n{timeLeftString}.",
-                                   blockInput: true, imageList: new List<Texture2D> { totem.sprite.AnimFrame.texture }),
+                                   blockInput: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
                                    });
                             }
 
@@ -1711,7 +1711,7 @@ namespace SonOfRobin
                             Inventory.soundCombine.Play();
                             new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.AnimFrame.texture, piece2.sprite.AnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
 
                             return;
                         }

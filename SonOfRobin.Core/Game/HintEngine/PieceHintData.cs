@@ -299,7 +299,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     message: "| I can start brewing\n| potions now!",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.PotionBrew}),
 
                 new PieceHint(
@@ -382,7 +382,7 @@ namespace SonOfRobin
                     ignoreHintSetting: true,
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.RuinsWall, PieceTemplate.Name.RuinsColumn, PieceTemplate.Name.RuinsRubble, PieceTemplate.Name.RuinsDigSite },
                     message: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
+                    imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
 
                  new PieceHint(
                     showCineCurtains: true,
@@ -416,7 +416,7 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInput: true),
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInput: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true)},
 
                     mapDiscoveredPercentage: 0.22f,
@@ -466,7 +466,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
                     message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
+                    imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowExploding }),
 

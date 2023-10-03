@@ -350,7 +350,7 @@ namespace SonOfRobin
                         int bonusHitPoints = world.random.Next((int)(firstCraftedPiece.maxHitPoints * 0.2f), (int)(firstCraftedPiece.maxHitPoints * 0.7f));
 
                         taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                            imageList: new List<Texture2D> { firstCraftedPiece.sprite.AnimFrame.texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight) }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+                            imageList: new List<Texture2D> { firstCraftedPiece.sprite.CroppedAnimFrame.texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight) }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                         foreach (BoardPiece craftedPiece in craftedPieces)
                         {
@@ -386,7 +386,7 @@ namespace SonOfRobin
                     string recipeNewLevelName = levelMaster ? "master |" : $"{recipeLevel + 1}";
 
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
-                    if (levelMaster) imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
+                    if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
                     taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
@@ -419,7 +419,7 @@ namespace SonOfRobin
                     string newLevelName = levelMaster ? "master |" : $"{player.CraftLevel}";
 
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture };
-                    if (levelMaster) imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Star].texture);
+                    if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
                     taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }

@@ -144,9 +144,9 @@ namespace SonOfRobin
 
                 StatBar.ChangeBatchFont(spriteFontBase: SonOfRobinGame.FontFreeSansBold.GetFont(12));
 
-                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
+                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: TextureBank.GetTexture(TextureBank.TextureName.Bed));
-                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Heart].texture);
 
                 currentPosY = StatBar.BatchHeight + 5; // must be invoked before drawing bars
 
@@ -159,7 +159,7 @@ namespace SonOfRobin
                 int counterSize = CounterSize;
                 Rectangle counterRect = this.CounterRect;
 
-                AnimData.framesForPkgs[AnimData.PkgName.BackpackMediumOutline].DrawAndKeepInRectBounds(destBoundsRect: counterRect, color: Color.White * this.viewParams.drawOpacity, opacity: 0.85f);
+                AnimData.croppedFramesForPkgs[AnimData.PkgName.BackpackMediumOutline].DrawAndKeepInRectBounds(destBoundsRect: counterRect, color: Color.White * this.viewParams.drawOpacity, opacity: 0.85f);
 
                 int occupiedSlotCount = player.PieceStorage.OccupiedSlots.Count + (player.ToolStorage.OccupiedSlots.Count - 1); // -1 to count out hand "tool"
                 int totalSlotCount = player.PieceStorage.AllSlots.Count + (player.ToolStorage.AllSlots.Count - 1); // -1 to count out hand "tool"

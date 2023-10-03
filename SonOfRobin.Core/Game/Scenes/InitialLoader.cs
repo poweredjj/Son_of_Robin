@@ -21,9 +21,11 @@ namespace SonOfRobin
             LoadAnimsChars,
             LoadAnimsMisc1,
             LoadAnimsMisc2,
+            LoadAnimsCroppedCopies,
             SaveAnimsJson,
             LoadKeysGfx,
             MakeItemsInfo,
+            RemoveUnneededData,
             MakeCraftRecipes,
             CreateScenes,
             WaitForBackgroundTasksToFinish1,
@@ -55,12 +57,14 @@ namespace SonOfRobin
             { Step.LoadAnimsChars, "loading animations (characters)" },
             { Step.LoadAnimsMisc1, "loading animations (others 1)" },
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
+            { Step.LoadAnimsCroppedCopies, "loading animations (cropped copies)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
             { Step.WaitForBackgroundTasksToFinish1, "waiting for background tasks to finish (first batch)" },
             { Step.WaitForBackgroundTasksToFinish2, "waiting for background tasks to finish (second batch)" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
+            { Step.RemoveUnneededData, "removing unneeded data" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
@@ -189,11 +193,12 @@ namespace SonOfRobin
                     AnimData.CreateAnimsMisc2();
                     break;
 
+                case Step.LoadAnimsCroppedCopies:
+                    AnimData.CreateCroppedCopies();
+                    break;
+
                 case Step.SaveAnimsJson:
                     AnimData.SaveJsonDict();
-                    AnimData.DeleteUsedAtlases();
-                    AnimData.textureDict.Clear(); // not needed afterwards
-                    AnimData.jsonDict.Clear(); // not needed afterwards
                     break;
 
                 case Step.LoadKeysGfx:
@@ -203,6 +208,12 @@ namespace SonOfRobin
 
                 case Step.MakeItemsInfo:
                     PieceInfo.CreateAllInfo();
+                    break;
+
+                case Step.RemoveUnneededData:
+                    AnimData.DeleteUsedAtlases();
+                    AnimData.textureDict.Clear(); // not needed afterwards
+                    AnimData.jsonDict.Clear(); // not needed afterwards
                     break;
 
                 case Step.MakeCraftRecipes:

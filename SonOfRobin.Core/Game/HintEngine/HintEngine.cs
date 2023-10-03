@@ -133,9 +133,9 @@ namespace SonOfRobin
                 case Type.Starving:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInput: true),
-                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
-                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
+                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInput: true),
+                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
+                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -226,7 +226,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true) });
+                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true) });
                         break;
                     }
 
@@ -271,7 +271,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.AnimFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
+                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
                             new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)}, blockInput: true)
                         });
                         break;
@@ -282,7 +282,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.AnimFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
+                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
                         });
                         break;
                     }
@@ -336,11 +336,11 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 300 } }, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.Heart].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
 
                             taskChain.Add(new HintMessage(text: "My contract says, that I'm here to help test this game, human.", boxType: invertedDialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
                         }
                         else
                         {
@@ -393,7 +393,7 @@ namespace SonOfRobin
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
-                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
