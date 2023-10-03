@@ -221,8 +221,6 @@ namespace SonOfRobin
 
         private Texture2D GetIconTexture()
         {
-            // TODO add icons
-
             return this.type switch
             {
                 BuffEngine.BuffType.InvWidth => null,
@@ -231,8 +229,8 @@ namespace SonOfRobin
                 BuffEngine.BuffType.ToolbarHeight => null,
                 BuffEngine.BuffType.Speed => null,
                 BuffEngine.BuffType.Strength => null,
-                BuffEngine.BuffType.HP => null,
-                BuffEngine.BuffType.MaxHP => null,
+                BuffEngine.BuffType.HP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffHPMinus),
+                BuffEngine.BuffType.MaxHP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPMinus),
                 BuffEngine.BuffType.MaxFatigue => null,
                 BuffEngine.BuffType.EnableMap => null,
                 BuffEngine.BuffType.RegenPoison => this.isPositive ? null : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
@@ -242,7 +240,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.SprintCooldown => null,
                 BuffEngine.BuffType.ExtendSprintDuration => null,
                 BuffEngine.BuffType.LowHP => null,
-                BuffEngine.BuffType.Tired => null,
+                BuffEngine.BuffType.Tired => TextureBank.GetTexture(TextureBank.TextureName.Bed),
                 BuffEngine.BuffType.Hungry => null,
                 BuffEngine.BuffType.Heat => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
                 BuffEngine.BuffType.HeatProtection => null,

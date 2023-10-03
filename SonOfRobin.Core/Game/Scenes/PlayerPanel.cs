@@ -113,7 +113,7 @@ namespace SonOfRobin
             if (this.isHidden != hide)
             {
                 var paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY - (SonOfRobinGame.VirtualHeight / 2) } };
-                this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: !hide, duration: 12, refreshBaseVal: false);
+                this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: !hide, duration: 5, refreshBaseVal: false);
             }
 
             this.isHidden = hide;
@@ -224,8 +224,8 @@ namespace SonOfRobin
                             int buffSecondsLeft = (int)Math.Ceiling((float)buffFramesLeft / 60f);
                             string timespanString = Helpers.ConvertTimeSpanToString(TimeSpan.FromSeconds(buffSecondsLeft));
                             if (timespanString.Length <= 2) timespanString += "s";
-                            if (timespanString.StartsWith("0")) timespanString = timespanString.Remove(0, 1);
-                            buffTextFormatted += " /c[#d9d9d9]" + timespanString;
+                            if (timespanString.StartsWith("0")) timespanString = " " + timespanString.Remove(0, 1);
+                            buffTextFormatted += " /c[#b6f3fa]" + timespanString;
 
                             opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 30, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
                         }
@@ -245,7 +245,7 @@ namespace SonOfRobin
                         if (buff.iconTexture != null)
                         {
                             imageRect = new Rectangle(x: (int)textPos.X, y: buffBGRect.Top, width: buffBGRect.Height, height: buffBGRect.Height);
-                            int textureMargin = bgInflateSize / 2;
+                            int textureMargin = bgInflateSize;
                             buffBGRect.Width += imageRect.Width + textureMargin;
                             textPos.X += imageRect.Width + textureMargin;
                             textPos.Y -= 2; // making room for progress rect

@@ -37,8 +37,15 @@ namespace SonOfRobin
             SimpleStack = 21,
 
             BuffPoison = 108,
-            BuffHeat = 109,
-            BuffWet = 110,
+            BuffRegen = 109,
+            BuffHeat = 110,
+            BuffWet = 111,
+            BuffHPPlus = 112,
+            BuffHPMinus = 113,
+            BuffMaxHPPlus = 114,
+            BuffMaxHPMinus = 115,
+            BuffStrPlus = 116,
+            BuffStrMinus = 117,
 
             RepeatingOceanFloor = 22,
             RepeatingWaterCaustics1 = 23,
@@ -150,8 +157,15 @@ namespace SonOfRobin
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
+            { TextureName.BuffRegen, "buffs/buff_regen" },
             { TextureName.BuffHeat, "buffs/buff_heat" },
             { TextureName.BuffWet, "buffs/buff_wet" },
+            { TextureName.BuffHPPlus, "buffs/buff_hp_plus" },
+            { TextureName.BuffHPMinus, "buffs/buff_hp_minus" },
+            { TextureName.BuffMaxHPPlus, "buffs/buff_max_hp_plus" },
+            { TextureName.BuffMaxHPMinus, "buffs/buff_max_hp_minus" },
+            { TextureName.BuffStrPlus, "buffs/buff_str_plus" },
+            { TextureName.BuffStrMinus, "buffs/buff_str_minus" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },
