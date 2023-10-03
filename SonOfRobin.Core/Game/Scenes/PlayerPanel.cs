@@ -88,9 +88,9 @@ namespace SonOfRobin
             this.itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
 
             this.triSliceBG = new TriSliceBG(
-                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
-                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
-                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
+                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
+                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
+                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight));
 
             this.world = world;
             this.isHidden = false;
@@ -199,7 +199,7 @@ namespace SonOfRobin
                 Vector2 shadowOffset = new Vector2(2, 2);
                 Color shadowColor = Color.Black * 0.7f;
 
-                if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Count() > 0)
+                if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Any())
                 {
                     SonOfRobinGame.SpriteBatch.End();
                     TriSliceBG.StartSpriteBatch(this);
