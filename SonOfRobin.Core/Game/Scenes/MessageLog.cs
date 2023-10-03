@@ -185,7 +185,7 @@ namespace SonOfRobin
 
             int minBaselineVal = this.screenHeight - this.bottomMargin;
 
-            if (this.baseline > minBaselineVal) this.baseline -= (int)(4f * Preferences.messageLogScale);
+            if (this.baseline > minBaselineVal) this.baseline -= (int)(5f * Preferences.messageLogScale);
             this.baseline = Math.Max(this.baseline, minBaselineVal);
         }
 
