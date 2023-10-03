@@ -104,23 +104,15 @@ namespace SonOfRobin
             private Vector2 TextPosWithOffset
             { get { return this.textPos + this.basePos; } }
 
-            public void DrawBackground()
+            public void Draw()
             {
-                // draws background only (SamplerState.LinearWrap must be turned on for proper wrapping)
-
                 float flashOpacity = this.FlashOpacity;
                 Color finalBGColor = this.bgColor * 0.5f;
+                float opacity = this.Opacity;
 
                 if (flashOpacity > 0 && !this.isDebug) finalBGColor = Helpers.Blend2Colors(firstColor: finalBGColor, secondColor: Color.White, firstColorOpacity: 1 - flashOpacity, secondColorOpacity: flashOpacity);
 
-                this.triSliceBG.Draw(triSliceRect: this.BGRectWithOffset, color: finalBGColor * this.Opacity);
-            }
-
-            public void DrawEverythingElse()
-            {
-                // draws image only (SamplerState.LinearWrap must be turned off, otherwise glitches will occur)
-
-                float opacity = this.Opacity;
+                this.triSliceBG.Draw(triSliceRect: this.BGRectWithOffset, color: finalBGColor * opacity);
 
                 if (this.image != null)
                 {
@@ -199,7 +191,7 @@ namespace SonOfRobin
             { messagesToDisplay = this.messages.ToList(); }
             catch (ArgumentException) { return; } // if some background process tries to add message right now
 
-            TriSliceBG.StartSpriteBatch(this); // needed to correctly draw triSliceBG
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Vector2 currentPos = new Vector2(this.leftMargin, this.baseline);
             int maxDrawHeight = 0;
@@ -208,7 +200,6 @@ namespace SonOfRobin
             Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, (int)DebugScene.lastTextSize.Y);
 
             Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight - maxDrawHeight);
-            var drawnMessages = new List<Message>();
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
@@ -226,22 +217,7 @@ namespace SonOfRobin
                     continue;
                 }
                 else if (!messageRect.Intersects(drawAreaRect)) continue; // message is (probably) below screen
-                else
-                {
-                    message.DrawBackground();
-                    drawnMessages.Add(message);
-                }
-            }
-
-            if (drawnMessages.Count > 0)
-            {
-                SonOfRobinGame.SpriteBatch.End();
-
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                foreach (Message message in drawnMessages)
-                {
-                    message.DrawEverythingElse();
-                }
+                else message.Draw();
             }
 
             SonOfRobinGame.SpriteBatch.End();

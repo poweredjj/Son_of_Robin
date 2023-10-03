@@ -43,6 +43,7 @@ namespace SonOfRobin
 
         public static void StartSpriteBatch(Scene scene)
         {
+            // needed for mid textures with Width > 1 (for proper wrapping)
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scene.TransformMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.LinearWrap);
         }
 

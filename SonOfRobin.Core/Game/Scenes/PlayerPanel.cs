@@ -201,9 +201,6 @@ namespace SonOfRobin
 
                 if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Any())
                 {
-                    SonOfRobinGame.SpriteBatch.End();
-                    TriSliceBG.StartSpriteBatch(this);
-
                     foreach (Buff buff in player.buffEngine.BuffList)
                     {
                         string buffText = buff.playerPanelText;
@@ -274,9 +271,6 @@ namespace SonOfRobin
 
                         currentPosY += buffBGRect.Height;
                     }
-
-                    SonOfRobinGame.SpriteBatch.End();
-                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 }
             }
 
