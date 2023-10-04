@@ -1393,6 +1393,17 @@ namespace SonOfRobin
             // if (this.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.downloadsPath, "test.png"), texture: this.cameraViewTarget); // for testing
         }
 
+        public override void Draw()
+        {
+            if (this.WorldCreationInProgress) return;
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: Matrix.CreateScale(1f));
+            SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.End();
+
+            this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
+        }
+
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)
         {
             // searching for light sources
@@ -1632,17 +1643,6 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.SpriteBatch.End();
-        }
-
-        public override void Draw()
-        {
-            if (this.WorldCreationInProgress) return;
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: Matrix.CreateScale(1f));
-            SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
-            SonOfRobinGame.SpriteBatch.End();
-
-            this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
         }
 
         private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
