@@ -99,7 +99,7 @@ namespace SonOfRobin
                 worldScale = value;
 
                 World world = World.GetTopWorld();
-                if (world != null) world.CreateNewDarknessMask();
+                if (world != null) world.RefreshRenderTargets();
             }
         }
 
