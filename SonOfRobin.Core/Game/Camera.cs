@@ -69,7 +69,7 @@ namespace SonOfRobin
             scene.viewParams.PosX = this.viewPos.X;
             scene.viewParams.PosY = this.viewPos.Y;
 
-            float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f / Preferences.GlobalScale;
+            float worldScale = this.useWorldScale ? Preferences.worldScale : 1f / Preferences.GlobalScale;
             float scale = 1f / (worldScale * this.CurrentZoom);
             scene.viewParams.ScaleX = scale;
             scene.viewParams.ScaleY = scale;
@@ -92,6 +92,7 @@ namespace SonOfRobin
 
         public Rectangle viewRect;
         private Vector2 viewPos;
+
         public Rectangle ExtendedViewRect
         {
             get
@@ -106,23 +107,11 @@ namespace SonOfRobin
             }
         }
 
-        public Rectangle DarknessViewRect // to avoid edge flickering
-        {
-            get
-            {
-                return new Rectangle(
-                    x: this.viewRect.X,
-                    y: this.viewRect.Y,
-                    width: this.viewRect.Width + 4,
-                    height: this.viewRect.Height + 3);
-            }
-        }
-
         public int ScreenWidth
         {
             get
             {
-                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                float worldScale = this.useWorldScale ? Preferences.worldScale : 1f;
                 return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom / worldScale);
             }
         }
@@ -131,7 +120,7 @@ namespace SonOfRobin
         {
             get
             {
-                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                float worldScale = this.useWorldScale ? Preferences.worldScale : 1f;
                 return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom / worldScale);
             }
         }

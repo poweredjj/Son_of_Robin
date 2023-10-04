@@ -394,19 +394,6 @@ namespace SonOfRobin
         public int HeatQueueSize
         { get { return this.heatedPieces.Count; } }
 
-        private Vector2 DarknessMaskScale
-        {
-            get
-            {
-                Rectangle darknessViewRect = this.camera.DarknessViewRect;
-
-                int maxDarknessWidth = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth * 1.2f), 2000);
-                int maxDarknessHeight = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight * 1.2f), 1500);
-
-                return new Vector2((float)darknessViewRect.Width / (float)maxDarknessWidth, (float)darknessViewRect.Height / (float)maxDarknessHeight);
-            }
-        }
-
         public void CompleteCreation()
         {
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
@@ -1340,6 +1327,8 @@ namespace SonOfRobin
 
             // drawing darkness
 
+            Matrix worldMatrix = this.TransformMatrix;
+
             var blockingLightSpritesList = new List<Sprite>();
 
             if ((Preferences.drawSunShadows &&
@@ -1361,10 +1350,10 @@ namespace SonOfRobin
             this.scrollingSurfaceManager.DrawAllWater();
 
             // drawing background (ground, leaving "holes" for water)
-            SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
+            SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
             int trianglesDrawn = this.Grid.DrawBackground();
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
             // drawing sprites
             var drawnPieces = this.Grid.DrawSprites(blockingLightSpritesList: blockingLightSpritesList);
@@ -1384,20 +1373,23 @@ namespace SonOfRobin
             // drawing highlighted pieces and field tips
             if (Preferences.showFieldControlTips || Preferences.pickupsHighlighted)
             {
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                 if (Preferences.pickupsHighlighted) this.DrawHighlightedPieces(drawnPieces);
                 if (Preferences.showFieldControlTips) FieldTip.DrawFieldTips(world: this);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            // if (this.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.downloadsPath, "test.png"), texture: this.cameraViewTarget); // for testing
+            // if (this.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.downloadsPath, "test_camera.png"), texture: this.cameraViewTarget); // for testing
+            // if (this.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.downloadsPath, "test_darkness.png"), texture: this.darknessMask); // for testing
         }
 
         public override void Draw()
         {
             if (this.WorldCreationInProgress) return;
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: Matrix.CreateScale(1f));
+            Matrix screenMatrix = Matrix.CreateScale(1f);
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: screenMatrix);
             SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
@@ -1418,10 +1410,12 @@ namespace SonOfRobin
 
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
 
+            Matrix worldMatrix = this.TransformMatrix;
+
             if (ambientLightData.darknessColor == Color.Transparent)
             {
                 SetRenderTarget(this.darknessMask);
-                SonOfRobinGame.SpriteBatch.Begin();
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                 SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
                 SonOfRobinGame.SpriteBatch.End();
 
@@ -1484,7 +1478,7 @@ namespace SonOfRobin
                     RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMaskList[tempShadowMaskIndex];
 
                     SetRenderTarget(tempShadowMask);
-                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                     SonOfRobinGame.GfxDev.Clear(Color.Black);
                     SonOfRobinGame.SpriteBatch.End();
 
@@ -1538,21 +1532,14 @@ namespace SonOfRobin
             };
 
             SetRenderTarget(this.darknessMask);
-            SonOfRobinGame.SpriteBatch.Begin(blendState: darknessMaskBlend);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
             SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
 
             // subtracting shadow masks from darkness
 
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
-            Rectangle darknessViewRect = this.camera.DarknessViewRect;
             foreach (var lightSprite in lightSprites)
             {
                 Rectangle lightRect = lightSprite.lightEngine.Rect;
-
-                lightRect.X = (int)(((float)lightRect.X - (float)darknessViewRect.X) / darknessMaskScale.X);
-                lightRect.Y = (int)(((float)lightRect.Y - (float)darknessViewRect.Y) / darknessMaskScale.Y);
-                lightRect.Width = (int)((float)lightRect.Width / darknessMaskScale.X);
-                lightRect.Height = (int)((float)lightRect.Height / darknessMaskScale.Y);
 
                 if (Preferences.drawShadows)
                 {
@@ -1576,8 +1563,7 @@ namespace SonOfRobin
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
-            Rectangle darknessViewRect = this.camera.DarknessViewRect;
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
+            Rectangle cameraRect = this.camera.viewRect;
 
             // drawing ambient light
 
@@ -1588,7 +1574,7 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One
             };
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: ambientBlend);
-            if (ambientLightData.lightColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, darknessViewRect, ambientLightData.lightColor);
+            if (ambientLightData.lightColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cameraRect, ambientLightData.lightColor);
 
             // drawing point lights
 
@@ -1606,7 +1592,6 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: colorLightBlend);
 
-            Rectangle cameraRect = this.camera.viewRect;
 
             foreach (var lightSprite in lightSprites)
             {
@@ -1635,11 +1620,16 @@ namespace SonOfRobin
 
                 // drawing lightning
 
-                if (lightningPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, darknessViewRect, new Color(240, 251, 255) * lightningPercentage * 0.7f);
+                if (lightningPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.camera.viewRect, new Color(240, 251, 255) * lightningPercentage * 0.7f);
 
                 // drawing darkness
 
-                if (ambientLightData.darknessColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: darknessViewRect.X, y: darknessViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
+                if (ambientLightData.darknessColor != Color.Transparent)
+                {
+                    SonOfRobinGame.SpriteBatch.End();
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: Matrix.CreateScale(1f));
+                    SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, this.darknessMask.Bounds, Color.White);
+                }
             }
 
             SonOfRobinGame.SpriteBatch.End();
@@ -1672,31 +1662,24 @@ namespace SonOfRobin
         {
             // refreshing cameraViewTarget
 
-            int newCameraTargetWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
-            int newCameraTargetHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
+            int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
+            int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
 
-            if (this.cameraViewTarget == null || this.cameraViewTarget.Width != newCameraTargetWidth || this.cameraViewTarget.Height != newCameraTargetHeight)
+            if (this.cameraViewTarget == null || this.cameraViewTarget.Width != newWidth || this.cameraViewTarget.Height != newHeight)
             {
                 this.cameraViewTarget?.Dispose();
-                this.cameraViewTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth, SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                this.cameraViewTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.cameraViewTarget.Width}x{this.cameraViewTarget.Height}");
             }
 
             // refreshing darkness mask
 
-            Rectangle darknessViewRect = this.camera.DarknessViewRect;
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
-
-            int darknessMaskWidth = (int)(darknessViewRect.Width / darknessMaskScale.X);
-            int darknessMaskHeight = (int)(darknessViewRect.Height / darknessMaskScale.Y);
-
-            if (this.darknessMask != null)
+            if (this.darknessMask == null || this.darknessMask.Width != newWidth || this.darknessMask.Height != newHeight)
             {
-                if (this.darknessMask.Width == darknessMaskWidth && this.darknessMask.Height == darknessMaskHeight) return;
-                this.darknessMask.Dispose();
+                this.darknessMask?.Dispose();
+                this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new render target (world) - {this.cameraViewTarget.Width}x{this.cameraViewTarget.Height}");
             }
-            this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, darknessMaskWidth, darknessMaskHeight);
-
-            MessageLog.Add(debugMessage: true, text: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
         }
     }
 }

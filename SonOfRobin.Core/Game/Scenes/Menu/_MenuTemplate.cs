@@ -154,7 +154,7 @@ namespace SonOfRobin
                             worldScaleList.InsertRange(0, new List<Object> { 0.075f, 0.1f, 0.125f, 0.25f, 0.3f, 0.4f, 0.5f });
                             worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
                         }
-                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "WorldScale");
+                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "worldScale");
 
                         var globalScaleList = new List<Object> { 1f, 1.5f, 2f };
 

@@ -86,22 +86,9 @@ namespace SonOfRobin
         }
 
         public static float menuScale = 0.75f;
-        private static float worldScale = 1.5f;
+        public static float worldScale = 1.5f;
         public static float messageLogScale = 1f;
         public static bool messageLogAtRight = false;
-
-        public static float WorldScale
-        {
-            get { return worldScale; }
-            set
-            {
-                if (worldScale == value) return;
-                worldScale = value;
-
-                World world = World.GetTopWorld();
-                if (world != null) world.RefreshRenderTargets();
-            }
-        }
 
         public static bool CanZoomOut
         { get { return worldScale >= 1; } }
