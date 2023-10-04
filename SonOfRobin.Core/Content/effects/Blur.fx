@@ -17,6 +17,7 @@ sampler2D InputSampler = sampler_state
     Texture = <SpriteTexture>;
 };
 
+
 struct VertexShaderOutput
 {
     float4 Position : SV_POSITION;
@@ -28,22 +29,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
-    float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
-
-    float4 currentPixel =
-    tex2D(InputSampler, float2(input.UV.x - (uvPix.x * blurX), input.UV.y - (uvPix.y * blurY))) +
-    tex2D(InputSampler, float2(input.UV.x, input.UV.y - (uvPix.y * blurY))) +
-    tex2D(InputSampler, float2(input.UV.x + (uvPix.x * blurX), input.UV.y - (uvPix.y * blurY))) +
+    float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);    
+        
+    float4 s11 = tex2D(InputSampler, input.UV + (float2(-blurX, -blurY) * uvPix));
+    float4 s12 = tex2D(InputSampler, input.UV + (float2(0, -blurY) * uvPix));
+    float4 s13 = tex2D(InputSampler, input.UV + (float2(blurX, -blurY) * uvPix));
     
-    tex2D(InputSampler, float2(input.UV.x - (uvPix.x * blurX), input.UV.y)) +
-    tex2D(InputSampler, float2(input.UV.x, input.UV.y)) +
-    tex2D(InputSampler, float2(input.UV.x + (uvPix.x * blurX), input.UV.y)) +
+    float4 s21 = tex2D(InputSampler, input.UV + (float2(-blurX, 0) * uvPix));
+    float4 s22 = tex2D(InputSampler, input.UV + (float2(0, 0) * uvPix));
+    float4 s23 = tex2D(InputSampler, input.UV + (float2(blurX, 0) * uvPix));
     
-    tex2D(InputSampler, float2(input.UV.x - (uvPix.x * blurX), input.UV.y + (uvPix.y * blurY))) +
-    tex2D(InputSampler, float2(input.UV.x, input.UV.y + (uvPix.y * blurY))) +
-    tex2D(InputSampler, float2(input.UV.x + (uvPix.x * blurX), input.UV.y + (uvPix.y * blurY)));
-      
-    return currentPixel / 9;
+    float4 s31 = tex2D(InputSampler, input.UV + (float2(-blurX, blurY) * uvPix));
+    float4 s32 = tex2D(InputSampler, input.UV + (float2(0, blurY) * uvPix));
+    float4 s33 = tex2D(InputSampler, input.UV + (float2(blurX, blurY) * uvPix));   
+    
+    return (
+    s11 + s12 + s13 +
+    s21 + s22 + s23 +
+    s31 + s32 + s33) / 9;
 }
 
 technique SpriteOutline

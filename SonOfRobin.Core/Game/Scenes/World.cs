@@ -1390,7 +1390,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
 
             // EffInstance testEffect = new BurnInstance(intensity: 0.5f, boardPiece: this.Player, framesLeft: -1); // for testing
-            // EffInstance testEffect = new BlurInstance(textureSize: new Vector2(this.cameraViewTarget.Width, this.cameraViewTarget.Height), blurSize: new Point(6, 0), framesLeft: -1); // for testing
+            // EffInstance testEffect = new BlurInstance(textureSize: new Vector2(this.cameraViewTarget.Width, this.cameraViewTarget.Height), blurSize: new Point(3, 3), framesLeft: -1); // for testing
             // testEffect.TurnOn(currentUpdate: this.CurrentUpdate); // for testing
 
             SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
