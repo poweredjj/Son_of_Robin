@@ -23,7 +23,7 @@ namespace SonOfRobin
                 this.isEmpty = isEmpty;
                 this.name = name;
                 this.text = text;
-                this.frame = PieceInfo.GetInfo(name).croppedFrame;
+                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
                 this.bgColor = bgColor;
                 this.counter = counter;
             }
@@ -34,7 +34,7 @@ namespace SonOfRobin
                 this.isMain = false;
                 this.isEmpty = true;
                 this.name = PieceTemplate.Name.Empty;
-                this.frame = PieceInfo.GetInfo(name).croppedFrame;
+                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
                 this.text = "";
                 this.bgColor = Color.White;
                 this.counter = 0;

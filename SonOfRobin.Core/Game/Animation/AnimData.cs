@@ -11,8 +11,8 @@ namespace SonOfRobin
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
-        public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new(); // default frames for packages (not always cropped)
-        public static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (always cropped)
+        public static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
+        public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
         public static Dictionary<string, Object> jsonDict = new();
@@ -376,7 +376,11 @@ namespace SonOfRobin
 
         public static void AddFrameList(PkgName animPackage, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
         {
-            if (!framesForPkgs.ContainsKey(animPackage)) framesForPkgs[animPackage] = frameList[0];
+            if (!animSizesForPkgs.ContainsKey(animPackage) || animSizesForPkgs[animPackage] < animSize)
+            {
+                croppedFramesForPkgs[animPackage] = frameList[0].GetCroppedFrameCopy();
+                animSizesForPkgs[animPackage] = animSize;
+            }
 
             string completeAnimID = $"{animPackage}-{animSize}-{animName}";
             frameListById[completeAnimID] = new List<AnimFrame>(frameList);
@@ -661,7 +665,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BubbleCraftGreen, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.PlantPoison, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
-            AddFrameList(animPackage: PkgName.Map, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f, crop: false));
+            AddFrameList(animPackage: PkgName.Map, frameList: ConvertImageToFrameList(atlasName: "map_item", layer: 0, scale: 0.06f, crop: false));
             AddFrameList(animPackage: PkgName.BackpackMediumOutline, frameList: ConvertImageToFrameList(atlasName: "backpack_medium_outline", layer: 1, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BackpackSmall, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BackpackMedium, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
@@ -1192,7 +1196,7 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { framesForPkgs[packageName] }); // adding default frame
+            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
         }
 
         public static void AddRPGMakerPackageV2(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
@@ -1241,7 +1245,7 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { framesForPkgs[packageName] }); // adding default frame
+            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
         }
 
         private static string JsonDataPath
@@ -1303,16 +1307,6 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
-        }
-
-        public static void CreateCroppedCopies()
-        {
-            foreach (var kvp in framesForPkgs)
-            {
-                PkgName pkgName = kvp.Key;
-                AnimFrame animFrame = kvp.Value;
-                croppedFramesForPkgs[pkgName] = animFrame.GetCroppedFrameCopy();
-            }
         }
 
         public static void DeleteUsedAtlases()

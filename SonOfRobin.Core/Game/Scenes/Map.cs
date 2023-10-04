@@ -525,7 +525,7 @@ namespace SonOfRobin
 
             // drawing paper map background texture
 
-            Texture2D mapTexture = AnimData.framesForPkgs[AnimData.PkgName.Map].texture;
+            Texture2D mapTexture = TextureBank.GetTexture(TextureBank.TextureName.Map);
             Rectangle viewRect = this.camera.viewRect;
             Rectangle worldRect = this.world.worldRect;
             Rectangle extendedMapRect = this.world.worldRect;
@@ -762,7 +762,7 @@ namespace SonOfRobin
                 int crosshairHalfSize = crossHairSize / 2;
 
                 Rectangle crosshairRect = new(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
-                AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).croppedFrame;
+                AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).CroppedFrame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }
 

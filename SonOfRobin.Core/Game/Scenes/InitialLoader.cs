@@ -21,7 +21,6 @@ namespace SonOfRobin
             LoadAnimsChars,
             LoadAnimsMisc1,
             LoadAnimsMisc2,
-            LoadAnimsCroppedCopies,
             SaveAnimsJson,
             LoadKeysGfx,
             MakeItemsInfo,
@@ -57,7 +56,6 @@ namespace SonOfRobin
             { Step.LoadAnimsChars, "loading animations (characters)" },
             { Step.LoadAnimsMisc1, "loading animations (others 1)" },
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
-            { Step.LoadAnimsCroppedCopies, "loading animations (cropped copies)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
             { Step.WaitForBackgroundTasksToFinish1, "waiting for background tasks to finish (first batch)" },
@@ -191,10 +189,6 @@ namespace SonOfRobin
 
                 case Step.LoadAnimsMisc2:
                     AnimData.CreateAnimsMisc2();
-                    break;
-
-                case Step.LoadAnimsCroppedCopies:
-                    AnimData.CreateCroppedCopies();
                     break;
 
                 case Step.SaveAnimsJson:
