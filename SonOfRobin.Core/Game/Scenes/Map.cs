@@ -44,7 +44,7 @@ namespace SonOfRobin
         public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
 
         private static float InitialZoom
-        { get { return Preferences.WorldScale / 2; } }
+        { get { return Preferences.worldScale / 2; } }
 
         private bool ShowDetailedMap
         { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
@@ -149,20 +149,18 @@ namespace SonOfRobin
 
         public void UpdateResolution()
         {
-            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
-            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
+            int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
+            int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
+
+            float multiplierX = (float)newWidth / (float)world.width;
+            float multiplierY = (float)newHeight / (float)world.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
-            this.FinalMapToDisplay?.Dispose();
-
-            this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
-
-            this.SetViewParamsForMiniature();
-
-            if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
+            if (this.FinalMapToDisplay == null || this.FinalMapToDisplay.Width != newWidth || this.FinalMapToDisplay.Height != newHeight)
             {
-                this.lowResGround?.Dispose();
-                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, true, SurfaceFormat.Color, DepthFormat.None);
+                this.FinalMapToDisplay?.Dispose();
+                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (map final) - {this.FinalMapToDisplay.Width}x{this.FinalMapToDisplay.Height}");
             }
 
             this.backgroundNeedsUpdating = true;
@@ -182,6 +180,7 @@ namespace SonOfRobin
             {
                 this.lowResGround?.Dispose();
                 this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (map lowResGround) - {lowResGround.Width}x{lowResGround.Height}");
             }
 
             SetRenderTarget(this.lowResGround);
