@@ -38,7 +38,7 @@ namespace SonOfRobin
                      SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
 
                 this.isDebug = isDebug;
-                this.flashFrame = SonOfRobinGame.CurrentUpdate;
+                this.flashFrame = SonOfRobinGame.CurrentDraw;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
