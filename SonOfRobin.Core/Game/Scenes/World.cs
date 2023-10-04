@@ -1387,9 +1387,7 @@ namespace SonOfRobin
         {
             if (this.WorldCreationInProgress) return;
 
-            Matrix screenMatrix = Matrix.CreateScale(1f);
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: screenMatrix);
+            SonOfRobinGame.SpriteBatch.Begin();
             SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
@@ -1627,7 +1625,7 @@ namespace SonOfRobin
                 if (ambientLightData.darknessColor != Color.Transparent)
                 {
                     SonOfRobinGame.SpriteBatch.End();
-                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: Matrix.CreateScale(1f));
+                    SonOfRobinGame.SpriteBatch.Begin();
                     SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, this.darknessMask.Bounds, Color.White);
                 }
             }
