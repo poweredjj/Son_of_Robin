@@ -40,7 +40,9 @@ namespace SonOfRobin
         public readonly int height;
         public readonly Rectangle worldRect;
         public readonly Camera camera;
+        private Vector2 darknessMaskScale;
         private RenderTarget2D darknessMask;
+        private RenderTarget2D renderTarget;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
         public readonly CineCurtains cineCurtains;
@@ -396,19 +398,6 @@ namespace SonOfRobin
 
         public int HeatQueueSize
         { get { return this.heatedPieces.Count; } }
-
-        private Vector2 DarknessMaskScale
-        {
-            get
-            {
-                Rectangle darknessViewRect = this.camera.DarknessViewRect;
-
-                int maxDarknessWidth = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth * 1.2f), 2000);
-                int maxDarknessHeight = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight * 1.2f), 1500);
-
-                return new Vector2((float)darknessViewRect.Width / (float)maxDarknessWidth, (float)darknessViewRect.Height / (float)maxDarknessHeight);
-            }
-        }
 
         public void CompleteCreation()
         {
@@ -1419,11 +1408,14 @@ namespace SonOfRobin
 
         public void CreateNewDarknessMask()
         {
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
             Rectangle darknessViewRect = this.camera.DarknessViewRect;
 
-            int darknessMaskWidth = (int)(darknessViewRect.Width / darknessMaskScale.X);
-            int darknessMaskHeight = (int)(darknessViewRect.Height / darknessMaskScale.Y);
+            int maxDarknessWidth = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth * 1.2f), 2000);
+            int maxDarknessHeight = Math.Min((int)(SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight * 1.2f), 1500);
+            this.darknessMaskScale = new Vector2((float)darknessViewRect.Width / (float)maxDarknessWidth, (float)darknessViewRect.Height / (float)maxDarknessHeight);
+
+            int darknessMaskWidth = (int)(darknessViewRect.Width / this.darknessMaskScale.X);
+            int darknessMaskHeight = (int)(darknessViewRect.Height / this.darknessMaskScale.Y);
 
             if (this.darknessMask != null)
             {
@@ -1458,7 +1450,6 @@ namespace SonOfRobin
 
                 return lightSprites;
             }
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
 
             // preparing shadow masks
 
@@ -1580,10 +1571,10 @@ namespace SonOfRobin
             {
                 Rectangle lightRect = lightSprite.lightEngine.Rect;
 
-                lightRect.X = (int)(((float)lightRect.X - (float)darknessViewRect.X) / darknessMaskScale.X);
-                lightRect.Y = (int)(((float)lightRect.Y - (float)darknessViewRect.Y) / darknessMaskScale.Y);
-                lightRect.Width = (int)((float)lightRect.Width / darknessMaskScale.X);
-                lightRect.Height = (int)((float)lightRect.Height / darknessMaskScale.Y);
+                lightRect.X = (int)(((float)lightRect.X - (float)darknessViewRect.X) / this.darknessMaskScale.X);
+                lightRect.Y = (int)(((float)lightRect.Y - (float)darknessViewRect.Y) / this.darknessMaskScale.Y);
+                lightRect.Width = (int)((float)lightRect.Width / this.darknessMaskScale.X);
+                lightRect.Height = (int)((float)lightRect.Height / this.darknessMaskScale.Y);
 
                 if (Preferences.drawShadows)
                 {
@@ -1606,8 +1597,6 @@ namespace SonOfRobin
 
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
-            Vector2 darknessMaskScale = this.DarknessMaskScale;
-
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             Rectangle darknessViewRect = this.camera.DarknessViewRect;
 
@@ -1671,7 +1660,7 @@ namespace SonOfRobin
 
                 // drawing darkness
 
-                if (ambientLightData.darknessColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: darknessViewRect.X, y: darknessViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
+                if (ambientLightData.darknessColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: darknessViewRect.X, y: darknessViewRect.Y, width: (int)(this.darknessMask.Width * this.darknessMaskScale.X), height: (int)(this.darknessMask.Height * this.darknessMaskScale.Y)), Color.White);
             }
 
             SonOfRobinGame.SpriteBatch.End();
