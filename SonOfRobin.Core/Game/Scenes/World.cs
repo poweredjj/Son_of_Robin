@@ -1387,7 +1387,11 @@ namespace SonOfRobin
         {
             if (this.WorldCreationInProgress) return;
 
-            SonOfRobinGame.SpriteBatch.Begin();
+            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+
+            // EffInstance testEffect = new BurnInstance(intensity: 0.5f, boardPiece: this.Player, framesLeft: -1); // for testing
+            // testEffect.TurnOn(currentUpdate: this.CurrentUpdate); // for testing
+
             SonOfRobinGame.SpriteBatch.Draw(this.cameraViewTarget, this.cameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
