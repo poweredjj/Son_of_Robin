@@ -191,8 +191,24 @@ namespace SonOfRobin
 
                 if (this.world.Player.pointWalkTarget != Vector2.Zero)
                 {
-                    aheadCorrectionTarget = this.world.Player.pointWalkTarget - currentTargetPos;
                     moveBackToPlayer = this.world.Player.PointWalkTargetReached;
+
+                    Vector2 pointWalkTargetCorrected = this.world.Player.pointWalkTarget;
+
+
+                    if (!moveBackToPlayer)
+                    {
+                        Vector2 maxCorrectionSize = new Vector2(this.viewRect.Width * (Preferences.enableTouchJoysticks ? 0.25f : 0.35f), this.viewRect.Height * 0.35f);
+
+                        Vector2 maxCorrectionLeftTop = this.world.Player.sprite.position - maxCorrectionSize;
+                        Vector2 maxCorrectionRightBottom = this.world.Player.sprite.position + maxCorrectionSize;
+
+
+                        pointWalkTargetCorrected = Vector2.Clamp(value1: pointWalkTargetCorrected, min: maxCorrectionLeftTop, max: maxCorrectionRightBottom);
+
+                    }
+
+                    aheadCorrectionTarget = pointWalkTargetCorrected - currentTargetPos;
                 }
                 else
                 {
@@ -203,7 +219,7 @@ namespace SonOfRobin
                 }
 
                 float movementSlowdownForCorrection = moveBackToPlayer ? 110 : 70;
-                if (!this.viewRect.Contains(this.world.Player.sprite.position)) movementSlowdownForCorrection = 1;
+                if (!this.viewRect.Contains(this.world.Player.sprite.position)) movementSlowdownForCorrection = 1; // catching up to player, like during zoom in
 
                 this.aheadCorrection.X += (aheadCorrectionTarget.X - this.aheadCorrection.X) / movementSlowdownForCorrection;
                 this.aheadCorrection.Y += (aheadCorrectionTarget.Y - this.aheadCorrection.Y) / movementSlowdownForCorrection;
