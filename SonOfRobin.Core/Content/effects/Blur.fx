@@ -31,22 +31,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);    
         
-    float4 s11 = tex2D(InputSampler, input.UV + (float2(-blurX, -blurY) * uvPix));
-    float4 s12 = tex2D(InputSampler, input.UV + (float2(0, -blurY) * uvPix));
-    float4 s13 = tex2D(InputSampler, input.UV + (float2(blurX, -blurY) * uvPix));
+    return
+    (tex2D(InputSampler, input.UV + (float2(-blurX, -blurY) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(0, -blurY) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(blurX, -blurY) * uvPix)) +
     
-    float4 s21 = tex2D(InputSampler, input.UV + (float2(-blurX, 0) * uvPix));
-    float4 s22 = tex2D(InputSampler, input.UV + (float2(0, 0) * uvPix));
-    float4 s23 = tex2D(InputSampler, input.UV + (float2(blurX, 0) * uvPix));
+    tex2D(InputSampler, input.UV + (float2(-blurX, 0) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(0, 0) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(blurX, 0) * uvPix)) +
     
-    float4 s31 = tex2D(InputSampler, input.UV + (float2(-blurX, blurY) * uvPix));
-    float4 s32 = tex2D(InputSampler, input.UV + (float2(0, blurY) * uvPix));
-    float4 s33 = tex2D(InputSampler, input.UV + (float2(blurX, blurY) * uvPix));   
-    
-    return (
-    s11 + s12 + s13 +
-    s21 + s22 + s23 +
-    s31 + s32 + s33) / 9;
+    tex2D(InputSampler, input.UV + (float2(-blurX, blurY) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(0, blurY) * uvPix)) +
+    tex2D(InputSampler, input.UV + (float2(blurX, blurY) * uvPix))
+    ) / 9;
 }
 
 technique SpriteOutline
