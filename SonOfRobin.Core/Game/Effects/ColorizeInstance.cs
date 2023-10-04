@@ -11,7 +11,6 @@ namespace SonOfRobin
         public ColorizeInstance(Color color, int framesLeft = 1, int priority = 1, int fadeFramesLeft = 0) : base(effect: SonOfRobinGame.EffectColorize, framesLeft: framesLeft, priority: priority)
         {
             this.color = color.ToVector4();
-            this.framesLeft = framesLeft;
             this.fadeFramesTotal = fadeFramesLeft;
             this.fadeFramesLeft = fadeFramesLeft;
         }

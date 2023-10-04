@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin effects/Blur.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Blur.fx
+
 #begin effects/Border.fx
 /importer:EffectImporter
 /processor:EffectProcessor
