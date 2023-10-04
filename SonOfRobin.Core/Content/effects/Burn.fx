@@ -12,6 +12,7 @@ sampler s0;
 float intensity;
 float time;
 float phaseModifier;
+bool checkAlpha;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -30,7 +31,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	// shaders use color value range 0.0f - 1.0f
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
-	if (originalColor.a <= 0.4) return originalColor;
+    if (checkAlpha && originalColor.a <= 0.4) return originalColor;
 
 	// Calculate burning effect
 	float burnVal = sin((input.TextureCoordinates.y + time + phaseModifier) * 5) * 0.1;

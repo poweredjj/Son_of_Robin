@@ -203,9 +203,7 @@ namespace SonOfRobin
                         Vector2 maxCorrectionLeftTop = this.world.Player.sprite.position - maxCorrectionSize;
                         Vector2 maxCorrectionRightBottom = this.world.Player.sprite.position + maxCorrectionSize;
 
-
                         pointWalkTargetCorrected = Vector2.Clamp(value1: pointWalkTargetCorrected, min: maxCorrectionLeftTop, max: maxCorrectionRightBottom);
-
                     }
 
                     aheadCorrectionTarget = pointWalkTargetCorrected - currentTargetPos;

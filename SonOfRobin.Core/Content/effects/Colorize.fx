@@ -11,6 +11,7 @@ Texture2D SpriteTexture;
 sampler s0;
 float4 colorizeColor;
 float opacity;
+bool checkAlpha;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -30,7 +31,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 
-	if (originalColor.a <= 0.5) return originalColor;
+    if (checkAlpha && originalColor.a <= 0.5) return originalColor;
 	
 	float4 gray;
 	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -1389,7 +1390,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
 
-            // EffInstance testEffect = new BurnInstance(intensity: 0.5f, boardPiece: this.Player, framesLeft: -1); // for testing
+            // EffInstance testEffect = new BurnInstance(intensity: 0.5f, boardPiece: null, checkAlpha: false, framesLeft: -1); // for testing
+            // EffInstance testEffect = new ColorizeInstance(color: Color.Cyan, framesLeft: -1, priority: 0, checkAlpha: false); // for testing
             // EffInstance testEffect = new BlurInstance(textureSize: new Vector2(this.cameraViewTarget.Width, this.cameraViewTarget.Height), blurSize: new Point(3, 3), framesLeft: -1); // for testing
             // testEffect.TurnOn(currentUpdate: this.CurrentUpdate); // for testing
 
