@@ -144,8 +144,7 @@ namespace SonOfRobin
         {
             get
             {
-                string fullDescription = SonOfRobinGame.platform == Platform.Mobile ?
-                    $"{SaveDateString} time played: {this.ElapsedTimeString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}" : $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
+                string fullDescription = $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
 
                 if (this.saveIsObsolete) fullDescription += "   INCOMPATIBLE";
                 if (!this.saveIsObsolete && this.saveIsCorrupted) fullDescription += "   CORRUPTED";
