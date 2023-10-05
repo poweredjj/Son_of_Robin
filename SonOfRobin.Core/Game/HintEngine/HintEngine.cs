@@ -351,7 +351,7 @@ namespace SonOfRobin
                             SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
                             this.world.solidColorManager.Add(whiteOverlay);
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), framesLeft: -1), storeForLaterUse: true));
+                            //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), framesLeft: -1), storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
 
@@ -362,7 +362,7 @@ namespace SonOfRobin
                             taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 120, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), endBlurSize: new Vector2(0.1f, 0.1f), framesLeft: 60 * 5), storeForLaterUse: true));
+                            //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 120, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), endBlurSize: new Vector2(0.1f, 0.1f), framesLeft: 60 * 5), storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
                             taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
