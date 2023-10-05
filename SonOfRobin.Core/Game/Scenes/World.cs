@@ -41,7 +41,8 @@ namespace SonOfRobin
         public readonly Rectangle worldRect;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
-        public RenderTarget2D CameraViewTarget { get; private set; }
+        public RenderTarget2D CameraViewRenderTarget { get; private set; }
+        public EffInstance globalEffect;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
         public readonly CineCurtains cineCurtains;
@@ -155,6 +156,9 @@ namespace SonOfRobin
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
             this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(Vector2.Zero);
+            this.CameraViewRenderTarget = null;
+            this.darknessMask = null;
+            this.globalEffect = null;
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
@@ -187,7 +191,7 @@ namespace SonOfRobin
             RumbleManager.StopAll();
             base.Remove();
             this.darknessMask?.Dispose();
-            this.CameraViewTarget?.Dispose();
+            this.CameraViewRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", textColor: new Color(255, 180, 66));
@@ -1266,6 +1270,8 @@ namespace SonOfRobin
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
+            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Point(6, 6), framesLeft: 30);
+
             this.solidColorManager.Add(redOverlay);
         }
 
@@ -1346,7 +1352,7 @@ namespace SonOfRobin
 
             // drawing final image
 
-            SetRenderTarget(this.CameraViewTarget);
+            SetRenderTarget(this.CameraViewRenderTarget);
 
             // drawing water surface
             this.scrollingSurfaceManager.DrawAllWater();
@@ -1388,12 +1394,13 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
 
-            // EffInstance testEffect = new BurnInstance(intensity: 0.5f, boardPiece: null, checkAlpha: false, framesLeft: -1); // for testing
-            // EffInstance testEffect = new ColorizeInstance(color: Color.Cyan, framesLeft: -1, priority: 0, checkAlpha: false); // for testing
-            // EffInstance testEffect = new BlurInstance(textureSize: new Vector2(this.cameraViewTarget.Width, this.cameraViewTarget.Height), blurSize: new Point(3, 3), framesLeft: -1); // for testing
-            // testEffect.TurnOn(currentUpdate: this.CurrentUpdate); // for testing
+            if (this.globalEffect != null)
+            {
+                this.globalEffect.TurnOn(currentUpdate: this.CurrentUpdate);
+                if (this.globalEffect.framesLeft == 0) this.globalEffect = null;
+            }
 
-            SonOfRobinGame.SpriteBatch.Draw(this.CameraViewTarget, this.CameraViewTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.CameraViewRenderTarget, this.CameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
@@ -1595,7 +1602,6 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: colorLightBlend);
 
-
             foreach (var lightSprite in lightSprites)
             {
                 if (lightSprite.lightEngine.ColorActive && cameraRect.Intersects(lightSprite.lightEngine.Rect))
@@ -1668,11 +1674,11 @@ namespace SonOfRobin
             int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
             int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
 
-            if (this.CameraViewTarget == null || this.CameraViewTarget.Width != newWidth || this.CameraViewTarget.Height != newHeight)
+            if (this.CameraViewRenderTarget == null || this.CameraViewRenderTarget.Width != newWidth || this.CameraViewRenderTarget.Height != newHeight)
             {
-                this.CameraViewTarget?.Dispose();
-                this.CameraViewTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.CameraViewTarget.Width}x{this.CameraViewTarget.Height}");
+                this.CameraViewRenderTarget?.Dispose();
+                this.CameraViewRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.CameraViewRenderTarget.Width}x{this.CameraViewRenderTarget.Height}");
             }
 
             // refreshing darkness mask
@@ -1681,7 +1687,7 @@ namespace SonOfRobin
             {
                 this.darknessMask?.Dispose();
                 this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                MessageLog.Add(debugMessage: true, text: $"Creating new render target (world) - {this.CameraViewTarget.Width}x{this.CameraViewTarget.Height}");
+                MessageLog.Add(debugMessage: true, text: $"Creating new render target (world) - {this.CameraViewRenderTarget.Width}x{this.CameraViewRenderTarget.Height}");
             }
         }
     }

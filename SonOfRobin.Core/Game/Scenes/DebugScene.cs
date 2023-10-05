@@ -406,9 +406,18 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
-                // world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+                // world.globalEffect = new BurnInstance(intensity: 0.5f, boardPiece: null, checkAlpha: false, framesLeft: 60);
+                // world.globalEffect = new ColorizeInstance(color: Color.Cyan, checkAlpha: false, framesLeft: 60);
+                world.globalEffect = new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Point(6, 6), framesLeft: 30);
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //    // world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
