@@ -174,15 +174,12 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
-            int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
-
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
 
-            if (this.lowResGround == null || this.lowResGround.Width != newWidth || this.lowResGround.Height != newHeight)
+            if (this.lowResGround == null || this.lowResGround.Width != this.viewParams.Width || this.lowResGround.Height != this.viewParams.Height)
             {
                 this.lowResGround?.Dispose();
-                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                this.lowResGround = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (map lowResGround) - {lowResGround.Width}x{lowResGround.Height}");
             }
 
