@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -212,16 +213,67 @@ namespace SonOfRobin
             return rawDataAsGrid;
         }
 
-        public static void SaveTextureAsPNG(string filename, Texture2D texture)
+        public static void SaveTextureAsPNG(string pngPath, Texture2D texture)
         {
             try
             {
-                Stream stream = File.Create(filename);
+                Stream stream = File.Create(pngPath);
                 texture.SaveAsPng(stream, texture.Width, texture.Height);
                 stream.Dispose();
             }
             catch (IOException)
             { }
+        }
+
+        public static void SaveTextureAsPNGResized(Texture2D texture, int maxWidth, int maxHeight, string pngPath)
+        {
+            if (maxWidth < 0) throw new ArgumentException($"MaxWidth {maxWidth} cannot be less than 0.");
+            if (maxHeight < 0) throw new ArgumentException($"MaxHeight {maxHeight} cannot be less than 0.");
+
+            // Get the texture data into an array
+            Color[] textureData = new Color[texture.Width * texture.Height];
+            texture.GetData(textureData);
+
+            // Create an ImageSharp image from the texture data
+            using (var image = new Image<Rgb24>(texture.Width, texture.Height)) // Rgb24 is used, otherwise alpha is wrong (Texture2D.FromStream)
+            {
+                // Parallelize the loop that copies pixel data from textureData to the image
+                Parallel.For(0, texture.Height, SonOfRobinGame.defaultParallelOptions, y =>
+                {
+                    for (int x = 0; x < texture.Width; x++)
+                    {
+                        int index = y * texture.Width + x;
+                        image[x, y] = new Rgb24(textureData[index].R, textureData[index].G, textureData[index].B);
+                    }
+                });
+
+                // Calculate the new dimensions for scaling while preserving aspect ratio
+                int newWidth, newHeight;
+                if (image.Width > maxWidth || image.Height > maxHeight)
+                {
+                    var newSize = Helpers.FitIntoSize(sourceWidth: image.Width, sourceHeight: image.Height, targetWidth: maxWidth, targetHeight: maxHeight);
+                    newWidth = newSize.X;
+                    newHeight = newSize.Y;
+                }
+                else
+                {
+                    newWidth = image.Width;
+                    newHeight = image.Height;
+                }
+
+                // Resize the image
+                image.Mutate(x => x.Resize(new ResizeOptions
+                {
+                    Size = new Size(newWidth, newHeight),
+                    Mode = ResizeMode.Max
+                }));
+
+                // Save the scaled image as a PNG
+                using (var outputStream = new FileStream(pngPath, FileMode.Create))
+                {
+                    image.Save(outputStream, new PngEncoder { CompressionLevel = PngCompressionLevel.Level6 });
+                }
+            }
         }
 
         public static Texture2D LoadTextureFromPNG(string path)
@@ -400,7 +452,7 @@ namespace SonOfRobin
                 int yFactor = y * width;
                 for (int x = 0; x < width; x++)
                 {
-                    array2D[x, y] = array1D[(yFactor) + x];
+                    array2D[x, y] = array1D[yFactor + x];
                 }
             }
 

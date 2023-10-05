@@ -84,7 +84,7 @@ namespace SonOfRobin
 
         private const float maxWindowWidthPercent = 0.35f;
         private const float maxWindowHeightPercent = 0.7f;
-        private const float maxLineHeightPercent = 0.05f;
+        private const float maxLineHeightPercent = 0.25f;  // 0.05f;
 
         private const float marginPercent = 0.025f;
         private const int transDuration = 6; // 6

@@ -438,7 +438,7 @@ namespace SonOfRobin
                             string saveSlotName = (string)this.ExecuteHelper;
                             string savePath = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
 
-                            SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(savePath));
+                            SaveHeaderInfo saveInfo = new SaveHeaderInfo(folderName: Path.GetFileName(savePath));
 
                             string exportPath = SonOfRobinGame.downloadsPath;
                             if (!Directory.Exists(exportPath)) exportPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -486,7 +486,7 @@ namespace SonOfRobin
                             }
                             else
                             {
-                                SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(saveSlotName));
+                                SaveHeaderInfo saveInfo = new SaveHeaderInfo(folderName: Path.GetFileName(saveSlotName));
                                 if (!saveInfo.saveIsCorrect)
                                 {
                                     Directory.Delete(path: extractPath, recursive: true);

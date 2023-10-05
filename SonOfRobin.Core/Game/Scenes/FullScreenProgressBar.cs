@@ -88,7 +88,7 @@ namespace SonOfRobin
 
             TextureBank.FlushTemporaryTextures();
 
-            this.texture = TextureBank.GetTextureTemporary($"Loading/{textureName}");
+            this.texture = TextureBank.GetTexture(fileName: $"Loading/{textureName}", persistent: false);
             this.textureName = textureName;
         }
 

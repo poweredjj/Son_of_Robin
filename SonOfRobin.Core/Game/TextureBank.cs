@@ -333,14 +333,14 @@ namespace SonOfRobin
             else return GetTextureTemporary(fileName);
         }
 
-        public static Texture2D GetTexturePersistent(string fileName)
+        private static Texture2D GetTexturePersistent(string fileName)
         {
             if (!textureByNamePersistent.ContainsKey(fileName)) textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
 
             return textureByNamePersistent[fileName];
         }
 
-        public static Texture2D GetTextureTemporary(string fileName)
+        private static Texture2D GetTextureTemporary(string fileName)
         {
             if (!textureByNameTemporary.ContainsKey(fileName)) textureByNameTemporary[fileName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
 

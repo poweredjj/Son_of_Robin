@@ -17,6 +17,7 @@ namespace SonOfRobin
         public const string eventsName = "events.json";
         public const string weatherName = "weather.json";
         public const string gridName = "grid.json";
+        public const string screenshotName = "screenshot.png";
         public const string piecesPrefix = "pieces_";
         public const string tempPrefix = "_save_temp_";
 
@@ -134,7 +135,7 @@ namespace SonOfRobin
             this.gridTemplateFound = false;
             this.currentPiecePackageNo = 0;
             this.piecesData = new ConcurrentBag<object> { };
-            this.allSteps = this.saveMode ? 7 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
+            this.allSteps = this.saveMode ? 6 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
         }
@@ -221,6 +222,12 @@ namespace SonOfRobin
 
             if (this.backgroundTask == null)
             {
+                if (this.saveMode)
+                {
+                    Directory.CreateDirectory(this.saveTempPath);
+                    GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.saveTempPath, screenshotName), texture: this.world.CameraViewTarget, maxWidth: 800, maxHeight: 600);
+                }
+
                 this.backgroundTask = this.saveMode ? Task.Run(() => this.ProcessSaving()) : Task.Run(() => this.ProcessLoading());
             }
             else
@@ -269,13 +276,6 @@ namespace SonOfRobin
 
         private void ProcessSaving()
         {
-            // preparing save directory
-            {
-                this.processedSteps++;
-                this.currentStepName = "directory";
-                Directory.CreateDirectory(this.saveTempPath);
-            }
-
             // saving header data
             {
                 this.processedSteps++;

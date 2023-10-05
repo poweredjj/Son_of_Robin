@@ -22,7 +22,7 @@ namespace SonOfRobin
                 var saveFolders = Directory.GetDirectories(SonOfRobinGame.saveGamesPath);
                 foreach (string folder in saveFolders)
                 {
-                    SaveHeaderInfo saveInfo = new(Path.GetFileName(folder));
+                    SaveHeaderInfo saveInfo = new(folderName: Path.GetFileName(folder));
                     if (saveInfo.saveIsCorrect) correctSaves.Add(saveInfo);
                 }
 
@@ -41,7 +41,7 @@ namespace SonOfRobin
 
                 foreach (string folder in saveFolders)
                 {
-                    var saveInfo = new SaveHeaderInfo(Path.GetFileName(folder));
+                    var saveInfo = new SaveHeaderInfo(folderName: Path.GetFileName(folder));
                     if (!saveInfo.saveIsCorrect || saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted) incorrectSaves.Add(saveInfo);
                 }
 

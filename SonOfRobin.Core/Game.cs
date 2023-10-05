@@ -134,12 +134,12 @@ namespace SonOfRobin
             WhiteRectangle = new Texture2D(base.GraphicsDevice, 1, 1);
             WhiteRectangle.SetData(new[] { Color.White });
 
-            GradientLeft = TextureBank.GetTexturePersistent("gradient_left");
-            GradientRight = TextureBank.GetTexturePersistent("gradient_right");
-            GradientTop = TextureBank.GetTexturePersistent("gradient_top");
-            GradientBottom = TextureBank.GetTexturePersistent("gradient_bottom");
+            GradientLeft = TextureBank.GetTexture("gradient_left");
+            GradientRight = TextureBank.GetTexture("gradient_right");
+            GradientTop = TextureBank.GetTexture("gradient_top");
+            GradientBottom = TextureBank.GetTexture("gradient_bottom");
 
-            SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
+            SplashScreenTexture = TextureBank.GetTexture("loading_gfx");
             ErrorLog = new ErrorLog();
             SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             solidColor.MoveToBottom();
