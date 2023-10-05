@@ -13,8 +13,9 @@ namespace SonOfRobin
         public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
         public readonly int taskDelay;
+        private bool invokedByDoubleTouch;
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f) :
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f, bool invokedByDoubleTouch = false) :
 
             base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, imageList: imageList, infoWindowMaxLineHeightPercentOverride: infoWindowMaxLineHeightPercentOverride)
         {
@@ -25,6 +26,7 @@ namespace SonOfRobin
             this.rectColor = Color.LightSlateGray;
             this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
             if (!playSound) this.soundInvoke = new Sound(SoundData.Name.Empty);
+            this.invokedByDoubleTouch = invokedByDoubleTouch;
         }
 
         public override string DisplayedText
@@ -57,7 +59,7 @@ namespace SonOfRobin
 
                 if (rect.Contains(position) && touch.State == TouchLocationState.Released && this.menu.CanInterpretTouchReleaseAsButtonPress)
                 {
-                    if (this == this.menu.lastTouchedEntry || this.GetType() != typeof(CraftInvoker)) this.Invoke();
+                    if (this == this.menu.lastTouchedEntry || !this.invokedByDoubleTouch) this.Invoke();
                     else
                     {
                         this.menu.lastTouchedEntry = this;

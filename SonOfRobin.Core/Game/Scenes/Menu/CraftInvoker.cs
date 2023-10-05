@@ -45,7 +45,8 @@ namespace SonOfRobin
         private readonly List<PieceStorage> storageList;
         private readonly List<InvokerDrawParams> drawParamsList;
 
-        public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = true) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false)
+        public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = true) :
+            base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false, invokedByDoubleTouch: true)
         {
             this.recipe = recipe;
             this.storageList = storageList;
@@ -88,9 +89,6 @@ namespace SonOfRobin
 
         public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
         {
-            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
-            bool hasBeenCrafted = World.GetTopWorld().craftStats.HasBeenCrafted(recipe);
-
             if (active)
             {
                 this.UpdateInfoText();
@@ -163,7 +161,7 @@ namespace SonOfRobin
                 rectX += rectWidth + margin;
 
                 // drawing "new" icon
-                if (!hasBeenCrafted)
+                if (!World.GetTopWorld().craftStats.HasBeenCrafted(recipe))
                 {
                     int rectSize = (int)(outerEntryRect.Height * 0.6f);
                     int rectOffset = (int)(rectSize * 0.2f);
