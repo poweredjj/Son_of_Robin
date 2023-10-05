@@ -225,7 +225,7 @@ namespace SonOfRobin
                 if (this.saveMode)
                 {
                     Directory.CreateDirectory(this.saveTempPath);
-                    GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.saveTempPath, screenshotName), texture: this.world.CameraViewTarget, maxWidth: 800, maxHeight: 600);
+                    GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.saveTempPath, screenshotName), texture: this.world.CameraViewTarget, maxWidth: 640, maxHeight: 480); // screenshot should not be too large (because many might be loaded at once)
                 }
 
                 this.backgroundTask = this.saveMode ? Task.Run(() => this.ProcessSaving()) : Task.Run(() => this.ProcessLoading());

@@ -820,7 +820,7 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                             // sound won't play here, because loading game stops all sounds
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
@@ -856,7 +856,7 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -874,7 +874,7 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
