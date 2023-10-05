@@ -110,6 +110,7 @@ namespace SonOfRobin
             CheckForPieceHints = 43,
             ExecutePieceHintCheckNow = 92,
             TurnOnWindParticles = 93,
+            DisposeSaveScreenshotsIfNoMenuPresent = 94,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -515,7 +516,7 @@ namespace SonOfRobin
                     case TaskName.SaveGame:
                         {
                             // example executeHelper for this task
-                            // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false } };
+                            // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false } };                          
 
                             var saveParams = (Dictionary<string, Object>)this.ExecuteHelper;
                             World world = (World)saveParams["world"];
@@ -1977,6 +1978,12 @@ namespace SonOfRobin
 
                             return;
                         }
+
+                    case TaskName.DisposeSaveScreenshotsIfNoMenuPresent:
+                        if (Scene.GetTopSceneOfType(typeof(Menu)) != null) new Task(taskName: TaskName.DisposeSaveScreenshotsIfNoMenuPresent, delay: 60 * 3);
+                        else SaveHeaderInfo.DisposeScreenshots();
+
+                        return;
 
                     default:
                         throw new ArgumentException($"Unsupported taskName - {taskName}.");

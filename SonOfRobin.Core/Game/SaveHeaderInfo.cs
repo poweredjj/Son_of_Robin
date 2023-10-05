@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,34 +9,7 @@ namespace SonOfRobin
 {
     public class SaveHeaderInfo
     {
-        public class ScreenshotTexture
-        {
-            // needed to properly dispose texture, when no longer referenced
-
-            private readonly string pngPath;
-            private Texture2D texture;
-
-            public ScreenshotTexture(string pngPath)
-            {
-                this.pngPath = pngPath;
-                this.texture = null;
-            }
-
-            public Texture2D Texture
-            {
-                get
-                {
-                    if (this.texture != null && !this.texture.IsDisposed) return this.texture;
-                    this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
-                    return this.texture;
-                }
-            }
-
-            ~ScreenshotTexture()
-            {
-                this.texture?.Dispose();
-            }
-        }
+        private static readonly Dictionary<string, Texture2D> loadedScreenshots = new Dictionary<string, Texture2D>();
 
         public readonly bool saveIsCorrect;
         public readonly bool saveIsObsolete;
@@ -50,7 +24,6 @@ namespace SonOfRobin
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
         public readonly PieceTemplate.Name playerName;
-        private ScreenshotTexture screenshot;
 
         public SaveHeaderInfo(string folderName)
         {
@@ -72,7 +45,6 @@ namespace SonOfRobin
             this.frozenClock = null;
             this.timePlayed = TimeSpan.FromSeconds(0);
             this.playerName = PieceTemplate.Name.Empty;
-            this.screenshot = new ScreenshotTexture(Path.Combine(this.fullPath, LoaderSaver.screenshotName));
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -114,8 +86,46 @@ namespace SonOfRobin
         {
             get
             {
-                return this.screenshot.Texture;
+                string pngPath = Path.Combine(this.fullPath, LoaderSaver.screenshotName);
+
+                // disposing old screenshot (in case png has been updated)
+                if (loadedScreenshots.ContainsKey(pngPath) && loadedScreenshots[pngPath] != null) loadedScreenshots[pngPath].Dispose();
+
+                Texture2D screenshot = GfxConverter.LoadTextureFromPNG(Path.Combine(this.fullPath, LoaderSaver.screenshotName));
+                loadedScreenshots[pngPath] = screenshot;
+                if (screenshot != null) new Scheduler.Task(taskName: Scheduler.TaskName.DisposeSaveScreenshotsIfNoMenuPresent, delay: 60 * 3);
+
+                return screenshot;
             }
+        }
+
+        public List<InfoWindow.TextEntry> ScreenshotTextEntryList // TextEntry is not nullable, so a list is used
+        {
+            get
+            {
+                var infoTextList = new List<InfoWindow.TextEntry>();
+
+                Texture2D screenshot = this.Screenshot;
+                if (screenshot != null) infoTextList.Add(new InfoWindow.TextEntry(text: $"|", imageList: new List<Texture2D> { screenshot }, color: Color.White, scale: 7f));
+
+                return infoTextList;
+            }
+        }
+
+        public static void DisposeScreenshots()
+        {
+            int disposedScreenshots = 0;
+            foreach (Texture2D screenshot in loadedScreenshots.Values)
+            {
+                if (screenshot != null && !screenshot.IsDisposed)
+                {
+                    screenshot.Dispose();
+                    disposedScreenshots++;
+                }
+            }
+
+            loadedScreenshots.Clear();
+            if (disposedScreenshots > 0) MessageLog.Add(debugMessage: false, text: $"screenshots disposed ({disposedScreenshots})");
         }
 
         private string ElapsedTimeString { get { return string.Format("{0:D2}:{1:D2}", (int)Math.Floor(this.timePlayed.TotalHours), this.timePlayed.Minutes); } }

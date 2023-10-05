@@ -818,11 +818,7 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
 
-                            Texture2D screenshot = saveInfo.Screenshot;
-                            if (screenshot != null)
-                            {
-                                infoTextList.Add(new InfoWindow.TextEntry(text: $"|", imageList: new List<Texture2D> { screenshot }, color: Color.White, scale: 7f));
-                            }
+                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
                             Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper,
                                    infoTextList: infoTextList); // sound won't play here, because loading game stops all sounds
