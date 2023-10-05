@@ -816,11 +816,11 @@ namespace SonOfRobin
                                 soundName = SoundData.Name.Empty;
                             }
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"|   {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
                             // sound won't play here, because loading game stops all sounds
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
@@ -856,7 +856,7 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -874,7 +874,7 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f, invokedByDoubleTouch: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -1126,7 +1126,7 @@ namespace SonOfRobin
                 playerSelectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
             }
 
-            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
+            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "appearance only - no effect on gameplay", color: Color.White, scale: 1f) });
 
             var startingItemSelectorValueDict = new Dictionary<object, object>();
             foreach (PieceTemplate.Name itemName in Preferences.startingItemNames)
@@ -1135,7 +1135,7 @@ namespace SonOfRobin
                 startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.texture };
             }
 
-            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem");
+            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "the one item you would take to a deserted island", color: Color.White, scale: 1f) });
 
             var startingSkillSelectorValueDict = new Dictionary<object, object>();
             foreach (Player.SkillName skillName in Player.allSkillNames)
@@ -1143,7 +1143,7 @@ namespace SonOfRobin
                 startingSkillSelectorValueDict[skillName] = new List<object> { $"{skillName}: {Player.skillDescriptions[skillName]}", PieceInfo.GetTexture(Player.skillTextures[skillName]) };
             }
 
-            new Selector(menu: menu, name: "skill", valueDict: startingSkillSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingSkill");
+            new Selector(menu: menu, name: "skill", valueDict: startingSkillSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingSkill", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "fundamental, permanent life skill", color: Color.White, scale: 1f) });
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)
