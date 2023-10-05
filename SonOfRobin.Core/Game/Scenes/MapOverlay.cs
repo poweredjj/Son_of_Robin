@@ -18,22 +18,6 @@ namespace SonOfRobin
 
         public void AddTransition()
         {
-            int margin = (int)(SonOfRobinGame.VirtualWidth * 0.05f);
-            float scaleMini = 3f;
-            float scaleFull = 1f;
-
-            int widthMini = (int)(this.map.FinalMapToDisplay.Width / scaleMini);
-            int heightMini = (int)(this.map.FinalMapToDisplay.Height / scaleMini);
-
-            int posXMini = (int)((SonOfRobinGame.VirtualWidth - widthMini - margin) * scaleMini);
-            int posYMini = (int)((SonOfRobinGame.VirtualHeight - heightMini - margin) * scaleMini);
-
-            int posXFull = 0;
-            int posYFull = 0;
-
-            float opacityMini = 0.7f;
-            float opacityFull = 1f;
-
             switch (this.map.Mode)
             {
                 case Map.MapMode.Off:
@@ -46,32 +30,36 @@ namespace SonOfRobin
                     break;
 
                 case Map.MapMode.Mini:
+                    float scaleMini = 3f;
+
+                    int widthMini = (int)((float)this.map.FinalMapToDisplay.Width / (float)Preferences.GlobalScale / scaleMini);
+                    int heightMini = (int)((float)this.map.FinalMapToDisplay.Height / (float)Preferences.GlobalScale / scaleMini);
+                    int margin = (int)(SonOfRobinGame.VirtualWidth * 0.05f);
+
+                    int posXMini = (int)((SonOfRobinGame.VirtualWidth - (widthMini + margin)) * scaleMini);
+                    int posYMini = (int)((SonOfRobinGame.VirtualHeight - (heightMini + margin)) * scaleMini);
 
                     this.viewParams.PosX = posXMini;
-                    this.viewParams.PosY = SonOfRobinGame.VirtualHeight * scaleMini;
-                    this.viewParams.Opacity = opacityMini;
+                    this.viewParams.PosY = posYMini + (heightMini * scaleMini);
+                    this.viewParams.Opacity = 0.7f;
                     this.viewParams.ScaleX = scaleMini;
                     this.viewParams.ScaleY = scaleMini;
 
                     this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
                         paramsToChange: new Dictionary<string, float> {
-                        { "PosX", posXMini },
                         { "PosY", posYMini },
-                        { "ScaleX", scaleMini },
-                        { "ScaleY", scaleMini },
                         });
 
                     break;
 
                 case Map.MapMode.Full:
-
                     this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
                         paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", opacityFull },
-                        { "PosX", posXFull },
-                        { "PosY", posYFull },
-                        { "ScaleX", scaleFull },
-                        { "ScaleY", scaleFull },
+                        { "Opacity", 1f },
+                        { "PosX", 0 },
+                        { "PosY", 0 },
+                        { "ScaleX", 1f },
+                        { "ScaleY", 1f },
                         });
 
                     break;
@@ -97,7 +85,7 @@ namespace SonOfRobin
             float opacity = 1f - this.map.world.cineCurtains.showPercentage;
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * opacity * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight), Color.White * opacity * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
         }
     }
