@@ -22,8 +22,9 @@ namespace SonOfRobin
         protected readonly bool rebuildsMenuInstantScroll;
         protected readonly bool rebuildsAllMenus;
         public List<InfoWindow.TextEntry> infoTextList;
+        private readonly float infoWindowMaxLineHeightPercentOverride;
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, float infoWindowMaxLineHeightPercentOverride = 0f, List<Texture2D> imageList = null)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.menu = menu;
@@ -38,6 +39,7 @@ namespace SonOfRobin
             this.rectColor = Color.Black;
             this.outlineColor = Color.White;
             this.infoTextList = infoTextList;
+            this.infoWindowMaxLineHeightPercentOverride = infoWindowMaxLineHeightPercentOverride;
 
             this.menu.entryList.Add(this);
 
@@ -207,7 +209,7 @@ namespace SonOfRobin
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
-            SonOfRobinGame.HintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
+            SonOfRobinGame.HintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, maxLineHeightPercentOverride: this.infoWindowMaxLineHeightPercentOverride, addTransition: true);
         }
     }
 }

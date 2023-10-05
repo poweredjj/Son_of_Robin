@@ -84,10 +84,9 @@ namespace SonOfRobin
 
         private const float maxWindowWidthPercent = 0.35f;
         private const float maxWindowHeightPercent = 0.7f;
-        private const float maxLineHeightPercent = 0.25f;  // 0.05f;
-
+        private const float maxLineHeightPercent = 0.05f;
         private const float marginPercent = 0.025f;
-        private const int transDuration = 6; // 6
+        private const int transDuration = 6;
 
         private int Margin
         {
@@ -103,6 +102,7 @@ namespace SonOfRobin
         public readonly Color bgColor;
         private List<TextEntry> entryList;
         public bool isActive;
+        public float maxLineHeightPercentOverride;
 
         private float GlobalScale
         {
@@ -110,7 +110,7 @@ namespace SonOfRobin
             {
                 float maxWindowWidth = SonOfRobinGame.VirtualWidth * maxWindowWidthPercent;
                 float maxWindowHeight = SonOfRobinGame.VirtualHeight * maxWindowHeightPercent;
-                float maxLineHeight = SonOfRobinGame.VirtualHeight * maxLineHeightPercent;
+                float maxLineHeight = SonOfRobinGame.VirtualHeight * (this.maxLineHeightPercentOverride == 0f ? maxLineHeightPercent : this.maxLineHeightPercentOverride);
                 if (SonOfRobinGame.platform == Platform.Desktop) maxLineHeight *= 0.6f;
 
                 int margin = this.Margin;
@@ -189,6 +189,7 @@ namespace SonOfRobin
             this.bgColor = bgColor;
             this.viewParams.Opacity = 0f;
             this.entryList = new List<TextEntry> { };
+            this.maxLineHeightPercentOverride = 0f;
         }
 
         public Vector2 MeasureEntries(List<TextEntry> entryList)
@@ -217,7 +218,7 @@ namespace SonOfRobin
             return centerPos;
         }
 
-        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true, bool addTransition = false, bool turnOffInput = false)
+        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true, bool addTransition = false, bool turnOffInput = false, float maxLineHeightPercentOverride = 0f)
         {
             // simple progress bar usage
 
@@ -242,11 +243,13 @@ namespace SonOfRobin
                 entryList.Add(new TextEntry(text: $"{curVal}/{maxVal}   {percentage}%", color: Color.White, justify: TextEntry.Justify.Center));
             }
 
-            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true, turnOffInput: turnOffInput);
+            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true, turnOffInput: turnOffInput, maxLineHeightPercentOverride: maxLineHeightPercentOverride);
         }
 
-        public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false, bool turnOffInput = false)
+        public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false, bool turnOffInput = false, float maxLineHeightPercentOverride = 0f)
         {
+            this.maxLineHeightPercentOverride = maxLineHeightPercentOverride;
+
             // normal usage
             if (turnOffInput) this.InputType = InputTypes.Normal; // captures input and deactivates normal input in the scenes below
 

@@ -820,8 +820,8 @@ namespace SonOfRobin
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper,
-                                   infoTextList: infoTextList); // sound won't play here, because loading game stops all sounds
+                            Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f);
+                            // sound won't play here, because loading game stops all sounds
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
                             {
@@ -842,6 +842,7 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
 
                         var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", SaveHeaderManager.NewSaveSlotName }, { "showMessage", true } };
+
                         new Invoker(menu: menu, name: "new save", taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams, rebuildsMenu: true,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "make new save", color: Color.White, scale: 1f) });
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -851,7 +852,11 @@ namespace SonOfRobin
                             saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
                             var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
 
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) });
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+
+                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
+
+                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -865,7 +870,11 @@ namespace SonOfRobin
 
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) });
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+
+                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
+
+                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.25f);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);

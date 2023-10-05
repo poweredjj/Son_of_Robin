@@ -125,7 +125,7 @@ namespace SonOfRobin
             }
 
             loadedScreenshots.Clear();
-            if (disposedScreenshots > 0) MessageLog.Add(debugMessage: false, text: $"screenshots disposed ({disposedScreenshots})");
+            if (disposedScreenshots > 0) MessageLog.Add(debugMessage: true, text: $"screenshots disposed ({disposedScreenshots})");
         }
 
         private string ElapsedTimeString { get { return string.Format("{0:D2}:{1:D2}", (int)Math.Floor(this.timePlayed.TotalHours), this.timePlayed.Minutes); } }
