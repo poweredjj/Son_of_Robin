@@ -408,7 +408,7 @@ namespace SonOfRobin
 
                 // world.globalEffect = new BurnInstance(intensity: 0.5f, boardPiece: null, checkAlpha: false, framesLeft: 60);
                 // world.globalEffect = new ColorizeInstance(color: Color.Cyan, checkAlpha: false, framesLeft: 60);
-                world.globalEffect = new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Point(6, 6), framesLeft: 30);
+                world.globalEffect = new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), framesLeft: 30);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

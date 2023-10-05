@@ -7,29 +7,46 @@ namespace SonOfRobin
     {
         public Vector2 blurSize;
         private readonly Vector2 textureSize;
-        private readonly Tweener tweener;
+        private Tweener tweener;
 
-        public BlurInstance(Point blurSize, Vector2 textureSize, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectBlur, framesLeft: framesLeft, priority: priority)
+        private readonly Vector2 startBlurSize;
+        private readonly Vector2 endBlurSize;
+        private readonly bool autoreverse;
+
+        public BlurInstance(Vector2 startBlurSize, Vector2 textureSize, int framesLeft = 1, Vector2 endBlurSize = default, bool autoreverse = false, int priority = 1) : base(effect: SonOfRobinGame.EffectBlur, framesLeft: framesLeft, priority: priority)
         {
-            Vector2 blurSizeVector = new Vector2(blurSize.X, blurSize.Y);
+            this.startBlurSize = startBlurSize;
+            this.endBlurSize = endBlurSize;
+            this.autoreverse = autoreverse;
 
-            this.blurSize = blurSizeVector;
+            this.blurSize = startBlurSize;
+            this.textureSize = textureSize;
+        }
 
+        private void SetTweener()
+        {
             if (this.framesLeft > 0)
             {
                 this.tweener = new Tweener();
+
+                if (this.endBlurSize == default) this.blurSize = Vector2.Zero;
                 this.blurSize = Vector2.Zero;
 
-                this.tweener.TweenTo(target: this, expression: instance => instance.blurSize, toValue: blurSizeVector, duration: (float)framesLeft / 2 / 60, delay: 0)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticIn);
-            }
+                this.tweener.TweenTo(target: this, expression: instance => instance.blurSize, toValue: this.endBlurSize == default ? this.startBlurSize : this.endBlurSize, duration: (float)framesLeft / (this.autoreverse ? 2 : 1) / 60, delay: 0);
 
-            this.textureSize = textureSize;
+                Tween tween = this.tweener.FindTween(target: this, memberName: "blurSize");
+
+                if (this.autoreverse) tween.AutoReverse();
+
+                if (this.autoreverse) tween.Easing(EasingFunctions.QuadraticIn);
+                else tween.Easing(EasingFunctions.Linear);
+            }
         }
 
         public override void TurnOn(int currentUpdate)
         {
+            if (this.tweener == null && this.framesLeft > 0) this.SetTweener();
+
             this.tweener?.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
             // MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} blurSize {this.blurSize}");

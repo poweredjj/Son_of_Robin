@@ -266,6 +266,7 @@ namespace SonOfRobin
                     this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
                     this.camera.ResetMovementSpeed();
                     this.camera.TrackPiece(this.Player);
+                    this.globalEffect = null;
 
                     if (this.cineCurtains.Enabled) this.cineCurtains.Enabled = false;
 
@@ -1270,7 +1271,7 @@ namespace SonOfRobin
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
-            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Point(6, 6), framesLeft: 30);
+            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), startBlurSize: new Vector2(8, 8), autoreverse: true, framesLeft: 20);
 
             this.solidColorManager.Add(redOverlay);
         }
