@@ -119,7 +119,7 @@ namespace SonOfRobin
             this.lastFunnyActionName = "";
             this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
-            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8);
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
 
