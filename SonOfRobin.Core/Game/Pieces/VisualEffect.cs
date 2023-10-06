@@ -247,5 +247,15 @@ namespace SonOfRobin
         {
             if (!this.sprite.particleEngine.HasAnyParticles) this.Destroy();
         }
+
+        public override void SM_HasteCloneFollowPlayer()
+        {
+            if (!this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.Haste) && this.sprite.opacityFade == null)
+            {
+                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+            }
+
+            this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
+        }
     }
 }

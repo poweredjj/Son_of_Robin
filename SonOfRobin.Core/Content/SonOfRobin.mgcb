@@ -8743,6 +8743,12 @@
 /processorParam:Quality=Best
 /build:sound/345920__dragisharambo21__thunder.ogg
 
+#begin sound/351256__kinoton__deep-whoosh-1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/351256__kinoton__deep-whoosh-1.ogg
+
 #begin sound/352650__foolboymedia__piano-notification-4.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

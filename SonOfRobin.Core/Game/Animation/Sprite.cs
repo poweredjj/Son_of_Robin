@@ -677,7 +677,13 @@ namespace SonOfRobin
             }
         }
 
-        public bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
+        public void AssignFrameForce(AnimFrame animFrame)
+        {
+            // does not check collisions, use with caution
+            this.AnimFrame = animFrame;
+        }
+
+        private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
             AnimFrame oldAnimFrame = this.AnimFrame;
 

@@ -2814,6 +2814,13 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         break;
 
+                    case PieceTemplate.Name.HastePlayerClone:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
+                        break;
+
                     case PieceTemplate.Name.EmptyVisualEffect:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;

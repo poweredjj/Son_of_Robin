@@ -98,7 +98,7 @@ namespace SonOfRobin
 
             lastTextSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: debugText);
 
-            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
+            // font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -576,9 +576,9 @@ namespace SonOfRobin
 
                 // world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
 
-                //world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
+                world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
 
-                world.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.MaxFatigue, autoRemoveDelay: 4 * 60, value: 600f), world: world);
+                // world.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.MaxFatigue, autoRemoveDelay: 4 * 60, value: 600f), world: world);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F9))

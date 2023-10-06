@@ -436,6 +436,19 @@ namespace SonOfRobin
                         if (add)
                         {
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
+
+                            Sound.QuickPlay(SoundData.Name.Whoosh);
+
+                            int cloneCount = 20;
+                            for (int cloneNo = 0; cloneNo < cloneCount; cloneNo++)
+                            {
+                                BoardPiece hastePlayerClone = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.HastePlayerClone, world: player.world, position: player.sprite.position, precisePlacement: true);
+
+                                Sprite hastePlayerCloneSprite = hastePlayerClone.sprite;
+                                hastePlayerCloneSprite.opacity = (1f - ((float)cloneNo / (cloneCount + 1))) * 0.3f;
+                                new Tracking(world: world, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
+                            }
+
                             player.world.stateMachineTypesManager.EnableMultiplier((int)buff.value);
                             player.world.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
                             player.world.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);

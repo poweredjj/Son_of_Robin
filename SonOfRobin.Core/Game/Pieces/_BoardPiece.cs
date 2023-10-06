@@ -46,6 +46,7 @@ namespace SonOfRobin
             AnimalCallForHelp = 27,
             SeaWaveMove = 28,
             EmitParticles = 29,
+            HasteCloneFollowPlayer = 31,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -743,6 +744,10 @@ namespace SonOfRobin
                     this.SM_EmitParticles();
                     break;
 
+                case State.HasteCloneFollowPlayer:
+                    this.SM_HasteCloneFollowPlayer();
+                    break;
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     this.RemoveFromStateMachines();
                     break;
@@ -1094,6 +1099,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_EmitParticles()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_HasteCloneFollowPlayer()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()

@@ -280,6 +280,7 @@ namespace SonOfRobin
             ParticleEmitterEnding = 214,
             ParticleEmitterWeather = 218,
             EmptyVisualEffect = 215,
+            HastePlayerClone = 220,
 
             // obsolete below (kept for compatibility with old saves)
         }
@@ -2615,6 +2616,13 @@ namespace SonOfRobin
                 case Name.EmptyVisualEffect:
                     {
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "empty visual effect", description: "Empty visual effect.", activeState: BoardPiece.State.Empty, visible: true);
+
+                        return visualEffect;
+                    }
+
+                case Name.HastePlayerClone:
+                    {
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: world?.Player != null ? world.Player.sprite.AnimPackage : AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "haste player clone", description: "Haste player clone.", activeState: BoardPiece.State.HasteCloneFollowPlayer, visible: true);
 
                         return visualEffect;
                     }
