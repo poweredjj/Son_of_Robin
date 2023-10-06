@@ -108,37 +108,42 @@ namespace SonOfRobin
 
         public static TriSliceBG GetBGForPreset(Preset preset)
         {
-            if (bgByPreset.ContainsKey(preset)) return bgByPreset[preset];
-
-            return preset switch
+            if (!bgByPreset.ContainsKey(preset))
             {
-                Preset.Message => new TriSliceBG(
-                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
-                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
-                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight)),
+                TriSliceBG triSliceBG = preset switch
+                {
+                    Preset.Message => new TriSliceBG(
+                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
+                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
+                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight)),
 
-                Preset.Buff => new TriSliceBG(
-                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
-                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
-                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight)),
+                    Preset.Buff => new TriSliceBG(
+                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
+                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
+                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight)),
 
-                Preset.MenuBrown => new TriSliceBG(
-                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownLeft),
-                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownMid),
-                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownRight)),
+                    Preset.MenuBrown => new TriSliceBG(
+                                                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownLeft),
+                                                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownMid),
+                                                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownRight)),
 
-                Preset.MenuSilver => new TriSliceBG(
-                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverLeft),
-                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverMid),
-                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverRight)),
+                    Preset.MenuSilver => new TriSliceBG(
+                                                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverLeft),
+                                                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverMid),
+                                                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverRight)),
 
-                Preset.MenuGold => new TriSliceBG(
-                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldLeft),
-                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldMid),
-                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldRight)),
+                    Preset.MenuGold => new TriSliceBG(
+                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldLeft),
+                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldMid),
+                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldRight)),
 
-                _ => throw new ArgumentException($"Unsupported preset - {preset}."),
-            };
+                    _ => throw new ArgumentException($"Unsupported preset - {preset}."),
+                };
+
+                bgByPreset[preset] = triSliceBG;
+            }
+
+            return bgByPreset[preset];
         }
     }
 }
