@@ -11,6 +11,7 @@ namespace SonOfRobin
         {
             Message,
             Buff,
+            MenuBrown,
             MenuSilver,
             MenuGold,
         }
@@ -120,6 +121,11 @@ namespace SonOfRobin
                                         textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
                                         textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
                                         textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight)),
+
+                Preset.MenuBrown => new TriSliceBG(
+                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownLeft),
+                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownMid),
+                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownRight)),
 
                 Preset.MenuSilver => new TriSliceBG(
                                             textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverLeft),

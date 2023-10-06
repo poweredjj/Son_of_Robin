@@ -8101,6 +8101,42 @@
 /processorParam:TextureFormat=Color
 /build:gfx/tri_slice_bg/buff_bg_right.png
 
+#begin gfx/tri_slice_bg/menu_brown_bg_left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tri_slice_bg/menu_brown_bg_left.png
+
+#begin gfx/tri_slice_bg/menu_brown_bg_mid.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tri_slice_bg/menu_brown_bg_mid.png
+
+#begin gfx/tri_slice_bg/menu_brown_bg_right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tri_slice_bg/menu_brown_bg_right.png
+
 #begin gfx/tri_slice_bg/menu_gold_bg_left.png
 /importer:TextureImporter
 /processor:TextureProcessor
