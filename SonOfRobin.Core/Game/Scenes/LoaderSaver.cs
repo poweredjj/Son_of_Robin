@@ -135,7 +135,7 @@ namespace SonOfRobin
             this.gridTemplateFound = false;
             this.currentPiecePackageNo = 0;
             this.piecesData = new ConcurrentBag<object> { };
-            this.allSteps = this.saveMode ? 6 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
+            this.allSteps = this.saveMode ? 7 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
         }
@@ -222,19 +222,17 @@ namespace SonOfRobin
 
             if (this.backgroundTask == null)
             {
-                if (this.saveMode)
-                {
-                    Directory.CreateDirectory(this.saveTempPath);
-                    GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.saveTempPath, screenshotName), texture: this.world.CameraViewRenderTarget, maxWidth: 640, maxHeight: 480); // screenshot should not be too large (because many might be loaded at once)
-                }
-
                 this.backgroundTask = this.saveMode ? Task.Run(() => this.ProcessSaving()) : Task.Run(() => this.ProcessLoading());
             }
             else
             {
                 if (this.backgroundTask.IsCompleted)
                 {
-                    if (!this.saveMode && !this.HasBeenRemoved) this.FinishLoading();
+                    if (!this.HasBeenRemoved)
+                    {
+                        if (this.saveMode) this.FinishSaving();
+                        else this.FinishLoading();
+                    }
                     this.processingComplete = true;
                 }
             }
@@ -276,6 +274,13 @@ namespace SonOfRobin
 
         private void ProcessSaving()
         {
+            // preparing save directory
+            {
+                this.processedSteps++;
+                this.currentStepName = "directory";
+                Directory.CreateDirectory(this.saveTempPath);
+            }
+
             // saving header data
             {
                 this.processedSteps++;
@@ -444,9 +449,13 @@ namespace SonOfRobin
                 new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
                 Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
             }
-            MessageLog.Add(debugMessage: true, text: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
+        }
 
-            this.processingComplete = true;
+        private void FinishSaving() // steps that have to run on main thread
+        {
+            GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: this.world.CameraViewRenderTarget, maxWidth: 640, maxHeight: 480); // screenshot should not be too large (because many might be loaded at once)
+
+            MessageLog.Add(debugMessage: true, text: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
         }
 
         private void ProcessLoading()
@@ -578,7 +587,7 @@ namespace SonOfRobin
             this.currentStepName = "creating world";
         }
 
-        private void FinishLoading() // steps that cannot be run in another thread
+        private void FinishLoading() // steps that have to run on main thread
         {
             // creating new world (using header data)
             int seed = (int)(Int64)this.headerData["seed"];
