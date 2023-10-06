@@ -123,6 +123,8 @@ namespace SonOfRobin
 
         protected float GetOpacity(bool active)
         {
+            if (this.menu.touchMode) return 1f;
+
             if (active)
             {
                 this.lastFlashFrame = SonOfRobinGame.CurrentUpdate + 20;
@@ -165,8 +167,7 @@ namespace SonOfRobin
 
             Vector2 textPos = new Vector2(
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
-                rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
-
+                rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));         
             
             Color textColorCalculated = new Color( // to avoid transparency (which would ruin shadows)
                 r: (byte)((float)this.textColor.R * opacity),
