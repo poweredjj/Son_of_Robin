@@ -154,6 +154,14 @@ namespace SonOfRobin
             TriSliceBGBuffLeft = 124,
             TriSliceBGBuffMid = 125,
             TriSliceBGBuffRight = 126,
+
+            TriSliceBGMenuGoldLeft = 131,
+            TriSliceBGMenuGoldMid = 132,
+            TriSliceBGMenuGoldRight = 133,
+
+            TriSliceBGMenuSilverLeft = 134,
+            TriSliceBGMenuSilverMid = 135,
+            TriSliceBGMenuSilverRight = 136,
         }
 
         private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
@@ -301,6 +309,14 @@ namespace SonOfRobin
             { TextureName.TriSliceBGBuffLeft, "tri_slice_bg/buff_bg_left" },
             { TextureName.TriSliceBGBuffMid, "tri_slice_bg/buff_bg_mid" },
             { TextureName.TriSliceBGBuffRight, "tri_slice_bg/buff_bg_right" },
+
+            { TextureName.TriSliceBGMenuGoldLeft, "tri_slice_bg/menu_gold_bg_left" },
+            { TextureName.TriSliceBGMenuGoldMid, "tri_slice_bg/menu_gold_bg_mid" },
+            { TextureName.TriSliceBGMenuGoldRight, "tri_slice_bg/menu_gold_bg_right" },
+
+            { TextureName.TriSliceBGMenuSilverLeft, "tri_slice_bg/menu_silver_bg_left" },
+            { TextureName.TriSliceBGMenuSilverMid, "tri_slice_bg/menu_silver_bg_mid" },
+            { TextureName.TriSliceBGMenuSilverRight, "tri_slice_bg/menu_silver_bg_right" },
         };
 
         private const string gfxFolderName = "gfx";

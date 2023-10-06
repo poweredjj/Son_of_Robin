@@ -87,10 +87,7 @@ namespace SonOfRobin
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(60);
             this.itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
 
-            this.triSliceBG = new TriSliceBG(
-                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
-                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
-                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight));
+            this.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.Buff);
 
             this.world = world;
             this.isHidden = false;

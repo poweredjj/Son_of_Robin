@@ -149,10 +149,7 @@ namespace SonOfRobin
             this.leftMargin = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
             this.bottomMargin = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
 
-            this.triSliceBG = new TriSliceBG(
-                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
-                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
-                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight));
+            this.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.Message);
 
             this.messages = new();
             this.lastDebugMessage = "";

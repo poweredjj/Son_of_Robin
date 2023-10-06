@@ -1,11 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
     public struct TriSliceBG
     {
+        public enum Preset : byte
+        {
+            Message,
+            Buff,
+            MenuSilver,
+            MenuGold,
+        }
+
+        private static readonly Dictionary<Preset, TriSliceBG> bgByPreset = new Dictionary<Preset, TriSliceBG>();
+
+        public readonly bool isActive;
+
         private readonly Texture2D textureLeft;
         private readonly Texture2D textureMid;
         private readonly Texture2D textureRight;
@@ -21,8 +34,10 @@ namespace SonOfRobin
         private int midTextureRepeats;
         private Rectangle midSourceBoundsRect;
 
-        public TriSliceBG(Texture2D textureLeft, Texture2D textureMid, Texture2D textureRight)
+        private TriSliceBG(Texture2D textureLeft, Texture2D textureMid, Texture2D textureRight)
         {
+            this.isActive = true;
+
             if (textureLeft.Height != textureMid.Height || textureLeft.Height != textureRight.Height) throw new ArgumentException("Height of all textures must be equal.");
 
             this.textureLeft = textureLeft;
@@ -47,16 +62,13 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scene.TransformMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.LinearWrap);
         }
 
-        public void Draw(Rectangle triSliceRect, Color color)
+        public void Draw(Rectangle triSliceRect, Color color, bool keepExactRectSize = false)
         {
             float scale = (float)triSliceRect.Height / (float)this.textureLeft.Height;
 
             this.textureLeftScaledWidth = (float)(this.textureLeft.Width * scale);
             this.textureMidScaledWidth = Math.Max((float)this.textureMid.Width * scale, 1);
             this.textureRightScaledWidth = (float)this.textureRight.Width * scale;
-
-            // making sure, that last mid texture occurence is drawn fully
-            this.midTextureRepeats = (int)Math.Ceiling((triSliceRect.Width - (textureLeftScaledWidth + textureRightScaledWidth)) / textureMidScaledWidth);
 
             this.leftRect.X = triSliceRect.X;
             this.leftRect.Y = triSliceRect.Y;
@@ -65,7 +77,19 @@ namespace SonOfRobin
 
             this.midRect.X = this.leftRect.Right;
             this.midRect.Y = triSliceRect.Y;
-            this.midRect.Width = (int)textureMidScaledWidth * this.midTextureRepeats;
+
+            if (keepExactRectSize || this.textureMid.Width == 1)
+            {
+                // keeping exact size (but mid texture might be cut)
+                this.midRect.Width = (int)(triSliceRect.Width - textureLeftScaledWidth - textureRightScaledWidth);
+            }
+            else
+            {
+                // making sure, that last mid texture occurence is drawn fully (but drawn rect might be slightly wider)
+                this.midTextureRepeats = (int)Math.Ceiling((triSliceRect.Width - (textureLeftScaledWidth + textureRightScaledWidth)) / textureMidScaledWidth);
+                this.midRect.Width = (int)textureMidScaledWidth * this.midTextureRepeats;
+            }
+
             this.midRect.Height = triSliceRect.Height;
 
             this.midSourceBoundsRect.Width = this.textureMid.Width * this.midTextureRepeats;
@@ -79,6 +103,36 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(this.textureLeft, this.leftRect, this.textureLeft.Bounds, color);
             SonOfRobinGame.SpriteBatch.Draw(this.textureMid, this.midRect, this.midSourceBoundsRect, color);
             SonOfRobinGame.SpriteBatch.Draw(this.textureRight, this.rightRect, this.textureRight.Bounds, color);
+        }
+
+        public static TriSliceBG GetBGForPreset(Preset preset)
+        {
+            if (bgByPreset.ContainsKey(preset)) return bgByPreset[preset];
+
+            return preset switch
+            {
+                Preset.Message => new TriSliceBG(
+                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogLeft),
+                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogMid),
+                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMessageLogRight)),
+
+                Preset.Buff => new TriSliceBG(
+                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffLeft),
+                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffMid),
+                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGBuffRight)),
+
+                Preset.MenuSilver => new TriSliceBG(
+                                            textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverLeft),
+                                            textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverMid),
+                                            textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverRight)),
+
+                Preset.MenuGold => new TriSliceBG(
+                                        textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldLeft),
+                                        textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldMid),
+                                        textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGoldRight)),
+
+                _ => throw new ArgumentException($"Unsupported preset - {preset}."),
+            };
         }
     }
 }

@@ -15,7 +15,9 @@ namespace SonOfRobin
         public readonly List<Texture2D> imageList;
         protected TextWithImages textWithImages;
         public Color textColor;
+        public Color shadowColor;
         public Color rectColor;
+        public TriSliceBG triSliceBG;
         public Color outlineColor;
         protected int lastFlashFrame = 0;
         protected readonly bool rebuildsMenu;
@@ -36,7 +38,9 @@ namespace SonOfRobin
             this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
             this.rebuildsAllMenus = rebuildsAllMenus;
             this.textColor = Color.White;
+            this.shadowColor = Color.Black;
             this.rectColor = Color.Black;
+            this.triSliceBG = default;
             this.outlineColor = Color.White;
             this.infoTextList = infoTextList;
             this.infoWindowMaxLineHeightPercentOverride = infoWindowMaxLineHeightPercentOverride;
@@ -135,9 +139,13 @@ namespace SonOfRobin
             float opacityFade = this.OpacityFade;
             Rectangle rect = this.Rect;
 
-            if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.rectColor * opacityFade * 2);
+            if (this.triSliceBG.isActive) this.triSliceBG.Draw(triSliceRect: rect, color: Color.White * opacity * menu.viewParams.Opacity, keepExactRectSize: true);
+            else
+            {
+                if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.rectColor * opacityFade * 2);
+            }
 
-            Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
+            if (!this.triSliceBG.isActive) Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
 
             string text = textOverride != null ? textOverride : this.DisplayedText;
 
@@ -158,7 +166,7 @@ namespace SonOfRobin
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
                 rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
 
-            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f);
+            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f, drawShadow: this.triSliceBG.isActive, shadowColor: this.shadowColor);
         }
 
         protected void UpdateHintWindow()
