@@ -47,6 +47,7 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public readonly float cookerFoodMassMultiplier;
+            public readonly bool getsPushedByWaves;
             public readonly bool containerStorageIsGlobal;
 
             // "template" data not present in BoardPiece (set directly in PieceInfo)
@@ -146,6 +147,7 @@ namespace SonOfRobin
                 this.equipType = this.type == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = this.type == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
                 this.containerStorageIsGlobal = false;
+                this.getsPushedByWaves = false;
 
                 this.convertsWhenUsed = false;
                 if (this.type == typeof(Potion))
@@ -257,6 +259,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
                         AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: false);
                         break;
@@ -267,6 +270,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
                         AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: true);
                         break;
@@ -276,6 +280,7 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 65535;
+                        this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
                         AddPlayerCommonSounds(customSoundsForActions: customSoundsForActions, female: true);
                         break;
@@ -747,6 +752,7 @@ namespace SonOfRobin
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.SeedsGeneric:
@@ -755,6 +761,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Plant;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.CoffeeRaw:
@@ -765,12 +772,14 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.CoffeeRoasted:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         this.stackSize = 12;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Apple:
@@ -781,6 +790,7 @@ namespace SonOfRobin
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Banana:
@@ -791,6 +801,7 @@ namespace SonOfRobin
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Cherry:
@@ -801,6 +812,7 @@ namespace SonOfRobin
                         this.stackSize = 16;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Tomato:
@@ -812,6 +824,7 @@ namespace SonOfRobin
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Carrot:
@@ -822,6 +835,7 @@ namespace SonOfRobin
                         this.stackSize = 10;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.MeatRawRegular:
@@ -831,7 +845,9 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
-                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
+                        this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.MeatRawPrime:
@@ -842,7 +858,8 @@ namespace SonOfRobin
                         this.stackSize = 6;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
-                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
+                        this.getsPushedByWaves = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -853,7 +870,8 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
-                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
+                        this.getsPushedByWaves = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.Fat:
@@ -863,7 +881,8 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 5;
                         this.placeMaxDistance = 1000;
-                        this.placeMaxDistance = 1000; customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
+                        this.getsPushedByWaves = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.Leather:
@@ -873,6 +892,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 4;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Burger:
@@ -883,6 +903,7 @@ namespace SonOfRobin
                         this.stackSize = 5;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Meal:
@@ -891,6 +912,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetEaten;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Rabbit:
@@ -910,6 +932,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.1f;
                         this.animalSightRange = 400;
                         this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35);
 
@@ -940,6 +964,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.6f;
                         this.animalSightRange = 500;
                         this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f, pitchChange: -0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
 
@@ -970,6 +996,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 1f;
                         this.animalSightRange = 700;
                         this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
 
@@ -999,6 +1027,8 @@ namespace SonOfRobin
                         this.animalRetaliateChance = 0.05f;
                         this.animalSightRange = 250;
                         this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryFrog1, SoundData.Name.CryFrog2, SoundData.Name.CryFrog3, SoundData.Name.CryFrog4, }, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35);
 
@@ -1078,6 +1108,8 @@ namespace SonOfRobin
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Ding1);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f);
@@ -1105,6 +1137,8 @@ namespace SonOfRobin
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Ding1);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f);
@@ -1130,6 +1164,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f);
 
@@ -1144,6 +1180,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
@@ -1167,6 +1205,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
@@ -1195,6 +1235,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
@@ -1209,6 +1251,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
@@ -1222,6 +1266,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
@@ -1236,6 +1282,8 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         this.containerStorageIsGlobal = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
 
@@ -1249,6 +1297,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
                         this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
 
@@ -1262,6 +1311,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
                         this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
                         break;
@@ -1484,6 +1534,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1494,6 +1545,7 @@ namespace SonOfRobin
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         this.hasFlatShadow = true;
                         break;
 
@@ -1504,6 +1556,7 @@ namespace SonOfRobin
                         this.stackSize = 4;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         this.hasFlatShadow = true;
                         break;
 
@@ -1514,6 +1567,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Stone:
@@ -1521,6 +1575,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         this.hasFlatShadow = true;
                         break;
 
@@ -1531,6 +1586,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Clay:
@@ -1541,6 +1597,8 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropMud, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -1549,6 +1607,8 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropRope, cooldown: 15, maxPitchVariation: 0.4f);
                         break;
 
@@ -1558,6 +1618,8 @@ namespace SonOfRobin
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.getsPushedByWaves = true;
+
                         break;
 
                     case PieceTemplate.Name.CoalDeposit:
@@ -1705,6 +1767,8 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.canBePickedUp = true;
                         this.stackSize = 8;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1712,6 +1776,8 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 8;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1721,6 +1787,8 @@ namespace SonOfRobin
                         this.stackSize = 5;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronBar, maxPitchVariation: 0.6f);
                         break;
 
@@ -1728,6 +1796,8 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 18;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronRod, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1735,12 +1805,15 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 50;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.IronPlate:
                         this.category = BoardPiece.Category.Metal;
                         this.canBePickedUp = true;
                         this.stackSize = 18;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropIronPlate, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
@@ -1749,6 +1822,8 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 8;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropSand, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1758,6 +1833,7 @@ namespace SonOfRobin
                         this.stackSize = 12;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropCrystal, cooldown: 15, maxPitchVariation: 0.6f);
                         break;
 
@@ -1915,6 +1991,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.toolHitCooldown = 50;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 1.0f } };
                         break;
 
@@ -1925,6 +2002,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 1f }, { BoardPiece.Category.Wood, 5f }, { BoardPiece.Category.Flesh, 3f }, { BoardPiece.Category.Leather, 5f } };
                         break;
 
@@ -1935,6 +2013,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 2f }, { BoardPiece.Category.Wood, 8f }, { BoardPiece.Category.Flesh, 5f }, { BoardPiece.Category.Leather, 8f } };
                         break;
 
@@ -1945,6 +2024,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 3f }, { BoardPiece.Category.Wood, 15 }, { BoardPiece.Category.Flesh, 8f }, { BoardPiece.Category.Leather, 15f } };
                         break;
 
@@ -1955,6 +2035,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 6f }, { BoardPiece.Category.Wood, 40 }, { BoardPiece.Category.Flesh, 10f }, { BoardPiece.Category.Leather, 40f } };
                         break;
 
@@ -1965,6 +2046,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 1f }, { BoardPiece.Category.Stone, 5f }, { BoardPiece.Category.Wood, 1f } };
                         break;
 
@@ -1975,6 +2057,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 2f }, { BoardPiece.Category.Stone, 8f }, { BoardPiece.Category.Wood, 2f } };
                         break;
 
@@ -1985,6 +2068,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
                         break;
 
@@ -1995,6 +2079,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 6f }, { BoardPiece.Category.Stone, 30f }, { BoardPiece.Category.Wood, 6f }, { BoardPiece.Category.Crystal, 6f } };
                         break;
 
@@ -2005,6 +2090,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 30f } };
                         break;
 
@@ -2015,6 +2101,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 40f } };
                         break;
 
@@ -2025,6 +2112,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 60f } };
                         break;
 
@@ -2035,6 +2123,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 20;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 85 } };
                         break;
 
@@ -2045,6 +2134,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 35;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
                         break;
 
@@ -2056,6 +2146,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
                         this.toolRange = 10;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 6f } };
                         break;
 
@@ -2067,6 +2158,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
                         this.toolRange = 23;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 12f } };
                         break;
 
@@ -2077,6 +2169,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 40;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 4f } };
                         break;
 
@@ -2087,6 +2180,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 30;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 12f } };
                         break;
 
@@ -2097,6 +2191,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
                         this.toolHitCooldown = 25;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Dirt, 20f } };
                         break;
 
@@ -2106,6 +2201,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.Hit;
                         this.floatsOnWater = true;
+                        this.getsPushedByWaves = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 9 } };
                         this.toolShootsProjectile = true;
                         this.toolCompatibleAmmo = new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowWood, PieceTemplate.Name.ArrowStone, PieceTemplate.Name.ArrowIron, PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowExploding };
@@ -2119,6 +2215,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.toolMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 36 } };
                         this.toolShootsProjectile = true;
+                        this.getsPushedByWaves = true;
                         this.toolCompatibleAmmo = new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowWood, PieceTemplate.Name.ArrowStone, PieceTemplate.Name.ArrowIron, PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowExploding };
                         break;
 
@@ -2130,6 +2227,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.projectileHitMultiplier = 2;
                         this.projectileCanBeStuck = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.ArrowStone:
@@ -2140,6 +2238,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.ArrowIron:
@@ -2150,6 +2249,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.projectileHitMultiplier = 4f;
                         this.projectileCanBeStuck = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.ArrowCrystal:
@@ -2160,6 +2260,7 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         this.projectileHitMultiplier = 7f;
                         this.projectileCanBeStuck = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.ArrowExploding:
@@ -2171,12 +2272,14 @@ namespace SonOfRobin
                         this.projectileHitMultiplier = 3f;
                         this.projectileCanBeStuck = true;
                         this.projectileCanExplode = true;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.TentModernPacked:
                         this.category = BoardPiece.Category.Leather;
                         this.canBePickedUp = true;
                         this.stackSize = 1;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.TentModern:
@@ -2222,6 +2325,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BackpackMedium:
@@ -2231,6 +2335,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BackpackBig:
@@ -2240,6 +2345,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BackpackLuxurious:
@@ -2249,6 +2355,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BeltSmall:
@@ -2257,6 +2364,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BeltMedium:
@@ -2265,6 +2373,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BeltBig:
@@ -2273,6 +2382,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BeltLuxurious:
@@ -2281,6 +2391,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Map:
@@ -2289,6 +2400,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.Dungarees:
@@ -2297,6 +2409,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.HatSimple:
@@ -2305,6 +2418,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BootsProtective:
@@ -2313,6 +2427,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BootsMountain:
@@ -2321,6 +2436,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BootsAllTerrain:
@@ -2329,6 +2445,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.BootsSpeed:
@@ -2337,6 +2454,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.GlovesStrength:
@@ -2345,6 +2463,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.GlassesVelvet:
@@ -2353,6 +2472,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.3f;
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.PlasticDrop, cooldown: 15, maxPitchVariation: 0.1f);
                         break;
 
@@ -2363,6 +2483,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.TorchBig:
@@ -2372,6 +2493,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
+                        this.getsPushedByWaves = true;
                         break;
 
                     case PieceTemplate.Name.LanternFull:
@@ -2381,6 +2503,7 @@ namespace SonOfRobin
                         this.toolbarTask = Scheduler.TaskName.SwitchLightSource;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f);
 
                         break;
@@ -2391,6 +2514,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
@@ -2399,6 +2523,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.2f;
                         this.canBePickedUp = true;
                         this.stackSize = 6;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f);
                         break;
 
@@ -2427,6 +2552,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2437,6 +2563,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2447,6 +2574,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2457,6 +2585,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2467,6 +2596,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2477,6 +2607,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2487,6 +2618,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2497,6 +2629,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2507,6 +2640,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2517,6 +2651,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 20;
                         this.placeMaxDistance = 200;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f);
                         break;
 
@@ -2526,6 +2661,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
@@ -2534,6 +2670,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.canBePickedUp = true;
                         this.toolbarTask = Scheduler.TaskName.GetDrinked;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 
@@ -2542,6 +2679,7 @@ namespace SonOfRobin
                         this.startingMass = 200;
                         this.fireAffinity = 1.0f;
                         this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
                         break;
 

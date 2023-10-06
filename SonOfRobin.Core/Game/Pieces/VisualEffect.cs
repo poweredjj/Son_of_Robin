@@ -126,13 +126,13 @@ namespace SonOfRobin
 
             if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
             {
-                List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
+                List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
 
                 foreach (Sprite collidingSprite in collidingSpritesList)
                 {
                     BoardPiece collidingPiece = collidingSprite.boardPiece;
 
-                    if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement && Vector2.Distance(this.sprite.position, collidingSprite.position) <= 50)
+                    if (collidingPiece.pieceInfo.getsPushedByWaves && !collidingPiece.HasPassiveMovement && Vector2.Distance(this.sprite.position, collidingSprite.position) <= 50)
                     {
                         collidingPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.SwimShallow);
 
