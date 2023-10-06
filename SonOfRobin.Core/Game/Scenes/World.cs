@@ -1275,7 +1275,7 @@ namespace SonOfRobin
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
-            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
+            this.globalEffect = new MosaicInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
             this.globalEffect.intensityForTweener = 0f;
             this.tweenerForGlobalEffect
                 .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: 10f / 60f)

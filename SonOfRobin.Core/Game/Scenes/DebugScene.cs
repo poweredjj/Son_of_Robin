@@ -409,9 +409,9 @@ namespace SonOfRobin
 
                 var taskChain = new List<Object>();
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 30, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(12, 12), framesLeft: 60 * 4), storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 0), framesLeft: 60 * 2), storeForLaterUse: true));
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 4f } }, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "Linear" }, { "durationSeconds", 2f } }, storeForLaterUse: true));
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }

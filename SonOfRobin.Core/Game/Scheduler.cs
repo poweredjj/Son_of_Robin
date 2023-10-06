@@ -2035,6 +2035,7 @@ namespace SonOfRobin
                             if (easing == "QuadraticIn") tween.Easing(EasingFunctions.QuadraticIn);
                             else if (easing == "SineInOut") tween.Easing(EasingFunctions.SineInOut);
                             else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
+                            else if (easing == "Linear") tween.Easing(EasingFunctions.Linear);
 
                             return;
                         }

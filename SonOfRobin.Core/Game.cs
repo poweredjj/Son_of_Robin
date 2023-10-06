@@ -48,6 +48,8 @@ namespace SonOfRobin
         public static Effect EffectBorder { get; private set; }
         public static Effect EffectSketch { get; private set; }
         public static Effect EffectBlur { get; private set; }
+        public static Effect EffectMosaic { get; private set; }
+        public static Effect EffectPixelate { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -247,6 +249,8 @@ namespace SonOfRobin
             EffectBorder = ContentMgr.Load<Effect>("effects/Border");
             EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
             EffectBlur = ContentMgr.Load<Effect>("effects/Blur");
+            EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
+            EffectPixelate = ContentMgr.Load<Effect>("effects/Pixelate");
         }
 
         public static void LoadInitialTextures()
