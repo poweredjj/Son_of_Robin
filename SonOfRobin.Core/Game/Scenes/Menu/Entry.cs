@@ -38,7 +38,7 @@ namespace SonOfRobin
             this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
             this.rebuildsAllMenus = rebuildsAllMenus;
             this.textColor = Color.White;
-            this.shadowColor = Color.Black;
+            this.shadowColor = Color.Black * 0.8f;
             this.rectColor = Color.Black;
             this.triSliceBG = default;
             this.outlineColor = Color.White;
@@ -123,12 +123,13 @@ namespace SonOfRobin
 
         protected float GetOpacity(bool active)
         {
-            if (active) this.lastFlashFrame = SonOfRobinGame.CurrentUpdate + 20;
-            float opacity = active ? 1 : 0.6f;
-            float opacityFade = Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f;
-            opacity = Math.Min(opacity + opacityFade, 1);
+            if (active)
+            {
+                this.lastFlashFrame = SonOfRobinGame.CurrentUpdate + 20;
+                return 1f;
+            }
 
-            return opacity;
+            return Math.Min(0.6f + this.OpacityFade, 1);
         }
 
         public virtual void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
@@ -166,7 +167,13 @@ namespace SonOfRobin
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
                 rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
 
-            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f, drawShadow: this.triSliceBG.isActive, shadowColor: this.shadowColor);
+            
+            Color textColorCalculated = new Color( // to avoid transparency (which would ruin shadows)
+                r: (byte)((float)this.textColor.R * opacity),
+                g: (byte)((float)this.textColor.G * opacity),
+                b: (byte)((float)this.textColor.B * opacity));
+
+            this.textWithImages.Draw(position: textPos, color: textColorCalculated * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f, drawShadow: this.triSliceBG.isActive, shadowColor: this.shadowColor);
         }
 
         protected void UpdateHintWindow()
