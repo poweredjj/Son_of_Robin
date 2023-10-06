@@ -15,7 +15,7 @@
 
         public override void TurnOn(int currentUpdate)
         {
-            this.effect.Parameters["intensity"].SetValue(this.intensity);
+            this.effect.Parameters["intensity"].SetValue(this.intensity * this.intensityForTweener);
             this.effect.Parameters["time"].SetValue(SonOfRobinGame.CurrentUpdate / 35f);
             this.effect.Parameters["phaseModifier"].SetValue(this.phaseModifier / 10f);
             this.effect.Parameters["checkAlpha"].SetValue(this.checkAlpha);

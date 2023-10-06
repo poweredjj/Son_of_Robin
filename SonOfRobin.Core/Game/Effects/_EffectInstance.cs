@@ -8,12 +8,14 @@ namespace SonOfRobin
         public readonly int priority;
         public readonly Effect effect;
         private int lastFrameFired;
+        public float intensityForTweener; // to control every effect the same way (should impact every variable passed to shader)
 
         public EffInstance(Effect effect, int framesLeft, int priority)
         {
             this.effect = effect;
             this.framesLeft = framesLeft;
             this.priority = priority;
+            this.intensityForTweener = 1f;
         }
 
         public bool WasUsedInThisFrame(int currentUpdate)

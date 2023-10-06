@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace SonOfRobin
         private RenderTarget2D darknessMask;
         public RenderTarget2D CameraViewRenderTarget { get; private set; }
         public EffInstance globalEffect;
+        public readonly Tweener tweenerForGlobalEffect;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
         public readonly CineCurtains cineCurtains;
@@ -159,6 +161,7 @@ namespace SonOfRobin
             this.CameraViewRenderTarget = null;
             this.darknessMask = null;
             this.globalEffect = null;
+            this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
@@ -917,6 +920,7 @@ namespace SonOfRobin
             this.ProcessInput();
             this.UpdateViewParams();
             MeshDefinition.UpdateAllDefs();
+            this.tweenerForGlobalEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.weather.Update();
             this.swayManager.Update();
 
@@ -1271,7 +1275,12 @@ namespace SonOfRobin
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
-            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), startBlurSize: new Vector2(8, 8), autoreverse: true, framesLeft: 20);
+            this.globalEffect = new BlurInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
+            this.globalEffect.intensityForTweener = 0f;
+            this.tweenerForGlobalEffect
+                .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: 10f / 60f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticIn);
 
             this.solidColorManager.Add(redOverlay);
         }

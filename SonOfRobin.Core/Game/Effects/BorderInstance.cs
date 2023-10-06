@@ -21,7 +21,7 @@ namespace SonOfRobin
         public override void TurnOn(int currentUpdate)
         {
             this.effect.Parameters["outlineColor"].SetValue(this.outlineColor);
-            this.effect.Parameters["outlineThickness"].SetValue(this.outlineThickness);
+            this.effect.Parameters["outlineThickness"].SetValue((int)(this.outlineThickness * this.intensityForTweener));
             this.effect.Parameters["drawFill"].SetValue(this.drawFill);
             this.effect.Parameters["textureSize"].SetValue(this.textureSize);
 

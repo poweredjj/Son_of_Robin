@@ -10,8 +10,7 @@
 Texture2D SpriteTexture;
 sampler s0;
 float2 textureSize : VPOS;
-int blurX;
-int blurY;
+float2 blur;
 
 sampler2D InputSampler = sampler_state
 {
@@ -32,17 +31,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);    
         
     return
-    (tex2D(s0, input.TextureCoordinates + (float2(-blurX, -blurY) * uvPix)) +
-    tex2D(s0, input.TextureCoordinates + (float2(0, -blurY) * uvPix)) +
-    tex2D(s0, input.TextureCoordinates + (float2(blurX, -blurY) * uvPix)) +
+    (tex2D(s0, input.TextureCoordinates + (float2(-blur.x, -blur.y) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(0, -blur.y) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(blur.x, -blur.y) * uvPix)) +
     
-    tex2D(s0, input.TextureCoordinates + (float2(-blurX, 0) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(-blur.x, 0) * uvPix)) +
     tex2D(s0, input.TextureCoordinates + (float2(0, 0) * uvPix)) +
-    tex2D(s0, input.TextureCoordinates + (float2(blurX, 0) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(blur.x, 0) * uvPix)) +
     
-    tex2D(s0, input.TextureCoordinates + (float2(-blurX, blurY) * uvPix)) +
-    tex2D(s0, input.TextureCoordinates + (float2(0, blurY) * uvPix)) +
-    tex2D(s0, input.TextureCoordinates + (float2(blurX, blurY) * uvPix))
+    tex2D(s0, input.TextureCoordinates + (float2(-blur.x, blur.y) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(0, blur.y) * uvPix)) +
+    tex2D(s0, input.TextureCoordinates + (float2(blur.x, blur.y) * uvPix))
     ) / 9;
 }
 

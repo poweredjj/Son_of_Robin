@@ -351,7 +351,7 @@ namespace SonOfRobin
                             SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
                             this.world.solidColorManager.Add(whiteOverlay);
 
-                            //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), framesLeft: -1), storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), blurSize: new Vector2(13, 13), framesLeft: -1), storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
 
@@ -359,10 +359,10 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
 
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0.0f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 10f } }, storeForLaterUse: true));
+
                             taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
-
-                            //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 120, executeHelper: new BlurInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), endBlurSize: new Vector2(0.1f, 0.1f), framesLeft: 60 * 5), storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
                             taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
@@ -390,6 +390,8 @@ namespace SonOfRobin
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
                             taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: null, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 1f, storeForLaterUse: true));
 

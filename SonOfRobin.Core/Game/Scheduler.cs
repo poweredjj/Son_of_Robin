@@ -4,6 +4,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
 using MonoGame.Extended.Particles.Profiles;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -112,6 +113,7 @@ namespace SonOfRobin
             TurnOnWindParticles = 93,
             DisposeSaveScreenshotsIfNoMenuPresent = 94,
             SetGlobalWorldEffect = 95,
+            SetGlobalWorldTweener = 96,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -1992,6 +1994,47 @@ namespace SonOfRobin
                         {
                             World world = World.GetTopWorld();
                             if (world != null) world.globalEffect = (EffInstance)this.ExecuteHelper;
+
+                            return;
+                        }
+
+                    case TaskName.SetGlobalWorldTweener:
+                        {
+                            // example executeHelper for this task
+                            // var tweenData = new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", true }, { "easing", "SineOut" }, { "durationSeconds", 1f } };
+
+                            World world = World.GetTopWorld();
+
+                            if (world.globalEffect == null)
+                            {
+                                MessageLog.Add(debugMessage: true, text: $"Scheduler: world doesn't have globalEffect. Cannot apply tweener.");
+                                return;
+                            }
+
+                            var tweenData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            float tweenIntensity = (float)tweenData["tweenIntensity"];
+                            bool autoreverse = tweenData.ContainsKey("autoreverse") && (bool)tweenData["autoreverse"];
+                            float durationSeconds = (float)tweenData["durationSeconds"];
+                            string easing = (string)tweenData["easing"];
+
+                            world.tweenerForGlobalEffect.CancelAndCompleteAll();
+
+                            if (tweenData.ContainsKey("startIntensity"))
+                            {
+                                float startIntensity = (float)tweenData["startIntensity"];
+                                world.globalEffect.intensityForTweener = startIntensity;
+                            }
+
+                            world.tweenerForGlobalEffect.TweenTo(target: world.globalEffect, expression: effect => effect.intensityForTweener, toValue: tweenIntensity, duration: durationSeconds);
+
+                            Tween tween = world.tweenerForGlobalEffect.FindTween(target: world.globalEffect, memberName: "intensityForTweener");
+
+                            if (autoreverse) tween.AutoReverse();
+
+                            if (easing == "QuadraticIn") tween.Easing(EasingFunctions.QuadraticIn);
+                            else if (easing == "SineInOut") tween.Easing(EasingFunctions.SineInOut);
+                            else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
 
                             return;
                         }
