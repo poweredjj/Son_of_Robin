@@ -38,7 +38,7 @@ namespace SonOfRobin
                      SonOfRobinGame.FontVCROSD.GetFont(21 * Preferences.messageLogScale);
 
                 this.isDebug = isDebug;
-                this.flashFrame = SonOfRobinGame.CurrentDraw;
+                this.flashFrame = SonOfRobinGame.CurrentUpdate;
                 this.text = message;
                 this.textColor = textColor;
                 this.bgColor = bgColor;
@@ -85,12 +85,12 @@ namespace SonOfRobin
             {
                 get
                 {
-                    return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true);
+                    return (float)Helpers.ConvertRange(oldMin: this.deletionFrame, oldMax: this.deletionFrame - 60, newMin: 0, newMax: 1, oldVal: SonOfRobinGame.CurrentUpdate, clampToEdges: true);
                 }
             }
 
             private float FlashOpacity
-            { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 20, oldMax: this.flashFrame, newMin: 0, newMax: 0.6, oldVal: SonOfRobinGame.CurrentDraw, clampToEdges: true); } }
+            { get { return (float)Helpers.ConvertRange(oldMin: this.flashFrame + 20, oldMax: this.flashFrame, newMin: 0, newMax: 0.6, oldVal: SonOfRobinGame.CurrentUpdate, clampToEdges: true); } }
 
             private Rectangle ImageRectWithOffset
             { get { return AddOffsetToRect(rectangle: this.imageRect, offset: this.basePos); } }
