@@ -604,7 +604,7 @@ namespace SonOfRobin
                             textLines.Add(toolbarText);
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.BeltSmall].texture);
 
-                            textLines.Add($"| Craft level: {player.CraftLevel}");
+                            textLines.Add($"| Crafting level: {player.CraftLevel}");
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
                             if (world.Player.ResourcefulCrafter)
