@@ -11,11 +11,7 @@ Texture2D SpriteTexture;
 sampler s0;
 float2 textureSize : VPOS;
 float2 effectSize;
-
-sampler2D InputSampler = sampler_state
-{
-    Texture = <SpriteTexture>;
-};
+float4 drawColor;
 
 struct VertexShaderOutput
 {
@@ -37,7 +33,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 uv = (gridPos + 0.5) * pixelSize * effectSize;
 
     // Sample the color from the original texture
-    return tex2D(s0, uv);
+    return tex2D(s0, uv) * drawColor;
 }
 
 technique SpriteDrawing

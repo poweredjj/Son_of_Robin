@@ -17,9 +17,10 @@ namespace SonOfRobin
             this.fadeFramesLeft = fadeFramesLeft;
         }
 
-        public override void TurnOn(int currentUpdate)
+        public override void TurnOn(int currentUpdate, Color drawColor = default)
         {
             float opacity = 1f;
+
             if (this.fadeFramesTotal > 0)
             {
                 this.fadeFramesLeft--;
@@ -30,7 +31,7 @@ namespace SonOfRobin
             this.effect.Parameters["opacity"].SetValue(opacity * this.intensityForTweener);
             this.effect.Parameters["checkAlpha"].SetValue(this.checkAlpha);
 
-            base.TurnOn(currentUpdate);
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
 }

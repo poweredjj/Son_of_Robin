@@ -23,6 +23,7 @@ namespace SonOfRobin
             WhiteCircleSmall = 8,
             Biceps = 9,
             WhiteHorizontalLine = 107,
+            PerlinNoise = 140,
 
             SimpleArrowUp = 10,
             SimpleArrowRight = 11,
@@ -182,6 +183,7 @@ namespace SonOfRobin
             { TextureName.WhiteCircleSmall, "small_white_circle" },
             { TextureName.Biceps, "biceps" },
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
+            { TextureName.PerlinNoise, "perlin_noise" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },

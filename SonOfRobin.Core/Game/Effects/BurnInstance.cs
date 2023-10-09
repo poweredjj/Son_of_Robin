@@ -1,4 +1,6 @@
-﻿namespace SonOfRobin
+﻿using Microsoft.Xna.Framework;
+
+namespace SonOfRobin
 {
     public class BurnInstance : EffInstance
     {
@@ -13,14 +15,14 @@
             this.phaseModifier = boardPiece != null && boardPiece.GetType() == typeof(Plant) ? boardPiece.sprite.position.X : 1;
         }
 
-        public override void TurnOn(int currentUpdate)
+        public override void TurnOn(int currentUpdate, Color drawColor = default)
         {
             this.effect.Parameters["intensity"].SetValue(this.intensity * this.intensityForTweener);
             this.effect.Parameters["time"].SetValue(SonOfRobinGame.CurrentUpdate / 35f);
             this.effect.Parameters["phaseModifier"].SetValue(this.phaseModifier / 10f);
             this.effect.Parameters["checkAlpha"].SetValue(this.checkAlpha);
 
-            base.TurnOn(currentUpdate);
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
 }

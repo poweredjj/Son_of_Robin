@@ -18,14 +18,14 @@ namespace SonOfRobin
             this.textureSize = textureSize;
         }
 
-        public override void TurnOn(int currentUpdate)
+        public override void TurnOn(int currentUpdate, Color drawColor = default)
         {
             this.effect.Parameters["outlineColor"].SetValue(this.outlineColor);
             this.effect.Parameters["outlineThickness"].SetValue((int)(this.outlineThickness * this.intensityForTweener));
             this.effect.Parameters["drawFill"].SetValue(this.drawFill);
             this.effect.Parameters["textureSize"].SetValue(this.textureSize);
 
-            base.TurnOn(currentUpdate);
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
 }

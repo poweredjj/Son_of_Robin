@@ -12,11 +12,7 @@ sampler s0;
 float4 colorizeColor;
 float opacity;
 bool checkAlpha;
-
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
+float4 drawColor;
 
 struct VertexShaderOutput
 {
@@ -31,14 +27,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 
-    if (checkAlpha && originalColor.a <= 0.5) return originalColor;
+    if (checkAlpha && originalColor.a <= 0.5) return originalColor * drawColor;
 	
 	float4 gray;
 	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
 	gray.a = 1;
 
 	float4 newColor = gray + (colorizeColor * 0.8);
-	return (newColor * opacity) + (originalColor * (1 - opacity));
+    return ((newColor * opacity) + (originalColor * (1 - opacity))) * drawColor;
 }
 
 technique SpriteDrawing

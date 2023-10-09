@@ -13,11 +13,7 @@ float intensity;
 float time;
 float phaseModifier;
 bool checkAlpha;
-
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
+float4 drawColor;
 
 struct VertexShaderOutput
 {
@@ -31,7 +27,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	// shaders use color value range 0.0f - 1.0f
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
-    if (checkAlpha && originalColor.a <= 0.4) return originalColor;
+    if (checkAlpha && originalColor.a <= 0.4) return originalColor * drawColor;
 
 	// Calculate burning effect
 	float burnVal = sin((input.TextureCoordinates.y + time + phaseModifier) * 5) * 0.1;
@@ -44,7 +40,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	finalColor.rgb = ((originalColor.r + originalColor.g + originalColor.b) / 3.0) + burnColor + fireColor;
 	finalColor.a = originalColor.a;
 
-	return lerp(originalColor, finalColor, intensity);
+    return lerp(originalColor, finalColor, intensity) * drawColor;
 }
 
 technique SpriteDrawing

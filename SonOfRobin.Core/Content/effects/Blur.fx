@@ -11,11 +11,7 @@ Texture2D SpriteTexture;
 sampler s0;
 float2 textureSize : VPOS;
 float2 blurSize;
-
-sampler2D InputSampler = sampler_state
-{
-    Texture = <SpriteTexture>;
-};
+float4 drawColor;
 
 struct VertexShaderOutput
 {
@@ -35,9 +31,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     // Calculate the center of the pixel in UV coordinates
     float2 uv = (gridPos + 0.5) * pixelSize * blurSize;
-    
-    // return tex2D(s0, uv); // returning not interpolated value (pixelated, for testing)
-    
+        
     float2 bigPixelSize = pixelSize * blurSize;
     
     // Calculate the offsets for sampling the four corners
@@ -62,7 +56,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         cornerPos.y
     );
     
-    return interpolatedColor;
+    return interpolatedColor * drawColor;
 }
 
 

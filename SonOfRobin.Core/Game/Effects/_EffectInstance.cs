@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SonOfRobin
 {
@@ -23,8 +24,11 @@ namespace SonOfRobin
             return this.lastFrameFired == currentUpdate;
         }
 
-        public virtual void TurnOn(int currentUpdate)
+        public virtual void TurnOn(int currentUpdate, Color drawColor = default)
         {
+            if (drawColor == default) drawColor = Color.White;
+
+            this.effect.Parameters["drawColor"].SetValue(drawColor.ToVector4());
             this.lastFrameFired = currentUpdate;
             if (this.framesLeft > -1) this.framesLeft -= 1;
             effect.CurrentTechnique.Passes[0].Apply();

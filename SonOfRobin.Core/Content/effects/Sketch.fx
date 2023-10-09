@@ -11,11 +11,8 @@ Texture2D SpriteTexture;
 sampler s0;
 float4 fgColor;
 float4 bgColor;
+float4 drawColor;
 
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
 
 struct VertexShaderOutput
 {
@@ -38,7 +35,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	newColor = bgColor * (tonedGray * 2.7f) + (color * 0.23f);
 	newColor.a = color.a;
 
-	return newColor;
+    return newColor * drawColor;
 }
 
 technique SpriteDrawing

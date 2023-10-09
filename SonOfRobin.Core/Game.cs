@@ -28,7 +28,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.504f;
-        public static readonly DateTime lastChanged = new(2023, 10, 06);
+        public static readonly DateTime lastChanged = new(2023, 10, 09);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -50,6 +50,7 @@ namespace SonOfRobin
         public static Effect EffectBlur { get; private set; }
         public static Effect EffectMosaic { get; private set; }
         public static Effect EffectPixelate { get; private set; }
+        public static Effect EffectDistortWater { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -251,6 +252,7 @@ namespace SonOfRobin
             EffectBlur = ContentMgr.Load<Effect>("effects/Blur");
             EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
             EffectPixelate = ContentMgr.Load<Effect>("effects/Pixelate");
+            EffectDistortWater = ContentMgr.Load<Effect>("effects/DistortWater");
         }
 
         public static void LoadInitialTextures()

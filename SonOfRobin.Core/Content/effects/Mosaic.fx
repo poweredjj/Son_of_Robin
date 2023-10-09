@@ -11,11 +11,7 @@ Texture2D SpriteTexture;
 sampler s0;
 float2 textureSize : VPOS;
 float2 blurSize;
-
-sampler2D InputSampler = sampler_state
-{
-    Texture = <SpriteTexture>;
-};
+float4 drawColor;
 
 struct VertexShaderOutput
 {
@@ -42,7 +38,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     tex2D(s0, input.TextureCoords + (float2(-blurSize.x, blurSize.y) * pixelSize)) +
     tex2D(s0, input.TextureCoords + (float2(0, blurSize.y) * pixelSize)) +
     tex2D(s0, input.TextureCoords + (float2(blurSize.x, blurSize.y) * pixelSize))
-    ) / 9;
+    ) / 9 * drawColor;
 }
 
 

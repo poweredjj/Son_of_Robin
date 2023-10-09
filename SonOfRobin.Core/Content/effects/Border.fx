@@ -12,6 +12,7 @@ float2 textureSize : VPOS;
 float4 outlineColor;
 bool drawFill;
 float outlineThickness;
+float4 drawColor;
 
 sampler2D InputSampler = sampler_state
 {
@@ -73,7 +74,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         }
     }
 
-    return isOutlinePixel ? outlineColor : (drawFill ? currentPixel : float4(0, 0, 0, 0));
+    return isOutlinePixel ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
 }
 
 technique SpriteOutline

@@ -1632,9 +1632,7 @@ namespace SonOfRobin
 
                 if (fogPercentage > 0 && (this.Player == null || !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.CanSeeThroughFog)))
                 {
-                    SonOfRobinGame.SpriteBatch.End();
-                    this.scrollingSurfaceManager.StartSpriteBatch(waterBlendMode: false);
-                    this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 1.0f, 1f));
+                    this.scrollingSurfaceManager.fog.Draw(Math.Min(fogPercentage, 1f));
                 }
 
                 // drawing lightning
