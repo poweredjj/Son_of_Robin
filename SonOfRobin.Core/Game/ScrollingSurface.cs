@@ -154,27 +154,9 @@ namespace SonOfRobin
             float drawOpacity = opacityOverride == -1f ? this.opacity : opacityOverride;
             Color drawColor = Color.White * drawOpacity;
 
-            // this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White); // for testing
             this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
-            Rectangle viewRect = this.world.camera.viewRect;
-
-            int offsetX = (int)this.offset.X;
-            int offsetY = (int)this.offset.Y;
-
-            int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
-            int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
-
-            if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
-            if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
-
-            int drawRectX = (startColumn * this.texture.Width) + offsetX;
-            int drawRectY = (startRow * this.texture.Height) + offsetY;
-            int drawRectWidth = viewRect.Width + (viewRect.X - drawRectX) + 4;
-            int drawRectHeight = viewRect.Height + (viewRect.Y - drawRectY) + 3;
-
-            Rectangle destRect = new(x: drawRectX, y: drawRectY, width: drawRectWidth, height: drawRectHeight);
-
+            Rectangle destRect = new Rectangle((int)this.offset.X, (int)this.offset.Y, this.world.width, this.world.height);
             Rectangle sourceRect = destRect;
             sourceRect.Location = Point.Zero;
 
