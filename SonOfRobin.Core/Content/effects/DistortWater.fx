@@ -41,7 +41,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     //return ((textureColor * 0.3) + (distortColor * 0.7)) * drawColor; // for testing
                
     float2 distortionOffset = distortColor.g * float2(0.2, 0.2);
-    float2 readCoords = input.TextureCoordinates + (baseOffset * 0.02) + distortionOffset;
+    float2 readCoords = input.TextureCoordinates + (baseOffset * 3) + distortionOffset;
        
     return (tex2D(WaterTextureSampler, readCoords) / 2) * drawColor;
 }

@@ -23,7 +23,6 @@ namespace SonOfRobin
             WhiteCircleSmall = 8,
             Biceps = 9,
             WhiteHorizontalLine = 107,
-            PerlinNoise = 140,
 
             SimpleArrowUp = 10,
             SimpleArrowRight = 11,
@@ -59,8 +58,7 @@ namespace SonOfRobin
             BuffPoisonRemove = 129,
 
             RepeatingOceanFloor = 22,
-            RepeatingWaterCaustics1 = 23,
-            RepeatingWaterCaustics2 = 24,
+            RepeatingWaterCaustics = 23,
             RepeatingFog = 25,
 
             VirtualJoypadBackground = 26,
@@ -128,6 +126,7 @@ namespace SonOfRobin
             RepeatingRuins = 79,
             RepeatingLava = 80,
             RepeatingVolcanoEdge = 81,
+            RepeatingPerlinNoise = 140,
 
             RepeatingMapGrassGood = 82,
             RepeatingMapGrassBad = 83,
@@ -183,7 +182,6 @@ namespace SonOfRobin
             { TextureName.WhiteCircleSmall, "small_white_circle" },
             { TextureName.Biceps, "biceps" },
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
-            { TextureName.PerlinNoise, "perlin_noise" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },
@@ -283,6 +281,7 @@ namespace SonOfRobin
             { TextureName.RepeatingRuins, "repeating_textures/ruins" },
             { TextureName.RepeatingLava, "repeating_textures/lava" },
             { TextureName.RepeatingVolcanoEdge, "repeating_textures/volcano_edge" },
+            { TextureName.RepeatingPerlinNoise, "repeating_textures/perlin_noise" },
 
             { TextureName.RepeatingMapGrassGood, "repeating_textures/map_grass_good" },
             { TextureName.RepeatingMapGrassBad, "repeating_textures/map_grass_bad" },
@@ -304,8 +303,7 @@ namespace SonOfRobin
             { TextureName.RepeatingMapVolcanoEdge, "repeating_textures/map_volcano_edge" },
 
             { TextureName.RepeatingOceanFloor, "repeating_textures/ocean_floor" },
-            { TextureName.RepeatingWaterCaustics1, "repeating_textures/water_caustics1" },
-            { TextureName.RepeatingWaterCaustics2, "repeating_textures/water_caustics2" },
+            { TextureName.RepeatingWaterCaustics, "repeating_textures/water_caustics" },
             { TextureName.RepeatingFog, "repeating_textures/fog" },
 
             { TextureName.TriSliceBGMessageLogLeft, "tri_slice_bg/message_bg_left" },

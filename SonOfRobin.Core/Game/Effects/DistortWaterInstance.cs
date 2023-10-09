@@ -20,7 +20,7 @@ namespace SonOfRobin
         {
             this.effect.Parameters["WaterTexture"].SetValue(this.waterTexture);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
-            this.effect.Parameters["baseOffset"].SetValue(scrollingSurface.offset);
+            this.effect.Parameters["baseOffset"].SetValue(scrollingSurface.offset / new Vector2(this.waterTexture.Width, this.waterTexture.Height));
             base.TurnOn(currentUpdate: currentUpdate, drawColor);
         }
     }

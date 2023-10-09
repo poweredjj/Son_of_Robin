@@ -6775,18 +6775,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/particles/water_drop.png
 
-#begin gfx/perlin_noise.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/perlin_noise.png
-
 #begin gfx/plant_poison.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7267,6 +7255,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ocean_floor.png
 
+#begin gfx/repeating_textures/perlin_noise.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/perlin_noise.png
+
 #begin gfx/repeating_textures/ruins.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7315,7 +7315,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/volcano_edge.png
 
-#begin gfx/repeating_textures/water_caustics1.png
+#begin gfx/repeating_textures/water_caustics.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -7325,19 +7325,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/water_caustics1.png
-
-#begin gfx/repeating_textures/water_caustics2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/water_caustics2.png
+/build:gfx/repeating_textures/water_caustics.png
 
 #begin gfx/repeating_textures/water_deep.png
 /importer:TextureImporter

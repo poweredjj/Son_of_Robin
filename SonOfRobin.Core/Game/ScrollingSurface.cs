@@ -8,8 +8,7 @@ namespace SonOfRobin
     {
         private static readonly Color waterColor = new Color(12, 122, 156);
         private readonly ScrollingSurface oceanFloor;
-        private readonly ScrollingSurface waterCaustics1;
-        private readonly ScrollingSurface waterCaustics2;
+        private readonly ScrollingSurface waterCaustics;
         public readonly ScrollingSurface fog;
         public readonly World world;
 
@@ -30,16 +29,11 @@ namespace SonOfRobin
 
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
 
-            Texture2D textureCaustics1 = TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics1);
-            Texture2D textureCaustics2 = TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics2);
-            Texture2D distortTexture = TextureBank.GetTexture(TextureBank.TextureName.PerlinNoise);
+            Texture2D textureCaustics = TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics);
+            Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoise);
 
-            this.waterCaustics1 = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: textureCaustics1, blendState: waterBlend);
-
-            this.waterCaustics2 = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: textureCaustics2, blendState: waterBlend);
-
-            this.waterCaustics1.effInstance = new DistortWaterInstance(scrollingSurface: this.waterCaustics1, waterTexture: textureCaustics1, distortTexture: distortTexture);
-            this.waterCaustics2.effInstance = new DistortWaterInstance(scrollingSurface: this.waterCaustics2, waterTexture: textureCaustics1, distortTexture: distortTexture);
+            this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.45f, opacityTweenVal: 0.45f, useTweenForOffset: true, world: world, texture: textureCaustics, blendState: waterBlend);
+            this.waterCaustics.effInstance = new DistortWaterInstance(scrollingSurface: this.waterCaustics, waterTexture: textureCaustics, distortTexture: textureDistort);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 60, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
         }
@@ -47,8 +41,7 @@ namespace SonOfRobin
         public void Update(bool updateFog)
         {
             this.oceanFloor.Update();
-            this.waterCaustics1.Update();
-            this.waterCaustics2.Update();
+            this.waterCaustics.Update();
             if (updateFog) this.fog.Update();
         }
 
@@ -76,7 +69,7 @@ namespace SonOfRobin
 
             this.oceanFloor.Draw();
 
-            this.waterCaustics1.Draw();
+            this.waterCaustics.Draw();
             // this.waterCaustics2.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
@@ -161,8 +154,8 @@ namespace SonOfRobin
             float drawOpacity = opacityOverride == -1f ? this.opacity : opacityOverride;
             Color drawColor = Color.White * drawOpacity;
 
-            this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White); // for testing
-            //this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
+            // this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White); // for testing
+            this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
             Rectangle viewRect = this.world.camera.viewRect;
 
