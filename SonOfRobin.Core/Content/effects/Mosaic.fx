@@ -9,7 +9,7 @@
 
 Texture2D SpriteTexture;
 sampler s0;
-float2 textureSize : VPOS;
+float2 textureSize;
 float2 blurSize;
 float4 drawColor;
 

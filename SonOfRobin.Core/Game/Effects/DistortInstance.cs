@@ -20,10 +20,14 @@ namespace SonOfRobin
 
         public override void TurnOn(int currentUpdate, Color drawColor = default)
         {
-            this.effect.Parameters["distortionMultiplier"].SetValue(this.distortionMultiplier);
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
+
+            this.effect.Parameters["distortionMultiplier"].SetValue(this.distortionMultiplier);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
             this.effect.Parameters["baseTextureOffset"].SetValue(this.scrollingSurface.offset / new Vector2(this.baseTexture.Width, this.baseTexture.Height));
+
+            // MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} offset {this.scrollingSurface.offset}", textColor: Color.Orange);
+
             base.TurnOn(currentUpdate: currentUpdate, drawColor);
         }
     }

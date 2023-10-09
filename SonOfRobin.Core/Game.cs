@@ -110,7 +110,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool LicenceValid
@@ -122,6 +122,7 @@ namespace SonOfRobin
         public SonOfRobinGame()
         {
             GfxDevMgr = new GraphicsDeviceManager(this);
+            GfxDevMgr.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
         protected override void Initialize()

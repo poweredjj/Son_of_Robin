@@ -27,10 +27,11 @@ namespace SonOfRobin
 
             this.world = world;
 
+            // to properly scroll, every ScrollingSurface needs to have effInstance = DistortInstance set 
+
             Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseMedium);
 
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
-
             this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, distortionMultiplier: 0.12f);
 
             this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
@@ -156,9 +157,27 @@ namespace SonOfRobin
 
             this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
-            Rectangle destRect = new Rectangle(0, 0, this.world.width, this.world.height);
+            Rectangle viewRect = this.world.camera.viewRect;
+
+            int offsetX = (int)this.offset.X;
+            int offsetY = (int)this.offset.Y;
+
+            int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
+            int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
+
+            if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
+            if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
+
+            int drawRectX = (startColumn * this.texture.Width) + offsetX;
+            int drawRectY = (startRow * this.texture.Height) + offsetY;
+            int drawRectWidth = viewRect.Width + (viewRect.X - drawRectX) + 4;
+            int drawRectHeight = viewRect.Height + (viewRect.Y - drawRectY) + 3;
+
+            Rectangle destRect = new(x: drawRectX, y: drawRectY, width: drawRectWidth, height: drawRectHeight);
             Rectangle sourceRect = destRect;
             sourceRect.Location = Point.Zero;
+
+            // DO NOT use worldspace rect for drawing, because precision errors will pixelate water on mobile
 
             SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRect, drawColor);
         }
