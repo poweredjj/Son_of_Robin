@@ -443,12 +443,6 @@ namespace SonOfRobin
 
             if (!movedCorrectly)
             { throw new ArgumentException("An error occured during renaming temp save directory."); }
-
-            if (this.showSavedMessage)
-            {
-                new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
-                Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
-            }
         }
 
         private void FinishSaving() // steps that have to run on main thread
@@ -456,6 +450,12 @@ namespace SonOfRobin
             GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: this.world.CameraViewRenderTarget, maxWidth: 640, maxHeight: 480); // screenshot should not be too large (because many might be loaded at once)
 
             MessageLog.Add(debugMessage: true, text: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
+
+            if (this.showSavedMessage)
+            {
+                new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+                Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
+            }
         }
 
         private void ProcessLoading()
