@@ -27,15 +27,17 @@ namespace SonOfRobin
 
             this.world = world;
 
+            Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseMedium);
+
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
 
-            Texture2D textureCaustics = TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics);
-            Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoise);
+            this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, distortionMultiplier: 0.12f);
 
-            this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.45f, opacityTweenVal: 0.45f, useTweenForOffset: true, world: world, texture: textureCaustics, blendState: waterBlend);
-            this.waterCaustics.effInstance = new DistortWaterInstance(scrollingSurface: this.waterCaustics, waterTexture: textureCaustics, distortTexture: textureDistort);
+            this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
+            this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, distortTexture: textureDistort, distortionMultiplier: 1f);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 60, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
+            this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseLow), distortionMultiplier: 1.6f);
         }
 
         public void Update(bool updateFog)
@@ -68,9 +70,7 @@ namespace SonOfRobin
             }
 
             this.oceanFloor.Draw();
-
             this.waterCaustics.Draw();
-            // this.waterCaustics2.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class ScrollingSurface
     {
         private readonly World world;
-        private readonly Texture2D texture;
+        public readonly Texture2D texture;
         private readonly bool useTweenForOpacity;
         private readonly bool useTweenForOffset;
         private readonly float opacityTweenVal;
@@ -156,7 +156,7 @@ namespace SonOfRobin
 
             this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
-            Rectangle destRect = new Rectangle((int)this.offset.X, (int)this.offset.Y, this.world.width, this.world.height);
+            Rectangle destRect = new Rectangle(0, 0, this.world.width, this.world.height);
             Rectangle sourceRect = destRect;
             sourceRect.Location = Point.Zero;
 
