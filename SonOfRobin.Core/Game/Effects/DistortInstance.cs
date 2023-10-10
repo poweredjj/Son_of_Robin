@@ -34,8 +34,8 @@ namespace SonOfRobin
             this.effect.Parameters["baseTextureOffset"].SetValue(this.scrollingSurface.offset);
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
 
-            this.effect.Parameters["globalDistortionPower"].SetValue(this.globalDistortionPower);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
+            this.effect.Parameters["globalDistortionPower"].SetValue(this.globalDistortionPower);
             this.effect.Parameters["distortionFromOffsetPower"].SetValue(this.distortionFromOffsetPower);
             this.effect.Parameters["distortionSizeMultiplier"].SetValue(this.distortionSizeMultiplier);
            
