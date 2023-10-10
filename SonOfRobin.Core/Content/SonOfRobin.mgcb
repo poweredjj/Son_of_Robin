@@ -7255,7 +7255,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ocean_floor.png
 
-#begin gfx/repeating_textures/perlin_noise_low.png
+#begin gfx/repeating_textures/perlin_noise_color.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -7265,19 +7265,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/perlin_noise_low.png
-
-#begin gfx/repeating_textures/perlin_noise_medium.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/perlin_noise_medium.png
+/build:gfx/repeating_textures/perlin_noise_color.png
 
 #begin gfx/repeating_textures/ruins.png
 /importer:TextureImporter

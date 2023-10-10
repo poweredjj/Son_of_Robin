@@ -126,8 +126,7 @@ namespace SonOfRobin
             RepeatingRuins = 79,
             RepeatingLava = 80,
             RepeatingVolcanoEdge = 81,
-            RepeatingPerlinNoiseMedium = 140,
-            RepeatingPerlinNoiseLow = 141,
+            RepeatingPerlinNoiseColor = 140,
 
             RepeatingMapGrassGood = 82,
             RepeatingMapGrassBad = 83,
@@ -282,8 +281,7 @@ namespace SonOfRobin
             { TextureName.RepeatingRuins, "repeating_textures/ruins" },
             { TextureName.RepeatingLava, "repeating_textures/lava" },
             { TextureName.RepeatingVolcanoEdge, "repeating_textures/volcano_edge" },
-            { TextureName.RepeatingPerlinNoiseMedium, "repeating_textures/perlin_noise_medium" },
-            { TextureName.RepeatingPerlinNoiseLow, "repeating_textures/perlin_noise_low" },
+            { TextureName.RepeatingPerlinNoiseColor, "repeating_textures/perlin_noise_color" },
 
             { TextureName.RepeatingMapGrassGood, "repeating_textures/map_grass_good" },
             { TextureName.RepeatingMapGrassBad, "repeating_textures/map_grass_bad" },

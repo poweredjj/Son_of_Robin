@@ -29,16 +29,16 @@ namespace SonOfRobin
 
             // to properly scroll, every ScrollingSurface needs to have effInstance = DistortInstance set 
 
-            Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseMedium);
+            Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
 
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
-            this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, distortionMultiplier: 0.12f);
+            this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, distortionPowerMultiplier: 0.12f);
 
             this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
-            this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, distortTexture: textureDistort, distortionMultiplier: 1f);
+            this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, distortTexture: textureDistort, distortionPowerMultiplier: 1f, distortionSizeMultiplier: 2.6f);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 60, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
-            this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseLow), distortionMultiplier: 1.6f);
+            this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), distortionPowerMultiplier: 1.6f, distortionSizeMultiplier: 0.4f);
         }
 
         public void Update(bool updateFog)
@@ -157,19 +157,18 @@ namespace SonOfRobin
 
             this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
+            // offset is not taken into account here - it will be applied using shader
+
             Rectangle viewRect = this.world.camera.viewRect;
 
-            int offsetX = (int)this.offset.X;
-            int offsetY = (int)this.offset.Y;
+            int startColumn = viewRect.X / this.texture.Width;
+            int startRow = viewRect.Y / this.texture.Height;
 
-            int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
-            int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
+            if (viewRect.X < (startColumn * this.texture.Width)) startColumn--;
+            if (viewRect.Y < (startRow * this.texture.Height)) startRow--;
 
-            if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
-            if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
-
-            int drawRectX = (startColumn * this.texture.Width) + offsetX;
-            int drawRectY = (startRow * this.texture.Height) + offsetY;
+            int drawRectX = startColumn * this.texture.Width;
+            int drawRectY = startRow * this.texture.Height;
             int drawRectWidth = viewRect.Width + (viewRect.X - drawRectX) + 4;
             int drawRectHeight = viewRect.Height + (viewRect.Y - drawRectY) + 3;
 
