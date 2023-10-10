@@ -315,12 +315,12 @@ namespace SonOfRobin
 
             for (int pieceNo = 0; pieceNo < fogPiecesToCreate; pieceNo++)
             {
-                //BoardPiece fogPiece = PieceTemplate.CreateAndPlaceOnBoard(
-                //    world: this.world,
-                //    position: new Vector2(random.Next(extendedCameraRect.Left, extendedCameraRect.Right), random.Next(extendedCameraRect.Top, extendedCameraRect.Bottom)),
-                //    templateName: PieceTemplate.Name.WeatherFog);
+                BoardPiece fogPiece = PieceTemplate.CreateAndPlaceOnBoard(
+                    world: this.world,
+                    position: new Vector2(random.Next(extendedCameraRect.Left, extendedCameraRect.Right), random.Next(extendedCameraRect.Top, extendedCameraRect.Bottom)),
+                    templateName: PieceTemplate.Name.WeatherFog);
 
-                //this.fogPieces.Add(fogPiece);
+                this.fogPieces.Add(fogPiece);
             }
         }
 
