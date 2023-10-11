@@ -1388,12 +1388,11 @@ namespace SonOfRobin
 
             this.DrawLightAndDarkness(lightSprites);
 
-            // drawing highlighted pieces and field tips
-            if (Preferences.showFieldControlTips || Preferences.pickupsHighlighted)
+            // drawing highlighted pieces
+            if (Preferences.pickupsHighlighted)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                if (Preferences.pickupsHighlighted) this.DrawHighlightedPieces(drawnPieces);
-                if (Preferences.showFieldControlTips) FieldTip.DrawFieldTips(world: this);
+                this.DrawHighlightedPieces(drawnPieces);
                 SonOfRobinGame.SpriteBatch.End();
             }
         }
@@ -1401,6 +1400,8 @@ namespace SonOfRobin
         public override void Draw()
         {
             if (this.WorldCreationInProgress) return;
+
+            // drawing CameraViewRenderTarget
 
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
 
@@ -1412,6 +1413,15 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(this.CameraViewRenderTarget, this.CameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
+
+            // drawing field tips
+
+            if (Preferences.showFieldControlTips)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                FieldTip.DrawFieldTips(world: this);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
         }
