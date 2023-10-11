@@ -1403,7 +1403,7 @@ namespace SonOfRobin
 
             // drawing CameraViewRenderTarget
 
-            if (Preferences.halfFramerate) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering in halfFramerate mode
+            if (Preferences.halfFramerate) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
             if (this.globalEffect != null)
