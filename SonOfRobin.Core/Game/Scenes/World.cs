@@ -1341,7 +1341,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.WorldCreationInProgress) return;
+            if (this.WorldCreationInProgress || SonOfRobinGame.IgnoreThisDraw) return;
 
             // drawing darkness
 
@@ -1403,7 +1403,8 @@ namespace SonOfRobin
 
             // drawing CameraViewRenderTarget
 
-            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+            if (Preferences.halfFramerate) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering in halfFramerate mode
+            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
             if (this.globalEffect != null)
             {
@@ -1423,7 +1424,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
+            this.CurrentFrame += Preferences.halfFramerate ? 2 : 1;
         }
 
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)

@@ -91,6 +91,8 @@ namespace SonOfRobin
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
         public static string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
+        public static bool IgnoreThisDraw { get { return Preferences.halfFramerate && CurrentDraw % 2 != 0; } }
+
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }
 

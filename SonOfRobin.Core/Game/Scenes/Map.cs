@@ -510,7 +510,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.Mode == MapMode.Off) return;
+            if (this.Mode == MapMode.Off || SonOfRobinGame.IgnoreThisDraw) return;
 
             this.UpdateBackground();
 

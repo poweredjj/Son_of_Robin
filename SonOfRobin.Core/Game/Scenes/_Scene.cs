@@ -498,7 +498,7 @@ namespace SonOfRobin
                 scene.Draw();
             }
 
-            LastDrawDuration = DrawTimeElapsed;
+            if (!SonOfRobinGame.IgnoreThisDraw) LastDrawDuration = DrawTimeElapsed; // ignored draws should not be taken into account
         }
 
         public static void SetRenderTarget(RenderTarget2D newRenderTarget)

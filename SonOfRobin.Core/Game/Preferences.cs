@@ -96,7 +96,7 @@ namespace SonOfRobin
         private static bool fullScreenMode = false;
         private static bool vSync = true;
         private static bool frameSkip = false;
-        private static bool halfFramerate = false;
+        public static bool halfFramerate = false;
         public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
@@ -401,26 +401,6 @@ namespace SonOfRobin
             }
         }
 
-        public static bool HalfFramerate
-        {
-            get { return halfFramerate; }
-            set
-            {
-                if (halfFramerate == value) return;
-
-                halfFramerate = value;
-                ShowAppliedAfterRestartMessage("FPS cap");
-            }
-        }
-
-        private static void ApplyFPSCap() // doesn't work correctly on mobile
-        {
-            SonOfRobinGame.GfxDevMgr.PreparingDeviceSettings += (sender, e) =>
-            {
-                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = halfFramerate ? PresentInterval.Two : PresentInterval.One;
-            };
-        }
-
         public static bool VSync
         {
             get { return vSync; }
@@ -687,7 +667,7 @@ namespace SonOfRobin
 
             if (prefsLoaded)
             {
-                ApplyFPSCap();
+                // empty for now
             }
             else
             {

@@ -23,6 +23,7 @@ namespace SonOfRobin
             if (this.elapsed > msgFrequency)
             {
                 this.FPS = Math.Round(frames / elapsed);
+                if (Preferences.halfFramerate) this.FPS /= 2;
                 this.Updates = this.updates;
                 this.Frames = this.frames;
 
