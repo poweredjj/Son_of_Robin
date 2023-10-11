@@ -58,7 +58,9 @@ namespace SonOfRobin
 
         public override void SM_SeaWaveMove()
         {
-            if (!this.sprite.IsInCameraRect) return;
+            Rectangle cameraIntersectRect = this.sprite.GfxRect;
+            cameraIntersectRect.Inflate(cameraIntersectRect.Width, 0);
+            if (!this.world.camera.viewRect.Intersects(cameraIntersectRect)) return; // sprite.IsInCameraRect would leave some "stuck" waves at camera edges         
 
             if (this.tweener == null) this.tweener = new Tweener();
 
