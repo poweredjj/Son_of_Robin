@@ -366,7 +366,7 @@ namespace SonOfRobin
             particleEmitter.LifeSpan = TimeSpan.FromSeconds(2.5f / this.RainPercentage);
             particleEmitter.Parameters.Scale = new Range<float>(rainBaseScale * 0.9f, rainBaseScale * 1.05f);
 
-            if ((firstRun || SonOfRobinGame.CurrentUpdate % 5 == 0) && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10))
+            if (firstRun || ((SonOfRobinGame.CurrentUpdate % 5 == 0) && (Math.Abs(this.lastRainRect.Width - cameraRect.Width) > 10)))
             {
                 this.lastRainRect = cameraRect;
                 particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2.2f, height: cameraRect.Height / 2);

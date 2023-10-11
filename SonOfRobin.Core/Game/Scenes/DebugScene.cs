@@ -406,7 +406,6 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-
                 var taskChain = new List<Object>();
 
                 taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 0), framesLeft: 60 * 2), storeForLaterUse: true));
@@ -437,7 +436,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.35f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
                 world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.2f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             }
 
