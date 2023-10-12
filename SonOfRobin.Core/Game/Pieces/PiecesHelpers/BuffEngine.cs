@@ -121,7 +121,7 @@ namespace SonOfRobin
                 return;
             }
             this.buffDict[buff.id] = buff;
-            if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
+            if (buff.autoRemoveDelay > 0) new LevelEvent(eventName: LevelEvent.EventName.RemoveBuff, level: this.piece.level, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
             // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Buff added for '{this.piece.readableName}' - id {buff.id} type {buff.type} value {buff.value}.");
 
@@ -402,7 +402,7 @@ namespace SonOfRobin
 
                             var regenPoisonData = new Dictionary<string, Object> {
                             { "buffID", buff.id }, { "charges", buff.autoRemoveDelay / delay }, { "delay", delay }, { "hpChange", buff.value }, { "canKill", buff.canKill } };
-                            new WorldEvent(eventName: WorldEvent.EventName.RegenPoison, world: world, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
+                            new LevelEvent(eventName: LevelEvent.EventName.RegenPoison, level: this.piece.level, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
 
                             if ((int)buff.value < 0)
                             {

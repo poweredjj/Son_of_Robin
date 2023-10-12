@@ -156,7 +156,7 @@ namespace SonOfRobin
                 if (Keyboard.HasBeenPressed(Keys.D7))
                 {
                     var heart = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.Heart);
-                    world.worldEventManager.RemovePieceFromQueue(heart);
+                    world.ActiveLevel.levelEventManager.RemovePieceFromQueue(heart);
                     heart.sprite.opacityFade = null;
                     heart.sprite.opacity = 1;
                     new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
@@ -465,7 +465,7 @@ namespace SonOfRobin
             //{
             //    if (world == null) return;
 
-            //    new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
+            //    new LevelEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

@@ -709,7 +709,7 @@ namespace SonOfRobin
             female.pregnancyMass = 1; // starting mass should be greater than 0
             female.pregnancyFramesLeft = (int)female.pieceInfo.animalPregnancyDuration;
 
-            new WorldEvent(world: this.world, delay: (int)female.pieceInfo.animalPregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
+            new LevelEvent(level: this.level, delay: (int)female.pieceInfo.animalPregnancyDuration, boardPiece: female, eventName: LevelEvent.EventName.Birth);
 
             this.stamina = 0;
             animalMate.stamina = 0;
@@ -920,7 +920,7 @@ namespace SonOfRobin
 
             if (this.world.random.Next(3) == 0) // a chance for a following call for help
             {
-                new WorldEvent(eventName: WorldEvent.EventName.AnimalCallForHelp, world: world, delay: 250, boardPiece: this, eventHelper: this.target);
+                new LevelEvent(eventName: LevelEvent.EventName.AnimalCallForHelp, level: this.level, delay: 250, boardPiece: this, eventHelper: this.target);
             }
         }
     }

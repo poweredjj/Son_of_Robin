@@ -256,7 +256,7 @@ namespace SonOfRobin
         {
             if (!Preferences.debugShowSounds || this.visPiece == null) return;
 
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.visPiece.world, delay: 20, boardPiece: this.visPiece);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.visPiece.level, delay: 20, boardPiece: this.visPiece);
             this.visPiece = null;
         }
 

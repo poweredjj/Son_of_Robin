@@ -240,7 +240,7 @@ namespace SonOfRobin
 
                             new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                            new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
+                            new LevelEvent(eventName: LevelEvent.EventName.FadeOutSprite, delay: 40, level: this.level, boardPiece: usedChestMarker, eventHelper: 20);
                         }
                     }
                 }
@@ -913,7 +913,7 @@ namespace SonOfRobin
 
             // var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
-            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
+            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
@@ -930,7 +930,7 @@ namespace SonOfRobin
 
             // var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForGoal.sprite.color = Color.Violet; // for testing
-            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
+            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
 
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
             if (hasBeenMoved)

@@ -303,7 +303,7 @@ namespace SonOfRobin
                             var worldEventData = new Dictionary<string, object> {
                                 {"boardPiece", workshop },
                                 {"delay", 300 },
-                                {"eventName", WorldEvent.EventName.TurnOffWorkshop },
+                                {"eventName", LevelEvent.EventName.TurnOffWorkshop },
                             };
 
                             menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
@@ -906,11 +906,11 @@ namespace SonOfRobin
 
                             var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
 
-                            WorldEvent.EventName eventName = (WorldEvent.EventName)worldEventData["eventName"];
+                            LevelEvent.EventName eventName = (LevelEvent.EventName)worldEventData["eventName"];
                             BoardPiece boardPiece = (BoardPiece)worldEventData["boardPiece"];
                             int delay = (int)worldEventData["delay"];
 
-                            new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece);
+                            new LevelEvent(eventName: eventName, level: boardPiece.level, delay: delay, boardPiece: boardPiece);
 
                             return;
                         }
@@ -1827,7 +1827,7 @@ namespace SonOfRobin
                             treasureChest.Open();
                             treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
-                            new WorldEvent(eventName: WorldEvent.EventName.Destruction, delay: 60 * 2, world: treasureChest.world, boardPiece: treasureChest, eventHelper: 30);
+                            new LevelEvent(eventName: LevelEvent.EventName.Destruction, delay: 60 * 2, level: treasureChest.level, boardPiece: treasureChest, eventHelper: 30);
 
                             return;
                         }

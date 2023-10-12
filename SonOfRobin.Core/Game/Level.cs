@@ -20,6 +20,8 @@ namespace SonOfRobin
         public readonly PieceCreationData[] creationDataArrayRegular;
         public readonly PieceCreationData[] creationDataArrayTemporaryDecorations;
         public readonly List<Sprite> temporaryDecorationSprites;
+        public List<PieceTemplate.Name> doNotCreatePiecesList;
+        public readonly LevelEventManager levelEventManager;
 
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
@@ -45,6 +47,7 @@ namespace SonOfRobin
             var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName, levelType: this.levelType);
             this.creationDataArrayRegular = creationDataList.Where(data => !data.temporaryDecoration).ToArray();
             this.creationDataArrayTemporaryDecorations = creationDataList.Where(data => data.temporaryDecoration).ToArray();
+            this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
 
             foreach (PieceCreationData pieceCreationData in this.creationDataArrayTemporaryDecorations)
             {
@@ -61,11 +64,12 @@ namespace SonOfRobin
             this.nonPlantSpritesQueue = new Queue<Sprite>();
             this.heatedPieces = new HashSet<BoardPiece>();
             this.plantCellsQueue = new Queue<Cell>();
+            this.levelEventManager = new LevelEventManager(this);
         }
 
         public void Update()
         {
-            // TODO move World methods here
+            this.levelEventManager.ProcessQueue();
         }
     }
 }

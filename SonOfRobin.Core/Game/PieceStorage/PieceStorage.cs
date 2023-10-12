@@ -224,7 +224,7 @@ namespace SonOfRobin
             if (piece.sprite.IsOnBoard)
             {
                 piece.RemoveFromBoard();
-                this.world.worldEventManager.RemovePieceFromQueue(pieceToRemove: piece);
+                this.world.ActiveLevel.levelEventManager.RemovePieceFromQueue(pieceToRemove: piece);
             }
             slot.AddPiece(piece);
 

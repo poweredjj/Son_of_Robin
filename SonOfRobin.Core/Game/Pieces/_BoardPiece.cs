@@ -286,7 +286,7 @@ namespace SonOfRobin
                         if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
 
                         // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
-                        new WorldEvent(eventName: WorldEvent.EventName.StopBurning, world: this.world, delay: delay, boardPiece: this);
+                        new LevelEvent(eventName: LevelEvent.EventName.StopBurning, level: this.level, delay: delay, boardPiece: this);
                     }
                 }
                 else
@@ -392,7 +392,7 @@ namespace SonOfRobin
             if (this.DestructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()
@@ -520,7 +520,7 @@ namespace SonOfRobin
             if (this.PieceStorage != null && this.GetType() != typeof(Plant)) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
-            if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
+            if (addDestroyEvent) new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
         }
 
         public virtual void Destroy()

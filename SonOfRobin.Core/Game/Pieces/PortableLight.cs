@@ -55,7 +55,7 @@ namespace SonOfRobin
                     this.activeSoundPack.Play(action: PieceSoundPackTemplate.Action.IsOn);
 
                     var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
-                    new WorldEvent(eventName: WorldEvent.EventName.BurnOutLightSource, world: world, delay: 60, boardPiece: this, eventHelper: damageData);
+                    new LevelEvent(eventName: LevelEvent.EventName.BurnOutLightSource, level: this.level, delay: 60, boardPiece: this, eventHelper: damageData);
                 }
                 else
                 {

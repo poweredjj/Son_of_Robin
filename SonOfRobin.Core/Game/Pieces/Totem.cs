@@ -97,11 +97,11 @@ namespace SonOfRobin
             colorOverlay.transManager.AddTransition(new Transition(transManager: colorOverlay.transManager, outTrans: true, startDelay: burnDurationFrames, duration: 60 * 9, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.75f, endRemoveScene: true));
             this.world.solidColorManager.Add(colorOverlay);
 
-            this.world.worldEventManager.RemovePieceFromQueue(this); // just in case
+            this.level.levelEventManager.RemovePieceFromQueue(this); // just in case
 
-            new WorldEvent(eventName: WorldEvent.EventName.TotemAffectWeather, world: this.world, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDelay), boardPiece: this, eventHelper: goodOfferingMass);
+            new LevelEvent(eventName: LevelEvent.EventName.TotemAffectWeather, level: this.level, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDelay), boardPiece: this, eventHelper: goodOfferingMass);
 
-            new WorldEvent(eventName: WorldEvent.EventName.SwitchLightEngine, world: this.world, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDuration + weatherChangeDelay), boardPiece: this, eventHelper: false);
+            new LevelEvent(eventName: LevelEvent.EventName.SwitchLightEngine, level: this.level, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDuration + weatherChangeDelay), boardPiece: this, eventHelper: false);
 
             var rumbleData = new Dictionary<string, Object> { { "force", 0.08f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.6f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 1.3f } };
             new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: eventsDelay, executeHelper: rumbleData);

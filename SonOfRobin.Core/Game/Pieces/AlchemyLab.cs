@@ -388,7 +388,7 @@ namespace SonOfRobin
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
             this.showStatBarsTillFrame = this.world.CurrentUpdate + brewingTime;
 
-            new WorldEvent(eventName: WorldEvent.EventName.FinishBrewing, world: this.world, delay: brewingTime, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.FinishBrewing, level: this.level, delay: brewingTime, boardPiece: this);
 
             this.world.HintEngine.Disable(PieceHint.Type.AlchemyLab);
             this.world.HintEngine.Disable(Tutorials.Type.PotionBrew);

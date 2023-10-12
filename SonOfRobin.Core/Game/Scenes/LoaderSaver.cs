@@ -299,7 +299,7 @@ namespace SonOfRobin
                     { "TimePlayed", this.world.TimePlayed },
                     { "MapEnabled", this.world.MapEnabled },
                     { "realDateTime", DateTime.Now },
-                    { "doNotCreatePiecesList", this.world.doNotCreatePiecesList },
+                    { "doNotCreatePiecesList", this.world.IslandLevel.doNotCreatePiecesList },
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
                     { "craftStats", this.world.craftStats.Serialize() },
                     { "cookStats", this.world.cookStats.Serialize() },
@@ -404,7 +404,7 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "events";
 
-                var eventData = this.world.worldEventManager.Serialize();
+                var eventData = this.world.IslandLevel.levelEventManager.Serialize();
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);

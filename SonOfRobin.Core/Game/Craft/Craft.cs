@@ -463,7 +463,7 @@ namespace SonOfRobin
                 else
                 {
                     // showing on the field (WorldEvent works better for this case)
-                    new WorldEvent(eventName: WorldEvent.EventName.CheckForPieceHints, world: world, delay: 60 * 1, boardPiece: null, eventHelper: executeHelper);
+                    new LevelEvent(eventName: LevelEvent.EventName.CheckForPieceHints, level: world.ActiveLevel, delay: 60 * 1, boardPiece: null, eventHelper: executeHelper);
                 }
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
