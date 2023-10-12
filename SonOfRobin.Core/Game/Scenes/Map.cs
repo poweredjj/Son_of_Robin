@@ -683,7 +683,8 @@ namespace SonOfRobin
                         if (Preferences.debugShowNamedLocationAreas)
                         {
                             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, location.areaRect, location.Color * 0.25f);
-                            Helpers.DrawRectangleOutline(rect: location.areaRect, color: Color.Black, borderWidth: outlineSize);
+                            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: location.areaRect, color: Color.Black, thickness: outlineSize);
+
                             location.DrawCellRects(new Color(Math.Min(location.Color.R * 2, 255), Math.Min(location.Color.G * 2, 255), Math.Min(location.Color.B * 2, 255)) * 0.35f);
                         }
 
@@ -766,7 +767,7 @@ namespace SonOfRobin
             }
 
             // drawing camera rect (debug)
-            if (Preferences.debugShowOutsideCamera) Helpers.DrawRectangleOutline(rect: this.camera.viewRect, color: Color.White, borderWidth: 3);
+            if (Preferences.debugShowOutsideCamera) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.camera.viewRect, color: Color.White, thickness: 3f);
 
             SonOfRobinGame.SpriteBatch.End();
         }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1198,7 +1199,7 @@ namespace SonOfRobin
             if (this.type != Type.SingleBottom)
             {
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.BlanchedAlmond * 0.7f * opacity);
-                Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * opacity, borderWidth: 2);
+                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: bgRect, color: Color.White * opacity, thickness: 2f);
             }
 
             foreach (StorageSlot slot in this.storage.AllSlots)
@@ -1216,7 +1217,7 @@ namespace SonOfRobin
                 Color fillColor = isActive ? Color.LightSeaGreen : Color.White;
 
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, tileRect, fillColor * 0.35f * opacity);
-                Helpers.DrawRectangleOutline(rect: tileRect, color: outlineColor * opacity * 0.8f, borderWidth: 2);
+                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: tileRect, color: outlineColor * opacity * 0.8f, thickness: 2f);
 
                 this.DrawSlotLabel(slot: slot, tileRect: tileRect, opacity: opacity);
 

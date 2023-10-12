@@ -1,5 +1,6 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -237,7 +238,7 @@ namespace SonOfRobin
 
             if (drawCellData)
             {
-                Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
+                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.rect, color: Color.White * 0.3f, thickness: 1f);
 
                 var colorForExtPropNames = new Dictionary<ExtBoardProps.Name, Color> {
                 { ExtBoardProps.Name.Sea, Color.Cyan },

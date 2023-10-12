@@ -1,6 +1,7 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace SonOfRobin
             Vector2 textSize = MeasureStringCorrectly(font: font, stringToMeasure: text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
 
-            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
+            if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: rectangle, color: Color.White, thickness: 1f);
 
             float xOffset = alignX switch
             {
@@ -110,7 +111,7 @@ namespace SonOfRobin
 
             Vector2 scaledTexture = new Vector2(texture.Width * scale, texture.Height * scale);
 
-            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
+            if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: rectangle, color: Color.White, thickness: 1f);
 
             var xOffset = alignX switch
             {
@@ -129,7 +130,7 @@ namespace SonOfRobin
             };
 
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
-            if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
+            if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: destRect, color: Color.Green, thickness: 1f);
 
             if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
             else
@@ -141,18 +142,6 @@ namespace SonOfRobin
             }
 
             return destRect;
-        }
-
-        public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)
-        {
-            // top
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, rect.Y, rect.Width, borderWidth), color);
-            // bottom
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, rect.Y + rect.Height - borderWidth, rect.Width, borderWidth), color);
-            // left
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, rect.Y, borderWidth, rect.Height), color);
-            // right
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X + rect.Width - borderWidth, rect.Y, borderWidth, rect.Height), color);
         }
 
         public static string FirstCharToLowerCase(string str)

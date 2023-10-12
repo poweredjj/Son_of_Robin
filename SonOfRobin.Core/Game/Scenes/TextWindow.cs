@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -251,7 +252,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgShadowRect, Color.Black * 0.4f * this.viewParams.drawOpacity);
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, this.bgColor * this.viewParams.drawOpacity);
-            Helpers.DrawRectangleOutline(rect: bgRect, color: this.textColor * this.viewParams.drawOpacity, borderWidth: 2);
+            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: bgRect, color: this.textColor * this.viewParams.drawOpacity, thickness: 2f);
 
             this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.Black * 0.5f, shadowOffset: new Vector2(textShadowOffset), textScale: this.textScale, drawShadow: this.drawShadow);
 

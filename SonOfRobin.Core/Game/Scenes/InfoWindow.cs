@@ -1,6 +1,7 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -351,7 +352,7 @@ namespace SonOfRobin
             int margin = this.Margin;
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, this.bgColor * this.bgOpacity * this.viewParams.drawOpacity);
-            Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
+            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: bgRect, color: Color.White * this.viewParams.drawOpacity, thickness: 2f);
 
             float globalScale = this.GlobalScale;
             float shadowOffset = Math.Max(2.5f * globalScale, 1);

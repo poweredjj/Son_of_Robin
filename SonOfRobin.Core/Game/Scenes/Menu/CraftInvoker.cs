@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -143,7 +144,7 @@ namespace SonOfRobin
                         pieceRect.Y -= mainPiecePixelsToAddHeight / 2;
                     }
 
-                    Helpers.DrawRectangleOutline(rect: pieceRect, color: Color.White * this.menu.viewParams.drawOpacity, borderWidth: 2);
+                    SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: pieceRect, color: Color.White * this.menu.viewParams.drawOpacity, thickness: 2f);
                 }
 
                 bgColorOpacity = drawParams.isMain ? 0.7f : 0.35f;

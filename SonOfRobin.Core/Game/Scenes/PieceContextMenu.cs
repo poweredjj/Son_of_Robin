@@ -1,6 +1,7 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -534,7 +535,7 @@ namespace SonOfRobin
             Vector2 maxEntrySize = this.MaxEntrySize;
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.DodgerBlue * 0.9f * this.viewParams.drawOpacity);
-            Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
+            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: bgRect, color: Color.White * this.viewParams.drawOpacity, thickness: 2f);
 
             float textScale = this.TextScale;
 

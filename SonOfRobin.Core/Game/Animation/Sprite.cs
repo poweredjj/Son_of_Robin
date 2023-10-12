@@ -1,6 +1,7 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -812,8 +813,7 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.ColRect.X, this.ColRect.Y, this.ColRect.Width, this.ColRect.Height), this.ColRect, Color.Red * 0.55f);
 
-                Helpers.DrawRectangleOutline(new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.Blue, borderWidth: 2);
-
+                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), color: Color.Blue, thickness: 2f);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.White);
             }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -596,13 +597,13 @@ namespace SonOfRobin
 
             Rectangle scrollWholeRect = this.ScrollWholeRect;
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.Opacity);
-            Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].bgColor * 0.8f * this.viewParams.Opacity, borderWidth: 2);
+            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: scrollWholeRect, color: this.entryList[0].bgColor * 0.8f, thickness: 2f);
 
             int scrollPos = (int)(this.CurrentScrollPosition * this.ScrollbarMultiplier);
 
             Rectangle widgetRect = new Rectangle(this.ScrollbarPosX, scrollPos, this.ScrollbarWidth, this.ScrollbarWidgetHeight);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, widgetRect, this.entryList[0].bgColor * 0.75f * this.viewParams.Opacity);
-            Helpers.DrawRectangleOutline(rect: widgetRect, color: this.entryList[0].textColor * this.viewParams.Opacity, borderWidth: 2);
+            SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: widgetRect, color: this.entryList[0].textColor * this.viewParams.Opacity, thickness: 2f);
         }
 
         public void SetViewPosAndSize()
