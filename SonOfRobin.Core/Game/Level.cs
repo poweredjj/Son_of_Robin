@@ -22,7 +22,7 @@ namespace SonOfRobin
         public readonly List<Sprite> temporaryDecorationSprites;
         public List<PieceTemplate.Name> doNotCreatePiecesList;
         public readonly LevelEventManager levelEventManager;
-
+        public Grid Grid { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
 
@@ -65,6 +65,12 @@ namespace SonOfRobin
             this.heatedPieces = new HashSet<BoardPiece>();
             this.plantCellsQueue = new Queue<Cell>();
             this.levelEventManager = new LevelEventManager(this);
+        }
+
+        public void AssignGrid(Grid grid)
+        {
+            if (this.Grid != null) throw new ArgumentException($"Grid has already been assigned to level {this.levelType}.");
+            this.Grid = grid;
         }
 
         public void Update()

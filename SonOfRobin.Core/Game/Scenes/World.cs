@@ -54,8 +54,10 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-        public Grid Grid { get; private set; }
+
+        public Grid Grid { get { return this.ActiveLevel.Grid; } }
         public int CurrentFrame { get; private set; }
+
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
@@ -97,10 +99,21 @@ namespace SonOfRobin
             this.WorldCreationInProgress = true;
             this.populatingFramesLeft = populatingFramesTotal;
             this.creationStart = DateTime.Now;
+            this.resDivider = resDivider;
+
 
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
 
-            this.resDivider = resDivider;
+            Grid grid;
+            if (this.saveGameData != null)
+            {
+                var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
+                var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
+                grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
+            }
+            else grid = new Grid(level: this.IslandLevel, resDivider: resDivider, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride);
+            this.IslandLevel.AssignGrid(grid);
+
             this.CurrentFrame = 0;
             this.CurrentUpdate = 0;
             this.createdTime = DateTime.Now;
@@ -127,8 +140,6 @@ namespace SonOfRobin
             this.cineCurtains = new CineCurtains();
             this.initialPlayerName = playerName;
             this.debugText = "";
-            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride);
-            else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.map);
             this.AddLinkedScene(this.playerPanel);
@@ -427,7 +438,7 @@ namespace SonOfRobin
             {
                 if (this.backgroundTask == null)
                 {
-                    this.backgroundTask = Task.Run(() => this.Deserialize(gridOnly: false));
+                    this.backgroundTask = Task.Run(() => this.Deserialize());
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: 1, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering the island..." : null);
                 }
@@ -490,19 +501,9 @@ namespace SonOfRobin
             MessageLog.Add(debugMessage: true, text: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
         }
 
-        private void Deserialize(bool gridOnly)
+        private void Deserialize()
         {
             var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
-
-            // deserializing grid
-            {
-                if (gridOnly) // grid has to be deserialized first
-                {
-                    var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
-                    this.Grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
-                    return;
-                }
-            }
 
             if (this.HasBeenRemoved) return; // to avoid processing if cancelled
 

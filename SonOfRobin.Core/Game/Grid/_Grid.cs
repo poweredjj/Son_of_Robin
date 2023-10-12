@@ -57,6 +57,7 @@ namespace SonOfRobin
 
         public readonly GridTemplate gridTemplate;
         public readonly World world;
+        public readonly Level level;
 
         public readonly int width;
         public readonly int height;
@@ -82,18 +83,19 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, Cell[]> cellArraysForPieceNamesMasterDict; // pieces and cells that those pieces can (initially) be placed into
         private readonly Dictionary<PieceTemplate.Name, Queue<Cell>> cellSetsForPieceNamesWorkingQueueDict;
 
-        public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
+        public Grid(Level level, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.CreationInProgress = true;
             this.currentStage = 0;
 
-            this.world = world;
+            this.level = level;
+            this.world = this.level.world;
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
             this.namedLocations = new NamedLocations(grid: this);
 
-            this.width = this.world.ActiveLevel.width;
-            this.height = this.world.ActiveLevel.height;
+            this.width = this.level.width;
+            this.height = this.level.height;
             this.dividedWidth = (int)Math.Ceiling((double)this.width / (double)this.resDivider);
             this.dividedHeight = (int)Math.Ceiling((double)this.height / (double)this.resDivider);
 
@@ -112,10 +114,10 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.ActiveLevel.width, height: this.world.ActiveLevel.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
+            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
 
-            this.noOfCellsX = (int)Math.Ceiling((float)this.world.ActiveLevel.width / (float)this.cellWidth);
-            this.noOfCellsY = (int)Math.Ceiling((float)this.world.ActiveLevel.height / (float)this.cellHeight);
+            this.noOfCellsX = (int)Math.Ceiling((float)this.level.width / (float)this.cellWidth);
+            this.noOfCellsY = (int)Math.Ceiling((float)this.level.height / (float)this.cellHeight);
 
             this.cellArraysForPieceNamesMasterDict = new Dictionary<PieceTemplate.Name, Cell[]>();
             this.cellSetsForPieceNamesWorkingQueueDict = new Dictionary<PieceTemplate.Name, Queue<Cell>>();
@@ -184,7 +186,7 @@ namespace SonOfRobin
             int cellWidth = (int)(Int64)gridData["cellWidth"];
             int cellHeight = (int)(Int64)gridData["cellHeight"];
 
-            Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
+            Grid grid = new(level: world.IslandLevel, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
             // for compatibility with older saves
@@ -241,7 +243,7 @@ namespace SonOfRobin
         {
             // looking for matching template
 
-            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.world.ActiveLevel.width, height: this.world.ActiveLevel.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
             if (templateGrid == null) return false;
 
             // copying terrain
@@ -464,8 +466,8 @@ namespace SonOfRobin
         {
             // the algorithm will only work, if water surrounds the island
 
-            int maxX = (this.world.ActiveLevel.width / this.resDivider) - 1;
-            int maxY = (this.world.ActiveLevel.height / this.resDivider) - 1;
+            int maxX = (this.level.width / this.resDivider) - 1;
+            int maxY = (this.level.height / this.resDivider) - 1;
 
             var startingPointsRaw = new ConcurrentBag<Point>();
 
@@ -514,8 +516,8 @@ namespace SonOfRobin
                 pointCollectionsForBiomes[name] = new List<ConcurrentBag<Point>>();
             }
 
-            int maxX = this.world.ActiveLevel.width / this.resDivider;
-            int maxY = this.world.ActiveLevel.height / this.resDivider;
+            int maxX = this.level.width / this.resDivider;
+            int maxY = this.level.height / this.resDivider;
 
             byte biomeMinVal = Terrain.biomeMin;
             byte biomeMaxVal = 255;
@@ -631,8 +633,8 @@ namespace SonOfRobin
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
         {
-            int maxX = this.world.ActiveLevel.width / this.resDivider;
-            int maxY = this.world.ActiveLevel.height / this.resDivider;
+            int maxX = this.level.width / this.resDivider;
+            int maxY = this.level.height / this.resDivider;
 
             var pointBag = new ConcurrentBag<Point>();
 
@@ -665,8 +667,8 @@ namespace SonOfRobin
 
         private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, List<TerrainSearch> terrainSearches, ExtBoardProps.Name nameToSetIfInRange = ExtBoardProps.Name.Sea, bool setNameIfInsideRange = false, bool setNameIfOutsideRange = false, ExtBoardProps.Name nameToSetIfOutsideRange = ExtBoardProps.Name.Sea)
         {
-            int dividedWidth = this.world.ActiveLevel.width / this.resDivider;
-            int dividedHeight = this.world.ActiveLevel.height / this.resDivider;
+            int dividedWidth = this.level.width / this.resDivider;
+            int dividedHeight = this.level.height / this.resDivider;
 
             Point[] offsetArray = new Point[]
             {
@@ -847,16 +849,16 @@ namespace SonOfRobin
         public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
         {
             int xMinCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.world.ActiveLevel.width - 1), cellLength: this.cellWidth);
+                position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.level.width - 1), cellLength: this.cellWidth);
 
             int xMaxCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.X + distance), min: 0, max: this.world.ActiveLevel.width - 1), cellLength: this.cellWidth);
+                position: Math.Clamp(value: (int)(position.X + distance), min: 0, max: this.level.width - 1), cellLength: this.cellWidth);
 
             int yMinCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.Y - distance), min: 0, max: this.world.ActiveLevel.height - 1), cellLength: this.cellHeight);
+                position: Math.Clamp(value: (int)(position.Y - distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
             int yMaxCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.world.ActiveLevel.height - 1), cellLength: this.cellHeight);
+                position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
             List<Cell> cellsWithinDistance = new();
 
