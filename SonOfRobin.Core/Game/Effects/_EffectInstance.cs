@@ -24,10 +24,8 @@ namespace SonOfRobin
             return this.lastFrameFired == currentUpdate;
         }
 
-        public virtual void TurnOn(int currentUpdate, Color drawColor = default)
+        public virtual void TurnOn(int currentUpdate, Color drawColor)
         {
-            if (drawColor == default) drawColor = Color.White;
-
             this.effect.Parameters["drawColor"].SetValue(drawColor.ToVector4());
             this.lastFrameFired = currentUpdate;
             if (this.framesLeft > -1) this.framesLeft -= 1;

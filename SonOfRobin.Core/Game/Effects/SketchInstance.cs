@@ -13,7 +13,7 @@ namespace SonOfRobin
             this.bgColor = bgColor.ToVector4();
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor = default)
+        public override void TurnOn(int currentUpdate, Color drawColor)
         {
             this.effect.Parameters["fgColor"].SetValue(this.fgColor);
             this.effect.Parameters["bgColor"].SetValue(this.bgColor);

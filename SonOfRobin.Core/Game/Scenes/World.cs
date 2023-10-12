@@ -1409,7 +1409,7 @@ namespace SonOfRobin
 
             if (this.globalEffect != null)
             {
-                this.globalEffect.TurnOn(currentUpdate: this.CurrentUpdate);
+                this.globalEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
                 if (this.globalEffect.framesLeft == 0) this.globalEffect = null;
             }
 

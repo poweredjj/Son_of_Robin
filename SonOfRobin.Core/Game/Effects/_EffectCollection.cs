@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.SpriteBatch.End();
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scene.TransformMatrix, sortMode: SpriteSortMode.Immediate);
-                effInstance.TurnOn(currentUpdateToUse);
+                effInstance.TurnOn(currentUpdate: currentUpdateToUse, drawColor: Color.White);
                 if (effInstance.framesLeft == 0)
                 {
                     this.effectInstanceSet.Remove(effInstance);

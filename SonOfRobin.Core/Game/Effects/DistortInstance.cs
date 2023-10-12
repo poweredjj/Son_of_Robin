@@ -28,7 +28,7 @@ namespace SonOfRobin
             this.baseTextureSize = new Vector2(this.baseTexture.Width, this.baseTexture.Height);
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor = default)
+        public override void TurnOn(int currentUpdate, Color drawColor)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["baseTextureOffset"].SetValue(this.scrollingSurface.offset);
@@ -45,7 +45,7 @@ namespace SonOfRobin
 
             // MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} offset {this.scrollingSurface.offset}", textColor: Color.Orange);
 
-            base.TurnOn(currentUpdate: currentUpdate, drawColor);
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
 }

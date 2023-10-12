@@ -17,7 +17,7 @@ namespace SonOfRobin
             this.fadeFramesLeft = fadeFramesLeft;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor = default)
+        public override void TurnOn(int currentUpdate, Color drawColor)
         {
             float opacity = 1f;
 
