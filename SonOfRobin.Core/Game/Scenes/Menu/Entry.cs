@@ -16,9 +16,8 @@ namespace SonOfRobin
         protected TextWithImages textWithImages;
         public Color textColor;
         public Color shadowColor;
-        public Color rectColor;
+        public Color bgColor;
         public TriSliceBG triSliceBG;
-        public Color outlineColor;
         protected int lastFlashFrame = 0;
         protected readonly bool rebuildsMenu;
         protected readonly bool rebuildsMenuInstantScroll;
@@ -39,9 +38,8 @@ namespace SonOfRobin
             this.rebuildsAllMenus = rebuildsAllMenus;
             this.textColor = Color.White;
             this.shadowColor = Color.Black * 0.8f;
-            this.rectColor = Color.Black;
-            this.triSliceBG = default;
-            this.outlineColor = Color.White;
+            this.bgColor = Color.White;
+            this.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuGray);
             this.infoTextList = infoTextList;
             this.infoWindowMaxLineHeightPercentOverride = infoWindowMaxLineHeightPercentOverride;
 
@@ -139,16 +137,9 @@ namespace SonOfRobin
             if (this.imageList != null) imageList = this.imageList;
 
             float opacity = this.GetOpacity(active: active);
-            float opacityFade = this.OpacityFade;
             Rectangle rect = this.Rect;
 
-            if (this.triSliceBG.isActive) this.triSliceBG.Draw(triSliceRect: rect, color: Color.White * opacity * menu.viewParams.Opacity, keepExactRectSize: true);
-            else
-            {
-                if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.rectColor * opacityFade * 2);
-            }
-
-            if (!this.triSliceBG.isActive) Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
+            this.triSliceBG.Draw(triSliceRect: rect, color: this.bgColor * opacity * this.menu.viewParams.Opacity, keepExactRectSize: true);
 
             string text = textOverride != null ? textOverride : this.DisplayedText;
 
@@ -167,14 +158,14 @@ namespace SonOfRobin
 
             Vector2 textPos = new Vector2(
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
-                rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));         
-            
+                rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
+
             Color textColorCalculated = new Color( // to avoid transparency (which would ruin shadows)
                 r: (byte)((float)this.textColor.R * opacity),
                 g: (byte)((float)this.textColor.G * opacity),
                 b: (byte)((float)this.textColor.B * opacity));
 
-            this.textWithImages.Draw(position: textPos, color: textColorCalculated * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f, drawShadow: this.triSliceBG.isActive, shadowColor: this.shadowColor);
+            this.textWithImages.Draw(position: textPos, color: textColorCalculated * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f, drawShadow: true, shadowColor: this.shadowColor);
         }
 
         protected void UpdateHintWindow()

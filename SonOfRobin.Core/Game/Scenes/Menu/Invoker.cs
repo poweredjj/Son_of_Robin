@@ -23,7 +23,6 @@ namespace SonOfRobin
             this.taskDelay = taskDelay;
             this.executeHelper = executeHelper;
             this.closesMenu = closesMenu;
-            this.rectColor = Color.LightSlateGray;
             this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
             if (!playSound) this.soundInvoke = new Sound(SoundData.Name.Empty);
             this.invokedByDoubleTouch = invokedByDoubleTouch;

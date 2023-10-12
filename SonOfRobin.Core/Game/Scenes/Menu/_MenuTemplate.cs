@@ -90,7 +90,7 @@ namespace SonOfRobin
             {
                 case Name.Main:
                     {
-                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: false, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: false, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
@@ -129,7 +129,7 @@ namespace SonOfRobin
 
                 case Name.Options:
                     {
-                        Menu menu = new(templateName: templateName, name: "OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Invoker(menu: menu, name: "controls", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Controls } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "controls settings", color: Color.White, scale: 1f) });
 
@@ -143,20 +143,20 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "debug", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Debug } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "only for the brave ones ;)", color: Color.White, scale: 1f) });
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         return menu;
                     }
 
                 case Name.Scale:
                     {
-                        Menu menu = new(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
                         if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
@@ -182,13 +182,13 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         return menu;
                     }
@@ -197,7 +197,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "export save", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.ExportSave } });
 
@@ -213,13 +213,13 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
                         new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteIncompatibleSaves);
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         return menu;
                     }
@@ -228,7 +228,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "GRAPHICS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "GRAPHICS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Selector(menu: menu, name: "FPS counter", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowFpsCounter", rebuildsMenu: true);
 
@@ -260,20 +260,20 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "plants sway", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "plantsSway");
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         return menu;
                     }
 
                 case Name.Sound:
                     {
-                        Menu menu = new(templateName: templateName, name: "SOUND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "SOUND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         Sound sound = new(SoundData.Name.Empty); // sound name doesn't really matter
 
@@ -294,20 +294,21 @@ namespace SonOfRobin
 
                             new Selector(menu: menu, name: "volume", valueDict: valueDict, targetObj: sound, propertyName: "globalVolume");
                         }
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
 
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
                 case Name.Controls:
                     {
-                        Menu menu = new(templateName: templateName, name: "CONTROLS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "CONTROLS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Invoker(menu: menu, name: "configure gamepad", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Gamepad } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all gamepad controls", color: Color.White, scale: 1f) });
                         new Invoker(menu: menu, name: "configure keyboard", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Keyboard } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all keyboard controls", color: Color.White, scale: 1f) });
@@ -340,13 +341,13 @@ namespace SonOfRobin
 
                         if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: preferences, propertyName: "fieldControlTipsScale");
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
 
                         return menu;
                     }
@@ -354,7 +355,7 @@ namespace SonOfRobin
                 case Name.Gamepad:
                     {
                         bool gamepad = true;
-                        Menu menu = new(templateName: templateName, name: "CONFIGURE GAMEPAD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "CONFIGURE GAMEPAD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         var allButtonsList = new List<Buttons> { Buttons.A, Buttons.B, Buttons.X, Buttons.Y, Buttons.LeftShoulder, Buttons.RightShoulder, Buttons.LeftTrigger, Buttons.RightTrigger, Buttons.Start, Buttons.Back, Buttons.LeftStick, Buttons.RightStick, Buttons.DPadLeft, Buttons.DPadRight, Buttons.DPadUp, Buttons.DPadDown };
 
@@ -381,7 +382,7 @@ namespace SonOfRobin
                 case Name.Keyboard:
                     {
                         bool gamepad = false;
-                        Menu menu = new(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         Dictionary<object, object> allKeysDict = KeyboardScheme.KeyTextures.ToDictionary(k => (object)new StoredInput(k.Key), k => (object)k.Value);
                         CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: null, keysOrButtonsDict: allKeysDict);
@@ -396,7 +397,7 @@ namespace SonOfRobin
 
                 case Name.CreateNewIsland:
                     {
-                        Menu menu = new(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, sound: SoundData.Name.NewGameStart);
                         new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
@@ -445,18 +446,19 @@ namespace SonOfRobin
                             new Separator(menu: menu, name: "", isEmpty: true);
                         }
 
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
                 case Name.SetSeed:
                     {
-                        Menu menu = new(templateName: templateName, name: "ENTER SEED", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "ENTER SEED", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         var digitList = new List<Object> { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -468,19 +470,20 @@ namespace SonOfRobin
                             new Selector(menu: menu, name: $"digit {i + 1}", valueList: digitList, targetObj: preferences, propertyName: $"seedDigit{i + 1}", rebuildsMenu: true);
                         }
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
                 case Name.OpenIslandTemplate:
                     {
-                        Menu menu = new(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         CreateCharacterSelection(menu);
 
@@ -493,31 +496,33 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider } }, sound: SoundData.Name.NewGameStart);
                         }
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
                 case Name.RestartIsland:
                     {
-                        Menu menu = new(templateName: templateName, name: "RESTART ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "RESTART ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         CreateCharacterSelection(menu);
 
                         new Invoker(menu: menu, name: "restart now", taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
@@ -525,7 +530,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         if ((Preferences.debugSaveEverywhere || Preferences.DebugMode) && !world.SpectatorMode && world.Player?.activeState == BoardPiece.State.PlayerControlledWalking && world.Player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
@@ -659,8 +664,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(31, 197, 219);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         // island info
@@ -696,8 +700,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(148, 115, 55);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         // general craft stats
@@ -723,8 +726,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(168, 74, 145);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         // crafting / planting lists
@@ -755,8 +757,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(181, 22, 83);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         // brewing stats
@@ -783,8 +784,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(102, 212, 157);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         // harvesting stats
@@ -830,8 +830,7 @@ namespace SonOfRobin
 
                             Invoker invoker = new(menu: menu, name: "meat harvesting stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new(245, 140, 245);
-                            invoker.rectColor = color;
-                            invoker.outlineColor = color;
+                            invoker.bgColor = color;
                         }
 
                         return menu;
@@ -839,7 +838,7 @@ namespace SonOfRobin
 
                 case Name.GameOver:
                     {
-                        Menu menu = new(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
                         new Invoker(menu: menu, name: "enter spectator mode", closesMenu: true, taskName: Scheduler.TaskName.SetSpectatorMode, executeHelper: true);
                         new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
@@ -860,7 +859,7 @@ namespace SonOfRobin
 
                 case Name.Load:
                     {
-                        Menu menu = new(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
                             Scheduler.TaskName taskName;
@@ -900,24 +899,25 @@ namespace SonOfRobin
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
                             {
-                                loadInvoker.rectColor = Color.DarkRed;
+                                loadInvoker.bgColor = Color.DarkRed;
                                 loadInvoker.textColor = new Color(255, 116, 82);
                             }
                         }
-
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
                         return menu;
                     }
 
                 case Name.Save:
                     {
-                        Menu menu = new(templateName: templateName, name: "SAVE GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "SAVE GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         World world = World.GetTopWorld();
 
@@ -939,19 +939,20 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
                         return menu;
                     }
 
                 case Name.ExportSave:
                     {
-                        Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
@@ -962,19 +963,20 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
                         return menu;
                     }
 
                 case Name.ImportSave:
                     {
-                        Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         string importPath = SonOfRobinGame.downloadsPath;
                         if (!Directory.Exists(importPath)) importPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -994,18 +996,19 @@ namespace SonOfRobin
                         {
                             Separator separator = new Separator(menu: menu, name: "no saves to import")
                             {
-                                rectColor = Color.DarkRed,
+                                bgColor = Color.DarkRed,
                                 textColor = new Color(255, 116, 82)
                             };
                         }
-
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
                         return menu;
                     }
 
@@ -1040,7 +1043,7 @@ namespace SonOfRobin
 
                 case Name.Debug:
                     {
-                        Menu menu = new(templateName: templateName, name: "DEBUG MENU", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "DEBUG MENU", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         World world = World.GetTopWorld();
                         bool nonDemoWorldActive = world != null && !world.demoMode;
@@ -1096,7 +1099,7 @@ namespace SonOfRobin
 
                 case Name.Shelter:
                     {
-                        Menu menu = new(templateName: templateName, name: "SHELTER", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.ClothRustle1, soundClose: SoundData.Name.ClothRustle2)
+                        Menu menu = new(templateName: templateName, name: "SHELTER", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.ClothRustle1, soundClose: SoundData.Name.ClothRustle2, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver)
                         {
                             bgColor = Color.DarkBlue * 0.7f
                         };
@@ -1107,9 +1110,15 @@ namespace SonOfRobin
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
-                        menu.EntriesRectColor = Color.DarkBlue;
-                        menu.EntriesTextColor = Color.White;
-                        menu.EntriesOutlineColor = Color.DodgerBlue;
+                        foreach (Entry entry in menu.entryList)
+                        {
+                            if (entry.GetType() != typeof(Separator))
+                            {
+                                entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.Message);
+                                entry.bgColor = new Color(0, 106, 199);
+                                entry.textColor = Color.White;
+                            }
+                        }
 
                         return menu;
                     }
@@ -1144,7 +1153,7 @@ namespace SonOfRobin
                 case Name.Tutorials:
                     {
                         World world = World.GetTopWorld();
-                        Menu menu = new(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, triSliceBGForNameEntry: TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuSilver));
+                        Menu menu = new(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         foreach (Tutorials.Tutorial tutorial in Tutorials.TutorialsInMenu)
                         {
@@ -1154,13 +1163,13 @@ namespace SonOfRobin
                             }
                         }
 
-                        new Separator(menu: menu, name: "", isEmpty: true);
-                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
-
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         return menu;
                     }
@@ -1276,7 +1285,7 @@ namespace SonOfRobin
 
             List<PieceStorage> storageList = player.GetCraftStoragesToTakeFrom(showCraftMarker: true);
 
-            Menu menu = new(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null, soundOpen: soundOpen);
+            Menu menu = new(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null, soundOpen: soundOpen, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
             menu.bgColor = Color.LemonChiffon * 0.5f;
 
             var recipeList = Craft.GetRecipesForCategory(category: category, includeHidden: false, discoveredRecipes: world.discoveredRecipesForPieces);
@@ -1284,12 +1293,12 @@ namespace SonOfRobin
             {
                 var craftParams = new Dictionary<string, object> { { "recipe", recipe }, { "craftOnTheGround", false } };
 
-                new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: craftParams, recipe: recipe, storageList: storageList);
+                CraftInvoker craftInvoker = new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: craftParams, recipe: recipe, storageList: storageList);
+                craftInvoker.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
             }
 
-            menu.EntriesRectColor = Color.SaddleBrown;
-            menu.EntriesTextColor = Color.PaleGoldenrod;
-            menu.EntriesOutlineColor = Color.SaddleBrown;
+            // menu.EntriesRectColor = new Color(235, 176, 0);
+            // menu.EntriesTextColor = Color.PaleGoldenrod;
 
             return menu;
         }

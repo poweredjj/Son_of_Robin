@@ -42,7 +42,7 @@ namespace SonOfRobin
         public readonly object templateExecuteHelper; // needed for correct rebuild
         private bool creationComplete;
 
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke, TriSliceBG triSliceBGForNameEntry = default) :
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke, TriSliceBG.Preset nameEntryBgPreset = TriSliceBG.Preset.MenuSilver) :
             base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.creationComplete = false;
@@ -73,11 +73,7 @@ namespace SonOfRobin
             this.soundInvoke = new Sound(soundInvoke);
 
             Separator separator = new Separator(menu: this, name: this.name);
-            if (triSliceBGForNameEntry.isActive)
-            {
-                separator.triSliceBG = triSliceBGForNameEntry;
-                separator.textColor = Color.White;
-            }
+            separator.triSliceBG = TriSliceBG.GetBGForPreset(nameEntryBgPreset);
 
             this.SetTouchLayout();
             this.AddStartTransitions();
@@ -91,46 +87,11 @@ namespace SonOfRobin
             {
                 return this.layout switch
                 {
-                    Layout.Middle => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.7f),
-                    Layout.Left => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f),
-                    Layout.Right => Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f),
+                    Layout.Middle => (int)(SonOfRobinGame.VirtualWidth * 0.7f),
+                    Layout.Left => (int)(SonOfRobinGame.VirtualWidth * 0.65f),
+                    Layout.Right => (int)(SonOfRobinGame.VirtualWidth * 0.65f),
                     _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
                 };
-            }
-        }
-
-        public Color EntriesTextColor
-        {
-            set
-            {
-                foreach (Entry entry in this.entryList)
-                {
-                    if (entry.GetType() != typeof(Separator)) entry.textColor = value;
-                    else entry.rectColor = value;
-                }
-            }
-        }
-
-        public Color EntriesRectColor
-        {
-            set
-            {
-                foreach (Entry entry in this.entryList)
-                {
-                    if (entry.GetType() != typeof(Separator)) entry.rectColor = value;
-                    else entry.textColor = value;
-                }
-            }
-        }
-
-        public Color EntriesOutlineColor
-        {
-            set
-            {
-                foreach (Entry entry in this.entryList)
-                {
-                    entry.outlineColor = value;
-                }
             }
         }
 
@@ -635,12 +596,12 @@ namespace SonOfRobin
 
             Rectangle scrollWholeRect = this.ScrollWholeRect;
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.Opacity);
-            Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].outlineColor * 0.5f * this.viewParams.Opacity, borderWidth: 2);
+            Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].bgColor * 0.8f * this.viewParams.Opacity, borderWidth: 2);
 
             int scrollPos = (int)(this.CurrentScrollPosition * this.ScrollbarMultiplier);
 
             Rectangle widgetRect = new Rectangle(this.ScrollbarPosX, scrollPos, this.ScrollbarWidth, this.ScrollbarWidgetHeight);
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, widgetRect, this.entryList[0].outlineColor * 0.75f * this.viewParams.Opacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, widgetRect, this.entryList[0].bgColor * 0.75f * this.viewParams.Opacity);
             Helpers.DrawRectangleOutline(rect: widgetRect, color: this.entryList[0].textColor * this.viewParams.Opacity, borderWidth: 2);
         }
 

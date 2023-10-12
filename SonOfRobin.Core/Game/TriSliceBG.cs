@@ -11,14 +11,13 @@ namespace SonOfRobin
         {
             Message,
             Buff,
+            MenuGray,
             MenuBrown,
             MenuSilver,
             MenuGold,
         }
 
         private static readonly Dictionary<Preset, TriSliceBG> bgByPreset = new Dictionary<Preset, TriSliceBG>();
-
-        public readonly bool isActive;
 
         private readonly Texture2D textureLeft;
         private readonly Texture2D textureMid;
@@ -37,8 +36,6 @@ namespace SonOfRobin
 
         private TriSliceBG(Texture2D textureLeft, Texture2D textureMid, Texture2D textureRight)
         {
-            this.isActive = true;
-
             if (textureLeft.Height != textureMid.Height || textureLeft.Height != textureRight.Height) throw new ArgumentException("Height of all textures must be equal.");
 
             this.textureLeft = textureLeft;
@@ -126,6 +123,11 @@ namespace SonOfRobin
                                                 textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownLeft),
                                                 textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownMid),
                                                 textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuBrownRight)),
+
+                    Preset.MenuGray => new TriSliceBG(
+                                                textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGrayLeft),
+                                                textureMid: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGrayMid),
+                                                textureRight: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuGrayRight)),
 
                     Preset.MenuSilver => new TriSliceBG(
                                                 textureLeft: TextureBank.GetTexture(TextureBank.TextureName.TriSliceBGMenuSilverLeft),

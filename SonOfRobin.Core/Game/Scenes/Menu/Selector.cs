@@ -63,8 +63,6 @@ namespace SonOfRobin
         {
             this.activeIndex = 0;
             this.SetDefaultValue();
-
-            this.rectColor = Color.SteelBlue;
         }
 
         private void SetDefaultValue()

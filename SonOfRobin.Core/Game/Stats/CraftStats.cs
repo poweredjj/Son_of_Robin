@@ -214,8 +214,7 @@ namespace SonOfRobin
                     string nameString = showPageCounter ? $"{header.ToLower()} - page {pageCounter}" : $"{header.ToLower()}";
                     Invoker invoker = new Invoker(menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
 
-                    invoker.rectColor = color;
-                    invoker.outlineColor = color;
+                    invoker.bgColor = color;
 
                     pageCounter++;
                     pieceCounter = 0;

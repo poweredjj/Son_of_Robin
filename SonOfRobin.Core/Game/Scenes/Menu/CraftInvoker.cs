@@ -95,20 +95,18 @@ namespace SonOfRobin
                 this.UpdateHintWindow();
             }
 
-            this.GetOpacity(active: active);
-            float opacityFade = this.OpacityFade;
+            float opacity = this.GetOpacity(active: active);
             Rectangle outerEntryRect = this.Rect;
-            if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, outerEntryRect, this.rectColor * opacityFade * 2);
+
+            this.triSliceBG.Draw(triSliceRect: outerEntryRect, color: this.bgColor * opacity * this.menu.viewParams.Opacity, keepExactRectSize: true);
 
             float innerMargin = outerEntryRect.Height * 0.1f;
             Rectangle innerEntryRect = new Rectangle(outerEntryRect.X + (int)innerMargin, outerEntryRect.Y + (int)innerMargin, outerEntryRect.Width - (int)(innerMargin * 2), outerEntryRect.Height - (int)(innerMargin * 2));
 
-            Helpers.DrawRectangleOutline(rect: outerEntryRect, color: this.outlineColor, borderWidth: 2);
-
             // making a set of draw data structs
 
             // calculating rects
-            int rectWidth = (int)(Math.Min(innerEntryRect.Width / ((float)this.drawParamsList.Count - 0.5f), innerEntryRect.Height * 2));
+            int rectWidth = (int)Math.Min(innerEntryRect.Width / ((float)this.drawParamsList.Count - 0.5f), innerEntryRect.Height * 2);
             int margin = innerEntryRect.Width / this.drawParamsList.Count > rectWidth ? (int)innerMargin * 3 : (int)innerMargin;
 
             rectWidth -= margin;
