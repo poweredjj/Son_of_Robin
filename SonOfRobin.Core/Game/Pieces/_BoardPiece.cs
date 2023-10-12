@@ -85,6 +85,7 @@ namespace SonOfRobin
         public const float minBurnVal = 0.5f;
 
         public readonly World world;
+        public readonly Level level;
         public readonly int id;
         public readonly PieceTemplate.Name name;
         public Sprite sprite;
@@ -123,6 +124,7 @@ namespace SonOfRobin
             byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null)
         {
             this.world = world;
+            this.level = world?.ActiveLevel;
             this.name = name;
             this.id = id;
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
@@ -264,7 +266,7 @@ namespace SonOfRobin
                 if (this.heatLevel > 0)
                 {
                     this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.heatLevel, boardPiece: this, framesLeft: -1));
-                    this.world.heatedPieces.Add(this);
+                    this.level.heatedPieces.Add(this);
                 }
 
                 if (this.IsBurning)
@@ -478,15 +480,15 @@ namespace SonOfRobin
 
         public void AddToPieceCount()
         {
-            this.world.pieceCountByName[this.name]++;
-            if (!this.world.pieceCountByClass.ContainsKey(this.GetType())) this.world.pieceCountByClass[this.GetType()] = 0;
-            this.world.pieceCountByClass[this.GetType()]++;
+            this.level.pieceCountByName[this.name]++;
+            if (!this.level.pieceCountByClass.ContainsKey(this.GetType())) this.level.pieceCountByClass[this.GetType()] = 0;
+            this.level.pieceCountByClass[this.GetType()]++;
         }
 
         public void RemoveFromPieceCount()
         {
-            this.world.pieceCountByName[this.name]--;
-            this.world.pieceCountByClass[this.GetType()]--;
+            this.level.pieceCountByName[this.name]--;
+            this.level.pieceCountByClass[this.GetType()]--;
         }
 
         public void GrowOlder(int timeDelta)
@@ -766,7 +768,7 @@ namespace SonOfRobin
             if (!this.sprite.IsOnBoard)
             {
                 this.heatLevel = 0; // changing the value directly
-                this.world.heatedPieces.Remove(this);
+                this.level.heatedPieces.Remove(this);
                 return;
             }
 
@@ -781,7 +783,7 @@ namespace SonOfRobin
 
             if (this.HeatLevel == 0)
             {
-                this.world.heatedPieces.Remove(this);
+                this.level.heatedPieces.Remove(this);
                 return;
             }
 

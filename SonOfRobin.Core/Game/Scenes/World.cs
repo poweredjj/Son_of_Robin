@@ -54,13 +54,6 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-        public Dictionary<PieceTemplate.Name, int> pieceCountByName;
-        public Dictionary<Type, int> pieceCountByClass;
-
-        public Queue<Cell> plantCellsQueue;
-        public Queue<Sprite> plantSpritesQueue;
-        public readonly HashSet<BoardPiece> heatedPieces;
-        public Queue<Sprite> nonPlantSpritesQueue;
         public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
@@ -87,7 +80,7 @@ namespace SonOfRobin
         {
             this.seed = seed;
             this.random = new Random(seed);
-            this.IslandLevel = new Level(type: Level.Type.Island, seed: this.seed, width: width, height: height);
+            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, seed: this.seed, width: width, height: height);
             this.ActiveLevel = this.IslandLevel;
 
             this.demoMode = demoMode;
@@ -121,18 +114,7 @@ namespace SonOfRobin
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
-
-
-
-
-            this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
-            foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
-            this.pieceCountByClass = new Dictionary<Type, int> { };
             this.HintEngine = new HintEngine(world: this);
-            this.plantSpritesQueue = new Queue<Sprite>();
-            this.nonPlantSpritesQueue = new Queue<Sprite>();
-            this.heatedPieces = new HashSet<BoardPiece>();
-            this.plantCellsQueue = new Queue<Cell>();
             this.ProcessedNonPlantsCount = 0;
             this.ProcessedPlantsCount = 0;
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
@@ -376,14 +358,14 @@ namespace SonOfRobin
                 int pieceCount = 0;
                 foreach (PieceTemplate.Name templateName in PieceTemplate.allNames)
                 {
-                    pieceCount += this.pieceCountByName[templateName];
+                    pieceCount += this.ActiveLevel.pieceCountByName[templateName];
                 }
                 return pieceCount;
             }
         }
 
         public int HeatQueueSize
-        { get { return this.heatedPieces.Count; } }
+        { get { return this.ActiveLevel.heatedPieces.Count; } }
 
         public void CompleteCreation()
         {
@@ -583,7 +565,7 @@ namespace SonOfRobin
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
-                    if (newBoardPiece.HeatLevel > 0) this.heatedPieces.Add(newBoardPiece);
+                    if (newBoardPiece.HeatLevel > 0) this.ActiveLevel.heatedPieces.Add(newBoardPiece);
 
                     if (PieceInfo.IsPlayer(templateName))
                     {
@@ -736,7 +718,7 @@ namespace SonOfRobin
                 int minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
                 if (creationData.maxAmount > -1) minAmount = Math.Min(minAmount, creationData.maxAmount);
 
-                int amountToCreate = Math.Max(minAmount - this.pieceCountByName[creationData.name], 0);
+                int amountToCreate = Math.Max(minAmount - this.ActiveLevel.pieceCountByName[creationData.name], 0);
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
@@ -907,6 +889,8 @@ namespace SonOfRobin
             this.weather.Update();
             this.swayManager.Update();
 
+            this.ActiveLevel.Update();
+
             if (this.soundPaused && this.inputActive)
             {
                 ManagedSoundInstance.ResumeAll();
@@ -1020,14 +1004,14 @@ namespace SonOfRobin
         public void RemovePieceFromHeatQueue(BoardPiece boardPiece)
         {
             try
-            { this.heatedPieces.Remove(boardPiece); }
+            { this.ActiveLevel.heatedPieces.Remove(boardPiece); }
             catch (KeyNotFoundException)
             { }
         }
 
         private void ProcessHeatQueue()
         {
-            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.heatedPieces))
+            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.ActiveLevel.heatedPieces))
             {
                 boardPiece.ProcessHeat();
             }
@@ -1043,11 +1027,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.nonPlantSpritesQueue.Count == 0)
+            if (this.ActiveLevel.nonPlantSpritesQueue.Count == 0)
             {
                 // var startTime = DateTime.Now; // for testing
 
-                this.nonPlantSpritesQueue = new Queue<Sprite>(
+                this.ActiveLevel.nonPlantSpritesQueue = new Queue<Sprite>(
                     this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants)
                     .Where(sprite => sprite.boardPiece.FramesSinceLastProcessed > 0)
                     .OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed)
@@ -1061,9 +1045,9 @@ namespace SonOfRobin
 
             while (true)
             {
-                if (nonPlantSpritesQueue.Count == 0) return;
+                if (ActiveLevel.nonPlantSpritesQueue.Count == 0) return;
 
-                BoardPiece currentNonPlant = this.nonPlantSpritesQueue.Dequeue().boardPiece;
+                BoardPiece currentNonPlant = this.ActiveLevel.nonPlantSpritesQueue.Dequeue().boardPiece;
 
                 this.ProcessOneNonPlant(currentNonPlant);
                 this.ProcessedNonPlantsCount++;
@@ -1112,36 +1096,36 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.plantCellsQueue.Count == 0)
+            if (this.ActiveLevel.plantCellsQueue.Count == 0)
             {
-                this.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
+                this.ActiveLevel.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
                 // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
-            if (this.plantSpritesQueue.Count == 0)
+            if (this.ActiveLevel.plantSpritesQueue.Count == 0)
             {
                 var newPlantSpritesList = new List<Sprite>();
 
                 while (true)
                 {
-                    Cell cell = this.plantCellsQueue.Dequeue();
+                    Cell cell = this.ActiveLevel.plantCellsQueue.Dequeue();
                     newPlantSpritesList.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
 
-                    if (plantCellsQueue.Count == 0 || !this.CanProcessMoreOffCameraRectPiecesNow) break;
+                    if (this.ActiveLevel.plantCellsQueue.Count == 0 || !this.CanProcessMoreOffCameraRectPiecesNow) break;
                 }
 
-                this.plantSpritesQueue = new Queue<Sprite>(newPlantSpritesList);
+                this.ActiveLevel.plantSpritesQueue = new Queue<Sprite>(newPlantSpritesList);
 
                 if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             while (true)
             {
-                if (this.plantSpritesQueue.Count == 0) return;
+                if (this.ActiveLevel.plantSpritesQueue.Count == 0) return;
 
-                Plant currentPlant = (Plant)this.plantSpritesQueue.Dequeue().boardPiece;
+                Plant currentPlant = (Plant)this.ActiveLevel.plantSpritesQueue.Dequeue().boardPiece;
                 if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;
 
                 currentPlant.StateMachineWork();
@@ -1316,7 +1300,7 @@ namespace SonOfRobin
             foreach (var kvp in piecesToCount)
             {
                 PieceTemplate.Name pieceName = kvp.Key;
-                if (this.pieceCountByName[pieceName] < kvp.Value) return false;
+                if (this.ActiveLevel.pieceCountByName[pieceName] < kvp.Value) return false;
             }
 
             return true;

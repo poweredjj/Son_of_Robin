@@ -387,15 +387,9 @@ namespace SonOfRobin
                 this.SetMovementSpeed(0.25f);
             }
 
-            Rectangle searchRect = firstRun ?
-                new Rectangle(
-                x: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.ActiveLevel.width), min: 0, max: this.world.ActiveLevel.width - 2000),
-                y: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.ActiveLevel.height), min: 0, max: this.world.ActiveLevel.height - 1000),
-                width: SonOfRobinGame.VirtualWidth,
-                height: SonOfRobinGame.VirtualHeight)
-                : this.viewRect;
+            Rectangle searchRect = firstRun ? new Rectangle(x: 0, y: 0, width: this.world.ActiveLevel.width, height: this.world.ActiveLevel.height) : this.viewRect;
 
-            for (int searchNo = 0; searchNo < 4; searchNo++)
+            for (int searchNo = 0; searchNo < (firstRun ? 1 : 4); searchNo++)
             {
                 var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: searchRect, addPadding: false);
 
@@ -411,6 +405,7 @@ namespace SonOfRobin
                 {
                     var index = this.world.random.Next(cameraTargets.Count);
                     this.TrackPiece(trackedPiece: cameraTargets[index].boardPiece, moveInstantly: firstRun);
+
                     return;
                 }
             }

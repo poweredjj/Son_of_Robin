@@ -742,7 +742,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < noOfChildren; i++)
             {
-                if (this.world.pieceCountByName[this.name] >= this.world.ActiveLevel.maxAnimalsPerName)
+                if (this.world.ActiveLevel.pieceCountByName[this.name] >= this.world.ActiveLevel.maxAnimalsPerName)
                 {
                     var fat = this.pregnancyMass;
                     this.Mass = Math.Min(this.Mass + fat, this.pieceInfo.animalMaxMass);

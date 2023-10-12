@@ -47,8 +47,8 @@ namespace SonOfRobin
                 else debugLines.Add($"{world.debugText}");
             }
 
-            int plantCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
-            int animalCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+            int plantCount = worldActive && world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.ActiveLevel.pieceCountByClass[typeof(Plant)] : 0;
+            int animalCount = worldActive && world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.ActiveLevel.pieceCountByClass[typeof(Animal)] : 0;
 
             if (plantCount > 0 && animalCount > 0) debugLines.Add($"plants {plantCount}, animals {animalCount}");
 

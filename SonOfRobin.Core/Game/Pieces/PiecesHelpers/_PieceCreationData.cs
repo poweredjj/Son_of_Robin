@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public readonly struct PieceCreationData
     {
-        public readonly Level.Type levelType;
+        public readonly Level.LevelType levelType;
         public readonly PieceTemplate.Name name;
         public readonly float multiplier;
         public readonly int tempDecorMultiplier;
@@ -13,7 +13,7 @@ namespace SonOfRobin
         public readonly bool temporaryDecoration;
         public readonly bool doNotReplenish;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false, Level.Type levelType = Level.Type.Island)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false, Level.LevelType levelType = Level.LevelType.Island)
         {
             this.levelType = levelType;
             this.name = name;
@@ -24,7 +24,7 @@ namespace SonOfRobin
             this.doNotReplenish = doNotReplenish;
         }
 
-        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level.Type levelType)
+        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level.LevelType levelType)
         {
             var dataList = new List<PieceCreationData>
             {

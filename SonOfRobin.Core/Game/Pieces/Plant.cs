@@ -165,7 +165,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < 10; i++) // infinite loop would cause locking when plant has enough mass, but no free spot for a "child" can be found
             {
-                bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
+                bool canReproduce = this.pieceInfo.plantMaxExistingNumber == 0 || this.world.ActiveLevel.pieceCountByName[this.name] < this.pieceInfo.plantMaxExistingNumber;
                 bool haveEnoughMass = canReproduce && this.Mass > this.pieceInfo.plantReproductionData.massNeeded + this.pieceInfo.startingMass;
 
                 if (haveEnoughMass)

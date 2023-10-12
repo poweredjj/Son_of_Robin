@@ -57,7 +57,7 @@ namespace SonOfRobin
 
             int mainPieceOwnedCount = PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp ?
                 PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: recipe.pieceToCreate) :
-                this.storageList[0].world.pieceCountByName[recipe.pieceToCreate];
+                this.storageList[0].world.ActiveLevel.pieceCountByName[recipe.pieceToCreate];
 
             this.drawParamsList.Add(new InvokerDrawParams(
                 isMain: true,

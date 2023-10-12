@@ -669,8 +669,8 @@ namespace SonOfRobin
 
                         // island info
                         {
-                            int plantCount = world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
-                            int animalCount = world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+                            int plantCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.ActiveLevel.pieceCountByClass[typeof(Plant)] : 0;
+                            int animalCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.ActiveLevel.pieceCountByClass[typeof(Animal)] : 0;
 
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
