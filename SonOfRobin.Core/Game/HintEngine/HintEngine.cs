@@ -373,9 +373,9 @@ namespace SonOfRobin
                             Vector2 seaOffset = new(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
 
                             int edgeDistLeft = (int)player.sprite.position.X;
-                            int edgeDistRight = (int)(this.world.width - player.sprite.position.X);
+                            int edgeDistRight = (int)(this.world.ActiveLevel.width - player.sprite.position.X);
                             int edgeDistUp = (int)player.sprite.position.Y;
-                            int edgeDistDown = (int)(this.world.height - player.sprite.position.Y);
+                            int edgeDistDown = (int)(this.world.ActiveLevel.height - player.sprite.position.Y);
                             int edgeDistX = edgeDistLeft < edgeDistRight ? -edgeDistLeft : edgeDistRight;
                             int edgeDistY = edgeDistUp < edgeDistDown ? -edgeDistUp : edgeDistDown;
                             if (edgeDistX < 0) seaOffset.X *= -1;

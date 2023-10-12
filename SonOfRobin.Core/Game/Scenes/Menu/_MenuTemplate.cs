@@ -677,7 +677,7 @@ namespace SonOfRobin
 
                             textLines.Add("Island info\n");
 
-                            textLines.Add($"| Size: {world.width}x{world.height}");
+                            textLines.Add($"| Size: {world.IslandLevel.width}x{world.IslandLevel.height}");
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Map].texture);
 
                             textLines.Add($"| All Objects: {world.PieceCount}");

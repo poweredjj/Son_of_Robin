@@ -12,35 +12,28 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
+        public const int buildDuration = (int)(60 * 2.5);
+        private const int populatingFramesTotal = 8;
         public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
         public bool WorldCreationInProgress { get; private set; }
 
-        public const int buildDuration = (int)(60 * 2.5);
-        private const int populatingFramesTotal = 8;
         private int populatingFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
-
         private Task backgroundTask;
         private Object saveGameData;
         public Dictionary<int, BoardPiece> piecesByIDForDeserialization; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
-
         private bool soundPaused;
         public bool BuildMode { get; private set; }
-
         private bool spectatorMode;
         private bool cineMode;
         public readonly PieceTemplate.Name initialPlayerName;
         public readonly int seed;
         public readonly int resDivider;
-        public int maxAnimalsPerName;
         public readonly Random random;
-        public readonly int width;
-        public readonly int height;
-        public readonly Rectangle worldRect;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
         public RenderTarget2D CameraViewRenderTarget { get; private set; }
@@ -57,13 +50,13 @@ namespace SonOfRobin
 
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
+        public Level ActiveLevel { get; private set; }
+        public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
-        private readonly List<PieceCreationData> creationDataListRegular;
-        private readonly List<PieceCreationData> creationDataListTemporaryDecorations;
-        private readonly List<Sprite> temporaryDecorationSprites;
+
         public Queue<Cell> plantCellsQueue;
         public Queue<Sprite> plantSpritesQueue;
         public readonly HashSet<BoardPiece> heatedPieces;
@@ -94,6 +87,8 @@ namespace SonOfRobin
         {
             this.seed = seed;
             this.random = new Random(seed);
+            this.IslandLevel = new Level(type: Level.Type.Island, seed: this.seed, width: width, height: height);
+            this.ActiveLevel = this.IslandLevel;
 
             this.demoMode = demoMode;
             this.cineMode = false;
@@ -126,24 +121,9 @@ namespace SonOfRobin
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
-            this.width = width;
-            this.height = height;
-            this.worldRect = new Rectangle(x: 0, y: 0, width: this.width, height: this.height);
-            this.viewParams.Width = width; // it does not need to be updated, because world size is constant
-            this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
-            this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
-            MessageLog.Add(debugMessage: true, text: $"maxAnimalsPerName {maxAnimalsPerName}");
 
-            var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
-            this.creationDataListRegular = creationDataList.Where(data => !data.temporaryDecoration).ToList();
-            this.creationDataListTemporaryDecorations = creationDataList.Where(data => data.temporaryDecoration).ToList();
 
-            foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
-            {
-                if (PieceInfo.GetInfo(pieceCreationData.name).serialize) throw new ArgumentException($"Serialized piece cannot be temporary - {pieceCreationData.name}.");
-            }
-            this.temporaryDecorationSprites = new List<Sprite>();
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
@@ -198,13 +178,13 @@ namespace SonOfRobin
             this.CameraViewRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
-            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} remove() completed.", textColor: new Color(255, 180, 66));
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.IslandLevel.width}x{this.IslandLevel.height} remove() completed.", textColor: new Color(255, 180, 66));
         }
 
         ~World()
         {
             DestroyedNotReleasedWorldCount--;
-            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.width}x{this.height} no longer referenced.", textColor: new Color(120, 255, 174));
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.IslandLevel.width}x{this.IslandLevel.height} no longer referenced.", textColor: new Color(120, 255, 174));
         }
 
         public PieceTemplate.Name PlayerName
@@ -557,7 +537,6 @@ namespace SonOfRobin
                 this.islandClock.Initialize((int)(Int64)headerData["clockTimeElapsed"]);
                 this.TimePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
                 this.mapEnabled = (bool)headerData["MapEnabled"];
-                this.maxAnimalsPerName = (int)(Int64)headerData["maxAnimalsPerName"];
                 this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
@@ -747,10 +726,10 @@ namespace SonOfRobin
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
             if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return 0;
 
-            int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
+            int minPieceAmount = Math.Max(Convert.ToInt32((long)this.ActiveLevel.width * (long)this.ActiveLevel.height / 300000 * multiplier), 0); // 300000
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
 
-            foreach (PieceCreationData creationData in creationDataListRegular)
+            foreach (PieceCreationData creationData in this.ActiveLevel.creationDataArrayRegular)
             {
                 if (doNotCreatePiecesList.Contains(creationData.name) || (creationData.doNotReplenish && !initialCreation)) continue;
 
@@ -820,7 +799,7 @@ namespace SonOfRobin
                 .Where(cell => !cell.temporaryDecorationsCreated)
                 .OrderBy(x => this.random.Next()))
             {
-                foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
+                foreach (PieceCreationData pieceCreationData in this.ActiveLevel.creationDataArrayTemporaryDecorations)
                 {
                     if (cell.allowedNames.Contains(pieceCreationData.name))
                     {
@@ -833,7 +812,7 @@ namespace SonOfRobin
                                 var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: pieceCreationData.name, world: this, position: randomPosition);
                                 if (newBoardPiece.sprite.IsOnBoard)
                                 {
-                                    this.temporaryDecorationSprites.Add(newBoardPiece.sprite);
+                                    this.ActiveLevel.temporaryDecorationSprites.Add(newBoardPiece.sprite);
                                     newBoardPiece.isTemporaryDecoration = true;
                                     createdDecorationsCount++;
                                     break;
@@ -860,7 +839,7 @@ namespace SonOfRobin
             if (createdDecorationsCount > 0)
             {
                 TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
+                MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.ActiveLevel.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -874,13 +853,13 @@ namespace SonOfRobin
             Rectangle extendedCameraRect = this.camera.viewRect;
             extendedCameraRect.Inflate(this.camera.viewRect.Width, this.camera.viewRect.Height); // to destroying newly created pieces around camera edge
 
-            foreach (Sprite sprite in this.temporaryDecorationSprites.ToList())
+            foreach (Sprite sprite in this.ActiveLevel.temporaryDecorationSprites.ToList())
             {
                 if (!extendedCameraRect.Contains(sprite.position) && sprite.boardPiece.exists)
                 {
                     if (sprite.currentCell != null) sprite.currentCell.temporaryDecorationsCreated = false;
                     sprite.boardPiece.Destroy();
-                    this.temporaryDecorationSprites.Remove(sprite);
+                    this.ActiveLevel.temporaryDecorationSprites.Remove(sprite);
                     destroyedDecorationsCount++;
                 }
 
@@ -903,6 +882,9 @@ namespace SonOfRobin
             {
                 analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove) * new Vector2(this.camera.viewRect.Width, this.camera.viewRect.Height) * new Vector2(0.05f, 0.03f);
             }
+
+            this.viewParams.Width = this.ActiveLevel.width;
+            this.viewParams.Height = this.ActiveLevel.height;
 
             this.camera.Update(cameraCorrection: analogCameraCorrection, calculateAheadCorrection: true);
             this.camera.SetViewParams(this);
@@ -1325,8 +1307,8 @@ namespace SonOfRobin
         public Vector2 KeepVector2InWorldBounds(Vector2 vector2)
         {
             return new Vector2(
-                x: Math.Clamp(value: vector2.X, min: 0, max: this.width - 1),
-                y: Math.Clamp(value: vector2.Y, min: 0, max: this.height - 1));
+                x: Math.Clamp(value: vector2.X, min: 0, max: this.ActiveLevel.width - 1),
+                y: Math.Clamp(value: vector2.Y, min: 0, max: this.ActiveLevel.height - 1));
         }
 
         public bool SpecifiedPiecesCountIsMet(Dictionary<PieceTemplate.Name, int> piecesToCount)

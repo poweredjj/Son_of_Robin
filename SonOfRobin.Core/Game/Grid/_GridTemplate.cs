@@ -178,8 +178,8 @@ namespace SonOfRobin
 
                 if (existingWorlds.Where(currentWorld =>
                 currentWorld.seed == gridTemplate.seed &&
-                currentWorld.width == gridTemplate.width &&
-                currentWorld.height == gridTemplate.height
+                currentWorld.IslandLevel.width == gridTemplate.width &&
+                currentWorld.IslandLevel.height == gridTemplate.height
                 ).Any())
                 {
                     pathsToKeep.Add(templatePath);

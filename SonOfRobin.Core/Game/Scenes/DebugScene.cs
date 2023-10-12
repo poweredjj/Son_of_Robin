@@ -213,7 +213,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(world.width), BoardPiece.Random.Next(world.height)));
+                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(world.ActiveLevel.width), BoardPiece.Random.Next(world.ActiveLevel.height)));
                     if (hasBeenMoved) break;
                 }
             }

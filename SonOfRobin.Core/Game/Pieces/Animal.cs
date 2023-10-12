@@ -399,8 +399,8 @@ namespace SonOfRobin
                 for (int i = 0; i < 10; i++) // trying to set target, which can be reached
                 {
                     Vector2 targetPos = new(
-                        Math.Clamp(value: (int)this.sprite.position.X + this.world.random.Next(-2000, 2000), min: 0, max: this.world.width - 1),
-                        Math.Clamp(value: (int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), min: 0, max: this.world.height - 1));
+                        Math.Clamp(value: (int)this.sprite.position.X + this.world.random.Next(-2000, 2000), min: 0, max: this.world.ActiveLevel.width - 1),
+                        Math.Clamp(value: (int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), min: 0, max: this.world.ActiveLevel.height - 1));
 
                     if (this.sprite.allowedTerrain.CanStandHere(world: this.world, position: targetPos))
                     {
@@ -742,7 +742,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < noOfChildren; i++)
             {
-                if (this.world.pieceCountByName[this.name] >= this.world.maxAnimalsPerName)
+                if (this.world.pieceCountByName[this.name] >= this.world.ActiveLevel.maxAnimalsPerName)
                 {
                     var fat = this.pregnancyMass;
                     this.Mass = Math.Min(this.Mass + fat, this.pieceInfo.animalMaxMass);

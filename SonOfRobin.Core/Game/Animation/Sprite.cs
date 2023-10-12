@@ -386,9 +386,9 @@ namespace SonOfRobin
 
                 Vector2 newPos = startPosition + offset;
                 newPos.X = Math.Max(newPos.X, 0);
-                newPos.X = Math.Min(newPos.X, this.world.width - 1);
+                newPos.X = Math.Min(newPos.X, this.world.ActiveLevel.width - 1);
                 newPos.Y = Math.Max(newPos.Y, 0);
-                newPos.Y = Math.Min(newPos.Y, this.world.height - 1);
+                newPos.Y = Math.Min(newPos.Y, this.world.ActiveLevel.height - 1);
 
                 bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                 if (hasBeenMoved) return true;
@@ -538,8 +538,8 @@ namespace SonOfRobin
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
             this.position = new Vector2(
-                x: (int)Math.Clamp(value: positionToCheck.X, min: 0, max: this.world.width - 1),
-                y: (int)Math.Clamp(value: positionToCheck.Y, min: 0, max: this.world.height - 1));
+                x: (int)Math.Clamp(value: positionToCheck.X, min: 0, max: this.world.ActiveLevel.width - 1),
+                y: (int)Math.Clamp(value: positionToCheck.Y, min: 0, max: this.world.ActiveLevel.height - 1));
             // to ensure integer values
 
             this.UpdateRects();
@@ -572,7 +572,7 @@ namespace SonOfRobin
         public bool CheckForCollision(bool ignoreDensity = false)
         {
             if (this.world == null) return false;
-            if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
+            if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.ActiveLevel.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.ActiveLevel.height) return true;
             if (this.IgnoresCollisions) return false;
 
             bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;

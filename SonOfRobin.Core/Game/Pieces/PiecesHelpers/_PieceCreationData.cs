@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public readonly struct PieceCreationData
     {
+        public readonly Level.Type levelType;
         public readonly PieceTemplate.Name name;
         public readonly float multiplier;
         public readonly int tempDecorMultiplier;
@@ -11,8 +13,9 @@ namespace SonOfRobin
         public readonly bool temporaryDecoration;
         public readonly bool doNotReplenish;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false, Level.Type levelType = Level.Type.Island)
         {
+            this.levelType = levelType;
             this.name = name;
             this.multiplier = multiplier;
             this.tempDecorMultiplier = tempDecorMultiplier;
@@ -21,7 +24,7 @@ namespace SonOfRobin
             this.doNotReplenish = doNotReplenish;
         }
 
-        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName)
+        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level.Type levelType)
         {
             var dataList = new List<PieceCreationData>
             {
@@ -94,7 +97,7 @@ namespace SonOfRobin
             //    dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
             //}
 
-            return dataList;
+            return dataList = dataList.Where(record => levelType == record.levelType).ToList();
         }
     }
 }

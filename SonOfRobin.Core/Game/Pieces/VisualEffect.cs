@@ -67,10 +67,10 @@ namespace SonOfRobin
             Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
             if (tweenPos == null)
             {
-                Vector2 waveTarget = new Vector2(this.world.width / 2, this.world.height / 2);
+                Vector2 waveTarget = new Vector2(this.world.ActiveLevel.width / 2, this.world.ActiveLevel.height / 2);
                 if (this.world.weather.WindPercentage > 0)
                 {
-                    Vector2 windTarget = new Vector2(this.world.width * this.world.weather.WindOriginX, this.world.height * this.world.weather.WindOriginY);
+                    Vector2 windTarget = new Vector2(this.world.ActiveLevel.width * this.world.weather.WindOriginX, this.world.ActiveLevel.height * this.world.weather.WindOriginY);
                     waveTarget = Vector2.Lerp(waveTarget, windTarget, this.world.weather.WindPercentage);
                 }
 
@@ -138,7 +138,7 @@ namespace SonOfRobin
                     {
                         collidingPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.SwimShallow);
 
-                        float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
+                        float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.ActiveLevel.width / 2, this.world.ActiveLevel.height / 2));
                         int pushDistance = this.world.random.Next(400, 800);
 
                         Vector2 pushMovement = new Vector2((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));

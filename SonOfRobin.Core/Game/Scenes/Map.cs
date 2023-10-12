@@ -152,8 +152,8 @@ namespace SonOfRobin
             int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
             int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
 
-            float multiplierX = (float)newWidth / (float)world.width;
-            float multiplierY = (float)newHeight / (float)world.height;
+            float multiplierX = (float)newWidth / (float)this.world.ActiveLevel.width;
+            float multiplierY = (float)newHeight / (float)this.world.ActiveLevel.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
             if (this.FinalMapToDisplay == null || this.FinalMapToDisplay.Width != newWidth || this.FinalMapToDisplay.Height != newHeight)
@@ -193,7 +193,7 @@ namespace SonOfRobin
             int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
             int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
 
-            float sourceMultiplier = 1f / (float)this.world.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
+            float sourceMultiplier = 1f / (float)this.world.ActiveLevel.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
 
             Rectangle srcRect = new Rectangle(0, 0, (int)(cellWidth * sourceMultiplier), (int)(cellHeight * sourceMultiplier));
             Rectangle destRect = new Rectangle(0, 0, destCellWidth, destCellHeight);
@@ -331,8 +331,8 @@ namespace SonOfRobin
 
         private void SetViewParamsForMiniature()
         {
-            this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
-            this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
+            this.viewParams.Width = (int)(this.world.ActiveLevel.width * this.scaleMultiplier);
+            this.viewParams.Height = (int)(this.world.ActiveLevel.height * this.scaleMultiplier);
             this.viewParams.ScaleX = Preferences.GlobalScale;
             this.viewParams.ScaleY = Preferences.GlobalScale;
             this.viewParams.PosX = 0;
@@ -484,8 +484,8 @@ namespace SonOfRobin
             {
                 Vector2 newPos = this.camera.TrackedPos + movement;
 
-                newPos.X = Math.Clamp(value: newPos.X, min: 0, max: this.world.width);
-                newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.height);
+                newPos.X = Math.Clamp(value: newPos.X, min: 0, max: this.world.ActiveLevel.width);
+                newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.ActiveLevel.height);
                 this.camera.TrackCoords(position: newPos, moveInstantly: moveInstantly);
             }
 
@@ -526,8 +526,8 @@ namespace SonOfRobin
 
             Texture2D mapTexture = TextureBank.GetTexture(TextureBank.TextureName.Map);
             Rectangle viewRect = this.camera.viewRect;
-            Rectangle worldRect = this.world.worldRect;
-            Rectangle extendedMapRect = this.world.worldRect;
+            Rectangle worldRect = this.world.ActiveLevel.levelRect;
+            Rectangle extendedMapRect = this.world.ActiveLevel.levelRect;
 
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 

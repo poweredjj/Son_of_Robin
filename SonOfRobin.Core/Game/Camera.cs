@@ -64,8 +64,8 @@ namespace SonOfRobin
 
         public void SetViewParams(Scene scene)
         {
-            scene.viewParams.Width = this.world.width;
-            scene.viewParams.Height = this.world.height;
+            scene.viewParams.Width = this.world.ActiveLevel.width;
+            scene.viewParams.Height = this.world.ActiveLevel.height;
             scene.viewParams.PosX = this.viewPos.X;
             scene.viewParams.PosY = this.viewPos.Y;
 
@@ -265,8 +265,8 @@ namespace SonOfRobin
 
             if (this.keepInWorldBounds)
             {
-                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.width - screenWidth - 1f); // do not use Math.Clamp, it might throw ArgumentException
-                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.height - screenHeight - 1f); // do not use Math.Clamp, it might throw ArgumentException
+                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.ActiveLevel.width - screenWidth - 1f); // do not use Math.Clamp, it might throw ArgumentException
+                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.ActiveLevel.height - screenHeight - 1f); // do not use Math.Clamp, it might throw ArgumentException
             }
 
             float xMax = xMin + screenWidth;
@@ -274,8 +274,8 @@ namespace SonOfRobin
 
             if (this.keepInWorldBounds)
             {
-                xMax = Math.Min(xMax, this.world.width);
-                yMax = Math.Min(yMax, this.world.height);
+                xMax = Math.Min(xMax, this.world.ActiveLevel.width);
+                yMax = Math.Min(yMax, this.world.ActiveLevel.height);
             }
 
             this.CurrentPos = viewCenter;
@@ -389,8 +389,8 @@ namespace SonOfRobin
 
             Rectangle searchRect = firstRun ?
                 new Rectangle(
-                x: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.width), min: 0, max: this.world.width - 2000),
-                y: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.height), min: 0, max: this.world.height - 1000),
+                x: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.ActiveLevel.width), min: 0, max: this.world.ActiveLevel.width - 2000),
+                y: (int)Math.Clamp(value: BoardPiece.Random.Next(0, this.world.ActiveLevel.height), min: 0, max: this.world.ActiveLevel.height - 1000),
                 width: SonOfRobinGame.VirtualWidth,
                 height: SonOfRobinGame.VirtualHeight)
                 : this.viewRect;

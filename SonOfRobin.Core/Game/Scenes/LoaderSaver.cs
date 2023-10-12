@@ -289,9 +289,8 @@ namespace SonOfRobin
                 var headerData = new Dictionary<string, Object>
                 {
                     { "seed", this.world.seed },
-                    { "width", this.world.width },
-                    { "height", this.world.height },
-                    { "maxAnimalsPerName", this.world.maxAnimalsPerName },
+                    { "width", this.world.IslandLevel.width },
+                    { "height", this.world.IslandLevel.height },
                     { "playerName", this.world.initialPlayerName },
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.CurrentFrame },
