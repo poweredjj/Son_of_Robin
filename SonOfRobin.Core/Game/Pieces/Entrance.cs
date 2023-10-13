@@ -30,7 +30,7 @@ namespace SonOfRobin
             {
                 new TextWindow(text: $"I can't enter this | cave, because the entrance has crumbled...", imageList: new List<Texture2D> { this.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                 return;
-            }
+            }          
 
             if (this.targetLevel == null)
             {
@@ -40,12 +40,22 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 100000), width: 15000, height: 15000);
-                Grid grid = new Grid(level: this.targetLevel, resDivider: this.world.resDivider);
-                this.targetLevel.AssignGrid(grid);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 9999), width: 20000, height: 20000);
+                this.targetLevel.AssignGrid(new Grid(level: this.targetLevel, resDivider: this.world.resDivider));
             }
 
-            string levelText = this.targetLevel.depth == 0 ? "" : $" level {this.targetLevel.depth}";
+            if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)
+            {
+                var confirmationData = new Dictionary<string, Object> {
+                            { "question", "Are you sure? You won't be able to come back." },
+                            { "taskName", Scheduler.TaskName.UseEntrance },
+                            { "executeHelper", this }, { "blocksUpdatesBelow", true } };
+
+                MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+                return;
+            }
+
+            string levelText = this.targetLevel.depth == 0 ? "" : $" level {this.targetLevel.depth} seed {this.targetLevel.seed}";
             string fullText = $"Entering {this.targetLevel.levelType.ToString().ToLower()}{levelText}.";
             if (this.targetLevel.depth == 0) fullText = "Going out.";
 

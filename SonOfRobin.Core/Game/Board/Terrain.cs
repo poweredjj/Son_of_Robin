@@ -87,13 +87,16 @@ namespace SonOfRobin
 
         public void TryToLoadSavedTerrain()
         {
-            byte[,] loadedMinVal;
+            byte[,] loadedMinVal = null;
             byte[,] loadedMaxVal = null;
             byte[,] loadedMapData = null;
 
-            loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
-            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);
-            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadGreyscalePNGAs2DByteArraySquareFlipped(this.terrainPngPath);
+            if (this.Grid.level.levelType == Level.LevelType.Island)
+            {
+                loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
+                if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);
+                if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadGreyscalePNGAs2DByteArraySquareFlipped(this.terrainPngPath);
+            }
 
             if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {

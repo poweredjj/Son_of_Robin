@@ -187,6 +187,8 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
+            if (this.Grid.level.levelType != Level.LevelType.Island) return false;
+
             foreach (Name name in allExtPropNames)
             {
                 // creating dictionary entries (will get corrupted sometimes if created in parallel)

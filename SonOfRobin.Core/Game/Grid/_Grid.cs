@@ -114,7 +114,7 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
+            this.gridTemplate = new GridTemplate(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
 
             this.noOfCellsX = (int)Math.Ceiling((float)this.level.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.level.height / (float)this.cellHeight);
@@ -245,7 +245,7 @@ namespace SonOfRobin
 
             // looking for matching template
 
-            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
             if (templateGrid == null) return false;
 
             // copying terrain
@@ -404,7 +404,9 @@ namespace SonOfRobin
                     break;
 
                 case Stage.LoadMeshes:
-                    Mesh[] meshArray = MeshGenerator.LoadMeshes(this);
+                    Mesh[] meshArray = null;
+                    if (this.level.levelType == Level.LevelType.Island) meshArray = MeshGenerator.LoadMeshes(this);
+
                     if (meshArray != null)
                     {
                         this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: meshArray, grid: this);
@@ -454,7 +456,7 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
 
-                Random random = new Random(this.world.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
+                Random random = new Random(this.level.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
                 concurrentCellSetsForPieceNames[pieceName] = cellList.OrderBy(cell => random.Next()).ToArray();
             });
 
@@ -511,7 +513,7 @@ namespace SonOfRobin
 
             var pointCollectionsForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
 
-            Random random = new(this.world.seed); // based on original seed (to ensure that biome order will be identical for given seed)
+            Random random = new(this.level.seed); // based on original seed (to ensure that biome order will be identical for given seed)
             foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => random.Next())) // shuffled biome list
             {
                 biomeCountByName[name] = 0;
