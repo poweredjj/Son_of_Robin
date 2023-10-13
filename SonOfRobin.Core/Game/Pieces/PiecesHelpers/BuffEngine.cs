@@ -449,14 +449,14 @@ namespace SonOfRobin
                                 new Tracking(level: player.level, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
                             }
 
-                            player.world.stateMachineTypesManager.EnableMultiplier((int)buff.value);
-                            player.world.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
-                            player.world.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);
+                            player.level.stateMachineTypesManager.EnableMultiplier((int)buff.value);
+                            player.level.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
+                            player.level.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);
                         }
                         else
                         {
-                            player.world.stateMachineTypesManager.DisableMultiplier();
-                            player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            player.level.stateMachineTypesManager.DisableMultiplier();
+                            player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                         }
 
                         return true;

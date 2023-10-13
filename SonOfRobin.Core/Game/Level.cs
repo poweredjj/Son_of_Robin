@@ -9,6 +9,8 @@ namespace SonOfRobin
     {
         public enum LevelType : byte { Island, Cave }
 
+        public readonly Level parentLevel;
+
         public readonly LevelType levelType;
         public readonly World world;
         public readonly int seed;
@@ -17,6 +19,7 @@ namespace SonOfRobin
         public readonly int height;
         public readonly Rectangle levelRect;
         public int maxAnimalsPerName;
+        public readonly SMTypesManager stateMachineTypesManager;
         public readonly PieceCreationData[] creationDataArrayRegular;
         public readonly PieceCreationData[] creationDataArrayTemporaryDecorations;
         public readonly List<Sprite> temporaryDecorationSprites;
@@ -38,6 +41,7 @@ namespace SonOfRobin
 
         public Level(LevelType type, World world, int seed, int width, int height)
         {
+            this.parentLevel = world.ActiveLevel;
             this.levelType = type;
             this.world = world;
             this.seed = seed;
@@ -72,6 +76,8 @@ namespace SonOfRobin
             this.levelEventManager = new LevelEventManager(this);
             this.trackingManager = new TrackingManager(this);
             this.recentParticlesManager = new RecentParticlesManager(level: this);
+            this.stateMachineTypesManager = new SMTypesManager(this);
+
             this.playerReturnPos = Vector2.Zero;
 
             this.creationInProgress = true;

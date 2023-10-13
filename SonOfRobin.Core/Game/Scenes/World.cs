@@ -60,7 +60,6 @@ namespace SonOfRobin
         public readonly IslandClock islandClock;
         public readonly Weather weather;
         public readonly SolidColorManager solidColorManager;
-        public readonly SMTypesManager stateMachineTypesManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -137,7 +136,6 @@ namespace SonOfRobin
             this.AddLinkedScene(this.cineCurtains);
 
             this.solidColorManager = new SolidColorManager(this);
-            this.stateMachineTypesManager = new SMTypesManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.craftStats = new CraftStats();
             this.cookStats = new KitchenStats();
@@ -216,7 +214,7 @@ namespace SonOfRobin
                     this.InputType = InputTypes.None;
 
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
-                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
+                    this.ActiveLevel.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
 
                     this.Player.activeState = BoardPiece.State.PlayerControlledByCinematic;
                     this.Player.pointWalkTarget = Vector2.Zero;
@@ -934,7 +932,7 @@ namespace SonOfRobin
 
             this.CurrentUpdate += this.updateMultiplier;
             this.islandClock.Advance(this.updateMultiplier);
-            this.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
+            this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
         }
 
         private void ProcessInput()
@@ -1134,8 +1132,8 @@ namespace SonOfRobin
             this.Player.activeState = BoardPiece.State.PlayerControlledBuilding;
             this.Player.RemovePassiveMovement(); // player moved by wind could lose "connection" to a chest, resulting in a crash
 
-            this.stateMachineTypesManager.DisableMultiplier();
-            this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
+            this.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+            this.ActiveLevel.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
             this.islandClock.Pause();
 
             Scene craftMenu = GetTopSceneOfType(typeof(Menu));
@@ -1195,8 +1193,8 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
 
-            Player.world.stateMachineTypesManager.DisableMultiplier();
-            Player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+            Player.level.stateMachineTypesManager.DisableMultiplier();
+            Player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             this.islandClock.Resume();
 
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
@@ -1242,7 +1240,7 @@ namespace SonOfRobin
         {
             foreach (BoardPiece piece in this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true))
             {
-                if (this.stateMachineTypesManager.CanBeProcessed(piece)) piece.sprite.UpdateAnimation(checkForCollision: true);
+                if (this.ActiveLevel.stateMachineTypesManager.CanBeProcessed(piece)) piece.sprite.UpdateAnimation(checkForCollision: true);
             }
         }
 

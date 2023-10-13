@@ -61,9 +61,6 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 0.2f, maxAmount: 5),
-                new PieceCreationData(name: PieceTemplate.Name.CaveExit, multiplier: 0.2f, maxAmount: 5, levelType: Level.LevelType.Cave),
-
                 new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.3f),
                 new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.22f),
                 new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.1f),
@@ -93,6 +90,14 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2),
+
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 0.2f, maxAmount: 5),
+
+                // cave 
+
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 0.2f, maxAmount: 5, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveExit, multiplier: 0.2f, maxAmount: 5, levelType: Level.LevelType.Cave),
+
                 };
 
             //{ // for testing creation of selected pieces

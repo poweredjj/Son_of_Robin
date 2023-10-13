@@ -1050,8 +1050,8 @@ namespace SonOfRobin
 
                             // world.updateMultiplier = 0 is not used here, to allow for playing ambient sounds
 
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
 
                             world.islandClock.Pause();
 
@@ -1066,8 +1066,8 @@ namespace SonOfRobin
                             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
 
                             world.updateMultiplier = 1;
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
 
                             return;
@@ -1081,8 +1081,8 @@ namespace SonOfRobin
                             SonOfRobinGame.Game.IsFixedTimeStep = false;
 
                             world.updateMultiplier = (int)this.ExecuteHelper;
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
 
                             return;
@@ -2069,7 +2069,7 @@ namespace SonOfRobin
                             BoardPiece caveEntrance = (BoardPiece)this.ExecuteHelper;
                             World world = caveEntrance.world;
 
-                            world.EnterNewLevel(world.IslandLevel);
+                            world.EnterNewLevel(world.ActiveLevel.parentLevel);
 
                             return;
                         }
