@@ -97,7 +97,7 @@ namespace SonOfRobin
 
             lastTextSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: debugText);
 
-            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
+            //font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -434,6 +434,8 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 if (world == null) return;
+
+                world.ActiveLevel.playerReturnPos = world.Player.sprite.position;
 
                 if (world.ActiveLevel == world.IslandLevel)
                 {

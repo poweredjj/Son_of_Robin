@@ -142,7 +142,20 @@ namespace SonOfRobin
         private int baseline;
 
         private int MaxDeletionFrame
-        { get { return this.messages.Count > 0 ? this.messages.Select(m => m.deletionFrame).Max() : SonOfRobinGame.CurrentUpdate; } }
+        {
+            get
+            {
+                while (true)
+                {
+                    try
+                    {
+                        return this.messages.Count > 0 ? this.messages.Select(m => m.deletionFrame).Max() : SonOfRobinGame.CurrentUpdate;
+                    }
+                    catch (InvalidOperationException)
+                    { } // if background task adds a message in the meantime
+                }
+            }
+        }
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {

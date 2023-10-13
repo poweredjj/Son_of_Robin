@@ -169,8 +169,17 @@ namespace SonOfRobin
 
         public void EnterNewLevel(Level newLevel)
         {
+            this.ActiveLevel.playerReturnPos = this.Player.sprite.position;
+            this.Player.sprite.RemoveFromBoard();
+
             this.ActiveLevel = newLevel;
             this.populatingFramesLeft = populatingFramesTotal;
+
+            if (!this.ActiveLevel.creationInProgress)
+            {
+                this.Player.MoveToActiveLevel();
+                this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
+            }
         }
 
         public PieceTemplate.Name PlayerName
@@ -462,10 +471,7 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.ActiveLevel.creationInProgress = false;
 
-            if (this.Player != null && this.Player.level != this.ActiveLevel)
-            {
-                this.Player.MoveToActiveLevel();
-            }
+            if (this.Player != null && this.Player.level != this.ActiveLevel) this.Player.MoveToActiveLevel();
 
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
