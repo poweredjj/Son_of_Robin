@@ -2715,6 +2715,9 @@ namespace SonOfRobin
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, levelType: Level.LevelType.Cave); // levelType is ignored here
 
+                        boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
+                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
+
                         return boardPiece;
                     }
 

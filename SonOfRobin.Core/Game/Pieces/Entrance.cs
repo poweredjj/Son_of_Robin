@@ -40,14 +40,14 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 9999), width: 20000, height: 20000);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 9999), width: 15000, height: 15000);
                 this.targetLevel.AssignGrid(new Grid(level: this.targetLevel, resDivider: this.world.resDivider));
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)
             {
                 var confirmationData = new Dictionary<string, Object> {
-                            { "question", "Are you sure? You won't be able to come back." },
+                            { "question", "Want to exit? You won't be able to come back." },
                             { "taskName", Scheduler.TaskName.UseEntrance },
                             { "executeHelper", this }, { "blocksUpdatesBelow", true } };
 
