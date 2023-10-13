@@ -63,7 +63,6 @@ namespace SonOfRobin
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
-        public readonly RecentParticlesManager recentParticlesManager;
         public readonly SwayManager swayManager;
         public string debugText;
         public int ProcessedNonPlantsCount { get; private set; }
@@ -118,7 +117,6 @@ namespace SonOfRobin
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
-            this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
             this.HintEngine = new HintEngine(world: this);
             this.ProcessedNonPlantsCount = 0;
@@ -890,7 +888,6 @@ namespace SonOfRobin
             }
 
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
-            this.recentParticlesManager.Update();
 
             if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: false);
 

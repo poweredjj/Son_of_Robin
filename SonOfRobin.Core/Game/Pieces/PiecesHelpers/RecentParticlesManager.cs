@@ -6,13 +6,13 @@ namespace SonOfRobin
 {
     public class RecentParticlesManager
     {
-        private readonly World world;
+        private readonly Level level;
         private readonly HashSet<BoardPiece> pieceSet;
-        public IEnumerable<BoardPiece> OffScreenPieces { get { return this.pieceSet.Where(piece => !world.camera.viewRect.Intersects(piece.sprite.GfxRect)); } }
+        public IEnumerable<BoardPiece> OffScreenPieces { get { return this.pieceSet.Where(piece => !level.world.camera.viewRect.Intersects(piece.sprite.GfxRect)); } }
 
-        public RecentParticlesManager(World world)
+        public RecentParticlesManager(Level level)
         {
-            this.world = world;
+            this.level = level;
             this.pieceSet = new HashSet<BoardPiece>();
         }
 
@@ -30,8 +30,10 @@ namespace SonOfRobin
                 return;
             }
 
-            Vector2 cameraCenter = new(this.world.camera.viewRect.Center.X, this.world.camera.viewRect.Center.Y);
-            int maxDistance = this.world.camera.viewRect.Width;
+            Rectangle cameraRect = this.level.world.camera.viewRect;
+
+            Vector2 cameraCenter = new(cameraRect.Center.X, cameraRect.Center.Y);
+            int maxDistance = cameraRect.Width;
 
             // int pieceCountPrevious = this.pieceSet.Count;
 

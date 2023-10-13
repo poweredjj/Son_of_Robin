@@ -23,6 +23,8 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> doNotCreatePiecesList;
         public readonly LevelEventManager levelEventManager;
         public readonly TrackingManager trackingManager;
+        public readonly RecentParticlesManager recentParticlesManager;
+
         public Grid Grid { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
@@ -67,6 +69,7 @@ namespace SonOfRobin
             this.plantCellsQueue = new Queue<Cell>();
             this.levelEventManager = new LevelEventManager(this);
             this.trackingManager = new TrackingManager(this);
+            this.recentParticlesManager = new RecentParticlesManager(level: this);
         }
 
         public void Destroy()
@@ -84,6 +87,7 @@ namespace SonOfRobin
         {
             this.levelEventManager.ProcessQueue();
             this.trackingManager.ProcessQueue();
+            this.recentParticlesManager.Update();
         }
     }
 }

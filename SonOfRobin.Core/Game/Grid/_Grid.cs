@@ -1187,7 +1187,7 @@ namespace SonOfRobin
             }
 
             var visiblePieces = this.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
-            var offScreenParticleEmitterPieces = this.world.recentParticlesManager.OffScreenPieces;
+            var offScreenParticleEmitterPieces = this.level.recentParticlesManager.OffScreenPieces;
             var piecesToDraw = visiblePieces.Concat(offScreenParticleEmitterPieces).ToList();
 
             foreach (BoardPiece piece in piecesToDraw
