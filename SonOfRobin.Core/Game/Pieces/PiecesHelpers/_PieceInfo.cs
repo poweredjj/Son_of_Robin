@@ -2913,7 +2913,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CaveEntrance:
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.EnterCave;
-                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterCave;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
                         break;
@@ -2921,7 +2921,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CaveExit:
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.ExitCave;
-                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterCave;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
                         break;

@@ -979,7 +979,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/carrot_plant_has_carrot.png
 
-#begin gfx/cave_entrance.png
+#begin gfx/cave_entrance_blocked.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -989,7 +989,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/cave_entrance.png
+/build:gfx/cave_entrance_blocked.png
+
+#begin gfx/cave_entrance_open.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/cave_entrance_open.png
 
 #begin gfx/cave_exit.png
 /importer:TextureImporter
@@ -4410,6 +4422,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/eat.png
+
+#begin gfx/input/VirtButton/enter_exit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/enter_exit.png
 
 #begin gfx/input/VirtButton/go_to_player.png
 /importer:TextureImporter

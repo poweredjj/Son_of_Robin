@@ -734,8 +734,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.FenceVerticalShort, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
             AddFrameList(animPackage: PkgName.FenceHorizontalLong, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
             AddFrameList(animPackage: PkgName.FenceVerticalLong, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
-            AddFrameList(animPackage: PkgName.CaveEntrance, frameList: ConvertImageToFrameList(atlasName: "cave_entrance", scale: 2f, layer: 1, depthPercent: 0.95f));
-            AddFrameList(animPackage: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
             AddFrameList(animPackage: PkgName.Totem, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
             AddFrameList(animPackage: PkgName.RuinsColumn, frameList: ConvertImageToFrameList(atlasName: "ruins_column", layer: 1));
             AddFrameList(animPackage: PkgName.RuinsRubble, frameList: ConvertImageToFrameList(atlasName: "ruins_rubble", layer: 1));
@@ -1029,6 +1027,17 @@ namespace SonOfRobin
                 frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
                 AddFrameList(animPackage: packageName, frameList);
                 AddFrameList(animPackage: packageName, animName: "off", frameList: frameList);
+            }
+            {
+                PkgName packageName = PkgName.CaveEntrance;
+
+                float scale = 2f;
+                float depthPercent = 0.95f;
+
+                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
+                AddFrameList(animPackage: packageName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
+
+                AddFrameList(animPackage: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
             }
             {
                 PkgName packageName = PkgName.Explosion;
