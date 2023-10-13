@@ -40,10 +40,16 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 100000), width: 5000, height: 5000);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 100000), width: 15000, height: 15000);
                 Grid grid = new Grid(level: this.targetLevel, resDivider: this.world.resDivider);
                 this.targetLevel.AssignGrid(grid);
             }
+
+            string levelText = this.targetLevel.depth == 0 ? "" : $" level {this.targetLevel.depth}";
+            string fullText = $"Entering {this.targetLevel.levelType.ToString().ToLower()}{levelText}.";
+            if (this.targetLevel.depth == 0) fullText = "Going out.";
+
+            MessageLog.Add(text: fullText, texture: PieceInfo.GetTexture(this.name), avoidDuplicates: true);
 
             this.world.EnterNewLevel(this.targetLevel);
         }

@@ -165,6 +165,8 @@ namespace SonOfRobin
                 }
             }
 
+            this.UpdateLastFrameSMProcessed(); // otherwise player would freeze for some time
+
             if (this.level.playerReturnPos == Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: true, position: Vector2.Zero);
             else this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
 

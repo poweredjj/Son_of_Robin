@@ -2710,10 +2710,7 @@ namespace SonOfRobin
 
                 case Name.CaveExit:
                     {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
-                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
-                        });
+                        var allowedTerrain = new AllowedTerrain();
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, levelType: Level.LevelType.Cave); // levelType is ignored here

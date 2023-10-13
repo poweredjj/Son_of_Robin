@@ -758,7 +758,12 @@ namespace SonOfRobin
                     { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
 
-            this.lastFrameSMProcessed = this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // updated after SM processing, to allow for proper time delta calculation
+            this.UpdateLastFrameSMProcessed(); // updated after SM processing, to allow for proper time delta calculation
+        }
+
+        protected void UpdateLastFrameSMProcessed()
+        {
+            this.lastFrameSMProcessed = this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType());
         }
 
         public void ProcessHeat()
