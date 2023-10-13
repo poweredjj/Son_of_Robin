@@ -165,7 +165,8 @@ namespace SonOfRobin
                 }
             }
 
-            this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, precisePlacement: true, ignoreCollisions: false, closestFreeSpot: true);
+            if (this.level.playerReturnPos == Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: true, position: Vector2.Zero);
+            else this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
         }
 
         public override bool ShowStatBars

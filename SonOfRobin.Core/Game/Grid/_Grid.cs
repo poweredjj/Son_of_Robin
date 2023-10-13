@@ -232,7 +232,7 @@ namespace SonOfRobin
                     height == existingWorld.IslandLevel.height &&
                     (ignoreCellSize || (cellWidth == existingWorld.Grid.cellWidth && cellHeight == existingWorld.Grid.cellHeight)))
                 {
-                    return existingWorld.Grid;
+                    return existingWorld.IslandLevel.Grid;
                 }
             }
 
@@ -241,6 +241,8 @@ namespace SonOfRobin
 
         public bool CopyBoardFromTemplate()
         {
+            if (this.level.levelType != Level.LevelType.Island) return false;
+
             // looking for matching template
 
             Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);

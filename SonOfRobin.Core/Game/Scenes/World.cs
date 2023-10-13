@@ -183,12 +183,7 @@ namespace SonOfRobin
         }
 
         public PieceTemplate.Name PlayerName
-        {
-            get
-            {
-                return this.Player == null ? this.initialPlayerName : this.Player.name;
-            }
-        }
+        { get { return this.Player == null ? this.initialPlayerName : this.Player.name; } }
 
         public bool PopulatingInProgress
         { get { return this.populatingFramesLeft > 0; } }
@@ -604,6 +599,8 @@ namespace SonOfRobin
 
         private void CreateAndPlacePlayer()
         {
+            if (this.Player != null) return;
+
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
                 PieceTemplate.Name playerName = this.initialPlayerName; // taken from a temporary Player boardPiece
