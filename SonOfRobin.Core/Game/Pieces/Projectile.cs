@@ -107,7 +107,7 @@ namespace SonOfRobin
 
                     if (!this.pieceInfo.projectileCanExplode && this.pieceInfo.projectileCanBeStuck && this.exists)
                     {
-                        Tracking tracking = new Tracking(world: this.world, targetSprite: animal.sprite, followingSprite: this.sprite, turnOffDelay: this.world.random.Next(200, 2000), bounceWhenRemoved: true);
+                        Tracking tracking = new Tracking(level: this.level, targetSprite: animal.sprite, followingSprite: this.sprite, turnOffDelay: this.world.random.Next(200, 2000), bounceWhenRemoved: true);
                         if (tracking.isCorrect)
                         {
                             this.showStatBarsTillFrame = 0;
@@ -183,7 +183,7 @@ namespace SonOfRobin
             Rectangle explosionRect = new(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
             explosionRect.Inflate(50, 50);
 
-            var piecesWithinDistance = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            var piecesWithinDistance = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
             if (piecesWithinDistance.Count == 0) return;
 
             foreach (BoardPiece piece in piecesWithinDistance)

@@ -191,7 +191,7 @@ namespace SonOfRobin
             if (!Preferences.debugShowSounds) return;
 
             this.visPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this.boardPiece.world, position: this.boardPiece.sprite.position, templateName: PieceTemplate.Name.MusicNote);
-            new Tracking(world: this.boardPiece.world, targetSprite: this.boardPiece.sprite, followingSprite: this.visPiece.sprite);
+            new Tracking(level: this.boardPiece.level, targetSprite: this.boardPiece.sprite, followingSprite: this.visPiece.sprite);
         }
 
         public static void StopAll()

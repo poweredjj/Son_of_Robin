@@ -163,17 +163,17 @@ namespace SonOfRobin
             return this.rangesByTerrainName[terrainName].IsInRange(fieldValue);
         }
 
-        public bool CanStandHere(Vector2 position, World world)
+        public bool CanStandHere(Vector2 position, Level level)
         {
             foreach (var kvp in this.extPropertiesDict)
             {
-                bool value = world.Grid.ExtBoardProps.GetValue(name: kvp.Key, x: (int)position.X, y: (int)position.Y); ;
+                bool value = level.Grid.ExtBoardProps.GetValue(name: kvp.Key, x: (int)position.X, y: (int)position.Y); ;
                 if (value != kvp.Value) return false;
             }
 
             foreach (var kvp in this.rangesByTerrainName)
             {
-                var fieldValue = world.Grid.terrainByName[kvp.Key].GetMapData((int)position.X, (int)position.Y);
+                var fieldValue = level.Grid.terrainByName[kvp.Key].GetMapData((int)position.X, (int)position.Y);
                 if (!kvp.Value.IsInRange(fieldValue)) return false;
             }
 

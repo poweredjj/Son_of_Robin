@@ -55,8 +55,8 @@ namespace SonOfRobin
             if (worldActive)
             {
                 debugLines.Add($"proc. non-plants: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
-                debugLines.Add($"tracking count {world.trackingManager.TrackingCount} swayCount {world.swayManager.SwayEventsCount}");
-                if (world.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
+                debugLines.Add($"tracking count {world.ActiveLevel.trackingManager.TrackingCount} swayCount {world.swayManager.SwayEventsCount}");
+                if (world.ActiveLevel.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
             debugLines.Add($"snd inst. total: {ManagedSoundInstance.CreatedInstancesCount} act: {ManagedSoundInstance.ActiveInstancesCount} inact: {ManagedSoundInstance.InactiveInstancesCount}");
@@ -159,7 +159,7 @@ namespace SonOfRobin
                     world.ActiveLevel.levelEventManager.RemovePieceFromQueue(heart);
                     heart.sprite.opacityFade = null;
                     heart.sprite.opacity = 1;
-                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
+                    new Tracking(level: world.ActiveLevel, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))

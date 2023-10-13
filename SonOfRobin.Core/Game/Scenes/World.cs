@@ -54,15 +54,12 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-
         public Grid Grid { get { return this.ActiveLevel.Grid; } }
         public int CurrentFrame { get; private set; }
-
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
-        public readonly TrackingManager trackingManager;
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
@@ -120,7 +117,6 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-            this.trackingManager = new TrackingManager(this);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.recentParticlesManager = new RecentParticlesManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -159,7 +155,8 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            this.Grid.Destroy();
+            this.ActiveLevel.Destroy();
+            // TODO add destroy() to all levels here
             Sound.StopAll();
             RumbleManager.StopAll();
             base.Remove();
@@ -576,7 +573,7 @@ namespace SonOfRobin
                 // deserializing tracking
 
                 var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
-                this.trackingManager.Deserialize(trackingDataList);
+                this.IslandLevel.trackingManager.Deserialize(trackingDataList);
 
                 if (this.HasBeenRemoved) return; // to avoid processing if cancelled
 
@@ -906,7 +903,6 @@ namespace SonOfRobin
                 this.CreateTemporaryDecorations(ignoreDuration: false);
             }
 
-            this.trackingManager.ProcessQueue();
             this.ActiveLevel.Update();
 
             this.ProcessHeatQueue();

@@ -497,7 +497,7 @@ namespace SonOfRobin
             world.camera.TrackPiece(pieceToShow);
 
             BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(pieceToShow.sprite.GfxRect.Center.X, pieceToShow.sprite.GfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
-            new Tracking(world: world, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
+            new Tracking(level: world.ActiveLevel, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
 
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 

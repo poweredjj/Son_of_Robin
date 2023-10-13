@@ -222,7 +222,7 @@ namespace SonOfRobin
             {
                 var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
+                var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
                 var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
 
                 foreach (BoardPiece chestPiece in chestPieces)
@@ -238,7 +238,7 @@ namespace SonOfRobin
                         {
                             BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: chestPiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
 
-                            new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                            new Tracking(level: this.level, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                             new LevelEvent(eventName: LevelEvent.EventName.FadeOutSprite, delay: 40, level: this.level, boardPiece: usedChestMarker, eventHelper: 20);
                         }
@@ -307,7 +307,7 @@ namespace SonOfRobin
             {
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToInteract = new List<BoardPiece>();
@@ -333,7 +333,7 @@ namespace SonOfRobin
 
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToPickUp = new List<BoardPiece>();
@@ -1045,8 +1045,8 @@ namespace SonOfRobin
 
             if (this.world.MapEnabled && this.CanSeeAnything)
             {
-                NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
-                if (location != null && !location.hasBeenDiscovered) this.world.Grid.namedLocations.ProcessDiscovery();
+                NamedLocations.Location location = this.level.Grid.namedLocations.PlayerLocation;
+                if (location != null && !location.hasBeenDiscovered) this.level.Grid.namedLocations.ProcessDiscovery();
             }
         }
 

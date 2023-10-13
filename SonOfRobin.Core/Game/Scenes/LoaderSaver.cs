@@ -393,7 +393,7 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "tracking";
 
-                var trackingData = this.world.trackingManager.Serialize();
+                var trackingData = this.world.ActiveLevel.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
                 FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);

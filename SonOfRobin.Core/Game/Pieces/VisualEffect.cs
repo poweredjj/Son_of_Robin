@@ -21,7 +21,7 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate % 60 != 0) return;
 
-            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
+            var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
             var predatorPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal) && ((Animal)piece).Eats.Contains(this.world.Player.name));
 
             foreach (BoardPiece piece in predatorPieces)
@@ -87,7 +87,7 @@ namespace SonOfRobin
                 for (int distance = 0; distance < maxDistance; distance += oneStepDistance)
                 {
                     beachPos += oneStepOffset;
-                    if (this.world.Grid.terrainByName[Terrain.Name.Height].GetMapData((int)beachPos.X, (int)beachPos.Y) > Terrain.waterLevelMax) break;
+                    if (this.level.Grid.terrainByName[Terrain.Name.Height].GetMapData((int)beachPos.X, (int)beachPos.Y) > Terrain.waterLevelMax) break;
                 }
 
                 float delay = this.world.random.Next(15);
@@ -166,7 +166,7 @@ namespace SonOfRobin
                 explosion.sprite.AssignNewSize(3);
                 new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f);
 
-                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
+                var piecesWithinRange = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
                     if (piece.pieceInfo.fireAffinity > 0) piece.HeatLevel += 2;

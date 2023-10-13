@@ -446,7 +446,7 @@ namespace SonOfRobin
 
                                 Sprite hastePlayerCloneSprite = hastePlayerClone.sprite;
                                 hastePlayerCloneSprite.opacity = (1f - ((float)cloneNo / (cloneCount + 1))) * 0.3f;
-                                new Tracking(world: world, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
+                                new Tracking(level: player.level, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
                             }
 
                             player.world.stateMachineTypesManager.EnableMultiplier((int)buff.value);

@@ -179,7 +179,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -198,7 +198,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -852,7 +852,7 @@ namespace SonOfRobin
             Rectangle heatRect = this.sprite.GfxRect;
             heatRect.Inflate(this.sprite.GfxRect.Width * 0.8f, this.sprite.GfxRect.Height * 0.8f);
 
-            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
             foreach (BoardPiece heatedPiece in nearbyPieces)
             {
                 if (heatedPiece.pieceInfo.fireAffinity == 0 ||
@@ -907,7 +907,7 @@ namespace SonOfRobin
                     this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
                     this.flameLight.sprite.lightEngine.Activate();
 
-                    new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flameLight.sprite);
+                    new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: flameLight.sprite);
 
                     this.flameLight.sprite.opacity = 0f;
                     new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);

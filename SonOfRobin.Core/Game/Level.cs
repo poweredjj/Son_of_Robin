@@ -22,6 +22,7 @@ namespace SonOfRobin
         public readonly List<Sprite> temporaryDecorationSprites;
         public List<PieceTemplate.Name> doNotCreatePiecesList;
         public readonly LevelEventManager levelEventManager;
+        public readonly TrackingManager trackingManager;
         public Grid Grid { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
@@ -65,6 +66,12 @@ namespace SonOfRobin
             this.heatedPieces = new HashSet<BoardPiece>();
             this.plantCellsQueue = new Queue<Cell>();
             this.levelEventManager = new LevelEventManager(this);
+            this.trackingManager = new TrackingManager(this);
+        }
+
+        public void Destroy()
+        {
+            this.Grid.Destroy();
         }
 
         public void AssignGrid(Grid grid)
@@ -76,6 +83,7 @@ namespace SonOfRobin
         public void Update()
         {
             this.levelEventManager.ProcessQueue();
+            this.trackingManager.ProcessQueue();
         }
     }
 }

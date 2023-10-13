@@ -185,7 +185,7 @@ namespace SonOfRobin
 
         public List<BoardPiece> GetSeenPieces()
         {
-            return this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange);
+            return this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange);
         }
 
         private void UpdateAttackCooldown()
@@ -254,7 +254,7 @@ namespace SonOfRobin
             var foodList = seenPieces.Where(piece =>
             (this.Eats.Contains(piece.name) || !piece.alive && this.pieceInfo.isCarnivorous && piece.name == this.name) &&
             piece.Mass > 0 &&
-            this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
+            this.sprite.allowedTerrain.CanStandHere(level: this.level, position: piece.sprite.position)).ToList();
 
             BoardPiece foodPiece = null;
 
@@ -309,8 +309,8 @@ namespace SonOfRobin
                 BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Crosshair);
                 BoardPiece backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Backlight);
 
-                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: crossHair.sprite);
-                new Tracking(world: world, targetSprite: this.sprite, followingSprite: backlight.sprite, targetYAlign: YAlign.Bottom);
+                new Tracking(level: this.level, targetSprite: this.target.sprite, followingSprite: crossHair.sprite);
+                new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: backlight.sprite, targetYAlign: YAlign.Bottom);
                 new OpacityFade(sprite: crossHair.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
                 new OpacityFade(sprite: backlight.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
 
@@ -357,7 +357,7 @@ namespace SonOfRobin
                     {
                         if (this.visualAid != null) this.visualAid.Destroy();
                         this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
-                        new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                        new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                         this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
                     }
@@ -402,7 +402,7 @@ namespace SonOfRobin
                         Math.Clamp(value: (int)this.sprite.position.X + this.world.random.Next(-2000, 2000), min: 0, max: this.world.ActiveLevel.width - 1),
                         Math.Clamp(value: (int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), min: 0, max: this.world.ActiveLevel.height - 1));
 
-                    if (this.sprite.allowedTerrain.CanStandHere(world: this.world, position: targetPos))
+                    if (this.sprite.allowedTerrain.CanStandHere(level: this.level, position: targetPos))
                     {
                         this.aiData.TargetPos = targetPos;
                         break;
@@ -439,7 +439,7 @@ namespace SonOfRobin
                 if (this.sprite.IsInCameraRect)
                 {
                     this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
-                    new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
+                    new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
                 }
             }
 
@@ -565,7 +565,7 @@ namespace SonOfRobin
             if (this.world.random.Next(attackChance) == 0)
             {
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
-                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
+                new Tracking(level: this.level, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
                 if (this.world.random.Next(2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
@@ -605,7 +605,7 @@ namespace SonOfRobin
             else // if attack had missed
             {
                 BoardPiece miss = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Miss);
-                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: miss.sprite);
+                new Tracking(level: this.level, targetSprite: this.target.sprite, followingSprite: miss.sprite);
             }
         }
 
@@ -625,7 +625,7 @@ namespace SonOfRobin
             if (this.target.IsAnimalOrPlayer && this.target.pieceInfo.Yield != null && this.world.random.Next(25) == 0)
             {
                 BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
-                new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
+                new Tracking(level: this.level, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
                 this.target.pieceInfo.Yield.DropDebris(this.target);
                 this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
@@ -763,7 +763,7 @@ namespace SonOfRobin
                     this.pregnancyMass -= (int)this.pieceInfo.startingMass;
 
                     var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: child.sprite.position, templateName: PieceTemplate.Name.Backlight);
-                    new Tracking(world: world, targetSprite: child.sprite, followingSprite: backlight.sprite, targetXAlign: XAlign.Center, targetYAlign: YAlign.Center);
+                    new Tracking(level: this.level, targetSprite: child.sprite, followingSprite: backlight.sprite, targetXAlign: XAlign.Center, targetYAlign: YAlign.Center);
                 }
             }
 
@@ -841,7 +841,7 @@ namespace SonOfRobin
                 {
                     searchRange += this.pieceInfo.animalSightRange;
 
-                    var cellsWithinDistance = (IEnumerable<Cell>)this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
+                    var cellsWithinDistance = (IEnumerable<Cell>)this.level.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
 
                     bool canGoToWater = this.sprite.allowedTerrain.IsInRange(terrainName: Terrain.Name.Height, Terrain.waterLevelMax - 1);
 
@@ -877,7 +877,7 @@ namespace SonOfRobin
         {
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
-            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
+            var piecesWithinSoundRange = level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
 
             bool targetIsPlayer = this.target.GetType() == typeof(Player);
@@ -900,7 +900,7 @@ namespace SonOfRobin
                 if (targetIsPlayer)
                 {
                     allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
-                    new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                    new Tracking(level: this.level, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                     if (willFollowPlayerAnywhere) allyAnimal.sprite.allowedTerrain.CopyTerrainFromTemplate(this.world.Player.sprite.allowedTerrain);
                 }
@@ -913,7 +913,7 @@ namespace SonOfRobin
             if (targetIsPlayer)
             {
                 this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationBlue);
-                new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
             }
 
             this.activeState = State.AnimalChaseTarget;

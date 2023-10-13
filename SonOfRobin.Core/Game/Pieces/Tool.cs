@@ -202,7 +202,7 @@ namespace SonOfRobin
             World world = player.world;
 
             BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
-            new Tracking(world: world, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
+            new Tracking(level: player.level, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
 
             if (target.GetType() == typeof(Plant))
             {
