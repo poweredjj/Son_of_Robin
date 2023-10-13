@@ -85,7 +85,7 @@ namespace SonOfRobin
         public const float minBurnVal = 0.5f;
 
         public readonly World world;
-        public readonly Level level;
+        public Level level;
         public readonly int id;
         public readonly PieceTemplate.Name name;
         public Sprite sprite;

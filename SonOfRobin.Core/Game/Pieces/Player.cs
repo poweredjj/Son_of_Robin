@@ -83,7 +83,6 @@ namespace SonOfRobin
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
-
         public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default") :
 
@@ -151,6 +150,25 @@ namespace SonOfRobin
             StorageSlot knifeSlot = this.ToolStorage.FindCorrectSlot(knifeTool);
             this.ToolStorage.AddPiece(knifeTool);
             knifeSlot.locked = true;
+        }
+
+        public void MoveToActiveLevel()
+        {
+            if (this.level == this.world.ActiveLevel) return;
+            this.level.playerReturnPos = this.sprite.position;
+
+            this.sprite.RemoveFromBoard();
+
+            this.level = this.world.ActiveLevel;
+            foreach (PieceStorage storage in new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage })
+            {
+                foreach (BoardPiece piece in storage.GetAllPieces())
+                {
+                    piece.level = this.world.ActiveLevel;
+                }
+            }
+
+            if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, precisePlacement: true);
         }
 
         public override bool ShowStatBars

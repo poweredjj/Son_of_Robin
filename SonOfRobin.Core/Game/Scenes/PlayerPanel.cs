@@ -121,7 +121,7 @@ namespace SonOfRobin
             bool shouldBeHidden = this.ShouldBeHidden;
             this.HideOrShow(!shouldBeHidden);
 
-            if (shouldBeHidden && !this.transManager.HasAnyTransition) return;
+            if ((shouldBeHidden && !this.transManager.HasAnyTransition)) return;
 
             this.AdaptToNewSize();
 

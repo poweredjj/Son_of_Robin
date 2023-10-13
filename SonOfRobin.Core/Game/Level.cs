@@ -24,6 +24,7 @@ namespace SonOfRobin
         public readonly LevelEventManager levelEventManager;
         public readonly TrackingManager trackingManager;
         public readonly RecentParticlesManager recentParticlesManager;
+        public bool creationInProgress;
 
         public Grid Grid { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
@@ -33,6 +34,7 @@ namespace SonOfRobin
         public Queue<Sprite> plantSpritesQueue;
         public readonly HashSet<BoardPiece> heatedPieces;
         public Queue<Sprite> nonPlantSpritesQueue;
+        public Vector2 playerReturnPos;
 
         public Level(LevelType type, World world, int seed, int width, int height)
         {
@@ -70,6 +72,9 @@ namespace SonOfRobin
             this.levelEventManager = new LevelEventManager(this);
             this.trackingManager = new TrackingManager(this);
             this.recentParticlesManager = new RecentParticlesManager(level: this);
+            this.playerReturnPos = Vector2.Zero;
+
+            this.creationInProgress = true;
         }
 
         public void Destroy()
@@ -85,9 +90,18 @@ namespace SonOfRobin
 
         public void Update()
         {
+            this.ProcessHeatQueue();
             this.levelEventManager.ProcessQueue();
             this.trackingManager.ProcessQueue();
             this.recentParticlesManager.Update();
+        }
+
+        private void ProcessHeatQueue()
+        {
+            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.heatedPieces))
+            {
+                boardPiece.ProcessHeat();
+            }
         }
     }
 }

@@ -224,7 +224,7 @@ namespace SonOfRobin
             {
                 World existingWorld = (World)scene;
 
-                if (!existingWorld.WorldCreationInProgress &&
+                if (!existingWorld.ActiveLevel.creationInProgress &&
                     existingWorld.Grid != null &&
                     !existingWorld.Grid.CreationInProgress &&
                     seed == existingWorld.seed &&

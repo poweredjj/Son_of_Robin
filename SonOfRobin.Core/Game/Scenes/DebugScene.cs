@@ -38,8 +38,7 @@ namespace SonOfRobin
             var debugLines = new List<string>();
 
             World world = World.GetTopWorld();
-
-            bool worldActive = world != null && !world.WorldCreationInProgress;
+            bool worldActive = world != null && !world.ActiveLevel.creationInProgress;
 
             if (worldActive)
             {
@@ -402,18 +401,18 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F1))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
 
-                var taskChain = new List<Object>();
+            //    var taskChain = new List<Object>();
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 40), framesLeft: 60 * 2), storeForLaterUse: true));
+            //    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 40), framesLeft: 60 * 2), storeForLaterUse: true));
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "Linear" }, { "durationSeconds", 2f } }, storeForLaterUse: true));
+            //    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "Linear" }, { "durationSeconds", 2f } }, storeForLaterUse: true));
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
-            }
+            //    new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
@@ -431,6 +430,21 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             //    // world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             //}
+
+            if (Keyboard.HasBeenPressed(Keys.F1))
+            {
+                if (world == null) return;
+
+                if (world.ActiveLevel == world.IslandLevel)
+                {
+                    Level newLevel = new Level(type: Level.LevelType.Cave, world: world, seed: 1234, width: 4000, height: 4000);
+                    Grid grid = new Grid(level: newLevel, resDivider: world.resDivider);
+                    newLevel.AssignGrid(grid);
+
+                    world.EnterNewLevel(newLevel);
+                }
+                else world.EnterNewLevel(world.IslandLevel);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {

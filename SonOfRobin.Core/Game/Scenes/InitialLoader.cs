@@ -267,7 +267,7 @@ namespace SonOfRobin
                         {
                             demoWorld.Update();
 
-                            if (!demoWorld.WorldCreationInProgress && !demoWorld.PopulatingInProgress) break;
+                            if (!demoWorld.ActiveLevel.creationInProgress && !demoWorld.PopulatingInProgress) break;
                             else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock
                         }
                     }

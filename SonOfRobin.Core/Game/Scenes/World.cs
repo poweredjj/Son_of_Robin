@@ -15,7 +15,6 @@ namespace SonOfRobin
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;
         public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
-        public bool WorldCreationInProgress { get; private set; }
 
         private int populatingFramesLeft;
         public readonly DateTime creationStart;
@@ -92,11 +91,9 @@ namespace SonOfRobin
             this.saveGameData = saveGameData;
             this.piecesByIDForDeserialization = new Dictionary<int, BoardPiece>();
             this.createMissingPiecesOutsideCamera = false;
-            this.WorldCreationInProgress = true;
             this.populatingFramesLeft = populatingFramesTotal;
             this.creationStart = DateTime.Now;
             this.resDivider = resDivider;
-
 
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
 
@@ -153,8 +150,7 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            this.ActiveLevel.Destroy();
-            // TODO add destroy() to all levels here
+            this.ActiveLevel.Destroy(); // TODO add destroy() to all levels here
             Sound.StopAll();
             RumbleManager.StopAll();
             base.Remove();
@@ -169,6 +165,12 @@ namespace SonOfRobin
         {
             DestroyedNotReleasedWorldCount--;
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.IslandLevel.width}x{this.IslandLevel.height} no longer referenced.", textColor: new Color(120, 255, 174));
+        }
+
+        public void EnterNewLevel(Level newLevel)
+        {
+            this.ActiveLevel = newLevel;
+            this.populatingFramesLeft = populatingFramesTotal;
         }
 
         public PieceTemplate.Name PlayerName
@@ -458,7 +460,13 @@ namespace SonOfRobin
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-            this.WorldCreationInProgress = false;
+            this.ActiveLevel.creationInProgress = false;
+
+            if (this.Player != null && this.Player.level != this.ActiveLevel)
+            {
+                this.Player.MoveToActiveLevel();
+            }
+
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
 
@@ -868,7 +876,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            if (this.WorldCreationInProgress)
+            if (this.ActiveLevel.creationInProgress)
             {
                 this.CompleteCreation();
                 return;
@@ -901,8 +909,6 @@ namespace SonOfRobin
             }
 
             this.ActiveLevel.Update();
-
-            this.ProcessHeatQueue();
 
             if (!this.BuildMode) this.UpdateAllAnims();
 
@@ -996,14 +1002,6 @@ namespace SonOfRobin
             { this.ActiveLevel.heatedPieces.Remove(boardPiece); }
             catch (KeyNotFoundException)
             { }
-        }
-
-        private void ProcessHeatQueue()
-        {
-            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.ActiveLevel.heatedPieces))
-            {
-                boardPiece.ProcessHeat();
-            }
         }
 
         private void StateMachinesProcessNonPlantQueue()
@@ -1297,7 +1295,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.WorldCreationInProgress || SonOfRobinGame.IgnoreThisDraw) return;
+            if (this.ActiveLevel.creationInProgress || SonOfRobinGame.IgnoreThisDraw) return;
 
             // drawing darkness
 
@@ -1355,7 +1353,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (this.WorldCreationInProgress) return;
+            if (this.ActiveLevel.creationInProgress) return;
 
             // drawing CameraViewRenderTarget
 
