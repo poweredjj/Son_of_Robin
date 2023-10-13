@@ -114,8 +114,7 @@ namespace SonOfRobin
             DisposeSaveScreenshotsIfNoMenuPresent = 94,
             SetGlobalWorldEffect = 95,
             SetGlobalWorldTweener = 96,
-            EnterCave = 97,
-            ExitCave = 98,
+            UseEntrance = 97,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2042,35 +2041,10 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.EnterCave:
+                    case TaskName.UseEntrance:
                         {
-                            BoardPiece caveEntrance = (BoardPiece)this.ExecuteHelper;
-                            World world = caveEntrance.world;
-
-                            if (caveEntrance.sprite.AnimName == "blocked")
-                            {
-                                new TextWindow(text: $"I can't enter this | cave, because the entrance has crumbled...", imageList: new List<Texture2D> { caveEntrance.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
-                                return;
-                            }
-
-                            if (caveEntrance.level.levelType == Level.LevelType.Island) caveEntrance.sprite.AssignNewName(newAnimName: "blocked", checkForCollision: false);
-
-                            Level caveLevel = new Level(type: Level.LevelType.Cave, world: world, seed: 1234, width: 8000, height: 8000);
-                            Grid grid = new Grid(level: caveLevel, resDivider: world.resDivider);
-                            caveLevel.AssignGrid(grid);
-
-                            world.EnterNewLevel(caveLevel);
-
-                            return;
-                        }
-
-                    case TaskName.ExitCave:
-                        {
-                            BoardPiece caveEntrance = (BoardPiece)this.ExecuteHelper;
-                            World world = caveEntrance.world;
-
-                            world.EnterNewLevel(world.ActiveLevel.parentLevel);
-
+                            Entrance entrance = (Entrance)this.ExecuteHelper;
+                            entrance.Enter();
                             return;
                         }
 

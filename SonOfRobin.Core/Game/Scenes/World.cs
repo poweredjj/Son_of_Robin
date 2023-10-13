@@ -1193,8 +1193,8 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
 
-            Player.level.stateMachineTypesManager.DisableMultiplier();
-            Player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+            this.Player.level.stateMachineTypesManager.DisableMultiplier();
+            this.Player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             this.islandClock.Resume();
 
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));

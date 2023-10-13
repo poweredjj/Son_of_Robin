@@ -10,7 +10,7 @@ namespace SonOfRobin
         public enum LevelType : byte { Island, Cave }
 
         public readonly Level parentLevel;
-
+        public readonly int depth;
         public readonly LevelType levelType;
         public readonly World world;
         public readonly int seed;
@@ -42,6 +42,7 @@ namespace SonOfRobin
         public Level(LevelType type, World world, int seed, int width, int height)
         {
             this.parentLevel = world.ActiveLevel;
+            this.depth = this.parentLevel == null ? 0 : parentLevel.depth + 1;
             this.levelType = type;
             this.world = world;
             this.seed = seed;

@@ -2702,8 +2702,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.");
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave);
 
                         return boardPiece;
                     }
@@ -2715,8 +2715,8 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.");
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, levelType: Level.LevelType.Cave); // levelType is ignored here
 
                         return boardPiece;
                     }
