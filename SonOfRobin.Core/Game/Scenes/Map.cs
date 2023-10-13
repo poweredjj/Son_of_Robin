@@ -269,6 +269,11 @@ namespace SonOfRobin
             }
         }
 
+        public void MoveCameraToPlayer()
+        {
+            this.camera.TrackPiece(trackedPiece: this.world.Player, moveInstantly: true);
+        }
+
         public bool CheckIfPlayerCanReadTheMap(bool showMessage)
         {
             bool canBeTurnedOn = this.world.Player.CanSeeAnything;

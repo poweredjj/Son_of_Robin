@@ -179,6 +179,7 @@ namespace SonOfRobin
             {
                 this.Player.MoveToActiveLevel();
                 this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
+                this.map.MoveCameraToPlayer();
             }
         }
 
