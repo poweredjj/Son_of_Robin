@@ -282,6 +282,9 @@ namespace SonOfRobin
             EmptyVisualEffect = 215,
             HastePlayerClone = 220,
 
+            CaveEntrance = 221,
+            CaveExit = 222,
+
             // obsolete below (kept for compatibility with old saves)
         }
 
@@ -2688,6 +2691,32 @@ namespace SonOfRobin
                     {
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 220, readableName: "long fence (vertical)", description: "A long fence.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveEntrance:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
+                        });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveExit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
+                        });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.");
 
                         return boardPiece;
                     }

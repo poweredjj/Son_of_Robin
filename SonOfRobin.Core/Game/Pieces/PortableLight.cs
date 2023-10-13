@@ -54,8 +54,7 @@ namespace SonOfRobin
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
                     this.activeSoundPack.Play(action: PieceSoundPackTemplate.Action.IsOn);
 
-                    var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
-                    new LevelEvent(eventName: LevelEvent.EventName.BurnOutLightSource, level: this.level, delay: 60, boardPiece: this, eventHelper: damageData);
+                    this.AddBurnOutLevelEvent();
                 }
                 else
                 {
@@ -65,6 +64,12 @@ namespace SonOfRobin
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
                 }
             }
+        }
+
+        public void AddBurnOutLevelEvent()
+        {
+            var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
+            new LevelEvent(eventName: LevelEvent.EventName.BurnOutLightSource, level: this.level, delay: 60, boardPiece: this, eventHelper: damageData);
         }
 
         public override Dictionary<string, Object> Serialize()

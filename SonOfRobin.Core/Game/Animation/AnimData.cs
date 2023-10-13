@@ -371,6 +371,9 @@ namespace SonOfRobin
             FenceHorizontalLong = 281,
             FenceVerticalLong = 282,
 
+            CaveEntrance = 295,
+            CaveExit = 296,
+
             // obsolete below (kept for compatibility with old saves)
         }
 
@@ -731,6 +734,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.FenceVerticalShort, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
             AddFrameList(animPackage: PkgName.FenceHorizontalLong, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
             AddFrameList(animPackage: PkgName.FenceVerticalLong, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
+            AddFrameList(animPackage: PkgName.CaveEntrance, frameList: ConvertImageToFrameList(atlasName: "cave_entrance", scale: 2f, layer: 1, depthPercent: 0.95f));
+            AddFrameList(animPackage: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
             AddFrameList(animPackage: PkgName.Totem, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
             AddFrameList(animPackage: PkgName.RuinsColumn, frameList: ConvertImageToFrameList(atlasName: "ruins_column", layer: 1));
             AddFrameList(animPackage: PkgName.RuinsRubble, frameList: ConvertImageToFrameList(atlasName: "ruins_rubble", layer: 1));

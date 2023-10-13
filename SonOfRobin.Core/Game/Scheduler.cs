@@ -114,6 +114,8 @@ namespace SonOfRobin
             DisposeSaveScreenshotsIfNoMenuPresent = 94,
             SetGlobalWorldEffect = 95,
             SetGlobalWorldTweener = 96,
+            EnterCave = 97,
+            ExitCave = 98,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2036,6 +2038,30 @@ namespace SonOfRobin
                             else if (easing == "SineInOut") tween.Easing(EasingFunctions.SineInOut);
                             else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
                             else if (easing == "Linear") tween.Easing(EasingFunctions.Linear);
+
+                            return;
+                        }
+
+                    case TaskName.EnterCave:
+                        {
+                            BoardPiece caveEntrance = (BoardPiece)this.ExecuteHelper;
+                            World world = caveEntrance.world;
+
+                            Level caveLevel = new Level(type: Level.LevelType.Cave, world: world, seed: 1234, width: 8000, height: 8000);
+                            Grid grid = new Grid(level: caveLevel, resDivider: world.resDivider);
+                            caveLevel.AssignGrid(grid);
+
+                            world.EnterNewLevel(caveLevel);
+
+                            return;
+                        }
+
+                    case TaskName.ExitCave:
+                        {
+                            BoardPiece caveEntrance = (BoardPiece)this.ExecuteHelper;
+                            World world = caveEntrance.world;
+
+                            world.EnterNewLevel(world.IslandLevel);
 
                             return;
                         }

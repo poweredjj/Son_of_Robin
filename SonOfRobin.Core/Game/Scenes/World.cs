@@ -175,12 +175,7 @@ namespace SonOfRobin
             this.ActiveLevel = newLevel;
             this.populatingFramesLeft = populatingFramesTotal;
 
-            if (!this.ActiveLevel.creationInProgress)
-            {
-                this.Player.MoveToActiveLevel();
-                this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
-                this.map.MoveCameraToPlayer();
-            }
+            if (!this.ActiveLevel.creationInProgress) this.Player.MoveToActiveLevel();
         }
 
         public PieceTemplate.Name PlayerName

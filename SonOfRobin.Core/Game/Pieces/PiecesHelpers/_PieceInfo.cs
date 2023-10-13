@@ -2910,6 +2910,22 @@ namespace SonOfRobin
                         this.hasFlatShadow = true;
                         break;
 
+                    case PieceTemplate.Name.CaveEntrance:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.EnterCave;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterCave;
+                        this.blocksMovement = true;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.CaveExit:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.ExitCave;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterCave;
+                        this.blocksMovement = true;
+                        this.hasFlatShadow = true;
+                        break;
+
                     default:
                         throw new ArgumentException($"Unsupported name - {this.name}.");
                 }

@@ -89,6 +89,7 @@ namespace SonOfRobin
             VirtButtonUseAnvil = 48,
             VirtButtonJump = 49,
             VirtButtonOffer = 50,
+            VirtButtonEnterCave = 144,
 
             ParticleCircleSharp = 51,
             ParticleCircleSoft = 52,
@@ -248,6 +249,7 @@ namespace SonOfRobin
             { TextureName.VirtButtonUseAnvil, "input/VirtButton/use_anvil" },
             { TextureName.VirtButtonJump, "input/VirtButton/jump" },
             { TextureName.VirtButtonOffer, "input/VirtButton/offer" },
+            { TextureName.VirtButtonEnterCave, "input/VirtButton/offer" }, // TODO replace with a proper icon
 
             { TextureName.ParticleCircleSharp, "particles/circle_16x16_sharp" },
             { TextureName.ParticleCircleSoft, "particles/circle_16x16_soft" },

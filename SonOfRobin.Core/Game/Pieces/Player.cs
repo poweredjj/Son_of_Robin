@@ -167,6 +167,22 @@ namespace SonOfRobin
 
             if (this.level.playerReturnPos == Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: true, position: Vector2.Zero);
             else this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
+
+            this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
+            this.world.map.MoveCameraToPlayer();
+
+            foreach (BoardPiece piece in this.ToolStorage.GetAllPieces())
+            {
+                if (piece.GetType() == typeof(PortableLight))
+                {
+                    PortableLight portableLight = (PortableLight)piece;
+                    if (portableLight.IsOn)
+                    {
+                        portableLight.AddBurnOutLevelEvent();
+                        break;
+                    }
+                }
+            }
         }
 
         public override bool ShowStatBars
