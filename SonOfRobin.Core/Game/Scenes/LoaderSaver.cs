@@ -307,6 +307,7 @@ namespace SonOfRobin
                     { "meatHarvestStats", this.world.meatHarvestStats.Serialize() },
                     { "identifiedPieces", this.world.identifiedPieces },
                     { "mapData", this.world.map.Serialize() },
+                    { "playerLastSteps", this.world.IslandLevel.playerLastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList() },
                     { "saveVersion", SaveHeaderManager.saveVersion },
             };
 

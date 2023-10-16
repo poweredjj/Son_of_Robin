@@ -68,7 +68,6 @@ namespace SonOfRobin
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
-        public List<Vector2> LastSteps { get; private set; }
         private Vector2 previousStepPos; // used to calculate distanceWalked only
         private float distanceWalked;
 
@@ -98,7 +97,6 @@ namespace SonOfRobin
             this.BrewLevel = 1;
             this.HarvestLevel = 1;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
-            this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
             this.pointWalkTarget = Vector2.Zero;
@@ -532,7 +530,6 @@ namespace SonOfRobin
             pieceData["player_ToolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_EquipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_GlobalChestStorage"] = this.GlobalChestStorage.Serialize();
-            pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
 
             return pieceData;
         }
@@ -553,8 +550,6 @@ namespace SonOfRobin
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_ToolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_EquipStorage"], storagePiece: this);
             this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_GlobalChestStorage"], storagePiece: this);
-            List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
-            this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
 
             this.RefreshAllowedPiecesForStorages();
         }
@@ -661,10 +656,12 @@ namespace SonOfRobin
 
         public void UpdateLastSteps()
         {
-            if (this.world.MapEnabled && (this.LastSteps.Count == 0 || Vector2.Distance(this.sprite.position, this.LastSteps.Last()) > 180))
+            var lastSteps = this.world.ActiveLevel.playerLastSteps;
+
+            if (this.world.MapEnabled && (lastSteps.Count == 0 || Vector2.Distance(this.sprite.position, lastSteps.Last()) > 180))
             {
-                this.LastSteps.Add(this.sprite.position);
-                if (this.LastSteps.Count > maxLastStepsCount) this.LastSteps.RemoveAt(0);
+                lastSteps.Add(this.sprite.position);
+                if (lastSteps.Count > maxLastStepsCount) lastSteps.RemoveAt(0);
             }
         }
 

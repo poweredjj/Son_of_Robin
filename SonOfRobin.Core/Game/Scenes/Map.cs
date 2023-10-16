@@ -594,13 +594,13 @@ namespace SonOfRobin
 
             float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
-            int totalSteps = this.world.Player.LastSteps.Count;
+            int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
             int stepNo = 0;
 
             Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
             Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
 
-            foreach (Vector2 stepPos in this.world.Player.LastSteps)
+            foreach (Vector2 stepPos in this.world.ActiveLevel.playerLastSteps)
             {
                 if (viewRect.Contains(stepPos))
                 {

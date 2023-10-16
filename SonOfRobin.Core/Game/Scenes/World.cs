@@ -530,6 +530,11 @@ namespace SonOfRobin
                 this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
                 if (headerData.ContainsKey("mapData")) this.map.Deserialize(headerData["mapData"]);
+                if (headerData.ContainsKey("playerLastSteps"))
+                {
+                    List<Point> lastStepsPointList = (List<Point>)headerData["playerLastSteps"];
+                    this.IslandLevel.playerLastSteps.AddRange(lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList());
+                }
             }
 
             if (this.HasBeenRemoved) return; // to avoid processing if cancelled

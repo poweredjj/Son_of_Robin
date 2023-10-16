@@ -28,6 +28,7 @@ namespace SonOfRobin
         public readonly TrackingManager trackingManager;
         public readonly RecentParticlesManager recentParticlesManager;
         public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
+        public readonly List<Vector2> playerLastSteps;
         public bool creationInProgress;
 
         public Grid Grid { get; private set; }
@@ -87,6 +88,8 @@ namespace SonOfRobin
                 { new Color(93, 6, 99), null },
                 { new Color(97, 68, 15), null },
             };
+            this.playerLastSteps = new List<Vector2>();
+
 
             this.playerReturnPos = Vector2.Zero;
 
