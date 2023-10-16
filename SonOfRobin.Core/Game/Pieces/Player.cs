@@ -165,8 +165,33 @@ namespace SonOfRobin
 
             this.UpdateLastFrameSMProcessed(); // otherwise player would freeze for some time
 
-            if (this.level.playerReturnPos == Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: true, position: Vector2.Zero);
-            else this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
+            if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
+            else
+            {
+                for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
+                {
+                    // randomPlacement would not work (because it would require an outer beach)
+                    if (this.sprite.PlaceOnBoard(randomPlacement: false, position: new Vector2(this.world.random.Next(this.level.width), this.world.random.Next(this.level.height)))) break;
+                }
+            }
+
+            if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
+
+
+            if (this.world.ActiveLevel.levelType == Level.LevelType.Cave)
+            {
+                bool exitFound = false;
+                foreach (BoardPiece nearbyPiece in this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 1000))
+                {
+                    if (nearbyPiece.name == PieceTemplate.Name.CaveExit)
+                    {
+                        exitFound = true;
+                        break;
+                    }
+                }
+
+                if (!exitFound) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.CaveExit, closestFreeSpot: true);
+            }
 
             this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
             this.world.map.MoveCameraToPlayer();
@@ -1604,7 +1629,7 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                //{ 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 1 }, { "minTotalNoOfCrafts", 2 } } }, // for testing
+                // { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 1 }, { "minTotalNoOfCrafts", 2 } } }, // for testing
                 { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 6 }, { "minTotalNoOfCrafts", 10 } } },
                 { 3, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 15 }, { "minTotalNoOfCrafts", 30 } } },
                 { 4, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 30 }, { "minTotalNoOfCrafts", 150 } } },

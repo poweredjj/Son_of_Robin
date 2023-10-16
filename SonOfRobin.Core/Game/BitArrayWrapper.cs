@@ -166,12 +166,12 @@ namespace SonOfRobin
 
         public override bool GetVal(int x, int y)
         {
-            return false;
+            return base.GetVal(0, 0);
         }
 
         public override void SetVal(int x, int y, bool value)
         {
-            // this method does nothing
+            base.SetVal(0, 0, value);
         }
 
         public override bool SaveToPNG(string path)

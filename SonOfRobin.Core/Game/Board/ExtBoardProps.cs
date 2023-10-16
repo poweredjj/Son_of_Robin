@@ -11,12 +11,12 @@ namespace SonOfRobin
     {
         public enum Name : byte
         {
-            Sea = 0,
-            OuterBeach = 1,
+            Sea,
+            OuterBeach,
 
             // each biome name must start with "Biome"
-            BiomeSwamp = 2,
-            BiomeRuins = 3,
+            BiomeSwamp,
+            BiomeRuins,
         };
 
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
@@ -183,6 +183,16 @@ namespace SonOfRobin
         public void SetValueRaw(Name name, bool value, int rawX, int rawY)
         {
             this.extDataByProperty[name].SetVal(x: rawX, y: rawY, value: value);
+        }
+
+        public void FillWithTrue(Name name)
+        {
+            this.extDataByProperty[name].FillWithTrue();
+        }
+
+        public void FillWithFalse(Name name)
+        {
+            this.extDataByProperty[name].FillWithFalse();
         }
 
         private bool LoadTemplate()

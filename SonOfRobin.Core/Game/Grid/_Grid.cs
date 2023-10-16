@@ -339,14 +339,16 @@ namespace SonOfRobin
                     {
                         Level.LevelType levelType = this.world.ActiveLevel.levelType;
 
+                        // TODO add different generation params for different level types
+
                         this.terrainByName[Terrain.Name.Height] = new Terrain(
-                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: levelType == Level.LevelType.Island);
+                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
                         this.terrainByName[Terrain.Name.Humidity] = new Terrain(
                             grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
                         this.terrainByName[Terrain.Name.Biome] = new Terrain(
-                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: levelType == Level.LevelType.Island);
+                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
                         Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                         {
@@ -407,7 +409,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateNamedLocations:
-                    this.namedLocations.GenerateLocations();
+                    if (this.level.levelType == Level.LevelType.Island) this.namedLocations.GenerateLocations();
 
                     break;
 
@@ -476,6 +478,8 @@ namespace SonOfRobin
 
         private void ExtCalculateSea()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             // the algorithm will only work, if water surrounds the island
 
             int maxX = (this.level.width / this.resDivider) - 1;
@@ -503,6 +507,8 @@ namespace SonOfRobin
 
         private void ExtCalculateOuterBeach()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.Name.OuterBeach, value: true);
 
             this.FloodFillExtProps(
@@ -515,6 +521,8 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             // setting up variables
 
             var biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();

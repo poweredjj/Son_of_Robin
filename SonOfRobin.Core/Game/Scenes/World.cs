@@ -707,7 +707,7 @@ namespace SonOfRobin
                 }
             }
 
-            throw new DivideByZeroException("Cannot place player sprite.");
+            throw new ArgumentException("Cannot place player sprite.");
         }
 
         public int CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)

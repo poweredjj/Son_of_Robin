@@ -669,15 +669,17 @@ namespace SonOfRobin
 
                         // island info
                         {
-                            int plantCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.ActiveLevel.pieceCountByClass[typeof(Plant)] : 0;
-                            int animalCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.ActiveLevel.pieceCountByClass[typeof(Animal)] : 0;
+                            Level islandLevel = world.IslandLevel;
+
+                            int plantCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? islandLevel.pieceCountByClass[typeof(Plant)] : 0;
+                            int animalCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? islandLevel.pieceCountByClass[typeof(Animal)] : 0;
 
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("Island info\n");
 
-                            textLines.Add($"| Size: {world.IslandLevel.width}x{world.IslandLevel.height}");
+                            textLines.Add($"| Size: {islandLevel.width}x{islandLevel.height}");
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Map].texture);
 
                             textLines.Add($"| All Objects: {world.PieceCount}");
@@ -692,8 +694,8 @@ namespace SonOfRobin
                             string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
                             textLines.Add($"Time played: {timePlayedString}");
                             textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
-                            textLines.Add($"Map discovered: {Math.Round(world.Grid.VisitedCellsPercentage * 100, 1)}%");
-                            textLines.Add($"Locations found: {world.Grid.namedLocations.DiscoveredLocationsCount}/{world.Grid.namedLocations.AllLocationsCount}");
+                            textLines.Add($"Map discovered: {Math.Round(islandLevel.grid.VisitedCellsPercentage * 100, 1)}%");
+                            textLines.Add($"Locations found: {islandLevel.grid.namedLocations.DiscoveredLocationsCount}/{islandLevel.grid.namedLocations.AllLocationsCount}");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
