@@ -16,6 +16,14 @@ namespace SonOfRobin
             this.eventQueue = new Dictionary<int, Queue<LevelEvent>>();
         }
 
+        public void AddToQueue(List<LevelEvent> eventList, bool addFadeOut = true)
+        {
+            foreach (LevelEvent levelEvent in eventList)
+            {
+                this.AddToQueue(levelEvent: levelEvent, addFadeOut: addFadeOut);
+            }
+        }
+
         public void AddToQueue(LevelEvent levelEvent, bool addFadeOut = true)
         {
             if (!this.eventQueue.ContainsKey(levelEvent.startUpdateNo)) this.eventQueue[levelEvent.startUpdateNo] = new Queue<LevelEvent>();
@@ -46,6 +54,23 @@ namespace SonOfRobin
             }
         }
 
+        public List<LevelEvent> RemovePiecesFromQueueAndGetRemovedEvents(HashSet<BoardPiece> piecesSet)
+        {
+            // Pieces removed from the board should not be removed from the queue (CPU intensive) - will be ignored when run.
+
+            var allRemovedEvents = new List<LevelEvent>();
+
+            foreach (int frame in this.eventQueue.Keys.ToList())
+            {
+                var removedEventsForFrame = this.eventQueue[frame].Where(plannedEvent => piecesSet.Contains(plannedEvent.boardPiece)).ToList();
+                allRemovedEvents.AddRange(removedEventsForFrame);
+
+                this.eventQueue[frame] = new Queue<LevelEvent>(this.eventQueue[frame].Where(plannedEvent => !piecesSet.Contains(plannedEvent.boardPiece)));
+            }
+
+            return allRemovedEvents;
+        }
+
         public void ProcessQueue()
         {
             var framesToProcess = this.eventQueue.Keys
@@ -58,7 +83,9 @@ namespace SonOfRobin
             foreach (int frameNo in framesToProcess)
             {
                 foreach (LevelEvent currentEvent in this.eventQueue[frameNo])
-                { currentEvent.Execute(this.level); }
+                {
+                    currentEvent.Execute(this.level);
+                }
 
                 this.eventQueue.Remove(frameNo);
             }

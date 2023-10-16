@@ -170,9 +170,17 @@ namespace SonOfRobin
             this.ActiveLevel.playerReturnPos = this.Player.sprite.position;
             this.Player.sprite.RemoveFromBoard();
 
+            var piecesToMoveEvents = new List<BoardPiece> { this.Player };
+            foreach (PieceStorage storage in new List<PieceStorage> { this.Player.PieceStorage, this.Player.ToolStorage, this.Player.EquipStorage })
+            {
+                piecesToMoveEvents.AddRange(storage.GetAllPieces());
+            }
+            var removedEvents = this.ActiveLevel.levelEventManager.RemovePiecesFromQueueAndGetRemovedEvents(piecesToMoveEvents.ToHashSet());
+
             this.ActiveLevel = newLevel;
             this.populatingFramesLeft = populatingFramesTotal;
 
+            this.ActiveLevel.levelEventManager.AddToQueue(eventList: removedEvents, addFadeOut: false);
             if (!this.ActiveLevel.creationInProgress) this.Player.MoveToActiveLevel();
         }
 
