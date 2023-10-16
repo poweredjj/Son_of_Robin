@@ -924,7 +924,7 @@ namespace SonOfRobin
                 this.Player.UpdateLastSteps();
             }
 
-            foreach (BoardPiece mapMarker in this.map.mapMarkerByColor.Values)
+            foreach (BoardPiece mapMarker in this.ActiveLevel.mapMarkerByColor.Values)
             {
                 if (mapMarker != null && mapMarker.sprite.IsOnBoard) this.ProcessOneNonPlant(mapMarker);
             }

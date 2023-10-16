@@ -27,6 +27,7 @@ namespace SonOfRobin
         public readonly LevelEventManager levelEventManager;
         public readonly TrackingManager trackingManager;
         public readonly RecentParticlesManager recentParticlesManager;
+        public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
         public bool creationInProgress;
 
         public Grid Grid { get; private set; }
@@ -78,6 +79,14 @@ namespace SonOfRobin
             this.trackingManager = new TrackingManager(this);
             this.recentParticlesManager = new RecentParticlesManager(level: this);
             this.stateMachineTypesManager = new SMTypesManager(this);
+            this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
+            {
+                { Color.Blue, null },
+                { new Color(15, 128, 0), null },
+                { Color.Red, null },
+                { new Color(93, 6, 99), null },
+                { new Color(97, 68, 15), null },
+            };
 
             this.playerReturnPos = Vector2.Zero;
 

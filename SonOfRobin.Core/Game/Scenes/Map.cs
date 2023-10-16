@@ -41,8 +41,6 @@ namespace SonOfRobin
         private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
-        public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
-
         private static float InitialZoom
         { get { return Preferences.worldScale / 2; } }
 
@@ -66,14 +64,6 @@ namespace SonOfRobin
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.bgTaskSpritesToShow = new List<Sprite>();
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
-            this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
-            {
-                { Color.Blue, null },
-                { new Color(15, 128, 0), null },
-                { Color.Red, null },
-                { new Color(93, 6, 99), null },
-                { new Color(97, 68, 15), null },
-            };
         }
 
         public override void Remove()
@@ -105,7 +95,7 @@ namespace SonOfRobin
         public Dictionary<string, Object> Serialize()
         {
             var markerPosDict = new Dictionary<Vector2, byte[]>();
-            foreach (var kvp in this.mapMarkerByColor)
+            foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
             {
                 Color markerColor = kvp.Key;
                 BoardPiece markerPiece = kvp.Value;
@@ -136,9 +126,9 @@ namespace SonOfRobin
 
                 Color markerColor = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
 
-                if (this.mapMarkerByColor.ContainsKey(markerColor))
+                if (this.world.ActiveLevel.mapMarkerByColor.ContainsKey(markerColor))
                 {
-                    this.mapMarkerByColor[markerColor] = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: markerPos, templateName: PieceTemplate.Name.MapMarker);
+                    this.world.ActiveLevel.mapMarkerByColor[markerColor] = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: markerPos, templateName: PieceTemplate.Name.MapMarker);
                 }
                 else
                 {
@@ -296,17 +286,19 @@ namespace SonOfRobin
 
             this.KeepBackgroundTasksAlive();
 
-            foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
-            {
-                BoardPiece mapMarker = this.mapMarkerByColor[markerColor];
-                if (mapMarker != null && !mapMarker.exists) this.mapMarkerByColor[markerColor] = null; // if marker had destroyed itself
+            var mapMarkerByColor = this.world.ActiveLevel.mapMarkerByColor;
 
-                mapMarker = this.mapMarkerByColor[markerColor]; // refreshing, if changed above
+            foreach (Color markerColor in mapMarkerByColor.Keys.ToList())
+            {
+                BoardPiece mapMarker = mapMarkerByColor[markerColor];
+                if (mapMarker != null && !mapMarker.exists) mapMarkerByColor[markerColor] = null; // if marker had destroyed itself
+
+                mapMarker = mapMarkerByColor[markerColor]; // refreshing, if changed above
 
                 if (mapMarker != null && !mapMarker.sprite.IsOnBoard)
                 {
                     mapMarker.Destroy();
-                    this.mapMarkerByColor[markerColor] = null;
+                    mapMarkerByColor[markerColor] = null;
                 }
             }
 
@@ -318,7 +310,7 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Full)
             {
-                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
+                foreach (BoardPiece mapMarker in mapMarkerByColor.Values)
                 {
                     if (mapMarker != null)
                     {
@@ -361,15 +353,17 @@ namespace SonOfRobin
 
             // removing all markers
 
+            var mapMarkerByColor = this.world.ActiveLevel.mapMarkerByColor;
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapDeleteMarkers))
             {
                 bool anyMarkerRemoved = false;
-                foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
+                foreach (Color markerColor in mapMarkerByColor.Keys.ToList())
                 {
-                    if (this.mapMarkerByColor[markerColor] != null)
+                    if (mapMarkerByColor[markerColor] != null)
                     {
-                        this.mapMarkerByColor[markerColor].Destroy();
-                        this.world.map.mapMarkerByColor[markerColor] = null;
+                        mapMarkerByColor[markerColor].Destroy();
+                        mapMarkerByColor[markerColor] = null;
                         anyMarkerRemoved = true;
                     }
                 }
@@ -386,7 +380,7 @@ namespace SonOfRobin
 
                 bool markerRemoved = false;
 
-                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(mapMarkerByColor))
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
@@ -396,7 +390,7 @@ namespace SonOfRobin
                         if (Math.Abs(Vector2.Distance(markerPiece.sprite.position, this.camera.CurrentPos)) < 15 / this.camera.CurrentZoom)
                         {
                             markerPiece.Destroy();
-                            this.world.map.mapMarkerByColor[markerColor] = null;
+                            mapMarkerByColor[markerColor] = null;
                             soundMarkerRemove.Play();
                             markerRemoved = true;
                             break;
@@ -408,7 +402,7 @@ namespace SonOfRobin
 
                 // placing new marker (if possible)
 
-                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(mapMarkerByColor))
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
@@ -416,7 +410,7 @@ namespace SonOfRobin
                     if (markerPiece == null)
                     {
                         markerPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
-                        this.world.map.mapMarkerByColor[markerColor] = markerPiece;
+                        mapMarkerByColor[markerColor] = markerPiece;
                         soundMarkerPlace.Play();
                         return;
                     }
@@ -496,7 +490,7 @@ namespace SonOfRobin
 
             if (!TouchInput.IsBeingTouchedInAnyWay && movement == Vector2.Zero)
             {
-                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
+                foreach (BoardPiece mapMarker in mapMarkerByColor.Values)
                 {
                     if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 15f / this.camera.CurrentZoom)
                     {
@@ -738,7 +732,7 @@ namespace SonOfRobin
                 int markerSizePixels = (int)(Preferences.MapMarkerRealSize * this.viewParams.ScaleY / Preferences.GlobalScale);
                 Rectangle markerRect = new Rectangle(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
 
-                foreach (var kvp in this.world.map.mapMarkerByColor)
+                foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;

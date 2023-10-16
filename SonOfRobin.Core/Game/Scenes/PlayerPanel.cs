@@ -275,7 +275,7 @@ namespace SonOfRobin
 
             if (!this.transManager.HasAnyTransition)
             {
-                foreach (var kvp in this.world.map.mapMarkerByColor)
+                foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
