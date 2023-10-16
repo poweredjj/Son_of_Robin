@@ -98,25 +98,11 @@ namespace SonOfRobin
             this.creationInProgress = true;
         }
 
+        // Level class should be treated as a data container. All processing should be done within World() class (if possible).
+
         public void Destroy()
         {
             this.grid.Destroy();
-        }
-
-        public void Update()
-        {
-            this.ProcessHeatQueue();
-            this.levelEventManager.ProcessQueue();
-            this.trackingManager.ProcessQueue();
-            this.recentParticlesManager.Update();
-        }
-
-        private void ProcessHeatQueue()
-        {
-            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.heatedPieces))
-            {
-                boardPiece.ProcessHeat();
-            }
         }
     }
 }

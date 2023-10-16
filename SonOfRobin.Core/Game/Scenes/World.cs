@@ -903,6 +903,7 @@ namespace SonOfRobin
             }
 
             this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
+            this.ActiveLevel.recentParticlesManager.Update();
 
             if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: false);
 
@@ -915,7 +916,10 @@ namespace SonOfRobin
                 this.CreateTemporaryDecorations(ignoreDuration: false);
             }
 
-            this.ActiveLevel.Update();
+            this.ActiveLevel.trackingManager.ProcessQueue();
+            this.ActiveLevel.levelEventManager.ProcessQueue();
+
+            this.ProcessHeatQueue();
 
             if (!this.BuildMode) this.UpdateAllAnims();
 
@@ -943,6 +947,14 @@ namespace SonOfRobin
             this.CurrentUpdate += this.updateMultiplier;
             this.islandClock.Advance(this.updateMultiplier);
             this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
+        }
+
+        private void ProcessHeatQueue()
+        {
+            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.ActiveLevel.heatedPieces))
+            {
+                boardPiece.ProcessHeat();
+            }
         }
 
         private void ProcessInput()
