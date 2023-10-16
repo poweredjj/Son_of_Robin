@@ -53,7 +53,7 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-        public Grid Grid { get { return this.ActiveLevel.Grid; } }
+        public Grid Grid { get { return this.ActiveLevel.grid; } }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
@@ -74,7 +74,15 @@ namespace SonOfRobin
         {
             this.seed = seed;
             this.random = new Random(seed);
-            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, seed: this.seed, width: width, height: height);
+            this.resDivider = resDivider;
+
+            Dictionary<string, object> gridSerializedData = null;
+            if (this.saveGameData != null)
+            {
+                var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
+                gridSerializedData = (Dictionary<string, Object>)saveGameDataDict["grid"];
+            }
+            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, seed: this.seed, width: width, height: height, cellWidthOverride: cellWidthOverride, cellHeightOverride: cellHeightOverride, gridSerializedData: gridSerializedData);
             this.ActiveLevel = this.IslandLevel;
 
             this.demoMode = demoMode;
@@ -92,19 +100,8 @@ namespace SonOfRobin
             this.createMissingPiecesOutsideCamera = false;
             this.populatingFramesLeft = populatingFramesTotal;
             this.creationStart = DateTime.Now;
-            this.resDivider = resDivider;
 
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
-
-            Grid grid;
-            if (this.saveGameData != null)
-            {
-                var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
-                var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
-                grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
-            }
-            else grid = new Grid(level: this.IslandLevel, resDivider: resDivider, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride);
-            this.IslandLevel.AssignGrid(grid);
 
             this.CurrentFrame = 0;
             this.CurrentUpdate = 0;

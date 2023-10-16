@@ -30,7 +30,7 @@ namespace SonOfRobin
             {
                 new TextWindow(text: $"I can't enter this | cave, because the entrance has crumbled...", imageList: new List<Texture2D> { this.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                 return;
-            }          
+            }
 
             if (this.targetLevel == null)
             {
@@ -41,7 +41,6 @@ namespace SonOfRobin
                 }
 
                 this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 9999), width: 15000, height: 15000);
-                this.targetLevel.AssignGrid(new Grid(level: this.targetLevel, resDivider: this.world.resDivider));
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)

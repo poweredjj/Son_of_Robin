@@ -183,7 +183,7 @@ namespace SonOfRobin
             Rectangle explosionRect = new(x: (int)this.sprite.position.X - 1, y: (int)this.sprite.position.Y - 1, width: 2, height: 2);
             explosionRect.Inflate(50, 50);
 
-            var piecesWithinDistance = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            var piecesWithinDistance = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
             if (piecesWithinDistance.Count == 0) return;
 
             foreach (BoardPiece piece in piecesWithinDistance)

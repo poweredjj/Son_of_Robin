@@ -185,7 +185,7 @@ namespace SonOfRobin
 
         public List<BoardPiece> GetSeenPieces()
         {
-            return this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange);
+            return this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange);
         }
 
         private void UpdateAttackCooldown()
@@ -841,7 +841,7 @@ namespace SonOfRobin
                 {
                     searchRange += this.pieceInfo.animalSightRange;
 
-                    var cellsWithinDistance = (IEnumerable<Cell>)this.level.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
+                    var cellsWithinDistance = (IEnumerable<Cell>)this.level.grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
 
                     bool canGoToWater = this.sprite.allowedTerrain.IsInRange(terrainName: Terrain.Name.Height, Terrain.waterLevelMax - 1);
 
@@ -877,7 +877,7 @@ namespace SonOfRobin
         {
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
-            var piecesWithinSoundRange = level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
+            var piecesWithinSoundRange = level.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.pieceInfo.animalSightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
 
             bool targetIsPlayer = this.target.GetType() == typeof(Player);

@@ -179,14 +179,14 @@ namespace SonOfRobin
             return gridData;
         }
 
-        public static Grid Deserialize(Dictionary<string, Object> gridData, World world, int resDivider)
+        public static Grid Deserialize(Dictionary<string, Object> gridData, Level level, int resDivider)
         {
             // this data is included in save file (not in template)
 
             int cellWidth = (int)(Int64)gridData["cellWidth"];
             int cellHeight = (int)(Int64)gridData["cellHeight"];
 
-            Grid grid = new(level: world.IslandLevel, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
+            Grid grid = new(level: level, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
             // for compatibility with older saves
@@ -224,7 +224,8 @@ namespace SonOfRobin
             {
                 World existingWorld = (World)scene;
 
-                if (!existingWorld.ActiveLevel.creationInProgress &&
+                if (existingWorld.ActiveLevel != null &&
+                    existingWorld.ActiveLevel.creationInProgress &&
                     existingWorld.Grid != null &&
                     !existingWorld.Grid.CreationInProgress &&
                     seed == existingWorld.seed &&
@@ -232,7 +233,7 @@ namespace SonOfRobin
                     height == existingWorld.IslandLevel.height &&
                     (ignoreCellSize || (cellWidth == existingWorld.Grid.cellWidth && cellHeight == existingWorld.Grid.cellHeight)))
                 {
-                    return existingWorld.IslandLevel.Grid;
+                    return existingWorld.IslandLevel.grid;
                 }
             }
 

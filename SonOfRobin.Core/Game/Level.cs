@@ -29,19 +29,18 @@ namespace SonOfRobin
         public readonly RecentParticlesManager recentParticlesManager;
         public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
         public readonly List<Vector2> playerLastSteps;
-        public bool creationInProgress;
-
-        public Grid Grid { get; private set; }
+        public readonly Grid grid;
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
-
         public Queue<Cell> plantCellsQueue;
         public Queue<Sprite> plantSpritesQueue;
         public readonly HashSet<BoardPiece> heatedPieces;
         public Queue<Sprite> nonPlantSpritesQueue;
         public Vector2 playerReturnPos;
 
-        public Level(LevelType type, World world, int seed, int width, int height)
+        public bool creationInProgress;
+
+        public Level(LevelType type, World world, int seed, int width, int height, int cellWidthOverride = 0, int cellHeightOverride = 0, Dictionary<string, object> gridSerializedData = null)
         {
             this.parentLevel = world.ActiveLevel;
             this.depth = this.parentLevel == null ? 0 : parentLevel.depth + 1;
@@ -89,22 +88,19 @@ namespace SonOfRobin
                 { new Color(97, 68, 15), null },
             };
             this.playerLastSteps = new List<Vector2>();
-
-
             this.playerReturnPos = Vector2.Zero;
+
+
+            this.grid = gridSerializedData == null ?
+            new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 20, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
+            Grid.Deserialize(level: this, gridData: gridSerializedData, resDivider: this.world.resDivider);
 
             this.creationInProgress = true;
         }
 
         public void Destroy()
         {
-            this.Grid.Destroy();
-        }
-
-        public void AssignGrid(Grid grid)
-        {
-            if (this.Grid != null) throw new ArgumentException($"Grid has already been assigned to level {this.levelType}.");
-            this.Grid = grid;
+            this.grid.Destroy();
         }
 
         public void Update()

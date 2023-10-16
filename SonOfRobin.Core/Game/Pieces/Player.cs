@@ -241,7 +241,7 @@ namespace SonOfRobin
             {
                 var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
-                var nearbyPieces = this.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
+                var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
                 var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
 
                 foreach (BoardPiece chestPiece in chestPieces)
@@ -326,7 +326,7 @@ namespace SonOfRobin
             {
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = this.level.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToInteract = new List<BoardPiece>();
@@ -352,7 +352,7 @@ namespace SonOfRobin
 
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = this.level.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToPickUp = new List<BoardPiece>();
@@ -1063,8 +1063,8 @@ namespace SonOfRobin
 
             if (this.world.MapEnabled && this.CanSeeAnything)
             {
-                NamedLocations.Location location = this.level.Grid.namedLocations.PlayerLocation;
-                if (location != null && !location.hasBeenDiscovered) this.level.Grid.namedLocations.ProcessDiscovery();
+                NamedLocations.Location location = this.level.grid.namedLocations.PlayerLocation;
+                if (location != null && !location.hasBeenDiscovered) this.level.grid.namedLocations.ProcessDiscovery();
             }
         }
 

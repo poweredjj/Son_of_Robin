@@ -24,7 +24,7 @@ namespace SonOfRobin
 
         public bool CanBePlacedHere(BoardPiece piece)
         {
-            var nearbyPieces = piece.level.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radius);
+            var nearbyPieces = piece.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: this.radius);
 
             if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count > this.maxNoOfPiecesTotal) return false;
             if (this.maxNoOfPiecesSameName != -1 && CheckExceedsSameNameCount(piece: piece, nearbyPieces: nearbyPieces, maxCount: this.maxNoOfPiecesSameName)) return false;

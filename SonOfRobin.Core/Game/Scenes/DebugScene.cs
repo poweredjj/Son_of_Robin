@@ -440,7 +440,6 @@ namespace SonOfRobin
                 if (world.ActiveLevel == world.IslandLevel)
                 {
                     Level newLevel = new Level(type: Level.LevelType.Cave, world: world, seed: 1234, width: 8000, height: 8000);
-                    newLevel.AssignGrid(new Grid(level: newLevel, resDivider: world.resDivider));
 
                     world.EnterNewLevel(newLevel);
                 }
