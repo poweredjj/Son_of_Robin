@@ -16,7 +16,6 @@ namespace SonOfRobin
 
             // each biome name must start with "Biome"
             BiomeSwamp = 2,
-
             BiomeRuins = 3,
         };
 
@@ -73,8 +72,7 @@ namespace SonOfRobin
                 this.extDataPNGPathByName[name] = Path.Combine(this.templateFolder, $"ext_bitmap_{name}.png");
             }
 
-            bool loadedCorrectly = this.LoadTemplate();
-            if (!loadedCorrectly)
+            if (!this.LoadTemplate())
             {
                 MessageLog.Add(debugMessage: true, text: "ext - creating new", textColor: Color.Yellow);
 
@@ -107,7 +105,9 @@ namespace SonOfRobin
 
             foreach (Name extPropName in allExtPropNames)
             {
-                arrayCollection[extPropName] = new BitArrayWrapper(this.Grid.dividedWidth, this.Grid.dividedHeight);
+                arrayCollection[extPropName] = this.Grid.level.levelType == Level.LevelType.Island ?
+                    new BitArrayWrapper(this.Grid.dividedWidth, this.Grid.dividedHeight) :
+                    new BitArrayWrapperEmpty();
             }
 
             return arrayCollection;
@@ -139,12 +139,12 @@ namespace SonOfRobin
             }
         }
 
-        public void EndCreationAndSave()
+        public void EndCreationAndSave(bool saveTemplate)
         {
             if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
 
             this.CreationInProgress = false;
-            this.SaveTemplate();
+            if (saveTemplate) this.SaveTemplate();
         }
 
         public bool CheckIfContainsPropertyForCell(Name name, bool value, int cellNoX, int cellNoY)
@@ -187,7 +187,7 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
-            if (this.Grid.level.levelType != Level.LevelType.Island) return false;
+            if (this.Grid.serializable) return false;
 
             foreach (Name name in allExtPropNames)
             {

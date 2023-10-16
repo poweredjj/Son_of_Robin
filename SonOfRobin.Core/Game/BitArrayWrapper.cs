@@ -30,12 +30,12 @@ namespace SonOfRobin
             this.bitArray = new BitArray(boolArray);
         }
 
-        public void SetVal(int x, int y, bool value)
+        public virtual void SetVal(int x, int y, bool value)
         {
             this.bitArray.Set((y * this.width) + x, value);
         }
 
-        public bool GetVal(int x, int y)
+        public virtual bool GetVal(int x, int y)
         {
             return this.bitArray.Get((y * this.width) + x);
         }
@@ -50,7 +50,7 @@ namespace SonOfRobin
             this.bitArray.SetAll(false);
         }
 
-        public bool SaveToPNG(string path)
+        public virtual bool SaveToPNG(string path)
         {
             var workingArray = new bool[this.width * this.height];
             this.bitArray.CopyTo(workingArray, 0);
@@ -155,6 +155,28 @@ namespace SonOfRobin
         public bool GetVal(int x, int y)
         {
             return this.bitArrayWrapper.GetVal(x: x + this.xOffset, y: y + this.yOffset);
+        }
+    }
+
+    public class BitArrayWrapperEmpty : BitArrayWrapper
+    {
+        public BitArrayWrapperEmpty() : base(width: 1, height: 1)
+        {
+        }
+
+        public override bool GetVal(int x, int y)
+        {
+            return false;
+        }
+
+        public override void SetVal(int x, int y, bool value)
+        {
+            // this method does nothing
+        }
+
+        public override bool SaveToPNG(string path)
+        {
+            return false;
         }
     }
 }

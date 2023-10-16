@@ -949,14 +949,6 @@ namespace SonOfRobin
             this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
         }
 
-        private void ProcessHeatQueue()
-        {
-            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.ActiveLevel.heatedPieces))
-            {
-                boardPiece.ProcessHeat();
-            }
-        }
-
         private void ProcessInput()
         {
             if (this.demoMode || this.CineMode) return;
@@ -1012,6 +1004,14 @@ namespace SonOfRobin
                     // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                     return;
                 }
+            }
+        }
+
+        private void ProcessHeatQueue()
+        {
+            foreach (BoardPiece boardPiece in new HashSet<BoardPiece>(this.ActiveLevel.heatedPieces))
+            {
+                boardPiece.ProcessHeat();
             }
         }
 

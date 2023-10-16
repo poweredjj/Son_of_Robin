@@ -53,6 +53,7 @@ namespace SonOfRobin
         private Task backgroundTask;
         private Stage currentStage;
         private DateTime stageStartTime;
+        public readonly bool serializable;
         public bool CreationInProgress { get; private set; }
 
         public readonly GridTemplate gridTemplate;
@@ -93,6 +94,7 @@ namespace SonOfRobin
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
             this.namedLocations = new NamedLocations(grid: this);
+            this.serializable = this.level.levelType == Level.LevelType.Island;
 
             this.width = this.level.width;
             this.height = this.level.height;
@@ -114,7 +116,7 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
-            this.gridTemplate = new GridTemplate(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
+            this.gridTemplate = new GridTemplate(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now, saveHeader: this.serializable);
 
             this.noOfCellsX = (int)Math.Ceiling((float)this.level.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.level.height / (float)this.cellHeight);
@@ -242,7 +244,7 @@ namespace SonOfRobin
 
         public bool CopyBoardFromTemplate()
         {
-            if (this.level.levelType != Level.LevelType.Island) return false;
+            if (!this.serializable) return false;
 
             // looking for matching template
 
@@ -335,14 +337,16 @@ namespace SonOfRobin
             {
                 case Stage.LoadTerrain:
                     {
+                        Level.LevelType levelType = this.world.ActiveLevel.levelType;
+
                         this.terrainByName[Terrain.Name.Height] = new Terrain(
-                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: levelType == Level.LevelType.Island);
 
                         this.terrainByName[Terrain.Name.Humidity] = new Terrain(
                             grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
                         this.terrainByName[Terrain.Name.Biome] = new Terrain(
-                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: levelType == Level.LevelType.Island);
 
                         Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                         {
@@ -362,10 +366,13 @@ namespace SonOfRobin
                     break;
 
                 case Stage.SaveTerrain:
-                    Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
+                    if (this.serializable)
                     {
-                        terrain.SaveTemplate();
-                    });
+                        Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
+                        {
+                            terrain.SaveTemplate();
+                        });
+                    }
 
                     break;
 
@@ -395,7 +402,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.SetExtDataFinish:
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave(saveTemplate: this.serializable);
 
                     break;
 
@@ -406,7 +413,7 @@ namespace SonOfRobin
 
                 case Stage.LoadMeshes:
                     Mesh[] meshArray = null;
-                    if (this.level.levelType == Level.LevelType.Island) meshArray = MeshGenerator.LoadMeshes(this);
+                    if (this.serializable) meshArray = MeshGenerator.LoadMeshes(this);
 
                     if (meshArray != null)
                     {
@@ -417,7 +424,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateMeshes:
-                    if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(this), grid: this);
+                    if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(grid: this, saveTemplate: this.serializable), grid: this);
 
                     break;
 

@@ -91,7 +91,7 @@ namespace SonOfRobin
             byte[,] loadedMaxVal = null;
             byte[,] loadedMapData = null;
 
-            if (this.Grid.level.levelType == Level.LevelType.Island)
+            if (this.Grid.serializable)
             {
                 loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
                 if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);

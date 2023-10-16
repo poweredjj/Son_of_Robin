@@ -29,7 +29,7 @@ namespace SonOfRobin
             return new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
         }
 
-        public static Mesh[] GenerateMeshes(Grid grid)
+        public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
             var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.meshDefBySearchPriority.ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
@@ -96,7 +96,7 @@ namespace SonOfRobin
 
             var meshArray = meshByID.Values.ToArray();
 
-            SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
+            if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
             return meshArray;
         }
 
