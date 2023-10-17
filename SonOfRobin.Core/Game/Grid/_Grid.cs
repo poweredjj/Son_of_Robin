@@ -339,16 +339,37 @@ namespace SonOfRobin
                     {
                         Level.LevelType levelType = this.world.ActiveLevel.levelType;
 
-                        // TODO add different generation params for different level types
+                        switch (levelType)
+                        {
+                            case Level.LevelType.Island:
 
-                        this.terrainByName[Terrain.Name.Height] = new Terrain(
-                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> { new Terrain.RangeConversion(inMin: 0, inMax: Terrain.waterLevelMax, outMin: 0, outMax: 0) });
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
-                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(
-                            grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
-                        this.terrainByName[Terrain.Name.Biome] = new Terrain(
-                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                                break;
+
+                            case Level.LevelType.Cave:
+
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> { new Terrain.RangeConversion(inMin: 0, inMax: Terrain.waterLevelMax, outMin: 0, outMax: 0) });
+
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Unsupported levelType - {levelType}.");
+                        }
 
                         Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                         {
