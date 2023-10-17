@@ -6943,6 +6943,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/beach_dark.png
 
+#begin gfx/repeating_textures/cave_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/cave_wall.png
+
 #begin gfx/repeating_textures/fog.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7050,6 +7062,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/map_beach_dark.png
+
+#begin gfx/repeating_textures/map_cave_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/map_cave_wall.png
 
 #begin gfx/repeating_textures/map_grass_bad.png
 /importer:TextureImporter

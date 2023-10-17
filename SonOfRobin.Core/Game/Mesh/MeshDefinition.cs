@@ -322,7 +322,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition lava = new MeshDefinition(
-                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island, Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingLava,
                 mapTextureName: TextureBank.TextureName.RepeatingMapLava,
                 blendState: BlendState.AlphaBlend,
@@ -406,11 +406,35 @@ namespace SonOfRobin
                 mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
                 blendState: BlendState.AlphaBlend,
                 search: new(
-                searchPriority: 1,
+                searchPriority: 2,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 255),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: Terrain.lavaMin - 1),
                     })
                 );
+
+            //MeshDefinition caveFloor1 = new MeshDefinition(
+            //    levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
+            //    textureName: TextureBank.TextureName.RepeatingCaveFloor,
+            //    mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
+            //    blendState: BlendState.AlphaBlend,
+            //    search: new(
+            //    searchPriority: 2,
+            //    searchEntriesTerrain: new List<SearchEntryTerrain> {
+            //        new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 125),
+            //        })
+            //    );
+
+            //MeshDefinition caveFloor2 = new MeshDefinition(
+            //    levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
+            //    textureName: TextureBank.TextureName.RepeatingPerlinNoiseColor,
+            //    mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
+            //    blendState: BlendState.AlphaBlend,
+            //    search: new(
+            //    searchPriority: 2,
+            //    searchEntriesTerrain: new List<SearchEntryTerrain> {
+            //        new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 126, maxVal: Terrain.lavaMin - 1),
+            //        })
+            //    );
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
         }

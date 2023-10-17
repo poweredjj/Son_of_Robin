@@ -314,8 +314,8 @@ namespace SonOfRobin
             { TextureName.RepeatingMapVolcanoEdge, "repeating_textures/map_volcano_edge" },
             { TextureName.RepeatingCaveFloor, "repeating_textures/mountain_low" }, // repeated (needs a separate texture)
             { TextureName.RepeatingMapCaveFloor, "repeating_textures/map_mountain_low" }, // repeated (needs a separate texture)
-            { TextureName.RepeatingCaveWall, "repeating_textures/volcano_edge" }, // repeated (needs a separate texture)
-            { TextureName.RepeatingMapCaveWall, "repeating_textures/map_volcano_edge" }, // repeated (needs a separate texture)
+            { TextureName.RepeatingCaveWall, "repeating_textures/cave_wall" },
+            { TextureName.RepeatingMapCaveWall, "repeating_textures/map_cave_wall" },
 
             { TextureName.TriSliceBGMessageLogLeft, "tri_slice_bg/message_bg_left" },
             { TextureName.TriSliceBGMessageLogMid, "tri_slice_bg/message_bg_mid" },

@@ -40,7 +40,7 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.level.random.Next(1, 9999), width: 8000, height: 8000);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: 8000, height: 8000);
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)

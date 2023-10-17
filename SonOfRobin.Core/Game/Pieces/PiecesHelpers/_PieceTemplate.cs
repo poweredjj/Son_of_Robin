@@ -282,7 +282,8 @@ namespace SonOfRobin
             EmptyVisualEffect = 215,
             HastePlayerClone = 220,
 
-            CaveEntrance = 221,
+            CaveEntranceOutside = 221,
+            CaveEntranceInside = 223,
             CaveExit = 222,
 
             // obsolete below (kept for compatibility with old saves)
@@ -2695,8 +2696,9 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.CaveEntrance:
+                case Name.CaveEntranceOutside:
                     {
+                        // outside - has different allowedTerrain
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
@@ -2708,10 +2710,23 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.CaveEntranceInside:
+                    {
+                        // inside - has different allowedTerrain
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 117) },
+                            });
+
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
+
+                        return boardPiece;
+                    }
+
                 case Name.CaveExit:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax + 1, max: Terrain.waterLevelMax + 3) },
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 117) },
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
@@ -2722,6 +2737,9 @@ namespace SonOfRobin
 
                         return boardPiece;
                     }
+
+                // all deposits and stones should be created within 116 - 125 height range (near walls)
+                // TODO add deposits below
 
                 default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
             }

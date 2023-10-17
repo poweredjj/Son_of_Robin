@@ -91,11 +91,11 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2),
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 1.0f, maxAmount: 10), // TODO update values
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 1.0f, maxAmount: 10), // TODO update values
 
                 // cave 
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 1.0f, maxAmount: 2, levelType: Level.LevelType.Cave), // TODO update values
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.0f, maxAmount: 2, levelType: Level.LevelType.Cave), // TODO update values
                 new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.12f, levelType: Level.LevelType.Cave),  // for testing
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f, levelType: Level.LevelType.Cave),  // for testing
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 1.0f, maxAmount: maxAnimalsPerName, levelType: Level.LevelType.Cave), // for testing
