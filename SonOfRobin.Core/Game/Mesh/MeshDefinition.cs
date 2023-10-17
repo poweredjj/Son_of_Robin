@@ -412,30 +412,6 @@ namespace SonOfRobin
                     })
                 );
 
-            //MeshDefinition caveFloor1 = new MeshDefinition(
-            //    levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
-            //    textureName: TextureBank.TextureName.RepeatingCaveFloor,
-            //    mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
-            //    blendState: BlendState.AlphaBlend,
-            //    search: new(
-            //    searchPriority: 2,
-            //    searchEntriesTerrain: new List<SearchEntryTerrain> {
-            //        new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 125),
-            //        })
-            //    );
-
-            //MeshDefinition caveFloor2 = new MeshDefinition(
-            //    levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
-            //    textureName: TextureBank.TextureName.RepeatingPerlinNoiseColor,
-            //    mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
-            //    blendState: BlendState.AlphaBlend,
-            //    search: new(
-            //    searchPriority: 2,
-            //    searchEntriesTerrain: new List<SearchEntryTerrain> {
-            //        new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 126, maxVal: Terrain.lavaMin - 1),
-            //        })
-            //    );
-
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
         }
     }

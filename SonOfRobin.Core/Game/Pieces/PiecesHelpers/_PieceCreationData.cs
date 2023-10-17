@@ -54,10 +54,6 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.2f),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.1f),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 35),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 35),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 14),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 22),
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
 
@@ -95,11 +91,14 @@ namespace SonOfRobin
 
                 // cave 
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.0f, maxAmount: 2, levelType: Level.LevelType.Cave), // TODO update values
-                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.12f, levelType: Level.LevelType.Cave),  // for testing
-                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f, levelType: Level.LevelType.Cave),  // for testing
-                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 1.0f, maxAmount: maxAnimalsPerName, levelType: Level.LevelType.Cave), // for testing
+                // TODO add multiplier bonus, based on level depth
 
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.0f, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 6f, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 10, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 20, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 };
 
             //{ // for testing creation of selected pieces

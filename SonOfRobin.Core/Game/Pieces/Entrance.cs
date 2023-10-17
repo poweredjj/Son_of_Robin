@@ -40,7 +40,9 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: 8000, height: 8000);
+                int levelSize = 8000 + (3000 * this.level.depth);
+
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize);
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)
@@ -81,6 +83,9 @@ namespace SonOfRobin
         {
             if (this.isBlocked)
             {
+                new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DustPuff }, particlesToEmit: 120);
+                new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.SmokePuff }, particlesToEmit: 40);
+
                 new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60 * 8, destroyPiece: true);
                 this.activeState = State.Empty;
             }

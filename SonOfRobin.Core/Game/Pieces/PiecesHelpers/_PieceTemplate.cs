@@ -70,6 +70,7 @@ namespace SonOfRobin
             MineralsSmall = 46,
             MineralsMossyBig = 47,
             MineralsMossySmall = 48,
+            CaveWeakMinerals = 224,
 
             JarTreasureRich = 49,
             JarTreasurePoor = 50,
@@ -1405,54 +1406,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.IronDeposit:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CrystalDepositBig:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CrystalDepositSmall:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CoalDeposit:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
-
-                        return boardPiece;
-                    }
-
                 case Name.Coal:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
@@ -2738,8 +2691,64 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                // all deposits and stones should be created within 116 - 125 height range (near walls)
-                // TODO add deposits below
+                case Name.CaveWeakMinerals:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3 };
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 126) },
+                            });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                               maxHitPoints: 5, readableName: "weak minerals", description: "Weak cave minerals.");
+
+                        return boardPiece;
+                    }
+
+                case Name.IronDeposit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CoalDeposit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CrystalDepositBig:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CrystalDepositSmall:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
+
+                        return boardPiece;
+                    }
 
                 default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
             }
