@@ -111,6 +111,11 @@ namespace SonOfRobin
             }
         }
 
+        private static readonly Dictionary<Level.LevelType, AmbientLightData> staticAmbientLightForLevelType = new Dictionary<Level.LevelType, AmbientLightData>
+            {
+                { Level.LevelType.Cave, new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.DarkBlue * 0.75f, lightColor: Color.Transparent) }
+            };
+
         private static readonly List<AmbientLightData> lightDataList = new List<AmbientLightData>
         {
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.9f, lightColor: Color.Transparent),
@@ -127,8 +132,10 @@ namespace SonOfRobin
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
         };
 
-        public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime, Weather weather)
+        public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime, Weather weather, Level level)
         {
+            if (staticAmbientLightForLevelType.ContainsKey(level.levelType)) return staticAmbientLightForLevelType[level.levelType];
+
             AmbientLightData rawAmbientLightData = CalculateRawLightAndDarknessColors(currentDateTime: currentDateTime);
 
             if (weather.CloudsPercentage == 0 && weather.LightningPercentage == 0) return rawAmbientLightData;
@@ -154,7 +161,7 @@ namespace SonOfRobin
             return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: lightColor);
         }
 
-        public static AmbientLightData CalculateRawLightAndDarknessColors(DateTime currentDateTime)
+        private static AmbientLightData CalculateRawLightAndDarknessColors(DateTime currentDateTime)
         {
             // raw colors - without taking weather effects into account
 

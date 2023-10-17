@@ -1324,7 +1324,7 @@ namespace SonOfRobin
 
             if ((Preferences.drawSunShadows &&
                 AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).sunShadowsColor != Color.Transparent) ||
-                (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).darknessColor != Color.Transparent))
+                (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
                 blockingLightSpritesList = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement)
                     .OrderBy(o => o.sprite.GfxRect.Bottom)
@@ -1412,7 +1412,7 @@ namespace SonOfRobin
 
             // returning if darkness is transparent
 
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, this.ActiveLevel);
 
             Matrix worldMatrix = this.TransformMatrix;
 
@@ -1566,7 +1566,7 @@ namespace SonOfRobin
 
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, this.ActiveLevel);
             Rectangle cameraRect = this.camera.viewRect;
 
             // drawing ambient light
