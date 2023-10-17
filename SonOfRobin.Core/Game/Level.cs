@@ -90,7 +90,6 @@ namespace SonOfRobin
             this.playerLastSteps = new List<Vector2>();
             this.playerReturnPos = Vector2.Zero;
 
-
             this.grid = gridSerializedData == null ?
             new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 20, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
             Grid.Deserialize(level: this, gridData: gridSerializedData, resDivider: this.world.resDivider);

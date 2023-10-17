@@ -397,7 +397,7 @@ namespace SonOfRobin
             {
                 this.locationList.Add(Location.Deserialize(grid: this.grid, locationData: singleLocationData));
             }
-            this.locationsCreated |= true;
+            this.locationsCreated = true;
         }
 
         public void CopyLocationsFromTemplate(NamedLocations templateLocations)

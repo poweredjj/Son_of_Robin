@@ -121,7 +121,7 @@ namespace SonOfRobin
             }
         }
 
-        public void UpdateNoiseMap()
+        public void GenerateNoiseMap()
         {
             if (!this.CreationInProgress) return;
 

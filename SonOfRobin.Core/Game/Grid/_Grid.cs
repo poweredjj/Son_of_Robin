@@ -362,7 +362,7 @@ namespace SonOfRobin
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
                         // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
-                        currentTerrain.UpdateNoiseMap();
+                        currentTerrain.GenerateNoiseMap();
                     }
 
                     break;

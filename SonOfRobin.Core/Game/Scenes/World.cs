@@ -75,6 +75,7 @@ namespace SonOfRobin
             this.seed = seed;
             this.random = new Random(seed);
             this.resDivider = resDivider;
+            this.saveGameData = saveGameData;
 
             Dictionary<string, object> gridSerializedData = null;
             if (this.saveGameData != null)
@@ -95,7 +96,6 @@ namespace SonOfRobin
                 this.InputType = InputTypes.None;
                 this.soundActive = false;
             }
-            this.saveGameData = saveGameData;
             this.piecesByIDForDeserialization = new Dictionary<int, BoardPiece>();
             this.createMissingPiecesOutsideCamera = false;
             this.populatingFramesLeft = populatingFramesTotal;
