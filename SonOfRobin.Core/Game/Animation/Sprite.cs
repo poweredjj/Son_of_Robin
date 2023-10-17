@@ -787,7 +787,7 @@ namespace SonOfRobin
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
-                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate);
+                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate, drawColor: this.color * this.opacity);
                     this.DrawRoutine(calculateSubmerge: calculateSubmerge);
 
                     if (!thereWillBeMoreEffects)

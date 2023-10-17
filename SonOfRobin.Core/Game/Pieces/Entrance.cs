@@ -79,7 +79,11 @@ namespace SonOfRobin
 
         public override void SM_CaveEntranceDisappear()
         {
-            if (this.isBlocked && !this.sprite.IsInCameraRect) this.Destroy();
+            if (this.isBlocked)
+            {
+                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60 * 8, destroyPiece: true);
+                this.activeState = State.Empty;
+            }
         }
     }
 }

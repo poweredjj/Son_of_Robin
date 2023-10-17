@@ -95,8 +95,9 @@ namespace SonOfRobin
 
                 // cave 
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 1.0f, maxAmount: 10, levelType: Level.LevelType.Cave), // TODO update values
-                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, levelType: Level.LevelType.Cave), // for testing
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntrance, multiplier: 1.0f, maxAmount: 2, levelType: Level.LevelType.Cave), // TODO update values
+                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.12f, levelType: Level.LevelType.Cave),  // for testing
+                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f, levelType: Level.LevelType.Cave),  // for testing
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 1.0f, maxAmount: maxAnimalsPerName, levelType: Level.LevelType.Cave), // for testing
 
                 };

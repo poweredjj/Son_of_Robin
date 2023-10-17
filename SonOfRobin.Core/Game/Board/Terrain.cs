@@ -51,8 +51,7 @@ namespace SonOfRobin
 
         private readonly int seed;
         private readonly bool addBorder;
-        private readonly List<RangeConversion> rangeConversions;
-
+        private readonly RangeConversion[] rangeConversions;
 
         private readonly float frequency;
         private readonly int octaves;
@@ -83,7 +82,7 @@ namespace SonOfRobin
             this.gain = gain;
 
             this.addBorder = addBorder;
-            this.rangeConversions = rangeConversions == null ? new List<RangeConversion>() : rangeConversions;
+            this.rangeConversions = rangeConversions == null ? new RangeConversion[0] : rangeConversions.ToArray();
 
             string templatePath = this.Grid.gridTemplate.templatePath;
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}_flipped.png");

@@ -31,11 +31,11 @@ namespace SonOfRobin
 
         public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
-            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.meshDefBySearchPriority.ToArray());
+            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType).ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
-            //foreach (MeshDefinition meshDef in MeshDefinition.meshDefBySearchPriority) // for profiling in debugger
-            Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, SonOfRobinGame.defaultParallelOptions, meshDef =>
+            //foreach (MeshDefinition meshDef in MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType)) // for profiling in debugger
+            Parallel.ForEach(MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType), SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
 

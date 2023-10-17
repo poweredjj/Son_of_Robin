@@ -1338,7 +1338,8 @@ namespace SonOfRobin
             SetRenderTarget(this.CameraViewRenderTarget);
 
             // drawing water surface
-            this.scrollingSurfaceManager.DrawAllWater();
+            if (this.ActiveLevel.hasWater) this.scrollingSurfaceManager.DrawAllWater();
+            else SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             // drawing background (ground, leaving "holes" for water)
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);

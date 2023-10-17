@@ -743,7 +743,7 @@ namespace SonOfRobin
                         markerRect.Y = (int)markerPiece.sprite.position.Y - (markerRect.Height / 2);
 
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
-                        markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
+                        markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
                         markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
 

@@ -37,6 +37,7 @@ namespace SonOfRobin
         public readonly HashSet<BoardPiece> heatedPieces;
         public Queue<Sprite> nonPlantSpritesQueue;
         public Vector2 playerReturnPos;
+        public readonly bool hasWater;
 
         public bool creationInProgress;
 
@@ -89,6 +90,7 @@ namespace SonOfRobin
             };
             this.playerLastSteps = new List<Vector2>();
             this.playerReturnPos = Vector2.Zero;
+            this.hasWater = this.levelType == LevelType.Island;
 
             this.grid = gridSerializedData == null ?
             new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 20, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
