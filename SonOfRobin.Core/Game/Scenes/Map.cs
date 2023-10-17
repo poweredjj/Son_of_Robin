@@ -519,7 +519,7 @@ namespace SonOfRobin
             // filling with water color
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.GfxDev.Clear(waterColor);
+            SonOfRobinGame.GfxDev.Clear(this.world.ActiveLevel.hasWater ? waterColor: Color.Black);
 
             // drawing paper map background texture
 

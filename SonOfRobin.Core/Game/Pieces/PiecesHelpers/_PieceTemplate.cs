@@ -2651,7 +2651,6 @@ namespace SonOfRobin
 
                 case Name.CaveEntranceOutside:
                     {
-                        // outside - has different allowedTerrain
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
@@ -2665,9 +2664,8 @@ namespace SonOfRobin
 
                 case Name.CaveEntranceInside:
                     {
-                        // inside - has different allowedTerrain
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 117) },
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
@@ -2679,7 +2677,7 @@ namespace SonOfRobin
                 case Name.CaveExit:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 117) },
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
