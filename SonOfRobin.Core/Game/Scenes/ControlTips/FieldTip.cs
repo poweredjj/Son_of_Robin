@@ -23,7 +23,7 @@ namespace SonOfRobin
         };
 
         private static readonly Alignment[] inAlignment = new Alignment[] { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
-    
+
         private readonly SpriteFontBase font;
         private const int maxInactiveDuration = 10;
         private const int movementSlowdown = 6;
@@ -32,7 +32,7 @@ namespace SonOfRobin
         private static readonly Dictionary<string, FieldTip> tipsDict = new Dictionary<string, FieldTip>();
         private static readonly List<Sprite> thisFrameSpritesShown = new List<Sprite>();
 
-        private readonly World world;
+        private readonly Level level;
         private readonly Texture2D texture;
         private readonly Rectangle textureSourceRect;
 
@@ -56,7 +56,7 @@ namespace SonOfRobin
         private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
-            this.world = world;
+            this.level = world.ActiveLevel;
             this.texture = texture;
             this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
@@ -64,7 +64,7 @@ namespace SonOfRobin
             this.targetOpacity = 1f;
 
             this.alignment = alignment;
-            this.lastFrameActive = this.world.CurrentUpdate;
+            this.lastFrameActive = this.level.world.CurrentUpdate;
 
             this.targetSprite = targetSprite;
 
@@ -79,7 +79,7 @@ namespace SonOfRobin
         private void Update(Sprite targetSprite, Alignment alignment)
         {
             this.alignment = alignment;
-            this.lastFrameActive = world.CurrentUpdate;
+            this.lastFrameActive = this.level.world.CurrentUpdate;
 
             this.targetSprite = targetSprite;
             if (this.currentOpacity == 0f) this.currentPos = this.targetPos;
@@ -95,7 +95,7 @@ namespace SonOfRobin
         public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
             if (texture.Name == null) return;
-            if (!tipsDict.ContainsKey(texture.Name) || tipsDict[texture.Name].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
+            if (!tipsDict.ContainsKey(texture.Name) || tipsDict[texture.Name].level != world.ActiveLevel) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
             else tipsDict[texture.Name].Update(targetSprite: targetSprite, alignment: alignment);
         }
 
@@ -124,7 +124,7 @@ namespace SonOfRobin
 
         public void UpdateAndDraw(World world)
         {
-            if (this.world != world)
+            if (this.level != world.ActiveLevel)
             {
                 this.Remove();
                 return;
@@ -135,7 +135,7 @@ namespace SonOfRobin
             this.targetPos = this.CalculatePosition();
             this.MoveIfObstructsPlayerOrOtherTip();
 
-            if (this.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration || !this.world.inputActive) this.targetOpacity = 0f;
+            if (this.level.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration || !this.level.world.inputActive) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
 
             this.currentPos += (this.targetPos - this.currentPos) / movementSlowdown;
@@ -164,7 +164,7 @@ namespace SonOfRobin
                 int textHeight = destRect.Height;
                 int margin = 0;
 
-                bool topSide = this.world.Player.sprite.position.Y > destRect.Y;
+                bool topSide = this.level.world.Player.sprite.position.Y > destRect.Y;
 
                 int textPosY = topSide ? (int)(destRect.Y - textHeight - margin) : (int)(destRect.Y + destRect.Height + margin);
 
@@ -180,7 +180,7 @@ namespace SonOfRobin
         {
             var rectsToCheck = new List<Rectangle>();
 
-            if (this.world.Player != null) rectsToCheck.Add(this.world.Player.sprite.GfxRect);
+            if (this.level.world.Player != null) rectsToCheck.Add(this.level.world.Player.sprite.GfxRect);
             foreach (FieldTip fieldTip in tipsDict.Values)
             {
                 if (fieldTip != this) rectsToCheck.Add(fieldTip.CalculateDestRect(fieldTip.currentPos));

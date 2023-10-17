@@ -82,6 +82,7 @@ namespace SonOfRobin
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
+
         public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default") :
 
@@ -168,29 +169,18 @@ namespace SonOfRobin
             if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
             else
             {
+                BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.CaveExit, world: this.world);
+
                 for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
                 {
-                    // randomPlacement would not work (because it would require an outer beach)
-                    if (this.sprite.PlaceOnBoard(randomPlacement: false, position: new Vector2(this.world.random.Next(this.level.width), this.world.random.Next(this.level.height)))) break;
-                }
-            }
-
-            if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
-
-
-            if (this.world.ActiveLevel.levelType == Level.LevelType.Cave)
-            {
-                bool exitFound = false;
-                foreach (BoardPiece nearbyPiece in this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 1000))
-                {
-                    if (nearbyPiece.name == PieceTemplate.Name.CaveExit)
+                    if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
+                        this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
                     {
-                        exitFound = true;
                         break;
                     }
                 }
 
-                if (!exitFound) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.CaveExit, closestFreeSpot: true);
+                if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
             }
 
             this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
