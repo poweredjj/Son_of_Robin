@@ -113,7 +113,7 @@ namespace SonOfRobin
 
         private static readonly Dictionary<Level.LevelType, AmbientLightData> staticAmbientLightForLevelType = new Dictionary<Level.LevelType, AmbientLightData>
         {
-            { Level.LevelType.Cave, new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.92f, lightColor: Color.Transparent) }
+            { Level.LevelType.Cave, new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.85f, lightColor: Color.Transparent) }
         };
 
         private static readonly List<AmbientLightData> lightDataList = new List<AmbientLightData>

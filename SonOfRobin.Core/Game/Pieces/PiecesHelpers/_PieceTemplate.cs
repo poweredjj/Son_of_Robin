@@ -2729,7 +2729,7 @@ namespace SonOfRobin
                 case Name.CrystalDepositBig:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
@@ -2740,7 +2740,7 @@ namespace SonOfRobin
                 case Name.CrystalDepositSmall:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
                             maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
