@@ -13,9 +13,9 @@ namespace SonOfRobin
         private readonly Level.LevelType levelType;
 
         public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, Level.LevelType levelType,
-             byte animSize = 0, string animName = "default", int maxHitPoints = 1, bool rotatesWhenDropped = false) :
+             byte animSize = 0, string animName = "default", int maxHitPoints = 1, bool rotatesWhenDropped = false, State activeState = State.Empty) :
 
-             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty, rotatesWhenDropped: rotatesWhenDropped)
+             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: activeState, rotatesWhenDropped: rotatesWhenDropped)
         {
             this.levelType = levelType;
             this.goesDown = goesDown;
@@ -75,6 +75,11 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.isBlocked = (bool)pieceData["entrance_isBlocked"];
+        }
+
+        public override void SM_CaveEntranceDisappear()
+        {
+            if (this.isBlocked && !this.sprite.IsInCameraRect) this.Destroy();
         }
     }
 }

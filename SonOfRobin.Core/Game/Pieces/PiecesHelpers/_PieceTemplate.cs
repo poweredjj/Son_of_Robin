@@ -2703,7 +2703,7 @@ namespace SonOfRobin
                         });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave);
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
 
                         return boardPiece;
                     }

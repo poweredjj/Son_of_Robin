@@ -47,6 +47,7 @@ namespace SonOfRobin
             SeaWaveMove = 28,
             EmitParticles = 29,
             HasteCloneFollowPlayer = 31,
+            CaveEntranceDisappear = 32,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -750,6 +751,10 @@ namespace SonOfRobin
                     this.SM_HasteCloneFollowPlayer();
                     break;
 
+                case State.CaveEntranceDisappear:
+                    this.SM_CaveEntranceDisappear();
+                    break;
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     this.RemoveFromStateMachines();
                     break;
@@ -1109,6 +1114,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_HasteCloneFollowPlayer()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_CaveEntranceDisappear()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()
