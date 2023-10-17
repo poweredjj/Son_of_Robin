@@ -342,7 +342,7 @@ namespace SonOfRobin
                         // TODO add different generation params for different level types
 
                         this.terrainByName[Terrain.Name.Height] = new Terrain(
-                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> { new Terrain.RangeConversion(inMin: 0, inMax: Terrain.waterLevelMax, outMin: 0, outMax: 0) });
 
                         this.terrainByName[Terrain.Name.Humidity] = new Terrain(
                             grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
