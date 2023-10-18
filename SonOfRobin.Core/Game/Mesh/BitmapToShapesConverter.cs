@@ -93,6 +93,34 @@ namespace SonOfRobin
                         }
                     }
 
+                    //if (x == -1 && y == -1)
+                    //{
+                    //    neighbourArray[0, 0] = 2;
+                    //    int edgeID = GetEdgeID(neighbourArray);
+                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 0] = 0;
+                    //}
+
+                    //if (x == width - 1 && y == -1)
+                    //{
+                    //    neighbourArray[1, 0] = 2;
+                    //    int edgeID = GetEdgeID(neighbourArray);
+                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 0] = 0;
+                    //}
+
+                    //if (x == -1 && y == height - 1)
+                    //{
+                    //    neighbourArray[0, 1] = 2;
+                    //    int edgeID = GetEdgeID(neighbourArray);
+                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 1] = 0;
+                    //}
+
+                    //if (x == width - 1 && y == height - 1)
+                    //{
+                    //    neighbourArray[1, 1] = 2;
+                    //    int edgeID = GetEdgeID(neighbourArray);
+                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 1] = 0;
+                    //}
+
                     CalculateMarchingCellAndAddEdgesToSet(edgeSet: edgeSet, pos: currentPos, neighbourArray: neighbourArray);
                 }
             }
@@ -102,10 +130,15 @@ namespace SonOfRobin
 
         public static void CalculateMarchingCellAndAddEdgesToSet(HashSet<Edge> edgeSet, Vector2 pos, int[,] neighbourArray)
         {
-            foreach (Edge edge in edgesForIDs[(neighbourArray[0, 0] * 1000) + (neighbourArray[1, 0] * 100) + (neighbourArray[0, 1] * 10) + neighbourArray[1, 1]])
+            foreach (Edge edge in edgesForIDs[GetEdgeID(neighbourArray)])
             {
                 edgeSet.Add(new Edge(start: pos + edge.start, end: pos + edge.end));
             }
+        }
+
+        private static int GetEdgeID(int[,] neighbourArray)
+        {
+            return (neighbourArray[0, 0] * 1000) + (neighbourArray[1, 0] * 100) + (neighbourArray[0, 1] * 10) + neighbourArray[1, 1];
         }
 
         public static List<Shape> OrderAndMergeEdges(HashSet<Edge> edges)
@@ -237,6 +270,30 @@ namespace SonOfRobin
 
             // full
             { 1111, Array.Empty<Edge>() },
+
+            // left top corner, connected to neighbour chunk
+            { 2001, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},  
+
+            // right top corner, connected to neighbour chunk
+            { 0210, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},  
+            
+            // bottom left corner, connected to neighbour chunk
+            { 0120, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},  
+            
+            // bottom right corner, connected to neighbour chunk
+            { 1002, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},  
 
             // single corner cases (filled corners)
             { 1000, new Edge[] {
