@@ -2944,7 +2944,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
-                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesBlocking: 0);
+                        this.allowedDensity = new AllowedDensity(radius: 1000, maxNoOfPiecesSameClass: 0);
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
                         break;
