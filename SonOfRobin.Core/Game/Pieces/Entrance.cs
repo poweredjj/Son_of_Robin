@@ -40,8 +40,7 @@ namespace SonOfRobin
                     this.isBlocked = true;
                 }
 
-                int levelSize = 6000 + (4000 * (this.level.depth - 1));
-
+                int levelSize = 8000 + (3000 * (this.level.depth - 1));
                 this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize);
             }
 

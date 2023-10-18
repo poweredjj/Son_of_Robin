@@ -76,9 +76,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
 
                 new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 2),
+                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 2),
                 new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true, tempDecorMultiplier: 3),
                 new PieceCreationData(name: PieceTemplate.Name.SwampGeyser, temporaryDecoration: true, tempDecorMultiplier: 1),
-                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 2),
 
                 new PieceCreationData(name: PieceTemplate.Name.SeaWave, temporaryDecoration: true, tempDecorMultiplier: 1),
 
@@ -98,6 +98,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, minDepth: 3, maxAmount: 30, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, minDepth: 4 , doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
+
+                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),
                 };
 
             //{ // for testing creation of selected pieces

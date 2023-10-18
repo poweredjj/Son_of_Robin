@@ -406,7 +406,7 @@ namespace SonOfRobin
                 mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
                 blendState: BlendState.AlphaBlend,
                 search: new(
-                searchPriority: 2,
+                searchPriority: 0,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: Terrain.lavaMin - 1),
                     })

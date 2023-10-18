@@ -519,7 +519,7 @@ namespace SonOfRobin
             // filling with water color
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.GfxDev.Clear(this.world.ActiveLevel.hasWater ? waterColor: Color.Black);
+            SonOfRobinGame.GfxDev.Clear(this.world.ActiveLevel.hasWater ? waterColor : Color.Black);
 
             // drawing paper map background texture
 
@@ -537,7 +537,7 @@ namespace SonOfRobin
             // drawing ground
             if (this.ShowDetailedMap)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, waterColor);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, this.world.ActiveLevel.hasWater ? waterColor : Color.Black);
                 SonOfRobinGame.SpriteBatch.End();
 
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);

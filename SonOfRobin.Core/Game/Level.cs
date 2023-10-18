@@ -93,7 +93,7 @@ namespace SonOfRobin
             this.hasWater = this.levelType == LevelType.Island;
 
             this.grid = gridSerializedData == null ?
-            new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 20, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
+            new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 12, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
             Grid.Deserialize(level: this, gridData: gridSerializedData, resDivider: this.world.resDivider);
 
             this.creationInProgress = true;
