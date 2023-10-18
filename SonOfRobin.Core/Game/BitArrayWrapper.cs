@@ -108,12 +108,13 @@ namespace SonOfRobin
             catch (UnknownImageFormatException) { return null; } // file corrupted
         }
 
-        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight, int xOverlap = 0, int yOverlap = 0)
+        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight, int xOverlap, int yOverlap)
         {
             if (chunkWidth <= 0 || chunkHeight <= 0) throw new ArgumentException("Chunk dimensions and BitArray dimensions must be positive.");
+            if (xOverlap < 0 || yOverlap < 0) throw new ArgumentException("Overlap values cannot be negative.");
 
-            int numChunksX = (int)Math.Ceiling((double)(this.width - xOverlap) / (double)(chunkWidth - xOverlap));
-            int numChunksY = (int)Math.Ceiling((double)(this.height - yOverlap) / (double)(chunkHeight - yOverlap));
+            int numChunksX = (int)Math.Ceiling((double)this.width / (double)chunkWidth);
+            int numChunksY = (int)Math.Ceiling((double)this.height / (double)chunkHeight);
 
             var chunks = new List<BitArrayWrapperChunk>();
 
@@ -121,13 +122,18 @@ namespace SonOfRobin
             {
                 for (int chunkX = 0; chunkX < numChunksX; chunkX++)
                 {
-                    int xOffset = chunkX * (chunkWidth - xOverlap);
-                    int yOffset = chunkY * (chunkHeight - yOverlap);
+                    int xPos = Math.Max((chunkX * chunkWidth) - xOverlap, 0);
+                    int yPos = Math.Max((chunkY * chunkHeight) - yOverlap, 0);
 
-                    int currentChunkWidth = Math.Min(chunkWidth + xOverlap, this.width - (chunkX * (chunkWidth - xOverlap)));
-                    int currentChunkHeight = Math.Min(chunkHeight + xOverlap, this.height - (chunkY * (chunkHeight - yOverlap)));
+                    int currentChunkWidth = chunkWidth + (xOverlap * 2);
+                    int currentChunkHeight = chunkHeight + (yOverlap * 2);
 
-                    chunks.Add(new BitArrayWrapperChunk(bitArrayWrapper: this, width: currentChunkWidth, height: currentChunkHeight, xOffset: xOffset, yOffset: yOffset));
+                    // xOffset + currentChunkWidth
+
+                    currentChunkWidth = Math.Min(currentChunkWidth, this.width - xPos);
+                    currentChunkHeight = Math.Min(currentChunkHeight, this.height - yPos);
+
+                    chunks.Add(new BitArrayWrapperChunk(bitArrayWrapper: this, width: currentChunkWidth, height: currentChunkHeight, xOffset: xPos, yOffset: yPos));
                 }
             }
 

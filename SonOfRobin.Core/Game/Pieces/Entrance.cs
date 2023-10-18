@@ -55,7 +55,7 @@ namespace SonOfRobin
                 return;
             }
 
-            string levelText = this.targetLevel.depth == 0 ? "" : $" level {this.targetLevel.depth} seed {this.targetLevel.seed}";
+            string levelText = this.targetLevel.depth == 0 ? "" : $" level {this.targetLevel.depth}";
             string fullText = $"Entering {this.targetLevel.levelType.ToString().ToLower()}{levelText}.";
             if (this.targetLevel.depth == 0) fullText = "Going out.";
 

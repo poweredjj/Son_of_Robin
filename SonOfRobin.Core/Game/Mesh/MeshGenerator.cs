@@ -67,8 +67,7 @@ namespace SonOfRobin
                     pointList.Clear(); // no longer needed, clearing memory
 
                     // Splitting very large bitmaps into chunks, because triangulation has size limit.
-                    // It is a little glitchy, but necessary at this point.
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 4, yOverlap: 4))
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 1000, chunkHeight: 1000, xOverlap: 2, yOverlap: 2))
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
@@ -78,11 +77,7 @@ namespace SonOfRobin
                             textureName: meshDef.textureName,
                             groupedShapes: groupedShapes);
 
-                        List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
-                        foreach (Mesh splitMesh in splitMeshes)
-                        {
-                            if (mesh.indices.Length >= 3) meshBag.Add(splitMesh);
-                        }
+                        meshBag.Add(mesh);
                     }
                 }
                 //} // for profiling in debugger
