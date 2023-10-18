@@ -23,41 +23,18 @@ namespace SonOfRobin
         {
             public readonly Vector2 start;
             public readonly Vector2 end;
-            public readonly float angleRadians;
+            public readonly double angleRadians;
 
             public Edge(Vector2 start, Vector2 end)
             {
                 this.start = start;
                 this.end = end;
-                this.angleRadians = GetAngleRadians(start: start, end: end);
-            }
-
-            private static float GetAngleRadians(Vector2 start, Vector2 end)
-            {
-                Vector2 delta = end - start;
-                return (float)Math.Atan2(delta.Y, delta.X);
+                this.angleRadians = Math.Atan2(end.Y - start.Y, end.X - start.X);
             }
 
             public static Edge ReversedEdge(Edge edge)
             {
                 return new Edge(start: edge.end, end: edge.start);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    int hash = 17; // Prime number to start with
-
-                    // Ensure that start and end vectors are in a consistent order
-                    var orderedStart = Vector2.Min(start, end);
-                    var orderedEnd = Vector2.Max(start, end);
-
-                    hash = hash * 23 + orderedStart.GetHashCode();
-                    hash = hash * 23 + orderedEnd.GetHashCode();
-
-                    return hash;
-                }
             }
         }
 
@@ -146,7 +123,6 @@ namespace SonOfRobin
             }
 
             var shapeList = new List<Shape>();
-
             if (edgesToSort.Count == 0) return shapeList;
 
             var currentShape = new Shape();
@@ -174,11 +150,11 @@ namespace SonOfRobin
 
                             if (currentEdge.angleRadians == nextEdge.angleRadians)
                             {
-                                nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
                                 currentShape.pointList.Remove(currentEdge.end);
+                                nextEdge = new Edge(start: currentEdge.start, end: nextEdge.end);
                             }
-                            currentShape.pointList.Add(nextEdge.end);
 
+                            currentShape.pointList.Add(nextEdge.end);
                             currentEdge = nextEdge;
                             break;
                         }
