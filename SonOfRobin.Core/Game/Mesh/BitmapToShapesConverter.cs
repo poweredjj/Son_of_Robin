@@ -93,33 +93,37 @@ namespace SonOfRobin
                         }
                     }
 
-                    //if (x == -1 && y == -1)
-                    //{
-                    //    neighbourArray[0, 0] = 2;
-                    //    int edgeID = GetEdgeID(neighbourArray);
-                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 0] = 0;
-                    //}
+                    if (x == -1 && y == -1)
+                    {
+                        int prevVal = neighbourArray[0, 0];
+                        neighbourArray[0, 0] = 2;
+                        int edgeID = GetEdgeID(neighbourArray);
+                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 0] = prevVal;
+                    }
 
-                    //if (x == width - 1 && y == -1)
-                    //{
-                    //    neighbourArray[1, 0] = 2;
-                    //    int edgeID = GetEdgeID(neighbourArray);
-                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 0] = 0;
-                    //}
+                    if (x == width - 1 && y == -1)
+                    {
+                        int prevVal = neighbourArray[1, 0];
+                        neighbourArray[1, 0] = 2;
+                        int edgeID = GetEdgeID(neighbourArray);
+                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 0] = prevVal;
+                    }
 
-                    //if (x == -1 && y == height - 1)
-                    //{
-                    //    neighbourArray[0, 1] = 2;
-                    //    int edgeID = GetEdgeID(neighbourArray);
-                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 1] = 0;
-                    //}
+                    if (x == -1 && y == height - 1)
+                    {
+                        int prevVal = neighbourArray[0, 1];
+                        neighbourArray[0, 1] = 2;
+                        int edgeID = GetEdgeID(neighbourArray);
+                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 1] = prevVal;
+                    }
 
-                    //if (x == width - 1 && y == height - 1)
-                    //{
-                    //    neighbourArray[1, 1] = 2;
-                    //    int edgeID = GetEdgeID(neighbourArray);
-                    //    if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 1] = 0;
-                    //}
+                    if (x == width - 1 && y == height - 1)
+                    {
+                        int prevVal = neighbourArray[1, 1];
+                        neighbourArray[1, 1] = 2;
+                        int edgeID = GetEdgeID(neighbourArray);
+                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 1] = prevVal;
+                    }
 
                     CalculateMarchingCellAndAddEdgesToSet(edgeSet: edgeSet, pos: currentPos, neighbourArray: neighbourArray);
                 }
