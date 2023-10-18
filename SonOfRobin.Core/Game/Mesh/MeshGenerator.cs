@@ -77,7 +77,7 @@ namespace SonOfRobin
                             textureName: meshDef.textureName,
                             groupedShapes: groupedShapes);
 
-                        meshBag.Add(mesh);
+                        if (mesh.indices.Length >= 3) meshBag.Add(mesh);
                     }
                 }
                 //} // for profiling in debugger

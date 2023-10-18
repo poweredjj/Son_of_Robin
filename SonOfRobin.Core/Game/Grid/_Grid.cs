@@ -225,17 +225,18 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World existingWorld = (World)scene;
+                Level level = existingWorld.IslandLevel;
 
-                if (existingWorld.ActiveLevel != null &&
-                    existingWorld.ActiveLevel.creationInProgress &&
-                    existingWorld.Grid != null &&
-                    !existingWorld.Grid.CreationInProgress &&
-                    seed == existingWorld.seed &&
-                    width == existingWorld.IslandLevel.width &&
-                    height == existingWorld.IslandLevel.height &&
-                    (ignoreCellSize || (cellWidth == existingWorld.Grid.cellWidth && cellHeight == existingWorld.Grid.cellHeight)))
+                if (level != null &&
+                    !level.creationInProgress &&
+                    level.grid != null &&
+                    !level.grid.CreationInProgress &&
+                    seed == level.seed &&
+                    width == level.width &&
+                    height == level.height &&
+                    (ignoreCellSize || (cellWidth == level.grid.cellWidth && cellHeight == level.grid.cellHeight)))
                 {
-                    return existingWorld.IslandLevel.grid;
+                    return level.grid;
                 }
             }
 
