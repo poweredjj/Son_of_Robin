@@ -652,12 +652,12 @@ namespace SonOfRobin
                             this.Player.ToolStorage.AddPiece(piece);
                         }
 
-                        foreach (Cell cell in this.Grid.allCells)
-                        {
-                            cell.SetAsVisited();
-                        }
+                        foreach (Cell cell in this.Grid.allCells) cell.SetAsVisited();
 
                         this.Grid.namedLocations.SetAllLocationsAsDiscovered();
+                        foreach (HintEngine.Type generalHintType in HintEngine.allTypes.Where(hintType => hintType != HintEngine.Type.CineIntroduction)) this.HintEngine.Disable(generalHintType);
+                        foreach (PieceHint.Type pieceHintType in PieceHint.allTypes) this.HintEngine.Disable(pieceHintType);
+                        foreach (Tutorials.Type tutorialType in Tutorials.allTypes) this.HintEngine.Disable(tutorialType);
 
                         var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
 

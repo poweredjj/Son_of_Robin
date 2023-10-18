@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -12,8 +11,10 @@ namespace SonOfRobin
         public readonly int maxAmount;
         public readonly bool temporaryDecoration;
         public readonly bool doNotReplenish;
+        private readonly int minDepth;
+        private readonly float multiplierChangeForDepthLevel;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false, Level.LevelType levelType = Level.LevelType.Island)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, float multiplierChangeForDepthLevel = 0f, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1, bool doNotReplenish = false, Level.LevelType levelType = Level.LevelType.Island, int minDepth = 0)
         {
             this.levelType = levelType;
             this.name = name;
@@ -22,9 +23,11 @@ namespace SonOfRobin
             this.maxAmount = maxAmount; // -1 == no limit
             this.temporaryDecoration = temporaryDecoration; // only created dynamically in camera view and not saved (ignores multiplier and maxAmount)
             this.doNotReplenish = doNotReplenish;
+            this.minDepth = minDepth;
+            this.multiplierChangeForDepthLevel = multiplierChangeForDepthLevel;
         }
 
-        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level.LevelType levelType)
+        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level level)
         {
             var dataList = new List<PieceCreationData>
             {
@@ -71,7 +74,6 @@ namespace SonOfRobin
 
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
 
                 new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 2),
@@ -89,16 +91,14 @@ namespace SonOfRobin
 
                 new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 1.0f, maxAmount: 10), // TODO update values
 
-                // cave 
+                // cave
 
-                // TODO add multiplier bonus, based on level depth
-
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.0f, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 6f, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 10, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 20, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.2f, minDepth: 1, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 6f, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, minDepth: 2, maxAmount: 20, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, minDepth: 3, maxAmount: 10, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, minDepth: 4 , doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 };
 
             //{ // for testing creation of selected pieces
@@ -106,7 +106,29 @@ namespace SonOfRobin
             //    dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
             //}
 
-            return dataList = dataList.Where(record => levelType == record.levelType).ToList();
+            var creationDataListForLevel = new List<PieceCreationData>();
+
+            foreach (PieceCreationData creationData in dataList)
+            {
+                if (creationData.levelType != level.levelType || creationData.minDepth > level.depth) continue;
+                float realMultiplier = creationData.multiplier + (creationData.multiplierChangeForDepthLevel * level.depth);
+                if (realMultiplier <= 0) continue;
+
+                // all creation data params must be reflected here
+
+                creationDataListForLevel.Add(
+                    new PieceCreationData(
+                        name: creationData.name,
+                        multiplier: realMultiplier,
+                        maxAmount: creationData.maxAmount,
+                        temporaryDecoration: creationData.temporaryDecoration,
+                        tempDecorMultiplier: creationData.tempDecorMultiplier,
+                        doNotReplenish: creationData.doNotReplenish,
+                        levelType: creationData.levelType,
+                        minDepth: creationData.minDepth));
+            }
+
+            return creationDataListForLevel;
         }
     }
 }

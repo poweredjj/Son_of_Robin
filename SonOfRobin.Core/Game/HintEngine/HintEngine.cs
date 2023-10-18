@@ -32,6 +32,8 @@ namespace SonOfRobin
             BadSleep = 20,
         };
 
+        public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
+
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
@@ -535,7 +537,7 @@ namespace SonOfRobin
             this.shownGeneralHints.Remove(type);
         }
 
-        private void Disable(Type type, int delay = 0)
+        public void Disable(Type type, int delay = 0)
         {
             if (!this.shownGeneralHints.Contains(type)) this.shownGeneralHints.Add(type);
             if (delay != 0) new LevelEvent(eventName: LevelEvent.EventName.RestoreHint, delay: delay, level: this.world.IslandLevel, boardPiece: null, eventHelper: type);

@@ -88,6 +88,8 @@ namespace SonOfRobin
             CineDay4 = 71,
         }
 
+        public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
+
         public static readonly List<PieceHint> pieceHintList = new();
         private static int nearbyPiecesFrameChecked = 0;
         private static readonly List<BoardPiece> nearbyPieces = new();

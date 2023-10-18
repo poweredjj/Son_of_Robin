@@ -56,7 +56,7 @@ namespace SonOfRobin
             this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
             MessageLog.Add(debugMessage: true, text: $"maxAnimalsPerName {maxAnimalsPerName}");
 
-            var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName, levelType: this.levelType);
+            var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName, level: this);
             this.creationDataArrayRegular = creationDataList.Where(data => !data.temporaryDecoration).ToArray();
             this.creationDataArrayTemporaryDecorations = creationDataList.Where(data => data.temporaryDecoration).ToArray();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };

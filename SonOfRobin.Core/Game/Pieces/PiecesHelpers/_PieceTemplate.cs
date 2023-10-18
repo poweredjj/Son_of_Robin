@@ -2691,7 +2691,7 @@ namespace SonOfRobin
 
                 case Name.CaveWeakMinerals:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3 };
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
