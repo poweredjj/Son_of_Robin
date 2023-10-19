@@ -89,40 +89,14 @@ namespace SonOfRobin
                     {
                         for (int j = 0; j < 2; j++)
                         {
-                            neighbourArray[i, j] = x + i >= 0 && x + i < width && y + j >= 0 && y + j < height && chunk.GetVal(x + i, y + j) ? 1 : 0;
+                            int localX = x + i;
+                            int localY = y + j;
+
+                            // neighbourArray[i, j] = localX >= 0 && localX < width && localY >= 0 && localY < height && chunk.GetVal(localX, localY) ? 1 : 0;
+
+                            bool insideThisChunk = localX >= 0 && localX < width && localY >= 0 && localY < height;
+                            neighbourArray[i, j] = chunk.GetVal(localX, localY) ? (insideThisChunk ? 1 : 2) : 0;
                         }
-                    }
-
-                    if (x == -1 && y == -1)
-                    {
-                        int prevVal = neighbourArray[0, 0];
-                        neighbourArray[0, 0] = 2;
-                        int edgeID = GetEdgeID(neighbourArray);
-                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 0] = prevVal;
-                    }
-
-                    if (x == width - 1 && y == -1)
-                    {
-                        int prevVal = neighbourArray[1, 0];
-                        neighbourArray[1, 0] = 2;
-                        int edgeID = GetEdgeID(neighbourArray);
-                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 0] = prevVal;
-                    }
-
-                    if (x == -1 && y == height - 1)
-                    {
-                        int prevVal = neighbourArray[0, 1];
-                        neighbourArray[0, 1] = 2;
-                        int edgeID = GetEdgeID(neighbourArray);
-                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[0, 1] = prevVal;
-                    }
-
-                    if (x == width - 1 && y == height - 1)
-                    {
-                        int prevVal = neighbourArray[1, 1];
-                        neighbourArray[1, 1] = 2;
-                        int edgeID = GetEdgeID(neighbourArray);
-                        if (!edgesForIDs.ContainsKey(edgeID)) neighbourArray[1, 1] = prevVal;
                     }
 
                     CalculateMarchingCellAndAddEdgesToSet(edgeSet: edgeSet, pos: currentPos, neighbourArray: neighbourArray);
@@ -267,37 +241,13 @@ namespace SonOfRobin
             return inside;
         }
 
-        public static readonly Dictionary<int, Edge[]> edgesForIDs = new()
+        public static readonly Dictionary<int, Edge[]> edgesForIDs = new Dictionary<int, Edge[]>
         {
             // empty
             { 0000, Array.Empty<Edge>() },
 
             // full
             { 1111, Array.Empty<Edge>() },
-
-            // left top corner, connected to neighbour chunk
-            { 2001, new Edge[] {
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
-            }},  
-
-            // right top corner, connected to neighbour chunk
-            { 0210, new Edge[] {
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
-            }},  
-            
-            // bottom left corner, connected to neighbour chunk
-            { 0120, new Edge[] {
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
-            }},  
-            
-            // bottom right corner, connected to neighbour chunk
-            { 1002, new Edge[] {
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
-                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
-            }},  
 
             // single corner cases (filled corners)
             { 1000, new Edge[] {
@@ -359,6 +309,231 @@ namespace SonOfRobin
                 new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(1.0f, 0.5f)),
                 new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(0.5f, 1.0f)),
             }},
+
+            // cases with neighbour chunk corners (2)
+
+            { 2000, Array.Empty<Edge>() },
+            { 0200, Array.Empty<Edge>() },
+            { 0020, Array.Empty<Edge>() },
+            { 0002, Array.Empty<Edge>() },
+            { 0022, Array.Empty<Edge>() },
+            { 2020, Array.Empty<Edge>() },
+            { 0202, Array.Empty<Edge>() },
+            { 0222, Array.Empty<Edge>() },
+            { 2022, Array.Empty<Edge>() },
+            { 2220, Array.Empty<Edge>() },
+            { 2202, Array.Empty<Edge>() },
+            { 2200, Array.Empty<Edge>() },
+            { 0220, Array.Empty<Edge>() },
+
+            { 0102, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2100, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 0012, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1200, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 1020, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 2010, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 0201, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 0021, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1122, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2211, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2121, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1212, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 0212, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 0122, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 1120, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 1222, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 2122, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2221, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2212, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 0121, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1102, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 1210, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2120, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2111, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 1211, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 1112, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1121, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2210, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1012, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1022, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 2021, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2011, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 0211, new Edge[] {
+                new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 2201, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1202, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 2101, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.0f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1220, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 2102, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 0221, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2012, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 1002, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+            }},
+
+            { 0120, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 0.0f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+            }},
+
+            { 0210, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
+
+            { 2001, new Edge[] {
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(1.0f, 0.5f)),
+                new Edge(start: new Vector2(0.5f, 0.5f), end: new Vector2(0.5f, 1.0f)),
+            }},
         };
+
     }
 }

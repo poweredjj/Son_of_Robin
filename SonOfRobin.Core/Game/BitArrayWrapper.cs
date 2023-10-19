@@ -32,11 +32,13 @@ namespace SonOfRobin
 
         public virtual void SetVal(int x, int y, bool value)
         {
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
             this.bitArray.Set((y * this.width) + x, value);
         }
 
         public virtual bool GetVal(int x, int y)
         {
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) return false;
             return this.bitArray.Get((y * this.width) + x);
         }
 
