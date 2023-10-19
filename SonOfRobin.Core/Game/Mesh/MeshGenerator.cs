@@ -67,7 +67,7 @@ namespace SonOfRobin
                     pointList.Clear(); // no longer needed, clearing memory
 
                     // Splitting very large bitmaps into chunks, because triangulation has size limit.
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 500 / grid.resDivider, chunkHeight: 500 / grid.resDivider, xOverlap: 0, yOverlap: 0))
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 1000 / grid.resDivider, chunkHeight: 1000 / grid.resDivider, xOverlap: 0, yOverlap: 0))
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 

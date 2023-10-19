@@ -91,10 +91,7 @@ namespace SonOfRobin
                 searchPriority: 0,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 255),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
+                    })
                 );
 
             MeshDefinition waterDeep = new MeshDefinition(
@@ -408,7 +405,7 @@ namespace SonOfRobin
                 search: new(
                 searchPriority: 0,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: Terrain.lavaMin - 1),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 255), // should cover whole floor, to avoid small holes
                     })
                 );
 

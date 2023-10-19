@@ -92,10 +92,8 @@ namespace SonOfRobin
                             int localX = x + i;
                             int localY = y + j;
 
-                            // neighbourArray[i, j] = localX >= 0 && localX < width && localY >= 0 && localY < height && chunk.GetVal(localX, localY) ? 1 : 0;
-
                             bool insideThisChunk = localX >= 0 && localX < width && localY >= 0 && localY < height;
-                            neighbourArray[i, j] = chunk.GetVal(localX, localY) ? (insideThisChunk ? 1 : 2) : 0;
+                            neighbourArray[i, j] = chunk.GetVal(localX, localY) ? (insideThisChunk ? 1 : 2) : 0; // GetVal can access BitArray data outside chunk
                         }
                     }
 
