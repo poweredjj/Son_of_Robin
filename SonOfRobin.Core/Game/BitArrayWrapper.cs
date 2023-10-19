@@ -110,10 +110,9 @@ namespace SonOfRobin
             catch (UnknownImageFormatException) { return null; } // file corrupted
         }
 
-        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight, int xOverlap, int yOverlap)
+        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight)
         {
             if (chunkWidth <= 0 || chunkHeight <= 0) throw new ArgumentException("Chunk dimensions and BitArray dimensions must be positive.");
-            if (xOverlap < 0 || yOverlap < 0) throw new ArgumentException("Overlap values cannot be negative.");
 
             int numChunksX = (int)Math.Ceiling((double)this.width / (double)chunkWidth);
             int numChunksY = (int)Math.Ceiling((double)this.height / (double)chunkHeight);
@@ -124,13 +123,11 @@ namespace SonOfRobin
             {
                 for (int chunkX = 0; chunkX < numChunksX; chunkX++)
                 {
-                    int xPos = Math.Max((chunkX * chunkWidth) - xOverlap, 0);
-                    int yPos = Math.Max((chunkY * chunkHeight) - yOverlap, 0);
+                    int xPos = chunkX * chunkWidth;
+                    int yPos = chunkY * chunkHeight;
 
-                    int currentChunkWidth = chunkWidth + (xOverlap * 2);
-                    int currentChunkHeight = chunkHeight + (yOverlap * 2);
-
-                    // xOffset + currentChunkWidth
+                    int currentChunkWidth = chunkWidth;
+                    int currentChunkHeight = chunkHeight;
 
                     currentChunkWidth = Math.Min(currentChunkWidth, this.width - xPos);
                     currentChunkHeight = Math.Min(currentChunkHeight, this.height - yPos);
