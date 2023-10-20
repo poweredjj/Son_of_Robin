@@ -70,6 +70,7 @@ namespace SonOfRobin
             MineralsSmall = 46,
             MineralsMossyBig = 47,
             MineralsMossySmall = 48,
+            CaveWeakMinerals = 224,
 
             JarTreasureRich = 49,
             JarTreasurePoor = 50,
@@ -281,6 +282,10 @@ namespace SonOfRobin
             ParticleEmitterWeather = 218,
             EmptyVisualEffect = 215,
             HastePlayerClone = 220,
+
+            CaveEntranceOutside = 221,
+            CaveEntranceInside = 223,
+            CaveExit = 222,
 
             // obsolete below (kept for compatibility with old saves)
         }
@@ -1401,54 +1406,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.IronDeposit:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CrystalDepositBig:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CrystalDepositSmall:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
-
-                        return boardPiece;
-                    }
-
-                case Name.CoalDeposit:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
-
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
-
-                        return boardPiece;
-                    }
-
                 case Name.Coal:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
@@ -2438,7 +2395,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        VisualEffect lavaFlame = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 0.3f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: false, castShadows: true));
+                        VisualEffect lavaFlame = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 180, opacity: 0.45f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: false, castShadows: true));
 
                         lavaFlame.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
                         ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.LavaFlame, particlesToEmit: 1);
@@ -2688,6 +2645,105 @@ namespace SonOfRobin
                     {
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 220, readableName: "long fence (vertical)", description: "A long fence.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveEntranceOutside:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
+                        });
+
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveEntranceInside:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
+                            });
+
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveExit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
+                            });
+
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, levelType: Level.LevelType.Cave); // levelType is ignored here
+
+                        boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
+                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveWeakMinerals:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4 };
+                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 126) },
+                            });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                               maxHitPoints: 5, readableName: "weak minerals", description: "Weak cave minerals.");
+
+                        return boardPiece;
+                    }
+
+                case Name.IronDeposit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CoalDeposit:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CrystalDepositBig:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
+
+                        return boardPiece;
+                    }
+
+                case Name.CrystalDepositSmall:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
+                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         return boardPiece;
                     }

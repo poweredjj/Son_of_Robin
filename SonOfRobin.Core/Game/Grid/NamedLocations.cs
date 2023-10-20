@@ -292,7 +292,7 @@ namespace SonOfRobin
             this.grid = grid;
             this.locationList = new List<Location>();
             this.locationsCreated = false;
-            this.random = new(this.grid.world.seed);
+            this.random = new(this.grid.level.seed);
             this.nameRandomizer = new(random: this.random);
             this.playerLocation = null;
             this.lastDiscovery = DateTime.MinValue;
@@ -397,7 +397,7 @@ namespace SonOfRobin
             {
                 this.locationList.Add(Location.Deserialize(grid: this.grid, locationData: singleLocationData));
             }
-            this.locationsCreated |= true;
+            this.locationsCreated = true;
         }
 
         public void CopyLocationsFromTemplate(NamedLocations templateLocations)

@@ -33,7 +33,7 @@ namespace SonOfRobin
         private readonly string headerPath;
         public DateTime CreatedDate { get; private set; }
 
-        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider, DateTime createdDate, float version = currentVersion, string templatePath = "")
+        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider, DateTime createdDate, float version = currentVersion, string templatePath = "", bool saveHeader = false)
         {
             this.seed = seed;
             this.width = width;
@@ -47,7 +47,7 @@ namespace SonOfRobin
             this.templatePath = templatePath == "" ? this.CheckCreateFolder() : templatePath;
             this.headerPath = Path.Combine(this.templatePath, headerName);
 
-            this.SaveHeader();
+            if (saveHeader) this.SaveHeader();
         }
 
         public bool IsObsolete
@@ -178,8 +178,8 @@ namespace SonOfRobin
 
                 if (existingWorlds.Where(currentWorld =>
                 currentWorld.seed == gridTemplate.seed &&
-                currentWorld.width == gridTemplate.width &&
-                currentWorld.height == gridTemplate.height
+                currentWorld.IslandLevel.width == gridTemplate.width &&
+                currentWorld.IslandLevel.height == gridTemplate.height
                 ).Any())
                 {
                     pathsToKeep.Add(templatePath);

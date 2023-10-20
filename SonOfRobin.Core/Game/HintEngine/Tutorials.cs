@@ -43,6 +43,8 @@ namespace SonOfRobin
             MeatHarvestLevels = 31,
         }
 
+        public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
+
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
         public static readonly Dictionary<Type, Tutorial> tutorials = new Dictionary<Type, Tutorial> { };

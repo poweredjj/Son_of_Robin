@@ -114,6 +114,7 @@ namespace SonOfRobin
             DisposeSaveScreenshotsIfNoMenuPresent = 94,
             SetGlobalWorldEffect = 95,
             SetGlobalWorldTweener = 96,
+            UseEntrance = 97,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -303,7 +304,7 @@ namespace SonOfRobin
                             var worldEventData = new Dictionary<string, object> {
                                 {"boardPiece", workshop },
                                 {"delay", 300 },
-                                {"eventName", WorldEvent.EventName.TurnOffWorkshop },
+                                {"eventName", LevelEvent.EventName.TurnOffWorkshop },
                             };
 
                             menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
@@ -367,7 +368,7 @@ namespace SonOfRobin
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
                             World oldWorld = (World)this.ExecuteHelper;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
+                            new World(width: oldWorld.IslandLevel.width, height: oldWorld.IslandLevel.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
                             oldWorld.Remove();
 
                             return;
@@ -906,11 +907,11 @@ namespace SonOfRobin
 
                             var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
 
-                            WorldEvent.EventName eventName = (WorldEvent.EventName)worldEventData["eventName"];
+                            LevelEvent.EventName eventName = (LevelEvent.EventName)worldEventData["eventName"];
                             BoardPiece boardPiece = (BoardPiece)worldEventData["boardPiece"];
                             int delay = (int)worldEventData["delay"];
 
-                            new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece);
+                            new LevelEvent(eventName: eventName, level: boardPiece.level, delay: delay, boardPiece: boardPiece);
 
                             return;
                         }
@@ -1048,8 +1049,8 @@ namespace SonOfRobin
 
                             // world.updateMultiplier = 0 is not used here, to allow for playing ambient sounds
 
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
 
                             world.islandClock.Pause();
 
@@ -1064,8 +1065,8 @@ namespace SonOfRobin
                             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
 
                             world.updateMultiplier = 1;
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
 
                             return;
@@ -1079,8 +1080,8 @@ namespace SonOfRobin
                             SonOfRobinGame.Game.IsFixedTimeStep = false;
 
                             world.updateMultiplier = (int)this.ExecuteHelper;
-                            world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+                            world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
 
                             return;
@@ -1827,7 +1828,7 @@ namespace SonOfRobin
                             treasureChest.Open();
                             treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
-                            new WorldEvent(eventName: WorldEvent.EventName.Destruction, delay: 60 * 2, world: treasureChest.world, boardPiece: treasureChest, eventHelper: 30);
+                            new LevelEvent(eventName: LevelEvent.EventName.Destruction, delay: 60 * 2, level: treasureChest.level, boardPiece: treasureChest, eventHelper: 30);
 
                             return;
                         }
@@ -2037,6 +2038,13 @@ namespace SonOfRobin
                             else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
                             else if (easing == "Linear") tween.Easing(EasingFunctions.Linear);
 
+                            return;
+                        }
+
+                    case TaskName.UseEntrance:
+                        {
+                            Entrance entrance = (Entrance)this.ExecuteHelper;
+                            entrance.Enter();
                             return;
                         }
 

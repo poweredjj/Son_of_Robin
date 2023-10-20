@@ -30,6 +30,7 @@ namespace SonOfRobin
             this.effect.Parameters["colorizeColor"].SetValue(this.color);
             this.effect.Parameters["opacity"].SetValue(opacity * this.intensityForTweener);
             this.effect.Parameters["checkAlpha"].SetValue(this.checkAlpha);
+            this.effect.Parameters["drawColor"].SetValue(drawColor.ToVector4());
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }

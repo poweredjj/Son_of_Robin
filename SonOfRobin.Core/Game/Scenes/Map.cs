@@ -41,8 +41,6 @@ namespace SonOfRobin
         private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
-        public readonly Dictionary<Color, BoardPiece> mapMarkerByColor;
-
         private static float InitialZoom
         { get { return Preferences.worldScale / 2; } }
 
@@ -66,14 +64,6 @@ namespace SonOfRobin
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.bgTaskSpritesToShow = new List<Sprite>();
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
-            this.mapMarkerByColor = new Dictionary<Color, BoardPiece>
-            {
-                { Color.Blue, null },
-                { new Color(15, 128, 0), null },
-                { Color.Red, null },
-                { new Color(93, 6, 99), null },
-                { new Color(97, 68, 15), null },
-            };
         }
 
         public override void Remove()
@@ -105,7 +95,7 @@ namespace SonOfRobin
         public Dictionary<string, Object> Serialize()
         {
             var markerPosDict = new Dictionary<Vector2, byte[]>();
-            foreach (var kvp in this.mapMarkerByColor)
+            foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
             {
                 Color markerColor = kvp.Key;
                 BoardPiece markerPiece = kvp.Value;
@@ -136,9 +126,9 @@ namespace SonOfRobin
 
                 Color markerColor = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
 
-                if (this.mapMarkerByColor.ContainsKey(markerColor))
+                if (this.world.ActiveLevel.mapMarkerByColor.ContainsKey(markerColor))
                 {
-                    this.mapMarkerByColor[markerColor] = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: markerPos, templateName: PieceTemplate.Name.MapMarker);
+                    this.world.ActiveLevel.mapMarkerByColor[markerColor] = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: markerPos, templateName: PieceTemplate.Name.MapMarker);
                 }
                 else
                 {
@@ -152,8 +142,8 @@ namespace SonOfRobin
             int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
             int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
 
-            float multiplierX = (float)newWidth / (float)world.width;
-            float multiplierY = (float)newHeight / (float)world.height;
+            float multiplierX = (float)newWidth / (float)this.world.ActiveLevel.width;
+            float multiplierY = (float)newHeight / (float)this.world.ActiveLevel.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY) * 2;
 
             if (this.FinalMapToDisplay == null || this.FinalMapToDisplay.Width != newWidth || this.FinalMapToDisplay.Height != newHeight)
@@ -193,7 +183,7 @@ namespace SonOfRobin
             int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
             int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
 
-            float sourceMultiplier = 1f / (float)this.world.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
+            float sourceMultiplier = 1f / (float)this.world.ActiveLevel.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
 
             Rectangle srcRect = new Rectangle(0, 0, (int)(cellWidth * sourceMultiplier), (int)(cellHeight * sourceMultiplier));
             Rectangle destRect = new Rectangle(0, 0, destCellWidth, destCellHeight);
@@ -269,6 +259,11 @@ namespace SonOfRobin
             }
         }
 
+        public void MoveCameraToPlayer()
+        {
+            this.camera.TrackPiece(trackedPiece: this.world.Player, moveInstantly: true);
+        }
+
         public bool CheckIfPlayerCanReadTheMap(bool showMessage)
         {
             bool canBeTurnedOn = this.world.Player.CanSeeAnything;
@@ -291,17 +286,19 @@ namespace SonOfRobin
 
             this.KeepBackgroundTasksAlive();
 
-            foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
-            {
-                BoardPiece mapMarker = this.mapMarkerByColor[markerColor];
-                if (mapMarker != null && !mapMarker.exists) this.mapMarkerByColor[markerColor] = null; // if marker had destroyed itself
+            var mapMarkerByColor = this.world.ActiveLevel.mapMarkerByColor;
 
-                mapMarker = this.mapMarkerByColor[markerColor]; // refreshing, if changed above
+            foreach (Color markerColor in mapMarkerByColor.Keys.ToList())
+            {
+                BoardPiece mapMarker = mapMarkerByColor[markerColor];
+                if (mapMarker != null && !mapMarker.exists) mapMarkerByColor[markerColor] = null; // if marker had destroyed itself
+
+                mapMarker = mapMarkerByColor[markerColor]; // refreshing, if changed above
 
                 if (mapMarker != null && !mapMarker.sprite.IsOnBoard)
                 {
                     mapMarker.Destroy();
-                    this.mapMarkerByColor[markerColor] = null;
+                    mapMarkerByColor[markerColor] = null;
                 }
             }
 
@@ -313,7 +310,7 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Full)
             {
-                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
+                foreach (BoardPiece mapMarker in mapMarkerByColor.Values)
                 {
                     if (mapMarker != null)
                     {
@@ -331,8 +328,8 @@ namespace SonOfRobin
 
         private void SetViewParamsForMiniature()
         {
-            this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
-            this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
+            this.viewParams.Width = (int)(this.world.ActiveLevel.width * this.scaleMultiplier);
+            this.viewParams.Height = (int)(this.world.ActiveLevel.height * this.scaleMultiplier);
             this.viewParams.ScaleX = Preferences.GlobalScale;
             this.viewParams.ScaleY = Preferences.GlobalScale;
             this.viewParams.PosX = 0;
@@ -356,15 +353,17 @@ namespace SonOfRobin
 
             // removing all markers
 
+            var mapMarkerByColor = this.world.ActiveLevel.mapMarkerByColor;
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapDeleteMarkers))
             {
                 bool anyMarkerRemoved = false;
-                foreach (Color markerColor in this.mapMarkerByColor.Keys.ToList())
+                foreach (Color markerColor in mapMarkerByColor.Keys.ToList())
                 {
-                    if (this.mapMarkerByColor[markerColor] != null)
+                    if (mapMarkerByColor[markerColor] != null)
                     {
-                        this.mapMarkerByColor[markerColor].Destroy();
-                        this.world.map.mapMarkerByColor[markerColor] = null;
+                        mapMarkerByColor[markerColor].Destroy();
+                        mapMarkerByColor[markerColor] = null;
                         anyMarkerRemoved = true;
                     }
                 }
@@ -381,7 +380,7 @@ namespace SonOfRobin
 
                 bool markerRemoved = false;
 
-                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(mapMarkerByColor))
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
@@ -391,7 +390,7 @@ namespace SonOfRobin
                         if (Math.Abs(Vector2.Distance(markerPiece.sprite.position, this.camera.CurrentPos)) < 15 / this.camera.CurrentZoom)
                         {
                             markerPiece.Destroy();
-                            this.world.map.mapMarkerByColor[markerColor] = null;
+                            mapMarkerByColor[markerColor] = null;
                             soundMarkerRemove.Play();
                             markerRemoved = true;
                             break;
@@ -403,7 +402,7 @@ namespace SonOfRobin
 
                 // placing new marker (if possible)
 
-                foreach (var kvp in new Dictionary<Color, BoardPiece>(this.world.map.mapMarkerByColor))
+                foreach (var kvp in new Dictionary<Color, BoardPiece>(mapMarkerByColor))
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
@@ -411,7 +410,7 @@ namespace SonOfRobin
                     if (markerPiece == null)
                     {
                         markerPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
-                        this.world.map.mapMarkerByColor[markerColor] = markerPiece;
+                        mapMarkerByColor[markerColor] = markerPiece;
                         soundMarkerPlace.Play();
                         return;
                     }
@@ -484,14 +483,14 @@ namespace SonOfRobin
             {
                 Vector2 newPos = this.camera.TrackedPos + movement;
 
-                newPos.X = Math.Clamp(value: newPos.X, min: 0, max: this.world.width);
-                newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.height);
+                newPos.X = Math.Clamp(value: newPos.X, min: 0, max: this.world.ActiveLevel.width);
+                newPos.Y = Math.Clamp(value: newPos.Y, min: 0, max: this.world.ActiveLevel.height);
                 this.camera.TrackCoords(position: newPos, moveInstantly: moveInstantly);
             }
 
             if (!TouchInput.IsBeingTouchedInAnyWay && movement == Vector2.Zero)
             {
-                foreach (BoardPiece mapMarker in this.mapMarkerByColor.Values)
+                foreach (BoardPiece mapMarker in mapMarkerByColor.Values)
                 {
                     if (mapMarker != null && Vector2.Distance(this.camera.CurrentPos, mapMarker.sprite.position) < 15f / this.camera.CurrentZoom)
                     {
@@ -520,14 +519,14 @@ namespace SonOfRobin
             // filling with water color
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.GfxDev.Clear(waterColor);
+            SonOfRobinGame.GfxDev.Clear(this.world.ActiveLevel.hasWater ? waterColor : Color.Black);
 
             // drawing paper map background texture
 
             Texture2D mapTexture = TextureBank.GetTexture(TextureBank.TextureName.Map);
             Rectangle viewRect = this.camera.viewRect;
-            Rectangle worldRect = this.world.worldRect;
-            Rectangle extendedMapRect = this.world.worldRect;
+            Rectangle worldRect = this.world.ActiveLevel.levelRect;
+            Rectangle extendedMapRect = this.world.ActiveLevel.levelRect;
 
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
@@ -538,7 +537,7 @@ namespace SonOfRobin
             // drawing ground
             if (this.ShowDetailedMap)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, waterColor);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, worldRect, this.world.ActiveLevel.hasWater ? waterColor : Color.Black);
                 SonOfRobinGame.SpriteBatch.End();
 
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
@@ -595,13 +594,13 @@ namespace SonOfRobin
 
             float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
-            int totalSteps = this.world.Player.LastSteps.Count;
+            int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
             int stepNo = 0;
 
             Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
             Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
 
-            foreach (Vector2 stepPos in this.world.Player.LastSteps)
+            foreach (Vector2 stepPos in this.world.ActiveLevel.playerLastSteps)
             {
                 if (viewRect.Contains(stepPos))
                 {
@@ -733,7 +732,7 @@ namespace SonOfRobin
                 int markerSizePixels = (int)(Preferences.MapMarkerRealSize * this.viewParams.ScaleY / Preferences.GlobalScale);
                 Rectangle markerRect = new Rectangle(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
 
-                foreach (var kvp in this.world.map.mapMarkerByColor)
+                foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
                     Color markerColor = kvp.Key;
                     BoardPiece markerPiece = kvp.Value;
@@ -744,7 +743,7 @@ namespace SonOfRobin
                         markerRect.Y = (int)markerPiece.sprite.position.Y - (markerRect.Height / 2);
 
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
-                        markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate);
+                        markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
                         markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
 
@@ -842,7 +841,7 @@ namespace SonOfRobin
 
         private static readonly List<Type> typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
         private static readonly List<PieceTemplate.Name> namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
-        private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container) };
+        private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container), typeof(Entrance) };
         private static readonly List<PieceTemplate.Name> namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.Totem };
 
         private void BGSpritesTaskLoop()

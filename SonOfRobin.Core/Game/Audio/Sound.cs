@@ -191,7 +191,7 @@ namespace SonOfRobin
             if (!Preferences.debugShowSounds) return;
 
             this.visPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this.boardPiece.world, position: this.boardPiece.sprite.position, templateName: PieceTemplate.Name.MusicNote);
-            new Tracking(world: this.boardPiece.world, targetSprite: this.boardPiece.sprite, followingSprite: this.visPiece.sprite);
+            new Tracking(level: this.boardPiece.level, targetSprite: this.boardPiece.sprite, followingSprite: this.visPiece.sprite);
         }
 
         public static void StopAll()
@@ -256,7 +256,7 @@ namespace SonOfRobin
         {
             if (!Preferences.debugShowSounds || this.visPiece == null) return;
 
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.visPiece.world, delay: 20, boardPiece: this.visPiece);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.visPiece.level, delay: 20, boardPiece: this.visPiece);
             this.visPiece = null;
         }
 

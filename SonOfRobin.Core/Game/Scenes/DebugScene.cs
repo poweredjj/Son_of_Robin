@@ -38,8 +38,7 @@ namespace SonOfRobin
             var debugLines = new List<string>();
 
             World world = World.GetTopWorld();
-
-            bool worldActive = world != null && !world.WorldCreationInProgress;
+            bool worldActive = world != null && !world.ActiveLevel.creationInProgress;
 
             if (worldActive)
             {
@@ -47,16 +46,16 @@ namespace SonOfRobin
                 else debugLines.Add($"{world.debugText}");
             }
 
-            int plantCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
-            int animalCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+            int plantCount = worldActive && world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.ActiveLevel.pieceCountByClass[typeof(Plant)] : 0;
+            int animalCount = worldActive && world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.ActiveLevel.pieceCountByClass[typeof(Animal)] : 0;
 
             if (plantCount > 0 && animalCount > 0) debugLines.Add($"plants {plantCount}, animals {animalCount}");
 
             if (worldActive)
             {
                 debugLines.Add($"proc. non-plants: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
-                debugLines.Add($"tracking count {world.trackingManager.TrackingCount} swayCount {world.swayManager.SwayEventsCount}");
-                if (world.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
+                debugLines.Add($"tracking count {world.ActiveLevel.trackingManager.TrackingCount} swayCount {world.swayManager.SwayEventsCount}");
+                if (world.ActiveLevel.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
             debugLines.Add($"snd inst. total: {ManagedSoundInstance.CreatedInstancesCount} act: {ManagedSoundInstance.ActiveInstancesCount} inact: {ManagedSoundInstance.InactiveInstancesCount}");
@@ -156,10 +155,10 @@ namespace SonOfRobin
                 if (Keyboard.HasBeenPressed(Keys.D7))
                 {
                     var heart = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.Heart);
-                    world.worldEventManager.RemovePieceFromQueue(heart);
+                    world.ActiveLevel.levelEventManager.RemovePieceFromQueue(heart);
                     heart.sprite.opacityFade = null;
                     heart.sprite.opacity = 1;
-                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
+                    new Tracking(level: world.ActiveLevel, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))
@@ -213,7 +212,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(world.width), BoardPiece.Random.Next(world.height)));
+                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(world.ActiveLevel.width), BoardPiece.Random.Next(world.ActiveLevel.height)));
                     if (hasBeenMoved) break;
                 }
             }
@@ -402,18 +401,18 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F1))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
 
-                var taskChain = new List<Object>();
+            //    var taskChain = new List<Object>();
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 40), framesLeft: 60 * 2), storeForLaterUse: true));
+            //    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), blurSize: new Vector2(40, 40), framesLeft: 60 * 2), storeForLaterUse: true));
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "Linear" }, { "durationSeconds", 2f } }, storeForLaterUse: true));
+            //    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "Linear" }, { "durationSeconds", 2f } }, storeForLaterUse: true));
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
-            }
+            //    new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
@@ -431,6 +430,21 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             //    // world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             //}
+
+            if (Keyboard.HasBeenPressed(Keys.F1))
+            {
+                if (world == null) return;
+
+                world.ActiveLevel.playerReturnPos = world.Player.sprite.position;
+
+                if (world.ActiveLevel == world.IslandLevel)
+                {
+                    Level newLevel = new Level(type: Level.LevelType.Cave, world: world, seed: 1234, width: 8000, height: 8000);
+
+                    world.EnterNewLevel(newLevel);
+                }
+                else world.EnterNewLevel(world.IslandLevel);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
@@ -465,7 +479,7 @@ namespace SonOfRobin
             //{
             //    if (world == null) return;
 
-            //    new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
+            //    new LevelEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

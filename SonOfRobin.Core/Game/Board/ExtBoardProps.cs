@@ -11,13 +11,12 @@ namespace SonOfRobin
     {
         public enum Name : byte
         {
-            Sea = 0,
-            OuterBeach = 1,
+            Sea,
+            OuterBeach,
 
             // each biome name must start with "Biome"
-            BiomeSwamp = 2,
-
-            BiomeRuins = 3,
+            BiomeSwamp,
+            BiomeRuins,
         };
 
         private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
@@ -73,8 +72,7 @@ namespace SonOfRobin
                 this.extDataPNGPathByName[name] = Path.Combine(this.templateFolder, $"ext_bitmap_{name}.png");
             }
 
-            bool loadedCorrectly = this.LoadTemplate();
-            if (!loadedCorrectly)
+            if (!this.LoadTemplate())
             {
                 MessageLog.Add(debugMessage: true, text: "ext - creating new", textColor: Color.Yellow);
 
@@ -107,7 +105,9 @@ namespace SonOfRobin
 
             foreach (Name extPropName in allExtPropNames)
             {
-                arrayCollection[extPropName] = new BitArrayWrapper(this.Grid.dividedWidth, this.Grid.dividedHeight);
+                arrayCollection[extPropName] = this.Grid.level.levelType == Level.LevelType.Island ?
+                    new BitArrayWrapper(this.Grid.dividedWidth, this.Grid.dividedHeight) :
+                    new BitArrayWrapperEmpty();
             }
 
             return arrayCollection;
@@ -139,12 +139,12 @@ namespace SonOfRobin
             }
         }
 
-        public void EndCreationAndSave()
+        public void EndCreationAndSave(bool saveTemplate)
         {
             if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
 
             this.CreationInProgress = false;
-            this.SaveTemplate();
+            if (saveTemplate) this.SaveTemplate();
         }
 
         public bool CheckIfContainsPropertyForCell(Name name, bool value, int cellNoX, int cellNoY)
@@ -185,8 +185,20 @@ namespace SonOfRobin
             this.extDataByProperty[name].SetVal(x: rawX, y: rawY, value: value);
         }
 
+        public void FillWithTrue(Name name)
+        {
+            this.extDataByProperty[name].FillWithTrue();
+        }
+
+        public void FillWithFalse(Name name)
+        {
+            this.extDataByProperty[name].FillWithFalse();
+        }
+
         private bool LoadTemplate()
         {
+            if (this.Grid.serializable) return false;
+
             foreach (Name name in allExtPropNames)
             {
                 // creating dictionary entries (will get corrupted sometimes if created in parallel)

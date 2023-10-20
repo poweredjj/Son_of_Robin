@@ -21,7 +21,7 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate % 60 != 0) return;
 
-            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
+            var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
             var predatorPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal) && ((Animal)piece).Eats.Contains(this.world.Player.name));
 
             foreach (BoardPiece piece in predatorPieces)
@@ -67,10 +67,10 @@ namespace SonOfRobin
             Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
             if (tweenPos == null)
             {
-                Vector2 waveTarget = new Vector2(this.world.width / 2, this.world.height / 2);
+                Vector2 waveTarget = new Vector2(this.world.ActiveLevel.width / 2, this.world.ActiveLevel.height / 2);
                 if (this.world.weather.WindPercentage > 0)
                 {
-                    Vector2 windTarget = new Vector2(this.world.width * this.world.weather.WindOriginX, this.world.height * this.world.weather.WindOriginY);
+                    Vector2 windTarget = new Vector2(this.world.ActiveLevel.width * this.world.weather.WindOriginX, this.world.ActiveLevel.height * this.world.weather.WindOriginY);
                     waveTarget = Vector2.Lerp(waveTarget, windTarget, this.world.weather.WindPercentage);
                 }
 
@@ -87,7 +87,7 @@ namespace SonOfRobin
                 for (int distance = 0; distance < maxDistance; distance += oneStepDistance)
                 {
                     beachPos += oneStepOffset;
-                    if (this.world.Grid.terrainByName[Terrain.Name.Height].GetMapData((int)beachPos.X, (int)beachPos.Y) > Terrain.waterLevelMax) break;
+                    if (this.level.grid.terrainByName[Terrain.Name.Height].GetMapData((int)beachPos.X, (int)beachPos.Y) > Terrain.waterLevelMax) break;
                 }
 
                 float delay = this.world.random.Next(15);
@@ -138,7 +138,7 @@ namespace SonOfRobin
                     {
                         collidingPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.SwimShallow);
 
-                        float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
+                        float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.ActiveLevel.width / 2, this.world.ActiveLevel.height / 2));
                         int pushDistance = this.world.random.Next(400, 800);
 
                         Vector2 pushMovement = new Vector2((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));
@@ -166,7 +166,7 @@ namespace SonOfRobin
                 explosion.sprite.AssignNewSize(3);
                 new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f);
 
-                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
+                var piecesWithinRange = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
                     if (piece.pieceInfo.fireAffinity > 0) piece.HeatLevel += 2;

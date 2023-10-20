@@ -29,13 +29,13 @@ namespace SonOfRobin
             return new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
         }
 
-        public static Mesh[] GenerateMeshes(Grid grid)
+        public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
-            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.meshDefBySearchPriority.ToArray());
+            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType).ToArray());
             var meshBag = new ConcurrentBag<Mesh>();
 
-            //foreach (MeshDefinition meshDef in MeshDefinition.meshDefBySearchPriority) // for profiling in debugger
-            Parallel.ForEach(MeshDefinition.meshDefBySearchPriority, SonOfRobinGame.defaultParallelOptions, meshDef =>
+            //foreach (MeshDefinition meshDef in MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType)) // for profiling in debugger
+            Parallel.ForEach(MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType), SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
 
@@ -66,9 +66,8 @@ namespace SonOfRobin
                     }
                     pointList.Clear(); // no longer needed, clearing memory
 
-                    // Splitting very large bitmaps into chunks, because triangulation has size limit.
-                    // It is a little glitchy, but necessary at this point.
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: 2000, chunkHeight: 2000, xOverlap: 4, yOverlap: 4))
+                    // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40), chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40))) // keeping chunk size random, to make shared chunk borders less common
                     {
                         var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
 
@@ -78,11 +77,7 @@ namespace SonOfRobin
                             textureName: meshDef.textureName,
                             groupedShapes: groupedShapes);
 
-                        List<Mesh> splitMeshes = mesh.SplitIntoChunks(maxChunkSize: 800);
-                        foreach (Mesh splitMesh in splitMeshes)
-                        {
-                            if (mesh.indices.Length >= 3) meshBag.Add(splitMesh);
-                        }
+                        if (mesh.indices.Length >= 3) meshBag.Add(mesh);
                     }
                 }
                 //} // for profiling in debugger
@@ -96,7 +91,7 @@ namespace SonOfRobin
 
             var meshArray = meshByID.Values.ToArray();
 
-            SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
+            if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
             return meshArray;
         }
 

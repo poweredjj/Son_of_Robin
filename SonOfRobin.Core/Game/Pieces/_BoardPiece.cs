@@ -47,6 +47,7 @@ namespace SonOfRobin
             SeaWaveMove = 28,
             EmitParticles = 29,
             HasteCloneFollowPlayer = 31,
+            CaveEntranceDisappear = 32,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -85,6 +86,7 @@ namespace SonOfRobin
         public const float minBurnVal = 0.5f;
 
         public readonly World world;
+        public Level level;
         public readonly int id;
         public readonly PieceTemplate.Name name;
         public Sprite sprite;
@@ -123,6 +125,7 @@ namespace SonOfRobin
             byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null)
         {
             this.world = world;
+            this.level = world?.ActiveLevel;
             this.name = name;
             this.id = id;
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
@@ -131,7 +134,7 @@ namespace SonOfRobin
 
             this.activeSoundPack = new ActiveSoundPack(this);
             this.activeState = activeState;
-            this.lastFrameSMProcessed = this.world != null ? this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) : 0;
+            this.lastFrameSMProcessed = this.world != null ? this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) : 0;
             this.maxHitPoints = maxHitPoints;
             this.HitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
@@ -177,7 +180,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -196,7 +199,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -264,7 +267,7 @@ namespace SonOfRobin
                 if (this.heatLevel > 0)
                 {
                     this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.heatLevel, boardPiece: this, framesLeft: -1));
-                    this.world.heatedPieces.Add(this);
+                    this.level.heatedPieces.Add(this);
                 }
 
                 if (this.IsBurning)
@@ -284,7 +287,7 @@ namespace SonOfRobin
                         if (!this.sprite.BlocksMovement || this.world.HeatQueueSize > 100) delay /= 3; // to prevent from large fires
 
                         // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} {this.readableName} cool delay {delay}.");
-                        new WorldEvent(eventName: WorldEvent.EventName.StopBurning, world: this.world, delay: delay, boardPiece: this);
+                        new LevelEvent(eventName: LevelEvent.EventName.StopBurning, level: this.level, delay: delay, boardPiece: this);
                     }
                 }
                 else
@@ -355,7 +358,7 @@ namespace SonOfRobin
         { get { return this.createdByPlayer && this.GetType() == typeof(Plant); } }
 
         public int FramesSinceLastProcessed
-        { get { return Math.Max(this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) - this.lastFrameSMProcessed, 0); } }
+        { get { return Math.Max(this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()) - this.lastFrameSMProcessed, 0); } }
 
         public static Random Random
         {
@@ -390,7 +393,7 @@ namespace SonOfRobin
             if (this.DestructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()
@@ -478,15 +481,15 @@ namespace SonOfRobin
 
         public void AddToPieceCount()
         {
-            this.world.pieceCountByName[this.name]++;
-            if (!this.world.pieceCountByClass.ContainsKey(this.GetType())) this.world.pieceCountByClass[this.GetType()] = 0;
-            this.world.pieceCountByClass[this.GetType()]++;
+            this.level.pieceCountByName[this.name]++;
+            if (!this.level.pieceCountByClass.ContainsKey(this.GetType())) this.level.pieceCountByClass[this.GetType()] = 0;
+            this.level.pieceCountByClass[this.GetType()]++;
         }
 
         public void RemoveFromPieceCount()
         {
-            this.world.pieceCountByName[this.name]--;
-            this.world.pieceCountByClass[this.GetType()]--;
+            this.level.pieceCountByName[this.name]--;
+            this.level.pieceCountByClass[this.GetType()]--;
         }
 
         public void GrowOlder(int timeDelta)
@@ -518,7 +521,7 @@ namespace SonOfRobin
             if (this.PieceStorage != null && this.GetType() != typeof(Plant)) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
-            if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
+            if (addDestroyEvent) new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
         }
 
         public virtual void Destroy()
@@ -607,7 +610,7 @@ namespace SonOfRobin
             bool passiveMovementOccured = this.ProcessPassiveMovement();
             if (passiveMovementOccured) // passive movement blocks the state machine until the movement stops
             {
-                this.lastFrameSMProcessed = this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // has to be updated here, to prevent from processing passive movement multiple times
+                this.lastFrameSMProcessed = this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // has to be updated here, to prevent from processing passive movement multiple times
                 return;
             }
             else
@@ -617,7 +620,7 @@ namespace SonOfRobin
                 this.passiveRotation = 0;
             }
 
-            if (!this.world.stateMachineTypesManager.CanBeProcessed(this)) return;
+            if (!this.level.stateMachineTypesManager.CanBeProcessed(this)) return;
 
             if (!this.alive)
             {
@@ -748,6 +751,10 @@ namespace SonOfRobin
                     this.SM_HasteCloneFollowPlayer();
                     break;
 
+                case State.CaveEntranceDisappear:
+                    this.SM_CaveEntranceDisappear();
+                    break;
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     this.RemoveFromStateMachines();
                     break;
@@ -756,7 +763,12 @@ namespace SonOfRobin
                     { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
 
-            this.lastFrameSMProcessed = this.world.stateMachineTypesManager.GetDeltaCounterForType(this.GetType()); // updated after SM processing, to allow for proper time delta calculation
+            this.UpdateLastFrameSMProcessed(); // updated after SM processing, to allow for proper time delta calculation
+        }
+
+        protected void UpdateLastFrameSMProcessed()
+        {
+            this.lastFrameSMProcessed = this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType());
         }
 
         public void ProcessHeat()
@@ -766,7 +778,7 @@ namespace SonOfRobin
             if (!this.sprite.IsOnBoard)
             {
                 this.heatLevel = 0; // changing the value directly
-                this.world.heatedPieces.Remove(this);
+                this.level.heatedPieces.Remove(this);
                 return;
             }
 
@@ -781,7 +793,7 @@ namespace SonOfRobin
 
             if (this.HeatLevel == 0)
             {
-                this.world.heatedPieces.Remove(this);
+                this.level.heatedPieces.Remove(this);
                 return;
             }
 
@@ -850,7 +862,7 @@ namespace SonOfRobin
             Rectangle heatRect = this.sprite.GfxRect;
             heatRect.Inflate(this.sprite.GfxRect.Width * 0.8f, this.sprite.GfxRect.Height * 0.8f);
 
-            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
+            var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 150);
             foreach (BoardPiece heatedPiece in nearbyPieces)
             {
                 if (heatedPiece.pieceInfo.fireAffinity == 0 ||
@@ -905,7 +917,7 @@ namespace SonOfRobin
                     this.flameLight.sprite.lightEngine.AssignSprite(this.flameLight.sprite);
                     this.flameLight.sprite.lightEngine.Activate();
 
-                    new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flameLight.sprite);
+                    new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: flameLight.sprite);
 
                     this.flameLight.sprite.opacity = 0f;
                     new OpacityFade(sprite: this.flameLight.sprite, destOpacity: 1, duration: 30);
@@ -1102,6 +1114,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_HasteCloneFollowPlayer()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_CaveEntranceDisappear()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()

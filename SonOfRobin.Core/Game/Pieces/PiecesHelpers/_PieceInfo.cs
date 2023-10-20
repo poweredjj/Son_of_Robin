@@ -1619,7 +1619,19 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 6;
                         this.getsPushedByWaves = true;
+                        break;
 
+                    case PieceTemplate.Name.CaveWeakMinerals:
+                        this.category = BoardPiece.Category.Stone;
+                        this.movesWhenDropped = false;
+                        this.blocksMovement = true;
+                        this.placeMaxDistance = 500;
+
+                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 5, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Granite, chanceToDrop: 2, maxNumberToDrop: 1),
+                            });
                         break;
 
                     case PieceTemplate.Name.CoalDeposit:
@@ -2907,6 +2919,33 @@ namespace SonOfRobin
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonJump;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.CaveEntranceOutside:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.UseEntrance;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
+                        this.allowedDensity = new AllowedDensity(radius: 6000, maxNoOfPiecesSameClass: 0);
+                        this.blocksMovement = true;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.CaveEntranceInside:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.UseEntrance;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
+                        this.allowedDensity = new AllowedDensity(radius: 500, maxNoOfPiecesBlocking: 0);
+                        this.blocksMovement = true;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.CaveExit:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.UseEntrance;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
+                        this.allowedDensity = new AllowedDensity(radius: 1000, maxNoOfPiecesSameClass: 0);
+                        this.blocksMovement = true;
                         this.hasFlatShadow = true;
                         break;
 

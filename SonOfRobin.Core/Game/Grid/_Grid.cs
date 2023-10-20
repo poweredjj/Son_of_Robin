@@ -53,10 +53,12 @@ namespace SonOfRobin
         private Task backgroundTask;
         private Stage currentStage;
         private DateTime stageStartTime;
+        public readonly bool serializable;
         public bool CreationInProgress { get; private set; }
 
         public readonly GridTemplate gridTemplate;
         public readonly World world;
+        public readonly Level level;
 
         public readonly int width;
         public readonly int height;
@@ -82,18 +84,20 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, Cell[]> cellArraysForPieceNamesMasterDict; // pieces and cells that those pieces can (initially) be placed into
         private readonly Dictionary<PieceTemplate.Name, Queue<Cell>> cellSetsForPieceNamesWorkingQueueDict;
 
-        public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
+        public Grid(Level level, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.CreationInProgress = true;
             this.currentStage = 0;
 
-            this.world = world;
+            this.level = level;
+            this.world = this.level.world;
             this.resDivider = resDivider;
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
             this.namedLocations = new NamedLocations(grid: this);
+            this.serializable = this.level.levelType == Level.LevelType.Island;
 
-            this.width = this.world.width;
-            this.height = this.world.height;
+            this.width = this.level.width;
+            this.height = this.level.height;
             this.dividedWidth = (int)Math.Ceiling((double)this.width / (double)this.resDivider);
             this.dividedHeight = (int)Math.Ceiling((double)this.height / (double)this.resDivider);
 
@@ -112,10 +116,10 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now);
+            this.gridTemplate = new GridTemplate(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider, createdDate: DateTime.Now, saveHeader: this.serializable);
 
-            this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
-            this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
+            this.noOfCellsX = (int)Math.Ceiling((float)this.level.width / (float)this.cellWidth);
+            this.noOfCellsY = (int)Math.Ceiling((float)this.level.height / (float)this.cellHeight);
 
             this.cellArraysForPieceNamesMasterDict = new Dictionary<PieceTemplate.Name, Cell[]>();
             this.cellSetsForPieceNamesWorkingQueueDict = new Dictionary<PieceTemplate.Name, Queue<Cell>>();
@@ -177,14 +181,14 @@ namespace SonOfRobin
             return gridData;
         }
 
-        public static Grid Deserialize(Dictionary<string, Object> gridData, World world, int resDivider)
+        public static Grid Deserialize(Dictionary<string, Object> gridData, Level level, int resDivider)
         {
             // this data is included in save file (not in template)
 
             int cellWidth = (int)(Int64)gridData["cellWidth"];
             int cellHeight = (int)(Int64)gridData["cellHeight"];
 
-            Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
+            Grid grid = new(level: level, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
             // for compatibility with older saves
@@ -221,16 +225,18 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World existingWorld = (World)scene;
+                Level level = existingWorld.IslandLevel;
 
-                if (!existingWorld.WorldCreationInProgress &&
-                    existingWorld.Grid != null &&
-                    !existingWorld.Grid.CreationInProgress &&
-                    seed == existingWorld.seed &&
-                    width == existingWorld.width &&
-                    height == existingWorld.height &&
-                    (ignoreCellSize || (cellWidth == existingWorld.Grid.cellWidth && cellHeight == existingWorld.Grid.cellHeight)))
+                if (level != null &&
+                    !level.creationInProgress &&
+                    level.grid != null &&
+                    !level.grid.CreationInProgress &&
+                    seed == level.seed &&
+                    width == level.width &&
+                    height == level.height &&
+                    (ignoreCellSize || (cellWidth == level.grid.cellWidth && cellHeight == level.grid.cellHeight)))
                 {
-                    return existingWorld.Grid;
+                    return level.grid;
                 }
             }
 
@@ -239,9 +245,11 @@ namespace SonOfRobin
 
         public bool CopyBoardFromTemplate()
         {
+            if (!this.serializable) return false;
+
             // looking for matching template
 
-            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.level.seed, width: this.level.width, height: this.level.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
             if (templateGrid == null) return false;
 
             // copying terrain
@@ -330,14 +338,38 @@ namespace SonOfRobin
             {
                 case Stage.LoadTerrain:
                     {
-                        this.terrainByName[Terrain.Name.Height] = new Terrain(
-                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+                        Level.LevelType levelType = this.world.ActiveLevel.levelType;
+                        switch (levelType)
+                        {
+                            case Level.LevelType.Island:
 
-                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(
-                            grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
-                        this.terrainByName[Terrain.Name.Biome] = new Terrain(
-                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                                break;
+
+                            case Level.LevelType.Cave:
+
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 32f, octaves: 11, persistence: 0.58f, lacunarity: 1.8f, gain: 0.68f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> { new Terrain.RangeConversion(inMin: 0, inMax: 116, outMin: 0, outMax: 0), new Terrain.RangeConversion(inMin: 200, inMax: 255, outMin: Terrain.lavaMin, outMax: 255) });
+
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Unsupported levelType - {levelType}.");
+                        }
 
                         Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
                         {
@@ -351,16 +383,19 @@ namespace SonOfRobin
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
                         // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
-                        currentTerrain.UpdateNoiseMap();
+                        currentTerrain.GenerateNoiseMap();
                     }
 
                     break;
 
                 case Stage.SaveTerrain:
-                    Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
+                    if (this.serializable)
                     {
-                        terrain.SaveTemplate();
-                    });
+                        Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
+                        {
+                            terrain.SaveTemplate();
+                        });
+                    }
 
                     break;
 
@@ -390,17 +425,19 @@ namespace SonOfRobin
                     break;
 
                 case Stage.SetExtDataFinish:
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave(saveTemplate: this.serializable);
 
                     break;
 
                 case Stage.GenerateNamedLocations:
-                    this.namedLocations.GenerateLocations();
+                    if (this.level.levelType == Level.LevelType.Island) this.namedLocations.GenerateLocations();
 
                     break;
 
                 case Stage.LoadMeshes:
-                    Mesh[] meshArray = MeshGenerator.LoadMeshes(this);
+                    Mesh[] meshArray = null;
+                    if (this.serializable) meshArray = MeshGenerator.LoadMeshes(this);
+
                     if (meshArray != null)
                     {
                         this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: meshArray, grid: this);
@@ -410,7 +447,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.GenerateMeshes:
-                    if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(this), grid: this);
+                    if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(grid: this, saveTemplate: this.serializable), grid: this);
 
                     break;
 
@@ -450,7 +487,7 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
 
-                Random random = new Random(this.world.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
+                Random random = new Random(this.level.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
                 concurrentCellSetsForPieceNames[pieceName] = cellList.OrderBy(cell => random.Next()).ToArray();
             });
 
@@ -462,10 +499,12 @@ namespace SonOfRobin
 
         private void ExtCalculateSea()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             // the algorithm will only work, if water surrounds the island
 
-            int maxX = (this.world.width / this.resDivider) - 1;
-            int maxY = (this.world.height / this.resDivider) - 1;
+            int maxX = (this.level.width / this.resDivider) - 1;
+            int maxY = (this.level.height / this.resDivider) - 1;
 
             var startingPointsRaw = new ConcurrentBag<Point>();
 
@@ -489,6 +528,8 @@ namespace SonOfRobin
 
         private void ExtCalculateOuterBeach()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.Name.OuterBeach, value: true);
 
             this.FloodFillExtProps(
@@ -501,21 +542,23 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
+            if (this.level.levelType != Level.LevelType.Island) return;
+
             // setting up variables
 
             var biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
             var pointCollectionsForBiomes = new Dictionary<ExtBoardProps.Name, List<ConcurrentBag<Point>>>();
 
-            Random random = new(this.world.seed); // based on original seed (to ensure that biome order will be identical for given seed)
+            Random random = new(this.level.seed); // based on original seed (to ensure that biome order will be identical for given seed)
             foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => random.Next())) // shuffled biome list
             {
                 biomeCountByName[name] = 0;
                 pointCollectionsForBiomes[name] = new List<ConcurrentBag<Point>>();
             }
 
-            int maxX = this.world.width / this.resDivider;
-            int maxY = this.world.height / this.resDivider;
+            int maxX = this.level.width / this.resDivider;
+            int maxY = this.level.height / this.resDivider;
 
             byte biomeMinVal = Terrain.biomeMin;
             byte biomeMaxVal = 255;
@@ -631,8 +674,8 @@ namespace SonOfRobin
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
         {
-            int maxX = this.world.width / this.resDivider;
-            int maxY = this.world.height / this.resDivider;
+            int maxX = this.level.width / this.resDivider;
+            int maxY = this.level.height / this.resDivider;
 
             var pointBag = new ConcurrentBag<Point>();
 
@@ -665,8 +708,8 @@ namespace SonOfRobin
 
         private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, List<TerrainSearch> terrainSearches, ExtBoardProps.Name nameToSetIfInRange = ExtBoardProps.Name.Sea, bool setNameIfInsideRange = false, bool setNameIfOutsideRange = false, ExtBoardProps.Name nameToSetIfOutsideRange = ExtBoardProps.Name.Sea)
         {
-            int dividedWidth = this.world.width / this.resDivider;
-            int dividedHeight = this.world.height / this.resDivider;
+            int dividedWidth = this.level.width / this.resDivider;
+            int dividedHeight = this.level.height / this.resDivider;
 
             Point[] offsetArray = new Point[]
             {
@@ -847,16 +890,16 @@ namespace SonOfRobin
         public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
         {
             int xMinCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.world.width - 1), cellLength: this.cellWidth);
+                position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.level.width - 1), cellLength: this.cellWidth);
 
             int xMaxCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.X + distance), min: 0, max: this.world.width - 1), cellLength: this.cellWidth);
+                position: Math.Clamp(value: (int)(position.X + distance), min: 0, max: this.level.width - 1), cellLength: this.cellWidth);
 
             int yMinCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.Y - distance), min: 0, max: this.world.height - 1), cellLength: this.cellHeight);
+                position: Math.Clamp(value: (int)(position.Y - distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
             int yMaxCellNo = FindMatchingCellInSingleAxis(
-                position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.world.height - 1), cellLength: this.cellHeight);
+                position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
             List<Cell> cellsWithinDistance = new();
 
@@ -1073,7 +1116,7 @@ namespace SonOfRobin
             Scene.SetupPolygonDrawing(allowRepeat: true, transformMatrix: Matrix.CreateScale(1f / (float)this.width * (float)wholeIslandPreviewSize.X));
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
-            SonOfRobinGame.GfxDev.Clear(Map.waterColor);
+            SonOfRobinGame.GfxDev.Clear(this.level.hasWater ? Map.waterColor : Color.Black);
 
             foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.meshDef.drawPriority).Distinct())
             {
@@ -1185,7 +1228,7 @@ namespace SonOfRobin
             }
 
             var visiblePieces = this.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
-            var offScreenParticleEmitterPieces = this.world.recentParticlesManager.OffScreenPieces;
+            var offScreenParticleEmitterPieces = this.level.recentParticlesManager.OffScreenPieces;
             var piecesToDraw = visiblePieces.Concat(offScreenParticleEmitterPieces).ToList();
 
             foreach (BoardPiece piece in piecesToDraw

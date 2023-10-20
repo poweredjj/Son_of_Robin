@@ -298,7 +298,7 @@ namespace SonOfRobin
             this.cookingDoneFrame = this.world.CurrentUpdate + cookingTime;
             this.showStatBarsTillFrame = this.world.CurrentUpdate + cookingTime;
 
-            new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.FinishCooking, level: this.level, delay: cookingTime, boardPiece: this);
 
             this.world.HintEngine.Disable(PieceHint.Type.Cooker);
             this.world.HintEngine.Disable(Tutorials.Type.Cook);

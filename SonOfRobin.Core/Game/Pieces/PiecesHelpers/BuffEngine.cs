@@ -121,7 +121,7 @@ namespace SonOfRobin
                 return;
             }
             this.buffDict[buff.id] = buff;
-            if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
+            if (buff.autoRemoveDelay > 0) new LevelEvent(eventName: LevelEvent.EventName.RemoveBuff, level: this.piece.level, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
             // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Buff added for '{this.piece.readableName}' - id {buff.id} type {buff.type} value {buff.value}.");
 
@@ -402,7 +402,7 @@ namespace SonOfRobin
 
                             var regenPoisonData = new Dictionary<string, Object> {
                             { "buffID", buff.id }, { "charges", buff.autoRemoveDelay / delay }, { "delay", delay }, { "hpChange", buff.value }, { "canKill", buff.canKill } };
-                            new WorldEvent(eventName: WorldEvent.EventName.RegenPoison, world: world, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
+                            new LevelEvent(eventName: LevelEvent.EventName.RegenPoison, level: this.piece.level, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
 
                             if ((int)buff.value < 0)
                             {
@@ -446,17 +446,17 @@ namespace SonOfRobin
 
                                 Sprite hastePlayerCloneSprite = hastePlayerClone.sprite;
                                 hastePlayerCloneSprite.opacity = (1f - ((float)cloneNo / (cloneCount + 1))) * 0.3f;
-                                new Tracking(world: world, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
+                                new Tracking(level: player.level, targetSprite: player.sprite, followingSprite: hastePlayerCloneSprite, followSlowDown: cloneNo);
                             }
 
-                            player.world.stateMachineTypesManager.EnableMultiplier((int)buff.value);
-                            player.world.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
-                            player.world.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);
+                            player.level.stateMachineTypesManager.EnableMultiplier((int)buff.value);
+                            player.level.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
+                            player.level.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);
                         }
                         else
                         {
-                            player.world.stateMachineTypesManager.DisableMultiplier();
-                            player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            player.level.stateMachineTypesManager.DisableMultiplier();
+                            player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                         }
 
                         return true;

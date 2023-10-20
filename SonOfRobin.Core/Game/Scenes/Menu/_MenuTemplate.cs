@@ -669,15 +669,17 @@ namespace SonOfRobin
 
                         // island info
                         {
-                            int plantCount = world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
-                            int animalCount = world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+                            Level islandLevel = world.IslandLevel;
+
+                            int plantCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Plant)) ? islandLevel.pieceCountByClass[typeof(Plant)] : 0;
+                            int animalCount = world.ActiveLevel.pieceCountByClass.ContainsKey(typeof(Animal)) ? islandLevel.pieceCountByClass[typeof(Animal)] : 0;
 
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("Island info\n");
 
-                            textLines.Add($"| Size: {world.width}x{world.height}");
+                            textLines.Add($"| Size: {islandLevel.width}x{islandLevel.height}");
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Map].texture);
 
                             textLines.Add($"| All Objects: {world.PieceCount}");
@@ -692,8 +694,8 @@ namespace SonOfRobin
                             string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
                             textLines.Add($"Time played: {timePlayedString}");
                             textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
-                            textLines.Add($"Map discovered: {Math.Round(world.Grid.VisitedCellsPercentage * 100, 1)}%");
-                            textLines.Add($"Locations found: {world.Grid.namedLocations.DiscoveredLocationsCount}/{world.Grid.namedLocations.AllLocationsCount}");
+                            textLines.Add($"Map discovered: {Math.Round(islandLevel.grid.VisitedCellsPercentage * 100, 1)}%");
+                            textLines.Add($"Locations found: {islandLevel.grid.namedLocations.DiscoveredLocationsCount}/{islandLevel.grid.namedLocations.AllLocationsCount}");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
@@ -1049,11 +1051,11 @@ namespace SonOfRobin
                         bool nonDemoWorldActive = world != null && !world.demoMode;
 
                         new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugMode", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "save anywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugSaveEverywhere", rebuildsAllMenus: true);
 
                         if (nonDemoWorldActive) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.CreateAnyPiece } });
                         new Invoker(menu: menu, name: "sound test", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.SoundTest } });
                         new Invoker(menu: menu, name: "graphics list", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.GfxListTest } });
-                        new Selector(menu: menu, name: "save everywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugSaveEverywhere", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "show all recipes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllRecipes");
                         new Selector(menu: menu, name: "show plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPlantGrowthInCamera");
                         new Selector(menu: menu, name: "show anim size change", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimSizeChangeInCamera");
@@ -1259,6 +1261,13 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
             Player player = world.Player;
+
+            if (player.level.levelType != Level.LevelType.Island)
+            {
+                new TextWindow(text: "I can't craft in here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+
+                return null;
+            }
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
             {

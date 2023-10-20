@@ -30,13 +30,15 @@ namespace SonOfRobin
             this.bitArray = new BitArray(boolArray);
         }
 
-        public void SetVal(int x, int y, bool value)
+        public virtual void SetVal(int x, int y, bool value)
         {
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
             this.bitArray.Set((y * this.width) + x, value);
         }
 
-        public bool GetVal(int x, int y)
+        public virtual bool GetVal(int x, int y)
         {
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) return false;
             return this.bitArray.Get((y * this.width) + x);
         }
 
@@ -50,7 +52,7 @@ namespace SonOfRobin
             this.bitArray.SetAll(false);
         }
 
-        public bool SaveToPNG(string path)
+        public virtual bool SaveToPNG(string path)
         {
             var workingArray = new bool[this.width * this.height];
             this.bitArray.CopyTo(workingArray, 0);
@@ -108,12 +110,12 @@ namespace SonOfRobin
             catch (UnknownImageFormatException) { return null; } // file corrupted
         }
 
-        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight, int xOverlap = 0, int yOverlap = 0)
+        public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight)
         {
             if (chunkWidth <= 0 || chunkHeight <= 0) throw new ArgumentException("Chunk dimensions and BitArray dimensions must be positive.");
 
-            int numChunksX = (int)Math.Ceiling((double)(this.width - xOverlap) / (double)(chunkWidth - xOverlap));
-            int numChunksY = (int)Math.Ceiling((double)(this.height - yOverlap) / (double)(chunkHeight - yOverlap));
+            int numChunksX = (int)Math.Ceiling((double)this.width / (double)chunkWidth);
+            int numChunksY = (int)Math.Ceiling((double)this.height / (double)chunkHeight);
 
             var chunks = new List<BitArrayWrapperChunk>();
 
@@ -121,13 +123,16 @@ namespace SonOfRobin
             {
                 for (int chunkX = 0; chunkX < numChunksX; chunkX++)
                 {
-                    int xOffset = chunkX * (chunkWidth - xOverlap);
-                    int yOffset = chunkY * (chunkHeight - yOverlap);
+                    int xPos = chunkX * chunkWidth;
+                    int yPos = chunkY * chunkHeight;
 
-                    int currentChunkWidth = Math.Min(chunkWidth + xOverlap, this.width - (chunkX * (chunkWidth - xOverlap)));
-                    int currentChunkHeight = Math.Min(chunkHeight + xOverlap, this.height - (chunkY * (chunkHeight - yOverlap)));
+                    int currentChunkWidth = chunkWidth;
+                    int currentChunkHeight = chunkHeight;
 
-                    chunks.Add(new BitArrayWrapperChunk(bitArrayWrapper: this, width: currentChunkWidth, height: currentChunkHeight, xOffset: xOffset, yOffset: yOffset));
+                    currentChunkWidth = Math.Min(currentChunkWidth, this.width - xPos);
+                    currentChunkHeight = Math.Min(currentChunkHeight, this.height - yPos);
+
+                    chunks.Add(new BitArrayWrapperChunk(bitArrayWrapper: this, width: currentChunkWidth, height: currentChunkHeight, xOffset: xPos, yOffset: yPos));
                 }
             }
 
@@ -155,6 +160,28 @@ namespace SonOfRobin
         public bool GetVal(int x, int y)
         {
             return this.bitArrayWrapper.GetVal(x: x + this.xOffset, y: y + this.yOffset);
+        }
+    }
+
+    public class BitArrayWrapperEmpty : BitArrayWrapper
+    {
+        public BitArrayWrapperEmpty() : base(width: 1, height: 1)
+        {
+        }
+
+        public override bool GetVal(int x, int y)
+        {
+            return base.GetVal(0, 0);
+        }
+
+        public override void SetVal(int x, int y, bool value)
+        {
+            base.SetVal(0, 0, value);
+        }
+
+        public override bool SaveToPNG(string path)
+        {
+            return false;
         }
     }
 }

@@ -6,16 +6,16 @@ namespace SonOfRobin
 {
     public class SMTypesManager // short for "State Machine Types Manager"
     {
-        private readonly World world;
+        private readonly Level level;
         private readonly List<Type> allTypes;
         private List<Type> enabledTypesEveryFrame;
         private List<Type> enabledTypesNthFrame;
         private int nthFrameMultiplier;
         private readonly Dictionary<Type, int> deltaCountersForTypes;
 
-        public SMTypesManager(World world)
+        public SMTypesManager(Level level)
         {
-            this.world = world;
+            this.level = level;
             this.allTypes = new List<Type>();
             this.deltaCountersForTypes = new Dictionary<Type, int>();
 
@@ -44,7 +44,7 @@ namespace SonOfRobin
                 else if (this.enabledTypesNthFrame.Contains(type))
                 {
                     if (this.nthFrameMultiplier == 0) this.deltaCountersForTypes[type] += increaseVal;
-                    else if (this.world.CurrentUpdate % this.nthFrameMultiplier == 0) this.deltaCountersForTypes[type] += increaseVal;
+                    else if (this.level.world.CurrentUpdate % this.nthFrameMultiplier == 0) this.deltaCountersForTypes[type] += increaseVal;
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace SonOfRobin
             Type type = boardPiece.GetType();
 
             if (this.enabledTypesEveryFrame.Contains(type)) return true;
-            if (this.nthFrameMultiplier != 0 && this.world.CurrentUpdate % this.nthFrameMultiplier == 0) return this.enabledTypesNthFrame.Contains(type);
+            if (this.nthFrameMultiplier != 0 && this.level.world.CurrentUpdate % this.nthFrameMultiplier == 0) return this.enabledTypesNthFrame.Contains(type);
 
             return false;
         }

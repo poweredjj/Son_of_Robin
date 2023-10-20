@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -50,6 +51,8 @@ namespace SonOfRobin
 
         private readonly int seed;
         private readonly bool addBorder;
+        private readonly RangeConversion[] rangeConversions;
+
         private readonly float frequency;
         private readonly int octaves;
         private readonly float persistence;
@@ -62,7 +65,7 @@ namespace SonOfRobin
         private byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
+        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false, List<RangeConversion> rangeConversions = null)
         {
             this.CreationInProgress = true;
 
@@ -77,7 +80,9 @@ namespace SonOfRobin
             this.persistence = persistence;
             this.lacunarity = lacunarity;
             this.gain = gain;
+
             this.addBorder = addBorder;
+            this.rangeConversions = rangeConversions == null ? new RangeConversion[0] : rangeConversions.ToArray();
 
             string templatePath = this.Grid.gridTemplate.templatePath;
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}_flipped.png");
@@ -87,13 +92,16 @@ namespace SonOfRobin
 
         public void TryToLoadSavedTerrain()
         {
-            byte[,] loadedMinVal;
+            byte[,] loadedMinVal = null;
             byte[,] loadedMaxVal = null;
             byte[,] loadedMapData = null;
 
-            loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
-            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);
-            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadGreyscalePNGAs2DByteArraySquareFlipped(this.terrainPngPath);
+            if (this.Grid.serializable)
+            {
+                loadedMinVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.minValPngPath);
+                if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadGreyscalePNGAs2DByteArray(this.maxValPngPath);
+                if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadGreyscalePNGAs2DByteArraySquareFlipped(this.terrainPngPath);
+            }
 
             if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
@@ -118,7 +126,7 @@ namespace SonOfRobin
             }
         }
 
-        public void UpdateNoiseMap()
+        public void GenerateNoiseMap()
         {
             if (!this.CreationInProgress) return;
 
@@ -140,10 +148,15 @@ namespace SonOfRobin
                 {
                     int realX = x * resDivider;
 
-                    double rawNoiseValue = noise.GetNoise(realX, realY) + 1; // 0-2 range
+                    double rawNoiseValue = this.noise.GetNoise(realX, realY) + 1; // 0-2 range
                     if (this.addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
 
                     this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range;  can write to array using parallel, if every thread accesses its own indices
+
+                    foreach (RangeConversion rangeConversion in this.rangeConversions)
+                    {
+                        this.mapData[x, y] = rangeConversion.ConvertRange(this.mapData[x, y]);
+                    }
                 }
             });
 
@@ -246,6 +259,29 @@ namespace SonOfRobin
 
                 this.minValGridCell[cell.cellNoX, cell.cellNoY] = minVal;
                 this.maxValGridCell[cell.cellNoX, cell.cellNoY] = maxVal;
+            }
+        }
+
+        public readonly struct RangeConversion
+        {
+            public readonly byte inMin;
+            public readonly byte inMax;
+            public readonly byte outMin;
+            public readonly byte outMax;
+
+            public RangeConversion(byte inMin, byte inMax, byte outMin, byte outMax)
+            {
+                this.inMin = inMin;
+                this.inMax = inMax;
+                this.outMin = outMin;
+                this.outMax = outMax;
+            }
+
+            public byte ConvertRange(byte value)
+            {
+                return value < inMin || value > inMax ?
+                    value :
+                    (byte)Helpers.ConvertRange(oldMin: this.inMin, oldMax: this.inMax, newMin: this.outMin, newMax: this.outMax, oldVal: value, clampToEdges: true);
             }
         }
     }

@@ -140,8 +140,8 @@ namespace SonOfRobin
             this.world.HintEngine.Disable(Tutorials.Type.HarvestMeat);
 
             this.TurnOn();
-            this.world.worldEventManager.RemovePieceFromQueue(this); // clearing possible previous "turn off" instances
-            new WorldEvent(eventName: WorldEvent.EventName.TurnOffHarvestingWorkshop, delay: 30 * 60, boardPiece: this, world: this.world);
+            this.world.ActiveLevel.levelEventManager.RemovePieceFromQueue(this); // clearing possible previous "turn off" instances
+            new LevelEvent(eventName: LevelEvent.EventName.TurnOffHarvestingWorkshop, delay: 30 * 60, boardPiece: this, level: this.level);
             Sound.QuickPlay(SoundData.Name.KnifeSharpen);
 
             var basePieces = animalPiece.pieceInfo.Yield.GetAllPieces(piece: animalPiece);

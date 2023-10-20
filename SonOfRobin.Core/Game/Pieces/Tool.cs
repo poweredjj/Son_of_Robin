@@ -202,7 +202,7 @@ namespace SonOfRobin
             World world = player.world;
 
             BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
-            new Tracking(world: world, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
+            new Tracking(level: player.level, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
 
             if (target.GetType() == typeof(Plant))
             {
@@ -231,7 +231,7 @@ namespace SonOfRobin
                     PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     target.pieceInfo.Yield.DropDebris(piece: target, particlesToEmit: 100);
                     if (target.alive) target.Kill(); // has to be killed now...
-                    target.world.worldEventManager.RemovePieceFromQueue(pieceToRemove: target); // ...to remove from queue (making sure animal corpse won't disappear)
+                    target.level.levelEventManager.RemovePieceFromQueue(pieceToRemove: target); // ...to remove from queue (making sure animal corpse won't disappear)
                 }
                 else
                 {

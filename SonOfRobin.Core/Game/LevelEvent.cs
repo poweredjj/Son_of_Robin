@@ -5,33 +5,41 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public class WorldEventManager
+    public class LevelEventManager
     {
-        public readonly World world;
-        private readonly Dictionary<int, Queue<WorldEvent>> eventQueue;
+        public readonly Level level;
+        private readonly Dictionary<int, Queue<LevelEvent>> eventQueue;
 
-        public WorldEventManager(World world)
+        public LevelEventManager(Level level)
         {
-            this.world = world;
-            this.eventQueue = new Dictionary<int, Queue<WorldEvent>>();
+            this.level = level;
+            this.eventQueue = new Dictionary<int, Queue<LevelEvent>>();
         }
 
-        public void AddToQueue(WorldEvent worldEvent, bool addFadeOut = true)
+        public void AddToQueue(List<LevelEvent> eventList, bool addFadeOut = true)
         {
-            if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new Queue<WorldEvent>();
-            this.eventQueue[worldEvent.startUpdateNo].Enqueue(worldEvent);
-
-            if (worldEvent.eventName == WorldEvent.EventName.Destruction && addFadeOut)
+            foreach (LevelEvent levelEvent in eventList)
             {
-                if (worldEvent.boardPiece.GetType() == typeof(Animal))
+                this.AddToQueue(levelEvent: levelEvent, addFadeOut: addFadeOut);
+            }
+        }
+
+        public void AddToQueue(LevelEvent levelEvent, bool addFadeOut = true)
+        {
+            if (!this.eventQueue.ContainsKey(levelEvent.startUpdateNo)) this.eventQueue[levelEvent.startUpdateNo] = new Queue<LevelEvent>();
+            this.eventQueue[levelEvent.startUpdateNo].Enqueue(levelEvent);
+
+            if (levelEvent.eventName == LevelEvent.EventName.Destruction && addFadeOut)
+            {
+                if (levelEvent.boardPiece.GetType() == typeof(Animal))
                 {
                     // dead animal should explode instead of fading out
-                    new WorldEvent(eventName: WorldEvent.EventName.DropDebris, delay: worldEvent.delay - 1, world: world, boardPiece: worldEvent.boardPiece);
+                    new LevelEvent(eventName: LevelEvent.EventName.DropDebris, delay: levelEvent.delay - 1, level: this.level, boardPiece: levelEvent.boardPiece);
                 }
                 else
                 {
                     int fadeDuration = OpacityFade.defaultDuration;
-                    new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
+                    new LevelEvent(eventName: LevelEvent.EventName.FadeOutSprite, delay: levelEvent.delay - fadeDuration, level: this.level, boardPiece: levelEvent.boardPiece, eventHelper: fadeDuration);
                 }
             }
         }
@@ -42,14 +50,31 @@ namespace SonOfRobin
 
             foreach (int frame in this.eventQueue.Keys.ToList())
             {
-                this.eventQueue[frame] = new Queue<WorldEvent>(this.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove));
+                this.eventQueue[frame] = new Queue<LevelEvent>(this.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove));
             }
+        }
+
+        public List<LevelEvent> RemovePiecesFromQueueAndGetRemovedEvents(HashSet<BoardPiece> piecesSet)
+        {
+            // Pieces removed from the board should not be removed from the queue (CPU intensive) - will be ignored when run.
+
+            var allRemovedEvents = new List<LevelEvent>();
+
+            foreach (int frame in this.eventQueue.Keys.ToList())
+            {
+                var removedEventsForFrame = this.eventQueue[frame].Where(plannedEvent => piecesSet.Contains(plannedEvent.boardPiece)).ToList();
+                allRemovedEvents.AddRange(removedEventsForFrame);
+
+                this.eventQueue[frame] = new Queue<LevelEvent>(this.eventQueue[frame].Where(plannedEvent => !piecesSet.Contains(plannedEvent.boardPiece)));
+            }
+
+            return allRemovedEvents;
         }
 
         public void ProcessQueue()
         {
             var framesToProcess = this.eventQueue.Keys
-                .Where(frameNo => world.CurrentUpdate >= frameNo)
+                .Where(frameNo => this.level.world.CurrentUpdate >= frameNo)
                 .OrderBy(frameNo => frameNo)
                 .ToList();
 
@@ -57,8 +82,10 @@ namespace SonOfRobin
 
             foreach (int frameNo in framesToProcess)
             {
-                foreach (WorldEvent currentEvent in this.eventQueue[frameNo])
-                { currentEvent.Execute(this.world); }
+                foreach (LevelEvent currentEvent in this.eventQueue[frameNo])
+                {
+                    currentEvent.Execute(this.level);
+                }
 
                 this.eventQueue.Remove(frameNo);
             }
@@ -85,13 +112,13 @@ namespace SonOfRobin
         {
             foreach (Dictionary<string, Object> eventData in eventDataList)
             {
-                WorldEvent worldEvent = WorldEvent.Deserialize(world: this.world, eventData: eventData);
-                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent, addFadeOut: false);
+                LevelEvent levelEvent = LevelEvent.Deserialize(level: this.level, eventData: eventData);
+                if (levelEvent != null) this.AddToQueue(levelEvent: levelEvent, addFadeOut: false);
             }
         }
     }
 
-    public class WorldEvent
+    public class LevelEvent
     {
         public enum EventName : byte
         {
@@ -132,15 +159,15 @@ namespace SonOfRobin
         public bool CanBeSerialized
         { get { return !nonSerializedEvents.Contains(this.eventName); } }
 
-        public WorldEvent(EventName eventName, World world, int delay, BoardPiece boardPiece, Object eventHelper = null, bool addToQueue = true)
+        public LevelEvent(EventName eventName, Level level, int delay, BoardPiece boardPiece, Object eventHelper = null, bool addToQueue = true)
         {
             this.eventName = eventName;
             this.eventHelper = eventHelper;
             this.boardPiece = boardPiece;
             this.delay = Math.Max(delay, 1); // to prevent from modifying current frame queue
-            this.startUpdateNo = world.CurrentUpdate + this.delay;
+            this.startUpdateNo = level.world.CurrentUpdate + this.delay;
 
-            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this, addFadeOut: true);
+            if (addToQueue) level.levelEventManager.AddToQueue(levelEvent: this, addFadeOut: true);
         }
 
         public Dictionary<string, Object> Serialize()
@@ -155,10 +182,12 @@ namespace SonOfRobin
             return eventData;
         }
 
-        public static WorldEvent Deserialize(World world, Dictionary<string, Object> eventData)
+        public static LevelEvent Deserialize(Level level, Dictionary<string, Object> eventData)
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)(Int64)eventData["eventName"];
+
+            World world = level.world;
 
             var eventsWithoutPieces = new HashSet<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
 
@@ -188,10 +217,10 @@ namespace SonOfRobin
                 { }
             }
 
-            return new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper, addToQueue: false);
+            return new LevelEvent(eventName: eventName, level: level, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper, addToQueue: false);
         }
 
-        public void Execute(World world)
+        public void Execute(Level level)
         {
             if (this.boardPiece != null && !this.boardPiece.exists) return;
 
@@ -289,7 +318,7 @@ namespace SonOfRobin
                 case EventName.RestorePieceCreation:
                     {
                         var pieceName = (PieceTemplate.Name)Helpers.CastObjectToUshort(this.eventHelper);
-                        world.doNotCreatePiecesList.Remove(pieceName);
+                        level.doNotCreatePiecesList.Remove(pieceName);
 
                         MessageLog.Add(debugMessage: true, text: $"'{pieceName}' creation restored.");
 
@@ -299,7 +328,7 @@ namespace SonOfRobin
                 case EventName.RestoreHint:
                     {
                         var hintType = (HintEngine.Type)Helpers.CastObjectToByte(this.eventHelper);
-                        world.HintEngine.Enable(hintType);
+                        level.world.HintEngine.Enable(hintType);
 
                         MessageLog.Add(debugMessage: true, text: $"Hint '{hintType}' restored.");
 
@@ -312,6 +341,7 @@ namespace SonOfRobin
                         // var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
 
                         PortableLight portableLight = (PortableLight)this.boardPiece;
+                        World world = portableLight.world;
 
                         // breaking damage loop
 
@@ -359,7 +389,7 @@ namespace SonOfRobin
 
                         // setting next loop event
 
-                        new WorldEvent(eventName: EventName.BurnOutLightSource, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
+                        new LevelEvent(eventName: EventName.BurnOutLightSource, level: level, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
                         return;
                     }
 
@@ -412,7 +442,7 @@ namespace SonOfRobin
                         {
                             SolidColor redOverlay = new SolidColor(color: Color.Red * 0.8f, viewOpacity: 0.0f);
                             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 16, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
-                            world.solidColorManager.Add(redOverlay);
+                            level.world.solidColorManager.Add(redOverlay);
                             this.boardPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
                         }
 
@@ -433,7 +463,7 @@ namespace SonOfRobin
                         charges--;
                         regenPoisonData["charges"] = charges; // updating charges counter (the rest should stay the same)
 
-                        new WorldEvent(eventName: EventName.RegenPoison, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: regenPoisonData);
+                        new LevelEvent(eventName: EventName.RegenPoison, level: level, delay: delay, boardPiece: this.boardPiece, eventHelper: regenPoisonData);
 
                         return;
                     }
@@ -455,7 +485,7 @@ namespace SonOfRobin
 
                 case EventName.FinishBuilding:
                     {
-                        world.ExitBuildMode(restoreCraftMenu: false, showCraftMessages: true);
+                        level.world.ExitBuildMode(restoreCraftMenu: false, showCraftMessages: true);
                         return;
                     }
 
@@ -499,11 +529,13 @@ namespace SonOfRobin
 
                         // eventHelper for this event should be identical to Scheduler.TaskName.CheckForPieceHints
 
+                        World world = level.world;
+
                         if (world.CineMode ||
                             !world.inputActive ||
                             world.Player.activeState != BoardPiece.State.PlayerControlledWalking)
                         {
-                            new WorldEvent(eventName: this.eventName, world: world, delay: 60 * 2, boardPiece: null, eventHelper: this.eventHelper);
+                            new LevelEvent(eventName: this.eventName, level: level, delay: 60 * 2, boardPiece: null, eventHelper: this.eventHelper);
                             return;
                         }
 

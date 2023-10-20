@@ -21,15 +21,15 @@ namespace SonOfRobin
 
     public class TrackingManager
     {
-        public readonly World world;
+        public readonly Level level;
         private readonly HashSet<Tracking> trackingSet;
 
         public int TrackingCount
         { get { return trackingSet.Count; } }
 
-        public TrackingManager(World world)
+        public TrackingManager(Level level)
         {
-            this.world = world;
+            this.level = level;
             this.trackingSet = new HashSet<Tracking>();
         }
 
@@ -43,7 +43,7 @@ namespace SonOfRobin
             // parallel processing causes data corruption and crashes
             foreach (var tracking in new HashSet<Tracking>(this.trackingSet))
             {
-                if (tracking.ShouldThisBeRemoved(this.world)) this.RemoveFromQueue(tracking);
+                if (tracking.ShouldThisBeRemoved(this.level)) this.RemoveFromQueue(tracking);
                 else tracking.SetPosition(trackingManager: this);
             }
         }
@@ -55,7 +55,7 @@ namespace SonOfRobin
             {
                 MessageLog.Add(debugMessage: true, text: $"'{tracking.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
 
-                Vector2 passiveMovement = new(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
+                Vector2 passiveMovement = new(this.level.random.Next(-700, 700), this.level.random.Next(-700, 700));
                 tracking.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);
             }
         }
@@ -85,7 +85,7 @@ namespace SonOfRobin
         {
             foreach (Dictionary<string, Object> trackingData in trackingDataList)
             {
-                Tracking.Deserialize(world: this.world, trackingData: trackingData);
+                Tracking.Deserialize(level: this.level, trackingData: trackingData);
             }
         }
     }
@@ -116,14 +116,14 @@ namespace SonOfRobin
             }
         }
 
-        public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
+        public Tracking(Level level, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
             XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center,
             int turnOffDelay = 0, bool bounceWhenRemoved = false, int followSlowDown = 0, bool addToQueue = true)
         {
             this.isCorrect = false;
-            this.firstTrackingFrame = world.CurrentUpdate;
-            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : world.CurrentUpdate + turnOffDelay;
+            this.firstTrackingFrame = level.world.CurrentUpdate;
+            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : level.world.CurrentUpdate + turnOffDelay;
             this.bounceWhenRemoved = bounceWhenRemoved;
             this.followSlowDown = followSlowDown;
             if (this.followSlowDown < 0) new ArgumentException($"followSlowDown ({followSlowDown}) cannot be < 0.");
@@ -144,8 +144,8 @@ namespace SonOfRobin
 
             if (addToQueue)
             {
-                world.trackingManager.AddToQueue(this);
-                this.SetPosition(trackingManager: world.trackingManager); // to set position right away
+                level.trackingManager.AddToQueue(this);
+                this.SetPosition(trackingManager: level.trackingManager); // to set position right away
             }
         }
 
@@ -171,11 +171,13 @@ namespace SonOfRobin
             return trackingData;
         }
 
-        public static void Deserialize(World world, Dictionary<string, Object> trackingData)
+        public static void Deserialize(Level level, Dictionary<string, Object> trackingData)
         // deserialize
         {
             int followingID = (int)(Int64)trackingData["followingSprite_id"];
             int targetID = (int)(Int64)trackingData["targetSprite_id"];
+
+            World world = level.world;
 
             // if object was destroyed, it will no longer be available after loading
             if (!world.piecesByIDForDeserialization.ContainsKey(followingID) ||
@@ -197,23 +199,23 @@ namespace SonOfRobin
             int lastTrackingFrame = (int)(Int64)trackingData["lastTrackingFrame"];
             int delay = Math.Max(world.CurrentUpdate, lastTrackingFrame - world.CurrentUpdate);
 
-            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown, addToQueue: true);
+            new Tracking(level: level, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown, addToQueue: true);
         }
 
-        public bool ShouldThisBeRemoved(World world)
+        public bool ShouldThisBeRemoved(Level level)
         {
             return !this.BothSpritesExistAndOnBoard ||
                        (this.followingSprite.boardPiece.pieceInfo.serialize == false &&
                        this.followingSprite.opacity < 0.05f &&
                        this.followingSprite.opacityFade != null &&
-                       world.CurrentUpdate > this.firstTrackingFrame + 100);
+                       level.world.CurrentUpdate > this.firstTrackingFrame + 100);
         }
 
         public void SetPosition(TrackingManager trackingManager)
         {
             if (!this.followingSprite.boardPiece.exists ||
                 !this.targetSprite.boardPiece.exists ||
-                (this.lastTrackingFrame > 0 && trackingManager.world.CurrentUpdate >= this.lastTrackingFrame))
+                (this.lastTrackingFrame > 0 && trackingManager.level.world.CurrentUpdate >= this.lastTrackingFrame))
             {
                 trackingManager.RemoveFromQueue(this);
                 return;

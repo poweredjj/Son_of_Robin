@@ -68,7 +68,6 @@ namespace SonOfRobin
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
-        public List<Vector2> LastSteps { get; private set; }
         private Vector2 previousStepPos; // used to calculate distanceWalked only
         private float distanceWalked;
 
@@ -99,7 +98,6 @@ namespace SonOfRobin
             this.BrewLevel = 1;
             this.HarvestLevel = 1;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
-            this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
             this.pointWalkTarget = Vector2.Zero;
@@ -151,6 +149,42 @@ namespace SonOfRobin
             StorageSlot knifeSlot = this.ToolStorage.FindCorrectSlot(knifeTool);
             this.ToolStorage.AddPiece(knifeTool);
             knifeSlot.locked = true;
+        }
+
+        public void MoveToActiveLevel()
+        {
+            if (this.level == this.world.ActiveLevel) return;
+
+            this.level = this.world.ActiveLevel;
+            foreach (PieceStorage storage in new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage })
+            {
+                foreach (BoardPiece piece in storage.GetAllPieces())
+                {
+                    piece.level = this.world.ActiveLevel;
+                }
+            }
+
+            this.UpdateLastFrameSMProcessed(); // otherwise player would freeze for some time
+
+            if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
+            else
+            {
+                BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.CaveExit, world: this.world);
+
+                for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
+                {
+                    if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
+                        this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
+                    {
+                        break;
+                    }
+                }
+
+                if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
+            }
+
+            this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
+            this.world.map.MoveCameraToPlayer();
         }
 
         public override bool ShowStatBars
@@ -222,7 +256,7 @@ namespace SonOfRobin
             {
                 var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
-                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
+                var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
                 var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
 
                 foreach (BoardPiece chestPiece in chestPieces)
@@ -238,9 +272,9 @@ namespace SonOfRobin
                         {
                             BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: chestPiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
 
-                            new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                            new Tracking(level: this.level, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                            new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
+                            new LevelEvent(eventName: LevelEvent.EventName.FadeOutSprite, delay: 40, level: this.level, boardPiece: usedChestMarker, eventHelper: 20);
                         }
                     }
                 }
@@ -280,7 +314,8 @@ namespace SonOfRobin
         {
             get
             {
-                bool canSeeAnything = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.Player.sprite.IsInLightSourceRange;
+                bool canSeeAnything = (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) || this.world.Player.sprite.IsInLightSourceRange;
+
                 if (!canSeeAnything) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToSeeAnything, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
                 return canSeeAnything;
             }
@@ -307,7 +342,7 @@ namespace SonOfRobin
             {
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToInteract = new List<BoardPiece>();
@@ -333,7 +368,7 @@ namespace SonOfRobin
 
                 Rectangle focusRect = this.GetFocusRect();
 
-                var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
+                var spritesForRect = this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: focusRect, addPadding: true);
                 if (spritesForRect.Count == 0) return null;
 
                 var piecesToPickUp = new List<BoardPiece>();
@@ -511,7 +546,6 @@ namespace SonOfRobin
             pieceData["player_ToolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_EquipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_GlobalChestStorage"] = this.GlobalChestStorage.Serialize();
-            pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
 
             return pieceData;
         }
@@ -532,8 +566,6 @@ namespace SonOfRobin
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_ToolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_EquipStorage"], storagePiece: this);
             this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_GlobalChestStorage"], storagePiece: this);
-            List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
-            this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
 
             this.RefreshAllowedPiecesForStorages();
         }
@@ -640,10 +672,12 @@ namespace SonOfRobin
 
         public void UpdateLastSteps()
         {
-            if (this.world.MapEnabled && (this.LastSteps.Count == 0 || Vector2.Distance(this.sprite.position, this.LastSteps.Last()) > 180))
+            var lastSteps = this.world.ActiveLevel.playerLastSteps;
+
+            if (this.world.MapEnabled && (lastSteps.Count == 0 || Vector2.Distance(this.sprite.position, lastSteps.Last()) > 180))
             {
-                this.LastSteps.Add(this.sprite.position);
-                if (this.LastSteps.Count > maxLastStepsCount) this.LastSteps.RemoveAt(0);
+                lastSteps.Add(this.sprite.position);
+                if (lastSteps.Count > maxLastStepsCount) lastSteps.RemoveAt(0);
             }
         }
 
@@ -913,7 +947,7 @@ namespace SonOfRobin
 
             // var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
-            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
+            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
@@ -930,7 +964,7 @@ namespace SonOfRobin
 
             // var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForGoal.sprite.color = Color.Violet; // for testing
-            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
+            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
 
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
             if (hasBeenMoved)
@@ -1045,8 +1079,8 @@ namespace SonOfRobin
 
             if (this.world.MapEnabled && this.CanSeeAnything)
             {
-                NamedLocations.Location location = this.world.Grid.namedLocations.PlayerLocation;
-                if (location != null && !location.hasBeenDiscovered) this.world.Grid.namedLocations.ProcessDiscovery();
+                NamedLocations.Location location = this.level.grid.namedLocations.PlayerLocation;
+                if (location != null && !location.hasBeenDiscovered) this.level.grid.namedLocations.ProcessDiscovery();
             }
         }
 
@@ -1586,7 +1620,7 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                //{ 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 1 }, { "minTotalNoOfCrafts", 2 } } }, // for testing
+                // { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 1 }, { "minTotalNoOfCrafts", 2 } } }, // for testing
                 { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 6 }, { "minTotalNoOfCrafts", 10 } } },
                 { 3, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 15 }, { "minTotalNoOfCrafts", 30 } } },
                 { 4, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 30 }, { "minTotalNoOfCrafts", 150 } } },

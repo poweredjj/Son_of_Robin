@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000020f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000022f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -370,6 +370,9 @@ namespace SonOfRobin
             FenceVerticalShort = 280,
             FenceHorizontalLong = 281,
             FenceVerticalLong = 282,
+
+            CaveEntrance = 295,
+            CaveExit = 296,
 
             // obsolete below (kept for compatibility with old saves)
         }
@@ -1024,6 +1027,17 @@ namespace SonOfRobin
                 frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
                 AddFrameList(animPackage: packageName, frameList);
                 AddFrameList(animPackage: packageName, animName: "off", frameList: frameList);
+            }
+            {
+                PkgName packageName = PkgName.CaveEntrance;
+
+                float scale = 2f;
+                float depthPercent = 0.95f;
+
+                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
+                AddFrameList(animPackage: packageName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
+
+                AddFrameList(animPackage: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
             }
             {
                 PkgName packageName = PkgName.Explosion;

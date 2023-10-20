@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class MeshDefinition
     {
         public static readonly Dictionary<TextureBank.TextureName, MeshDefinition> meshDefByTextureName = new Dictionary<TextureBank.TextureName, MeshDefinition>();
-        public static readonly List<MeshDefinition> meshDefBySearchPriority = new List<MeshDefinition>();
+        private static readonly List<MeshDefinition> meshDefBySearchPriority = new List<MeshDefinition>();
 
         public readonly TextureBank.TextureName textureName;
         public readonly TextureBank.TextureName mapTextureName;
@@ -17,6 +17,7 @@ namespace SonOfRobin
         public readonly Texture2D mapTexture;
 
         public readonly MeshGenerator.RawMapDataSearchForTexture search;
+        public readonly Level.LevelType[] levelTypes;
         public readonly int drawPriority;
         public readonly BlendState blendState;
 
@@ -28,8 +29,10 @@ namespace SonOfRobin
         public bool TweenerActive { get; private set; }
         public Vector2 TextureOffset { get; private set; }
 
-        public MeshDefinition(TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, BlendState blendState, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
+        public MeshDefinition(Level.LevelType[] levelTypes, TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, BlendState blendState, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
         {
+            this.levelTypes = levelTypes;
+
             this.textureName = textureName;
             this.mapTextureName = mapTextureName;
             this.texture = TextureBank.GetTexture(textureName);
@@ -70,10 +73,16 @@ namespace SonOfRobin
                 this.textureDeformationOffsetY != 0;
         }
 
+        public static List<MeshDefinition> GetMeshDefBySearchPriority(Level.LevelType levelType)
+        {
+            return meshDefBySearchPriority.Where(meshDef => meshDef.levelTypes.Contains(levelType)).ToList();
+        }
+
         public static void CreateMeshDefinitions()
         {
             // needed to fill small holes, that will occur between other meshes
             MeshDefinition groundBase = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBase,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBase,
                 blendState: BlendState.AlphaBlend,
@@ -82,13 +91,11 @@ namespace SonOfRobin
                 searchPriority: 0,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.waterLevelMax + 1, maxVal: 255),
-                    },
-                searchEntriesExtProps: new List<SearchEntryExtProps> {
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
-                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
+                    })
                 );
 
             MeshDefinition waterDeep = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingWaterDeep,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterDeep,
                 blendState: BlendState.AlphaBlend,
@@ -103,6 +110,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition waterMedium = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingWaterMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterMedium,
                 blendState: BlendState.AlphaBlend,
@@ -117,6 +125,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition waterSuperShallow = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingWaterSuperShallow,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterSuperShallow,
                 blendState: new BlendState
@@ -140,6 +149,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition beachBright = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingBeachBright,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachBright,
                 blendState: BlendState.AlphaBlend,
@@ -154,6 +164,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition beachDark = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingBeachDark,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachDark,
                 blendState: BlendState.AlphaBlend,
@@ -168,6 +179,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition sand = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingSand,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSand,
                 blendState: BlendState.AlphaBlend,
@@ -183,6 +195,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition groundBad = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBad,
                 blendState: BlendState.AlphaBlend,
@@ -198,6 +211,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition groundGood = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundGood,
                 blendState: BlendState.AlphaBlend,
@@ -213,6 +227,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition grassBad = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGrassBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassBad,
                 blendState: BlendState.AlphaBlend,
@@ -228,6 +243,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition grassGood = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGrassGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassGood,
                 blendState: BlendState.AlphaBlend,
@@ -243,6 +259,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition mountainLow = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainLow,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainLow,
                 blendState: BlendState.AlphaBlend,
@@ -257,6 +274,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition mountainMedium = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainMedium,
                 blendState: BlendState.AlphaBlend,
@@ -271,6 +289,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition mountainHigh = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainHigh,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainHigh,
                 blendState: BlendState.AlphaBlend,
@@ -285,6 +304,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition volcanoEdge = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingVolcanoEdge,
                 mapTextureName: TextureBank.TextureName.RepeatingMapVolcanoEdge,
                 blendState: BlendState.AlphaBlend,
@@ -299,6 +319,7 @@ namespace SonOfRobin
                 );
 
             MeshDefinition lava = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island, Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingLava,
                 mapTextureName: TextureBank.TextureName.RepeatingMapLava,
                 blendState: BlendState.AlphaBlend,
@@ -333,6 +354,7 @@ namespace SonOfRobin
                 .Easing(EasingFunctions.QuadraticInOut);
 
             MeshDefinition swamp = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingSwamp,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSwamp,
                 blendState: BlendState.AlphaBlend,
@@ -353,6 +375,7 @@ namespace SonOfRobin
                 .Easing(EasingFunctions.SineInOut);
 
             MeshDefinition ruins = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingRuins,
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,
                 blendState: BlendState.AlphaBlend,
@@ -360,6 +383,30 @@ namespace SonOfRobin
                 searchPriority: 11,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
+                );
+
+            MeshDefinition caveWall = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
+                textureName: TextureBank.TextureName.RepeatingCaveWall,
+                mapTextureName: TextureBank.TextureName.RepeatingMapCaveWall,
+                blendState: BlendState.AlphaBlend,
+                search: new(
+                searchPriority: 1,
+                searchEntriesTerrain: new List<SearchEntryTerrain> {
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: 0),
+                    })
+                );
+
+            MeshDefinition caveFloor = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
+                textureName: TextureBank.TextureName.RepeatingCaveFloor,
+                mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
+                blendState: BlendState.AlphaBlend,
+                search: new(
+                searchPriority: 0,
+                searchEntriesTerrain: new List<SearchEntryTerrain> {
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 255), // should cover whole floor, to avoid small holes
+                    })
                 );
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));

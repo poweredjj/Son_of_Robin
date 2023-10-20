@@ -289,9 +289,8 @@ namespace SonOfRobin
                 var headerData = new Dictionary<string, Object>
                 {
                     { "seed", this.world.seed },
-                    { "width", this.world.width },
-                    { "height", this.world.height },
-                    { "maxAnimalsPerName", this.world.maxAnimalsPerName },
+                    { "width", this.world.IslandLevel.width },
+                    { "height", this.world.IslandLevel.height },
                     { "playerName", this.world.initialPlayerName },
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.CurrentFrame },
@@ -300,7 +299,7 @@ namespace SonOfRobin
                     { "TimePlayed", this.world.TimePlayed },
                     { "MapEnabled", this.world.MapEnabled },
                     { "realDateTime", DateTime.Now },
-                    { "doNotCreatePiecesList", this.world.doNotCreatePiecesList },
+                    { "doNotCreatePiecesList", this.world.IslandLevel.doNotCreatePiecesList },
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
                     { "craftStats", this.world.craftStats.Serialize() },
                     { "cookStats", this.world.cookStats.Serialize() },
@@ -308,6 +307,7 @@ namespace SonOfRobin
                     { "meatHarvestStats", this.world.meatHarvestStats.Serialize() },
                     { "identifiedPieces", this.world.identifiedPieces },
                     { "mapData", this.world.map.Serialize() },
+                    { "playerLastSteps", this.world.IslandLevel.playerLastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList() },
                     { "saveVersion", SaveHeaderManager.saveVersion },
             };
 
@@ -394,7 +394,7 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "tracking";
 
-                var trackingData = this.world.trackingManager.Serialize();
+                var trackingData = this.world.ActiveLevel.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
                 FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
@@ -405,7 +405,7 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "events";
 
-                var eventData = this.world.worldEventManager.Serialize();
+                var eventData = this.world.IslandLevel.levelEventManager.Serialize();
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);

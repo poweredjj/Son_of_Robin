@@ -109,7 +109,7 @@ namespace SonOfRobin
             {
                 if (this.lightEngine != null && this.lightEngine.IsActive) return true;
 
-                foreach (BoardPiece lightPiece in this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
+                foreach (BoardPiece lightPiece in this.boardPiece.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
                 {
                     if (lightPiece.sprite.lightEngine != null && lightPiece.sprite.lightEngine.Rect.Contains(this.position)) return true;
                 }
@@ -240,7 +240,7 @@ namespace SonOfRobin
 
         public void UpdateBoardLocation()
         {
-            this.world.Grid.UpdateLocation(this);
+            this.boardPiece.level.grid.UpdateLocation(this);
         }
 
         public Dictionary<string, object> Serialize()
@@ -296,13 +296,13 @@ namespace SonOfRobin
         public byte GetFieldValue(Terrain.Name terrainName)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get a field value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.Grid.terrainByName[terrainName].GetMapData((int)this.position.X, (int)this.position.Y);
+            return this.boardPiece.level.grid.terrainByName[terrainName].GetMapData((int)this.position.X, (int)this.position.Y);
         }
 
         public bool GetExtProperty(ExtBoardProps.Name name)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.Grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
+            return this.boardPiece.level.grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
         }
 
         public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)
@@ -354,7 +354,7 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 4; tryIndex++)
             {
-                Cell randomCell = this.world.Grid.GetRandomCellForPieceName(pieceName: this.boardPiece.name, returnDummyCellIfInsideCamera: this.world.createMissingPiecesOutsideCamera);
+                Cell randomCell = this.boardPiece.level.grid.GetRandomCellForPieceName(pieceName: this.boardPiece.name, returnDummyCellIfInsideCamera: this.world.createMissingPiecesOutsideCamera);
 
                 bool hasBeenMoved = this.SetNewPosition(
                     newPos: new Vector2(this.world.random.Next(randomCell.xMin, randomCell.xMax), this.world.random.Next(randomCell.yMin, randomCell.yMax)),
@@ -386,9 +386,9 @@ namespace SonOfRobin
 
                 Vector2 newPos = startPosition + offset;
                 newPos.X = Math.Max(newPos.X, 0);
-                newPos.X = Math.Min(newPos.X, this.world.width - 1);
+                newPos.X = Math.Min(newPos.X, this.world.ActiveLevel.width - 1);
                 newPos.Y = Math.Max(newPos.Y, 0);
-                newPos.Y = Math.Min(newPos.Y, this.world.height - 1);
+                newPos.Y = Math.Min(newPos.Y, this.world.ActiveLevel.height - 1);
 
                 bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                 if (hasBeenMoved) return true;
@@ -538,8 +538,8 @@ namespace SonOfRobin
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
             this.position = new Vector2(
-                x: (int)Math.Clamp(value: positionToCheck.X, min: 0, max: this.world.width - 1),
-                y: (int)Math.Clamp(value: positionToCheck.Y, min: 0, max: this.world.height - 1));
+                x: (int)Math.Clamp(value: positionToCheck.X, min: 0, max: this.world.ActiveLevel.width - 1),
+                y: (int)Math.Clamp(value: positionToCheck.Y, min: 0, max: this.world.ActiveLevel.height - 1));
             // to ensure integer values
 
             this.UpdateRects();
@@ -560,7 +560,7 @@ namespace SonOfRobin
 
             foreach (Cell.Group group in cellGroupsToCheck)
             {
-                foreach (Sprite sprite in this.world.Grid.GetSpritesFromSurroundingCells(sprite: this, groupName: group))
+                foreach (Sprite sprite in this.boardPiece.level.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: group))
                 {
                     if (this.ColRect.Intersects(sprite.ColRect) && sprite.id != this.id) collidingSprites.Add(sprite);
                 }
@@ -572,7 +572,7 @@ namespace SonOfRobin
         public bool CheckForCollision(bool ignoreDensity = false)
         {
             if (this.world == null) return false;
-            if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
+            if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.ActiveLevel.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.ActiveLevel.height) return true;
             if (this.IgnoresCollisions) return false;
 
             bool plantingMode = this.boardPiece.IsPlantMadeByPlayer;
@@ -587,11 +587,11 @@ namespace SonOfRobin
                 if (this.boardPiece.pieceInfo.allowedDensity != null && !ignoreDensity && !this.boardPiece.pieceInfo.allowedDensity.CanBePlacedHere(this.boardPiece)) return true;
             }
 
-            if (!plantingMode && !this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
+            if (!plantingMode && !this.allowedTerrain.CanStandHere(level: this.boardPiece.level, position: this.position)) return true;
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 
-            foreach (Sprite sprite in this.world.Grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
+            foreach (Sprite sprite in this.boardPiece.level.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
             {
                 if (this.ColRect.Intersects(sprite.ColRect) && sprite.id != this.id) return true;
             }
@@ -787,7 +787,7 @@ namespace SonOfRobin
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
-                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate);
+                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate, drawColor: this.color * this.opacity);
                     this.DrawRoutine(calculateSubmerge: calculateSubmerge);
 
                     if (!thereWillBeMoreEffects)
@@ -805,7 +805,7 @@ namespace SonOfRobin
                 if (this.particleEngine.HasAnyParticles)
                 {
                     this.particleEngine.Draw();
-                    this.world.recentParticlesManager.AddPiece(this.boardPiece);
+                    this.boardPiece.level.recentParticlesManager.AddPiece(this.boardPiece);
                 }
             }
 

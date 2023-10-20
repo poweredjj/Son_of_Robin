@@ -32,6 +32,8 @@ namespace SonOfRobin
             BadSleep = 20,
         };
 
+        public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
+
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
@@ -344,7 +346,7 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            new WorldEvent(eventName: WorldEvent.EventName.CheckForPieceHints, world: world, delay: 60 * 2, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CineCrateStarting } } }); // will be executed after playing this hint
+                            new LevelEvent(eventName: LevelEvent.EventName.CheckForPieceHints, level: this.world.ActiveLevel, delay: 60 * 2, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CineCrateStarting } } }); // will be executed after playing this hint
 
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
@@ -373,9 +375,9 @@ namespace SonOfRobin
                             Vector2 seaOffset = new(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
 
                             int edgeDistLeft = (int)player.sprite.position.X;
-                            int edgeDistRight = (int)(this.world.width - player.sprite.position.X);
+                            int edgeDistRight = (int)(this.world.ActiveLevel.width - player.sprite.position.X);
                             int edgeDistUp = (int)player.sprite.position.Y;
-                            int edgeDistDown = (int)(this.world.height - player.sprite.position.Y);
+                            int edgeDistDown = (int)(this.world.ActiveLevel.height - player.sprite.position.Y);
                             int edgeDistX = edgeDistLeft < edgeDistRight ? -edgeDistLeft : edgeDistRight;
                             int edgeDistY = edgeDistUp < edgeDistDown ? -edgeDistUp : edgeDistDown;
                             if (edgeDistX < 0) seaOffset.X *= -1;
@@ -497,7 +499,7 @@ namespace SonOfRobin
             world.camera.TrackPiece(pieceToShow);
 
             BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(pieceToShow.sprite.GfxRect.Center.X, pieceToShow.sprite.GfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
-            new Tracking(world: world, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
+            new Tracking(level: world.ActiveLevel, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
 
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
@@ -507,7 +509,7 @@ namespace SonOfRobin
 
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
 
-            var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", WorldEvent.EventName.Destruction } };
+            var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", LevelEvent.EventName.Destruction } };
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
 
             // task after the messages - added at the end, ordered normally
@@ -535,10 +537,10 @@ namespace SonOfRobin
             this.shownGeneralHints.Remove(type);
         }
 
-        private void Disable(Type type, int delay = 0)
+        public void Disable(Type type, int delay = 0)
         {
             if (!this.shownGeneralHints.Contains(type)) this.shownGeneralHints.Add(type);
-            if (delay != 0) new WorldEvent(eventName: WorldEvent.EventName.RestoreHint, delay: delay, world: this.world, boardPiece: null, eventHelper: type);
+            if (delay != 0) new LevelEvent(eventName: LevelEvent.EventName.RestoreHint, delay: delay, level: this.world.IslandLevel, boardPiece: null, eventHelper: type);
         }
 
         public void Disable(PieceHint.Type type)

@@ -61,8 +61,8 @@ namespace SonOfRobin
             }
             if (!waterFound) return;
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
             SonOfRobinGame.GfxDev.Clear(waterColor);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
 
             if (!Preferences.highQualityWater)
             {

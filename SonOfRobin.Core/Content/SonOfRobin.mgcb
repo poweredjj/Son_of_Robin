@@ -979,6 +979,42 @@
 /processorParam:TextureFormat=Color
 /build:gfx/carrot_plant_has_carrot.png
 
+#begin gfx/cave_entrance_blocked.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/cave_entrance_blocked.png
+
+#begin gfx/cave_entrance_open.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/cave_entrance_open.png
+
+#begin gfx/cave_exit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/cave_exit.png
+
 #begin gfx/celianna_farmnature_crops_transparent.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4387,6 +4423,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/eat.png
 
+#begin gfx/input/VirtButton/enter_exit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/enter_exit.png
+
 #begin gfx/input/VirtButton/go_to_player.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -6895,6 +6943,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/beach_dark.png
 
+#begin gfx/repeating_textures/cave_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/cave_wall.png
+
 #begin gfx/repeating_textures/fog.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7002,6 +7062,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/map_beach_dark.png
+
+#begin gfx/repeating_textures/map_cave_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/map_cave_wall.png
 
 #begin gfx/repeating_textures/map_grass_bad.png
 /importer:TextureImporter
