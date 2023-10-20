@@ -140,6 +140,7 @@ namespace SonOfRobin
             Edge currentEdge = edgesToSort.First();
             edgesToSort.Remove(currentEdge);
             currentShape.pointList.Add(currentEdge.start);
+            currentShape.pointList.Add(currentEdge.end);
 
             while (true)
             {
@@ -178,6 +179,7 @@ namespace SonOfRobin
 
                     currentEdge = edgesToSort.First();
                     currentShape.pointList.Add(currentEdge.start);
+                    currentShape.pointList.Add(currentEdge.end);
                     edgesToSort.Remove(currentEdge);
                 }
 
