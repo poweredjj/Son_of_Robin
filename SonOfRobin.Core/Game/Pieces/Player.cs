@@ -65,6 +65,7 @@ namespace SonOfRobin
         public int CookLevel { get; private set; }
         public int BrewLevel { get; private set; }
         public int HarvestLevel { get; private set; }
+        public int cavesVisited;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -97,6 +98,7 @@ namespace SonOfRobin
             this.CookLevel = 1;
             this.BrewLevel = 1;
             this.HarvestLevel = 1;
+            this.cavesVisited = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
@@ -546,6 +548,7 @@ namespace SonOfRobin
             pieceData["player_ToolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_EquipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_GlobalChestStorage"] = this.GlobalChestStorage.Serialize();
+            pieceData["player_cavesVisited"] = this.cavesVisited;
 
             return pieceData;
         }
@@ -566,6 +569,7 @@ namespace SonOfRobin
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_ToolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_EquipStorage"], storagePiece: this);
             this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_GlobalChestStorage"], storagePiece: this);
+            if (pieceData.ContainsKey("player_cavesVisited")) this.cavesVisited = (int)(Int64)pieceData["player_cavesVisited"];
 
             this.RefreshAllowedPiecesForStorages();
         }

@@ -38,6 +38,7 @@ namespace SonOfRobin
                 {
                     this.sprite.AssignNewName(newAnimName: "blocked", checkForCollision: false);
                     this.isBlocked = true;
+                    this.world.Player.cavesVisited++;
                 }
 
                 int levelSize = 8000 + (3000 * (this.level.depth - 1));

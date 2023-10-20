@@ -695,6 +695,7 @@ namespace SonOfRobin
                             textLines.Add($"Time played: {timePlayedString}");
                             textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
                             textLines.Add($"Map discovered: {Math.Round(islandLevel.grid.VisitedCellsPercentage * 100, 1)}%");
+                            textLines.Add($"Caves visited: {player.cavesVisited}");
                             textLines.Add($"Locations found: {islandLevel.grid.namedLocations.DiscoveredLocationsCount}/{islandLevel.grid.namedLocations.AllLocationsCount}");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
