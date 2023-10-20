@@ -13,7 +13,7 @@ namespace SonOfRobin
             this.textureSize = textureSize;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor = default)
+        public override void TurnOn(int currentUpdate, Color drawColor)
         {
             this.effect.Parameters["blurSize"].SetValue(Vector2.Max(this.blurSize * this.intensityForTweener, Vector2.One));
             this.effect.Parameters["textureSize"].SetValue(this.textureSize);
