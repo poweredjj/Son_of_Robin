@@ -85,8 +85,8 @@ namespace SonOfRobin
         {
             if (this.level.depth >= this.maxDepth)
             {
-                MessageLog.Add(debugMessage: false, text: $"Destroying entrance", textColor: Color.Orange);
                 this.Destroy(); // removing itself, if would lead too deep
+                return;
             }
 
             if (this.isBlocked)
