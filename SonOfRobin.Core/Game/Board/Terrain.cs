@@ -181,19 +181,25 @@ namespace SonOfRobin
 
         public Byte GetMapData(int x, int y)
         {
-            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
+            if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0.");
 
             return this.mapData[x / this.Grid.resDivider, y / this.Grid.resDivider];
         }
 
         public Byte GetMapDataRaw(int x, int y)
         {
-            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
+            if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0.");
 
             // direct access, without taking resDivider into account
             return this.mapData[x, y];
+        }
+
+        public void SetMapDataRaw(Point rawCoords, byte value)
+        {
+            // should only be used before saving template - never during gameplay
+
+            // direct access, without taking resDivider into account
+            this.mapData[rawCoords.X, rawCoords.Y] = value;
         }
 
         public byte GetMinValueForCell(int cellNoX, int cellNoY)
@@ -235,7 +241,7 @@ namespace SonOfRobin
             return gradLine;
         }
 
-        private void UpdateMinMaxGridCell()
+        public void UpdateMinMaxGridCell()
         {
             foreach (Cell cell in this.Grid.allCells)
             {

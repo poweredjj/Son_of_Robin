@@ -61,7 +61,7 @@ namespace SonOfRobin
                         break;
 
                     case RangeName.WaterMedium:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3), max: Convert.ToByte((Terrain.waterLevelMax / 3) * 2));
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3), max: Convert.ToByte(Terrain.waterLevelMax / 3 * 2));
                         break;
 
                     case RangeName.WaterDeep:

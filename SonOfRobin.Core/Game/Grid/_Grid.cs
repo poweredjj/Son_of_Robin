@@ -16,38 +16,40 @@ namespace SonOfRobin
     {
         public enum Stage : byte
         {
-            LoadTerrain,
-            GenerateTerrain,
-            SaveTerrain,
-            CheckExtData,
-            SetExtDataSea,
-            SetExtDataBeach,
-            SetExtDataBiomes,
-            SetExtDataPropertiesGrid,
-            SetExtDataFinish,
-            GenerateNamedLocations,
-            LoadMeshes,
-            GenerateMeshes,
-            FillAllowedNames,
+            TerrainLoad,
+            TerrainGenerate,
+            TerrainUpdateMinMax,
+            TerrainSave,
+            ExtDataCheck,
+            ExtDataSetSea,
+            ExtDataSetBeach,
+            ExtDataSetBiomes,
+            ExtDataSetPropertiesGrid,
+            ExtDataSetFinish,
+            NamedLocationsGenerate,
+            MeshesLoad,
+            MeshesGenerate,
+            AllowedNamesFill,
         }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new()
         {
-            { Stage.LoadTerrain, "loading terrain" },
-            { Stage.GenerateTerrain, "generating terrain" },
-            { Stage.SaveTerrain, "saving terrain" },
-            { Stage.CheckExtData, "loading extended data" },
-            { Stage.SetExtDataSea, "setting extended data (sea)" },
-            { Stage.SetExtDataBeach, "setting extended data (beach)" },
-            { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
-            { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
-            { Stage.SetExtDataFinish, "saving extended data" },
-            { Stage.GenerateNamedLocations, "generating named locations" },
-            { Stage.LoadMeshes, "loading meshes" },
-            { Stage.GenerateMeshes, "generating meshes" },
-            { Stage.FillAllowedNames, "filling lists of allowed names" },
+            { Stage.TerrainLoad, "loading terrain" },
+            { Stage.TerrainGenerate, "generating terrain (values)" },
+            { Stage.TerrainUpdateMinMax, "generating terrain (min + max)" },
+            { Stage.TerrainSave, "saving terrain" },
+            { Stage.ExtDataCheck, "loading extended data" },
+            { Stage.ExtDataSetSea, "setting extended data (sea)" },
+            { Stage.ExtDataSetBeach, "setting extended data (beach)" },
+            { Stage.ExtDataSetBiomes, "setting extended data (biomes)" },
+            { Stage.ExtDataSetPropertiesGrid, "setting extended data (properties grid)" },
+            { Stage.ExtDataSetFinish, "saving extended data" },
+            { Stage.NamedLocationsGenerate, "generating named locations" },
+            { Stage.MeshesLoad, "loading meshes" },
+            { Stage.MeshesGenerate, "generating meshes" },
+            { Stage.AllowedNamesFill, "filling lists of allowed names" },
         };
 
         private Task backgroundTask;
@@ -336,7 +338,7 @@ namespace SonOfRobin
         {
             switch (currentStage)
             {
-                case Stage.LoadTerrain:
+                case Stage.TerrainLoad:
                     {
                         Level.LevelType levelType = this.world.ActiveLevel.levelType;
                         switch (levelType)
@@ -379,16 +381,52 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.GenerateTerrain:
+                case Stage.TerrainGenerate:
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
                         // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
                         currentTerrain.GenerateNoiseMap();
                     }
 
+                    if (this.level.levelType == Level.LevelType.Cave)
+                    {
+                        // removing (filling with 0) all areas, except the largest one
+
+                        var walkableFloorRawPixelsBag = new ConcurrentBag<Point>();
+                        Parallel.For(0, this.dividedHeight, rawY =>
+                        {
+                            for (int rawX = 0; rawX < this.dividedWidth; rawX++)
+                            {
+                                byte rawPixelHeight = this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY);
+                                if (rawPixelHeight > 29) walkableFloorRawPixelsBag.Add(new Point(rawX, rawY));
+                            }
+                        });
+
+                        var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.dividedWidth, height: this.dividedHeight, pointsBag: walkableFloorRawPixelsBag);
+
+                        var largestArea = pixelCoordsByRegion.OrderByDescending(sublist => sublist.Count).FirstOrDefault();
+
+                        Parallel.ForEach(pixelCoordsByRegion.Where(sublist => sublist != largestArea), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
+                          {
+                              Terrain terrainHeight = this.terrainByName[Terrain.Name.Height];
+                              foreach (Point rawCoords in rawCoordsList)
+                              {
+                                  terrainHeight.SetMapDataRaw(rawCoords: rawCoords, value: 0);
+                              }
+                          });
+                    }
+
                     break;
 
-                case Stage.SaveTerrain:
+                case Stage.TerrainUpdateMinMax:
+                    Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
+                    {
+                        terrain.UpdateMinMaxGridCell();
+                    });
+
+                    break;
+
+                case Stage.TerrainSave:
                     if (this.serializable)
                     {
                         Parallel.ForEach(this.terrainByName.Values, SonOfRobinGame.defaultParallelOptions, terrain =>
@@ -399,42 +437,42 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.CheckExtData:
+                case Stage.ExtDataCheck:
                     if (this.ExtBoardProps == null) this.ExtBoardProps = new ExtBoardProps(grid: this);
 
                     break;
 
-                case Stage.SetExtDataSea:
+                case Stage.ExtDataSetSea:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateSea();
 
                     break;
 
-                case Stage.SetExtDataBeach:
+                case Stage.ExtDataSetBeach:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
 
                     break;
 
-                case Stage.SetExtDataBiomes:
+                case Stage.ExtDataSetBiomes:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateBiomes();
 
                     break;
 
-                case Stage.SetExtDataPropertiesGrid:
+                case Stage.ExtDataSetPropertiesGrid:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.CreateContainsPropertiesGrid();
 
                     break;
 
-                case Stage.SetExtDataFinish:
+                case Stage.ExtDataSetFinish:
                     if (this.ExtBoardProps.CreationInProgress) this.ExtBoardProps.EndCreationAndSave(saveTemplate: this.serializable);
 
                     break;
 
-                case Stage.GenerateNamedLocations:
+                case Stage.NamedLocationsGenerate:
                     if (this.level.levelType == Level.LevelType.Island) this.namedLocations.GenerateLocations();
 
                     break;
 
-                case Stage.LoadMeshes:
+                case Stage.MeshesLoad:
                     Mesh[] meshArray = null;
                     if (this.serializable) meshArray = MeshGenerator.LoadMeshes(this);
 
@@ -446,12 +484,12 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.GenerateMeshes:
+                case Stage.MeshesGenerate:
                     if (!this.meshGridLoaded) this.MeshGrid = MeshGenerator.CreateMeshGrid(meshArray: MeshGenerator.GenerateMeshes(grid: this, saveTemplate: this.serializable), grid: this);
 
                     break;
 
-                case Stage.FillAllowedNames:
+                case Stage.AllowedNamesFill:
                     Parallel.ForEach(this.allCells, SonOfRobinGame.defaultParallelOptions, cell =>
                     {
                         cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
