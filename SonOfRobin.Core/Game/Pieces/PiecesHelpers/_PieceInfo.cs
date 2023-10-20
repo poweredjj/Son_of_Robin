@@ -1044,7 +1044,7 @@ namespace SonOfRobin
                         this.animalPregnancyDuration = 3500;
                         this.animalMaxChildren = 5;
                         this.animalRetaliateChance = 1f;
-                        this.animalSightRange = 600;
+                        this.animalSightRange = 700;
                         this.canBePickedUp = true;
                         this.getsPushedByWaves = true;
 
