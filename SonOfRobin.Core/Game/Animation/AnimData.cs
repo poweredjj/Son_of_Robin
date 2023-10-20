@@ -40,6 +40,7 @@ namespace SonOfRobin
             CoffeeShrub = 14,
             CarrotPlant = 15,
             TomatoPlant = 16,
+            Mushroom = 305,
 
             Cactus = 17,
 
@@ -257,6 +258,15 @@ namespace SonOfRobin
             TigerYellow = 189,
             TigerBlack = 190,
 
+            BearBrown = 297,
+            BearWhite = 298,
+            BearOrange = 299,
+            BearBlack = 300,
+            BearDarkBrown = 301,
+            BearGray = 302,
+            BearRed = 303,
+            BearBeige = 304,
+
             TentModern = 283,
             TentModernPacked = 284,
             TentSmall = 191,
@@ -412,6 +422,12 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
             }
             {
+                PkgName packageName = PkgName.Mushroom;
+                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.8f));
+                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.0f));
+                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.4f));
+            }
+            {
                 PkgName packageName = PkgName.FlowersYellow2;
                 AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x",
                     layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
@@ -540,6 +556,22 @@ namespace SonOfRobin
                 AddRPGMakerPackageV2(packageName: PkgName.TigerBrown, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
                 AddRPGMakerPackageV2(packageName: PkgName.TigerYellow, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
                 AddRPGMakerPackageV2(packageName: PkgName.TigerBlack, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
+            }
+
+            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
+            {
+                string atlasName = "characters/bear";
+                byte animSize = kvp.Key;
+                float scale = kvp.Value;
+
+                AddRPGMakerPackageV2(packageName: PkgName.BearBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearWhite, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearOrange, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearDarkBrown, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearGray, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearRed, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.BearBeige, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
             }
             {
                 float scale = 1f;

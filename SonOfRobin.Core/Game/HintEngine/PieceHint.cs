@@ -53,7 +53,7 @@ namespace SonOfRobin
             HerbsBlack = 40,
             GlassSand = 41,
             CanBuildWorkshop = 42,
-            DangerousTiger = 43,
+            DangerousBear = 43,
             DigSiteGlass = 44,
             CarrotPlant = 45,
             ExplosiveGas = 46,

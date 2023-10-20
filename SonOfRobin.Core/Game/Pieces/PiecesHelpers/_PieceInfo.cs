@@ -547,6 +547,25 @@ namespace SonOfRobin
                             );
                         break;
 
+                    case PieceTemplate.Name.Mushroom:
+                        this.category = BoardPiece.Category.SmallPlant;
+                        this.fireAffinity = 0.4f;
+                        this.maxMassForSize = new int[] { 450, 900 };
+                        this.plantMassToBurn = 9;
+                        this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
+                        this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 230 } };
+                        this.plantDropSeedChance = 40;
+                        this.blocksPlantGrowth = true;
+                        this.placeMinDistance = 20;
+                        this.placeMaxDistance = 200;
+                        this.allowedDensity = new AllowedDensity(radius: 250, maxNoOfPiecesSameName: 6);
+                        this.isAffectedByWind = true;
+
+                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
+                        break;
+
                     case PieceTemplate.Name.TreeSmall:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
@@ -1007,6 +1026,37 @@ namespace SonOfRobin
                               new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 100, maxNumberToDrop: 3),
                               new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2),
                               new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2)
+                          });
+                        break;
+
+                    case PieceTemplate.Name.Bear:
+                        this.category = BoardPiece.Category.Flesh;
+                        this.startingMass = 80;
+                        this.fireAffinity = 0.65f;
+                        this.maxMassForSize = new int[] { 500, 2000 };
+                        this.blocksMovement = true;
+                        this.placeMinDistance = 10;
+                        this.placeMaxDistance = 45;
+                        this.animalMaxMass = 15000;
+                        this.animalMassBurnedMultiplier = 0.5f;
+                        this.animalAwareness = 50;
+                        this.animalMatureAge = 4000;
+                        this.animalPregnancyDuration = 3500;
+                        this.animalMaxChildren = 5;
+                        this.animalRetaliateChance = 1f;
+                        this.animalSightRange = 600;
+                        this.canBePickedUp = true;
+                        this.getsPushedByWaves = true;
+
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(name: SoundData.Name.BearRoar, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
+
+                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisBlood },
+                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                          finalDroppedPieces: new List<Yield.DroppedPiece> {
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 70, maxNumberToDrop: 1),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 70, maxNumberToDrop: 2),
+                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 60, maxNumberToDrop: 2)
                           });
                         break;
 

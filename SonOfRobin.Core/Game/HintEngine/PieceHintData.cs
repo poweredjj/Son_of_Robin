@@ -459,9 +459,9 @@ namespace SonOfRobin
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineDay3 }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DangerousTiger, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Tiger},
-                    message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Tiger).readableName} looks very dangerous!\nI'd rather stay away.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Tiger) }),
+                    type: PieceHint.Type.DangerousBear, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Bear},
+                    message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Bear).readableName} looks very dangerous!\nI'd rather stay away.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Bear) }),
 
                 new PieceHint(
                     type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },

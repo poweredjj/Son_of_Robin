@@ -1039,6 +1039,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/characters/actor29rec4.png
 
+#begin gfx/characters/bear.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/characters/bear.png
+
 #begin gfx/characters/crabs_big.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -6547,6 +6559,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/mossy_minerals_small_4.png
 
+#begin gfx/mushroom.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/mushroom.png
+
 #begin gfx/music_note.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9798,6 +9822,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/60968__ifartinurgeneraldirection__night-sounds.ogg
+
+#begin sound/614013__aarontheonly__roar9.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/614013__aarontheonly__roar9.ogg
 
 #begin sound/614724__newlocknew__fast-fire-flare-whoosh-1-6lrs.ogg
 /importer:OggImporter

@@ -29,6 +29,7 @@ namespace SonOfRobin
             FlowersMountain = 13,
 
             Cactus = 14,
+            Mushroom = 226,
 
             SeedsGeneric = 15,
             CoffeeRaw = 16,
@@ -64,6 +65,7 @@ namespace SonOfRobin
             Rabbit = 41,
             Fox = 42,
             Tiger = 43,
+            Bear = 225,
             Frog = 44,
 
             MineralsBig = 45,
@@ -664,6 +666,19 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
                             maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.");
+
+                        return boardPiece;
+                    }
+
+                case Name.Mushroom:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 128, max: 255) },
+                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
+
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom, allowedTerrain: allowedTerrain,
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, readableName: "mushroom", description: "A mushroom.");
 
                         return boardPiece;
                     }
@@ -1781,8 +1796,32 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.Bear:
+                    {
+                        var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.BearBrown, AnimData.PkgName.BearBlack, AnimData.PkgName.BearDarkBrown, AnimData.PkgName.BearGray, AnimData.PkgName.BearRed, AnimData.PkgName.BearBeige };
+
+                        var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.BearWhite, AnimData.PkgName.BearOrange };
+
+                        var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
+                        });
+
+                        var eats = new List<Name> { Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
+                        eats.AddRange(PieceInfo.GetPlayerNames());
+
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.0f,
+                         maxHitPoints: 800, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 60, readableName: "bear", description: "Cave animal.");
+
+                        return boardPiece;
+                    }
+
                 case Name.Tiger:
                     {
+                        // TODO remove in the future
+
                         var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerOrangeMedium, AnimData.PkgName.TigerGray, AnimData.PkgName.TigerOrangeLight, AnimData.PkgName.TigerOrangeDark, AnimData.PkgName.TigerBrown, AnimData.PkgName.TigerBlack };
 
                         var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerWhite, AnimData.PkgName.TigerYellow };

@@ -137,6 +137,7 @@ namespace SonOfRobin
             DropRope = 98,
 
             TigerRoar = 99,
+            BearRoar = 229,
 
             EatPlayer1 = 100,
             EatPlayer2 = 101,
@@ -339,6 +340,7 @@ namespace SonOfRobin
             { Name.HitFlesh1, "522091__magnuswaker__pound-of-flesh-1" },
             { Name.HitFlesh2, "620354__marb7e__whoosh-sword-hit-flesh" },
             { Name.TigerRoar, "546399__szegvari__angry-tiger-fantasy" },
+            { Name.BearRoar, "614013__aarontheonly__roar9" },
             { Name.PickUpItem, "467610__triqystudio__pickupitem" },
             { Name.DestroyCeramic1, "214336__zerolagtime__breaking-a-vase-remix" },
             { Name.DestroyCeramic2, "194683__kingsrow__breakingvase03" },
