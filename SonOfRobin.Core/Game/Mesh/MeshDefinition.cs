@@ -326,7 +326,7 @@ namespace SonOfRobin
                 search: new(
                 searchPriority: 17,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin, maxVal: 255),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.lavaMin - 1, maxVal: 255),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),

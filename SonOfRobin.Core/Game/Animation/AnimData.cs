@@ -93,6 +93,8 @@ namespace SonOfRobin
             MineralsMossySmall3 = 58,
             MineralsMossySmall4 = 59,
 
+            MineralsCave = 306,
+
             JarWhole = 60,
             JarBroken = 61,
 
@@ -423,9 +425,9 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.Mushroom;
-                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.8f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.0f));
-                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.4f));
+                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.6f));
+                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.8f));
+                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.0f));
             }
             {
                 PkgName packageName = PkgName.FlowersYellow2;
@@ -645,6 +647,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MineralsMossySmall2, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
             AddFrameList(animPackage: PkgName.MineralsMossySmall3, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
             AddFrameList(animPackage: PkgName.MineralsMossySmall4, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+       
+            AddFrameList(animPackage: PkgName.MineralsCave, frameList: ConvertImageToFrameList(atlasName: "cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
 
             AddFrameList(animPackage: PkgName.WaterLily1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.WaterLily2, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));

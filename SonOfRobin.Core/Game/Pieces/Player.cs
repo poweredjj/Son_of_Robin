@@ -171,19 +171,26 @@ namespace SonOfRobin
             if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
             else
             {
-                BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.CaveExit, world: this.world);
-
-                for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
+                foreach (PieceTemplate.Name pieceName in new List<PieceTemplate.Name> { PieceTemplate.Name.CaveExit, PieceTemplate.Name.CaveExitEmergency })
                 {
-                    if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
-                        this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
+                    BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: pieceName, world: this.world);
+
+                    for (int tryIndex = 0; tryIndex < 100000; tryIndex++)
                     {
-                        break;
+                        if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
+                            this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
+                        {
+                            break;
+                        }
                     }
+
+                    if (this.sprite.IsOnBoard) break;
                 }
 
                 if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
             }
+
+            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
 
             this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
             this.world.map.MoveCameraToPlayer();
@@ -1005,7 +1012,7 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate % 65 == 0)
             {
-                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining)
+                if (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining)
                 {
                     this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }

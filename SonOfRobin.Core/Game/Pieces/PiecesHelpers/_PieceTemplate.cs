@@ -288,6 +288,7 @@ namespace SonOfRobin
             CaveEntranceOutside = 221,
             CaveEntranceInside = 223,
             CaveExit = 222,
+            CaveExitEmergency = 227,
 
             // obsolete below (kept for compatibility with old saves)
         }
@@ -674,7 +675,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
-                            { Terrain.Name.Humidity, new AllowedRange(min: 128, max: 255) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom, allowedTerrain: allowedTerrain,
@@ -689,7 +690,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
@@ -705,7 +706,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
@@ -721,7 +722,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
@@ -736,7 +737,7 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossyBig1, AnimData.PkgName.MineralsMossyBig2, AnimData.PkgName.MineralsMossyBig3, AnimData.PkgName.MineralsMossyBig4, AnimData.PkgName.MineralsMossyBig5, AnimData.PkgName.MineralsMossyBig6, AnimData.PkgName.MineralsMossyBig7, AnimData.PkgName.MineralsMossyBig8, AnimData.PkgName.MineralsMossyBig9, AnimData.PkgName.MineralsMossyBig10, AnimData.PkgName.MineralsMossyBig11, AnimData.PkgName.MineralsMossyBig12 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
@@ -1804,16 +1805,12 @@ namespace SonOfRobin
 
                         var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
-
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
-                        });
-
+                     
                         var eats = new List<Name> { Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.0f,
-                         maxHitPoints: 800, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 60, readableName: "bear", description: "Cave animal.");
+                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), speed: 1.5f,
+                         maxHitPoints: 650, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 60, readableName: "bear", description: "Cave animal.");
 
                         return boardPiece;
                     }
@@ -2691,7 +2688,7 @@ namespace SonOfRobin
                 case Name.CaveEntranceOutside:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 150, max: 190) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin + 1, max: Terrain.volcanoEdgeMin - 1) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
@@ -2728,17 +2725,31 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.CaveWeakMinerals:
+                case Name.CaveExitEmergency:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4 };
-                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Count)];
+                        // the same as regular, but can be placed anywhere
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 126) },
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: Terrain.volcanoEdgeMin - 1) },
                             });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
-                               maxHitPoints: 5, readableName: "weak minerals", description: "Weak cave minerals.");
+                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave); // levelType is ignored here
+
+                        boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
+                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
+
+                        return boardPiece;
+                    }
+
+                case Name.CaveWeakMinerals:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 130) },
+                            });
+
+                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MineralsCave, allowedTerrain: allowedTerrain,
+                               maxHitPoints: 10, readableName: "weak minerals", description: "Weak cave minerals.");
 
                         return boardPiece;
                     }

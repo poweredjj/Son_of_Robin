@@ -101,6 +101,12 @@ namespace SonOfRobin
 
         // Level class should be treated as a data container. All processing should be done within World() class (if possible).
 
+        ~Level()
+        {      
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} {this.levelType} level seed {this.seed} {this.width}x{this.height} no longer referenced.", textColor: new Color(120, 255, 174));
+            this.Destroy(); // to dispose textures
+        }
+
         public void Destroy()
         {
             this.grid.Destroy();

@@ -549,7 +549,7 @@ namespace SonOfRobin
 
                     case PieceTemplate.Name.Mushroom:
                         this.category = BoardPiece.Category.SmallPlant;
-                        this.fireAffinity = 0.4f;
+                        this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 450, 900 };
                         this.plantMassToBurn = 9;
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
@@ -2991,6 +2991,15 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CaveExit:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.boardTask = Scheduler.TaskName.UseEntrance;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
+                        this.allowedDensity = new AllowedDensity(radius: 1000, maxNoOfPiecesSameClass: 0);
+                        this.blocksMovement = true;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.CaveExitEmergency:
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
