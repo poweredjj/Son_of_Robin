@@ -37,6 +37,12 @@ namespace SonOfRobin
             harvestTriggerSlot.AddPiece(harvestTrigger);
             harvestTriggerSlot.locked = true;
 
+            this.RefreshAnimalSlot();
+            this.ConfigureMeatSlots();
+        }
+
+        public void RefreshAnimalSlot()
+        {
             StorageSlot animalSlot = this.AnimalSlot;
             animalSlot.hidden = false;
             animalSlot.locked = false;
@@ -47,8 +53,6 @@ namespace SonOfRobin
             {
                 if (PieceInfo.TryToGetInfo(pieceName)?.type == typeof(Animal)) animalSlot.allowedPieceNames.Add(pieceName);
             }
-
-            this.ConfigureMeatSlots();
         }
 
         private void ConfigureMeatSlots()
@@ -244,6 +248,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
+            this.RefreshAnimalSlot();
             this.ConfigureMeatSlots();
         }
     }

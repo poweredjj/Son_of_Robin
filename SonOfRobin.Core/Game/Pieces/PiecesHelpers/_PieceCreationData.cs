@@ -88,21 +88,19 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2, levelType: Level.LevelType.Island),
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: 4, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: 6, levelType: Level.LevelType.Island),
 
                 // cave
 
                 new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.2f, minDepth: 1, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 7f, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, minDepth: 2, maxAmount: 30, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, minDepth: 3, maxAmount: 20, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, minDepth: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 5f, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, minDepth: 1, maxAmount: 30, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, minDepth: 2, maxAmount: 20, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.5f, maxAmount: 4, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.5f, maxAmount: 2, minDepth: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
 
                 new PieceCreationData(name: PieceTemplate.Name.Mushroom, multiplier: 0.5f, maxAmount: 50, minDepth: 1, doNotReplenish: false, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 6, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 7, minDepth: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 8, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 10, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
 
                 new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),

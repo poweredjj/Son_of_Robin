@@ -845,6 +845,8 @@ namespace SonOfRobin
 
             // highlighting pieces to interact with and corresponding interface elements
 
+            if (this.level.levelType == Level.LevelType.Island) ControlTips.TipHighlightOnNextFrame(tipName: "craft");
+
             if (this.world.inputActive) this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
 
             BoardPiece pieceToInteract = this.ClosestPieceToInteract;

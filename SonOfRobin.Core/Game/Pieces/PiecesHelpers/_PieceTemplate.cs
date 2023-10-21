@@ -2745,7 +2745,7 @@ namespace SonOfRobin
                 case Name.CaveWeakMinerals:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 130) },
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: 135) },
                             });
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MineralsCave, allowedTerrain: allowedTerrain,
@@ -2784,6 +2784,8 @@ namespace SonOfRobin
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
+                        boardPiece.sprite.lightEngine = new LightEngine(size: 400, opacity: 1.2f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
+
                         return boardPiece;
                     }
 
@@ -2794,6 +2796,8 @@ namespace SonOfRobin
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
                             maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
+
+                        boardPiece.sprite.lightEngine = new LightEngine(size: 650, opacity: 0.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
 
                         return boardPiece;
                     }

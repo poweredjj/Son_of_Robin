@@ -83,7 +83,10 @@ namespace SonOfRobin
 
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos + shadowOffset, scale: fontScaleVector, color: Color.Black, effect: FontSystemEffect.Blurry, effectAmount: outlineSize * 2);
 
-            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: fontScaleVector, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: outlineSize);
+            byte textBrightness = (byte)(controlTips.viewParams.drawOpacity * opacityMultiplier * globalOpacity * 255);
+            Color textColor = new Color(textBrightness, textBrightness, textBrightness, (byte)255);
+
+            font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: this.text, position: txtPos, scale: fontScaleVector, color: textColor, effect: FontSystemEffect.Stroked, effectAmount: outlineSize);
 
             // Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)(font.MeasureString(this.text).X * fontScale), (int)(font.MeasureString(this.text).Y * fontScale)), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }
