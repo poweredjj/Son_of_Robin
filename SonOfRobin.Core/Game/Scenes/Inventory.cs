@@ -1139,7 +1139,7 @@ namespace SonOfRobin
                     }
                 }
 
-                BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: potion.convertsToWhenUsed, world: potion.world);
+                BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: potion.pieceInfo.convertsToWhenUsed, world: potion.world);
 
                 if (potionInsideSlot) slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                 else

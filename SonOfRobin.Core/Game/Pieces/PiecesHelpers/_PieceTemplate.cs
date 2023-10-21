@@ -1680,7 +1680,7 @@ namespace SonOfRobin
                         // A generic potion, which animPackage and buffs will be set later.
 
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
-                             rotatesWhenDropped: true, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle);
+                             rotatesWhenDropped: true, readableName: "potion", description: "A potion.", buffList: null);
 
                         return boardPiece;
                     }
@@ -1688,7 +1688,7 @@ namespace SonOfRobin
                 case Name.BottleOfOil:
                     {
                         BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
-                             rotatesWhenDropped: true, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle);
+                             rotatesWhenDropped: true, readableName: "bottle of oil", description: "Crafting material.", buffList: null);
 
                         return boardPiece;
                     }

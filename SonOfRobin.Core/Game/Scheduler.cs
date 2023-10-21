@@ -734,9 +734,13 @@ namespace SonOfRobin
                             foreach (Buff buff in potion.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
-                            BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: potion.convertsToWhenUsed, world: world);
-                            slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
-
+                            if (potion.pieceInfo.convertsWhenUsed)
+                            {
+                                BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: potion.pieceInfo.convertsToWhenUsed, world: world);
+                                slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+                            }
+                            else slot.DestroyPieceWithID(potion.id);
+                            
                             player.CheckLowHP();
 
                             return;

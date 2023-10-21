@@ -417,7 +417,7 @@ namespace SonOfRobin
                             }
 
                             quantityLeft[pieceName] -= 1;
-                            if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0) break;
+                            if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0 || slot.PieceName != pieceName) break; // PieceName would change if empty container was placed
                         }
                     }
                 }

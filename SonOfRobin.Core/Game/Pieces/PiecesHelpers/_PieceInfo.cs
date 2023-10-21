@@ -153,7 +153,7 @@ namespace SonOfRobin
                 if (this.type == typeof(Potion))
                 {
                     this.convertsWhenUsed = true;
-                    this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
+                    this.convertsToWhenUsed = PieceTemplate.Name.EmptyBottle;
                 }
 
                 if (this.type == typeof(Shelter))
