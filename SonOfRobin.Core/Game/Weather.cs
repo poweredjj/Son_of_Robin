@@ -136,6 +136,7 @@ namespace SonOfRobin
             this.NextGlobalWindBlow = veryOldDate;
             this.NextLocalizedWindBlow = veryOldDate;
             this.WindPercentage = 0f;
+            this.LightningPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
             this.previousIntensityForType = new Dictionary<WeatherType, float>();
@@ -181,6 +182,20 @@ namespace SonOfRobin
 
         public void Update()
         {
+            if (this.world.ActiveLevel.levelType != Level.LevelType.Island)
+            {
+                this.CloudsPercentage = 0f;
+                this.FogPercentage = 0f;
+                this.SunVisibility = 0f;
+                this.WindPercentage = 0f;
+                this.RainPercentage = 0f;
+
+                if (this.rainSound.IsPlaying) this.rainSound.Stop();
+                if (this.windSound.IsPlaying) this.windSound.Stop();
+
+                return;
+            }
+
             DateTime islandDateTime = this.islandClock.IslandDateTime;
             weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 

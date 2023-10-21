@@ -382,7 +382,7 @@ namespace SonOfRobin
             if (this.distanceWalkedKilometers > 0 && player.DistanceWalkedKilometers < this.distanceWalkedKilometers) return false;
 
             // map discovered percentage
-            if (this.mapDiscoveredPercentage > 0 && world.Grid.VisitedCellsPercentage < this.mapDiscoveredPercentage) return false;
+            if (this.mapDiscoveredPercentage > 0 && world.IslandLevel.grid.VisitedCellsPercentage < this.mapDiscoveredPercentage) return false;
 
             // island time elapsed
             if (this.islandTimeElapsedHours > 0 && world.islandClock.IslandTimeElapsed.TotalHours < this.islandTimeElapsedHours) return false;

@@ -99,7 +99,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.02f, maxAmount: 4, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 2, minDepth: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
 
-                new PieceCreationData(name: PieceTemplate.Name.Mushroom, multiplier: 1.0f, maxAmount: 200, minDepth: 1, doNotReplenish: false, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.Mushroom, multiplier: 0.5f, maxAmount: 50, minDepth: 1, doNotReplenish: false, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 6, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 7, minDepth: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 8, minDepth: 3, doNotReplenish: true, levelType: Level.LevelType.Cave),
