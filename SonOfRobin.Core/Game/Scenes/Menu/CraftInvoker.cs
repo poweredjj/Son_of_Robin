@@ -155,7 +155,7 @@ namespace SonOfRobin
                 this.DrawFrameAndText(frame: drawParams.frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: drawParams.text);
 
                 Rectangle quantityRect = new Rectangle(x: pieceRect.X, y: pieceRect.Y + (pieceRect.Height / 2), width: (int)(pieceRect.Width * 0.5f), height: pieceRect.Height / 2);
-                Inventory.DrawQuantity(pieceCount: drawParams.counter, destRect: quantityRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
+                if (i != 0 || drawParams.counter > 1) Inventory.DrawQuantity(pieceCount: drawParams.counter, destRect: quantityRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
 
                 rectX += rectWidth + margin;
 
