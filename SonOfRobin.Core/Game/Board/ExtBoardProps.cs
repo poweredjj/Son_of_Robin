@@ -197,7 +197,7 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
-            if (this.Grid.serializable) return false;
+            if (!this.Grid.serializable) return false;
 
             foreach (Name name in allExtPropNames)
             {
