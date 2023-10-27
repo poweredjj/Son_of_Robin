@@ -91,6 +91,7 @@ namespace SonOfRobin
 
             if (this.isBlocked)
             {
+                Sound.QuickPlay(SoundData.Name.StonesFalling);
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DustPuff }, particlesToEmit: 120);
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.SmokePuff }, particlesToEmit: 40);
 

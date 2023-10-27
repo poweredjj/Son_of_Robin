@@ -293,6 +293,7 @@ namespace SonOfRobin
             Whoosh = 228,
             Glug = 230,
             WaterDrop = 231,
+            StonesFalling = 232,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -528,6 +529,7 @@ namespace SonOfRobin
             { Name.Whoosh, "351256__kinoton__deep-whoosh-1" },
             { Name.Glug, "221488__lloydevans09__glug" },
             { Name.WaterDrop, "349873__matrixxx__water-drop-02" },
+            { Name.StonesFalling, "567251__iwanplays__stones-falling" },
             };
     }
 }

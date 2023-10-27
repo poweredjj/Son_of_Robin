@@ -9745,6 +9745,12 @@
 /processorParam:Quality=Best
 /build:sound/567204__sergequadrado__announcement-sound-4.ogg
 
+#begin sound/567251__iwanplays__stones-falling.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/567251__iwanplays__stones-falling.ogg
+
 #begin sound/568992__fission9__inventory-open.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
