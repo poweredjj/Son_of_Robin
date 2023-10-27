@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Yield
     {
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new() { };
-        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump };
+        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken };
 
         public readonly struct DroppedPiece
         {
