@@ -29,7 +29,7 @@ namespace SonOfRobin
             FlowersMountain = 13,
 
             Cactus = 14,
-            Mushroom = 226,
+            MushroomPlant = 226,
 
             SeedsGeneric = 15,
             CoffeeRaw = 16,
@@ -53,6 +53,7 @@ namespace SonOfRobin
             Tomato = 31,
             Carrot = 32,
             Acorn = 33,
+            Mushroom = 229,
             MeatRawRegular = 34,
             MeatRawPrime = 35,
             MeatDried = 36,
@@ -672,15 +673,15 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.Mushroom:
+                case Name.MushroomPlant:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 255) },
                         });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom, allowedTerrain: allowedTerrain,
-                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, readableName: "mushroom", description: "A mushroom.");
+                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MushroomPlant, allowedTerrain: allowedTerrain,
+                           maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, readableName: "mushroom plant", description: "Growing mushrooms.");
 
                         return boardPiece;
                     }
@@ -1717,6 +1718,18 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.Mushroom:
+                    {
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
+
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom,
+                            allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList,
+                             rotatesWhenDropped: true, readableName: "mushroom", description: "Poisonous, but safe after cooking.");
+
+                        return boardPiece;
+                    }
+
                 case Name.MeatDried:
                     {
                         var buffList = new List<Buff> {
@@ -1774,7 +1787,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
-                            maxHitPoints: 150, maxAge: 30000, maxStamina: 300, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, readableName: "rabbit", description: "A small animal.");
+                            maxHitPoints: 150, maxAge: 30000, maxStamina: 300, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant, Name.Mushroom }, strength: 30, readableName: "rabbit", description: "A small animal.");
 
                         return boardPiece;
                     }
@@ -1790,7 +1803,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
-                        var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
+                        var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal, Name.Mushroom };
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
                          maxHitPoints: 300, maxAge: 30000, maxStamina: 800, eats: eats, strength: 30, readableName: "fox", description: "An animal.");
@@ -1807,7 +1820,7 @@ namespace SonOfRobin
                         var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
 
-                        var eats = new List<Name> { Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
+                        var eats = new List<Name> { Name.MushroomPlant, Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), speed: 1.5f,
@@ -1831,7 +1844,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
                         });
 
-                        var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
+                        var eats = new List<Name> { Name.Rabbit, Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f,

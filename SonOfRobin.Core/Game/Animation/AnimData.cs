@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000022f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000023f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -40,7 +40,7 @@ namespace SonOfRobin
             CoffeeShrub = 14,
             CarrotPlant = 15,
             TomatoPlant = 16,
-            Mushroom = 305,
+            MushroomPlant = 305,
 
             Cactus = 17,
 
@@ -153,6 +153,7 @@ namespace SonOfRobin
             Tomato = 102,
             Carrot = 103,
             Acorn = 104,
+            Mushroom = 307,
 
             SeedBag = 105,
             CoffeeRaw = 106,
@@ -424,10 +425,10 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
             }
             {
-                PkgName packageName = PkgName.Mushroom;
-                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.6f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 0.8f));
-                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 1, scale: 1.0f));
+                PkgName packageName = PkgName.MushroomPlant;
+                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.6f));
+                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.8f));
+                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 1.0f));
             }
             {
                 PkgName packageName = PkgName.FlowersYellow2;
@@ -647,7 +648,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MineralsMossySmall2, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
             AddFrameList(animPackage: PkgName.MineralsMossySmall3, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
             AddFrameList(animPackage: PkgName.MineralsMossySmall4, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
-       
+
             AddFrameList(animPackage: PkgName.MineralsCave, frameList: ConvertImageToFrameList(atlasName: "cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
 
             AddFrameList(animPackage: PkgName.WaterLily1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
@@ -793,6 +794,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MapMarker, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Candle, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Dungarees, frameList: ConvertImageToFrameList(atlasName: "dungarees", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.Mushroom, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 0, scale: 0.5f));
         }
 
         public static void CreateAnimsMisc2()

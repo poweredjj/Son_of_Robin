@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Cooker : BoardPiece
     {
-        public static readonly HashSet<PieceTemplate.Name> ingredientNames = new() { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime, PieceTemplate.Name.MeatDried, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam, PieceTemplate.Name.Fat };
+        public static readonly HashSet<PieceTemplate.Name> ingredientNames = new() { PieceTemplate.Name.MeatRawRegular, PieceTemplate.Name.MeatRawPrime, PieceTemplate.Name.Mushroom, PieceTemplate.Name.MeatDried, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam, PieceTemplate.Name.Fat };
 
         private static readonly HashSet<PieceTemplate.Name> fuelNames = new() { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 

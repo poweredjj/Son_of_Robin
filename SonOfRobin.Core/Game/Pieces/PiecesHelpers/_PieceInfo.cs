@@ -555,7 +555,7 @@ namespace SonOfRobin
                             );
                         break;
 
-                    case PieceTemplate.Name.Mushroom:
+                    case PieceTemplate.Name.MushroomPlant:
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 450, 900 };
@@ -571,7 +571,9 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Mushroom, chanceToDrop: 10, maxNumberToDrop: 1)
+                            });
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
@@ -887,6 +889,18 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f);
+                        break;
+
+                    case PieceTemplate.Name.Mushroom:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 60;
+                        this.fireAffinity = 0.2f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 8;
+                        this.toolbarTask = Scheduler.TaskName.GetEaten;
+                        this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1 }, cooldown: 15, maxPitchVariation: 0.8f);
                         break;
 
                     case PieceTemplate.Name.MeatDried:
@@ -2553,7 +2567,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.placeMaxDistance = 500;
                         this.getsPushedByWaves = true;
-                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.PlasticDrop, cooldown: 15, maxPitchVariation: 0.1f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropPlastic, cooldown: 15, maxPitchVariation: 0.1f);
                         break;
 
                     case PieceTemplate.Name.TorchSmall:
