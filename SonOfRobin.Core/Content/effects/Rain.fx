@@ -38,18 +38,24 @@ struct VertexShaderOutput
 float4 MainPS(VertexShaderOutput input) : COLOR
 {    
 	// shaders use color value range 0.0f - 1.0f
-    
+          
     float2 basePixelSize = 1.0 / baseTextureSize;
-    float2 distortionPixelSize = 1.0 / distortionTextureSize;
+    float2 distortionPixelSize = 1.0 / distortionTextureSize;   
     
-    float2 distortionInputOffset = float2(0, (float)currentUpdate * -distortionPixelSize.y);
-    float4 distortPixel = tex2D(DistortTextureSampler, input.TextureCoordinates + distortionInputOffset);
+    float2 distortionOffset = float2(0, 0);
+    for (int i = 1; i <= 2; i++)
+    {
+        float2 distortionInputOffset = float2((i - 1) * 0.35, (float) currentUpdate * -distortionPixelSize.y * 1.4 * i);
+
+        float distortionSizeMultiplier = i * 1.5;
+    
+        float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
+        float4 distortColor = tex2D(DistortTextureSampler, (pixelPos + distortionInputOffset) / distortionSizeMultiplier);
   
-    float distortionPower = max(distortPixel.r + globalDistortionPower - 1.0, 0);
-    float distortionSizeMultiplier = 1.0;
-     
-    float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + (distortionPower * distortionSizeMultiplier) + distortionInputOffset);
-    float2 distortionOffset = float2(distortColor.r, distortColor.g) * globalDistortionPower * 0.2f;
+        float distortionPower = max(distortColor.r + globalDistortionPower - 1.0, 0);
+        
+        distortionOffset = distortionOffset + float2(distortColor.r, distortColor.r) * distortionPower * 0.1f;
+    }
        
     return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * drawColor;
 }
