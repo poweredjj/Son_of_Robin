@@ -55,6 +55,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/Pixelate.fx
 
+#begin effects/Rain.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Rain.fx
+
 #begin effects/Sketch.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -7458,6 +7464,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/water_deep.png
+
+#begin gfx/repeating_textures/water_drops.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/water_drops.png
 
 #begin gfx/repeating_textures/water_medium.png
 /importer:TextureImporter

@@ -51,6 +51,7 @@ namespace SonOfRobin
         public static Effect EffectMosaic { get; private set; }
         public static Effect EffectPixelate { get; private set; }
         public static Effect EffectDistort { get; private set; }
+        public static Effect EffectRain { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -112,7 +113,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+           //  if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool LicenceValid
@@ -256,6 +257,7 @@ namespace SonOfRobin
             EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
             EffectPixelate = ContentMgr.Load<Effect>("effects/Pixelate");
             EffectDistort = ContentMgr.Load<Effect>("effects/Distort");
+            EffectRain = ContentMgr.Load<Effect>("effects/Rain");
         }
 
         public static void LoadInitialTextures()
