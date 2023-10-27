@@ -152,6 +152,7 @@ namespace SonOfRobin
         {
             get
             {
+                if (this.world.ActiveLevel.levelType == Level.LevelType.Cave) return PieceSoundPackTemplate.Action.StepRock;
                 if (this.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp)) return PieceSoundPackTemplate.Action.StepMud;
                 if (this.IsOnLava) return PieceSoundPackTemplate.Action.StepLava;
                 if (this.IsOnRocks) return PieceSoundPackTemplate.Action.StepRock;

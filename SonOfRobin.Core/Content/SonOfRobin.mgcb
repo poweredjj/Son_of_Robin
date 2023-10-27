@@ -9007,6 +9007,12 @@
 /processorParam:Quality=Best
 /build:sound/345920__dragisharambo21__thunder.ogg
 
+#begin sound/349873__matrixxx__water-drop-02.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/349873__matrixxx__water-drop-02.ogg
+
 #begin sound/351256__kinoton__deep-whoosh-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

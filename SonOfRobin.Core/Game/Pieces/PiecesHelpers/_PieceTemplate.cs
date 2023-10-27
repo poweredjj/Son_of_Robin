@@ -275,6 +275,7 @@ namespace SonOfRobin
             SoundNightCrickets = 209,
             SoundNoonCicadas = 210,
             SoundLava = 211,
+            SoundCaveWaterDrip = 228,
 
             SeaWave = 212,
             PredatorRepellant = 213,
@@ -676,7 +677,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 255) },
-                        }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
+                        });
 
                         BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom, allowedTerrain: allowedTerrain,
                            maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, readableName: "mushroom", description: "A mushroom.");
@@ -2584,6 +2585,19 @@ namespace SonOfRobin
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lava sound", description: "Ambient sound for lava.", visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Yellow;
+
+                        return ambientSound;
+                    }
+
+                case Name.SoundCaveWaterDrip:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
+                        });
+
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient cave water", description: "Ambient sound for cave water dripping.", visible: Preferences.debugShowSounds);
+
+                        ambientSound.sprite.color = Color.Blue;
 
                         return ambientSound;
                     }

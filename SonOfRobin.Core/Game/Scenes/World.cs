@@ -723,7 +723,9 @@ namespace SonOfRobin
                 if (this.ActiveLevel.doNotCreatePiecesList.Contains(creationData.name) || (creationData.doNotReplenish && !initialCreation)) continue;
 
                 int minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
-                if (creationData.maxAmount > -1) minAmount = Math.Min(minAmount, creationData.maxAmount);
+                int maxAmount = creationData.GetMaxAmount(level: this.ActiveLevel);
+
+                if (maxAmount > -1) minAmount = Math.Min(minAmount, maxAmount);
 
                 int amountToCreate = Math.Max(minAmount - this.ActiveLevel.pieceCountByName[creationData.name], 0);
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
@@ -763,7 +765,7 @@ namespace SonOfRobin
                         if (!this.ActiveLevel.doNotCreatePiecesList.Contains(pieceName) && addToDoNotCreateList)
                         {
                             this.ActiveLevel.doNotCreatePiecesList.Add(pieceName);
-                            new LevelEvent(eventName: LevelEvent.EventName.RestorePieceCreation, delay: 15000, level: this.ActiveLevel, boardPiece: null, eventHelper: pieceName);
+                            new LevelEvent(eventName: LevelEvent.EventName.RestorePieceCreation, delay: PieceInfo.GetInfo(pieceName).delayAfterCreationMinutes * 60 * 60, level: this.ActiveLevel, boardPiece: null, eventHelper: pieceName);
                         }
                         break;
                     }

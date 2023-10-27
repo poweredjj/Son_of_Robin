@@ -110,6 +110,7 @@ namespace SonOfRobin
             public readonly float projectileHitMultiplier;
             public readonly bool projectileCanBeStuck;
             public readonly bool projectileCanExplode;
+            public readonly int delayAfterCreationMinutes;
             public readonly TextureBank.TextureName interactVirtButtonName;
 
             public bool CanHurtAnimals
@@ -239,6 +240,7 @@ namespace SonOfRobin
                 this.projectileHitMultiplier = 0f;
                 this.projectileCanBeStuck = false;
                 this.projectileCanExplode = false;
+                this.delayAfterCreationMinutes = 10;
                 this.interactVirtButtonName = TextureBank.TextureName.Empty;
 
                 var customSoundsForActions = new Dictionary<PieceSoundPackTemplate.Action, Sound>();
@@ -1711,6 +1713,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.BeachDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1726,6 +1729,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.ForestDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1741,6 +1745,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.DesertDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1755,6 +1760,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.GlassDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1768,6 +1774,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.SwampDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1785,6 +1792,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.RuinsDigSite:
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -2862,6 +2870,14 @@ namespace SonOfRobin
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f);
                         break;
 
+                    case PieceTemplate.Name.SoundCaveWaterDrip:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.floatsOnWater = true;
+                        this.ambsoundPlayDelay = 60 * 30;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.WaterDrop }, maxPitchVariation: 1f, volume: 1.0f);
+                        break;
+
                     case PieceTemplate.Name.ParticleEmitterEnding:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
@@ -2979,6 +2995,7 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 6000, maxNoOfPiecesSameClass: 0);
                         this.blocksMovement = true;
                         this.hasFlatShadow = true;
+                        this.delayAfterCreationMinutes = 30;
                         break;
 
                     case PieceTemplate.Name.CaveEntranceInside:

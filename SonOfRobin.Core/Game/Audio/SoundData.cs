@@ -292,6 +292,7 @@ namespace SonOfRobin
             BonusItem = 227,
             Whoosh = 228,
             Glug = 230,
+            WaterDrop = 231,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -526,6 +527,7 @@ namespace SonOfRobin
             { Name.BonusItem, "625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth" },
             { Name.Whoosh, "351256__kinoton__deep-whoosh-1" },
             { Name.Glug, "221488__lloydevans09__glug" },
+            { Name.WaterDrop, "349873__matrixxx__water-drop-02" },
             };
     }
 }
