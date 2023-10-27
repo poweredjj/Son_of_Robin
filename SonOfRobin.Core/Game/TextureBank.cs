@@ -110,6 +110,7 @@ namespace SonOfRobin
             ParticleDebrisSoot = 63,
 
             RepeatingPerlinNoiseColor = 140,
+            RepeatingWaterDrops = 149,
             RepeatingGrassGood = 64,
             RepeatingMapGrassGood = 82,
             RepeatingGrassBad = 65,
@@ -276,6 +277,7 @@ namespace SonOfRobin
             { TextureName.RepeatingWaterCaustics, "repeating_textures/water_caustics" },
             { TextureName.RepeatingFog, "repeating_textures/fog" },
             { TextureName.RepeatingPerlinNoiseColor, "repeating_textures/perlin_noise_color" },
+            { TextureName.RepeatingWaterDrops, "repeating_textures/water_drops" },
             { TextureName.RepeatingGrassGood, "repeating_textures/grass_good" },
             { TextureName.RepeatingMapGrassGood, "repeating_textures/map_grass_good" },
             { TextureName.RepeatingGrassBad, "repeating_textures/grass_bad" },

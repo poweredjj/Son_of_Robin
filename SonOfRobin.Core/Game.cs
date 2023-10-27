@@ -51,6 +51,7 @@ namespace SonOfRobin
         public static Effect EffectMosaic { get; private set; }
         public static Effect EffectPixelate { get; private set; }
         public static Effect EffectDistort { get; private set; }
+        public static Effect EffectRain { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -256,6 +257,7 @@ namespace SonOfRobin
             EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
             EffectPixelate = ContentMgr.Load<Effect>("effects/Pixelate");
             EffectDistort = ContentMgr.Load<Effect>("effects/Distort");
+            EffectRain = ContentMgr.Load<Effect>("effects/Rain");
         }
 
         public static void LoadInitialTextures()

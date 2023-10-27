@@ -351,6 +351,12 @@ namespace SonOfRobin
             if (!this.rainSound.IsPlaying) this.rainSound.Play();
             this.rainSound.AdjustVolume(this.RainPercentage);
 
+            if (this.world.globalEffect == null || this.world.globalEffect.effect != SonOfRobinGame.EffectMosaic)
+            {
+                this.world.globalEffect = new RainInstance(baseTexture: this.world.CameraViewRenderTarget);
+                this.world.globalEffect.intensityForTweener = this.RainPercentage;
+            }
+
             Rectangle cameraRect = this.world.camera.viewRect;
 
             bool firstRun = !this.rainEmitter.sprite.IsOnBoard;
