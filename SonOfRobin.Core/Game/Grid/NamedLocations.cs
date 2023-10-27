@@ -295,7 +295,7 @@ namespace SonOfRobin
             this.random = new(this.grid.level.seed);
             this.nameRandomizer = new(random: this.random);
             this.playerLocation = null;
-            this.lastDiscovery = DateTime.MinValue;
+            this.lastDiscovery = DateTime.Now;
             this.playerLocationLastCheckedFrame = 0;
         }
 

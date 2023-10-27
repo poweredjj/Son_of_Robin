@@ -1094,7 +1094,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.MapEnabled && this.CanSeeAnything)
+            if (this.world.MapEnabled && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night && this.CanSeeAnything)
             {
                 NamedLocations.Location location = this.level.grid.namedLocations.PlayerLocation;
                 if (location != null && !location.hasBeenDiscovered) this.level.grid.namedLocations.ProcessDiscovery();
