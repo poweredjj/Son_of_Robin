@@ -291,6 +291,7 @@ namespace SonOfRobin
             Rattle = 226,
             BonusItem = 227,
             Whoosh = 228,
+            Glug = 230,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -524,6 +525,7 @@ namespace SonOfRobin
             { Name.Rattle, "475827__zeffon__rattle-01" },
             { Name.BonusItem, "625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth" },
             { Name.Whoosh, "351256__kinoton__deep-whoosh-1" },
+            { Name.Glug, "221488__lloydevans09__glug" },
             };
     }
 }

@@ -26,6 +26,7 @@ namespace SonOfRobin
             Brew,
             Equip,
             Offer,
+            Empty,
         }
 
         private const float marginPercent = 0.03f;
@@ -137,13 +138,13 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addEmpty = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer);
+            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addEmpty: addEmpty);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -155,7 +156,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false)
+        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addEmpty = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -172,6 +173,7 @@ namespace SonOfRobin
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
             if (addHarvest) contextActionList.Add(ContextAction.Harvest);
             if (addOffer) contextActionList.Add(ContextAction.Offer);
+            if (addEmpty) contextActionList.Add(ContextAction.Empty);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
@@ -506,6 +508,28 @@ namespace SonOfRobin
 
                         return;
                     }
+
+                case ContextAction.Empty:
+                    {
+                        Potion potion = (Potion)this.piece;
+
+                        Sound.QuickPlay(SoundData.Name.Glug);
+
+                        BoardPiece emptyContainter = PieceTemplate.CreatePiece(templateName: potion.pieceInfo.convertsToWhenUsed, world: potion.world);
+
+                        if (this.slot.CanFitThisPiece(piece: emptyContainter, treatSlotAsEmpty: true))
+                        {
+                            this.slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+                        }
+                        else
+                        {
+                            this.slot.DestroyPieceWithID(potion.id);
+                            this.slot.storage.AddPiece(piece: emptyContainter, dropIfDoesNotFit: true);
+                        }
+
+                        return;
+                    }
+
 
                 case ContextAction.Extinguish:
                     {
