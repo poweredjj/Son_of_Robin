@@ -13,7 +13,6 @@ float globalDistortionPower;
 float4 drawColor;
 float2 baseTextureSize;
 float2 distortionTextureSize;
-float2 distortionTextureOffset;
 float currentUpdate;
 
 sampler s0: register(s0);
@@ -43,13 +42,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 basePixelSize = 1.0 / baseTextureSize;
     float2 distortionPixelSize = 1.0 / distortionTextureSize;
     
-    float2 distortionInputOffset = float2(0, currentUpdate * distortionPixelSize.y);
+    float2 distortionInputOffset = float2(0, (float)currentUpdate * -distortionPixelSize.y);
     float4 distortPixel = tex2D(DistortTextureSampler, input.TextureCoordinates + distortionInputOffset);
   
-    float distortionPower = max(globalDistortionPower + distortPixel.r - 1.0, 0);  
-    float distortionSizeMultiplier = 1.0;   
+    float distortionPower = max(distortPixel.r + globalDistortionPower - 1.0, 0);
+    float distortionSizeMultiplier = 1.0;
      
-    float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + (distortionPower * distortionSizeMultiplier));
+    float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + (distortionPower * distortionSizeMultiplier) + distortionInputOffset);
     float2 distortionOffset = float2(distortColor.r, distortColor.g) * globalDistortionPower * 0.2f;
        
     return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * drawColor;
