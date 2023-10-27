@@ -845,7 +845,11 @@ namespace SonOfRobin
 
             // highlighting pieces to interact with and corresponding interface elements
 
-            if (this.level.levelType == Level.LevelType.Island) ControlTips.TipHighlightOnNextFrame(tipName: "craft");
+            if (this.level.levelType == Level.LevelType.Island)
+            {
+                ControlTips.TipHighlightOnNextFrame(tipName: "craft");
+                VirtButton.ButtonHighlightOnNextFrame(VButName.FieldCraft);
+            }
 
             if (this.world.inputActive) this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
 
