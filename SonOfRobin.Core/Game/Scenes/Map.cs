@@ -729,7 +729,7 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Full)
             {
-                int markerSizePixels = (int)(Preferences.MapMarkerRealSize * this.viewParams.ScaleY / Preferences.GlobalScale);
+                int markerSizePixels = (int)(Preferences.MapMarkerRealSize * this.viewParams.ScaleY);
                 Rectangle markerRect = new Rectangle(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
 
                 foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
