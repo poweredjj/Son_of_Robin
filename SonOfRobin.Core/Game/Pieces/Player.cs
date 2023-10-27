@@ -1018,7 +1018,7 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate % 65 == 0)
             {
-                if (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining)
+                if (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining && this.activeState != State.PlayerControlledSleep)
                 {
                     this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }
@@ -1027,7 +1027,7 @@ namespace SonOfRobin
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (isInWater || isRaining) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+            if ((isInWater || isRaining) && this.activeState != State.PlayerControlledSleep) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
 
             if (isRaining)
             {
@@ -1075,7 +1075,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 1f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
             }
 
-            bool struckWithLightning = this.world.weather.LightningJustStruck && isInWater && this.world.random.Next(2) == 0;
+            bool struckWithLightning = this.world.weather.LightningJustStruck && isInWater && this.world.random.Next(2) == 0 && this.activeState != State.PlayerControlledSleep;
             if (struckWithLightning)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lightning, ignoreDelay: true);
@@ -1280,6 +1280,8 @@ namespace SonOfRobin
             if (!this.sleepEngine.canBeAttacked)
             {
                 this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.RegenPoison); // to remove poison inside shelter
+                this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Heat);
+                this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
                 this.sprite.Visible = false;
             }
             this.world.touchLayout = TouchLayout.WorldSleep;
