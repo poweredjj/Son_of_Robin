@@ -162,7 +162,7 @@ namespace SonOfRobin
             this.UpdateBurnAllFuelEndFrame();
 
             var nearbyPieces = this.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
-            var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal));
+            var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal) && piece.alive);
 
             bool hintShown = this.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.AnimalScaredOfFire);
 
