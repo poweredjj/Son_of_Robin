@@ -1372,6 +1372,7 @@ namespace SonOfRobin
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.SmallInventory, ignoreDelay: true);
 
+                Sound.QuickPlay(SoundData.Name.Error);
                 MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.CroppedAnimFrame.texture, avoidDuplicates: true);
             }
         }
