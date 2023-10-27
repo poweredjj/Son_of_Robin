@@ -423,6 +423,7 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
                         this.windParticlesDict[ParticleEngine.Preset.WindPetal] = Color.White;
+                        this.delayAfterCreationMinutes = 30;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -441,6 +442,7 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
                         this.windParticlesDict[ParticleEngine.Preset.WindPetal] = new Color(237, 123, 214);
+                        this.delayAfterCreationMinutes = 30;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -460,6 +462,7 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 240, maxNoOfPiecesSameName: 0);
                         this.isAffectedByWind = true;
                         this.windParticlesDict[ParticleEngine.Preset.WindPetal] = new Color(237, 222, 12);
+                        this.delayAfterCreationMinutes = 30;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -480,6 +483,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
+                        this.delayAfterCreationMinutes = 60;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -500,6 +504,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 200;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 2);
                         this.isAffectedByWind = true;
+                        this.delayAfterCreationMinutes = 60;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass, ParticleEngine.Preset.DebrisLeaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -539,6 +544,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 600;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
                         this.isAffectedByWind = true;
+                        this.delayAfterCreationMinutes = 30;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1097,6 +1103,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.delayAfterCreationMinutes = 60;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1111,6 +1118,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.delayAfterCreationMinutes = 60;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1125,6 +1133,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1141,6 +1150,7 @@ namespace SonOfRobin
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 500;
+                        this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
