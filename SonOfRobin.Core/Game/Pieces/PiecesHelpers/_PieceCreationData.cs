@@ -103,7 +103,7 @@ namespace SonOfRobin
                 // cave
 
                 new PieceCreationData(name: PieceTemplate.Name.CaveEntranceInside, multiplier: 1.2f, minDepth: 1, maxAmount: 2, doNotReplenish: true, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 5f, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.CaveWeakMinerals, multiplier: 6f, minDepth: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.5f, minDepth: 1, maxAmount: 10, maxAmountIncreaseForDepthLevel: 8, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.5f, minDepth: 2, maxAmount: 10, maxAmountIncreaseForDepthLevel: 5, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.5f, maxAmount: 4, minDepth: 3, maxAmountIncreaseForDepthLevel: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
