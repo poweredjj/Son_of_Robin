@@ -661,7 +661,7 @@ namespace SonOfRobin
                 case Name.Cactus:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
+                            { Terrain.Name.Height, new AllowedRange(min: 99, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
@@ -1805,7 +1805,7 @@ namespace SonOfRobin
 
                         var maleAnimPkgName = malePackageNames[BoardPiece.Random.Next(malePackageNames.Count)];
                         var femaleAnimPkgName = femalePackageNames[BoardPiece.Random.Next(femalePackageNames.Count)];
-                     
+
                         var eats = new List<Name> { Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
