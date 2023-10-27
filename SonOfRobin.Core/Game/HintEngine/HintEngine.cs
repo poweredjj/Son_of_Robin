@@ -15,7 +15,6 @@ namespace SonOfRobin
             Starving = 3,
             Tired = 4,
             VeryTired = 5,
-            CantUseToolsInWater = 6,
             SmallInventory = 7,
             MapNegative = 8,
             Lava = 9,
@@ -37,7 +36,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
 
         public HashSet<Type> shownGeneralHints = new() { };
         public HashSet<PieceHint.Type> shownPieceHints = new() { };
@@ -178,15 +177,6 @@ namespace SonOfRobin
                         var message = hintMessages[this.world.random.Next(hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(message);
-                        break;
-                    }
-
-                case Type.CantUseToolsInWater:
-                    {
-                        // no Disable(), because this hint should be shown every time
-                        ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"I cannot use my | {text} in water.", blockInput: true, imageList: new List<Texture2D> { texture }),
-                        });
                         break;
                     }
 

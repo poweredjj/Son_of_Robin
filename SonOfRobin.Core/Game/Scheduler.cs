@@ -740,7 +740,7 @@ namespace SonOfRobin
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                             }
                             else slot.DestroyPieceWithID(potion.id);
-                            
+
                             player.CheckLowHP();
 
                             return;
@@ -751,6 +751,18 @@ namespace SonOfRobin
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             PortableLight portableLight = (PortableLight)executeData["toolbarPiece"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
+                            bool buttonHeld = (bool)executeData["buttonHeld"];
+
+                            bool canBurnNow = portableLight.CanBurnNow;
+
+                            if (!highlightOnly && !canBurnNow && !buttonHeld)
+                            {
+                                MessageLog.Add(text: $"Cannot use {portableLight.readableName}.", texture: portableLight.pieceInfo.CroppedFrame.texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                                Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
+                                return;
+                            }
+
+                            if (!canBurnNow) return;
 
                             if (highlightOnly)
                             {
@@ -760,7 +772,6 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            bool buttonHeld = (bool)executeData["buttonHeld"];
                             if (buttonHeld) return;
 
                             portableLight.IsOn = !portableLight.IsOn;

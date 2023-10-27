@@ -11,7 +11,7 @@ namespace SonOfRobin
         private readonly LightEngine storedLightEngine;
 
         public PortableLight(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool canBeUsedDuringRain, LightEngine storedLightEngine,
-            byte animSize = 0, string animName = "off", int maxHitPoints = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty) :
+            byte animSize = 0, string animName = "off", int maxHitPoints = 1, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, activeState: State.Empty)
         {
@@ -20,6 +20,23 @@ namespace SonOfRobin
             this.isOn = false;
             this.canBeUsedDuringRain = canBeUsedDuringRain;
             this.convertsToWhenUsedUp = convertsToWhenUsedUp;
+        }
+
+        public bool CanBurnNow
+        {
+            get
+            {
+                bool cannotBurnNow =
+                    this.world.Player == null ||
+                    !this.world.Player.alive ||
+                    !this.world.Player.exists ||
+                    this.world.Player.sprite.IsInWater ||
+                    this.world.Player.sleepMode != Player.SleepMode.Awake ||
+                    !this.IsOnPlayersToolbar ||
+                    (!this.canBeUsedDuringRain && this.world.weather.IsRaining);
+
+                return !cannotBurnNow;
+            }
         }
 
         public bool IsOn

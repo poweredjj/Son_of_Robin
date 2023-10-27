@@ -1393,7 +1393,7 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.CroppedAnimFrame.texture);
+                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
 
                     return false;
                 }
@@ -1435,7 +1435,11 @@ namespace SonOfRobin
 
             if (!highlightOnly && this.sprite.CanDrownHere)
             {
-                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.CroppedAnimFrame.texture);
+                if (!buttonHeld)
+                {
+                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                    Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
+                }
 
                 return false;
             }
