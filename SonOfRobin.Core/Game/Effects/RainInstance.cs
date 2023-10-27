@@ -24,7 +24,7 @@ namespace SonOfRobin
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
             this.effect.Parameters["distortionTextureSize"].SetValue(this.distortTextureSize);
-            this.effect.Parameters["globalDistortionPower"].SetValue(this.intensityForTweener);
+            this.effect.Parameters["rainPower"].SetValue(this.intensityForTweener);
             this.effect.Parameters["currentUpdate"].SetValue(SonOfRobinGame.CurrentUpdate);
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
