@@ -391,29 +391,53 @@ namespace SonOfRobin
                     if (this.level.levelType == Level.LevelType.Cave)
                     {
                         // removing (filling with 0) all areas, except the largest one
-
-                        var walkableFloorRawPixelsBag = new ConcurrentBag<Point>();
-                        Parallel.For(0, this.dividedHeight, rawY =>
                         {
-                            for (int rawX = 0; rawX < this.dividedWidth; rawX++)
+                            var walkableFloorRawPixelsBag = new ConcurrentBag<Point>();
+                            Parallel.For(0, this.dividedHeight, rawY =>
                             {
-                                byte rawPixelHeight = this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY);
-                                if (rawPixelHeight > 29) walkableFloorRawPixelsBag.Add(new Point(rawX, rawY));
-                            }
-                        });
+                                for (int rawX = 0; rawX < this.dividedWidth; rawX++)
+                                {
+                                    if (this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY) > 29) walkableFloorRawPixelsBag.Add(new Point(rawX, rawY));
+                                }
+                            });
 
-                        var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.dividedWidth, height: this.dividedHeight, pointsBag: walkableFloorRawPixelsBag);
+                            var walkablePixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.dividedWidth, height: this.dividedHeight, pointsBag: walkableFloorRawPixelsBag);
 
-                        var largestArea = pixelCoordsByRegion.OrderByDescending(sublist => sublist.Count).FirstOrDefault();
+                            var largestArea = walkablePixelCoordsByRegion.OrderByDescending(sublist => sublist.Count).FirstOrDefault();
 
-                        Parallel.ForEach(pixelCoordsByRegion.Where(sublist => sublist != largestArea), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
-                          {
-                              Terrain terrainHeight = this.terrainByName[Terrain.Name.Height];
-                              foreach (Point rawCoords in rawCoordsList)
-                              {
-                                  terrainHeight.SetMapDataRaw(rawCoords: rawCoords, value: 0);
-                              }
-                          });
+                            Parallel.ForEach(walkablePixelCoordsByRegion.Where(sublist => sublist != largestArea), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
+                            {
+                                Terrain terrainHeight = this.terrainByName[Terrain.Name.Height];
+                                foreach (Point rawCoords in rawCoordsList)
+                                {
+                                    terrainHeight.SetMapDataRaw(rawCoords: rawCoords, value: 0);
+                                }
+                            });
+                        }
+
+                        {
+                            // removing (filling with largest non-lava value) small lava areas
+
+                            var lavaFloorRawPixelsBag = new ConcurrentBag<Point>();
+                            Parallel.For(0, this.dividedHeight, rawY =>
+                            {
+                                for (int rawX = 0; rawX < this.dividedWidth; rawX++)
+                                {
+                                    if (this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY) >= Terrain.lavaMin) lavaFloorRawPixelsBag.Add(new Point(rawX, rawY));
+                                }
+                            });
+
+                            var lavaPixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.dividedWidth, height: this.dividedHeight, pointsBag: lavaFloorRawPixelsBag);
+
+                            Parallel.ForEach(lavaPixelCoordsByRegion.Where(sublist => sublist.Count < 16), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
+                            {
+                                Terrain terrainHeight = this.terrainByName[Terrain.Name.Height];
+                                foreach (Point rawCoords in rawCoordsList)
+                                {
+                                    terrainHeight.SetMapDataRaw(rawCoords: rawCoords, value: Terrain.lavaMin - 1);
+                                }
+                            });
+                        }
                     }
 
                     break;
