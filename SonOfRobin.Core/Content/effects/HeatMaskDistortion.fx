@@ -46,7 +46,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 basePixelSize = 1.0 / baseTextureSize;
     float2 distortionPixelSize = 1.0 / distortionTextureSize;      
     float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates); 
-    float2 distortionOffset = float2(distortColor.r, distortColor.r) * basePixelSize * heatPower * 20;
+    float2 distortionOffset = float2(distortColor.r, distortColor.r) * basePixelSize * heatPower * 30;
     
     // return (tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) + distortColor) / 2; // for testing
 

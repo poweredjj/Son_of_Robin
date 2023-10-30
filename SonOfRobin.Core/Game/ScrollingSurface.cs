@@ -41,7 +41,7 @@ namespace SonOfRobin
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
 
-            this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, linearScrollPerFrame: new Vector2(1, -1), world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
+            this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, linearScrollPerFrame: new Vector2(-1, 1), world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
             this.hotAir.effInstance = new DistortInstance(scrollingSurface: this.hotAir, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f);
         }
 
@@ -151,11 +151,8 @@ namespace SonOfRobin
 
         public void Update()
         {
-            this.offset += this.linearScrollPerFrame;
-            {
-
-            }
             this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.offset += this.linearScrollPerFrame;
         }
 
         public void Draw(float opacityOverride = -1f)

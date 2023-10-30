@@ -343,7 +343,7 @@ namespace SonOfRobin
                             SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
                             this.world.solidColorManager.Add(whiteOverlay);
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new MosaicInstance(textureSize: new Vector2(this.world.CameraViewRenderTarget.Width, this.world.CameraViewRenderTarget.Height), blurSize: new Vector2(18, 18), framesLeft: -1), storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new MosaicInstance(textureSize: new Vector2(this.world.FinalRenderTarget.Width, this.world.FinalRenderTarget.Height), blurSize: new Vector2(18, 18), framesLeft: -1), storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
 

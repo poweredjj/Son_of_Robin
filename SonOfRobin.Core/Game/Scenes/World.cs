@@ -35,7 +35,7 @@ namespace SonOfRobin
         public readonly Random random;
         public readonly Camera camera;
         private RenderTarget2D darknessMask; // used for darkness and for heat
-        public RenderTarget2D CameraViewRenderTarget { get; private set; }
+        private RenderTarget2D cameraViewRenderTarget;
         public RenderTarget2D FinalRenderTarget { get; private set; }
         public EffInstance globalEffect;
         public EffInstance heatMaskDistortInstance;
@@ -55,7 +55,8 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-        public Grid Grid { get { return this.ActiveLevel.grid; } }
+        public Grid Grid
+        { get { return this.ActiveLevel.grid; } }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
@@ -119,7 +120,7 @@ namespace SonOfRobin
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
             this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(Vector2.Zero);
-            this.CameraViewRenderTarget = null;
+            this.cameraViewRenderTarget = null;
             this.FinalRenderTarget = null;
             this.darknessMask = null;
             this.globalEffect = null;
@@ -154,7 +155,7 @@ namespace SonOfRobin
             RumbleManager.StopAll();
             base.Remove();
             this.darknessMask?.Dispose();
-            this.CameraViewRenderTarget?.Dispose();
+            this.cameraViewRenderTarget?.Dispose();
             this.FinalRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
@@ -1258,7 +1259,7 @@ namespace SonOfRobin
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
-            this.globalEffect = new MosaicInstance(textureSize: new Vector2(this.CameraViewRenderTarget.Width, this.CameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
+            this.globalEffect = new MosaicInstance(textureSize: new Vector2(this.cameraViewRenderTarget.Width, this.cameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
             this.globalEffect.intensityForTweener = 0f;
             this.tweenerForGlobalEffect
                 .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: 10f / 60f)
@@ -1345,7 +1346,7 @@ namespace SonOfRobin
 
             // drawing final image
 
-            SetRenderTarget(this.CameraViewRenderTarget);
+            SetRenderTarget(this.cameraViewRenderTarget);
 
             // drawing water surface
             if (this.ActiveLevel.hasWater) this.scrollingSurfaceManager.DrawAllWater();
@@ -1386,14 +1387,14 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.Clear(Color.Black);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
-            //if (this.Player != null) // for testing
-            //{
-            //    Rectangle distortRect = this.Player.sprite.GfxRect;
-            //    distortRect.Inflate(distortRect.Width * 3, distortRect.Height * 3);
-            //    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, distortRect, Color.White);
-            //}
+            if (this.Player != null) // for testing
+            {
+                Rectangle distortRect = this.Player.sprite.GfxRect;
+                distortRect.Inflate(distortRect.Width * 3, distortRect.Height * 3);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, distortRect, Color.White);
+            }
 
-            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage / 3);
+            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage / 2);
 
             SonOfRobinGame.SpriteBatch.End();
 
@@ -1402,9 +1403,8 @@ namespace SonOfRobin
             SetRenderTarget(this.FinalRenderTarget);
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
-            if (this.heatMaskDistortInstance == null) this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.CameraViewRenderTarget, distortTexture: this.darknessMask);
             this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-            SonOfRobinGame.SpriteBatch.Draw(this.CameraViewRenderTarget, this.CameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.cameraViewRenderTarget, this.cameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
             // additional "permanent" effects can be added here (like curves, etc.), but everything should finally be rendered on FinalRenderTarget
@@ -1671,33 +1671,31 @@ namespace SonOfRobin
 
         public void RefreshRenderTargets()
         {
-            // refreshing cameraViewTarget
-
             int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
             int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
 
-            if (this.CameraViewRenderTarget == null || this.CameraViewRenderTarget.Width != newWidth || this.CameraViewRenderTarget.Height != newHeight)
+            if (this.cameraViewRenderTarget == null || this.cameraViewRenderTarget.Width != newWidth || this.cameraViewRenderTarget.Height != newHeight)
             {
-                this.CameraViewRenderTarget?.Dispose();
-                this.CameraViewRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.CameraViewRenderTarget.Width}x{this.CameraViewRenderTarget.Height}");
+                this.cameraViewRenderTarget?.Dispose();
+                this.cameraViewRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.cameraViewRenderTarget.Width}x{this.cameraViewRenderTarget.Height}");
             }
 
             if (this.FinalRenderTarget == null || this.FinalRenderTarget.Width != newWidth || this.FinalRenderTarget.Height != newHeight)
             {
                 this.FinalRenderTarget?.Dispose();
                 this.FinalRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.FinalRenderTarget.Width}x{this.FinalRenderTarget.Height}");
+                MessageLog.Add(debugMessage: true, text: $"Creating new final render target (world) - {this.FinalRenderTarget.Width}x{this.FinalRenderTarget.Height}");
             }
-
-            // refreshing darkness mask
 
             if (this.darknessMask == null || this.darknessMask.Width != newWidth || this.darknessMask.Height != newHeight)
             {
                 this.darknessMask?.Dispose();
                 this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                MessageLog.Add(debugMessage: true, text: $"Creating new render target (world) - {this.CameraViewRenderTarget.Width}x{this.CameraViewRenderTarget.Height}");
+                MessageLog.Add(debugMessage: true, text: $"Creating new darkness mask (world) - {this.darknessMask.Width}x{this.darknessMask.Height}");
             }
+
+            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.darknessMask);
         }
     }
 }
