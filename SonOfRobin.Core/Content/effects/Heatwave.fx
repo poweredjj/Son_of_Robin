@@ -44,15 +44,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 basePixelSize = 1.0 / baseTextureSize;
     float2 distortionPixelSize = 1.0 / distortionTextureSize;   
     
-    float2 distortionInputOffset = distortionTextureOffset * drawScale + float2(0, (float) currentUpdate * distortionPixelSize.y * 0.45 * heatPower);
+    float2 distortionInputOffset = distortionTextureOffset * drawScale + float2(0, (float)currentUpdate * distortionPixelSize.y * 0.5 * heatPower);
         
     float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
-    float4 distortColor = tex2D(DistortTextureSampler, pixelPos + distortionInputOffset);
+    float4 distortColor = tex2D(DistortTextureSampler, frac(pixelPos + distortionInputOffset));
     
-    // return (tex2D(BaseTextureSampler, input.TextureCoordinates) + distortColor) / 2 * drawColor; // for testing
+    // return (tex2D(BaseTextureSampler, input.TextureCoordinates) + distortColor) / 2 * drawColor; // for testing   
           
-    float2 distortionOffset = float2(distortColor.r - 0.5, distortColor.g - 0.5) * heatPower * 0.02f;       
-    return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * drawColor;
+    float2 distortionOffset = float2(distortColor.r - 0.5, distortColor.g - 0.5) * heatPower * 0.032f;
+    
+    float4 color1 = tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset);
+    distortionOffset = distortionOffset * 0.6;
+    
+    float4 color2 = tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset);
+    distortionOffset = distortionOffset * 0.6;
+    
+    float4 color3 = tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset);
+ 
+    return (color1 + color2 + color3) / 3 * drawColor;
 }
 
 technique SpriteDrawing
