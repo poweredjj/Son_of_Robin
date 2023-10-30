@@ -1243,7 +1243,7 @@ namespace SonOfRobin
 
                 case SleepMode.WaitMorning:
                     TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
-                    TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
+                    TimeSpan timeUntilMorning = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
                     if (timeUntilMorning > maxWaitingTime) timeUntilMorning = maxWaitingTime;
 
                     SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(maxWaitingTime.TotalMinutes - timeUntilMorning.TotalMinutes), maxVal: (int)maxWaitingTime.TotalMinutes, text: sleepModeText, addNumbers: false);
@@ -1264,7 +1264,7 @@ namespace SonOfRobin
         {
             if (checkIfSleepIsPossible && sleepEngine.minFatiguePercentPossibleToGet > 0 && this.FatiguePercent - sleepEngine.minFatiguePercentPossibleToGet < 0.05f)
             {
-                new TextWindow(text: "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound); ;
+                new TextWindow(text: "I'm not tired enough to sleep here.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound); ;
                 return;
             }
 
@@ -1275,7 +1275,7 @@ namespace SonOfRobin
             LoadingTips.ChangeTip();
 
             if (this.visualAid != null) this.visualAid.Destroy();
-            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
+            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
 
             if (!this.sleepEngine.canBeAttacked)
             {

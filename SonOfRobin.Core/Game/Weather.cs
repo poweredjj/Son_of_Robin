@@ -78,6 +78,7 @@ namespace SonOfRobin
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
         private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
+        private static readonly TimeSpan heatTransitionDuration = TimeSpan.FromMinutes(25);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
 
         public static readonly List<SoundData.Name> thunderNames = Enum.GetValues(typeof(SoundData.Name))
@@ -209,7 +210,25 @@ namespace SonOfRobin
             this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
             this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
-            this.HeatPercentage = this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.SunVisibility >= 0.8f && !this.IsRaining ? 1f : 0f;
+
+            this.HeatPercentage = 0;
+
+            if (this.SunVisibility >= 0.8f && !this.IsRaining)
+            {
+                IslandClock.PartOfDay currentPartOfDay = this.world.islandClock.CurrentPartOfDay;
+
+                if (currentPartOfDay == IslandClock.PartOfDay.Morning)
+                {
+                    TimeSpan timeUntilNoon = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon);
+                    if (timeUntilNoon <= heatTransitionDuration) this.HeatPercentage = 1f - ((float)timeUntilNoon.Ticks / (float)heatTransitionDuration.Ticks);
+                }
+                else if (currentPartOfDay == IslandClock.PartOfDay.Noon)
+                {
+                    this.HeatPercentage = 1f;
+                    TimeSpan timeUntilAfternoon = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Afternoon);
+                    if (timeUntilAfternoon <= heatTransitionDuration) this.HeatPercentage = (float)timeUntilAfternoon.Ticks / (float)heatTransitionDuration.Ticks;
+                }
+            }
 
             this.LightningPercentage = this.GetIntensityForWeatherType(WeatherType.Lightning);
             if (this.previousIntensityForType[WeatherType.Lightning] < this.currentIntensityForType[WeatherType.Lightning])
