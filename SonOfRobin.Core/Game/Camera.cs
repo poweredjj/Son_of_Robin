@@ -170,6 +170,7 @@ namespace SonOfRobin
             if (this.useFluidMotionForZoom)
             {
                 this.CurrentZoom += (this.TargetZoom - this.CurrentZoom) / this.zoomSlowdown;
+                if (Math.Abs(this.TargetZoom - this.CurrentZoom) < 0.00005f) this.CurrentZoom = this.TargetZoom;
                 if (this.CurrentZoom == this.TargetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
             }
             else
