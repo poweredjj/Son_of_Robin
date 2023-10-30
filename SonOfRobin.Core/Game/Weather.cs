@@ -242,12 +242,6 @@ namespace SonOfRobin
             this.ProcessRain();
             this.ProcessLightning();
 
-            if (this.HeatPercentage > 0f && (this.world.globalEffect == null || this.world.globalEffect.effect != SonOfRobinGame.EffectMosaic))
-            {
-                this.world.globalEffect = new HeatWaveInstance(world: this.world, baseTexture: this.world.CameraViewRenderTarget, framesLeft: 2);
-                this.world.globalEffect.intensityForTweener = this.HeatPercentage;
-            }
-
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
         }
 

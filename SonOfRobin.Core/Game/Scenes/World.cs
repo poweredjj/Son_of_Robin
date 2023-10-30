@@ -34,9 +34,11 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly Random random;
         public readonly Camera camera;
-        private RenderTarget2D darknessMask;
+        private RenderTarget2D darknessMask; // used for darkness and for heat
         public RenderTarget2D CameraViewRenderTarget { get; private set; }
+        public RenderTarget2D FinalRenderTarget { get; private set; }
         public EffInstance globalEffect;
+        public EffInstance heatMaskDistortInstance;
         public readonly Tweener tweenerForGlobalEffect;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
@@ -118,8 +120,10 @@ namespace SonOfRobin
             this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(Vector2.Zero);
             this.CameraViewRenderTarget = null;
+            this.FinalRenderTarget = null;
             this.darknessMask = null;
             this.globalEffect = null;
+            this.heatMaskDistortInstance = null;
             this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
@@ -151,6 +155,7 @@ namespace SonOfRobin
             base.Remove();
             this.darknessMask?.Dispose();
             this.CameraViewRenderTarget?.Dispose();
+            this.FinalRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.IslandLevel.width}x{this.IslandLevel.height} remove() completed.", textColor: new Color(255, 180, 66));
@@ -907,7 +912,7 @@ namespace SonOfRobin
                 this.soundPaused = false;
             }
 
-            this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
+            this.scrollingSurfaceManager.Update(updateFog: this.weather.FogPercentage > 0, updateHotAir: this.weather.HeatPercentage > 0);
             this.ActiveLevel.recentParticlesManager.Update();
 
             if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: false);
@@ -1374,13 +1379,42 @@ namespace SonOfRobin
                 this.DrawHighlightedPieces(drawnPieces);
                 SonOfRobinGame.SpriteBatch.End();
             }
+
+            // drawing heat deformation (using darkness mask)
+
+            SetRenderTarget(this.darknessMask);
+            SonOfRobinGame.GfxDev.Clear(Color.Black);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
+
+            //if (this.Player != null) // for testing
+            //{
+            //    Rectangle distortRect = this.Player.sprite.GfxRect;
+            //    distortRect.Inflate(distortRect.Width * 3, distortRect.Height * 3);
+            //    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, distortRect, Color.White);
+            //}
+
+            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage / 3);
+
+            SonOfRobinGame.SpriteBatch.End();
+
+            // drawing all effects
+
+            SetRenderTarget(this.FinalRenderTarget);
+            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+
+            if (this.heatMaskDistortInstance == null) this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.CameraViewRenderTarget, distortTexture: this.darknessMask);
+            this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(this.CameraViewRenderTarget, this.CameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.End();
+
+            // additional "permanent" effects can be added here (like curves, etc.), but everything should finally be rendered on FinalRenderTarget
         }
 
         public override void Draw()
         {
             if (this.ActiveLevel.creationInProgress) return;
 
-            // drawing CameraViewRenderTarget
+            // drawing FinalRenderTarget
 
             if (Preferences.halfFramerate) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
@@ -1391,7 +1425,7 @@ namespace SonOfRobin
                 if (this.globalEffect.framesLeft == 0) this.globalEffect = null;
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(this.CameraViewRenderTarget, this.CameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.FinalRenderTarget, this.FinalRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing field tips
@@ -1647,6 +1681,13 @@ namespace SonOfRobin
                 this.CameraViewRenderTarget?.Dispose();
                 this.CameraViewRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
                 MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.CameraViewRenderTarget.Width}x{this.CameraViewRenderTarget.Height}");
+            }
+
+            if (this.FinalRenderTarget == null || this.FinalRenderTarget.Width != newWidth || this.FinalRenderTarget.Height != newHeight)
+            {
+                this.FinalRenderTarget?.Dispose();
+                this.FinalRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.FinalRenderTarget.Width}x{this.FinalRenderTarget.Height}");
             }
 
             // refreshing darkness mask
