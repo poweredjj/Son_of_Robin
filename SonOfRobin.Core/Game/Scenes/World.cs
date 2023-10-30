@@ -1387,14 +1387,14 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.Clear(Color.Black);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
-            if (this.Player != null) // for testing
-            {
-                Rectangle distortRect = this.Player.sprite.GfxRect;
-                distortRect.Inflate(distortRect.Width * 3, distortRect.Height * 3);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, distortRect, Color.White);
-            }
+            //if (this.Player != null) // for testing
+            //{
+            //    Rectangle distortRect = this.Player.sprite.GfxRect;
+            //    distortRect.Inflate(distortRect.Width * 3, distortRect.Height * 3);
+            //    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, distortRect, Color.White);
+            //}
 
-            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage / 2);
+            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage * 0.4f);
 
             SonOfRobinGame.SpriteBatch.End();
 
