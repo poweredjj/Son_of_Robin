@@ -32,17 +32,17 @@ namespace SonOfRobin
 
             Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
 
-            this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
+            this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
             this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, globalDistortionPower: 0.12f, distortionFromOffsetPower: 0f, distortionOverTimePower: 1f, distortionOverTimeDuration: 60);
 
-            this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
+            this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
             this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, distortTexture: textureDistort, globalDistortionPower: 1f, distortionFromOffsetPower: 1f, distortionSizeMultiplier: 2.6f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120);
 
-            this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 60, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
+            this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
 
-            this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 200, world: world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
-            this.hotAir.effInstance = new DistortInstance(scrollingSurface: this.hotAir, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f, distortionOverTimePower: 0f, distortionOverTimeDuration: 5);
+            this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, linearScrollPerFrame: new Vector2(1, -1), world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
+            this.hotAir.effInstance = new DistortInstance(scrollingSurface: this.hotAir, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f);
         }
 
         public void Update(bool updateFog, bool updateHotAir)
@@ -89,16 +89,17 @@ namespace SonOfRobin
         private readonly bool useTweenForOpacity;
         private readonly bool useTweenForOffset;
         private readonly float opacityTweenVal;
-        private readonly int maxScrollingOffset;
+        private readonly Vector2 maxScrollingOffset;
         public EffInstance effInstance;
         private readonly BlendState blendState;
+        private readonly Vector2 linearScrollPerFrame;
 
         public Vector2 offset;
         public float opacity;
 
         private readonly Tweener tweener;
 
-        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, int maxScrollingOffset = 150, BlendState blendState = null)
+        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, int maxScrollingOffsetX = 150, int maxScrollingOffsetY = 150, BlendState blendState = null, Vector2 linearScrollPerFrame = default)
         {
             this.world = world;
             this.texture = texture;
@@ -106,9 +107,10 @@ namespace SonOfRobin
             this.blendState = blendState == null ? BlendState.AlphaBlend : blendState;
             this.useTweenForOpacity = useTweenForOpacity;
             this.useTweenForOffset = useTweenForOffset;
+            this.linearScrollPerFrame = linearScrollPerFrame;
 
             this.opacityTweenVal = opacityTweenVal;
-            this.maxScrollingOffset = maxScrollingOffset;
+            this.maxScrollingOffset = new Vector2(maxScrollingOffsetX, maxScrollingOffsetY);
 
             this.offset = new Vector2(0, 0);
             this.opacity = opacityBaseVal;
@@ -127,8 +129,8 @@ namespace SonOfRobin
                 Vector2 newPos = Vector2.Zero;
 
                 newPos = this.offset + new Vector2(
-                    this.world.random.Next(-this.maxScrollingOffset, this.maxScrollingOffset),
-                    this.world.random.Next(-this.maxScrollingOffset, this.maxScrollingOffset));
+                    this.world.random.Next((int)-this.maxScrollingOffset.X, (int)this.maxScrollingOffset.X),
+                    this.world.random.Next((int)-this.maxScrollingOffset.Y, (int)this.maxScrollingOffset.Y));
 
                 this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.offset, toValue: newPos, duration: this.world.random.Next(3, 8), delay: 0)
                     .AutoReverse()
@@ -149,6 +151,10 @@ namespace SonOfRobin
 
         public void Update()
         {
+            this.offset += this.linearScrollPerFrame;
+            {
+
+            }
             this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 
