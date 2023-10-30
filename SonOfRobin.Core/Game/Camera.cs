@@ -223,6 +223,9 @@ namespace SonOfRobin
                 this.aheadCorrection.X += (aheadCorrectionTarget.X - this.aheadCorrection.X) / movementSlowdownForCorrection;
                 this.aheadCorrection.Y += (aheadCorrectionTarget.Y - this.aheadCorrection.Y) / movementSlowdownForCorrection;
 
+                if (Math.Abs(aheadCorrectionTarget.X - this.aheadCorrection.X) < 0.5f) this.aheadCorrection = new Vector2(aheadCorrectionTarget.X, this.aheadCorrection.Y);
+                if (Math.Abs(aheadCorrectionTarget.Y - this.aheadCorrection.Y) < 0.5f) this.aheadCorrection = new Vector2(this.aheadCorrection.X, aheadCorrectionTarget.Y);
+
                 currentTargetPos += this.aheadCorrection;
             }
 
@@ -280,6 +283,9 @@ namespace SonOfRobin
             }
 
             this.CurrentPos = viewCenter;
+
+            if (Math.Abs(currentTargetPos.X - this.CurrentPos.X) < 0.5f) this.CurrentPos = new Vector2(currentTargetPos.X, this.CurrentPos.Y);
+            if (Math.Abs(currentTargetPos.Y - this.CurrentPos.Y) < 0.5f) this.CurrentPos = new Vector2(this.CurrentPos.X, currentTargetPos.Y);
 
             this.viewRect.X = (int)xMin;
             this.viewRect.Y = (int)yMin;
