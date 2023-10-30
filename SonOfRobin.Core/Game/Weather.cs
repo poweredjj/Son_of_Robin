@@ -105,6 +105,7 @@ namespace SonOfRobin
         public float WindPercentage { get; private set; }
         public float RainPercentage { get; private set; }
         public float LightningPercentage { get; private set; }
+        public float HeatPercentage { get; private set; }
 
         public bool IsRaining
         { get { return this.RainPercentage > 0.2f; } }
@@ -137,6 +138,7 @@ namespace SonOfRobin
             this.NextLocalizedWindBlow = veryOldDate;
             this.WindPercentage = 0f;
             this.LightningPercentage = 0f;
+            this.HeatPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
             this.previousIntensityForType = new Dictionary<WeatherType, float>();
@@ -189,6 +191,7 @@ namespace SonOfRobin
                 this.SunVisibility = 0f;
                 this.WindPercentage = 0f;
                 this.RainPercentage = 0f;
+                this.HeatPercentage = 0f;
 
                 if (this.rainSound.IsPlaying) this.rainSound.Stop();
                 if (this.windSound.IsPlaying) this.windSound.Stop();
@@ -206,6 +209,7 @@ namespace SonOfRobin
             this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
             this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
+            this.HeatPercentage = this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.SunVisibility >= 0.8f && !this.IsRaining ? 1f : 0f;
 
             this.LightningPercentage = this.GetIntensityForWeatherType(WeatherType.Lightning);
             if (this.previousIntensityForType[WeatherType.Lightning] < this.currentIntensityForType[WeatherType.Lightning])
@@ -218,6 +222,12 @@ namespace SonOfRobin
             this.ProcessFog();
             this.ProcessRain();
             this.ProcessLightning();
+
+            if (this.HeatPercentage > 0f && (this.world.globalEffect == null || this.world.globalEffect.effect != SonOfRobinGame.EffectMosaic))
+            {
+                this.world.globalEffect = new HeatWaveInstance(world: this.world, baseTexture: this.world.CameraViewRenderTarget, framesLeft: 2);
+                this.world.globalEffect.intensityForTweener = this.HeatPercentage;
+            }
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
         }

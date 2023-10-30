@@ -1018,7 +1018,7 @@ namespace SonOfRobin
 
             if (this.world.CurrentUpdate % 65 == 0)
             {
-                if (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining && this.activeState != State.PlayerControlledSleep)
+                if (this.world.weather.HeatPercentage == 1 && this.activeState != State.PlayerControlledSleep)
                 {
                     this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }

@@ -165,6 +165,7 @@ namespace SonOfRobin
         public void EnterNewLevel(Level newLevel)
         {
             if (newLevel.creationInProgress) this.touchLayout = TouchLayout.Empty;
+            this.globalEffect = null;
 
             this.ActiveLevel.playerReturnPos = this.Player.sprite.position;
             this.Player.sprite.RemoveFromBoard();

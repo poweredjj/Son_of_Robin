@@ -43,6 +43,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/Distort.fx
 
+#begin effects/Heatwave.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Heatwave.fx
+
 #begin effects/Mosaic.fx
 /importer:EffectImporter
 /processor:EffectProcessor
