@@ -156,7 +156,6 @@ namespace SonOfRobin
         public static bool plantsSway = true;
         public static int maxFlameLightsPerCell = 3;
 
-        public static bool drawShadows = true;
         public static bool drawSunShadows = true;
         private static bool showControlTips = true;
 
@@ -549,7 +548,6 @@ namespace SonOfRobin
             prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
             prefsData["mapMarkerScale"] = mapMarkerScale;
             prefsData["showHints"] = showHints;
-            prefsData["drawShadows"] = drawShadows;
             prefsData["drawSunShadows"] = drawSunShadows;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
             prefsData["EnableTouchButtons"] = EnableTouchButtons;
@@ -618,7 +616,6 @@ namespace SonOfRobin
                     float loadedMapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
                     if (namesForMapMarkerScale.ContainsKey(loadedMapMarkerScale)) mapMarkerScale = loadedMapMarkerScale;
                     showHints = (bool)prefsData["showHints"];
-                    drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
                     controlTipsScheme = (ButtonScheme.Type)(Int64)prefsData["controlTipsScheme"];
                     EnableTouchButtons = (bool)prefsData["EnableTouchButtons"];

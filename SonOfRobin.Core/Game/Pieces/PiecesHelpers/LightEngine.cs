@@ -16,7 +16,6 @@ namespace SonOfRobin
         private readonly float addedGfxRectMultiplier;
         private readonly bool glowOnlyAtNight;
         public readonly bool castShadows;
-        public int tempShadowMaskIndex;
 
         public LightEngine(float opacity, Color color, bool colorActive, bool castShadows, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
         {
