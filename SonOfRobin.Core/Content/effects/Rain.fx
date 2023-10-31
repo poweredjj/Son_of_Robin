@@ -50,7 +50,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         float distortionSizeMultiplier = 1 + (i * 0.45);    
     
         float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
-        float4 distortColor = tex2D(DistortTextureSampler, (pixelPos + distortionInputOffset) / distortionSizeMultiplier);
+        float4 distortColor = tex2D(DistortTextureSampler, frac((pixelPos + distortionInputOffset) / distortionSizeMultiplier));
   
         float distortionPower = max(distortColor.r + rainPower - 1.0, 0) * ((i + 1) / maxIterations * rainPower);
         
