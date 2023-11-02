@@ -1388,14 +1388,13 @@ namespace SonOfRobin
 
             if (this.weather.HeatPercentage > 0)
             {
-                SonOfRobinGame.SpriteBatch.Begin(); // scrollingSurfaceManager will start its own SpriteBatch
-                this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage * 0.4f);
+                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.4f, endSpriteBatch: false);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            BlendState testBlend = new()
+            BlendState multiplyBlend = new BlendState
             {
-                AlphaBlendFunction = BlendFunction.Add,
+                AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 AlphaSourceBlend = Blend.One,
                 AlphaDestinationBlend = Blend.One,
 
@@ -1404,11 +1403,9 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One,
             };
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, blendState: BlendState.AlphaBlend);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: multiplyBlend);
 
-            //SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: testBlend);
-
-            this.ActiveLevel.recentParticlesManager.DrawDistortion();
+            this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw properly
 
             SonOfRobinGame.SpriteBatch.End();
 

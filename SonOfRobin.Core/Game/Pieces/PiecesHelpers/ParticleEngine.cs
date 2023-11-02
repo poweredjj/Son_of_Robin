@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
@@ -305,12 +306,13 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 1;
                         drawAsDistortion = true;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 200, TimeSpan.FromSeconds(1.8), Profile.Point())
+                        particleEmitter = new ParticleEmitter(textureRegion, 70, TimeSpan.FromSeconds(2.6),
+                            Profile.BoxFill(width: this.sprite.GfxRect.Width / 2, height: this.sprite.GfxRect.Height / 2))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(14, 14, 14)),
-                                Speed = new Range<float>(5f, 20f),
+                                Color = HslColor.FromRgb(new Color(5, 5, 5)),
+                                Speed = new Range<float>(5f, 35f),
                                 Quantity = 0,
                             },
 
@@ -322,8 +324,8 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.3f),
-                                            EndValue = new Vector2(3.3f)
+                                            StartValue = new Vector2(1.0f),
+                                            EndValue = new Vector2(3.6f)
                                         },
                                         new OpacityInterpolator
                                         {
@@ -332,7 +334,7 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 20f},
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 35f},
                             }
                         };
                         break;
@@ -1603,12 +1605,13 @@ namespace SonOfRobin
         public void Draw()
         {
             SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix, sortMode: SpriteSortMode.Immediate);
             SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDraw);
         }
 
         public void DrawDistortion()
         {
+            // SpriteSortMode.Immediate must be set to draw properly
             SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDistortion);
         }
     }

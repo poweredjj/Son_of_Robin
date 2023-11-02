@@ -64,6 +64,8 @@ namespace SonOfRobin
 
         public void DrawDistortion()
         {
+            // SpriteSortMode.Immediate must be set to draw properly
+
             foreach (ParticleEngine particleEngine in this.distortionParticlesToDrawInThisFrame)
             {
                 particleEngine.DrawDistortion();

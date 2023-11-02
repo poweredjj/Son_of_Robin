@@ -155,9 +155,9 @@ namespace SonOfRobin
             this.offset += this.linearScrollPerFrame;
         }
 
-        public void Draw(float opacityOverride = -1f)
+        public void Draw(float opacityOverride = -1f, bool endSpriteBatch = true)
         {
-            SonOfRobinGame.SpriteBatch.End();
+            if (endSpriteBatch) SonOfRobinGame.SpriteBatch.End();
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: this.blendState, effect: this.effInstance == null ? null : this.effInstance.effect, samplerState: SamplerState.LinearWrap, sortMode: SpriteSortMode.Immediate);
 
             float drawOpacity = opacityOverride == -1f ? this.opacity : opacityOverride;
