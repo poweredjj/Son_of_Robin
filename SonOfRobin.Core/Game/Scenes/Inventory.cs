@@ -1130,7 +1130,7 @@ namespace SonOfRobin
                 {
                     foreach (Buff buff in buffsThatCanBeMoved)
                     {
-                        receivingPiece.buffList.Add(Buff.CopyBuff(buff));
+                        receivingPiece.buffList.Add(Buff.CopyBuff(buff: buff, increaseIDAtEveryUse: true));
                     }
 
                     if (buffsThatCanBeMoved.Count > 0)

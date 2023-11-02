@@ -47,10 +47,11 @@ namespace SonOfRobin
             this.activationFrame = 0; // to be assigned during activation
         }
 
-        public static Buff CopyBuff(Buff buff)
+        public static Buff CopyBuff(Buff buff, bool increaseIDAtEveryUse)
         {
             // all constructor params must be repeated here
-            return new Buff(type: buff.type, value: buff.value, autoRemoveDelay: buff.autoRemoveDelay, sleepMinutesNeededForActivation: buff.sleepMinutesNeededForActivation, isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: buff.increaseIDAtEveryUse);
+
+            return new Buff(type: buff.type, value: buff.value, autoRemoveDelay: buff.autoRemoveDelay, sleepMinutesNeededForActivation: buff.sleepMinutesNeededForActivation, isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
 
         private object CastValueToCorrectType(object value)

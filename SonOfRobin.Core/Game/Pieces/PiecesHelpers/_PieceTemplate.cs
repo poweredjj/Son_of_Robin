@@ -1562,7 +1562,7 @@ namespace SonOfRobin
                 case Name.HerbsGreen:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60)};
+                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1573,7 +1573,7 @@ namespace SonOfRobin
                 case Name.HerbsViolet:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true)};
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1595,7 +1595,7 @@ namespace SonOfRobin
                 case Name.HerbsBrown:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)-1, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)-1, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBrown, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "brown herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1606,7 +1606,7 @@ namespace SonOfRobin
                 case Name.HerbsDarkViolet:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Speed, value: -0.5f, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Speed, value: -0.5f, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark violet herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1617,7 +1617,7 @@ namespace SonOfRobin
                 case Name.HerbsDarkGreen:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Speed, value: 0.5f, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Speed, value: 0.5f, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark green herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1639,7 +1639,7 @@ namespace SonOfRobin
                 case Name.HerbsCyan:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30)};
+                             new Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1650,7 +1650,7 @@ namespace SonOfRobin
                 case Name.HerbsRed:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
+                             new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "red herbs", description: "Potion ingredient.", buffList: buffList);
@@ -1661,7 +1661,7 @@ namespace SonOfRobin
                 case Name.HerbsYellow:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3)};
+                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion ingredient.", buffList: buffList);
