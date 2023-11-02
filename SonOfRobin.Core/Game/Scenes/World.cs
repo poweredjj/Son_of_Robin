@@ -55,8 +55,10 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
+
         public Grid Grid
         { get { return this.ActiveLevel.grid; } }
+
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
@@ -1344,8 +1346,7 @@ namespace SonOfRobin
 
             var lightSprites = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList);
 
-            // drawing final image
-
+            // switching to camera view RenderTarget
             SetRenderTarget(this.cameraViewRenderTarget);
 
             // drawing water surface
@@ -1381,24 +1382,42 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            // drawing heat deformation (using darkness mask)
-
+            // drawing heat deformation
             SetRenderTarget(this.darknessAndHeatMask);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
-            if (this.weather.HeatPercentage > 0) this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage * 0.4f);
+            if (this.weather.HeatPercentage > 0)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(); // scrollingSurfaceManager will start its own SpriteBatch
+                this.scrollingSurfaceManager.hotAir.Draw(this.weather.HeatPercentage * 0.4f);
+                SonOfRobinGame.SpriteBatch.End();
+            }
+
+            BlendState testBlend = new()
+            {
+                AlphaBlendFunction = BlendFunction.Add,
+                AlphaSourceBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One,
+
+                ColorBlendFunction = BlendFunction.Add,
+                ColorSourceBlend = Blend.One,
+                ColorDestinationBlend = Blend.One,
+            };
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, blendState: BlendState.AlphaBlend);
+
+            //SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: testBlend);
+
             this.ActiveLevel.recentParticlesManager.DrawDistortion();
 
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing all effects
-
             SetRenderTarget(this.FinalRenderTarget);
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
             this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-            SonOfRobinGame.SpriteBatch.Draw(this.cameraViewRenderTarget, this.cameraViewRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.cameraViewRenderTarget, this.cameraViewRenderTarget.Bounds, Color.White);
             SonOfRobinGame.SpriteBatch.End();
 
             // additional "permanent" effects can be added here (like curves, etc.), but everything should finally be rendered on FinalRenderTarget
@@ -1444,21 +1463,16 @@ namespace SonOfRobin
                 .Select(o => o.sprite)
                 .ToList();
 
-            // returning if darkness is transparent
-
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, this.ActiveLevel);
-
-            Matrix worldMatrix = this.TransformMatrix;
-
-            if (ambientLightData.darknessColor == Color.Transparent)
-            {
-                SetRenderTarget(this.darknessAndHeatMask);
-                SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
-
-                return lightSprites;
-            }
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel);
 
             // preparing darkness mask
+
+            SetRenderTarget(this.darknessAndHeatMask);
+            SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
+
+            if (ambientLightData.darknessColor == Color.Transparent) return lightSprites;
+
+            Matrix worldMatrix = this.TransformMatrix;
 
             var darknessMaskBlend = new BlendState
             {
@@ -1470,9 +1484,6 @@ namespace SonOfRobin
                 ColorSourceBlend = Blend.One,
                 ColorDestinationBlend = Blend.One,
             };
-
-            SetRenderTarget(this.darknessAndHeatMask);
-            SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor); ;
 
             // preparing and drawing shadow masks
 
@@ -1521,9 +1532,7 @@ namespace SonOfRobin
                 RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMask;
 
                 SetRenderTarget(tempShadowMask);
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                 SonOfRobinGame.GfxDev.Clear(Color.Black);
-                SonOfRobinGame.SpriteBatch.End();
 
                 Matrix scaleMatrix = Matrix.CreateScale( // to match drawing size with rect size (light texture size differs from light rect size)
                     (float)tempShadowMask.Width / (float)lightRect.Width,
@@ -1557,7 +1566,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
-                // subtracting shadow masks from darkness
+                // subtracting shadow mask from darkness
 
                 SetRenderTarget(this.darknessAndHeatMask);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);

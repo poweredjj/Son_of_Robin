@@ -118,7 +118,7 @@ namespace SonOfRobin
 
                     foreach (BoardPiece piece in visiblePieces)
                     {
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true);
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.HeatBig, duration: 0, update: true);
                     }
                 }
 
