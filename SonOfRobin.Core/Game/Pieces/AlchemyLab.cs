@@ -128,6 +128,7 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.SmallHeat);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
         }
@@ -138,6 +139,7 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
             ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Brewing);
+            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.SmallHeat);
             this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BrewingFinish, duration: 8);
