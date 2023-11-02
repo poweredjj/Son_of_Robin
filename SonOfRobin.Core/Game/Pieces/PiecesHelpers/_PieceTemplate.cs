@@ -2730,7 +2730,7 @@ namespace SonOfRobin
                 case Name.CaveEntranceInside:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
+                            { Terrain.Name.Height, new AllowedRange(min: 118, max: 123) },
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
@@ -2808,12 +2808,13 @@ namespace SonOfRobin
                 case Name.CrystalDepositBig:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
                             maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 400, opacity: 1.2f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
+                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
                         return boardPiece;
                     }
@@ -2821,12 +2822,13 @@ namespace SonOfRobin
                 case Name.CrystalDepositSmall:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 168, max: Terrain.volcanoEdgeMin - 4) }});
+                            { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
                             maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 650, opacity: 0.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
+                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
                         return boardPiece;
                     }
