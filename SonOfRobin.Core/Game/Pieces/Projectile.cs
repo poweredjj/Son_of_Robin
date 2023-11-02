@@ -62,6 +62,7 @@ namespace SonOfRobin
                 this.sprite.AssignNewName("burning");
                 if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
                 ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame);
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatMedium);
             }
 
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.ArrowFly);

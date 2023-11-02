@@ -2494,6 +2494,7 @@ namespace SonOfRobin
                         visualEffect.sprite.opacity = 0;
 
                         ParticleEngine.TurnOn(sprite: visualEffect.sprite, preset: ParticleEngine.Preset.SwampGas, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: visualEffect.sprite, preset: ParticleEngine.Preset.HeatMedium, particlesToEmit: 1);
 
                         return visualEffect;
                     }

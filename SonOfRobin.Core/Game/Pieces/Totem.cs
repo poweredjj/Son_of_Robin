@@ -89,6 +89,7 @@ namespace SonOfRobin
             // first phase - burning the offering
 
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: burnDurationFrames, particlesToEmit: 2);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatBig, duration: burnDurationFrames, particlesToEmit: 1);
             this.sprite.lightEngine.Activate();
             Sound.QuickPlay(SoundData.Name.FireBurst);
             Sound.QuickPlay(SoundData.Name.Bonfire);
