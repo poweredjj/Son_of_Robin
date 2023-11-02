@@ -818,7 +818,7 @@ namespace SonOfRobin
                 if (this.world.CurrentUpdate % particleFrameDivider == 0)
                 {
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
-                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatBig, duration: 1, particlesToEmit: 1);
+                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatFlame, duration: 1, particlesToEmit: 1);
                 }
 
                 if (this.IsAnimalOrPlayer && this.alive && !this.activeSoundPack.IsPlaying(PieceSoundPackTemplate.Action.Cry)) this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);

@@ -55,6 +55,7 @@ namespace SonOfRobin
             HeatSmall = 31,
             HeatMedium = 30,
             HeatBig = 32,
+            HeatFlame = 33,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -91,6 +92,7 @@ namespace SonOfRobin
                 { Preset.HeatSmall, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatMedium, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatBig, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.HeatFlame, TextureBank.TextureName.ParticleCircleSoft },
             };
 
         public class PresetData
@@ -369,6 +371,45 @@ namespace SonOfRobin
                                         new OpacityInterpolator
                                         {
                                             StartValue = 0.17f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier { Direction = -Vector2.UnitY, Strength = 85f },
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.HeatFlame:
+                    {
+                        defaultParticlesToEmit = 1;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(2.2),
+                            Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(4, 4, 4)),
+                                Speed = new Range<float>(10f, 35f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.5f),
+                                            EndValue = new Vector2(7.0f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.2f,
                                             EndValue = 0f
                                         },
                                     }
@@ -1587,6 +1628,10 @@ namespace SonOfRobin
                     break;
 
                 case Preset.HeatBig:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.HeatFlame:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
