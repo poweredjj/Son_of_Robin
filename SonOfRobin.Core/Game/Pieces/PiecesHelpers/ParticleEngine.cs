@@ -15,41 +15,43 @@ namespace SonOfRobin
     {
         public enum Preset
         {
-            Fireplace,
-            BurnFlame,
-            Cooking,
-            Brewing,
-            CookingFinish,
-            BrewingFinish,
-            BloodDripping,
-            MeatDrying,
+            Fireplace = 0,
+            BurnFlame = 1,
+            Cooking = 2,
+            Brewing = 3,
+            CookingFinish = 4,
+            BrewingFinish = 5,
+            BloodDripping = 6,
+            MeatDrying = 7,
 
-            WaterWalk,
-            MudWalk,
-            WaterWave,
-            LavaFlame,
+            WaterWalk = 8,
+            MudWalk = 9,
+            WaterWave = 10,
+            LavaFlame = 11,
 
-            SwampGas,
-            Lightning,
-            Excavated,
-            DustPuff,
-            SmokePuff,
+            SwampGas = 12,
+            Lightning = 13,
+            Excavated = 14,
+            DustPuff = 15,
+            SmokePuff = 16,
 
-            DebrisWood,
-            DebrisLeaf,
-            DebrisGrass,
-            DebrisStone,
-            DebrisCrystal,
-            DebrisCeramic,
-            DebrisBlood,
-            DebrisStar,
-            DebrisHeart,
-            DebrisSoot,
+            DebrisWood = 17,
+            DebrisLeaf = 18,
+            DebrisGrass = 19,
+            DebrisStone = 20,
+            DebrisCrystal = 21,
+            DebrisCeramic = 22,
+            DebrisBlood = 23,
+            DebrisStar = 24,
+            DebrisHeart = 25,
+            DebrisSoot = 26,
 
-            WeatherRain,
+            WeatherRain = 27,
 
-            WindLeaf,
-            WindPetal,
+            WindLeaf = 28,
+            WindPetal = 29,
+
+            FireplaceHeat = 30,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -83,6 +85,7 @@ namespace SonOfRobin
                 { Preset.Lightning, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.BloodDripping, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.MeatDrying, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.FireplaceHeat, TextureBank.TextureName.ParticleCircleSoft },
             };
 
         public class PresetData
@@ -90,6 +93,8 @@ namespace SonOfRobin
             public readonly ParticleEmitter particleEmitter;
             public readonly int defaultParticlesToEmit;
             public readonly int particleToEmitMaxVariation;
+            public readonly bool drawAsDistortion;
+
             private int currentParticlesToEmit;
             private int framesLeft;
             public int delayFramesLeft { get; private set; }
@@ -101,13 +106,14 @@ namespace SonOfRobin
             public bool HasFinished
             { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
 
-            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0)
+            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0, bool drawAsDistortion = false)
             {
                 if (particlesToEmitMaxVariation < 0) throw new ArgumentOutOfRangeException($"particleToEmitMaxVariation cannot be < 0 - {particlesToEmitMaxVariation}");
 
                 this.defaultParticlesToEmit = defaultParticlesToEmit;
                 this.particleToEmitMaxVariation = particlesToEmitMaxVariation;
                 this.currentParticlesToEmit = 0;
+                this.drawAsDistortion = drawAsDistortion;
 
                 this.particleEmitter = particleEmitter;
                 this.delayFramesLeft = maxDelay > 0 ? SonOfRobinGame.random.Next(maxDelay + 1) : 0;
@@ -165,21 +171,28 @@ namespace SonOfRobin
         public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
 
         private Sprite sprite;
-        private readonly ParticleEffect particleEffect;
+        private readonly ParticleEffect particleEffectDraw;
+        private readonly ParticleEffect particleEffectDistortion;
         private readonly Dictionary<Preset, PresetData> dataByPreset;
 
         public bool HasAnyParticles
-        { get { return this.ActiveParticlesCount > 0; } }
+        { get { return this.ActiveParticlesCountDraw > 0 || this.ActiveParticlesCountDistortion > 0; } }
 
-        public int ActiveParticlesCount
-        { get { return this.particleEffect.Emitters.Select(x => x.ActiveParticles).Sum(); } }
+        public int ActiveParticlesCountDraw
+        { get { return this.particleEffectDraw.Emitters.Select(x => x.ActiveParticles).Sum(); } }
+
+        public int ActiveParticlesCountDistortion
+        { get { return this.particleEffectDistortion.Emitters.Select(x => x.ActiveParticles).Sum(); } }
 
         private ParticleEngine(Sprite sprite)
         {
             this.sprite = sprite;
             this.dataByPreset = new Dictionary<Preset, PresetData>();
-            this.particleEffect = new ParticleEffect(autoTrigger: false);
-            this.particleEffect.Emitters = new List<ParticleEmitter>();
+            this.particleEffectDraw = new ParticleEffect(autoTrigger: false);
+            this.particleEffectDraw.Emitters = new List<ParticleEmitter>();
+
+            this.particleEffectDistortion = new ParticleEffect(autoTrigger: false);
+            this.particleEffectDistortion.Emitters = new List<ParticleEmitter>();
         }
 
         public void ReassignSprite(Sprite newSprite)
@@ -201,6 +214,7 @@ namespace SonOfRobin
             int defaultParticlesToEmit;
             int particlesToEmitMaxVariation = 0;
             int maxDelay = 0;
+            bool drawAsDistortion = false;
             ParticleEmitter particleEmitter;
 
             switch (preset)
@@ -238,6 +252,44 @@ namespace SonOfRobin
                                     }
                                 },
                                 new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.FireplaceHeat:
+                    {
+                        defaultParticlesToEmit = 1;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 200, TimeSpan.FromSeconds(1.8), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(13, 13, 13)),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.3f),
+                                            EndValue = new Vector2(3.0f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 1f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 20f},
                             }
                         };
                         break;
@@ -1283,8 +1335,10 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
-            this.particleEffect.Emitters.Add(particleEmitter);
-            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay);
+            if (drawAsDistortion) this.particleEffectDistortion.Emitters.Add(particleEmitter);
+            else this.particleEffectDraw.Emitters.Add(particleEmitter);
+
+            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay, drawAsDistortion: drawAsDistortion);
         }
 
         public static ParticleEmitter GetEmitterForPreset(Sprite sprite, Preset preset)
@@ -1323,7 +1377,8 @@ namespace SonOfRobin
 
         public void Dispose()
         {
-            this.particleEffect.Dispose();
+            this.particleEffectDraw.Dispose();
+            this.particleEffectDistortion.Dispose();
         }
 
         public Dictionary<string, Object> Serialize()
@@ -1375,81 +1430,96 @@ namespace SonOfRobin
             if (this.dataByPreset.Count == 0) return;
 
             Preset preset = this.dataByPreset.First().Key;
+            Vector2 position;
+
             switch (preset)
             {
                 case Preset.Fireplace:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.FireplaceHeat:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.Cooking:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
                     break;
 
                 case Preset.Brewing:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.WaterWalk:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 case Preset.MudWalk:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 case Preset.BurnFlame:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.DebrisSoot:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.DustPuff:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.SmokePuff:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.WindLeaf:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.WindPetal:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
                     break;
 
                 case Preset.BloodDripping:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 5));
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 5));
                     break;
 
                 case Preset.Lightning:
-                    this.particleEffect.Position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2));
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2));
                     break;
 
                 case Preset.MeatDrying:
-                    this.particleEffect.Position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6));
+                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6));
                     break;
 
                 case Preset.WeatherRain:
-                    this.particleEffect.Position = new Vector2(this.sprite.position.X, this.sprite.position.Y - this.sprite.world.camera.viewRect.Height);
+                    position = new Vector2(this.sprite.position.X, this.sprite.position.Y - this.sprite.world.camera.viewRect.Height);
                     break;
 
                 default:
-                    this.particleEffect.Position = this.sprite.position;
+                    position = this.sprite.position;
                     break;
             }
 
-            this.particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.particleEffectDraw.Position = position;
+            this.particleEffectDistortion.Position = position;
+
+            this.particleEffectDraw.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.particleEffectDistortion.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public void Draw()
         {
             SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix);
-            SonOfRobinGame.SpriteBatch.Draw(this.particleEffect);
+            SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDraw);
+        }
+
+        public void DrawDistortion()
+        {
+            SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDistortion);
         }
     }
 }

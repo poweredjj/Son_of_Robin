@@ -87,6 +87,7 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(newAnimName: "on");
                     this.sprite.lightEngine.Activate();
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
+                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.FireplaceHeat);
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
@@ -99,6 +100,7 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(newAnimName: "off");
                     this.sprite.lightEngine.Deactivate();
                     ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Fireplace);
+                    ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.FireplaceHeat);
                     this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
                     this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
                 }

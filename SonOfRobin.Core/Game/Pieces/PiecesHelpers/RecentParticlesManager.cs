@@ -8,17 +8,21 @@ namespace SonOfRobin
     {
         private readonly Level level;
         private readonly HashSet<BoardPiece> pieceSet;
+        private readonly List<ParticleEngine> distortionParticlesToDrawInThisFrame;
         public IEnumerable<BoardPiece> OffScreenPieces { get { return this.pieceSet.Where(piece => !level.world.camera.viewRect.Intersects(piece.sprite.GfxRect)); } }
 
         public RecentParticlesManager(Level level)
         {
             this.level = level;
             this.pieceSet = new HashSet<BoardPiece>();
+            this.distortionParticlesToDrawInThisFrame = new List<ParticleEngine>();
         }
 
         public void AddPiece(BoardPiece piece)
         {
             this.pieceSet.Add(piece);
+            if (piece.sprite.particleEngine.ActiveParticlesCountDistortion > 0) this.distortionParticlesToDrawInThisFrame.Add(piece.sprite.particleEngine);
+
             // SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {this.pieceDict.Count - 1} -> {this.pieceDict.Count} ({piece.readableName})");
         }
 
@@ -56,6 +60,16 @@ namespace SonOfRobin
 
             // int pieceCountCurrent = this.pieceSet.Count;
             // if (pieceCountCurrent != pieceCountPrevious) SonOfRobinGame.messageLog.AddMessage(text: $"{SonOfRobinGame.CurrentUpdate} RecentParticles {pieceCountPrevious} -> {pieceCountCurrent}");
+        }
+
+        public void DrawDistortion()
+        {
+            foreach (ParticleEngine particleEngine in this.distortionParticlesToDrawInThisFrame)
+            {
+                particleEngine.DrawDistortion();
+            }
+
+            this.distortionParticlesToDrawInThisFrame.Clear();
         }
     }
 }
