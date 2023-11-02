@@ -111,10 +111,13 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MushroomPlant, multiplier: 0.5f, maxAmount: 50, minDepth: 1, doNotReplenish: false, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.0f, maxAmount: 12, minDepth: 1, maxAmountIncreaseForDepthLevel: 5, doNotReplenish: true, levelType: Level.LevelType.Cave),
 
-                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 5, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 3, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.SoundCaveWaterDrip, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Cave),
+                // Caves don't use temporaryDecoration, because it is better to just create everything at the start (caves are small).
+                // This way, some pieces can be placed with better precision.
+
+                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.LavaGas, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.SoundCaveWaterDrip, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 };
 
             //{ // for testing creation of selected pieces

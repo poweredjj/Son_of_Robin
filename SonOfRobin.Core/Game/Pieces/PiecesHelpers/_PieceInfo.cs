@@ -2804,6 +2804,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.inOpacityFadeDuration = 30;
+                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 1);
                         break;
 
                     case PieceTemplate.Name.SwampGas:
@@ -2837,6 +2838,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.fireAffinity = 1.0f;
                         this.placeMaxDistance = 0;
+                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 1);
                         this.inOpacityFadeDuration = 120;
                         this.floatsOnWater = true;
                         break;
@@ -2883,6 +2885,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 0;
+                        this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 1);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60);
                         break;
 
@@ -2899,6 +2902,7 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.floatsOnWater = true;
                         this.ambsoundPlayDelay = 60 * 30;
+                        this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 0);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.WaterDrop }, maxPitchVariation: 1f, volume: 1.0f);
                         break;
 
