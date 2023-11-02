@@ -429,7 +429,7 @@ namespace SonOfRobin
 
                             var lavaPixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: this.dividedWidth, height: this.dividedHeight, pointsBag: lavaFloorRawPixelsBag);
 
-                            Parallel.ForEach(lavaPixelCoordsByRegion.Where(sublist => sublist.Count < 16), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
+                            Parallel.ForEach(lavaPixelCoordsByRegion.Where(sublist => sublist.Count < 20), SonOfRobinGame.defaultParallelOptions, rawCoordsList =>
                             {
                                 Terrain terrainHeight = this.terrainByName[Terrain.Name.Height];
                                 foreach (Point rawCoords in rawCoordsList)

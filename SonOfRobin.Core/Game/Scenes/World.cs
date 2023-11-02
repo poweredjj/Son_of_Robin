@@ -1405,7 +1405,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: multiplyBlend);
 
-            this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw properly
+            this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw particles properly
 
             SonOfRobinGame.SpriteBatch.End();
 

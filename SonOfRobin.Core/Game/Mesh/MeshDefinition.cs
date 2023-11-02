@@ -75,7 +75,7 @@ namespace SonOfRobin
 
         public static List<MeshDefinition> GetMeshDefBySearchPriority(Level.LevelType levelType)
         {
-            return meshDefBySearchPriority.Where(meshDef => meshDef.levelTypes.Contains(levelType)).ToList();
+            return meshDefBySearchPriority.Where(meshDef => meshDef.levelTypes.Contains(levelType)).OrderBy(meshDef => meshDef.search.searchPriority).ToList();
         }
 
         public static void CreateMeshDefinitions()
