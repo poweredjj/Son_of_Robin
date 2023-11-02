@@ -1055,6 +1055,7 @@ namespace SonOfRobin
                         if (nonDemoWorldActive) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.CreateAnyPiece } });
                         new Invoker(menu: menu, name: "sound test", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.SoundTest } });
                         new Invoker(menu: menu, name: "graphics list", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.GfxListTest } });
+                        new Selector(menu: menu, name: "craft anywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCraftEverywhere", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "show all recipes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllRecipes");
                         new Selector(menu: menu, name: "show plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPlantGrowthInCamera");
                         new Selector(menu: menu, name: "show anim size change", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimSizeChangeInCamera");
@@ -1261,28 +1262,28 @@ namespace SonOfRobin
             World world = World.GetTopWorld();
             Player player = world.Player;
 
-            if (player.level.levelType != Level.LevelType.Island)
+            if (player.level.levelType != Level.LevelType.Island && !Preferences.debugCraftEverywhere)
             {
                 new TextWindow(text: "I can't | craft in here.", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
 
                 return null;
             }
 
-            if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+            if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby && !Preferences.debugCraftEverywhere)
             {
                 new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
 
                 return null;
             }
 
-            if (!player.CanSeeAnything)
+            if (!player.CanSeeAnything && !Preferences.debugCraftEverywhere)
             {
                 new HintMessage(text: "It is too dark to craft.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return null;
             }
 
-            if (player.IsVeryTired)
+            if (player.IsVeryTired && !Preferences.debugCraftEverywhere)
             {
                 new HintMessage(text: "I'm too tired to craft...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 

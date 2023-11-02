@@ -2449,6 +2449,7 @@ namespace SonOfRobin
 
                         lavaFlame.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
                         ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.LavaFlame, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.HeatBig, particlesToEmit: 1);
 
                         return lavaFlame;
                     }

@@ -303,6 +303,7 @@ namespace SonOfRobin
         public static bool debugShowAllRecipes = false;
         public static bool debugShowAllTutorials = false;
         public static bool debugSaveEverywhere = false;
+        public static bool debugCraftEverywhere = false;
         public static bool debugShowSounds = false;
         public static bool debugDisablePlayerPanel = false;
         public static bool debugAllowMapAnimation = false;

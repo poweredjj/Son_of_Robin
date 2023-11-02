@@ -34,7 +34,7 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly Random random;
         public readonly Camera camera;
-        private RenderTarget2D darknessMask; // used for darkness and for heat
+        private RenderTarget2D darknessAndHeatMask; // used for darkness and for heat
         private RenderTarget2D cameraViewRenderTarget;
         public RenderTarget2D FinalRenderTarget { get; private set; }
         public EffInstance globalEffect;
@@ -122,7 +122,7 @@ namespace SonOfRobin
             this.camera.TrackCoords(Vector2.Zero);
             this.cameraViewRenderTarget = null;
             this.FinalRenderTarget = null;
-            this.darknessMask = null;
+            this.darknessAndHeatMask = null;
             this.globalEffect = null;
             this.heatMaskDistortInstance = null;
             this.tweenerForGlobalEffect = new Tweener();
@@ -154,7 +154,7 @@ namespace SonOfRobin
             Sound.StopAll();
             RumbleManager.StopAll();
             base.Remove();
-            this.darknessMask?.Dispose();
+            this.darknessAndHeatMask?.Dispose();
             this.cameraViewRenderTarget?.Dispose();
             this.FinalRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
@@ -1383,7 +1383,7 @@ namespace SonOfRobin
 
             // drawing heat deformation (using darkness mask)
 
-            SetRenderTarget(this.darknessMask);
+            SetRenderTarget(this.darknessAndHeatMask);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
@@ -1452,7 +1452,7 @@ namespace SonOfRobin
 
             if (ambientLightData.darknessColor == Color.Transparent)
             {
-                SetRenderTarget(this.darknessMask);
+                SetRenderTarget(this.darknessAndHeatMask);
                 SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
 
                 return lightSprites;
@@ -1471,7 +1471,7 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One,
             };
 
-            SetRenderTarget(this.darknessMask);
+            SetRenderTarget(this.darknessAndHeatMask);
             SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor); ;
 
             // preparing and drawing shadow masks
@@ -1559,7 +1559,7 @@ namespace SonOfRobin
 
                 // subtracting shadow masks from darkness
 
-                SetRenderTarget(this.darknessMask);
+                SetRenderTarget(this.darknessAndHeatMask);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
                 SonOfRobinGame.SpriteBatch.End();
@@ -1633,7 +1633,7 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.SpriteBatch.End();
                     SonOfRobinGame.SpriteBatch.Begin();
-                    SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, this.darknessMask.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.Draw(this.darknessAndHeatMask, this.darknessAndHeatMask.Bounds, Color.White);
                 }
             }
 
@@ -1682,14 +1682,14 @@ namespace SonOfRobin
                 MessageLog.Add(debugMessage: true, text: $"Creating new final render target (world) - {this.FinalRenderTarget.Width}x{this.FinalRenderTarget.Height}");
             }
 
-            if (this.darknessMask == null || this.darknessMask.Width != newWidth || this.darknessMask.Height != newHeight)
+            if (this.darknessAndHeatMask == null || this.darknessAndHeatMask.Width != newWidth || this.darknessAndHeatMask.Height != newHeight)
             {
-                this.darknessMask?.Dispose();
-                this.darknessMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                MessageLog.Add(debugMessage: true, text: $"Creating new darkness mask (world) - {this.darknessMask.Width}x{this.darknessMask.Height}");
+                this.darknessAndHeatMask?.Dispose();
+                this.darknessAndHeatMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                MessageLog.Add(debugMessage: true, text: $"Creating new darkness mask (world) - {this.darknessAndHeatMask.Width}x{this.darknessAndHeatMask.Height}");
             }
 
-            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.darknessMask);
+            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.darknessAndHeatMask);
         }
     }
 }
