@@ -1650,7 +1650,7 @@ namespace SonOfRobin
         public void Draw()
         {
             SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix, sortMode: SpriteSortMode.Immediate);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix, sortMode: SpriteSortMode.Deferred);
             SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDraw);
         }
 
