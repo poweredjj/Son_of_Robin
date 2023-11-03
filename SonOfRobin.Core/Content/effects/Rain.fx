@@ -46,7 +46,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 distortionOffset = float2(0, 0);
     for (int i = 1; i <= maxIterations; i++)
     {
-        float2 distortionInputOffset = float2((i - 1) * 0.33, (float) currentUpdate * -distortionPixelSize.y * (0.8 + (i * 0.8)));
+        float2 distortionInputOffset = float2((i - 1) * 0.33, (float) currentUpdate * -distortionPixelSize.y * (0.7 + (i * 0.7)));
         float distortionSizeMultiplier = 1 + (i * 0.45);    
     
         float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
@@ -56,8 +56,16 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         
         distortionOffset = distortionOffset + float2(distortColor.r, distortColor.r) * distortionPower * 0.1f;
     }
-       
-    return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * drawColor;
+ 
+    float4 outputColor = tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset);
+    
+    if (abs(distortionOffset.x) > basePixelSize.x || abs(distortionOffset.y) > basePixelSize.y)
+    {
+        float4 reflectionColor = tex2D(BaseTextureSampler, float2(1, 1) - frac((input.TextureCoordinates + (distortionOffset * 0.6)) * float2(3.5, 2)));
+        outputColor = (outputColor * 0.5) + (reflectionColor * 0.5);
+    }
+    
+    return outputColor * drawColor;     
 }
 
 technique SpriteDrawing
