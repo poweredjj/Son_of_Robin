@@ -34,7 +34,7 @@ struct VertexShaderOutput
     float4 Color : COLOR0;
     float2 TextureCoordinates : TEXCOORD0;
 };
-
+ 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {    
 	// shaders use color value range 0.0f - 1.0f
@@ -46,7 +46,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 distortionOffset = float2(0, 0);
     for (int i = 1; i <= maxIterations; i++)
     {
-        float2 distortionInputOffset = float2((i - 1) * 0.33, (float) currentUpdate * -distortionPixelSize.y * (0.7 + (i * 0.7)));
+        float2 distortionInputOffset = float2((i - 1) * 0.33, (float)currentUpdate * -distortionPixelSize.y * (0.03 + (i * 0.4)));
         float distortionSizeMultiplier = 1 + (i * 0.45);    
     
         float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
@@ -61,7 +61,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     
     if (abs(distortionOffset.x) > basePixelSize.x || abs(distortionOffset.y) > basePixelSize.y)
     {
-        float4 reflectionColor = tex2D(BaseTextureSampler, float2(1, 1) - frac((input.TextureCoordinates + (distortionOffset * 0.6)) * float2(3.5, 2)));
+        float4 reflectionColor = tex2D(BaseTextureSampler, float2(1, 1) - frac((input.TextureCoordinates + (distortionOffset * 0.35)) * float2(4.5, 2)));
         outputColor = (outputColor * 0.5) + (reflectionColor * 0.5);
     }
     
