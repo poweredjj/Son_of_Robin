@@ -46,26 +46,23 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 distortionOffset = float2(0, 0);
     for (int i = 1; i <= maxIterations; i++)
     {
-        float2 distortionInputOffset = float2((i - 1) * 0.33, (float)currentUpdate * -distortionPixelSize.y * (0.03 + (i * 0.4)));
+        float2 distortionInputOffset = float2((i - 1) * 0.33, (float) currentUpdate * -distortionPixelSize.y * (0.02 + ((max(i - 1, 0) * 0.46))));
         float distortionSizeMultiplier = 1 + (i * 0.45);    
     
         float2 pixelPos = input.TextureCoordinates / basePixelSize * distortionPixelSize;
         float4 distortColor = tex2D(DistortTextureSampler, frac((pixelPos + distortionInputOffset) / distortionSizeMultiplier));
   
-        float distortionPower = max(distortColor.r + rainPower - 1.0, 0) * ((i + 1) / maxIterations * rainPower);
+        float distortionPower = max(distortColor.r + rainPower - 1.2, 0) * ((i + 1) / maxIterations * rainPower);
         
-        distortionOffset = distortionOffset + float2(distortColor.r, distortColor.r) * distortionPower * 0.1f;
+        distortionOffset = distortionOffset + float2(distortColor.r, distortColor.r) * distortionPower * 0.2f;
     }
  
     float4 outputColor = tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset);
     
-    if (abs(distortionOffset.x) > basePixelSize.x || abs(distortionOffset.y) > basePixelSize.y)
-    {
-        float4 reflectionColor = tex2D(BaseTextureSampler, float2(1, 1) - frac((input.TextureCoordinates + (distortionOffset * 0.35)) * float2(4.5, 2)));
-        outputColor = (outputColor * 0.5) + (reflectionColor * 0.5);
-    }
-    
-    return outputColor * drawColor;     
+    float4 reflectionColor = tex2D(BaseTextureSampler, float2(1, 1) - frac((input.TextureCoordinates + (distortionOffset * 0.3)) * float2(4, 2.5)));  
+    float reflectionOpacity = min(abs(distortionOffset.x) / (basePixelSize.x * 5), 0.75);
+  
+    return ((outputColor * (1 - reflectionOpacity)) + (reflectionColor * reflectionOpacity)) * drawColor;
 }
 
 technique SpriteDrawing
