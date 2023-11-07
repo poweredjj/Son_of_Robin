@@ -97,24 +97,14 @@ namespace SonOfRobin
                         }
                     }
 
-                    CalculateMarchingCellAndAddEdgesToSet(edgeSet: edgeSet, pos: currentPos, neighbourArray: neighbourArray);
+                    foreach (Edge edge in edgesForIDs[(neighbourArray[0, 0] * 1000) + (neighbourArray[1, 0] * 100) + (neighbourArray[0, 1] * 10) + neighbourArray[1, 1]])
+                    {
+                        edgeSet.Add(new Edge(start: currentPos + edge.start, end: currentPos + edge.end));
+                    }
                 }
             }
 
             return OrderAndMergeEdges(edgeSet);
-        }
-
-        public static void CalculateMarchingCellAndAddEdgesToSet(HashSet<Edge> edgeSet, Vector2 pos, int[,] neighbourArray)
-        {
-            foreach (Edge edge in edgesForIDs[GetEdgeID(neighbourArray)])
-            {
-                edgeSet.Add(new Edge(start: pos + edge.start, end: pos + edge.end));
-            }
-        }
-
-        private static int GetEdgeID(int[,] neighbourArray)
-        {
-            return (neighbourArray[0, 0] * 1000) + (neighbourArray[1, 0] * 100) + (neighbourArray[0, 1] * 10) + neighbourArray[1, 1];
         }
 
         public static List<Shape> OrderAndMergeEdges(HashSet<Edge> edges)
@@ -539,6 +529,5 @@ namespace SonOfRobin
                 new Edge(start: new Vector2(0.0f, 0.5f), end: new Vector2(0.5f, 1.0f)),
             }},
         };
-
     }
 }

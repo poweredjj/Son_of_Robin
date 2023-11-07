@@ -41,14 +41,14 @@ namespace SonOfRobin
 
         public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
-            List<MeshDefinition> meshDefs = MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType);
-            var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: meshDefs.ToArray());
+            MeshDefinition[] meshDefs = MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType);
+            var pixelBagsForTextureNames = GetRawPixelsForMeshDefSearches(grid: grid, meshDefs: meshDefs);
 
             ConcurrentBag<ChunkDataForMeshGeneration> chunkDataForMeshGenBag = new();
 
             Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
-                ConcurrentBag<Point> pixelBag = pixelBagsForPatterns[meshDef.textureName];
+                ConcurrentBag<Point> pixelBag = pixelBagsForTextureNames[meshDef.textureName];
 
                 if (!pixelBag.IsEmpty)
                 {
@@ -94,33 +94,35 @@ namespace SonOfRobin
             return meshArray;
         }
 
-        public static Dictionary<TextureBank.TextureName, ConcurrentBag<Point>> SplitRawPixelsBySearchCategories(Grid grid, MeshDefinition[] meshDefs)
+        public static Dictionary<TextureBank.TextureName, ConcurrentBag<Point>> GetRawPixelsForMeshDefSearches(Grid grid, MeshDefinition[] meshDefs)
         {
-            var pixelBagsForPatterns = new Dictionary<TextureBank.TextureName, ConcurrentBag<Point>>();
+            var pixelBagsForTextureNames = new Dictionary<TextureBank.TextureName, ConcurrentBag<Point>>();
             foreach (MeshDefinition meshDef in meshDefs)
             {
-                pixelBagsForPatterns[meshDef.textureName] = new ConcurrentBag<Point>();
+                pixelBagsForTextureNames[meshDef.textureName] = new ConcurrentBag<Point>();
             }
 
             var rawPixelsBag = new ConcurrentBag<Point>();
 
             Parallel.For(0, grid.dividedHeight, rawY =>
             {
+                Span<MeshDefinition> meshDefsAsSpan = meshDefs.AsSpan();
+
                 for (int rawX = 0; rawX < grid.dividedWidth; rawX++)
                 {
-                    for (int i = 0; i < meshDefs.Length; i++)
+                    for (int i = 0; i < meshDefsAsSpan.Length; i++)
                     {
-                        MeshDefinition meshDef = meshDefs[i];
+                        MeshDefinition meshDef = meshDefsAsSpan[i];
                         if (meshDef.search.PixelMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY))
                         {
-                            pixelBagsForPatterns[meshDef.textureName].Add(new Point(rawX, rawY));
+                            pixelBagsForTextureNames[meshDef.textureName].Add(new Point(rawX, rawY));
                             if (!meshDef.search.otherSearchesAllowed) break;
                         }
                     }
                 }
             });
 
-            return pixelBagsForPatterns;
+            return pixelBagsForTextureNames;
         }
 
         public static Mesh[] LoadFromTemplate(string meshesFilePath)
@@ -249,7 +251,8 @@ namespace SonOfRobin
             {
                 foreach (SearchEntryTerrain searchEntryTerrain in this.searchEntriesTerrain)
                 {
-                    if (!TerrainMeetsCriteria(grid: grid, rawX: rawX, rawY: rawY, terrainName: searchEntryTerrain.name, minVal: searchEntryTerrain.minVal, maxVal: searchEntryTerrain.maxVal)) return false;
+                    byte terrainVal = grid.terrainByName[searchEntryTerrain.name].GetMapDataRaw(rawX, rawY);
+                    if (!(terrainVal >= searchEntryTerrain.minVal && terrainVal <= searchEntryTerrain.maxVal)) return false;
                 }
 
                 foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
@@ -258,12 +261,6 @@ namespace SonOfRobin
                 }
 
                 return true;
-            }
-
-            private static bool TerrainMeetsCriteria(Grid grid, int rawX, int rawY, Terrain.Name terrainName, byte minVal, byte maxVal)
-            {
-                byte value = grid.terrainByName[terrainName].GetMapDataRaw(rawX, rawY);
-                return value >= minVal && value <= maxVal;
             }
         }
     }

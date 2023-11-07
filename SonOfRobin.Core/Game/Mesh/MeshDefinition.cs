@@ -73,9 +73,9 @@ namespace SonOfRobin
                 this.textureDeformationOffsetY != 0;
         }
 
-        public static List<MeshDefinition> GetMeshDefBySearchPriority(Level.LevelType levelType)
+        public static MeshDefinition[] GetMeshDefBySearchPriority(Level.LevelType levelType)
         {
-            return meshDefBySearchPriority.Where(meshDef => meshDef.levelTypes.Contains(levelType)).OrderBy(meshDef => meshDef.search.searchPriority).ToList();
+            return meshDefBySearchPriority.Where(meshDef => meshDef.levelTypes.Contains(levelType)).OrderBy(meshDef => meshDef.search.searchPriority).ToArray();
         }
 
         public static void CreateMeshDefinitions()
