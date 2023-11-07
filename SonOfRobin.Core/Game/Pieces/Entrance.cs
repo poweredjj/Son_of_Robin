@@ -92,6 +92,13 @@ namespace SonOfRobin
             if (this.isBlocked)
             {
                 Sound.QuickPlay(SoundData.Name.StonesFalling);
+                new RumbleEvent(force: 0.15f, bigMotor: true, smallMotor: false, fadeInSeconds: 0.8f, durationSeconds: 0f, fadeOutSeconds: 0.8f);
+                new RumbleEvent(force: 0.10f, bigMotor: false, smallMotor: true, fadeInSeconds: 1.2f, durationSeconds: 0f, fadeOutSeconds: 1.3f);
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 120, executeHelper: new Dictionary<string, Object> { { "force", 0.15f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.4f } }); 
+                
+                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 150, executeHelper: new Dictionary<string, Object> { { "force", 0.12f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.25f } });
+
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DustPuff }, particlesToEmit: 120);
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.SmokePuff }, particlesToEmit: 40);
 
