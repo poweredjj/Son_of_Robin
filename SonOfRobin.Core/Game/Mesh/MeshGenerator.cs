@@ -52,16 +52,19 @@ namespace SonOfRobin
 
             Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
-                var pointArray = pixelBagsForPatterns[meshDef.textureName].ToArray();
+                ConcurrentBag<Point> pixelBag = pixelBagsForPatterns[meshDef.textureName];
 
-                if (pointArray.Length > 0)
+                if (pixelBag.Count > 0)
                 {
+                    var pixelArray = pixelBag.ToArray();
+                    pixelBagsForPatterns[meshDef.textureName].Clear(); // clearing memory
+
                     int xMin = int.MaxValue;
                     int xMax = int.MinValue;
                     int yMin = int.MaxValue;
                     int yMax = int.MinValue;
 
-                    foreach (Point point in pointArray)
+                    foreach (Point point in pixelArray)
                     {
                         xMin = Math.Min(xMin, point.X);
                         xMax = Math.Max(xMax, point.X);
@@ -73,16 +76,22 @@ namespace SonOfRobin
                     int height = yMax - yMin + 1;
 
                     BitArrayWrapper bitArrayWrapper = new(width, height);
-                    foreach (Point point in pointArray)
+                    foreach (Point point in pixelArray)
                     {
                         bitArrayWrapper.SetVal(x: point.X - xMin, y: point.Y - yMin, value: true);
                     }
 
                     // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
+                    // Keeping chunk size random, to make shared chunk borders less common.
 
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40), chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40))) // keeping chunk size random, to make shared chunk borders less common
+                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(
+                        chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40),
+                        chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40)))
                     {
-                        if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
+                        if (chunk.HasAnyPixelSet)
+                        {
+                            chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
+                        }
                     }
                 }
             });
