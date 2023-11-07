@@ -56,29 +56,30 @@ namespace SonOfRobin
 
                 if (pixelBag.Count > 0)
                 {
-                    var pixelArray = pixelBag.ToArray();
-                    pixelBagsForPatterns[meshDef.textureName].Clear(); // clearing memory
+                    Span<Point> pixelArrayAsSpan = pixelBag.ToArray().AsSpan();
 
                     int xMin = int.MaxValue;
                     int xMax = int.MinValue;
                     int yMin = int.MaxValue;
                     int yMax = int.MinValue;
 
-                    foreach (Point point in pixelArray)
+                    for (int i = 0; i < pixelArrayAsSpan.Length; i++)
                     {
-                        xMin = Math.Min(xMin, point.X);
-                        xMax = Math.Max(xMax, point.X);
-                        yMin = Math.Min(yMin, point.Y);
-                        yMax = Math.Max(yMax, point.Y);
+                        Point point = pixelArrayAsSpan[i];
+
+                        if (point.X < xMin) xMin = point.X;
+                        if (point.X > xMax) xMax = point.X;
+                        if (point.Y < yMin) yMin = point.Y;
+                        if (point.Y > yMax) yMax = point.Y;
                     }
 
                     int width = xMax - xMin + 1;
                     int height = yMax - yMin + 1;
 
                     BitArrayWrapper bitArrayWrapper = new(width, height);
-                    foreach (Point point in pixelArray)
+                    for (int i = 0; i < pixelArrayAsSpan.Length; i++)
                     {
-                        bitArrayWrapper.SetVal(x: point.X - xMin, y: point.Y - yMin, value: true);
+                        bitArrayWrapper.SetVal(x: pixelArrayAsSpan[i].X - xMin, y: pixelArrayAsSpan[i].Y - yMin, value: true);
                     }
 
                     // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
@@ -171,7 +172,7 @@ namespace SonOfRobin
 
             Parallel.ForEach(meshArray, SonOfRobinGame.defaultParallelOptions, mesh =>
             {
-                if (mesh.indices.Length >= 3) meshBagSerialized.Add(mesh.Serialize());
+                meshBagSerialized.Add(mesh.Serialize());
             });
 
             Dictionary<string, Object> meshData = new()
