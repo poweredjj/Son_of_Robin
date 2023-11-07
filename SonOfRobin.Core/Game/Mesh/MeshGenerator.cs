@@ -99,6 +99,8 @@ namespace SonOfRobin
 
             var meshBag = new ConcurrentBag<Mesh>();
 
+            // Iterating (with parallel) over chunk data is more efficient, than iterating over mesh defs (as above).
+
             Parallel.ForEach(chunkDataForMeshGenBag, SonOfRobinGame.defaultParallelOptions, chunkDataForMeshGen =>
             {
                 Mesh mesh = ConvertShapesToMesh(
