@@ -148,6 +148,22 @@ namespace SonOfRobin
         public readonly int xOffset;
         public readonly int yOffset;
 
+        public bool HasAnyPixelSet
+        {
+            get
+            {
+                for (int y = 0; y < this.height; y++)
+                {
+                    for (int x = 0; x < this.width; x++)
+                    {
+                        if (this.GetVal(x, y)) return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public BitArrayWrapperChunk(BitArrayWrapper bitArrayWrapper, int width, int height, int xOffset, int yOffset)
         {
             this.bitArrayWrapper = bitArrayWrapper;

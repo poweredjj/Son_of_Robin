@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -501,6 +502,57 @@ namespace SonOfRobin
         }
 
         public static List<List<Point>> SlicePointBagIntoConnectedRegions(int width, int height, ConcurrentBag<Point> pointsBag)
+        {
+            Point[] offsetList = new Point[]
+            {
+        new Point(-1, 0),
+        new Point(1, 0),
+        new Point(0, -1),
+        new Point(0, 1),
+            };
+
+            var pointsSet = new HashSet<Point>(pointsBag);
+            pointsBag.Clear();
+
+            bool[,] bitmapPointIsProcessed = new bool[width, height];
+
+            var pointsByRegion = new ConcurrentBag<List<Point>>();
+
+            Parallel.ForEach(pointsSet, start =>
+            {
+                if (bitmapPointIsProcessed[start.X, start.Y]) return;
+
+                var thisRegionPoints = new List<Point>();
+                var stack = new Stack<Point>();
+                stack.Push(start);
+
+                while (stack.Count > 0)
+                {
+                    Point currentPoint = stack.Pop();
+
+                    if (currentPoint.X < 0 || currentPoint.X >= width ||
+                        currentPoint.Y < 0 || currentPoint.Y >= height ||
+                        bitmapPointIsProcessed[currentPoint.X, currentPoint.Y])
+                        continue;
+
+                    thisRegionPoints.Add(currentPoint);
+                    bitmapPointIsProcessed[currentPoint.X, currentPoint.Y] = true;
+
+                    foreach (Point offset in offsetList)
+                    {
+                        Point nextPoint = new Point(currentPoint.X + offset.X, currentPoint.Y + offset.Y);
+                        if (pointsSet.Contains(nextPoint)) stack.Push(nextPoint);
+                    }
+                }
+
+                pointsByRegion.Add(thisRegionPoints);
+            });
+
+            return pointsByRegion.ToList();
+        }
+
+
+        public static List<List<Point>> SlicePointBagIntoConnectedRegionsOld(int width, int height, ConcurrentBag<Point> pointsBag)
         {
             // preparing data
 
