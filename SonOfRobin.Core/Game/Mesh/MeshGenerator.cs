@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -29,13 +28,30 @@ namespace SonOfRobin
             return new(totalWidth: grid.width, totalHeight: grid.height, blockWidth: 2000, blockHeight: 2000, inputMeshArray: meshArray);
         }
 
+        public readonly struct ChunkDataForMeshGeneration
+        {
+            public readonly MeshDefinition meshDef;
+            public readonly BitArrayWrapperChunk chunk;
+            public readonly int posX;
+            public readonly int posY;
+
+            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY)
+            {
+                this.meshDef = meshDef;
+                this.chunk = chunk;
+                this.posX = posX;
+                this.posY = posY;
+            }
+        }
+
         public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
             var pixelBagsForPatterns = SplitRawPixelsBySearchCategories(grid: grid, meshDefs: MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType).ToArray());
-            var meshBag = new ConcurrentBag<Mesh>();
 
-            //foreach (MeshDefinition meshDef in MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType)) // for profiling in debugger
-            Parallel.ForEach(MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType), SonOfRobinGame.defaultParallelOptions, meshDef =>
+            List<MeshDefinition> meshDefs = MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType);
+            ConcurrentBag<ChunkDataForMeshGeneration> chunkDataForMeshGenBag = new();
+
+            Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
                 var pixelCoordsByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBagsForPatterns[meshDef.textureName]);
 
@@ -67,29 +83,52 @@ namespace SonOfRobin
                     pointList.Clear(); // no longer needed, clearing memory
 
                     // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
+
                     foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40), chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40))) // keeping chunk size random, to make shared chunk borders less common
                     {
-                        var groupedShapes = BitmapToShapesConverter.GenerateShapes(chunk);
+                        chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
+                    }
+                }
+            });
+
+            var chunkDataForMeshGenArray = chunkDataForMeshGenBag.ToArray();
+            int maxQueueSize = (chunkDataForMeshGenArray.Length / SonOfRobinGame.defaultParallelOptions.MaxDegreeOfParallelism) + 1;
+
+            List<Queue<ChunkDataForMeshGeneration>> chunkDataForMeshGenListOfQueues = new();
+            Queue<ChunkDataForMeshGeneration> chunkDataForMeshGenQueue = null;
+
+            foreach (ChunkDataForMeshGeneration chunkDataForMeshGen in chunkDataForMeshGenArray)
+            {
+                if (chunkDataForMeshGenQueue == null || chunkDataForMeshGenQueue.Count > maxQueueSize)
+                {
+                    chunkDataForMeshGenQueue = new Queue<ChunkDataForMeshGeneration>();
+                    chunkDataForMeshGenListOfQueues.Add(chunkDataForMeshGenQueue);
+                }
+            }
+
+            var meshBag = new ConcurrentBag<Mesh>();
+
+            Parallel.ForEach(chunkDataForMeshGenListOfQueues, SonOfRobinGame.defaultParallelOptions, chunkDataForMeshGenQueue =>
+            {
+                while (true)
+                {
+                    if (chunkDataForMeshGenQueue.Count > 0)
+                    {
+                        ChunkDataForMeshGeneration chunkDataForMeshGen = chunkDataForMeshGenQueue.Dequeue();
 
                         Mesh mesh = ConvertShapesToMesh(
-                            offset: new Vector2((xMin + chunk.xOffset) * grid.resDivider, (yMin + chunk.yOffset) * grid.resDivider),
+                            offset: new Vector2(chunkDataForMeshGen.posX * grid.resDivider, chunkDataForMeshGen.posY * grid.resDivider),
                             scaleX: grid.resDivider, scaleY: grid.resDivider,
-                            textureName: meshDef.textureName,
-                            groupedShapes: groupedShapes);
+                            textureName: chunkDataForMeshGen.meshDef.textureName,
+                            groupedShapes: BitmapToShapesConverter.GenerateShapes(chunkDataForMeshGen.chunk));
 
                         if (mesh.indices.Length >= 3) meshBag.Add(mesh);
                     }
+                    else break;
                 }
-                //} // for profiling in debugger
             });
 
-            var meshByID = new Dictionary<string, Mesh>();
-            foreach (Mesh mesh in meshBag)
-            {
-                meshByID[mesh.meshID] = mesh; // filtering out duplicated meshes
-            }
-
-            var meshArray = meshByID.Values.ToArray();
+            Mesh[] meshArray = meshBag.ToArray();
 
             if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
             return meshArray;
