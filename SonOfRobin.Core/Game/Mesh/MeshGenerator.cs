@@ -252,7 +252,7 @@ namespace SonOfRobin
                 foreach (SearchEntryTerrain searchEntryTerrain in this.searchEntriesTerrain)
                 {
                     byte terrainVal = grid.terrainByName[searchEntryTerrain.name].GetMapDataRaw(rawX, rawY);
-                    if (!(terrainVal >= searchEntryTerrain.minVal && terrainVal <= searchEntryTerrain.maxVal)) return false;
+                    if (terrainVal < searchEntryTerrain.minVal || terrainVal > searchEntryTerrain.maxVal) return false;
                 }
 
                 foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
