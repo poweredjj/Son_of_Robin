@@ -31,15 +31,11 @@ namespace SonOfRobin
         {
             public readonly MeshDefinition meshDef;
             public readonly BitArrayWrapperChunk chunk;
-            public readonly int posX;
-            public readonly int posY;
 
-            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY)
+            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk)
             {
                 this.meshDef = meshDef;
                 this.chunk = chunk;
-                this.posX = posX;
-                this.posY = posY;
             }
         }
 
@@ -54,32 +50,15 @@ namespace SonOfRobin
             {
                 ConcurrentBag<Point> pixelBag = pixelBagsForPatterns[meshDef.textureName];
 
-                if (pixelBag.Count > 0)
+                if (!pixelBag.IsEmpty)
                 {
+                    BitArrayWrapper bitArrayWrapper = new(grid.dividedWidth, grid.dividedHeight);
+
                     Span<Point> pixelArrayAsSpan = pixelBag.ToArray().AsSpan();
 
-                    int xMin = int.MaxValue;
-                    int xMax = int.MinValue;
-                    int yMin = int.MaxValue;
-                    int yMax = int.MinValue;
-
                     for (int i = 0; i < pixelArrayAsSpan.Length; i++)
                     {
-                        Point point = pixelArrayAsSpan[i];
-
-                        if (point.X < xMin) xMin = point.X;
-                        if (point.X > xMax) xMax = point.X;
-                        if (point.Y < yMin) yMin = point.Y;
-                        if (point.Y > yMax) yMax = point.Y;
-                    }
-
-                    int width = xMax - xMin + 1;
-                    int height = yMax - yMin + 1;
-
-                    BitArrayWrapper bitArrayWrapper = new(width, height);
-                    for (int i = 0; i < pixelArrayAsSpan.Length; i++)
-                    {
-                        bitArrayWrapper.SetVal(x: pixelArrayAsSpan[i].X - xMin, y: pixelArrayAsSpan[i].Y - yMin, value: true);
+                        bitArrayWrapper.SetVal(x: pixelArrayAsSpan[i].X, y: pixelArrayAsSpan[i].Y, value: true);
                     }
 
                     // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
@@ -89,22 +68,19 @@ namespace SonOfRobin
                         chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40),
                         chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40)))
                     {
-                        if (chunk.HasAnyPixelSet)
-                        {
-                            chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
-                        }
+                        if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk));
                     }
                 }
             });
 
-            var meshBag = new ConcurrentBag<Mesh>();
-
             // Iterating (with parallel) over chunk data is more efficient, than iterating over mesh defs (as above).
+
+            var meshBag = new ConcurrentBag<Mesh>();
 
             Parallel.ForEach(chunkDataForMeshGenBag, SonOfRobinGame.defaultParallelOptions, chunkDataForMeshGen =>
             {
                 Mesh mesh = ConvertShapesToMesh(
-                    offset: new Vector2(chunkDataForMeshGen.posX * grid.resDivider, chunkDataForMeshGen.posY * grid.resDivider),
+                    offset: new Vector2(chunkDataForMeshGen.chunk.xOffset * grid.resDivider, chunkDataForMeshGen.chunk.yOffset * grid.resDivider),
                     scaleX: grid.resDivider, scaleY: grid.resDivider,
                     textureName: chunkDataForMeshGen.meshDef.textureName,
                     groupedShapes: BitmapToShapesConverter.GenerateShapes(chunkDataForMeshGen.chunk));
