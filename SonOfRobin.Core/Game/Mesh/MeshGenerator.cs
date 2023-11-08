@@ -243,45 +243,60 @@ namespace SonOfRobin
 
             foreach (var kvp in groupedShapes)
             {
-                var doublesList = new List<double>(); // flat array of vertex coordinates like x0, y0, x1, y1, x2, y2...
-                var holeIndices = new List<int>(); // first vertex of each hole (points at doublesList, not accounting for double coords kept there)
                 var contour = kvp.Key;
                 var holes = kvp.Value;
 
-                var vertPositionsForShape = new List<Vector2>();
+                int elementCount = contour.pointList.Count;
+                foreach (var hole in holes) elementCount += hole.pointList.Count;
+
+                double[] doublesArray = new double[elementCount * 2]; // flat array of vertex coordinates like x0, y0, x1, y1, x2, y2...
+                int[] holeIndicesArray = new int[holes.Count]; // first vertex of each hole (points at doublesList, not accounting for double coords kept there)
+                Vector2[] vertPositionsForShapeArray = new Vector2[elementCount];
+
+                Span<double> doublesArrayAsSpan = doublesArray.AsSpan();
+                Span<Vector2> vertPositionsForShapeArrayAsSpan = vertPositionsForShapeArray.AsSpan();
+
                 var shapeVertList = new List<VertexPositionTexture>();
 
                 int currentIndex = 0;
-                foreach (Vector2 pos in contour.pointList)
+
+                var contourPointListAsSpan = CollectionsMarshal.AsSpan(contour.pointList);
+                for (var i = 0; i < contourPointListAsSpan.Length; i++)
                 {
-                    doublesList.Add(pos.X);
-                    doublesList.Add(pos.Y);
-                    vertPositionsForShape.Add(pos);
+                    Vector2 pos = contourPointListAsSpan[i];
+
+                    doublesArrayAsSpan[currentIndex * 2] = pos.X;
+                    doublesArrayAsSpan[(currentIndex * 2) + 1] = pos.Y;
+                    vertPositionsForShapeArrayAsSpan[currentIndex] = pos;
                     currentIndex++;
                 }
 
-                foreach (BitmapToShapesConverter.Shape hole in holes)
+                for (int i = 0; i < holes.Count; i++)
                 {
-                    holeIndices.Add(currentIndex);
+                    BitmapToShapesConverter.Shape hole = holes[i];
+                    holeIndicesArray[i] = currentIndex;
 
-                    foreach (Vector2 pos in hole.pointList)
+                    var holePointListAsSpan = CollectionsMarshal.AsSpan(hole.pointList);
+                    for (var j = 0; j < holePointListAsSpan.Length; j++)
                     {
-                        doublesList.Add(pos.X);
-                        doublesList.Add(pos.Y);
-                        vertPositionsForShape.Add(pos);
+                        Vector2 pos = holePointListAsSpan[j];
+
+                        doublesArrayAsSpan[currentIndex * 2] = pos.X;
+                        doublesArrayAsSpan[(currentIndex * 2) + 1] = pos.Y;
+                        vertPositionsForShapeArrayAsSpan[currentIndex] = pos;
                         currentIndex++;
                     }
                 }
 
-                List<int> indicesForShape = Earcut.Tessellate(data: doublesList.ToArray(), holeIndices: holeIndices.ToArray());
+                List<int> indicesForShape = Earcut.Tessellate(data: doublesArray, holeIndices: holeIndicesArray);
                 var indicesForShapeAsSpan = CollectionsMarshal.AsSpan(indicesForShape);
 
                 Vector3 basePos = new(offset.X, offset.Y, 0);
 
-                foreach (Vector2 position in vertPositionsForShape)
+                for (int i = 0; i < vertPositionsForShapeArrayAsSpan.Length; i++)
                 {
-                    VertexPositionTexture vertex = new();
-                    vertex.Position = basePos + new Vector3(position.X * scaleX, position.Y * scaleY, 0);
+                    Vector2 position = vertPositionsForShapeArrayAsSpan[i];
+                    VertexPositionTexture vertex = new() { Position = basePos + new Vector3(position.X * scaleX, position.Y * scaleY, 0) };
                     vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
                     shapeVertList.Add(vertex);
                 }
