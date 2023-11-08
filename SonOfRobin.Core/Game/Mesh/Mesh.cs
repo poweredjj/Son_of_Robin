@@ -55,39 +55,50 @@ namespace SonOfRobin
             var vertTexCoordXAsSpan = ((float[])meshDict["vertTexCoordX"]).AsSpan();
             var vertTexCoordYAsSpan = ((float[])meshDict["vertTexCoordY"]).AsSpan();
 
-            var vertList = new List<VertexPositionTexture>();
+            this.vertices = new VertexPositionTexture[vertXPosAsSpan.Length];
+            this.verticesTransformedCopy = new VertexPositionTexture[vertXPosAsSpan.Length];
+
+            Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
+            Span<VertexPositionTexture> verticesTransformedCopyAsSpan = this.verticesTransformedCopy.AsSpan();
 
             for (int i = 0; i < vertXPosAsSpan.Length; i++)
             {
-                vertList.Add(new VertexPositionTexture
+                VertexPositionTexture vertex = new()
                 {
                     Position = new Vector3(vertXPosAsSpan[i], vertYPosAsSpan[i], 0),
                     TextureCoordinate = new Vector2(vertTexCoordXAsSpan[i], vertTexCoordYAsSpan[i])
-                });
-            }
+                };
 
-            this.vertices = vertList.ToArray();
-            this.verticesTransformedCopy = vertList.ToArray();
+                verticesAsSpan[i] = vertex;
+                verticesTransformedCopyAsSpan[i] = vertex;
+            }
 
             this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
 
         public Object Serialize()
         {
-            var vertXPos = new List<float>();
-            var vertYPos = new List<float>();
-            var vertTexCoordX = new List<float>();
-            var vertTexCoordY = new List<float>();
-
             Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
+            int verticesCount = verticesAsSpan.Length;
+
+            float[] vertXPos = new float[verticesCount];
+            float[] vertYPos = new float[verticesCount];
+            float[] vertTexCoordX = new float[verticesCount];
+            float[] vertTexCoordY = new float[verticesCount];
+
+            var vertXPosAsSpan = vertXPos.AsSpan();
+            var vertYPosAsSpan = vertYPos.AsSpan();
+            var vertTexCoordXAsSpan = vertTexCoordX.AsSpan();
+            var vertTexCoordYAsSpan = vertTexCoordY.AsSpan();
 
             for (int i = 0; i < verticesAsSpan.Length; i++)
             {
                 VertexPositionTexture vertex = verticesAsSpan[i];
-                vertXPos.Add(vertex.Position.X);
-                vertYPos.Add(vertex.Position.Y);
-                vertTexCoordX.Add(vertex.TextureCoordinate.X);
-                vertTexCoordY.Add(vertex.TextureCoordinate.Y);
+
+                vertXPosAsSpan[i] = vertex.Position.X;
+                vertYPosAsSpan[i] = vertex.Position.Y;
+                vertTexCoordXAsSpan[i] = vertex.TextureCoordinate.X;
+                vertTexCoordYAsSpan[i] = vertex.TextureCoordinate.Y;
             }
 
             Dictionary<string, Object> meshData = new()
@@ -95,10 +106,10 @@ namespace SonOfRobin
                 { "textureName", this.textureName },
                 { "indices", this.indices },
                 { "boundsRect", this.boundsRect },
-                { "vertXPos", vertXPos.ToArray() },
-                { "vertYPos", vertYPos.ToArray() },
-                { "vertTexCoordX", vertTexCoordX.ToArray() },
-                { "vertTexCoordY", vertTexCoordY.ToArray() },
+                { "vertXPos", vertXPos },
+                { "vertYPos", vertYPos },
+                { "vertTexCoordX", vertTexCoordX },
+                { "vertTexCoordY", vertTexCoordY },
             };
 
             return meshData;
@@ -111,12 +122,16 @@ namespace SonOfRobin
             int yMin = int.MaxValue;
             int yMax = int.MinValue;
 
-            foreach (VertexPositionTexture vertex in vertArray)
+            Span<VertexPositionTexture> vertArrayAsSpan = vertArray.AsSpan();
+
+            for (int i = 0; i < vertArrayAsSpan.Length; i++)
             {
-                xMin = Math.Min(xMin, (int)vertex.Position.X);
-                xMax = Math.Max(xMax, (int)vertex.Position.X);
-                yMin = Math.Min(yMin, (int)vertex.Position.Y);
-                yMax = Math.Max(yMax, (int)vertex.Position.Y);
+                VertexPositionTexture vertex = vertArrayAsSpan[i];
+
+                if (vertex.Position.X < xMin) xMin = (int)vertex.Position.X;
+                if (vertex.Position.X > xMax) xMax = (int)vertex.Position.X;
+                if (vertex.Position.Y < yMin) yMin = (int)vertex.Position.Y;
+                if (vertex.Position.Y > yMax) yMax = (int)vertex.Position.Y;
             }
 
             return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
@@ -215,7 +230,7 @@ namespace SonOfRobin
             {
                 for (int blockNoY = startBlockY; blockNoY <= endBlockY; blockNoY++)
                 {
-                    meshesInRect.AddRange(meshArray[blockNoX, blockNoY]);
+                    meshesInRect.AddRange(this.meshArray[blockNoX, blockNoY]);
                 }
             }
 
