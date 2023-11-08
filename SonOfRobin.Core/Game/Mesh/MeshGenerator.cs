@@ -33,18 +33,22 @@ namespace SonOfRobin
             public readonly BitArrayWrapperChunk chunk;
             public readonly int posX;
             public readonly int posY;
+            public readonly int pixelCount;
 
-            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY)
+            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY, int pixelCount)
             {
                 this.meshDef = meshDef;
                 this.chunk = chunk;
                 this.posX = posX;
                 this.posY = posY;
+                this.pixelCount = pixelCount;
             }
         }
 
         public static Mesh[] GenerateMeshes(Grid grid, bool saveTemplate)
         {
+            DateTime stageStartTime = DateTime.Now;
+
             MeshDefinition[] meshDefs = MeshDefinition.GetMeshDefBySearchPriority(grid.level.levelType);
             var pixelBagsForTextureNames = GetRawPixelsForMeshDefSearches(grid: grid, meshDefs: meshDefs);
 
@@ -52,66 +56,88 @@ namespace SonOfRobin
 
             int totalRawPixelCount = grid.dividedWidth * grid.dividedHeight;
 
+            MessageLog.Add(debugMessage: true, text: $"Mesh generation - creating pixel bags duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            stageStartTime = DateTime.Now;
+
             Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
             {
                 ConcurrentBag<Point> pixelBag = pixelBagsForTextureNames[meshDef.textureName];
 
-                if (!pixelBag.IsEmpty)
+                List<Point[]> pixelCoordsArrayByRegion = new();
+
+                if (pixelBag.Count < totalRawPixelCount * 0.02f)
                 {
-                    Point[] pixelArray = pixelBag.ToArray();
-                    Span<Point> pixelArrayAsSpan = pixelArray.AsSpan();
-
-                    bool calculateWholeGrid = pixelArray.Length > totalRawPixelCount * 0.01f;
-
-                    // MessageLog.Add(debugMessage: true, text: $"{meshDef.textureName} {(float)pixelArray.Length / (float)totalRawPixelCount}");
-
-                    int xMin, xMax, yMin, yMax;
-
-                    if (calculateWholeGrid)
+                    var pixelCoordsListByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBag);
+                    foreach (List<Point> pointList in pixelCoordsListByRegion)
                     {
-                        xMin = 0;
-                        yMin = 0;
-                        xMax = grid.dividedWidth - 1;
-                        yMax = grid.dividedHeight - 1;
+                        pixelCoordsArrayByRegion.Add(pointList.ToArray());
                     }
-                    else
+                }
+                else
+                {
+                    pixelCoordsArrayByRegion.Add(pixelBag.ToArray());
+                }
+
+                pixelBag.Clear(); // clearing memory
+
+                foreach (Point[] pixelArray in pixelCoordsArrayByRegion)
+                {
+                    if (pixelArray.Length > 0)
                     {
-                        xMin = int.MaxValue;
-                        xMax = int.MinValue;
-                        yMin = int.MaxValue;
-                        yMax = int.MinValue;
+                        Span<Point> pixelArrayAsSpan = pixelArray.AsSpan();
+                        int xMin, xMax, yMin, yMax;
+
+                        bool calculateWholeGrid = pixelArray.Length > totalRawPixelCount * 0.05f;
+
+                        if (calculateWholeGrid)
+                        {
+                            xMin = 0;
+                            yMin = 0;
+                            xMax = grid.dividedWidth - 1;
+                            yMax = grid.dividedHeight - 1;
+                        }
+                        else
+                        {
+                            xMin = int.MaxValue;
+                            xMax = int.MinValue;
+                            yMin = int.MaxValue;
+                            yMax = int.MinValue;
+
+                            for (int i = 0; i < pixelArrayAsSpan.Length; i++)
+                            {
+                                Point point = pixelArrayAsSpan[i];
+                                if (point.X < xMin) xMin = point.X;
+                                if (point.X > xMax) xMax = point.X;
+                                if (point.Y < yMin) yMin = point.Y;
+                                if (point.Y > yMax) yMax = point.Y;
+                            }
+                        }
+
+                        int width = xMax - xMin + 1;
+                        int height = yMax - yMin + 1;
+
+                        BitArrayWrapper bitArrayWrapper = new(width, height);
 
                         for (int i = 0; i < pixelArrayAsSpan.Length; i++)
                         {
-                            Point point = pixelArrayAsSpan[i];
-                            if (point.X < xMin) xMin = point.X;
-                            if (point.X > xMax) xMax = point.X;
-                            if (point.Y < yMin) yMin = point.Y;
-                            if (point.Y > yMax) yMax = point.Y;
+                            bitArrayWrapper.SetVal(x: pixelArrayAsSpan[i].X - xMin, y: pixelArrayAsSpan[i].Y - yMin, value: true);
                         }
-                    }
 
-                    int width = xMax - xMin + 1;
-                    int height = yMax - yMin + 1;
+                        // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
+                        // Keeping chunk size random, to make shared chunk borders less common.
 
-                    BitArrayWrapper bitArrayWrapper = new(width, height);
-
-                    for (int i = 0; i < pixelArrayAsSpan.Length; i++)
-                    {
-                        bitArrayWrapper.SetVal(x: pixelArrayAsSpan[i].X - xMin, y: pixelArrayAsSpan[i].Y - yMin, value: true);
-                    }
-
-                    // Splitting very large bitmaps into chunks (to optimize drawing and because triangulation has size limits).
-                    // Keeping chunk size random, to make shared chunk borders less common.
-
-                    foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(
-                        chunkWidth: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40),
-                        chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 40)))
-                    {
-                        if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
+                        foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(
+                            chunkWidth: Math.Max(grid.world.random.Next(1200, 1600) / grid.resDivider, 100),
+                            chunkHeight: Math.Max(grid.world.random.Next(1200, 1600) / grid.resDivider, 100)))
+                        {
+                            if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset, pixelCount: pixelArray.Length));
+                        }
                     }
                 }
             });
+
+            MessageLog.Add(debugMessage: true, text: $"Mesh generation - creating chunk data duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            stageStartTime = DateTime.Now;
 
             // Iterating (with parallel) over chunk data is more efficient, than iterating over mesh defs (as above).
 
@@ -128,9 +154,15 @@ namespace SonOfRobin
                 if (mesh.indices.Length >= 3) meshBag.Add(mesh);
             });
 
+            MessageLog.Add(debugMessage: true, text: $"Mesh generation - mesh creation duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            stageStartTime = DateTime.Now;
+
             Mesh[] meshArray = meshBag.ToArray();
 
             if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
+
+            MessageLog.Add(debugMessage: true, text: $"Mesh generation - mesh saving duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+
             return meshArray;
         }
 
