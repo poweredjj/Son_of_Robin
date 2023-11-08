@@ -56,7 +56,6 @@ namespace SonOfRobin
             var vertTexCoordYAsSpan = ((float[])meshDict["vertTexCoordY"]).AsSpan();
 
             this.vertices = new VertexPositionTexture[vertXPosAsSpan.Length];
-            this.verticesTransformedCopy = new VertexPositionTexture[vertXPosAsSpan.Length];
 
             Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
 

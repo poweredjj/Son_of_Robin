@@ -531,7 +531,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-            MessageLog.Add(debugMessage: true, text: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+            MessageLog.Add(debugMessage: true, text: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
 
             this.PrepareNextStage(incrementCurrentStage: true);
         }

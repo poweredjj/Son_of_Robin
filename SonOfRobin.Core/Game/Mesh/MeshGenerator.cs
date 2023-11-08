@@ -57,7 +57,7 @@ namespace SonOfRobin
 
             int totalRawPixelCount = grid.dividedWidth * grid.dividedHeight;
 
-            MessageLog.Add(debugMessage: true, text: $"mesh gen details - creating pixel bags: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"mesh gen details - creating pixel bags: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}");
             stageStartTime = DateTime.Now;
 
             Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
@@ -137,7 +137,7 @@ namespace SonOfRobin
                 }
             });
 
-            MessageLog.Add(debugMessage: true, text: $"mesh gen details - creating chunk data: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"mesh gen details - creating chunk data: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}");
             stageStartTime = DateTime.Now;
 
             // Iterating (with parallel) over chunk data is more efficient, than iterating over mesh defs (as above).
@@ -155,13 +155,13 @@ namespace SonOfRobin
                 if (mesh.indices.Length >= 3) meshBag.Add(mesh);
             });
 
-            MessageLog.Add(debugMessage: true, text: $"mesh gen details - mesh creation: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"mesh gen details - mesh creation: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}");
             stageStartTime = DateTime.Now;
 
             Mesh[] meshArray = meshBag.ToArray();
 
             if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
-            MessageLog.Add(debugMessage: true, text: $"mesh gen details - mesh saving: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"mesh gen details - mesh saving: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}");
 
             return meshArray;
         }
