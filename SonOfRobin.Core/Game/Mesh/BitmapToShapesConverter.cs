@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace SonOfRobin
 {
@@ -72,8 +73,7 @@ namespace SonOfRobin
             int startY = yZeroFilled ? -1 : 0;
 
             var neighbourArray = new int[2, 2];
-
-            var edgeSet = new HashSet<Edge>();
+            var edgeQueue = new Queue<Edge>();
             Vector2 currentPos = Vector2.Zero;
 
             for (int x = startX; x < width; x++)
@@ -98,26 +98,30 @@ namespace SonOfRobin
 
                     foreach (Edge edge in edgesForIDs[(neighbourArray[0, 0] * 1000) + (neighbourArray[1, 0] * 100) + (neighbourArray[0, 1] * 10) + neighbourArray[1, 1]])
                     {
-                        edgeSet.Add(new Edge(start: currentPos + edge.start, end: currentPos + edge.end));
+                        edgeQueue.Enqueue(new Edge(start: currentPos + edge.start, end: currentPos + edge.end));
                     }
                 }
             }
 
-            return OrderAndMergeEdges(edgeSet);
+            return OrderAndMergeEdges(edgeQueue);
         }
 
-        public static List<Shape> OrderAndMergeEdges(HashSet<Edge> edges)
+        public static List<Shape> OrderAndMergeEdges(Queue<Edge> edges)
         {
             var edgesToSort = new HashSet<Edge>(edges);
-
             var edgesByPosDict = new Dictionary<Vector2, List<Edge>>();
-            foreach (Edge edge in edges)
+
+            while (true)
             {
+                Edge edge = edges.Dequeue();
+
                 if (!edgesByPosDict.ContainsKey(edge.start)) edgesByPosDict[edge.start] = new List<Edge>();
                 if (!edgesByPosDict.ContainsKey(edge.end)) edgesByPosDict[edge.end] = new List<Edge>();
 
                 edgesByPosDict[edge.start].Add(edge);
                 edgesByPosDict[edge.end].Add(edge);
+
+                if (edges.Count == 0) break;
             }
 
             var shapeList = new List<Shape>();
@@ -137,8 +141,11 @@ namespace SonOfRobin
 
                 if (edgesByPosDict.ContainsKey(currentEdge.end))
                 {
-                    foreach (Edge checkedEdge in edgesByPosDict[currentEdge.end])
+                    var edgesListAsSpan = CollectionsMarshal.AsSpan(edgesByPosDict[currentEdge.end]);
+                    for (var i = 0; i < edgesListAsSpan.Length; i++)
                     {
+                        Edge checkedEdge = edgesListAsSpan[i];
+
                         if (edgesToSort.Contains(checkedEdge))
                         {
                             connectionFound = true;

@@ -34,15 +34,13 @@ namespace SonOfRobin
             public readonly BitArrayWrapperChunk chunk;
             public readonly int posX;
             public readonly int posY;
-            public readonly int pixelCount;
 
-            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY, int pixelCount)
+            public ChunkDataForMeshGeneration(MeshDefinition meshDef, BitArrayWrapperChunk chunk, int posX, int posY)
             {
                 this.meshDef = meshDef;
                 this.chunk = chunk;
                 this.posX = posX;
                 this.posY = posY;
-                this.pixelCount = pixelCount;
             }
         }
 
@@ -131,7 +129,7 @@ namespace SonOfRobin
                             chunkWidth: Math.Max(grid.world.random.Next(1200, 2200) / grid.resDivider, 80),
                             chunkHeight: Math.Max(grid.world.random.Next(1200, 1600) / grid.resDivider, 80)))
                         {
-                            if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset, pixelCount: pixelArray.Length));
+                            if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
                         }
                     }
                 }
