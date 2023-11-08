@@ -42,6 +42,11 @@ namespace SonOfRobin
             return this.bitArray.Get((y * this.width) + x);
         }
 
+        public virtual bool GetValNoBoundsCheck(int x, int y)
+        {
+            return this.bitArray.Get((y * this.width) + x);
+        }
+
         public void FillWithTrue()
         {
             this.bitArray.SetAll(true);

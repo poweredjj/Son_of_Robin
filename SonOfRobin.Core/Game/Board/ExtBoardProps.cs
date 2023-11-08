@@ -170,9 +170,9 @@ namespace SonOfRobin
             return this.extDataByProperty[name].GetVal(x / this.Grid.resDivider, y / this.Grid.resDivider);
         }
 
-        public bool GetValueRaw(Name name, int rawX, int rawY)
+        public bool GetValueRaw(Name name, int rawX, int rawY, bool boundsCheck = true)
         {
-            return this.extDataByProperty[name].GetVal(rawX, rawY);
+            return boundsCheck ? this.extDataByProperty[name].GetVal(rawX, rawY) : this.extDataByProperty[name].GetValNoBoundsCheck(rawX, rawY);
         }
 
         public void SetValue(Name name, bool value, int x, int y)

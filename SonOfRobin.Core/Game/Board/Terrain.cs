@@ -194,6 +194,12 @@ namespace SonOfRobin
             return this.mapData[x, y];
         }
 
+        public Byte GetMapDataRawNoBoundsCheck(int x, int y)
+        {
+            // direct access, without taking resDivider into account         
+            return this.mapData[x, y];
+        }
+
         public void SetMapDataRaw(Point rawCoords, byte value)
         {
             // should only be used before saving template - never during gameplay

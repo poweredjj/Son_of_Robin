@@ -745,7 +745,7 @@ namespace SonOfRobin
             {
                 for (int rawY = 0; rawY < maxY; rawY++)
                 {
-                    if (this.ExtBoardProps.GetValueRaw(name: nameToUse, rawX: rawX, rawY: rawY) == value)
+                    if (this.ExtBoardProps.GetValueRaw(name: nameToUse, rawX: rawX, rawY: rawY, boundsCheck: false) == value)
                     {
                         pointBag.Add(new Point(rawX, rawY));
                     }

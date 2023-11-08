@@ -56,7 +56,7 @@ namespace SonOfRobin
 
             int totalRawPixelCount = grid.dividedWidth * grid.dividedHeight;
 
-            MessageLog.Add(debugMessage: true, text: $"Mesh generation - creating pixel bags duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"Mesh gen details - creating pixel bags duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
             stageStartTime = DateTime.Now;
 
             Parallel.ForEach(meshDefs, SonOfRobinGame.defaultParallelOptions, meshDef =>
@@ -65,7 +65,7 @@ namespace SonOfRobin
 
                 List<Point[]> pixelCoordsArrayByRegion = new();
 
-                if (pixelBag.Count < totalRawPixelCount * 0.02f)
+                if (pixelBag.Count < totalRawPixelCount * 0.03f)
                 {
                     var pixelCoordsListByRegion = Helpers.SlicePointBagIntoConnectedRegions(width: grid.dividedWidth, height: grid.dividedHeight, pointsBag: pixelBag);
                     foreach (List<Point> pointList in pixelCoordsListByRegion)
@@ -136,7 +136,7 @@ namespace SonOfRobin
                 }
             });
 
-            MessageLog.Add(debugMessage: true, text: $"Mesh generation - creating chunk data duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"Mesh gen details - creating chunk data duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
             stageStartTime = DateTime.Now;
 
             // Iterating (with parallel) over chunk data is more efficient, than iterating over mesh defs (as above).
@@ -154,14 +154,13 @@ namespace SonOfRobin
                 if (mesh.indices.Length >= 3) meshBag.Add(mesh);
             });
 
-            MessageLog.Add(debugMessage: true, text: $"Mesh generation - mesh creation duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"Mesh gen details - mesh creation duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
             stageStartTime = DateTime.Now;
 
             Mesh[] meshArray = meshBag.ToArray();
 
             if (saveTemplate) SaveToTemplate(meshesFilePath: GetMeshesFilePath(grid), meshArray: meshArray);
-
-            MessageLog.Add(debugMessage: true, text: $"Mesh generation - mesh saving duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
+            MessageLog.Add(debugMessage: true, text: $"Mesh gen details - mesh saving duration: {DateTime.Now - stageStartTime:hh\\:mm\\:ss\\.fff}.");
 
             return meshArray;
         }
@@ -173,8 +172,6 @@ namespace SonOfRobin
             {
                 pixelBagsForTextureNames[meshDef.textureName] = new ConcurrentBag<Point>();
             }
-
-            var rawPixelsBag = new ConcurrentBag<Point>();
 
             Parallel.For(0, grid.dividedHeight, rawY =>
             {
@@ -323,13 +320,13 @@ namespace SonOfRobin
             {
                 foreach (SearchEntryTerrain searchEntryTerrain in this.searchEntriesTerrain)
                 {
-                    byte terrainVal = grid.terrainByName[searchEntryTerrain.name].GetMapDataRaw(rawX, rawY);
+                    byte terrainVal = grid.terrainByName[searchEntryTerrain.name].GetMapDataRawNoBoundsCheck(rawX, rawY);
                     if (terrainVal < searchEntryTerrain.minVal || terrainVal > searchEntryTerrain.maxVal) return false;
                 }
 
                 foreach (SearchEntryExtProps searchEntryExtProps in this.searchEntriesExtProps)
                 {
-                    if (grid.ExtBoardProps.GetValueRaw(name: searchEntryExtProps.name, rawX: rawX, rawY: rawY) != searchEntryExtProps.value) return false;
+                    if (grid.ExtBoardProps.GetValueRaw(name: searchEntryExtProps.name, rawX: rawX, rawY: rawY, boundsCheck: false) != searchEntryExtProps.value) return false;
                 }
 
                 return true;

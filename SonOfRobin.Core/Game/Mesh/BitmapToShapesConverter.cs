@@ -40,8 +40,7 @@ namespace SonOfRobin
 
         public static Dictionary<Shape, List<Shape>> GenerateShapes(BitArrayWrapperChunk chunk)
         {
-            var shapeList = GenerateConnectedEdgesList(chunk);
-            return GroupShapes(shapeList);
+            return GroupShapes(shapes: GenerateConnectedEdgesList(chunk));
         }
 
         private static List<Shape> GenerateConnectedEdgesList(BitArrayWrapperChunk chunk)
