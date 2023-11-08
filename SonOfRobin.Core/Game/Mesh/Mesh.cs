@@ -50,20 +50,20 @@ namespace SonOfRobin
             this.boundsRect = (Rectangle)meshDict["boundsRect"];
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
 
-            var vertXPos = (float[])meshDict["vertXPos"];
-            var vertYPos = (float[])meshDict["vertYPos"];
-            var vertTexCoordX = (float[])meshDict["vertTexCoordX"];
-            var vertTexCoordY = (float[])meshDict["vertTexCoordY"];
+            var vertXPosAsSpan = ((float[])meshDict["vertXPos"]).AsSpan();
+            var vertYPosAsSpan = ((float[])meshDict["vertYPos"]).AsSpan();
+            var vertTexCoordXAsSpan = ((float[])meshDict["vertTexCoordX"]).AsSpan();
+            var vertTexCoordYAsSpan = ((float[])meshDict["vertTexCoordY"]).AsSpan();
 
             var vertList = new List<VertexPositionTexture>();
 
-            for (int i = 0; i < vertXPos.Length; i++)
+            for (int i = 0; i < vertXPosAsSpan.Length; i++)
             {
-                VertexPositionTexture vertex = new();
-                vertex.Position = new Vector3(vertXPos[i], vertYPos[i], 0);
-                vertex.TextureCoordinate = new Vector2(vertTexCoordX[i], vertTexCoordY[i]);
-
-                vertList.Add(vertex);
+                vertList.Add(new VertexPositionTexture
+                {
+                    Position = new Vector3(vertXPosAsSpan[i], vertYPosAsSpan[i], 0),
+                    TextureCoordinate = new Vector2(vertTexCoordXAsSpan[i], vertTexCoordYAsSpan[i])
+                });
             }
 
             this.vertices = vertList.ToArray();
@@ -79,8 +79,11 @@ namespace SonOfRobin
             var vertTexCoordX = new List<float>();
             var vertTexCoordY = new List<float>();
 
-            foreach (VertexPositionTexture vertex in this.vertices)
+            Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
+
+            for (int i = 0; i < verticesAsSpan.Length; i++)
             {
+                VertexPositionTexture vertex = verticesAsSpan[i];
                 vertXPos.Add(vertex.Position.X);
                 vertYPos.Add(vertex.Position.Y);
                 vertTexCoordX.Add(vertex.TextureCoordinate.X);
@@ -127,14 +130,17 @@ namespace SonOfRobin
                 {
                     Vector2 deformationOffset = Vector2.Zero;
 
-                    for (int i = 0; i < this.vertices.Length; i++)
+                    Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
+                    Span<VertexPositionTexture> verticesTransformedCopyAsSpan = this.verticesTransformedCopy.AsSpan();
+
+                    for (int i = 0; i < verticesAsSpan.Length; i++)
                     {
-                        VertexPositionTexture inputVertex = this.vertices[i];
+                        VertexPositionTexture inputVertex = verticesAsSpan[i];
 
                         if (meshDef.textureDeformationOffsetX != 0) deformationOffset.X = (float)Math.Sin(inputVertex.TextureCoordinate.X * 3) * meshDef.textureDeformationOffsetX;
                         if (meshDef.textureDeformationOffsetY != 0) deformationOffset.Y = (float)Math.Cos(inputVertex.TextureCoordinate.Y * 3) * meshDef.textureDeformationOffsetY;
 
-                        this.verticesTransformedCopy[i].TextureCoordinate = inputVertex.TextureCoordinate + this.meshDef.TextureOffset + deformationOffset;
+                        verticesTransformedCopyAsSpan[i].TextureCoordinate = inputVertex.TextureCoordinate + this.meshDef.TextureOffset + deformationOffset;
                     }
                 }
             }
