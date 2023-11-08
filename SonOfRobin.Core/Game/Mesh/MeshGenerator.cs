@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SonOfRobin
@@ -259,7 +260,7 @@ namespace SonOfRobin
                     currentIndex++;
                 }
 
-                foreach (var hole in holes)
+                foreach (BitmapToShapesConverter.Shape hole in holes)
                 {
                     holeIndices.Add(currentIndex);
 
@@ -273,6 +274,7 @@ namespace SonOfRobin
                 }
 
                 List<int> indicesForShape = Earcut.Tessellate(data: doublesList.ToArray(), holeIndices: holeIndices.ToArray());
+                var indicesForShapeAsSpan = CollectionsMarshal.AsSpan(indicesForShape);
 
                 Vector3 basePos = new(offset.X, offset.Y, 0);
 
@@ -284,15 +286,15 @@ namespace SonOfRobin
                     shapeVertList.Add(vertex);
                 }
 
-                foreach (int indice in indicesForShape)
+                for (int i = 0; i < indicesForShapeAsSpan.Length; i++)
                 {
-                    indicesList.Add((short)(indice + vertList.Count));
+                    indicesList.Add((short)(indicesForShapeAsSpan[i] + vertList.Count));
                 }
 
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertArray: vertList.ToArray(), indicesList: indicesList);
+            return new Mesh(textureName: textureName, vertArray: vertList.ToArray(), indicesArray: indicesList.ToArray());
         }
 
         public readonly struct RawMapDataSearchForTexture

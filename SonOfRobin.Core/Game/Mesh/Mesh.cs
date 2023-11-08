@@ -19,16 +19,15 @@ namespace SonOfRobin
         public readonly Rectangle boundsRect;
         public readonly MeshDefinition meshDef;
 
-        public Mesh(TextureBank.TextureName textureName, VertexPositionTexture[] vertArray, List<short> indicesList)
+        public Mesh(TextureBank.TextureName textureName, VertexPositionTexture[] vertArray, short[] indicesArray)
         {
             this.textureName = textureName;
             this.vertices = vertArray;
             this.verticesTransformedCopy = new VertexPositionTexture[vertArray.Length];
             Array.Copy(sourceArray: vertArray, destinationArray: this.verticesTransformedCopy, length: vertArray.Length);
-            this.indices = indicesList.ToArray();
+            this.indices = indicesArray;
             this.triangleCount = this.indices.Length / 3;
-            Rectangle boundsRect = GetBoundsRect(vertices);
-            this.boundsRect = boundsRect;
+            this.boundsRect = GetBoundsRect(vertices);
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
             this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
