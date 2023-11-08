@@ -292,7 +292,7 @@ namespace SonOfRobin
                 vertList.AddRange(shapeVertList);
             }
 
-            return new Mesh(textureName: textureName, vertList: vertList, indicesList: indicesList);
+            return new Mesh(textureName: textureName, vertArray: vertList.ToArray(), indicesList: indicesList);
         }
 
         public readonly struct RawMapDataSearchForTexture

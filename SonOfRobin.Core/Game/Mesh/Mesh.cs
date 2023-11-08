@@ -19,11 +19,12 @@ namespace SonOfRobin
         public readonly Rectangle boundsRect;
         public readonly MeshDefinition meshDef;
 
-        public Mesh(TextureBank.TextureName textureName, List<VertexPositionTexture> vertList, List<short> indicesList)
+        public Mesh(TextureBank.TextureName textureName, VertexPositionTexture[] vertArray, List<short> indicesList)
         {
             this.textureName = textureName;
-            this.vertices = vertList.ToArray();
-            this.verticesTransformedCopy = vertList.ToArray();
+            this.vertices = vertArray;
+            this.verticesTransformedCopy = new VertexPositionTexture[vertArray.Length];
+            Array.Copy(sourceArray: vertArray, destinationArray: this.verticesTransformedCopy, length: vertArray.Length);
             this.indices = indicesList.ToArray();
             this.triangleCount = this.indices.Length / 3;
             Rectangle boundsRect = GetBoundsRect(vertices);
@@ -59,19 +60,18 @@ namespace SonOfRobin
             this.verticesTransformedCopy = new VertexPositionTexture[vertXPosAsSpan.Length];
 
             Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
-            Span<VertexPositionTexture> verticesTransformedCopyAsSpan = this.verticesTransformedCopy.AsSpan();
 
             for (int i = 0; i < vertXPosAsSpan.Length; i++)
             {
-                VertexPositionTexture vertex = new()
+                verticesAsSpan[i] = new()
                 {
                     Position = new Vector3(vertXPosAsSpan[i], vertYPosAsSpan[i], 0),
                     TextureCoordinate = new Vector2(vertTexCoordXAsSpan[i], vertTexCoordYAsSpan[i])
                 };
-
-                verticesAsSpan[i] = vertex;
-                verticesTransformedCopyAsSpan[i] = vertex;
             }
+
+            this.verticesTransformedCopy = new VertexPositionTexture[this.vertices.Length];
+            Array.Copy(sourceArray: this.vertices, destinationArray: this.verticesTransformedCopy, length: this.vertices.Length);
 
             this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
