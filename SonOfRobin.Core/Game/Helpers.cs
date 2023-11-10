@@ -66,6 +66,7 @@ namespace SonOfRobin
         {
             Vector2 textSize = MeasureStringCorrectly(font: font, stringToMeasure: text);
             float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
+            scale = Math.Max(scale, 0.01f); // to avoid division by zero
 
             if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: rectangle, color: Color.White, thickness: 1f);
 
