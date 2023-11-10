@@ -402,6 +402,7 @@ namespace SonOfRobin
                 textureName: TextureBank.TextureName.RepeatingCaveFloor,
                 mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
                 blendState: BlendState.AlphaBlend,
+                drawPriority: -1,
                 search: new(
                 searchPriority: 0,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
