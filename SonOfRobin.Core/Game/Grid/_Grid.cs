@@ -1184,7 +1184,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(this.level.hasWater ? Map.waterColor : Color.Black);
 
-            foreach (Mesh mesh in this.MeshGrid.allMeshes.OrderBy(mesh => mesh.meshDef.drawPriority).Distinct())
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.Distinct().OrderBy(mesh => mesh.meshDef.drawPriority))
             {
                 basicEffect.Texture = mesh.meshDef.mapTexture;
 
@@ -1221,10 +1221,10 @@ namespace SonOfRobin
 
             int trianglesDrawn = 0;
 
-            HashSet<Mesh> meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
+            var meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
-                .OrderBy(mesh => mesh.meshDef.drawPriority)
-                .ToHashSet();
+                .Distinct()
+                .OrderBy(mesh => mesh.meshDef.drawPriority);
 
             foreach (Mesh mesh in meshesToDraw)
             {
