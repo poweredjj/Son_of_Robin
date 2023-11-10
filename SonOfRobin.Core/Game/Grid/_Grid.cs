@@ -360,7 +360,10 @@ namespace SonOfRobin
                             case Level.LevelType.Cave:
 
                                 this.terrainByName[Terrain.Name.Height] = new Terrain(
-                                    grid: this, name: Terrain.Name.Height, frequency: 32f, octaves: 11, persistence: 0.58f, lacunarity: 1.8f, gain: 0.68f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> { new Terrain.RangeConversion(inMin: 0, inMax: 116, outMin: 0, outMax: 0), new Terrain.RangeConversion(inMin: 200, inMax: 255, outMin: Terrain.lavaMin, outMax: 255), new Terrain.RangeConversion(inMin: Terrain.rocksLevelMin, inMax: Terrain.lavaMin - 1, outMin: Terrain.rocksLevelMin - 1, outMax: Terrain.rocksLevelMin - 1) });
+                                    grid: this, name: Terrain.Name.Height, frequency: 32f, octaves: 11, persistence: 0.58f, lacunarity: 1.8f, gain: 0.68f, addBorder: true, rangeConversions: new List<Terrain.RangeConversion> {
+                                        new Terrain.RangeConversion(inMin: 0, inMax: 116, outMin: 0, outMax: 0),
+                                        new Terrain.RangeConversion(inMin: 200, inMax: 255, outMin: Terrain.lavaMin, outMax: 255),
+                                        new Terrain.RangeConversion(inMin: Terrain.rocksLevelMin, inMax: Terrain.lavaMin, outMin: Terrain.rocksLevelMin - 1, outMax: Terrain.rocksLevelMin - 1) });
 
                                 this.terrainByName[Terrain.Name.Humidity] = new Terrain(
                                     grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
