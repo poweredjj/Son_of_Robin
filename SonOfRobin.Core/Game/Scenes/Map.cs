@@ -823,7 +823,16 @@ namespace SonOfRobin
                         .Distinct()
                         .ToList());
                 }
-                catch (InvalidOperationException) { continue; }
+                catch (InvalidOperationException)
+                {
+                    Thread.Sleep(1);
+                    continue;
+                }
+                catch (DivideByZeroException)
+                {
+                    Thread.Sleep(1);
+                    continue;
+                }
 
                 while (true) // target list should not be replaced when in use
                 {
