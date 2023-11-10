@@ -315,6 +315,7 @@ namespace SonOfRobin
         public static bool debugEnableExtremeMapSizes = false;
         public static bool debugInstantCookBrew = false;
         public static bool debugShowOutsideCamera = false;
+        public static bool debugShowMeshBounds = false;
         public static bool debugShowFocusRect = false;
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugShowWireframe = false;

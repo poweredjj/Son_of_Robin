@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
@@ -1234,6 +1235,17 @@ namespace SonOfRobin
                     trianglesDrawn += mesh.triangleCount;
                 }
             }
+
+            if (Preferences.debugShowMeshBounds)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
+                foreach (Mesh mesh in meshesToDraw)
+                {
+                    SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: mesh.boundsRect, color: Color.White, thickness: 1f);
+                }
+                SonOfRobinGame.SpriteBatch.End();
+            }
+
             return trianglesDrawn;
         }
 
