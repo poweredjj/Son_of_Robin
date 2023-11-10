@@ -519,7 +519,7 @@ namespace SonOfRobin
             this.alive = false;
             // fruits should be destroyed, not dropped
             if (this.PieceStorage != null && this.GetType() != typeof(Plant)) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
-            this.RemoveFromStateMachines();
+            this.activeState = State.Empty; // RemoveFromStateMachines() should not be called, because then passive movement would not be calculated properly
             this.sprite.Kill();
             if (addDestroyEvent) new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.pieceInfo.staysAfterDeath, boardPiece: this);
         }
