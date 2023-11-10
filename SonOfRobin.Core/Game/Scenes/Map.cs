@@ -884,7 +884,10 @@ namespace SonOfRobin
                     cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
                 }
                 catch (InvalidOperationException) // collection modified while iterating
-                { continue; }
+                {
+                    Thread.Sleep(1);
+                    continue;
+                }
 
                 foreach (Sprite sprite in cameraSprites)
                 {
