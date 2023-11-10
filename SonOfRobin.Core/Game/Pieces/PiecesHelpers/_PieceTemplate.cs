@@ -1824,7 +1824,7 @@ namespace SonOfRobin
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), speed: 1.5f,
-                         maxHitPoints: 650, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 60, readableName: "bear", description: "Cave animal.");
+                         maxHitPoints: 650, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 75, readableName: "bear", description: "Cave animal.");
 
                         return boardPiece;
                     }
