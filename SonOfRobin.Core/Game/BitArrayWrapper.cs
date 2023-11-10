@@ -195,6 +195,11 @@ namespace SonOfRobin
             return base.GetVal(0, 0);
         }
 
+        public override bool GetValNoBoundsCheck(int x, int y)
+        {
+            return base.GetVal(0, 0);
+        }
+
         public override void SetVal(int x, int y, bool value)
         {
             base.SetVal(0, 0, value);
