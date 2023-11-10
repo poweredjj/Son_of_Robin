@@ -109,7 +109,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositSmall, multiplier: 0.5f, maxAmount: 4, minDepth: 3, maxAmountIncreaseForDepthLevel: 1, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.5f, maxAmount: 3, minDepth: 4, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.MushroomPlant, multiplier: 0.5f, maxAmount: 50, minDepth: 1, doNotReplenish: false, levelType: Level.LevelType.Cave),
-                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 1.5f, maxAmount: 13, minDepth: 1, maxAmountIncreaseForDepthLevel: 8, doNotReplenish: true, levelType: Level.LevelType.Cave),
+                new PieceCreationData(name: PieceTemplate.Name.Bear, multiplier: 2.0f, maxAmount: 10, minDepth: 1, maxAmountIncreaseForDepthLevel: 10, doNotReplenish: true, levelType: Level.LevelType.Cave),
 
                 // Caves don't use temporaryDecoration, because it is better to just create everything at the start (caves are small).
                 // This way, some pieces can be placed with better precision.
