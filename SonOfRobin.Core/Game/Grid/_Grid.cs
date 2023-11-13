@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using SixLabors.ImageSharp;
@@ -1241,14 +1242,18 @@ namespace SonOfRobin
 
             if (Preferences.debugShowMeshBounds)
             {
+                SpriteFontBase font = SonOfRobinGame.FontVCROSD.GetFont(18);
+
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
                 foreach (Mesh mesh in meshesToDraw)
                 {
                     SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: mesh.boundsRect, color: Color.White, thickness: 1f);
+
+                    string meshText = $"{mesh.boundsRect.X},{mesh.boundsRect.Y}\n{mesh.boundsRect.Width}x{mesh.boundsRect.Height}\n{mesh.textureName}\ntris: {mesh.triangleCount}";
+                    font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: meshText, position: new Vector2(mesh.boundsRect.Left, mesh.boundsRect.Top), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 2);
                 }
                 SonOfRobinGame.SpriteBatch.End();
             }
-
             return trianglesDrawn;
         }
 
