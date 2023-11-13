@@ -769,6 +769,26 @@ namespace SonOfRobin
             if (Preferences.debugShowOutsideCamera) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.camera.viewRect, color: Color.White, thickness: 3f);
 
             SonOfRobinGame.SpriteBatch.End();
+
+            // drawing level name (within screen space)
+
+            Level level = this.world.ActiveLevel;
+            if (level.levelType != Level.LevelType.Island && this.Mode == MapMode.Full)
+            {
+                SonOfRobinGame.SpriteBatch.Begin();
+
+                string levelText = $"{level.levelType} level {level.depth}".ToLower();
+
+                Rectangle levelTextRect = new Rectangle(
+                    x: (int)(SonOfRobinGame.VirtualWidth * 0.01f), y: (int)(SonOfRobinGame.VirtualHeight * 0.01f),
+                    width: (int)(SonOfRobinGame.VirtualWidth * 0.3f), height: (int)(SonOfRobinGame.VirtualHeight * 0.05f));
+
+                Helpers.DrawTextInsideRect(font: locationFont, text: levelText, rectangle: levelTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: 2, drawTestRect: false, drawTimes: 3, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
+
+                Helpers.DrawTextInsideRect(font: locationFont, text: levelText, rectangle: levelTextRect, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
+
+                SonOfRobinGame.SpriteBatch.End();
+            }
         }
 
         public override void Draw()

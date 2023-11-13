@@ -551,8 +551,7 @@ namespace SonOfRobin
 
                         new VirtButton(name: VButName.MapDeleteMarkers, label: "DELETE\nMARKERS", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
 
-                        xPos = 0.06f;
-                        yPos = 0.12f;
+                        xPos -= xShift;
 
                         new VirtButton(name: VButName.MapToggleLocations, label: "TOGGLE\nLOCATIONS", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "mapShowLocationNames");
 
