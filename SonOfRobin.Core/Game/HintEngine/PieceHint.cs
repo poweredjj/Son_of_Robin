@@ -79,6 +79,7 @@ namespace SonOfRobin
             CineTentModernCantPack = 73,
             CineSmallBase = 65,
             CineRuins = 74,
+            CineCave = 75,
             CineTotem = 63,
             CineLookForSurvivors1 = 66,
             CineLookForSurvivors2 = 67,

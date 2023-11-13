@@ -41,6 +41,7 @@ namespace SonOfRobin
             Plant = 29,
             HarvestMeat = 30,
             MeatHarvestLevels = 31,
+            Caves = 32,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -387,6 +388,13 @@ namespace SonOfRobin
                 new HintMessage(text: "2. Stand close to the | fertile ground.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FertileGroundMedium) }, boxType: messageTextType),
                 new HintMessage(text: "3. Select the seed | you want to plant\nfrom inventory and use 'plant' option.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) }, boxType: messageTextType),
                 new HintMessage(text: "4. Pick a spot, where the | plant is colored green.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoffeeShrub) }, boxType: messageTextType)});
+
+            new Tutorial(type: Type.Caves, name: "caves", title: "About caves.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "| Crafting isn't possible inside the cave.\nOnce you exit, the | entrance collapses,\nso don't leave | important items behind.",
+                imageList: new List<Texture2D>{ TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft), PieceInfo.GetTexture(PieceTemplate.Name.CaveEntranceOutside),  PieceInfo.GetTexture(PieceTemplate.Name.Crystal) }, boxType: messageTextType),
+                new HintMessage(text:"Be ready |.\nEnsure you're | well-rested.\n\nGrab lots of:\n- | light sources\n- | food\n- | tools", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps), TextureBank.GetTexture(TextureBank.TextureName.Bed), PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron) }, boxType: messageTextType),
+                });
 
             CheckData();
         }

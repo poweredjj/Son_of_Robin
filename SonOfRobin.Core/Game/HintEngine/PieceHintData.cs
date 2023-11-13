@@ -385,6 +385,15 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
 
                  new PieceHint(
+                    type: PieceHint.Type.CineCave,
+                    showCineCurtains: true,
+                    ignoreHintSetting: true,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CaveEntranceOutside },
+                    message: "This looks like a | cave.\nI wonder what's inside?\nStill, it might be dangerous...",
+                    imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.CaveEntrance].texture },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Caves }),
+
+                 new PieceHint(
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     type: PieceHint.Type.CineTotem, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Totem },

@@ -191,7 +191,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (!haveEnoughMass || !canReproduce || !this.world.CanProcessMoreOffCameraRectPiecesNow) break;
+                if (!haveEnoughMass || !canReproduce || !World.CanProcessMoreOffCameraRectPiecesNow) break;
             }
 
             this.GrowOlder(timeDelta: timeDelta);

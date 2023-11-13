@@ -33,7 +33,7 @@ namespace SonOfRobin
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
 
-        private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
+        private const int hintDelay = 1 * 1 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };

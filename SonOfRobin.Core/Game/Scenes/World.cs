@@ -360,14 +360,14 @@ namespace SonOfRobin
             set { timePlayed = value; }
         }
 
-        public TimeSpan WorldElapsedUpdateTime
+        public static TimeSpan WorldElapsedUpdateTime
         { get { return UpdateTimeElapsed + LastDrawDuration; } }
 
-        public bool CanProcessMoreCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
+        public static bool CanProcessMoreCameraRectPiecesNow
+        { get { return WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
 
-        public bool CanProcessMoreOffCameraRectPiecesNow
-        { get { return this.WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
+        public static bool CanProcessMoreOffCameraRectPiecesNow
+        { get { return WorldElapsedUpdateTime.Milliseconds <= Preferences.StateMachinesDurationFrameMS; } }
 
         public float PieceCount
         {
@@ -724,7 +724,7 @@ namespace SonOfRobin
         public int CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
         {
             if (clearDoNotCreateList) this.ActiveLevel.doNotCreatePiecesList.Clear();
-            if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return 0;
+            if (!initialCreation && !CanProcessMoreOffCameraRectPiecesNow) return 0;
 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)this.ActiveLevel.width * (long)this.ActiveLevel.height / 300000 * multiplier), 0); // 300000
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
@@ -756,7 +756,7 @@ namespace SonOfRobin
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
-                    if (!initialCreation && !this.CanProcessMoreOffCameraRectPiecesNow) return piecesCreatedCount;
+                    if (!initialCreation && !CanProcessMoreOffCameraRectPiecesNow) return piecesCreatedCount;
 
                     var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: pieceName);
                     if (newBoardPiece.sprite.IsOnBoard)
@@ -792,7 +792,7 @@ namespace SonOfRobin
 
         private void CreateTemporaryDecorations(bool ignoreDuration)
         {
-            if (!ignoreDuration && !this.CanProcessMoreOffCameraRectPiecesNow) return;
+            if (!ignoreDuration && !CanProcessMoreOffCameraRectPiecesNow) return;
 
             DateTime creationStarted = DateTime.Now;
             int createdDecorationsCount = 0;
@@ -820,7 +820,7 @@ namespace SonOfRobin
                                     break;
                                 }
 
-                                if (!ignoreDuration && !this.CanProcessMoreOffCameraRectPiecesNow)
+                                if (!ignoreDuration && !CanProcessMoreOffCameraRectPiecesNow)
                                 {
                                     this.ShowTempDecorsMessage(createdDecorationsCount: createdDecorationsCount, creationStarted: creationStarted, completed: false);
                                     return;
@@ -847,7 +847,7 @@ namespace SonOfRobin
 
         private void DestroyTemporaryDecorationsOutsideCamera()
         {
-            if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+            if (!CanProcessMoreOffCameraRectPiecesNow) return;
 
             DateTime creationStarted = DateTime.Now;
             int destroyedDecorationsCount = 0;
@@ -865,7 +865,7 @@ namespace SonOfRobin
                     destroyedDecorationsCount++;
                 }
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) break;
+                if (!CanProcessMoreOffCameraRectPiecesNow) break;
             }
 
             if (destroyedDecorationsCount > 0)
@@ -1012,7 +1012,7 @@ namespace SonOfRobin
                 this.ProcessOneNonPlant(piece);
                 processedPiecesCount++;
 
-                if (processedPiecesCount > 30 && !this.CanProcessMoreCameraRectPiecesNow) // even in the worst case, some pieces must be processed
+                if (processedPiecesCount > 30 && !CanProcessMoreCameraRectPiecesNow) // even in the worst case, some pieces must be processed
                 {
                     // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Camera view SM: no time to finish processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                     return;
@@ -1040,7 +1040,7 @@ namespace SonOfRobin
         {
             this.ProcessedNonPlantsCount = 0;
 
-            if (!this.CanProcessMoreOffCameraRectPiecesNow)
+            if (!CanProcessMoreOffCameraRectPiecesNow)
             {
                 // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Non-plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
@@ -1059,7 +1059,7 @@ namespace SonOfRobin
                 // var duration = DateTime.Now - startTime; // for testing
                 // SonOfRobinGame.messageLog.AddMessage(text: $"{this.CurrentUpdate} created new nonPlantSpritesQueue ({this.nonPlantSpritesQueue.Count}) - duration {duration.Milliseconds}ms"); // for testing
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+                if (!CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             while (true)
@@ -1071,7 +1071,7 @@ namespace SonOfRobin
                 this.ProcessOneNonPlant(currentNonPlant);
                 this.ProcessedNonPlantsCount++;
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+                if (!CanProcessMoreOffCameraRectPiecesNow) return;
             }
         }
 
@@ -1109,7 +1109,7 @@ namespace SonOfRobin
         {
             this.ProcessedPlantsCount = 0;
 
-            if (!this.CanProcessMoreOffCameraRectPiecesNow)
+            if (!CanProcessMoreOffCameraRectPiecesNow)
             {
                 // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Plant SM: no time to start processing queue - {this.WorldElapsedUpdateTime.Milliseconds}ms.");
                 return;
@@ -1120,7 +1120,7 @@ namespace SonOfRobin
                 this.ActiveLevel.plantCellsQueue = new Queue<Cell>(this.Grid.allCells);
                 // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+                if (!CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             if (this.ActiveLevel.plantSpritesQueue.Count == 0)
@@ -1132,12 +1132,12 @@ namespace SonOfRobin
                     Cell cell = this.ActiveLevel.plantCellsQueue.Dequeue();
                     newPlantSpritesList.AddRange(cell.spriteGroups[Cell.Group.StateMachinesPlants]); // not shuffled to save cpu time
 
-                    if (this.ActiveLevel.plantCellsQueue.Count == 0 || !this.CanProcessMoreOffCameraRectPiecesNow) break;
+                    if (this.ActiveLevel.plantCellsQueue.Count == 0 || !CanProcessMoreOffCameraRectPiecesNow) break;
                 }
 
                 this.ActiveLevel.plantSpritesQueue = new Queue<Sprite>(newPlantSpritesList);
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+                if (!CanProcessMoreOffCameraRectPiecesNow) return;
             }
 
             while (true)
@@ -1151,7 +1151,7 @@ namespace SonOfRobin
                 if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.15 || currentPlant.Mass < 1) currentPlant.Destroy();
                 this.ProcessedPlantsCount++;
 
-                if (!this.CanProcessMoreOffCameraRectPiecesNow) return;
+                if (!CanProcessMoreOffCameraRectPiecesNow) return;
             }
         }
 
