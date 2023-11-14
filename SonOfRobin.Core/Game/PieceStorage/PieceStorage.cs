@@ -21,6 +21,7 @@ namespace SonOfRobin
             Fruits = 9,
             Lab = 10,
             Totem = 11,
+            Construction = 12,
         }
 
         public readonly World world;

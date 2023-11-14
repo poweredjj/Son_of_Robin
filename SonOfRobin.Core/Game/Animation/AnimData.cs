@@ -307,6 +307,8 @@ namespace SonOfRobin
             CampfireSmall = 217,
             CampfireMedium = 218,
 
+            Boat = 308,
+
             HerbsBlack = 219,
             HerbsCyan = 220,
             HerbsBlue = 221,
@@ -1093,6 +1095,13 @@ namespace SonOfRobin
                     }
 
                     AddFrameList(animPackage: packageName, animSize: size, animName: "default", frameList: frameList);
+                }
+            }
+
+            {
+                for (int animSize = 0; animSize <= 5; animSize++)
+                {
+                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.2f, depthPercent: 0.7f), animSize: animSize);
                 }
             }
 
