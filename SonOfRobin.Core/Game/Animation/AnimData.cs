@@ -1103,7 +1103,7 @@ namespace SonOfRobin
             {
                 for (int animSize = 0; animSize <= 5; animSize++)
                 {
-                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.2f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
+                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.5f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
                 }
             }
 

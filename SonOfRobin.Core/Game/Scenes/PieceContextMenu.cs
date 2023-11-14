@@ -26,6 +26,7 @@ namespace SonOfRobin
             Brew,
             Equip,
             Offer,
+            Construct,
             Empty,
         }
 
@@ -138,13 +139,13 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addEmpty = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addEmpty: addEmpty);
+            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -156,7 +157,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addEmpty = false)
+        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -173,6 +174,7 @@ namespace SonOfRobin
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
             if (addHarvest) contextActionList.Add(ContextAction.Harvest);
             if (addOffer) contextActionList.Add(ContextAction.Offer);
+            if (addConstruct) contextActionList.Add(ContextAction.Construct);
             if (addEmpty) contextActionList.Add(ContextAction.Empty);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
@@ -505,6 +507,14 @@ namespace SonOfRobin
                     {
                         Totem totem = (Totem)this.storage.storagePiece;
                         totem.Offer();
+
+                        return;
+                    }
+
+                case ContextAction.Construct:
+                    {
+                        ConstructionSite constructionSite = (ConstructionSite)this.storage.storagePiece;
+                        constructionSite.Construct();
 
                         return;
                     }

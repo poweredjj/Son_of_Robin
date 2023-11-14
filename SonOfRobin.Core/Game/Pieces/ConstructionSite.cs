@@ -7,26 +7,28 @@ namespace SonOfRobin
 {
     public class ConstructionSite : BoardPiece
     {
-        private int currentLevel;
-        private readonly int maxLevel;
+        private int constrLevel;
+        private readonly int maxConstrLevel;
+        private readonly PieceTemplate.Name convertsIntoWhenFinished;
         private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> ingredientsForLevels;
 
-        private Dictionary<PieceTemplate.Name, int> CurrentIngredientsDict { get { return this.ingredientsForLevels[this.currentLevel]; } }
+        private Dictionary<PieceTemplate.Name, int> CurrentIngredientsDict { get { return this.ingredientsForLevels[this.constrLevel]; } }
 
         private StorageSlot ConstructTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
 
-        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, int maxLevel, Dictionary<int, Dictionary<PieceTemplate.Name, int>> ingredientsForLevels,
+        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> ingredientsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
         {
             this.ingredientsForLevels = ingredientsForLevels;
+            this.convertsIntoWhenFinished = convertsIntoWhenFinished;
 
-            this.currentLevel = 0;
-            this.maxLevel = maxLevel;
+            this.constrLevel = 0;
+            this.maxConstrLevel = ingredientsForLevels.MaxBy(kvp => kvp.Key).Key;
 
-            for (int i = 0; i <= this.maxLevel; i++)
+            for (int i = 0; i <= this.maxConstrLevel; i++)
             {
                 if (!this.ingredientsForLevels.ContainsKey(i)) throw new ArgumentOutOfRangeException($"No ingredients for level {i}.");
             }
@@ -81,11 +83,18 @@ namespace SonOfRobin
             }
         }
 
+        public void Construct()
+        {
+            MessageLog.Add(text: $"Constructing level {this.constrLevel}...");
+
+            // TODO add code
+        }
+
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            pieceData["constructionSite_currentLevel"] = this.currentLevel;
+            pieceData["constructionSite_currentLevel"] = this.constrLevel;
 
             return pieceData;
         }
@@ -93,17 +102,14 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.currentLevel = (int)(Int64)pieceData["constructionSite_currentLevel"];
+            this.constrLevel = (int)(Int64)pieceData["constructionSite_currentLevel"];
 
             this.ConfigureStorage();
         }
 
         public override void DrawStatBar()
         {
-            if (this.world.CurrentUpdate < this.cookingDoneFrame)
-            {
-                // new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
-            }
+            // new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
 
             base.DrawStatBar();
         }

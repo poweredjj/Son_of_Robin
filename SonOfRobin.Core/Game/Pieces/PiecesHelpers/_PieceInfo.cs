@@ -1555,6 +1555,26 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         break;
 
+                    case PieceTemplate.Name.BoatConstructionSite:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        this.allowedDensity = new AllowedDensity(radius: 1000, forbidOverlapSameClass: true);
+                        break;
+
+                    case PieceTemplate.Name.BoatFinished:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.boardTask = Scheduler.TaskName.UseBoat;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        break;
+
                     case PieceTemplate.Name.Totem:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.0f; // protected from fire

@@ -796,7 +796,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger, PieceTemplate.Name.OfferTrigger };
+            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger, PieceTemplate.Name.OfferTrigger, PieceTemplate.Name.ConstructTrigger };
             if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
@@ -814,9 +814,10 @@ namespace SonOfRobin
             bool addHarvest = piece.name == PieceTemplate.Name.MeatHarvestTrigger;
             bool addFieldHarvest = piece.world.Player.Skill == Player.SkillName.Hunter && (this.storage.storageType == PieceStorage.StorageType.Virtual || this.storage.storageType == PieceStorage.StorageType.Inventory) && piece.GetType() == typeof(Animal) && !piece.alive;
             bool addOffer = piece.name == PieceTemplate.Name.OfferTrigger;
+            bool addConstruct = piece.name == PieceTemplate.Name.ConstructTrigger;
             bool addEmpty = piece.GetType() == typeof(Potion);
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addEmpty: addEmpty);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty);
             return;
         }
 

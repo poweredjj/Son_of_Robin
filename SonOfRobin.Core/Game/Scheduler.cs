@@ -115,6 +115,7 @@ namespace SonOfRobin
             SetGlobalWorldEffect = 95,
             SetGlobalWorldTweener = 96,
             UseEntrance = 97,
+            UseBoat = 98,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2060,6 +2061,14 @@ namespace SonOfRobin
                         {
                             Entrance entrance = (Entrance)this.ExecuteHelper;
                             entrance.Enter();
+                            return;
+                        }
+
+                    case TaskName.UseBoat:
+                        {
+                            BoardPiece boat = (BoardPiece)this.ExecuteHelper;
+                            boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEnding, ignoreDelay: true, piece: boat);
+
                             return;
                         }
 

@@ -23,6 +23,7 @@ namespace SonOfRobin
             BurntOutTorch = 12,
             CineIntroduction = 13,
             CineSmallBase = 14,
+            CineEnding = 21,
             AnimalScaredOfFire = 15,
             AnimalCounters = 16,
             ZoomOutLocked = 17,
@@ -445,6 +446,30 @@ namespace SonOfRobin
                         {
                             taskChain.Add(new HintMessage(text: "This should be enough for a basic camp | |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) }, boxType: dialogue, delay: 30).ConvertToTask());
                         }
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+
+                        break;
+                    }
+
+                case Type.CineEnding:
+                    {
+                        // no disable code needed
+
+                        Player player = this.world.Player;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.CineMode = true;
+
+                        BoardPiece boat = piece;
+
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new HintMessage(text: "Now I say something about leaving the island.", boxType: dialogue, delay: 60).ConvertToTask());
+
+                        // TODO add ending scene code
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
