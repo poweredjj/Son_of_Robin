@@ -357,6 +357,7 @@ namespace SonOfRobin
             Star = 261,
             Zzz = 262,
             Heart = 263,
+            Hammer = 309,
 
             Fog1 = 264,
             Fog2 = 265,
@@ -716,6 +717,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Miss, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
+            AddFrameList(animPackage: PkgName.Hammer, frameList: ConvertImageToFrameList(atlasName: "hammer", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Fog1, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Fog2, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.Fog3, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
@@ -1101,7 +1103,7 @@ namespace SonOfRobin
             {
                 for (int animSize = 0; animSize <= 5; animSize++)
                 {
-                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.2f, depthPercent: 0.7f), animSize: animSize);
+                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.2f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
                 }
             }
 

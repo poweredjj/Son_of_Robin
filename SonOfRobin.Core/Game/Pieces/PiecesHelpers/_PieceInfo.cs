@@ -2064,6 +2064,11 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         break;
 
+                    case PieceTemplate.Name.ConstructTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
                     case PieceTemplate.Name.BrewTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;

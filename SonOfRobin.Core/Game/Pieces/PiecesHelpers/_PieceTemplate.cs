@@ -179,6 +179,7 @@ namespace SonOfRobin
             BrewTrigger = 133,
             MeatHarvestTrigger = 134,
             OfferTrigger = 135,
+            ConstructTrigger = 230,
             FireplaceTriggerOn = 136,
             FireplaceTriggerOff = 137,
 
@@ -901,6 +902,15 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain();
 
                         BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.", activeState: BoardPiece.State.Empty);
+
+                        return boardPiece;
+                    }
+
+                case Name.ConstructTrigger:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Starts next construction level.", activeState: BoardPiece.State.Empty);
 
                         return boardPiece;
                     }
