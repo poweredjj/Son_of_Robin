@@ -195,11 +195,7 @@ namespace SonOfRobin
             this.world.camera.TrackPiece(trackedPiece: this, moveInstantly: true);
             this.world.map.MoveCameraToPlayer();
 
-            if (this.world.ActiveLevel.levelType == Level.LevelType.Cave)
-            {
-                Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Caves, world: this.world, ignoreDelay: true);
-                this.world.HintEngine.Disable(PieceHint.Type.CineCave);
-            }
+            if (this.world.ActiveLevel.levelType == Level.LevelType.Cave) this.world.HintEngine.Disable(PieceHint.Type.CineCave);
         }
 
         public override bool ShowStatBars
