@@ -116,8 +116,10 @@ namespace SonOfRobin
             SetGlobalWorldTweener = 96,
             UseEntrance = 97,
             UseBoat = 98,
-            ConstructionSiteConvertToFinalPiece = 99,
-            IslandClockAdvance = 100,
+            IslandClockAdvance = 99,
+            ChangeActiveState = 100,
+            ChangeTipsLayout = 101,
+            ChangeTouchLayout = 102,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2074,13 +2076,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.ConstructionSiteConvertToFinalPiece:
-                        {
-                            ConstructionSite constructionSite = (ConstructionSite)this.ExecuteHelper;
-                            constructionSite.ConvertToFinalPiece();
-                            return;
-                        }
-
                     case TaskName.IslandClockAdvance:
                         {
                             // example executeHelper for this task
@@ -2094,6 +2089,52 @@ namespace SonOfRobin
                             bool ignoreMultiplier = clockAdvanceData.ContainsKey("ignoreMultiplier") ? (bool)clockAdvanceData["ignoreMultiplier"] : false;
 
                             islandClock.Advance(amount: amount, ignorePause: ignorePause, ignoreMultiplier: ignoreMultiplier);
+
+                            return;
+                        }
+
+                    case TaskName.ChangeActiveState:
+                        {
+                            // example executeHelper for this task
+                            // var stateData = new Dictionary<string, Object> { { "boardPiece", player }, { "state", State.PlayerControlledWalking } };
+
+                            var stateData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            BoardPiece boardPiece = (BoardPiece)stateData["boardPiece"];
+                            BoardPiece.State state = (BoardPiece.State)stateData["state"];
+
+                            boardPiece.activeState = state;
+                            boardPiece.AddToStateMachines();
+
+                            return;
+                        }
+
+                    case TaskName.ChangeTipsLayout:
+                        {
+                            // example executeHelper for this task
+                            // var tipsData = new Dictionary<string, Object> { { "scene", world }, { "layout", ControlTips.TipsLayout.Empty } };
+
+                            var tipsData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            Scene scene = (Scene)tipsData["scene"];
+                            ControlTips.TipsLayout layout = (ControlTips.TipsLayout)tipsData["layout"];
+
+                            scene.tipsLayout = layout;
+
+                            return;
+                        }
+
+                    case TaskName.ChangeTouchLayout:
+                        {
+                            // example executeHelper for this task
+                            // var touchData = new Dictionary<string, Object> { { "scene", world }, { "layout", TouchLayout.Empty } };
+
+                            var touchData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            Scene scene = (Scene)touchData["scene"];
+                            TouchLayout layout = (TouchLayout)touchData["layout"];
+
+                            scene.touchLayout = layout;
 
                             return;
                         }
