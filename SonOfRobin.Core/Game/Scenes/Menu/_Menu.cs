@@ -286,7 +286,7 @@ namespace SonOfRobin
             }
         }
 
-        public void Rebuild(bool instantScroll)
+        public Menu Rebuild(bool instantScroll)
         {
             nextMenuNoStartTransition = true;
             Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName, executeHelper: this.templateExecuteHelper);
@@ -296,7 +296,7 @@ namespace SonOfRobin
                 // if menu refuses to be rebuild, after changing game parameters (craft, for example)
 
                 this.Remove();
-                return;
+                return null;
             }
 
             Entry activeEntry = this.ActiveEntry;
@@ -321,6 +321,8 @@ namespace SonOfRobin
                 Scene scene = sceneStack[i];
                 if (scene == this) sceneStack[i] = rebuiltMenu;
             }
+
+            return rebuiltMenu;
         }
 
         private void AddStartTransitions()

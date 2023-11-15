@@ -1198,18 +1198,12 @@ namespace SonOfRobin
             Yield debrisYield = new Yield(firstDebrisTypeList:
                 new List<ParticleEngine.Preset> { plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStar });
 
-            if (plantMode)
-            {
-                Sound.QuickPlay(SoundData.Name.Planting);
-            }
+            if (plantMode) Sound.QuickPlay(SoundData.Name.Planting);
             else
             {
                 Sound.QuickPlay(SoundData.Name.Sawing);
                 Sound.QuickPlay(SoundData.Name.Hammering);
             }
-
-            this.Player.simulatedPieceToBuild.Destroy();
-            this.Player.simulatedPieceToBuild = null;
 
             builtPiece.sprite.opacity = 0f;
             new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
@@ -1232,18 +1226,22 @@ namespace SonOfRobin
             this.Player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             this.islandClock.Resume();
 
+            this.Player.simulatedPieceToBuild?.Destroy();
+            this.Player.simulatedPieceToBuild = null;
+
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
-            if (restoreCraftMenu) craftMenu?.MoveToTop(); // there is no craft menu if planting
+            if (restoreCraftMenu)  // there is no craft menu if planting
+            {
+                if (craftMenu != null)
+                {
+                    Menu rebuiltCraftMenu = ((Menu)craftMenu).Rebuild(instantScroll: true); // rebuilding, to avoid counting simulated piece as built piece
+                    rebuiltCraftMenu?.MoveToTop();
+                }
+            }
             else craftMenu?.Remove();
 
             if (showCraftMessages) this.Player.recipeToBuild.UnlockNewRecipesAndShowSummary(this);
-
             this.Player.recipeToBuild = null;
-            if (this.Player.simulatedPieceToBuild != null)
-            {
-                this.Player.simulatedPieceToBuild.Destroy();
-                this.Player.simulatedPieceToBuild = null;
-            }
 
             this.BuildMode = false;
         }
