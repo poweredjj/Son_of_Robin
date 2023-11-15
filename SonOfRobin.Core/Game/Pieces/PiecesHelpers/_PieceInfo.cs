@@ -1564,6 +1564,7 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 1000, forbidOverlapSameClass: true);
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.BoatFinished:
@@ -1573,6 +1574,7 @@ namespace SonOfRobin
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.Totem:

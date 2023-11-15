@@ -215,7 +215,7 @@ namespace SonOfRobin
             }
             else
             {
-                taskChain.Add(new HintMessage(text: String.Join("\n", "Could not harvest anything..."), boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask());
+                taskChain.Add(new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask());
             }
 
             // registering stats and checking level up

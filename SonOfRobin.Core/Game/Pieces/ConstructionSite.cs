@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,41 +9,54 @@ namespace SonOfRobin
     public class ConstructionSite : BoardPiece
     {
         private int constrLevel;
+        private int neededMaterialsCount;
+
         private readonly int maxConstrLevel;
         private readonly PieceTemplate.Name convertsIntoWhenFinished;
-        private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> ingredientsForLevels;
+        private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels;
 
-        private Dictionary<PieceTemplate.Name, int> CurrentIngredientsDict { get { return this.ingredientsForLevels[this.constrLevel]; } }
+        private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict { get { return this.materialsForLevels[this.constrLevel]; } }
 
         private StorageSlot ConstructTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
 
-        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> ingredientsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
+        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
         {
-            this.ingredientsForLevels = ingredientsForLevels;
+            this.materialsForLevels = materialsForLevels;
             this.convertsIntoWhenFinished = convertsIntoWhenFinished;
 
             this.constrLevel = 0;
-            this.maxConstrLevel = ingredientsForLevels.MaxBy(kvp => kvp.Key).Key;
+            this.maxConstrLevel = materialsForLevels.MaxBy(kvp => kvp.Key).Key;
 
             for (int i = 0; i <= this.maxConstrLevel; i++)
             {
-                if (!this.ingredientsForLevels.ContainsKey(i)) throw new ArgumentOutOfRangeException($"No ingredients for level {i}.");
+                if (!this.materialsForLevels.ContainsKey(i)) throw new ArgumentOutOfRangeException($"No materials for level {i}.");
             }
+
+            this.showStatBarsTillFrame = int.MaxValue;
 
             this.ConfigureStorage();
         }
 
         private void ConfigureStorage()
         {
-            Dictionary<PieceTemplate.Name, int> currentIngredientsDict = this.CurrentIngredientsDict;
+            Dictionary<PieceTemplate.Name, int> currentMaterialsDict = this.CurrentMaterialsDict;
 
-            int storageWidth = currentIngredientsDict.MaxBy(kvp => kvp.Value).Value;
+            int storageWidth = currentMaterialsDict.MaxBy(kvp => kvp.Value).Value;
 
-            this.PieceStorage = new PieceStorage(width: (byte)storageWidth, height: (byte)(currentIngredientsDict.Count + 1), storagePiece: this, storageType: PieceStorage.StorageType.Construction);
+            this.neededMaterialsCount = 0;
+            foreach (var kvp in currentMaterialsDict)
+            {
+                PieceTemplate.Name materialName = kvp.Key;
+                int stackCount = kvp.Value;
+
+                this.neededMaterialsCount += PieceInfo.GetInfo(materialName).stackSize * stackCount;
+            }
+
+            this.PieceStorage = new PieceStorage(width: (byte)storageWidth, height: (byte)(currentMaterialsDict.Count + 1), storagePiece: this, storageType: PieceStorage.StorageType.Construction);
 
             foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
@@ -64,9 +78,9 @@ namespace SonOfRobin
             }
 
             int storageY = 1;
-            foreach (var kvp in currentIngredientsDict)
+            foreach (var kvp in currentMaterialsDict)
             {
-                PieceTemplate.Name ingredientName = kvp.Key;
+                PieceTemplate.Name materialName = kvp.Key;
                 int slotCount = kvp.Value;
 
                 for (int i = 0; i < slotCount; i++)
@@ -75,8 +89,8 @@ namespace SonOfRobin
 
                     slot.locked = false;
                     slot.hidden = false;
-                    slot.allowedPieceNames = new HashSet<PieceTemplate.Name> { ingredientName };
-                    slot.label = PieceInfo.GetInfo(ingredientName).readableName;
+                    slot.allowedPieceNames = new HashSet<PieceTemplate.Name> { materialName };
+                    slot.label = PieceInfo.GetInfo(materialName).readableName;
                 }
 
                 storageY++;
@@ -85,9 +99,57 @@ namespace SonOfRobin
 
         public void Construct()
         {
-            MessageLog.Add(text: $"Constructing level {this.constrLevel}...");
+            var foundMaterials = new Dictionary<PieceTemplate.Name, int>();
 
-            // TODO add code
+            foreach (BoardPiece material in this.PieceStorage.GetAllPieces())
+            {
+                if (!foundMaterials.ContainsKey(material.name)) foundMaterials[material.name] = 0;
+                foundMaterials[material.name]++;
+            }
+
+            var missingMaterials = new Dictionary<PieceTemplate.Name, int>();
+
+            foreach (var kvp in this.CurrentMaterialsDict)
+            {
+                PieceTemplate.Name materialName = kvp.Key;
+                int stackCount = kvp.Value;
+                int neededCount = PieceInfo.GetInfo(materialName).stackSize * stackCount;
+
+                int foundCount = foundMaterials.ContainsKey(materialName) ? foundMaterials[materialName] : 0;
+                if (foundCount < neededCount) missingMaterials[materialName] = neededCount - foundCount;
+            }
+
+            if (missingMaterials.Count > 0)
+            {
+                var textList = new List<string>();
+                var imageList = new List<Texture2D>();
+
+                foreach (var kvp in missingMaterials)
+                {
+                    PieceTemplate.Name materialName = kvp.Key;
+                    int missingCount = kvp.Value;
+
+                    PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
+
+                    textList.Add($"|  {pieceInfo.readableName} x{missingCount}");
+                    imageList.Add(AnimData.croppedFramesForPkgs[pieceInfo.animPkgName].texture);
+                }
+
+                string materialsList = String.Join("\n", textList);
+
+                new TextWindow(text: $"Some materials are missing:\n\n{materialsList}", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+
+                return;
+            }
+
+            this.constrLevel++;
+
+            if (this.constrLevel >= this.maxConstrLevel)
+            {
+                // TODO add conversion code
+            }
+
+            Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -103,13 +165,11 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.constrLevel = (int)(Int64)pieceData["constructionSite_currentLevel"];
-
-            this.ConfigureStorage();
         }
 
         public override void DrawStatBar()
         {
-            // new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.neededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Hammer].texture);
 
             base.DrawStatBar();
         }

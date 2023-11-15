@@ -1499,7 +1499,7 @@ namespace SonOfRobin
 
             if (meatPieces.Count == 0)
             {
-                Scheduler.Task hintTask = new HintMessage(text: String.Join("\n", "Could not harvest anything..."), boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask();
+                Scheduler.Task hintTask = new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask();
                 hintTask.Execute();
             }
             else if (meatPieces.Count >= 2)

@@ -868,7 +868,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "cooking starter", description: "Starts cooking.");
 
                         return boardPiece;
                     }
@@ -877,7 +877,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "brewing starter", description: "Starts brewing.");
 
                         return boardPiece;
                     }
@@ -886,7 +886,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, allowedTerrain: allowedTerrain, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, allowedTerrain: allowedTerrain, readableName: "upgrade", description: "Upgrades item.");
 
                         return boardPiece;
                     }
@@ -895,7 +895,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: allowedTerrain, readableName: "harvest", description: "Harvests meat from the animal.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: allowedTerrain, readableName: "harvest", description: "Harvests meat from the animal.");
 
                         return boardPiece;
                     }
@@ -904,7 +904,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.");
 
                         return boardPiece;
                     }
@@ -913,7 +913,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Starts next construction level.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Starts next construction level.");
 
                         return boardPiece;
                     }
@@ -922,7 +922,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "fireplace on", description: "Ignites the fireplace.");
 
                         return boardPiece;
                     }
@@ -931,7 +931,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, allowedTerrain: allowedTerrain, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty);
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, allowedTerrain: allowedTerrain, readableName: "fireplace off", description: "Extinginguishes fire.");
 
                         return boardPiece;
                     }
@@ -1250,7 +1250,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Boat, allowedTerrain: allowedTerrain, ingredientsForLevels: ingredientsForLevels, convertsIntoWhenFinished: Name.BoatFinished, readableName: "boat construction site", description: "Construction site for an escape boat.");
+                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Boat, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, convertsIntoWhenFinished: Name.BoatFinished, readableName: "boat construction site", description: "Construction site for an escape boat.");
 
                         return boardPiece;
                     }

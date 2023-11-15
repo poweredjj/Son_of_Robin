@@ -796,8 +796,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger, PieceTemplate.Name.OfferTrigger, PieceTemplate.Name.ConstructTrigger };
-            if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
+            if (slot.locked && piece.GetType() != typeof(Trigger)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
