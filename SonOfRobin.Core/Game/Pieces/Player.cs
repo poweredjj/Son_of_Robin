@@ -491,6 +491,16 @@ namespace SonOfRobin
                 { new Point(0,2), Equipment.EquipType.Map },
             };
 
+            var pieceNamesToDisplayForEquipTypes = new Dictionary<Equipment.EquipType, PieceTemplate.Name>
+            {
+                { Equipment.EquipType.Head, PieceTemplate.Name.HatSimple },
+                { Equipment.EquipType.Chest, PieceTemplate.Name.Dungarees },
+                { Equipment.EquipType.Legs, PieceTemplate.Name.BootsMountain },
+                { Equipment.EquipType.Backpack, PieceTemplate.Name.BackpackMedium },
+                { Equipment.EquipType.Belt, PieceTemplate.Name.BeltMedium },
+                { Equipment.EquipType.Map, PieceTemplate.Name.Map },
+            };
+
             if (this.Skill == SkillName.Fashionista) equipTypeBySlotCoords[new Point(2, 2)] = Equipment.EquipType.Accessory;
 
             foreach (var kvp in equipTypeBySlotCoords)
@@ -502,7 +512,9 @@ namespace SonOfRobin
                 slot.locked = false;
                 slot.hidden = false;
                 slot.allowedPieceNames = PieceInfo.GetNamesForEquipType(equipType);
-                slot.label = equipType.ToString().ToLower();
+
+                if (pieceNamesToDisplayForEquipTypes.ContainsKey(equipType)) slot.pieceTextureShownWhenEmpty = pieceNamesToDisplayForEquipTypes[equipType];
+                else slot.label = equipType.ToString().ToLower();
             }
         }
 

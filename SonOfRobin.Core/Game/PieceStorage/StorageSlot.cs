@@ -13,7 +13,7 @@ namespace SonOfRobin
         public List<BoardPiece> pieceList;
         public byte stackLimit;
         public string label;
-        public bool showAllowedPieceTexture;
+        public PieceTemplate.Name pieceTextureShownWhenEmpty;
         public bool locked;
         public bool hidden;
         public HashSet<PieceTemplate.Name> allowedPieceNames;
@@ -26,6 +26,7 @@ namespace SonOfRobin
             this.locked = false;
             this.hidden = false;
             this.label = "";
+            this.pieceTextureShownWhenEmpty = PieceTemplate.Name.Empty;
             this.stackLimit = stackLimit;
             this.allowedPieceNames = allowedPieceNames;
         }
@@ -182,7 +183,7 @@ namespace SonOfRobin
                 { "label", this.label},
                 { "allowedPieceNames", this.allowedPieceNames },
                 { "stackLimit", this.stackLimit },
-                { "showAllowedPieceTexture", this.showAllowedPieceTexture },
+                { "pieceTextureShownWhenEmpty", this.pieceTextureShownWhenEmpty },
                 { "pieceList", pieceList },
             };
 
@@ -199,7 +200,7 @@ namespace SonOfRobin
             this.allowedPieceNames = (HashSet<PieceTemplate.Name>)slotDict["allowedPieceNames"];
             this.stackLimit = (byte)(Int64)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
-            if (slotDict.ContainsKey("showAllowedPieceTexture")) this.showAllowedPieceTexture = (bool)slotDict["showAllowedPieceTexture"];
+            if (slotDict.ContainsKey("pieceTextureShownWhenEmpty")) this.pieceTextureShownWhenEmpty = (PieceTemplate.Name)(Int64)slotDict["pieceTextureShownWhenEmpty"];
 
             // repeated in World
 
@@ -221,9 +222,9 @@ namespace SonOfRobin
 
             if (this.IsEmpty)
             {
-                if (this.showAllowedPieceTexture && this.allowedPieceNames.Count == 1)
+                if (this.pieceTextureShownWhenEmpty != PieceTemplate.Name.Empty)
                 {
-                    Helpers.DrawTextureInsideRect(texture: PieceInfo.GetTexture(this.allowedPieceNames.First()), rectangle: destRect, color: Color.White * opacity * 0.3f);
+                    Helpers.DrawTextureInsideRect(texture: PieceInfo.GetTexture(this.pieceTextureShownWhenEmpty), rectangle: destRect, color: Color.White * opacity * 0.3f);
                 }
 
                 return;
