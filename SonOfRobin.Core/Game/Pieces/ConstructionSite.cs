@@ -156,21 +156,51 @@ namespace SonOfRobin
                 return;
             }
 
-            this.constrLevel++;
-            this.sprite.AssignNewSize((byte)this.constrLevel, checkForCollision: false);
-
-            if (this.constrLevel > this.maxConstrLevel)
-            {
-                PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
-
-                this.PieceStorage.DestroyAllPieces(); // to avoid dropping these pieces
-                this.Destroy();
-            }
-            else this.ClearAndConfigureStorage();
-
-            // TODO add building animation, fatigue, time passage
-
             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
+
+            this.constrLevel++;
+
+            bool buildingFinished = this.constrLevel > this.maxConstrLevel;
+
+            if (!buildingFinished)
+            {
+                this.sprite.AssignNewSize((byte)this.constrLevel, checkForCollision: false);
+                this.ClearAndConfigureStorage();
+                return;
+            }
+
+            // TODO add building animation
+
+            Player player = this.world.Player;
+            player.Fatigue = Math.Min(player.Fatigue + 1200, player.maxFatigue * 0.9f);
+
+            this.world.CineMode = true;
+            this.world.islandClock.Advance(amount: 60 * 60 * 4, ignorePause: true);
+
+            var clockAdvanceData = new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", 60 * 60 * 4 }, { "ignorePause", true }, { "ignoreMultiplier", false } };
+
+            new RumbleEvent(force: 0.08f, smallMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleSmallMotor: 0.51f);
+            new RumbleEvent(force: 0.85f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.15f, minSecondsSinceLastRumbleBigMotor: 0.35f);
+
+            var taskChain = new List<Object>();
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f } }, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ConstructionSiteConvertToFinalPiece, delay: 60 * 2, executeHelper: this, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 2 } }, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 2, executeHelper: false, storeForLaterUse: true));
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+        }
+
+        public void ConvertToFinalPiece()
+        {
+            PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
+
+            this.PieceStorage.DestroyAllPieces(); // to avoid dropping these pieces
+            this.Destroy();
         }
 
         public override Dictionary<string, Object> Serialize()

@@ -116,6 +116,8 @@ namespace SonOfRobin
             SetGlobalWorldTweener = 96,
             UseEntrance = 97,
             UseBoat = 98,
+            ConstructionSiteConvertToFinalPiece = 99,
+            IslandClockAdvance = 100,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2068,6 +2070,30 @@ namespace SonOfRobin
                         {
                             BoardPiece boat = (BoardPiece)this.ExecuteHelper;
                             boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEnding, ignoreDelay: true, piece: boat);
+
+                            return;
+                        }
+
+                    case TaskName.ConstructionSiteConvertToFinalPiece:
+                        {
+                            ConstructionSite constructionSite = (ConstructionSite)this.ExecuteHelper;
+                            constructionSite.ConvertToFinalPiece();
+                            return;
+                        }
+
+                    case TaskName.IslandClockAdvance:
+                        {
+                            // example executeHelper for this task
+                            // var clockAdvanceData = new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", 60 * 60 * 4 }, { "ignorePause", true }, { "ignoreMultiplier", false } };
+
+                            var clockAdvanceData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            IslandClock islandClock = (IslandClock)clockAdvanceData["islandClock"];
+                            int amount = (int)clockAdvanceData["amount"];
+                            bool ignorePause = clockAdvanceData.ContainsKey("ignorePause") ? (bool)clockAdvanceData["ignorePause"] : false;
+                            bool ignoreMultiplier = clockAdvanceData.ContainsKey("ignoreMultiplier") ? (bool)clockAdvanceData["ignoreMultiplier"] : false;
+
+                            islandClock.Advance(amount: amount, ignorePause: ignorePause, ignoreMultiplier: ignoreMultiplier);
 
                             return;
                         }

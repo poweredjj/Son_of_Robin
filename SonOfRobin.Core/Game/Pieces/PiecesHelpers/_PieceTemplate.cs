@@ -1252,6 +1252,8 @@ namespace SonOfRobin
                             // TODO add more levels
                         };
 
+                        // TODO add inventory open sound
+
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
