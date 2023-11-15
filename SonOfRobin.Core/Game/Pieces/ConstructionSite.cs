@@ -158,22 +158,25 @@ namespace SonOfRobin
 
             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
 
-            this.constrLevel++;
+            int newConstructionLevel = this.constrLevel + 1;
 
-            bool buildingFinished = this.constrLevel > this.maxConstrLevel;
+            bool buildingFinished = newConstructionLevel > this.maxConstrLevel;
 
-            if (!buildingFinished)
+            BoardPiece nextLevelPiece;
+
+            if (buildingFinished)
             {
-                this.sprite.AssignNewSize((byte)this.constrLevel, checkForCollision: false);
-                this.ClearAndConfigureStorage();
-                return;
+                nextLevelPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: this.world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
             }
+            else
+            {
+                nextLevelPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.name, world: this.world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
 
-            this.PieceStorage.DestroyAllPieces(); // to avoid dropping these pieces
-
-            PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: this.world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
-
-            this.Destroy();
+                ConstructionSite newConstrSite = (ConstructionSite)nextLevelPiece;
+                newConstrSite.constrLevel = newConstructionLevel;
+                newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
+                newConstrSite.ClearAndConfigureStorage();
+            }
 
             World world = this.world;
             Player player = this.world.Player;
@@ -181,11 +184,20 @@ namespace SonOfRobin
             world.touchLayout = TouchLayout.Empty;
             world.tipsLayout = ControlTips.TipsLayout.Empty;
             player.activeState = State.PlayerWaitForBuilding;
-            player.buildDurationForOneFrame = 5;
-            player.buildFatigueForOneFrame = 3;
+            player.buildDurationForOneFrame = 16;
+            player.buildFatigueForOneFrame = 6;
 
             Sound.QuickPlay(SoundData.Name.Sawing);
             Sound.QuickPlay(SoundData.Name.Hammering);
+
+            int buildDuration = 60 * 3;
+
+            this.PieceStorage.DestroyAllPieces(); // to avoid dropping "used" materials on the ground
+
+            nextLevelPiece.sprite.opacity = 0f;
+
+            new OpacityFade(sprite: nextLevelPiece.sprite, destOpacity: 1f, duration: buildDuration);
+            new OpacityFade(sprite: this.sprite, destOpacity: 0f, destroyPiece: true, duration: buildDuration);
 
             var taskChain = new List<Object>();
 
