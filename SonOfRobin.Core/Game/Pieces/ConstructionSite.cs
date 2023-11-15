@@ -38,10 +38,10 @@ namespace SonOfRobin
 
             this.showStatBarsTillFrame = int.MaxValue;
 
-            this.ConfigureStorage();
+            this.ClearAndConfigureStorage();
         }
 
-        private void ConfigureStorage()
+        private void ClearAndConfigureStorage()
         {
             Dictionary<PieceTemplate.Name, int> currentMaterialsDict = this.CurrentMaterialsDict;
 
@@ -132,7 +132,7 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
 
                     textList.Add($"|  {pieceInfo.readableName} x{missingCount}");
-                    imageList.Add(AnimData.croppedFramesForPkgs[pieceInfo.animPkgName].texture);
+                    imageList.Add(pieceInfo.CroppedFrame.texture);
                 }
 
                 string materialsList = String.Join("\n", textList);
@@ -143,11 +143,16 @@ namespace SonOfRobin
             }
 
             this.constrLevel++;
+            this.sprite.AssignNewSize((byte)this.constrLevel, checkForCollision: false);
 
-            if (this.constrLevel >= this.maxConstrLevel)
+            if (this.constrLevel > this.maxConstrLevel)
             {
-                // TODO add conversion code
+                PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
+
+                this.PieceStorage.DestroyAllPieces(); // to avoid dropping these pieces
+                this.Destroy();
             }
+            else this.ClearAndConfigureStorage();
 
             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
         }

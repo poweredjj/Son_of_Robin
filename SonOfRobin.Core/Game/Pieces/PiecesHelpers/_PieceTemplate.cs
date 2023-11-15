@@ -1244,6 +1244,11 @@ namespace SonOfRobin
                                 { Name.IronNail, 3 },
                             } },
 
+                            { 1, new Dictionary<Name, int>{
+                                { Name.IronPlate, 4 },
+                                { Name.BottleOfOil, 8 },
+                            } },
+
                             // TODO add more levels
                         };
 
