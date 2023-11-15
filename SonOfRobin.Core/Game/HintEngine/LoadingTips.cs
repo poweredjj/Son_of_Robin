@@ -40,6 +40,8 @@ namespace SonOfRobin
             "You are immune to heat, while being wet.",
             "You have to use meat workshop to get meat from an animal.",
             "Old equipment can be ripped apart to recover materials.",
+            "You cannot craft when inside cave.",
+            "Cave entrance will crumble after going out.",
         };
 
         private static List<string> tipsToDisplay = new();
