@@ -308,7 +308,7 @@ namespace SonOfRobin
             CampfireMedium = 218,
 
             BoatConstruction = 308,
-            BoatComplete = 309,
+            BoatComplete = 310,
 
             HerbsBlack = 219,
             HerbsCyan = 220,
