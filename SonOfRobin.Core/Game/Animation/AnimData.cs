@@ -307,7 +307,8 @@ namespace SonOfRobin
             CampfireSmall = 217,
             CampfireMedium = 218,
 
-            Boat = 308,
+            BoatConstruction = 308,
+            BoatComplete = 309,
 
             HerbsBlack = 219,
             HerbsCyan = 220,
@@ -1101,10 +1102,15 @@ namespace SonOfRobin
             }
 
             {
-                for (int animSize = 0; animSize <= 5; animSize++)
+                float depthPercent = 0.7f;
+                float scale = 0.7f;
+
+                for (int animSize = 0; animSize < 5; animSize++)
                 {
-                    AddFrameList(animPackage: PkgName.Boat, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_level_{animSize}", layer: 1, scale: 0.5f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
+                    AddFrameList(animPackage: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
                 }
+
+                AddFrameList(animPackage: PkgName.BoatComplete, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true));
             }
 
             AddFrameList(animPackage: PkgName.DigSiteGlass, animName: "default", frameList: new List<AnimFrame>

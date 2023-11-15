@@ -1567,7 +1567,7 @@ namespace SonOfRobin
                         this.hasFlatShadow = true;
                         break;
 
-                    case PieceTemplate.Name.BoatFinished:
+                    case PieceTemplate.Name.BoatComplete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.0f; // protected from fire
                         this.boardTask = Scheduler.TaskName.UseBoat;

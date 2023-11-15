@@ -110,7 +110,7 @@ namespace SonOfRobin
             AlchemyLabAdvanced = 75,
 
             BoatConstructionSite = 231,
-            BoatFinished = 232,
+            BoatComplete = 232,
 
             Totem = 76,
             RuinsColumn = 77,
@@ -1249,6 +1249,11 @@ namespace SonOfRobin
                                 { Name.BottleOfOil, 8 },
                             } },
 
+                            { 2, new Dictionary<Name, int>{
+                                { Name.IronRod, 6 },
+                                { Name.Leather, 8 },
+                            } },
+
                             // TODO add more levels
                         };
 
@@ -1257,18 +1262,18 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Boat, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, convertsIntoWhenFinished: Name.BoatFinished, readableName: "boat construction site", description: "Construction site for an escape boat.");
+                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, convertsIntoWhenFinished: Name.BoatComplete, readableName: "boat construction site", description: "Boat construction site.");
 
                         return boardPiece;
                     }
 
-                case Name.BoatFinished:
+                case Name.BoatComplete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Boat, allowedTerrain: allowedTerrain,
-                             rotatesWhenDropped: true, readableName: "boat", description: "Can be used to escape the island.", animSize: 5);
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatComplete, allowedTerrain: allowedTerrain,
+                             rotatesWhenDropped: true, readableName: "boat", description: "Can be used to escape the island.");
 
                         return boardPiece;
                     }

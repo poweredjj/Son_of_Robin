@@ -511,7 +511,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/big_torch_on.png
 
-#begin gfx/boat/boat_level_0.png
+#begin gfx/boat/boat_complete.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -521,9 +521,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_0.png
+/build:gfx/boat/boat_complete.png
 
-#begin gfx/boat/boat_level_1.png
+#begin gfx/boat/boat_construction_0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -533,9 +533,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_1.png
+/build:gfx/boat/boat_construction_0.png
 
-#begin gfx/boat/boat_level_2.png
+#begin gfx/boat/boat_construction_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -545,9 +545,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_2.png
+/build:gfx/boat/boat_construction_1.png
 
-#begin gfx/boat/boat_level_3.png
+#begin gfx/boat/boat_construction_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -557,9 +557,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_3.png
+/build:gfx/boat/boat_construction_2.png
 
-#begin gfx/boat/boat_level_4.png
+#begin gfx/boat/boat_construction_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -569,9 +569,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_4.png
+/build:gfx/boat/boat_construction_3.png
 
-#begin gfx/boat/boat_level_5.png
+#begin gfx/boat/boat_construction_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -581,7 +581,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_level_5.png
+/build:gfx/boat/boat_construction_4.png
 
 #begin gfx/boots_all_terrain.png
 /importer:TextureImporter
