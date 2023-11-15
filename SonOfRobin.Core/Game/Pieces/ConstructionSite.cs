@@ -9,13 +9,13 @@ namespace SonOfRobin
     public class ConstructionSite : BoardPiece
     {
         private int constrLevel;
-        private int neededMaterialsCount;
 
         private readonly int maxConstrLevel;
         private readonly PieceTemplate.Name convertsIntoWhenFinished;
         private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels;
 
-        private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict { get { return this.materialsForLevels[this.constrLevel]; } }
+        private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict
+        { get { return this.materialsForLevels[this.constrLevel]; } }
 
         private StorageSlot ConstructTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
@@ -41,20 +41,28 @@ namespace SonOfRobin
             this.ClearAndConfigureStorage();
         }
 
+        private int NeededMaterialsCount
+        {
+            get
+            {
+                int neededMaterialsCount = 0;
+                foreach (var kvp in this.CurrentMaterialsDict)
+                {
+                    PieceTemplate.Name materialName = kvp.Key;
+                    int stackCount = kvp.Value;
+
+                    neededMaterialsCount += PieceInfo.GetInfo(materialName).stackSize * stackCount;
+                }
+
+                return neededMaterialsCount;
+            }
+        }
+
         private void ClearAndConfigureStorage()
         {
             Dictionary<PieceTemplate.Name, int> currentMaterialsDict = this.CurrentMaterialsDict;
 
             int storageWidth = currentMaterialsDict.MaxBy(kvp => kvp.Value).Value;
-
-            this.neededMaterialsCount = 0;
-            foreach (var kvp in currentMaterialsDict)
-            {
-                PieceTemplate.Name materialName = kvp.Key;
-                int stackCount = kvp.Value;
-
-                this.neededMaterialsCount += PieceInfo.GetInfo(materialName).stackSize * stackCount;
-            }
 
             this.PieceStorage = new PieceStorage(width: (byte)storageWidth, height: (byte)(currentMaterialsDict.Count + 1), storagePiece: this, storageType: PieceStorage.StorageType.Construction);
 
@@ -184,7 +192,7 @@ namespace SonOfRobin
             world.touchLayout = TouchLayout.Empty;
             world.tipsLayout = ControlTips.TipsLayout.Empty;
             player.activeState = State.PlayerWaitForBuilding;
-            player.buildDurationForOneFrame = 16;
+            player.buildDurationForOneFrame = 90;
             player.buildFatigueForOneFrame = 6;
 
             Sound.QuickPlay(SoundData.Name.Sawing);
@@ -227,7 +235,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.neededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Hammer].texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Hammer].texture);
 
             base.DrawStatBar();
         }
