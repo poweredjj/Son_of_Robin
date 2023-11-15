@@ -89,8 +89,8 @@ namespace SonOfRobin
 
                     slot.locked = false;
                     slot.hidden = false;
+                    slot.showAllowedPieceTexture = true;
                     slot.allowedPieceNames = new HashSet<PieceTemplate.Name> { materialName };
-                    slot.label = PieceInfo.GetInfo(materialName).readableName;
                 }
 
                 storageY++;

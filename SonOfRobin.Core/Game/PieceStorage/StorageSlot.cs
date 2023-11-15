@@ -13,7 +13,7 @@ namespace SonOfRobin
         public List<BoardPiece> pieceList;
         public byte stackLimit;
         public string label;
-
+        public bool showAllowedPieceTexture;
         public bool locked;
         public bool hidden;
         public HashSet<PieceTemplate.Name> allowedPieceNames;
@@ -182,6 +182,7 @@ namespace SonOfRobin
                 { "label", this.label},
                 { "allowedPieceNames", this.allowedPieceNames },
                 { "stackLimit", this.stackLimit },
+                { "showAllowedPieceTexture", this.showAllowedPieceTexture },
                 { "pieceList", pieceList },
             };
 
@@ -198,6 +199,7 @@ namespace SonOfRobin
             this.allowedPieceNames = (HashSet<PieceTemplate.Name>)slotDict["allowedPieceNames"];
             this.stackLimit = (byte)(Int64)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
+            if (slotDict.ContainsKey("showAllowedPieceTexture")) this.showAllowedPieceTexture = (bool)slotDict["showAllowedPieceTexture"];
 
             // repeated in World
 
@@ -215,7 +217,18 @@ namespace SonOfRobin
 
         public void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
         {
-            if (this.hidden || this.IsEmpty) return;
+            if (this.hidden) return;
+
+            if (this.IsEmpty)
+            {
+                if (this.showAllowedPieceTexture && this.allowedPieceNames.Count == 1)
+                {
+                    Helpers.DrawTextureInsideRect(texture: PieceInfo.GetTexture(this.allowedPieceNames.First()), rectangle: destRect, color: Color.White * opacity * 0.3f);
+                }
+
+                return;
+            }
+
             Sprite sprite = this.TopPiece.sprite;
             BoardPiece piece = sprite.boardPiece;
             World world = piece.world;
