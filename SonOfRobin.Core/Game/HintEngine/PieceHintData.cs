@@ -428,7 +428,7 @@ namespace SonOfRobin
                     new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInput: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true)},
 
-                    mapDiscoveredPercentage: 0.22f,
+                    mapDiscoveredPercentage: 0.18f,
                     distanceWalkedKilometers: 20f,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineLookForSurvivors2 }),
 
