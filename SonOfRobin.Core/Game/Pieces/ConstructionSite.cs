@@ -142,6 +142,20 @@ namespace SonOfRobin
                 return;
             }
 
+            if (this.world.Player.FatiguePercent > 0.5f)
+            {
+                new TextWindow(text: "I'm | too tired to work on this now...", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Bed) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
+
+            var allowedPartsOfDay = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning, IslandClock.PartOfDay.Noon };
+
+            if (!allowedPartsOfDay.Contains(this.world.islandClock.CurrentPartOfDay))
+            {
+                new TextWindow(text: "It is too late to work on this today...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
+
             this.constrLevel++;
             this.sprite.AssignNewSize((byte)this.constrLevel, checkForCollision: false);
 
@@ -153,6 +167,8 @@ namespace SonOfRobin
                 this.Destroy();
             }
             else this.ClearAndConfigureStorage();
+
+            // TODO add building animation, fatigue, time passage
 
             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
         }
