@@ -1257,6 +1257,13 @@ namespace SonOfRobin
                             // TODO add more levels
                         };
 
+                        Dictionary<int, string> descriptionsForLevels = new()
+                        {
+                            { 0, "basic frame" },
+                            { 1, "sturdy hull" },
+                            { 2, "sailing rig" },
+                        };
+
                         // TODO add each level description
 
                         // TODO add inventory open sound
@@ -1264,7 +1271,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, convertsIntoWhenFinished: Name.BoatComplete, readableName: "boat construction site", description: "Boat construction site.");
+                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.BoatComplete, readableName: "boat construction site", description: "Boat construction site.");
 
                         return boardPiece;
                     }

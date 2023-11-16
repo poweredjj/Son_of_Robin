@@ -14,6 +14,7 @@ namespace SonOfRobin
         private readonly int maxConstrLevel;
         private readonly PieceTemplate.Name convertsIntoWhenFinished;
         private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels;
+        private readonly Dictionary<int, string> descriptionsForLevels;
 
         private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict
         { get { return this.materialsForLevels[this.constrLevel]; } }
@@ -21,20 +22,26 @@ namespace SonOfRobin
         private StorageSlot ConstructTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
 
-        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
+        private readonly BoardPiece triggerPiece;
+
+        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, Dictionary<int, string> descriptionsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
         {
             this.materialsForLevels = materialsForLevels;
+            this.descriptionsForLevels = descriptionsForLevels;
             this.convertsIntoWhenFinished = convertsIntoWhenFinished;
+            this.triggerPiece = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world);
 
             this.constrLevel = 0;
             this.maxConstrLevel = materialsForLevels.MaxBy(kvp => kvp.Key).Key;
+            this.RefreshTriggerDescription();
 
             for (int i = 0; i <= this.maxConstrLevel; i++)
             {
                 if (!this.materialsForLevels.ContainsKey(i)) throw new ArgumentOutOfRangeException($"No materials for level {i}.");
+                if (!this.descriptionsForLevels.ContainsKey(i)) throw new ArgumentOutOfRangeException($"No description for level {i}.");
             }
 
             this.showStatBarsTillFrame = int.MaxValue;
@@ -76,7 +83,7 @@ namespace SonOfRobin
             StorageSlot constructTriggerSlot = this.ConstructTriggerSlot;
             constructTriggerSlot.locked = false;
             constructTriggerSlot.hidden = false;
-            constructTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world));
+            constructTriggerSlot.AddPiece(this.triggerPiece);
             constructTriggerSlot.locked = true;
 
             for (int i = 1; i < storageWidth; i++)
@@ -104,6 +111,30 @@ namespace SonOfRobin
 
                 storageY++;
             }
+        }
+
+        private void RefreshTriggerDescription()
+        {
+            List<string> descriptionLines = new()
+            {
+                this.constrLevel == this.maxConstrLevel ?
+                "Process last construction level\n" :
+                "Process next construction level\n"
+            };
+
+            foreach (var kvp in this.descriptionsForLevels)
+            {
+                int constrLevel = kvp.Key;
+                string constrLevelName = kvp.Value;
+
+                string doneTxt = "";
+                if (constrLevel < this.constrLevel) doneTxt = " - done";
+                else if (constrLevel == this.constrLevel) doneTxt = " - next";
+
+                descriptionLines.Add($"{constrLevelName}{doneTxt}");
+            }
+
+            this.triggerPiece.description = String.Join("\n", descriptionLines);
         }
 
         public void Construct()
@@ -192,8 +223,9 @@ namespace SonOfRobin
 
                 ConstructionSite newConstrSite = (ConstructionSite)nextLevelPiece;
                 newConstrSite.constrLevel = newConstructionLevel;
-                newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
+                newConstrSite.RefreshTriggerDescription();
                 newConstrSite.ClearAndConfigureStorage();
+                newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
             }
 
             world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
