@@ -209,13 +209,28 @@ namespace SonOfRobin
 
             var taskChain = new List<Object>();
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeActiveState, delay: 60 * 3, executeHelper: new Dictionary<string, Object> { { "boardPiece", player }, { "state", State.PlayerControlledWalking } }, storeForLaterUse: true));
-
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeTipsLayout, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", world }, { "layout", ControlTips.TipsLayout.WorldMain } }, storeForLaterUse: true));
-
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeTouchLayout, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", world }, { "layout", TouchLayout.WorldMain } }, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.FinishConstructionAnim, delay: buildDuration, executeHelper: nextLevelPiece, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+        }
+
+        public static void FinishConstructionAnim(BoardPiece nextLevelPiece)
+        {
+            World world = nextLevelPiece.world;
+
+            world.Player.activeState = State.PlayerControlledWalking;
+            world.touchLayout = TouchLayout.WorldMain;
+            world.tipsLayout = ControlTips.TipsLayout.WorldMain;
+            nextLevelPiece.sprite.effectCol.RemoveAllEffects();
+            nextLevelPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Yellow, framesLeft: 60, fadeFramesLeft: 60));
+
+            // separate particle emitter is needed to draw particles under new piece
+            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(nextLevelPiece.sprite.position.X, nextLevelPiece.sprite.position.Y - 1), templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
+
+            Yield starYield = new(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarBig });
+            starYield.DropDebris(piece: particleEmitter);
+
+            Sound.QuickPlay(name: SoundData.Name.Chime, pitchChange: -0.35f);
         }
 
         public override Dictionary<string, Object> Serialize()

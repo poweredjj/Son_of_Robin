@@ -78,11 +78,11 @@ namespace SonOfRobin
                 {
                     // duration must be >= 1, because duration == 0 will drop debris forever
 
-                    case ParticleEngine.Preset.DebrisStar:
+                    case ParticleEngine.Preset.DebrisStarSmall:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStar, duration: 6, update: true, particlesToEmit: particlesToEmit);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStarSmall, duration: 6, update: true, particlesToEmit: particlesToEmit);
                             break;
                         }
 

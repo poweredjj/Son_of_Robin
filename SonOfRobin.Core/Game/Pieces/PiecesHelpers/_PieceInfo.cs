@@ -1374,7 +1374,7 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
-                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
+                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarSmall });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
 
                         break;
@@ -1388,7 +1388,7 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
-                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
+                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarSmall });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
                         break;
 

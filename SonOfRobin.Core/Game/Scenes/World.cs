@@ -1196,7 +1196,7 @@ namespace SonOfRobin
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 
             Yield debrisYield = new Yield(firstDebrisTypeList:
-                new List<ParticleEngine.Preset> { plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStar });
+                new List<ParticleEngine.Preset> { plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStarSmall });
 
             if (plantMode) Sound.QuickPlay(SoundData.Name.Planting);
             else

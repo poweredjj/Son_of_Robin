@@ -43,7 +43,8 @@ namespace SonOfRobin
             DebrisCrystal = 21,
             DebrisCeramic = 22,
             DebrisBlood = 23,
-            DebrisStar = 24,
+            DebrisStarSmall = 24,
+            DebrisStarBig = 34,
             DebrisHeart = 25,
             DebrisSoot = 26,
 
@@ -82,7 +83,8 @@ namespace SonOfRobin
                 { Preset.DebrisCrystal, TextureBank.TextureName.ParticleDebrisCrystal },
                 { Preset.DebrisCeramic, TextureBank.TextureName.ParticleDebrisCeramic },
                 { Preset.DebrisBlood, TextureBank.TextureName.ParticleDebrisBlood },
-                { Preset.DebrisStar, TextureBank.TextureName.ParticleDebrisStar },
+                { Preset.DebrisStarSmall, TextureBank.TextureName.ParticleDebrisStar },
+                { Preset.DebrisStarBig, TextureBank.TextureName.ParticleDebrisStar },
                 { Preset.DebrisHeart, TextureBank.TextureName.ParticleDebrisHeart },
                 { Preset.DebrisSoot, TextureBank.TextureName.ParticleDebrisSoot },
                 { Preset.SwampGas, TextureBank.TextureName.ParticleCircleSharp },
@@ -1184,7 +1186,37 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Preset.DebrisStar:
+                case Preset.DebrisStarBig:
+                    {
+                        defaultParticlesToEmit = 60;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(2f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(250f, 1500f),
+                                Scale = new Range<float>(0.2f, 1.2f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(0.5f, 1.6f),
+                            },
+
+                            Modifiers =
+                        {
+                            new DragModifier { Density = 0.2f, DragCoefficient = 25f },
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 4.0f, EndValue = 0f },
+                                },
+                            },
+                          }
+                        };
+                        break;
+                    }
+
+                case Preset.DebrisStarSmall:
                     {
                         defaultParticlesToEmit = 8;
 

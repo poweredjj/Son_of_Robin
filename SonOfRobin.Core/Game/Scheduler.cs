@@ -120,6 +120,7 @@ namespace SonOfRobin
             ChangeActiveState = 100,
             ChangeTipsLayout = 101,
             ChangeTouchLayout = 102,
+            FinishConstructionAnim = 103,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2136,6 +2137,13 @@ namespace SonOfRobin
 
                             scene.touchLayout = layout;
 
+                            return;
+                        }
+
+                    case TaskName.FinishConstructionAnim:
+                        {
+                            BoardPiece constructionSite = (BoardPiece)this.ExecuteHelper;
+                            ConstructionSite.FinishConstructionAnim(constructionSite);
                             return;
                         }
 
