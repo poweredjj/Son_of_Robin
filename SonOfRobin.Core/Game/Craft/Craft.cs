@@ -53,15 +53,15 @@ namespace SonOfRobin
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
 
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceToCreate);
-                bool isEquip = pieceInfo.type == typeof(Equipment);
+                bool isEquipOrConstructionSite = pieceInfo.type == typeof(Equipment) || pieceInfo.type == typeof(ConstructionSite);
 
                 if (maxLevel == -1)
                 {
                     maxLevel = pieceInfo.canBePickedUp ? 4 : 2;
-                    if (isEquip) maxLevel = 1;
+                    if (isEquipOrConstructionSite) maxLevel = 1;
                 }
                 this.maxLevel = maxLevel;
-                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquip ? 3 : 1;
+                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquipOrConstructionSite ? 3 : 1;
                 this.craftCountToLevelUp = craftCountToLevelUp;
 
                 this.masterLevelFatigueMultiplier = fatigueMultiplier;

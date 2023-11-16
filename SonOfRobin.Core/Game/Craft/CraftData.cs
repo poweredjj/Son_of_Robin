@@ -20,7 +20,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.IronNail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.AlchemyLabStandard, PieceTemplate.Name.WorkshopLeatherAdvanced }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopMaster, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 },  { PieceTemplate.Name.IronNail, 50 }, { PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.Clay, 3 }, { PieceTemplate.Name.IronRod, 3 }, { PieceTemplate.Name.EmptyBottle, 2 }, { PieceTemplate.Name.Leather, 5 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopMaster, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 },  { PieceTemplate.Name.IronNail, 50 }, { PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.Clay, 3 }, { PieceTemplate.Name.IronRod, 3 }, { PieceTemplate.Name.EmptyBottle, 2 }, { PieceTemplate.Name.Leather, 5 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BoatConstructionSite }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AlchemyLabStandard, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 4 }, { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Clay, 1 }, { PieceTemplate.Name.IronPlate, 1 }, { PieceTemplate.Name.EmptyBottle, 1 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabAdvanced } ),
 
@@ -77,6 +77,9 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.HotPlate, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.Stone, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.CookingPot }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 3 }, { PieceTemplate.Name.IronPlate, 3 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BoatConstructionSite, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.ShovelStone, 3 },  { PieceTemplate.Name.WoodPlank, 12 } }, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true),
+
                 };
         }
 
