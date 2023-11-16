@@ -913,7 +913,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Process next construction level.");
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Construct next level.");
 
                         return boardPiece;
                     }
@@ -1240,21 +1240,45 @@ namespace SonOfRobin
                         Dictionary<int, Dictionary<Name, int>> ingredientsForLevels = new()
                         {
                             { 0, new Dictionary<Name, int>{
-                                { Name.WoodPlank, 7 },
-                                { Name.IronNail, 3 },
+                                { Name.WoodPlank, 8 },
+                                { Name.WoodLogHard, 4 },
                             } },
 
                             { 1, new Dictionary<Name, int>{
-                                { Name.IronPlate, 4 },
+                                { Name.IronPlate, 5 },
+                                { Name.IronNail, 6 },
                                 { Name.BottleOfOil, 8 },
                             } },
 
                             { 2, new Dictionary<Name, int>{
                                 { Name.IronRod, 6 },
                                 { Name.Leather, 8 },
+                                { Name.Rope, 4 },
                             } },
 
-                            // TODO add more levels
+                            { 3, new Dictionary<Name, int>{
+                                { Name.IronNail, 7 },
+                                { Name.WoodLogHard, 4 },
+                                { Name.Granite, 3 },
+                                { Name.Clay, 4 },
+                            } },
+
+                            { 4, new Dictionary<Name, int>{
+                                { Name.BottleOfOil, 6 },
+                                { Name.Leather, 4 },
+                                { Name.Clay, 4 },
+                                { Name.Rope, 4 },
+                                { Name.WoodLogHard, 4 },
+                            } },
+
+                            { 5, new Dictionary<Name, int>{
+                                { Name.MeatDried, 8 },
+                                { Name.Carrot, 6 },
+                                { Name.Apple, 6 },
+                                { Name.Banana, 6 },
+                                { Name.Mushroom, 6 },
+                                { Name.CoffeeRoasted, 4 },
+                            } },
                         };
 
                         Dictionary<int, string> descriptionsForLevels = new()
@@ -1262,9 +1286,10 @@ namespace SonOfRobin
                             { 0, "basic frame" },
                             { 1, "sturdy hull" },
                             { 2, "sailing rig" },
+                            { 3, "steering system" },
+                            { 4, "final touches" },
+                            { 5, "supplies" },
                         };
-
-                        // TODO add each level description
 
                         // TODO add inventory open sound
 

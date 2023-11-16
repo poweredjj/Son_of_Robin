@@ -11,6 +11,8 @@ namespace SonOfRobin
     {
         private int constrLevel;
 
+        private readonly BoardPiece triggerPiece;
+
         private readonly int maxConstrLevel;
         private readonly PieceTemplate.Name convertsIntoWhenFinished;
         private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels;
@@ -18,7 +20,6 @@ namespace SonOfRobin
 
         private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict { get { return this.materialsForLevels[this.constrLevel]; } }
         private StorageSlot ConstructTriggerSlot { get { return this.PieceStorage.GetSlot(0, 0); } }
-        private BoardPiece TriggerPiece { get { return this.ConstructTriggerSlot.TopPiece; } }
 
         public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, Dictionary<int, string> descriptionsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
@@ -31,6 +32,9 @@ namespace SonOfRobin
 
             this.constrLevel = 0;
             this.maxConstrLevel = materialsForLevels.MaxBy(kvp => kvp.Key).Key;
+
+            this.triggerPiece = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world);
+            this.RefreshTriggerDescription();
 
             for (int i = 0; i <= this.maxConstrLevel; i++)
             {
@@ -78,7 +82,7 @@ namespace SonOfRobin
             StorageSlot constructTriggerSlot = this.ConstructTriggerSlot;
             constructTriggerSlot.locked = false;
             constructTriggerSlot.hidden = false;
-            constructTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world));
+            constructTriggerSlot.AddPiece(this.triggerPiece);
             constructTriggerSlot.locked = true;
 
             for (int i = 1; i < storageWidth; i++)
@@ -229,12 +233,7 @@ namespace SonOfRobin
 
         private void RefreshTriggerDescription()
         {
-            List<string> descriptionLines = new()
-            {
-                this.constrLevel == this.maxConstrLevel ?
-                "Process last construction level\n" :
-                "Process next construction level\n"
-            };
+            var descriptionLines = new List<string> { this.constrLevel == this.maxConstrLevel ? "Construct final level\n" : "Construct next level\n" };
 
             foreach (var kvp in this.descriptionsForLevels)
             {
@@ -248,7 +247,7 @@ namespace SonOfRobin
                 descriptionLines.Add($"{constrLevelName}{doneTxt}");
             }
 
-            this.TriggerPiece.description = String.Join("\n", descriptionLines);
+            this.triggerPiece.description = String.Join("\n", descriptionLines);
         }
 
         public static void FinishConstructionAnimation(BoardPiece nextLevelPiece)
@@ -296,7 +295,7 @@ namespace SonOfRobin
                 constructionMessage = $"{Helpers.FirstCharToUpperCase(constrLevelName)} complete!\n{Helpers.FirstCharToUpperCase(constructionSite.readableName)} level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
             }
 
-            new TextWindow(text: constructionMessage, imageList: imageList, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true);
+            new TextWindow(text: constructionMessage, imageList: imageList, textColor: buildingFinished ? Color.PaleGoldenrod : Color.White, bgColor: buildingFinished ? Color.DarkGoldenrod : Color.Green, useTransition: true, animate: true);
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -312,6 +311,13 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.constrLevel = (int)(Int64)pieceData["constructionSite_currentLevel"];
+
+            // to avoid having deserialized trigger, instead of this.triggerPiece
+            this.ConstructTriggerSlot.locked = false;
+            this.ConstructTriggerSlot.GetAllPieces(remove: true);
+            this.ConstructTriggerSlot.AddPiece(this.triggerPiece);
+            this.ConstructTriggerSlot.locked = true;
+            this.RefreshTriggerDescription();
         }
 
         public override void DrawStatBar()
