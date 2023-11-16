@@ -166,7 +166,7 @@ namespace SonOfRobin
                 return;
             }
 
-            var allowedPartsOfDay = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning, IslandClock.PartOfDay.Noon };
+            var allowedPartsOfDay = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning, IslandClock.PartOfDay.Noon, IslandClock.PartOfDay.Afternoon };
 
             if (!allowedPartsOfDay.Contains(this.world.islandClock.CurrentPartOfDay))
             {
