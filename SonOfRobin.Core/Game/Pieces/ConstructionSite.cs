@@ -219,12 +219,12 @@ namespace SonOfRobin
 
             var taskChain = new List<Object>();
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.FinishConstructionAnim, delay: buildDuration, executeHelper: nextLevelPiece, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.FinishConstructionAnimation, delay: buildDuration, executeHelper: nextLevelPiece, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
 
-        public static void FinishConstructionAnim(BoardPiece nextLevelPiece)
+        public static void FinishConstructionAnimation(BoardPiece nextLevelPiece)
         {
             bool buildingFinished = nextLevelPiece.GetType() != typeof(ConstructionSite);
 
@@ -235,11 +235,13 @@ namespace SonOfRobin
             world.Player.activeState = State.PlayerControlledWalking;
             world.touchLayout = TouchLayout.WorldMain;
             world.tipsLayout = ControlTips.TipsLayout.WorldMain;
-            nextLevelPiece.sprite.effectCol.RemoveAllEffects();
-            nextLevelPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Yellow, framesLeft: 60, fadeFramesLeft: 60));
 
             if (buildingFinished)
             {
+                int flashDuration = 60 * 2;
+
+                nextLevelPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Yellow, framesLeft: flashDuration, fadeFramesLeft: flashDuration));
+
                 // separate particle emitter is needed to draw particles under new piece
                 BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(nextLevelPiece.sprite.position.X, nextLevelPiece.sprite.position.Y - 1), templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
 
@@ -251,14 +253,20 @@ namespace SonOfRobin
             else Sound.QuickPlay(name: SoundData.Name.Ding1);
 
             string constructionMessage;
-            if (buildingFinished) constructionMessage = $"{Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
+            var imageList = new List<Texture2D>();
+
+            if (buildingFinished)
+            {
+                constructionMessage = $"| {Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
+                imageList.Add(nextLevelPiece.pieceInfo.texture);
+            }
             else
             {
                 ConstructionSite constructionSite = (ConstructionSite)nextLevelPiece;
                 constructionMessage = $"Construction site level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
             }
 
-            new TextWindow(text: constructionMessage, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true);
+            new TextWindow(text: constructionMessage, imageList: imageList, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true);
         }
 
         public override Dictionary<string, Object> Serialize()
