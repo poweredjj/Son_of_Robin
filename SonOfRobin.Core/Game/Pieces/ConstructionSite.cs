@@ -16,13 +16,9 @@ namespace SonOfRobin
         private readonly Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels;
         private readonly Dictionary<int, string> descriptionsForLevels;
 
-        private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict
-        { get { return this.materialsForLevels[this.constrLevel]; } }
-
-        private StorageSlot ConstructTriggerSlot
-        { get { return this.PieceStorage.GetSlot(0, 0); } }
-
-        private readonly BoardPiece triggerPiece;
+        private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict { get { return this.materialsForLevels[this.constrLevel]; } }
+        private StorageSlot ConstructTriggerSlot { get { return this.PieceStorage.GetSlot(0, 0); } }
+        private BoardPiece TriggerPiece { get { return this.ConstructTriggerSlot.TopPiece; } }
 
         public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, Dictionary<int, string> descriptionsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
@@ -32,11 +28,9 @@ namespace SonOfRobin
             this.materialsForLevels = materialsForLevels;
             this.descriptionsForLevels = descriptionsForLevels;
             this.convertsIntoWhenFinished = convertsIntoWhenFinished;
-            this.triggerPiece = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world);
 
             this.constrLevel = 0;
             this.maxConstrLevel = materialsForLevels.MaxBy(kvp => kvp.Key).Key;
-            this.RefreshTriggerDescription();
 
             for (int i = 0; i <= this.maxConstrLevel; i++)
             {
@@ -47,6 +41,7 @@ namespace SonOfRobin
             this.showStatBarsTillFrame = int.MaxValue;
 
             this.ClearAndConfigureStorage();
+            this.RefreshTriggerDescription();
         }
 
         private int NeededMaterialsCount
@@ -83,7 +78,7 @@ namespace SonOfRobin
             StorageSlot constructTriggerSlot = this.ConstructTriggerSlot;
             constructTriggerSlot.locked = false;
             constructTriggerSlot.hidden = false;
-            constructTriggerSlot.AddPiece(this.triggerPiece);
+            constructTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.ConstructTrigger, world: this.world));
             constructTriggerSlot.locked = true;
 
             for (int i = 1; i < storageWidth; i++)
@@ -113,30 +108,6 @@ namespace SonOfRobin
             }
         }
 
-        private void RefreshTriggerDescription()
-        {
-            List<string> descriptionLines = new()
-            {
-                this.constrLevel == this.maxConstrLevel ?
-                "Process last construction level\n" :
-                "Process next construction level\n"
-            };
-
-            foreach (var kvp in this.descriptionsForLevels)
-            {
-                int constrLevel = kvp.Key;
-                string constrLevelName = kvp.Value;
-
-                string doneTxt = "";
-                if (constrLevel < this.constrLevel) doneTxt = " - done";
-                else if (constrLevel == this.constrLevel) doneTxt = " - next";
-
-                descriptionLines.Add($"{constrLevelName}{doneTxt}");
-            }
-
-            this.triggerPiece.description = String.Join("\n", descriptionLines);
-        }
-
         public void Construct()
         {
             World world = this.world;
@@ -162,7 +133,7 @@ namespace SonOfRobin
                 if (foundCount < neededCount) missingMaterials[materialName] = neededCount - foundCount;
             }
 
-            if (missingMaterials.Count > 0)
+            if (missingMaterials.Count > 0 && !Preferences.debugAllowConstructionWithoutMaterials)
             {
                 var textList = new List<string>();
                 var imageList = new List<Texture2D>();
@@ -223,8 +194,8 @@ namespace SonOfRobin
 
                 ConstructionSite newConstrSite = (ConstructionSite)nextLevelPiece;
                 newConstrSite.constrLevel = newConstructionLevel;
-                newConstrSite.RefreshTriggerDescription();
                 newConstrSite.ClearAndConfigureStorage();
+                newConstrSite.RefreshTriggerDescription();
                 newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
             }
 
@@ -254,6 +225,30 @@ namespace SonOfRobin
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.FinishConstructionAnimation, delay: buildDuration, executeHelper: nextLevelPiece, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+        }
+
+        private void RefreshTriggerDescription()
+        {
+            List<string> descriptionLines = new()
+            {
+                this.constrLevel == this.maxConstrLevel ?
+                "Process last construction level\n" :
+                "Process next construction level\n"
+            };
+
+            foreach (var kvp in this.descriptionsForLevels)
+            {
+                int constrLevel = kvp.Key;
+                string constrLevelName = kvp.Value;
+
+                string doneTxt = "";
+                if (constrLevel < this.constrLevel) doneTxt = " - done";
+                else if (constrLevel == this.constrLevel) doneTxt = " - next";
+
+                descriptionLines.Add($"{constrLevelName}{doneTxt}");
+            }
+
+            this.TriggerPiece.description = String.Join("\n", descriptionLines);
         }
 
         public static void FinishConstructionAnimation(BoardPiece nextLevelPiece)
@@ -295,7 +290,10 @@ namespace SonOfRobin
             else
             {
                 ConstructionSite constructionSite = (ConstructionSite)nextLevelPiece;
-                constructionMessage = $"Construction site level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
+
+                string constrLevelName = constructionSite.descriptionsForLevels[constructionSite.constrLevel - 1];
+
+                constructionMessage = $"{Helpers.FirstCharToUpperCase(constrLevelName)} complete!\n{Helpers.FirstCharToUpperCase(constructionSite.readableName)} level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
             }
 
             new TextWindow(text: constructionMessage, imageList: imageList, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true);

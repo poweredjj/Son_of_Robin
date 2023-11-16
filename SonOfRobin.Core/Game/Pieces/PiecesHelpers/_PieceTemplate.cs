@@ -913,7 +913,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Starts next construction level.");
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Process next construction level.");
 
                         return boardPiece;
                     }
