@@ -426,7 +426,7 @@ namespace SonOfRobin
             if (this.bioWear > 0) pieceData["base_bioWear"] = this.bioWear;
             if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
             if (this.readableName != pieceInfo.readableName) pieceData["base_readableName"] = this.readableName;
-            if (this.description != pieceInfo.description) pieceData["base_description"] = this.readableName;
+            if (this.description != pieceInfo.description) pieceData["base_description"] = this.description;
             if (this.showStatBarsTillFrame > this.world.CurrentUpdate) pieceData["base_showStatBarsTillFrame"] = this.showStatBarsTillFrame;
 
             return pieceData;
