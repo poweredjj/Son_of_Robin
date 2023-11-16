@@ -1205,6 +1205,9 @@ namespace SonOfRobin
                 Sound.QuickPlay(SoundData.Name.Hammering);
             }
 
+            this.Player.simulatedPieceToBuild?.Destroy();
+            this.Player.simulatedPieceToBuild = null;
+
             builtPiece.sprite.opacity = 0f;
             new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
 

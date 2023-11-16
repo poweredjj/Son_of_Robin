@@ -77,6 +77,7 @@ namespace SonOfRobin
 
             CineCrateStarting = 0,
             CineTentModernCantPack = 73,
+            ConstructionSite = 76,
             CineSmallBase = 65,
             CineRuins = 74,
             CineCave = 75,

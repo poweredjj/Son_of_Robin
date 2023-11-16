@@ -400,7 +400,7 @@ namespace SonOfRobin
                     message: $"Hmm...\nI can feel mysterious aura surrounding this | { PieceInfo.GetInfo(PieceTemplate.Name.Totem).readableName }.\nMaybe I should examine it.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Totem) }),
 
-                new PieceHint(
+               new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors1,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -410,7 +410,7 @@ namespace SonOfRobin
                     islandTimeElapsedHours: 1,
                     distanceWalkedKilometers: 1f),
 
-                new PieceHint(
+               new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors2,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -420,7 +420,7 @@ namespace SonOfRobin
                     distanceWalkedKilometers: 8f,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineLookForSurvivors1 }),
 
-                new PieceHint(
+               new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors3,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -432,7 +432,7 @@ namespace SonOfRobin
                     distanceWalkedKilometers: 20f,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineLookForSurvivors2 }),
 
-                 new PieceHint(
+               new PieceHint(
                     type: PieceHint.Type.CineDay2,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -442,7 +442,7 @@ namespace SonOfRobin
                     partsOfDay: new HashSet<IslandClock.PartOfDay>{ IslandClock.PartOfDay.Morning, IslandClock.PartOfDay.Noon },
                     islandTimeElapsedHours: 20),
 
-                  new PieceHint(
+               new PieceHint(
                     type: PieceHint.Type.CineDay3,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -454,7 +454,7 @@ namespace SonOfRobin
                     islandTimeElapsedHours: 40,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineDay2 }),
 
-                   new PieceHint(
+                new PieceHint(
                     type: PieceHint.Type.CineDay4,
                     showCineCurtains: true,
                     ignoreHintSetting: true,
@@ -466,6 +466,12 @@ namespace SonOfRobin
                     partsOfDay: new HashSet<IslandClock.PartOfDay>{ IslandClock.PartOfDay.Morning },
                     islandTimeElapsedHours: 6 * 24,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineDay3 }),
+
+                new PieceHint(
+                    type: PieceHint.Type.ConstructionSite,
+                    message: "Well, this looks like a nice construction site.",
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.BoatConstructionSite},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ConstructionSites} ),
 
                 new PieceHint(
                     type: PieceHint.Type.DangerousBear, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Bear},
