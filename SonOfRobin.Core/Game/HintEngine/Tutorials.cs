@@ -402,7 +402,7 @@ namespace SonOfRobin
                 new HintMessage(text: "Some | structures are too big to be built at once.\nYou have to build a | construction site first.",  imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BoatComplete), PieceInfo.GetTexture(PieceTemplate.Name.BoatConstructionSite) }, boxType: messageTextType),
                 new HintMessage(text:"Every construction site have construction levels, that are built one at a time.", boxType: messageTextType),
                 new HintMessage(text:"To proceed with the next construction level,\nyou have to fill every construction slot\nwith a | | | corresponding material.\nThen, use | the 'construct' function.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.IronNail), PieceInfo.GetTexture(PieceTemplate.Name.IronPlate), PieceInfo.GetTexture(PieceTemplate.Name.ConstructTrigger) }, boxType: messageTextType),
-                new HintMessage(text:"After proceeding with final construction level,\n| construction site will turn\ninto the | desired structure.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BoatComplete), PieceInfo.GetTexture(PieceTemplate.Name.BoatConstructionSite) }, boxType: messageTextType),
+                new HintMessage(text:"After proceeding with final construction level,\n| construction site will turn\ninto the | desired structure.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BoatConstructionSite), PieceInfo.GetTexture(PieceTemplate.Name.BoatComplete) }, boxType: messageTextType),
                 });
 
             CheckData();

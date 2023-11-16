@@ -1105,7 +1105,7 @@ namespace SonOfRobin
                 float depthPercent = 0.7f;
                 float scale = 0.7f;
 
-                for (int animSize = 0; animSize < 5; animSize++)
+                for (int animSize = 0; animSize <= 5; animSize++)
                 {
                     AddFrameList(animPackage: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
                 }
