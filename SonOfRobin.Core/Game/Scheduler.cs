@@ -45,6 +45,7 @@ namespace SonOfRobin
             AddWorldEvent = 25,
             ShowTextWindow = 26,
             OpenShelterMenu = 27,
+            OpenBoatMenu = 104,
             SleepInsideShelter = 28,
             SleepOutside = 29,
             ForceWakeUp = 30,
@@ -2144,6 +2145,14 @@ namespace SonOfRobin
                         {
                             BoardPiece constructionSite = (BoardPiece)this.ExecuteHelper;
                             ConstructionSite.FinishConstructionAnimation(constructionSite);
+                            return;
+                        }
+
+                    case TaskName.OpenBoatMenu:
+                        {
+                            BoardPiece boatPiece = (BoardPiece)this.ExecuteHelper;
+                            boatPiece.world.OpenMenu(templateName: MenuTemplate.Name.Boat, executeHelper: this.ExecuteHelper);
+
                             return;
                         }
 

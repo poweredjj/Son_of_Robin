@@ -9973,6 +9973,12 @@
 /processorParam:Quality=Best
 /build:sound/60968__ifartinurgeneraldirection__night-sounds.ogg
 
+#begin sound/610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld.ogg
+
 #begin sound/614013__aarontheonly__roar9.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

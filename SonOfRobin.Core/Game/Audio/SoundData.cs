@@ -294,6 +294,7 @@ namespace SonOfRobin
             Glug = 230,
             WaterDrop = 231,
             StonesFalling = 232,
+            WoodCreak = 233,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -530,6 +531,7 @@ namespace SonOfRobin
             { Name.Glug, "221488__lloydevans09__glug" },
             { Name.WaterDrop, "349873__matrixxx__water-drop-02" },
             { Name.StonesFalling, "567251__iwanplays__stones-falling" },
+            { Name.WoodCreak, "610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld" },
             };
     }
 }

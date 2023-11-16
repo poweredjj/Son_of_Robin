@@ -1565,12 +1565,13 @@ namespace SonOfRobin
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 1000, forbidOverlapSameClass: true);
                         this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.WoodCreak, ignore3DAlways: true);
                         break;
 
                     case PieceTemplate.Name.BoatComplete:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.0f; // protected from fire
-                        this.boardTask = Scheduler.TaskName.UseBoat;
+                        this.boardTask = Scheduler.TaskName.OpenBoatMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;

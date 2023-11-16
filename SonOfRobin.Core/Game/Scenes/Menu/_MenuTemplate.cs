@@ -35,6 +35,7 @@ namespace SonOfRobin
             SoundTest,
             GfxListTest,
             Shelter,
+            Boat,
             CreateAnyPiece,
             GenericConfirm,
             CraftField,
@@ -1111,6 +1112,32 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.SleepInsideShelter, executeHelper: executeHelper, taskDelay: 15);
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                        foreach (Entry entry in menu.entryList)
+                        {
+                            if (entry.GetType() != typeof(Separator))
+                            {
+                                entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.Message);
+                                entry.bgColor = new Color(0, 106, 199);
+                                entry.textColor = Color.White;
+                            }
+                        }
+
+                        return menu;
+                    }
+
+                case Name.Boat:
+                    {
+                        Menu menu = new(templateName: templateName, name: "BOAT", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.WoodCreak, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver)
+                        {
+                            bgColor = Color.DarkBlue * 0.7f
+                        };
+
+                        new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+                        new Invoker(menu: menu, name: "use this boat to escape the island", closesMenu: true, taskName: Scheduler.TaskName.UseBoat, executeHelper: executeHelper, taskDelay: 15);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
