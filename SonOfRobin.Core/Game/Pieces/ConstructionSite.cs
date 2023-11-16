@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.Scene;
 
 namespace SonOfRobin
 {
@@ -107,6 +108,9 @@ namespace SonOfRobin
 
         public void Construct()
         {
+            World world = this.world;
+            Player player = this.world.Player;
+
             var foundMaterials = new Dictionary<PieceTemplate.Name, int>();
 
             foreach (BoardPiece material in this.PieceStorage.GetAllPieces())
@@ -139,18 +143,18 @@ namespace SonOfRobin
 
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
 
-                    textList.Add($"|  {pieceInfo.readableName} x{missingCount}");
+                    textList.Add($"| {pieceInfo.readableName} x{missingCount}");
                     imageList.Add(pieceInfo.CroppedFrame.texture);
                 }
 
                 string materialsList = String.Join("\n", textList);
 
-                new TextWindow(text: $"Some materials are missing:\n\n{materialsList}", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"Some materials are missing:\n\n{materialsList}", imageList: imageList, imageAlignX: Helpers.AlignX.Left, minMarkerWidthMultiplier: 2f, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
 
                 return;
             }
 
-            if (this.world.Player.FatiguePercent > 0.5f)
+            if (player.FatiguePercent > 0.5f)
             {
                 new TextWindow(text: "I'm | too tired to work on this now...", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Bed) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
@@ -161,6 +165,12 @@ namespace SonOfRobin
             if (!allowedPartsOfDay.Contains(this.world.islandClock.CurrentPartOfDay))
             {
                 new TextWindow(text: "It is too late to work on this today...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
+
+            if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+            {
+                new TextWindow(text: "I cannot work on this with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
                 return;
             }
 
@@ -186,11 +196,11 @@ namespace SonOfRobin
                 newConstrSite.ClearAndConfigureStorage();
             }
 
-            World world = this.world;
-            Player player = this.world.Player;
-
+            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+            world.ActiveLevel.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
             world.touchLayout = TouchLayout.Empty;
             world.tipsLayout = ControlTips.TipsLayout.Empty;
+
             player.activeState = State.PlayerWaitForBuilding;
             player.buildDurationForOneFrame = 90;
             player.buildFatigueForOneFrame = 6;
@@ -216,21 +226,39 @@ namespace SonOfRobin
 
         public static void FinishConstructionAnim(BoardPiece nextLevelPiece)
         {
+            bool buildingFinished = nextLevelPiece.GetType() != typeof(ConstructionSite);
+
             World world = nextLevelPiece.world;
 
+            world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+            world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             world.Player.activeState = State.PlayerControlledWalking;
             world.touchLayout = TouchLayout.WorldMain;
             world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             nextLevelPiece.sprite.effectCol.RemoveAllEffects();
             nextLevelPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Yellow, framesLeft: 60, fadeFramesLeft: 60));
 
-            // separate particle emitter is needed to draw particles under new piece
-            BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(nextLevelPiece.sprite.position.X, nextLevelPiece.sprite.position.Y - 1), templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
+            if (buildingFinished)
+            {
+                // separate particle emitter is needed to draw particles under new piece
+                BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(nextLevelPiece.sprite.position.X, nextLevelPiece.sprite.position.Y - 1), templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
 
-            Yield starYield = new(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarBig });
-            starYield.DropDebris(piece: particleEmitter);
+                Yield starYield = new(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarBig });
+                starYield.DropDebris(piece: particleEmitter);
 
-            Sound.QuickPlay(name: SoundData.Name.Chime, pitchChange: -0.35f);
+                Sound.QuickPlay(name: SoundData.Name.Chime, pitchChange: -0.35f);
+            }
+            else Sound.QuickPlay(name: SoundData.Name.Ding1);
+
+            string constructionMessage;
+            if (buildingFinished) constructionMessage = $"{Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
+            else
+            {
+                ConstructionSite constructionSite = (ConstructionSite)nextLevelPiece;
+                constructionMessage = $"Construction site level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
+            }
+
+            new TextWindow(text: constructionMessage, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true);
         }
 
         public override Dictionary<string, Object> Serialize()

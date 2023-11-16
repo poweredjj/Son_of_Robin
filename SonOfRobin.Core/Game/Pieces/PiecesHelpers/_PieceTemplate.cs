@@ -1257,6 +1257,8 @@ namespace SonOfRobin
                             // TODO add more levels
                         };
 
+                        // TODO add each level description
+
                         // TODO add inventory open sound
 
                         var allowedTerrain = new AllowedTerrain(
