@@ -1312,7 +1312,6 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-
                 case Name.BoatCompleteCruising:
                     {
                         var allowedTerrain = new AllowedTerrain();

@@ -466,11 +466,28 @@ namespace SonOfRobin
                         this.world.CineMode = true;
                         this.world.cineCurtains.Enabled = true;
 
-                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWeather: true, plansWeather: false, hasWater: true, world: this.world, width: 100000, height: 10000, seed: 0);
+                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWeather: true, plansWeather: false, hasWater: true, world: this.world, width: 100000, height: 8000, seed: 0);
 
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new HintMessage(text: "Now I say something before leaving the island.", boxType: dialogue, delay: 0).ConvertToTask());
+                        Vector2 startPlayerPos = new Vector2(player.sprite.position.X, player.sprite.position.Y);
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + ((player.sprite.position - boat.sprite.position) * 3) } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.2f } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I cannot believe it. I've managed to build this boat with my own hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Finally, I'm leaving this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Will I miss this place? It was my home for so much time...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Well... I cannot stay here forever even if I'm gonna miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, startPlayerPos } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.6f } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I hope that this boat can take me home safely...", boxType: dialogue, delay: 0).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Alright! Let's go home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 0, executeHelper: openSeaLevel, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
@@ -496,13 +513,19 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.05f, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.05f } }, storeForLaterUse: true));
-
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 1, executeHelper: player, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Now I say something when at open sea.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.05f } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true)); // for testing
+                        taskChain.Add(new HintMessage(text: "I've been drifting for many days now...", boxType: dialogue, delay: 60 * 5).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "Since I left the island, the only thing I see is boundless sea.\nNo land or ship in sight.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "I don't have much | food left.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried) }, boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "And I see storm on the horizon...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 1, executeHelper: false, storeForLaterUse: true)); // for testing
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
