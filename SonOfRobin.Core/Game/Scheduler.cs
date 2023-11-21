@@ -122,6 +122,7 @@ namespace SonOfRobin
             ChangeTipsLayout = 102,
             ChangeTouchLayout = 103,
             FinishConstructionAnimation = 104,
+            EnterNewLevel = 105,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2152,6 +2153,14 @@ namespace SonOfRobin
                         {
                             BoardPiece boatPiece = (BoardPiece)this.ExecuteHelper;
                             boatPiece.world.OpenMenu(templateName: MenuTemplate.Name.Boat, executeHelper: this.ExecuteHelper);
+
+                            return;
+                        }
+
+                    case TaskName.EnterNewLevel:
+                        {
+                            Level level = (Level)this.ExecuteHelper;
+                            level.world.EnterNewLevel(level);
 
                             return;
                         }

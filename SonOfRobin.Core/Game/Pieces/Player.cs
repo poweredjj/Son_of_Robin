@@ -335,7 +335,7 @@ namespace SonOfRobin
         {
             get
             {
-                bool canSeeAnything = (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) || this.world.Player.sprite.IsInLightSourceRange;
+                bool canSeeAnything = ((this.level.levelType == Level.LevelType.Island || this.level.levelType == Level.LevelType.OpenSea) && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) || this.world.Player.sprite.IsInLightSourceRange;
 
                 if (!canSeeAnything) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToSeeAnything, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
                 return canSeeAnything;

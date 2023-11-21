@@ -600,6 +600,7 @@ namespace SonOfRobin
             else if (this.level.levelType == Level.LevelType.OpenSea)
             {
                 this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.OuterBeach);
+                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.Sea);
                 return;
             }
 

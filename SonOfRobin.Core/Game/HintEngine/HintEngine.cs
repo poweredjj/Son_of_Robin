@@ -25,11 +25,11 @@ namespace SonOfRobin
             CineSmallBase = 13,
             CineEnding = 14,
             AnimalScaredOfFire = 15,
-            AnimalCounters = 16,
-            ZoomOutLocked = 17,
-            Lightning = 18,
-            TooDarkToUseTools = 19,
-            BadSleep = 20,
+            AnimalCounters = 17,
+            ZoomOutLocked = 18,
+            Lightning = 19,
+            TooDarkToUseTools = 20,
+            BadSleep = 21,
         };
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -458,19 +458,22 @@ namespace SonOfRobin
                     {
                         // no disable code needed
 
+                        BoardPiece boat = piece;
                         Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;
 
-                        BoardPiece boat = piece;
+                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWater: true, world: this.world, width: 100000, height: 10000, seed: 0);
 
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new HintMessage(text: "Now I say something about leaving the island.", boxType: dialogue, delay: 60).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Now I say something before leaving the island.", boxType: dialogue, delay: 60).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 60, executeHelper: openSeaLevel, storeForLaterUse: true));
 
                         // TODO add ending scene code
 
+                        taskChain.Add(new HintMessage(text: "Now I say something when at open sea.", boxType: dialogue, delay: 0).ConvertToTask());
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
