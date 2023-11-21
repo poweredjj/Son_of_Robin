@@ -23,8 +23,9 @@ namespace SonOfRobin
             BurntOutTorch = 11,
             CineIntroduction = 12,
             CineSmallBase = 13,
-            CineEnding = 14,
-            AnimalScaredOfFire = 15,
+            CineEndingPart1 = 14,
+            CineEndingPart2 = 15,
+            AnimalScaredOfFire = 16,
             AnimalCounters = 17,
             ZoomOutLocked = 18,
             Lightning = 19,
@@ -37,7 +38,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.CineEnding, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.CineEndingPart1, Type.CineEndingPart2, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
 
         public HashSet<Type> shownGeneralHints = new() { };
         public HashSet<PieceHint.Type> shownPieceHints = new() { };
@@ -454,7 +455,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Type.CineEnding:
+                case Type.CineEndingPart1:
                     {
                         // no disable code needed
 
@@ -463,18 +464,41 @@ namespace SonOfRobin
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;
+                        this.world.cineCurtains.Enabled = true;
 
-                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWater: true, world: this.world, width: 100000, height: 10000, seed: 0);
+                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWeather: true, plansWeather: false, hasWater: true, world: this.world, width: 100000, height: 10000, seed: 0);
 
                         var taskChain = new List<Object>();
 
                         taskChain.Add(new HintMessage(text: "Now I say something before leaving the island.", boxType: dialogue, delay: 60).ConvertToTask());
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 60, executeHelper: openSeaLevel, storeForLaterUse: true));
 
-                        // TODO add ending scene code
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
-                        taskChain.Add(new HintMessage(text: "Now I say something when at open sea.", boxType: dialogue, delay: 0).ConvertToTask());
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
+                        break;
+                    }
+
+                case Type.CineEndingPart2:
+                    {
+                        // no disable code needed
+
+                        Player player = this.world.Player;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.CineMode = true;
+                        this.world.cineCurtains.showPercentage = 1f; // no transition here
+
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 9999f, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 10, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 2, 0), storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.15f, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: player, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Now I say something when at open sea.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true)); // for testing
+
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 

@@ -2074,7 +2074,7 @@ namespace SonOfRobin
                     case TaskName.UseBoat:
                         {
                             BoardPiece boat = (BoardPiece)this.ExecuteHelper;
-                            boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEnding, ignoreDelay: true, piece: boat);
+                            boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
 
                             return;
                         }

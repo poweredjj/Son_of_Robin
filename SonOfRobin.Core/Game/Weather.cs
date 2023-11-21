@@ -185,7 +185,7 @@ namespace SonOfRobin
 
         public void Update()
         {
-            if (this.world.ActiveLevel.levelType != Level.LevelType.Island)
+            if (!this.world.ActiveLevel.hasWeather)
             {
                 this.CloudsPercentage = 0f;
                 this.FogPercentage = 0f;
@@ -242,7 +242,7 @@ namespace SonOfRobin
             this.ProcessRain();
             this.ProcessLightning();
 
-            if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+            if (this.world.ActiveLevel.plansWeather && this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
         }
 
         private void ProcessLightning()

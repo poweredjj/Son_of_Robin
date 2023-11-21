@@ -38,15 +38,19 @@ namespace SonOfRobin
         public Queue<Sprite> nonPlantSpritesQueue;
         public Vector2 playerReturnPos;
         public readonly bool hasWater;
+        public readonly bool hasWeather;
+        public readonly bool plansWeather;
 
         public bool creationInProgress;
 
-        public Level(LevelType type, World world, int seed, int width, int height, bool hasWater, int cellWidthOverride = 0, int cellHeightOverride = 0, Dictionary<string, object> gridSerializedData = null)
+        public Level(LevelType type, World world, int seed, int width, int height, bool hasWater = false, bool hasWeather = false, bool plansWeather = false, int cellWidthOverride = 0, int cellHeightOverride = 0, Dictionary<string, object> gridSerializedData = null)
         {
             this.parentLevel = world.ActiveLevel;
             this.depth = this.parentLevel == null ? 0 : parentLevel.depth + 1;
             this.levelType = type;
             this.hasWater = hasWater;
+            this.hasWeather = hasWeather;
+            this.plansWeather = plansWeather;
             this.world = world;
             this.seed = seed;
             this.random = new Random(seed);

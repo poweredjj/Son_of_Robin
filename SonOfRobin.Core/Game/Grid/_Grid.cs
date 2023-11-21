@@ -567,7 +567,12 @@ namespace SonOfRobin
 
         private void ExtCalculateSea()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.Sea);
+                return;
+            }
 
             // the algorithm will only work, if water surrounds the island
 
@@ -600,7 +605,6 @@ namespace SonOfRobin
             else if (this.level.levelType == Level.LevelType.OpenSea)
             {
                 this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.OuterBeach);
-                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.Sea);
                 return;
             }
 

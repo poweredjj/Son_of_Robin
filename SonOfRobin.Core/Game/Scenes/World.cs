@@ -88,7 +88,7 @@ namespace SonOfRobin
                 var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
                 gridSerializedData = (Dictionary<string, Object>)saveGameDataDict["grid"];
             }
-            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, hasWater: true, seed: this.seed, width: width, height: height, cellWidthOverride: cellWidthOverride, cellHeightOverride: cellHeightOverride, gridSerializedData: gridSerializedData);
+            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, hasWater: true, hasWeather: true, plansWeather: true, seed: this.seed, width: width, height: height, cellWidthOverride: cellWidthOverride, cellHeightOverride: cellHeightOverride, gridSerializedData: gridSerializedData);
             this.ActiveLevel = this.IslandLevel;
 
             this.demoMode = demoMode;
@@ -495,6 +495,7 @@ namespace SonOfRobin
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+            if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);
             else Craft.UnlockRecipesAddedInGameUpdate(world: this);
         }
 
