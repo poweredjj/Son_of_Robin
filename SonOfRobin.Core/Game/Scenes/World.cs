@@ -432,17 +432,20 @@ namespace SonOfRobin
                 }
             }
 
-            bool newGameStarted = this.saveGameData == null;
+            bool saveDataActive = this.saveGameData != null;
 
-            if (newGameStarted)
+            if (!saveDataActive)
             {
                 if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: true);
                 else
                 {
-                    this.CreateAndPlacePlayer();
+                    if (this.ActiveLevel.levelType == Level.LevelType.Island)
+                    {
+                        this.CreateAndPlacePlayer();
 
-                    if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
-                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
+                        if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                        PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
+                    }
                 }
             }
             else
@@ -494,9 +497,13 @@ namespace SonOfRobin
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
-            if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
-            if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);
-            else Craft.UnlockRecipesAddedInGameUpdate(world: this);
+            if (!this.demoMode)
+            {
+                if (!saveDataActive) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                else Craft.UnlockRecipesAddedInGameUpdate(world: this);
+
+                if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);
+            }
         }
 
         private void ProcessAllPopulatingSteps()

@@ -439,7 +439,7 @@ namespace SonOfRobin
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
                     new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, blockInput: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.BoatComplete].texture }, blockInput: true)},
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.BoatCompleteStanding].texture }, blockInput: true)},
 
                     mapDiscoveredPercentage: 0.19f,
                     distanceWalkedKilometers: 23f,

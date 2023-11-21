@@ -1547,7 +1547,7 @@ namespace SonOfRobin
                         customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.WoodCreak, ignore3DAlways: true);
                         break;
 
-                    case PieceTemplate.Name.BoatComplete:
+                    case PieceTemplate.Name.BoatCompleteStanding:
                         this.category = BoardPiece.Category.Indestructible;
                         this.fireAffinity = 0.0f; // protected from fire
                         this.boardTask = Scheduler.TaskName.OpenBoatMenu;
@@ -1555,6 +1555,16 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.BoatCompleteCruising:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
+                        this.serialize = false;
+                        this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Totem:

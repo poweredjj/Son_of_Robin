@@ -382,7 +382,7 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 0.15f, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: seaPos, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsSmoothly, delay: 0, executeHelper: seaPos, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
@@ -470,8 +470,8 @@ namespace SonOfRobin
 
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new HintMessage(text: "Now I say something before leaving the island.", boxType: dialogue, delay: 60).ConvertToTask());
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 60, executeHelper: openSeaLevel, storeForLaterUse: true));
+                        taskChain.Add(new HintMessage(text: "Now I say something before leaving the island.", boxType: dialogue, delay: 0).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 0, executeHelper: openSeaLevel, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
@@ -490,15 +490,19 @@ namespace SonOfRobin
 
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 9999f, storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 10, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 2, 0), storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.15f, storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: player, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 4, 0), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.35f }, { "setInstantly", true } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.05f, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.05f } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 1, executeHelper: player, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Now I say something when at open sea.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true)); // for testing
-
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 

@@ -60,7 +60,7 @@ namespace SonOfRobin
         {
             Rectangle cameraIntersectRect = this.sprite.GfxRect;
             cameraIntersectRect.Inflate(cameraIntersectRect.Width, 0);
-            if (!this.world.camera.viewRect.Intersects(cameraIntersectRect)) return; // sprite.IsInCameraRect would leave some "stuck" waves at camera edges         
+            if (!this.world.camera.viewRect.Intersects(cameraIntersectRect)) return; // sprite.IsInCameraRect would leave some "stuck" waves at camera edges
 
             if (this.tweener == null) this.tweener = new Tweener();
 
@@ -258,6 +258,11 @@ namespace SonOfRobin
             }
 
             this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
+        }
+
+        public override void SM_MoveSlowlyToTheRight()
+        {
+            this.sprite.Move(new Vector2(1, 0));
         }
     }
 }

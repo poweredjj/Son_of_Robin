@@ -53,7 +53,8 @@ namespace SonOfRobin
             TempoStop = 33,
             TempoPlay = 34,
             CameraTrackPiece = 35,
-            CameraTrackCoords = 36,
+            CameraTrackCoordsSmoothly = 36,
+            CameraTrackCoordsInstantly = 106,
             CameraSetZoom = 37,
             CameraSetMovementSpeed = 38,
             CameraResetMovementSpeed = 39,
@@ -1121,12 +1122,22 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.CameraTrackCoords:
+                    case TaskName.CameraTrackCoordsSmoothly:
                         {
                             World world = World.GetTopWorld();
                             if (world == null) return;
 
-                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper);
+                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper, moveInstantly: false);
+
+                            return;
+                        }
+
+                    case TaskName.CameraTrackCoordsInstantly:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper, moveInstantly: true);
 
                             return;
                         }

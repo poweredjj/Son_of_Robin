@@ -109,7 +109,8 @@ namespace SonOfRobin
             AlchemyLabAdvanced = 78,
 
             BoatConstructionSite = 79,
-            BoatComplete = 80,
+            BoatCompleteStanding = 80,
+            BoatCompleteCruising = 232,
 
             Totem = 81,
             RuinsColumn = 82,
@@ -1295,18 +1296,28 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.BoatComplete, readableName: "boat construction site", description: "Boat construction site.");
+                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.BoatCompleteStanding, readableName: "boat construction site", description: "Boat construction site.");
 
                         return boardPiece;
                     }
 
-                case Name.BoatComplete:
+                case Name.BoatCompleteStanding:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatComplete, allowedTerrain: allowedTerrain,
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteStanding, allowedTerrain: allowedTerrain,
                              rotatesWhenDropped: true, readableName: "boat", description: "Can be used to escape the island.");
+
+                        return boardPiece;
+                    }
+
+
+                case Name.BoatCompleteCruising:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteCruising, allowedTerrain: allowedTerrain, readableName: "boat", description: "Actively used to escape the island.", activeState: BoardPiece.State.MoveSlowlyToTheRight);
 
                         return boardPiece;
                     }

@@ -193,10 +193,10 @@ namespace SonOfRobin
                 {
                     this.sprite.PlaceOnBoard(randomPlacement: false, position: new Vector2(x: this.level.width / 10, y: this.level.height / 2), closestFreeSpot: true, maxDistanceOverride: int.MaxValue);
 
-                    BoardPiece boatSimulation = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.Crosshair, world: this.world);
-                    boatSimulation.sprite.AssignNewPackage(AnimData.PkgName.BoatComplete);
+                    BoardPiece boatSimulation = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
                     boatSimulation.sprite.PlaceOnBoard(randomPlacement: false, position: this.sprite.position, closestFreeSpot: true);
-                    new Tracking(level: this.level, targetSprite: this.sprite, followingSprite: boatSimulation.sprite, offsetX: 0, offsetY: -10);
+                    boatSimulation.AddToStateMachines();
+                    new Tracking(level: this.level, targetSprite: boatSimulation.sprite, followingSprite: this.sprite, offsetX: 100, offsetY: -15);
                 }
 
                 if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");

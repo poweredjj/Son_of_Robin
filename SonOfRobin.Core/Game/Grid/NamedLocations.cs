@@ -355,7 +355,7 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.3f, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: pointToShow, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsSmoothly, delay: 0, executeHelper: pointToShow, storeForLaterUse: true));
 
             taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.TrumpetChime).ConvertToTask());
 
