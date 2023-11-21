@@ -321,7 +321,7 @@ namespace SonOfRobin
             {
                 foreach (BoardPiece fogPiece in this.fogPieces)
                 {
-                    if (canSeeThroughFog || !fogPiece.sprite.GfxRect.Intersects(cameraRect)) fogPiece.Destroy();
+                    if (canSeeThroughFog || !fogPiece.sprite.GfxRect.Intersects(cameraRect) || fogPiece.level != this.world.ActiveLevel) fogPiece.Destroy();
                     else
                     {
                         if (fogPiece.sprite.opacityFade == null) new OpacityFade(sprite: fogPiece.sprite, destOpacity: 0, duration: this.world.random.Next(30, 60 * 4), destroyPiece: true);
@@ -379,6 +379,12 @@ namespace SonOfRobin
             }
 
             Rectangle cameraRect = this.world.camera.viewRect;
+
+            if (this.rainEmitter.level != this.world.ActiveLevel)
+            {
+                this.rainEmitter.level = this.world.ActiveLevel;
+                this.rainEmitter.RemoveFromBoard();
+            }
 
             bool firstRun = !this.rainEmitter.sprite.IsOnBoard;
             if (firstRun) this.rainEmitter.sprite.PlaceOnBoard(position: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), randomPlacement: false, ignoreCollisions: true, precisePlacement: true);

@@ -1357,17 +1357,7 @@ namespace SonOfRobin
         {
             int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
             int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
-
-            try
-            {
-                return this.cellGrid[cellNoX, cellNoY];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return this.cellGrid[
-                    Math.Clamp(value: cellNoX, min: 0, max: this.noOfCellsX - 1),
-                    Math.Clamp(value: cellNoY, min: 0, max: this.noOfCellsY - 1)];
-            }
+            return this.cellGrid[cellNoX, cellNoY];
         }
 
         private Cell[,] MakeGrid()
