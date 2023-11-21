@@ -107,7 +107,8 @@ namespace SonOfRobin
         public float RainPercentage { get; private set; }
         public float LightningPercentage { get; private set; }
         public float HeatPercentage { get; private set; }
-        public bool IsRaining { get { return this.RainPercentage > 0.2f; } }
+        public bool IsRaining
+        { get { return this.RainPercentage > 0.2f; } }
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
@@ -704,7 +705,7 @@ namespace SonOfRobin
 
             this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 0.45f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
 
-            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: 0.8f, randomizeIntensity: false);
+            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromSeconds(20), maxGap: TimeSpan.FromMinutes(4), maxIntensity: 1f, addChanceFactor: 0.9f, randomizeIntensity: false);
         }
 
         public Dictionary<string, Object> Serialize()

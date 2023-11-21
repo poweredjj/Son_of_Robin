@@ -1271,6 +1271,7 @@ namespace SonOfRobin
                                 { Name.Rope, 4 },
                                 { Name.WoodLogHard, 4 },
                                 { Name.LanternFull, 3 },
+                                { Name.Candle, 5 },
                             } },
 
                             { 5, new Dictionary<Name, int>{
