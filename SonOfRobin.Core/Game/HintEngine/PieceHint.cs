@@ -10,8 +10,8 @@ namespace SonOfRobin
     {
         public enum Type : byte
         {
-            CrateAnother = 1,
-            TentModernPacked = 72,
+            CrateAnother = 0,
+            TentModernPacked = 1,
             WoodNegative = 2,
             WoodPositive = 3,
             DigSiteNegative = 4,
@@ -73,22 +73,22 @@ namespace SonOfRobin
             WoodenFencePositive = 60,
             DeadAnimal = 61,
             HarvestingWorkshop = 62,
-            SwampDigSite = 64,
+            SwampDigSite = 63,
 
-            CineCrateStarting = 0,
-            CineTentModernCantPack = 73,
-            ConstructionSite = 76,
-            CineSmallBase = 65,
-            CineRuins = 74,
-            CineCave = 75,
-            CineTotem = 63,
-            CineLookForSurvivors1 = 66,
-            CineLookForSurvivors2 = 67,
-            CineLookForSurvivors3 = 68,
-            CineLookForSurvivors4 = 77,
-            CineDay1 = 69,
-            CineDay2 = 70,
-            CineDay3 = 71,
+            CineCrateStarting = 64,
+            CineTentModernCantPack = 65,
+            ConstructionSite = 66,
+            CineSmallBase = 67,
+            CineRuins = 68,
+            CineCave = 69,
+            CineTotem = 70,
+            CineLookForSurvivors1 = 71,
+            CineLookForSurvivors2 = 72,
+            CineLookForSurvivors3 = 73,
+            CineLookForSurvivors4 = 74,
+            CineDay1 = 75,
+            CineDay2 = 76,
+            CineDay3 = 77,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));

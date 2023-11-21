@@ -1255,18 +1255,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/characters/recolor_pt2.png
 
-#begin gfx/characters/tiger.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/characters/tiger.png
-
 #begin gfx/cherry.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9840,12 +9828,6 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/546322__micahlg__munchin-4.ogg
-
-#begin sound/546399__szegvari__angry-tiger-fantasy.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/546399__szegvari__angry-tiger-fantasy.ogg
 
 #begin sound/547585__f-m-audio__grit-spray.ogg
 /importer:OggImporter

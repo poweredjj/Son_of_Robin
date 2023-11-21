@@ -195,19 +195,6 @@ namespace SonOfRobin
             Grid grid = new(level: level, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
-            // for compatibility with older saves
-            if (gridData.ContainsKey("cellData"))
-            {
-                var cellData = (List<Object>)gridData["cellData"];
-
-                for (int i = 0; i < grid.allCells.Length; i++)
-                {
-                    var cellDict = (Dictionary<string, object>)cellData[i];
-                    grid.allCells[i].visitedByPlayer = (bool)cellDict["VisitedByPlayer"];
-                }
-            }
-
-            // current method
             if (gridData.ContainsKey("cellsVisitedByPlayer"))
             {
                 var cellsVisitedByPlayer = (ConcurrentBag<int>)gridData["cellsVisitedByPlayer"];

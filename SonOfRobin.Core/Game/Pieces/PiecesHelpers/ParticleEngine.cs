@@ -44,19 +44,19 @@ namespace SonOfRobin
             DebrisCeramic = 22,
             DebrisBlood = 23,
             DebrisStarSmall = 24,
-            DebrisStarBig = 34,
-            DebrisHeart = 25,
-            DebrisSoot = 26,
+            DebrisStarBig = 25,
+            DebrisHeart = 26,
+            DebrisSoot = 27,
 
-            WeatherRain = 27,
+            WeatherRain = 28,
 
-            WindLeaf = 28,
-            WindPetal = 29,
+            WindLeaf = 29,
+            WindPetal = 30,
 
             HeatSmall = 31,
-            HeatMedium = 30,
-            HeatBig = 32,
-            HeatFlame = 33,
+            HeatMedium = 32,
+            HeatBig = 33,
+            HeatFlame = 34,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {

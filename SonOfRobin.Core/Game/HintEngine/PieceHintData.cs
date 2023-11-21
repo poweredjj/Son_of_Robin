@@ -516,7 +516,7 @@ namespace SonOfRobin
                     type: PieceHint.Type.DeadAnimal,
                     message: $"I need to use | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName}\nto process this animal.",
                     imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting) },
-                    playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Rabbit, PieceTemplate.Name.Frog, PieceTemplate.Name.Fox, PieceTemplate.Name.Tiger }),
+                    playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Rabbit, PieceTemplate.Name.Frog, PieceTemplate.Name.Fox, PieceTemplate.Name.Bear }),
 
                 new PieceHint(
                     type: PieceHint.Type.PoisonousMeat,

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000024f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000025f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -23,374 +23,365 @@ namespace SonOfRobin
             Empty = 1,
 
             WhiteSpotLayerMinus1 = 2,
-            WhiteSpotLayerZero = 4,
-            WhiteSpotLayerOne = 3,
+            WhiteSpotLayerZero = 3,
+            WhiteSpotLayerOne = 4,
             WhiteSpotLayerTwo = 5,
-            WhiteSpotLayerThree = 285,
-
-            FlowersWhite = 6,
-            FlowersYellow1 = 7,
-            FlowersYellow2 = 8,
-            FlowersRed = 9,
-
-            Rushes = 10,
-            GrassDesert = 11,
-            GrassRegular = 12,
-            PlantPoison = 13,
-            CoffeeShrub = 14,
-            CarrotPlant = 15,
-            TomatoPlant = 16,
-            MushroomPlant = 305,
-
-            Cactus = 17,
-
-            PalmTree = 18,
-            TreeBig = 19,
-            TreeSmall1 = 20,
-            TreeSmall2 = 21,
-
-            TreeStump = 22,
-
-            WaterLily1 = 23,
-            WaterLily2 = 24,
-            WaterLily3 = 25,
-
-            MineralsBig1 = 26,
-            MineralsBig2 = 27,
-            MineralsBig3 = 28,
-            MineralsBig4 = 29,
-            MineralsBig5 = 30,
-            MineralsBig6 = 31,
-            MineralsBig7 = 32,
-            MineralsBig8 = 33,
-            MineralsBig9 = 34,
-            MineralsBig10 = 35,
-            MineralsBig11 = 36,
-            MineralsBig12 = 37,
-            MineralsBig13 = 38,
-            MineralsBig14 = 39,
-
-            MineralsSmall1 = 40,
-            MineralsSmall2 = 41,
-            MineralsSmall3 = 42,
-            MineralsSmall4 = 43,
-
-            MineralsMossyBig1 = 44,
-            MineralsMossyBig2 = 45,
-            MineralsMossyBig3 = 46,
-            MineralsMossyBig4 = 47,
-            MineralsMossyBig5 = 48,
-            MineralsMossyBig6 = 49,
-            MineralsMossyBig7 = 50,
-            MineralsMossyBig8 = 51,
-            MineralsMossyBig9 = 52,
-            MineralsMossyBig10 = 53,
-            MineralsMossyBig11 = 54,
-            MineralsMossyBig12 = 55,
-
-            MineralsMossySmall1 = 56,
-            MineralsMossySmall2 = 57,
-            MineralsMossySmall3 = 58,
-            MineralsMossySmall4 = 59,
-
-            MineralsCave = 306,
-
-            JarWhole = 60,
-            JarBroken = 61,
-
-            ChestWooden = 62,
-            ChestStone = 63,
-            ChestIron = 64,
-            ChestCrystal = 65,
-            ChestTreasureBlue = 66,
-            ChestTreasureRed = 67,
-
-            WoodLogRegular = 68,
-            WoodLogHard = 69,
-            WoodPlank = 70,
-
-            Nail = 71,
-            Rope = 72,
-            HideCloth = 311,
-            Crate = 73,
-
-            WorkshopEssential = 74,
-            WorkshopBasic = 75,
-            WorkshopAdvanced = 76,
-            WorkshopMaster = 77,
-
-            WorkshopMeatHarvesting = 78,
-
-            WorkshopLeatherBasic = 79,
-            WorkshopLeatherAdvanced = 80,
-
-            MeatDryingRackRegular = 81,
-            MeatDryingRackWide = 82,
-
-            AlchemyLabStandard = 83,
-            AlchemyLabAdvanced = 84,
-
-            Furnace = 85,
-            Anvil = 86,
-            HotPlate = 87,
-            CookingPot = 88,
-
-            Totem = 89,
-            RuinsWallHorizontal1 = 90,
-            RuinsWallHorizontal2 = 91,
-            RuinsWallWallVertical = 92,
-            RuinsColumn = 93,
-            RuinsRubble = 94,
-
-            Stick = 95,
-            Stone = 96,
-            Granite = 97,
-
-            Clay = 98,
-
-            Apple = 99,
-            Banana = 100,
-            Cherry = 101,
-            Tomato = 102,
-            Carrot = 103,
-            Acorn = 104,
-            Mushroom = 307,
-
-            SeedBag = 105,
-            CoffeeRaw = 106,
-            CoffeeRoasted = 107,
-
-            Clam = 108,
-
-            MeatRawRegular = 109,
-            MeatRawPrime = 110,
-            MeatDried = 111,
-            Fat = 112,
-            Burger = 113,
-            MealStandard = 114,
-            Leather = 115,
-
-            KnifeSimple = 116,
-
-            AxeWood = 117,
-            AxeStone = 118,
-            AxeIron = 119,
-            AxeCrystal = 120,
-
-            PickaxeWood = 121,
-            PickaxeStone = 122,
-            PickaxeIron = 123,
-            PickaxeCrystal = 124,
-
-            ScytheStone = 125,
-            ScytheIron = 126,
-            ScytheCrystal = 127,
-
-            SpearWood = 128,
-            SpearStone = 129,
-            SpearIron = 130,
-            SpearCrystal = 131,
-
-            ShovelStone = 132,
-            ShovelIron = 133,
-            ShovelCrystal = 134,
-
-            BowBasic = 135,
-            BowAdvanced = 136,
-
-            ArrowWood = 137,
-            ArrowStone = 138,
-            ArrowIron = 139,
-            ArrowCrystal = 140,
-            ArrowExploding = 141,
-
-            CoalDeposit = 142,
-            IronDeposit = 143,
-
-            CrystalDepositSmall = 144,
-            CrystalDepositBig = 145,
-
-            DigSite = 146,
-            DigSiteGlass = 147,
-            DigSiteRuins = 148,
-
-            Coal = 149,
-            IronOre = 150,
-            IronBar = 151,
-            IronRod = 152,
-            IronPlate = 153,
-            GlassSand = 154,
-            Crystal = 155,
-
-            PlayerBoy = 156,
-            PlayerGirl = 157,
-            PlayerTestDemoness = 158,
-
-            FoxBlack = 159,
-            FoxBrown = 160,
-            FoxChocolate = 161,
-            FoxGinger = 162,
-            FoxGray = 163,
-            FoxRed = 164,
-            FoxWhite = 165,
-            FoxYellow = 166,
-
-            Frog1 = 167,
-            Frog2 = 168,
-            Frog3 = 169,
-            Frog4 = 170,
-            Frog5 = 171,
-            Frog6 = 172,
-            Frog7 = 173,
-            Frog8 = 174,
-
-            RabbitBeige = 175,
-            RabbitBlack = 176,
-            RabbitBrown = 177,
-            RabbitDarkBrown = 178,
-            RabbitGray = 179,
-            RabbitLightBrown = 180,
-            RabbitLightGray = 181,
-            RabbitWhite = 182,
-
-            TigerOrangeMedium = 183,
-            TigerOrangeLight = 184,
-            TigerGray = 185,
-            TigerWhite = 186,
-            TigerOrangeDark = 187,
-            TigerBrown = 188,
-            TigerYellow = 189,
-            TigerBlack = 190,
-
-            BearBrown = 297,
-            BearWhite = 298,
-            BearOrange = 299,
-            BearBlack = 300,
-            BearDarkBrown = 301,
-            BearGray = 302,
-            BearRed = 303,
-            BearBeige = 304,
-
-            TentModern = 283,
-            TentModernPacked = 284,
-            TentSmall = 191,
-            TentMedium = 192,
-            TentBig = 193,
-
-            BackpackMediumOutline = 194,
-
-            BackpackSmall = 195,
-            BackpackMedium = 196,
-            BackpackBig = 197,
-            BackpackLuxurious = 198,
-
-            BeltSmall = 199,
-            BeltMedium = 200,
-            BeltBig = 201,
-            BeltLuxurious = 202,
-            Map = 203,
-
-            HatSimple = 204,
-            BootsProtective = 205,
-            BootsMountain = 206,
-            BootsSpeed = 207,
-            BootsAllTerrain = 208,
-            GlovesStrength = 209,
-            GlassesBlue = 210,
-            Dungarees = 211,
-
-            LanternFrame = 212,
-            Candle = 213,
-            Lantern = 214,
-
-            SmallTorch = 215,
-            BigTorch = 216,
-            CampfireSmall = 217,
-            CampfireMedium = 218,
-
-            BoatConstruction = 308,
-            BoatComplete = 310,
-
-            HerbsBlack = 219,
-            HerbsCyan = 220,
-            HerbsBlue = 221,
-            HerbsGreen = 222,
-            HerbsYellow = 223,
-            HerbsRed = 224,
-            HerbsViolet = 225,
-            HerbsBrown = 226,
-            HerbsDarkViolet = 227,
-            HerbsDarkGreen = 228,
-
-            EmptyBottle = 229,
-            PotionRed = 230,
-            PotionBlue = 231,
-            PotionViolet = 232,
-            PotionYellow = 233,
-            PotionCyan = 234,
-            PotionGreen = 235,
-            PotionBlack = 236,
-            PotionDarkViolet = 237,
-            PotionDarkYellow = 238,
-            PotionDarkGreen = 239,
-            PotionLightYellow = 240,
-            PotionTransparent = 241,
-            PotionBrown = 242,
-
-            BloodSplatter1 = 243,
-            BloodSplatter2 = 244,
-            BloodSplatter3 = 245,
-
-            HumanSkeleton = 246,
-            Hole = 247,
-
-            Explosion = 248,
-            SkullAndBones = 249,
-            MusicNoteSmall = 250,
-            MusicNoteBig = 251,
-            Miss = 252,
-            Attack = 253,
-            MapMarker = 254,
-            Backlight = 255,
-            Crosshair = 256,
-            Flame = 257,
-            Upgrade = 258,
-            WaterDrop = 259,
-            Star = 261,
-            Zzz = 262,
-            Heart = 263,
-            Hammer = 309,
-
-            Fog1 = 264,
-            Fog2 = 265,
-            Fog3 = 266,
-            Fog4 = 267,
-
-            BubbleExclamationRed = 272,
-            BubbleExclamationBlue = 273,
-            BubbleCraftGreen = 274,
-
-            SeaWave = 275,
-            WeatherFog1 = 286,
-            WeatherFog2 = 287,
-            WeatherFog3 = 288,
-            WeatherFog4 = 289,
-            WeatherFog5 = 290,
-            WeatherFog6 = 291,
-            WeatherFog7 = 292,
-            WeatherFog8 = 293,
-            WeatherFog9 = 294,
-
-            FertileGroundSmall = 276,
-            FertileGroundMedium = 277,
-            FertileGroundLarge = 278,
-            FenceHorizontalShort = 279,
-            FenceVerticalShort = 280,
-            FenceHorizontalLong = 281,
-            FenceVerticalLong = 282,
-
-            CaveEntrance = 295,
-            CaveExit = 296,
+            WhiteSpotLayerThree = 6,
+
+            FlowersWhite = 7,
+            FlowersYellow1 = 8,
+            FlowersYellow2 = 9,
+            FlowersRed = 10,
+
+            Rushes = 11,
+            GrassDesert = 12,
+            GrassRegular = 13,
+            PlantPoison = 14,
+            CoffeeShrub = 15,
+            CarrotPlant = 16,
+            TomatoPlant = 17,
+            MushroomPlant = 18,
+
+            Cactus = 19,
+
+            PalmTree = 20,
+            TreeBig = 21,
+            TreeSmall1 = 22,
+            TreeSmall2 = 23,
+
+            TreeStump = 24,
+
+            WaterLily1 = 25,
+            WaterLily2 = 26,
+            WaterLily3 = 27,
+
+            MineralsBig1 = 28,
+            MineralsBig2 = 29,
+            MineralsBig3 = 30,
+            MineralsBig4 = 31,
+            MineralsBig5 = 32,
+            MineralsBig6 = 33,
+            MineralsBig7 = 34,
+            MineralsBig8 = 35,
+            MineralsBig9 = 36,
+            MineralsBig10 = 37,
+            MineralsBig11 = 38,
+            MineralsBig12 = 39,
+            MineralsBig13 = 40,
+            MineralsBig14 = 41,
+
+            MineralsSmall1 = 42,
+            MineralsSmall2 = 43,
+            MineralsSmall3 = 44,
+            MineralsSmall4 = 45,
+
+            MineralsMossyBig1 = 46,
+            MineralsMossyBig2 = 47,
+            MineralsMossyBig3 = 48,
+            MineralsMossyBig4 = 49,
+            MineralsMossyBig5 = 50,
+            MineralsMossyBig6 = 51,
+            MineralsMossyBig7 = 52,
+            MineralsMossyBig8 = 53,
+            MineralsMossyBig9 = 54,
+            MineralsMossyBig10 = 55,
+            MineralsMossyBig11 = 56,
+            MineralsMossyBig12 = 57,
+
+            MineralsMossySmall1 = 58,
+            MineralsMossySmall2 = 59,
+            MineralsMossySmall3 = 60,
+            MineralsMossySmall4 = 61,
+
+            MineralsCave = 62,
+
+            JarWhole = 63,
+            JarBroken = 64,
+
+            ChestWooden = 65,
+            ChestStone = 66,
+            ChestIron = 67,
+            ChestCrystal = 68,
+            ChestTreasureBlue = 69,
+            ChestTreasureRed = 70,
+
+            WoodLogRegular = 71,
+            WoodLogHard = 72,
+            WoodPlank = 73,
+
+            Nail = 74,
+            Rope = 75,
+            HideCloth = 76,
+            Crate = 77,
+
+            WorkshopEssential = 78,
+            WorkshopBasic = 79,
+            WorkshopAdvanced = 80,
+            WorkshopMaster = 81,
+
+            WorkshopMeatHarvesting = 82,
+
+            WorkshopLeatherBasic = 83,
+            WorkshopLeatherAdvanced = 84,
+
+            MeatDryingRackRegular = 85,
+            MeatDryingRackWide = 86,
+
+            AlchemyLabStandard = 87,
+            AlchemyLabAdvanced = 88,
+
+            Furnace = 89,
+            Anvil = 90,
+            HotPlate = 91,
+            CookingPot = 92,
+
+            Totem = 93,
+            RuinsWallHorizontal1 = 94,
+            RuinsWallHorizontal2 = 95,
+            RuinsWallWallVertical = 96,
+            RuinsColumn = 97,
+            RuinsRubble = 98,
+
+            Stick = 99,
+            Stone = 100,
+            Granite = 101,
+
+            Clay = 102,
+
+            Apple = 103,
+            Banana = 104,
+            Cherry = 105,
+            Tomato = 106,
+            Carrot = 107,
+            Acorn = 108,
+            Mushroom = 109,
+
+            SeedBag = 110,
+            CoffeeRaw = 111,
+            CoffeeRoasted = 112,
+
+            Clam = 113,
+
+            MeatRawRegular = 114,
+            MeatRawPrime = 115,
+            MeatDried = 116,
+            Fat = 117,
+            Burger = 118,
+            MealStandard = 119,
+            Leather = 120,
+
+            KnifeSimple = 121,
+
+            AxeWood = 122,
+            AxeStone = 123,
+            AxeIron = 124,
+            AxeCrystal = 125,
+
+            PickaxeWood = 126,
+            PickaxeStone = 127,
+            PickaxeIron = 128,
+            PickaxeCrystal = 129,
+
+            ScytheStone = 130,
+            ScytheIron = 131,
+            ScytheCrystal = 132,
+
+            SpearWood = 133,
+            SpearStone = 134,
+            SpearIron = 135,
+            SpearCrystal = 136,
+
+            ShovelStone = 137,
+            ShovelIron = 138,
+            ShovelCrystal = 139,
+
+            BowBasic = 140,
+            BowAdvanced = 141,
+
+            ArrowWood = 142,
+            ArrowStone = 143,
+            ArrowIron = 144,
+            ArrowCrystal = 145,
+            ArrowExploding = 146,
+
+            CoalDeposit = 147,
+            IronDeposit = 148,
+
+            CrystalDepositSmall = 149,
+            CrystalDepositBig = 150,
+
+            DigSite = 151,
+            DigSiteGlass = 152,
+            DigSiteRuins = 153,
+
+            Coal = 154,
+            IronOre = 155,
+            IronBar = 156,
+            IronRod = 157,
+            IronPlate = 158,
+            GlassSand = 159,
+            Crystal = 160,
+
+            PlayerBoy = 161,
+            PlayerGirl = 162,
+            PlayerTestDemoness = 163,
+
+            FoxBlack = 164,
+            FoxBrown = 165,
+            FoxChocolate = 166,
+            FoxGinger = 167,
+            FoxGray = 168,
+            FoxRed = 169,
+            FoxWhite = 170,
+            FoxYellow = 171,
+
+            Frog1 = 172,
+            Frog2 = 173,
+            Frog3 = 174,
+            Frog4 = 175,
+            Frog5 = 176,
+            Frog6 = 177,
+            Frog7 = 178,
+            Frog8 = 179,
+
+            RabbitBeige = 180,
+            RabbitBlack = 181,
+            RabbitBrown = 182,
+            RabbitDarkBrown = 183,
+            RabbitGray = 184,
+            RabbitLightBrown = 185,
+            RabbitLightGray = 186,
+            RabbitWhite = 187,
+
+            BearBrown = 188,
+            BearWhite = 189,
+            BearOrange = 190,
+            BearBlack = 191,
+            BearDarkBrown = 192,
+            BearGray = 193,
+            BearRed = 194,
+            BearBeige = 195,
+
+            TentModern = 196,
+            TentModernPacked = 197,
+            TentSmall = 198,
+            TentMedium = 199,
+            TentBig = 200,
+
+            BackpackMediumOutline = 201,
+
+            BackpackSmall = 202,
+            BackpackMedium = 203,
+            BackpackBig = 204,
+            BackpackLuxurious = 205,
+
+            BeltSmall = 206,
+            BeltMedium = 207,
+            BeltBig = 208,
+            BeltLuxurious = 209,
+            Map = 210,
+
+            HatSimple = 211,
+            BootsProtective = 212,
+            BootsMountain = 213,
+            BootsSpeed = 214,
+            BootsAllTerrain = 215,
+            GlovesStrength = 216,
+            GlassesBlue = 217,
+            Dungarees = 218,
+
+            LanternFrame = 219,
+            Candle = 220,
+            Lantern = 221,
+
+            SmallTorch = 222,
+            BigTorch = 223,
+            CampfireSmall = 224,
+            CampfireMedium = 225,
+
+            BoatConstruction = 226,
+            BoatComplete = 227,
+
+            HerbsBlack = 228,
+            HerbsCyan = 229,
+            HerbsBlue = 230,
+            HerbsGreen = 231,
+            HerbsYellow = 232,
+            HerbsRed = 233,
+            HerbsViolet = 234,
+            HerbsBrown = 235,
+            HerbsDarkViolet = 236,
+            HerbsDarkGreen = 237,
+
+            EmptyBottle = 238,
+            PotionRed = 239,
+            PotionBlue = 240,
+            PotionViolet = 241,
+            PotionYellow = 242,
+            PotionCyan = 243,
+            PotionGreen = 244,
+            PotionBlack = 245,
+            PotionDarkViolet = 246,
+            PotionDarkYellow = 247,
+            PotionDarkGreen = 248,
+            PotionLightYellow = 249,
+            PotionTransparent = 250,
+            PotionBrown = 251,
+
+            BloodSplatter1 = 252,
+            BloodSplatter2 = 253,
+            BloodSplatter3 = 254,
+
+            HumanSkeleton = 255,
+            Hole = 256,
+
+            Explosion = 257,
+            SkullAndBones = 258,
+            MusicNoteSmall = 259,
+            MusicNoteBig = 260,
+            Miss = 261,
+            Attack = 262,
+            MapMarker = 263,
+            Backlight = 264,
+            Crosshair = 265,
+            Flame = 266,
+            Upgrade = 267,
+            WaterDrop = 268,
+            Star = 269,
+            Zzz = 270,
+            Heart = 271,
+            Hammer = 272,
+
+            Fog1 = 273,
+            Fog2 = 274,
+            Fog3 = 275,
+            Fog4 = 276,
+
+            BubbleExclamationRed = 277,
+            BubbleExclamationBlue = 278,
+            BubbleCraftGreen = 279,
+
+            SeaWave = 280,
+            WeatherFog1 = 281,
+            WeatherFog2 = 282,
+            WeatherFog3 = 283,
+            WeatherFog4 = 284,
+            WeatherFog5 = 285,
+            WeatherFog6 = 286,
+            WeatherFog7 = 287,
+            WeatherFog8 = 288,
+            WeatherFog9 = 289,
+
+            FertileGroundSmall = 290,
+            FertileGroundMedium = 291,
+            FertileGroundLarge = 292,
+            FenceHorizontalShort = 293,
+            FenceVerticalShort = 294,
+            FenceHorizontalLong = 295,
+            FenceVerticalLong = 296,
+
+            CaveEntrance = 297,
+            CaveExit = 298,
 
             // obsolete below (kept for compatibility with old saves)
         }
@@ -548,22 +539,6 @@ namespace SonOfRobin
                 AddRPGMakerPackageV2(packageName: PkgName.FoxChocolate, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
                 AddRPGMakerPackageV2(packageName: PkgName.FoxBrown, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
                 AddRPGMakerPackageV2(packageName: PkgName.FoxYellow, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
-            {
-                string atlasName = "characters/tiger";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
-
-                AddRPGMakerPackageV2(packageName: PkgName.TigerOrangeMedium, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerOrangeLight, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerGray, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerWhite, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerOrangeDark, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerBrown, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerYellow, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.TigerBlack, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
             }
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
