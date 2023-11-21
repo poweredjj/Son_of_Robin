@@ -210,6 +210,8 @@ namespace SonOfRobin
         {
             return new List<Craft.Recipe>
             {
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.HideCloth, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false ),
+
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsProtective, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Rope, 2 }, { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.IronPlate, 1 }}, fatigue: fatigueItemMedium, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.BootsMountain }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsMountain, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 4 }, { PieceTemplate.Name.Rope, 3 }, { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.BottleOfOil, 1 }, { PieceTemplate.Name.IronPlate, 1 }}, fatigue: fatigueItemBig, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.BootsAllTerrain }, isHidden: true),

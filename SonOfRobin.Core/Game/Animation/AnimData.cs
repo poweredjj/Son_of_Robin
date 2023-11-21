@@ -111,6 +111,7 @@ namespace SonOfRobin
 
             Nail = 71,
             Rope = 72,
+            HideCloth = 311,
             Crate = 73,
 
             WorkshopEssential = 74,
@@ -800,6 +801,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Candle, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.Dungarees, frameList: ConvertImageToFrameList(atlasName: "dungarees", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.Mushroom, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.HideCloth, frameList: ConvertImageToFrameList(atlasName: "hidecloth", layer: 0, scale: 0.1f));
         }
 
         public static void CreateAnimsMisc2()

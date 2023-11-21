@@ -936,6 +936,16 @@ namespace SonOfRobin
                         this.getsPushedByWaves = true;
                         break;
 
+                    case PieceTemplate.Name.HideCloth:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 100;
+                        this.fireAffinity = 0.8f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 4;
+                        this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
+                        break;
+
                     case PieceTemplate.Name.Burger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 560;

@@ -135,6 +135,7 @@ namespace SonOfRobin
             Granite = 93,
             Clay = 94,
             Rope = 95,
+            HideCloth = 233,
             Clam = 96,
 
             CoalDeposit = 97,
@@ -1252,7 +1253,7 @@ namespace SonOfRobin
 
                             { 2, new Dictionary<Name, int>{
                                 { Name.IronRod, 6 },
-                                { Name.Leather, 8 },
+                                { Name.HideCloth, 10 },
                                 { Name.Rope, 4 },
                             } },
 
@@ -1290,8 +1291,6 @@ namespace SonOfRobin
                             { 4, "final touches" },
                             { 5, "supplies" },
                         };
-
-                        // TODO add inventory open sound
 
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
@@ -1405,6 +1404,16 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.");
+
+                        return boardPiece;
+                    }
+
+                case Name.HideCloth:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
+
+                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HideCloth, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "hidecloth", description: "Crafting material.");
 
                         return boardPiece;
                     }
