@@ -196,7 +196,6 @@ namespace SonOfRobin
 
                     Vector2 pointWalkTargetCorrected = this.world.Player.pointWalkTarget;
 
-
                     if (!moveBackToPlayer)
                     {
                         Vector2 maxCorrectionSize = new Vector2(this.viewRect.Width * (Preferences.enableTouchJoysticks ? 0.25f : 0.35f), this.viewRect.Height * 0.35f);

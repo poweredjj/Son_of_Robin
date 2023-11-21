@@ -59,13 +59,16 @@ namespace SonOfRobin
         private readonly float lacunarity;
         private readonly float gain;
 
+        private readonly bool filledWithValue;
+        private readonly byte valueToFill;
+
         private double[] gradientLineX;
         private double[] gradientLineY;
 
         private byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false, List<RangeConversion> rangeConversions = null)
+        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool filledWithValue = false, byte valueToFill = 0, bool addBorder = false, List<RangeConversion> rangeConversions = null)
         {
             this.CreationInProgress = true;
 
@@ -80,6 +83,9 @@ namespace SonOfRobin
             this.persistence = persistence;
             this.lacunarity = lacunarity;
             this.gain = gain;
+
+            this.filledWithValue = filledWithValue;
+            this.valueToFill = valueToFill;
 
             this.addBorder = addBorder;
             this.rangeConversions = rangeConversions == null ? new RangeConversion[0] : rangeConversions.ToArray();
@@ -130,35 +136,50 @@ namespace SonOfRobin
         {
             if (!this.CreationInProgress) return;
 
-            this.noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-            this.noise.SetFractalOctaves(this.octaves);
-            this.noise.SetFractalLacunarity(this.lacunarity);
-            this.noise.SetFractalGain(this.gain);
-            this.noise.SetFrequency(this.frequency / 45000);
-            this.noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-            this.noise.SetFractalWeightedStrength(this.persistence);
-
-            int resDivider = this.Grid.resDivider;
-
-            Parallel.For(0, this.Grid.dividedHeight, SonOfRobinGame.defaultParallelOptions, y =>
+            if (this.filledWithValue)
             {
-                int realY = y * resDivider;
+                byte value = this.valueToFill;
 
-                for (int x = 0; x < this.Grid.dividedWidth; x++)
+                Parallel.For(0, this.Grid.dividedHeight, SonOfRobinGame.defaultParallelOptions, y =>
                 {
-                    int realX = x * resDivider;
-
-                    double rawNoiseValue = this.noise.GetNoise(realX, realY) + 1; // 0-2 range
-                    if (this.addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
-
-                    this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range;  can write to array using parallel, if every thread accesses its own indices
-
-                    foreach (RangeConversion rangeConversion in this.rangeConversions)
+                    for (int x = 0; x < this.Grid.dividedWidth; x++)
                     {
-                        this.mapData[x, y] = rangeConversion.ConvertRange(this.mapData[x, y]);
+                        this.mapData[x, y] = value;
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                this.noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+                this.noise.SetFractalOctaves(this.octaves);
+                this.noise.SetFractalLacunarity(this.lacunarity);
+                this.noise.SetFractalGain(this.gain);
+                this.noise.SetFrequency(this.frequency / 45000);
+                this.noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+                this.noise.SetFractalWeightedStrength(this.persistence);
+
+                int resDivider = this.Grid.resDivider;
+
+                Parallel.For(0, this.Grid.dividedHeight, SonOfRobinGame.defaultParallelOptions, y =>
+                {
+                    int realY = y * resDivider;
+
+                    for (int x = 0; x < this.Grid.dividedWidth; x++)
+                    {
+                        int realX = x * resDivider;
+
+                        double rawNoiseValue = this.noise.GetNoise(realX, realY) + 1; // 0-2 range
+                        if (this.addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
+
+                        this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range;  can write to array using parallel, if every thread accesses its own indices
+
+                        foreach (RangeConversion rangeConversion in this.rangeConversions)
+                        {
+                            this.mapData[x, y] = rangeConversion.ConvertRange(this.mapData[x, y]);
+                        }
+                    }
+                });
+            }
 
             this.UpdateMinMaxGridCell();
         }
@@ -196,7 +217,7 @@ namespace SonOfRobin
 
         public Byte GetMapDataRawNoBoundsCheck(int x, int y)
         {
-            // direct access, without taking resDivider into account         
+            // direct access, without taking resDivider into account
             return this.mapData[x, y];
         }
 

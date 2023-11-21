@@ -2797,7 +2797,7 @@ namespace SonOfRobin
                         });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 1, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 1, levelType: Level.LevelType.Cave, hasWater: false, activeState: BoardPiece.State.CaveEntranceDisappear);
 
                         return boardPiece;
                     }
@@ -2809,7 +2809,7 @@ namespace SonOfRobin
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 4, levelType: Level.LevelType.Cave, activeState: BoardPiece.State.CaveEntranceDisappear);
+                              maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 4, levelType: Level.LevelType.Cave, hasWater: false, activeState: BoardPiece.State.CaveEntranceDisappear);
 
                         return boardPiece;
                     }
@@ -2821,7 +2821,7 @@ namespace SonOfRobin
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave); // levelType is ignored here
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave, hasWater: false); // levelType and hasWater are ignored here
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
@@ -2838,7 +2838,7 @@ namespace SonOfRobin
                             });
 
                         BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
-                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave); // levelType is ignored here
+                              maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave, hasWater: false); // levelType and hasWater are ignored here
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);

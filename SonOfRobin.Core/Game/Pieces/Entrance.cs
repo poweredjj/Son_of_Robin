@@ -9,17 +9,19 @@ namespace SonOfRobin
     {
         private Level targetLevel;
         private bool isBlocked;
+        private readonly bool hasWater;
         private readonly bool goesDown;
         private readonly int maxDepth;
         private readonly Level.LevelType levelType;
 
-        public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, Level.LevelType levelType, int maxDepth,
+        public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, bool hasWater, Level.LevelType levelType, int maxDepth,
              byte animSize = 0, string animName = "default", int maxHitPoints = 1, bool rotatesWhenDropped = false, State activeState = State.Empty) :
 
              base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: activeState, rotatesWhenDropped: rotatesWhenDropped)
         {
             this.levelType = levelType;
             this.goesDown = goesDown;
+            this.hasWater = hasWater;
             this.isBlocked = false;
             this.maxDepth = maxDepth;
 
@@ -50,7 +52,7 @@ namespace SonOfRobin
                 }
 
                 int levelSize = 7000 + (1200 * (this.level.depth - 1));
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize, hasWater: this.hasWater);
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)

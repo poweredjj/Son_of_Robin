@@ -361,6 +361,19 @@ namespace SonOfRobin
 
                                 break;
 
+                            case Level.LevelType.OpenSea:
+
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: Terrain.waterLevelMax);
+
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: 0);
+
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: 0);
+
+                                break;
+
                             default:
                                 throw new ArgumentException($"Unsupported levelType - {levelType}.");
                         }
@@ -374,6 +387,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.TerrainGenerate:
+
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
                         // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
@@ -582,7 +596,12 @@ namespace SonOfRobin
 
         private void ExtCalculateOuterBeach()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.OuterBeach);
+                return;
+            }
 
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.Name.OuterBeach, value: true);
 

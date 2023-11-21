@@ -171,20 +171,30 @@ namespace SonOfRobin
             if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
             else
             {
-                foreach (PieceTemplate.Name pieceName in new List<PieceTemplate.Name> { PieceTemplate.Name.CaveExit, PieceTemplate.Name.CaveExitEmergency })
+                if (this.level.levelType == Level.LevelType.Cave)
                 {
-                    BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: pieceName, world: this.world);
+                    foreach (PieceTemplate.Name pieceName in new List<PieceTemplate.Name> { PieceTemplate.Name.CaveExit, PieceTemplate.Name.CaveExitEmergency })
+                    {
+                        BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: pieceName, world: this.world);
 
+                        for (int tryIndex = 0; tryIndex < 100000; tryIndex++)
+                        {
+                            if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
+                                this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
+                            {
+                                break;
+                            }
+                        }
+
+                        if (this.sprite.IsOnBoard) break;
+                    }
+                }
+                else if (this.level.levelType == Level.LevelType.OpenSea)
+                {
                     for (int tryIndex = 0; tryIndex < 100000; tryIndex++)
                     {
-                        if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
-                            this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
-                        {
-                            break;
-                        }
+                        if (this.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true)) break;
                     }
-
-                    if (this.sprite.IsOnBoard) break;
                 }
 
                 if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Level
     {
-        public enum LevelType : byte { Island, Cave }
+        public enum LevelType : byte { Island, Cave, OpenSea }
 
         public readonly Level parentLevel;
         public readonly int depth;
@@ -41,11 +41,12 @@ namespace SonOfRobin
 
         public bool creationInProgress;
 
-        public Level(LevelType type, World world, int seed, int width, int height, int cellWidthOverride = 0, int cellHeightOverride = 0, Dictionary<string, object> gridSerializedData = null)
+        public Level(LevelType type, World world, int seed, int width, int height, bool hasWater, int cellWidthOverride = 0, int cellHeightOverride = 0, Dictionary<string, object> gridSerializedData = null)
         {
             this.parentLevel = world.ActiveLevel;
             this.depth = this.parentLevel == null ? 0 : parentLevel.depth + 1;
             this.levelType = type;
+            this.hasWater = hasWater;
             this.world = world;
             this.seed = seed;
             this.random = new Random(seed);
@@ -90,7 +91,6 @@ namespace SonOfRobin
             };
             this.playerLastSteps = new List<Vector2>();
             this.playerReturnPos = Vector2.Zero;
-            this.hasWater = this.levelType == LevelType.Island;
 
             this.grid = gridSerializedData == null ?
             new Grid(level: this, resDivider: this.levelType == LevelType.Island ? this.world.resDivider : 14, cellWidth: cellWidthOverride, cellHeight: cellHeightOverride) :
@@ -102,7 +102,7 @@ namespace SonOfRobin
         // Level class should be treated as a data container. All processing should be done within World() class (if possible).
 
         ~Level()
-        {      
+        {
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} {this.levelType} level seed {this.seed} {this.width}x{this.height} no longer referenced.", textColor: new Color(120, 255, 174));
             this.Destroy(); // to dispose textures
         }
