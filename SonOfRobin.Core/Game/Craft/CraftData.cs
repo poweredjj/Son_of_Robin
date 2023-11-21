@@ -78,8 +78,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 3 }, { PieceTemplate.Name.IronPlate, 3 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BoatConstructionSite, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.ShovelStone, 3 },  { PieceTemplate.Name.WoodPlank, 12 } }, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true, checkIfIsUnlockable: false),
-
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BoatConstructionSite, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.ShovelStone, 3 },  { PieceTemplate.Name.WoodPlank, 12 } }, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true),
                 };
         }
 

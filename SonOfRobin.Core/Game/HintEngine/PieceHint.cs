@@ -103,7 +103,7 @@ namespace SonOfRobin
         private readonly HashSet<PieceTemplate.Name> fieldPiecesNearby;
         private readonly Tutorials.Type[] tutorialsToActivate;
         private readonly HintEngine.Type generalHintToActivate;
-        private readonly PieceTemplate.Name[] recipesToUnlock;
+        public readonly PieceTemplate.Name[] recipesToUnlock;
         private readonly HintEngine.Type[] shownGeneralHints;
         private readonly HashSet<Type> shownPieceHints;
         private readonly Tutorials.Type[] shownTutorials;
