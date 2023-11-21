@@ -342,8 +342,7 @@ namespace SonOfRobin
 
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
-                            SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
-                            this.world.solidColorManager.Add(whiteOverlay);
+                            this.world.solidColorManager.Add(new(color: Color.White, viewOpacity: 1f));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new MosaicInstance(textureSize: new Vector2(this.world.FinalRenderTarget.Width, this.world.FinalRenderTarget.Height), blurSize: new Vector2(18, 18), framesLeft: -1), storeForLaterUse: true));
 
@@ -500,12 +499,21 @@ namespace SonOfRobin
                         // no disable code needed
 
                         Player player = this.world.Player;
+                        player.sprite.orientation = Sprite.Orientation.right;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
 
+                        this.world.solidColorManager.Add(new(color: Color.Black, viewOpacity: 0.95f));
+
                         var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 15 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 1, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 1, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 4, 0), storeForLaterUse: true));
 
@@ -523,7 +531,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "I don't have much | food left.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried) }, boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "And I see storm on the horizon...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "And the weather is getting even worse...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(8), storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 1, executeHelper: false, storeForLaterUse: true)); // for testing
 

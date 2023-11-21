@@ -124,6 +124,9 @@ namespace SonOfRobin
             ChangeTouchLayout = 103,
             FinishConstructionAnimation = 104,
             EnterNewLevel = 105,
+            AddWeatherEvent = 107,
+            CreateVeryBadWeatherForDuration = 108,
+            ClearWeatherForDuration = 109,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2172,6 +2175,30 @@ namespace SonOfRobin
                         {
                             Level level = (Level)this.ExecuteHelper;
                             level.world.EnterNewLevel(level);
+
+                            return;
+                        }
+
+                    case TaskName.AddWeatherEvent:
+                        {
+                            WeatherEvent weatherEvent = (WeatherEvent)this.ExecuteHelper;
+                            World.GetTopWorld()?.weather.AddEvent(weatherEvent);
+
+                            return;
+                        }
+
+                    case TaskName.CreateVeryBadWeatherForDuration:
+                        {
+                            TimeSpan duration = (TimeSpan)this.ExecuteHelper;
+                            World.GetTopWorld()?.weather.CreateVeryBadWeatherForDuration(duration);
+
+                            return;
+                        }
+
+                    case TaskName.ClearWeatherForDuration:
+                        {
+                            TimeSpan duration = (TimeSpan)this.ExecuteHelper;
+                            World.GetTopWorld()?.weather.RemoveAllEventsForDuration(duration);
 
                             return;
                         }

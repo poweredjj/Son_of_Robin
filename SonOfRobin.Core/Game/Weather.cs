@@ -107,10 +107,7 @@ namespace SonOfRobin
         public float RainPercentage { get; private set; }
         public float LightningPercentage { get; private set; }
         public float HeatPercentage { get; private set; }
-
-        public bool IsRaining
-        { get { return this.RainPercentage > 0.2f; } }
-
+        public bool IsRaining { get { return this.RainPercentage > 0.2f; } }
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
@@ -201,7 +198,7 @@ namespace SonOfRobin
             }
 
             DateTime islandDateTime = this.islandClock.IslandDateTime;
-            weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
+            this.weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 
             this.UpdateCurrentIntensities();
 
@@ -242,7 +239,7 @@ namespace SonOfRobin
             this.ProcessRain();
             this.ProcessLightning();
 
-            if (this.world.ActiveLevel.plansWeather && this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+            if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
         }
 
         private void ProcessLightning()
@@ -569,6 +566,7 @@ namespace SonOfRobin
             }
 
             this.forecastEnd = forecastStartTime + maxForecastDuration;
+            if (!this.world.ActiveLevel.plansWeather) return;
 
             float minVal = 0.2f;
             float maxVal = 0.8f;

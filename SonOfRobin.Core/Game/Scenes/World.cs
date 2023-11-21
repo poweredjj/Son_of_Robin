@@ -1267,6 +1267,8 @@ namespace SonOfRobin
 
         public void FlashRedOverlay()
         {
+            this.FlashOverlay(color: Color.Red, duration: 10f / 60f);
+
             SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
 
@@ -1274,6 +1276,21 @@ namespace SonOfRobin
             this.globalEffect.intensityForTweener = 0f;
             this.tweenerForGlobalEffect
                 .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: 10f / 60f)
+                .AutoReverse()
+                .Easing(EasingFunctions.QuadraticIn);
+
+            this.solidColorManager.Add(redOverlay);
+        }
+
+        public void FlashOverlay(Color color, float duration)
+        {
+            SolidColor redOverlay = new(color: color, viewOpacity: 0.0f);
+            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+
+            this.globalEffect = new MosaicInstance(textureSize: new Vector2(this.cameraViewRenderTarget.Width, this.cameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
+            this.globalEffect.intensityForTweener = 0f;
+            this.tweenerForGlobalEffect
+                .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: duration)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticIn);
 
@@ -1585,7 +1602,7 @@ namespace SonOfRobin
 
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, this.ActiveLevel);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel);
             Rectangle cameraRect = this.camera.viewRect;
 
             // drawing ambient light
