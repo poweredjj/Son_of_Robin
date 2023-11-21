@@ -40,9 +40,10 @@ namespace SonOfRobin
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
+            public readonly bool checkIfIsUnlockable;
             public readonly int useOnlyIngredientsWithID; // for identifying correct seed when planting
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, int maxLevel = -1, int craftCountToLevelUp = -1, float fatigueMultiplier = 0.5f, float durationMultiplier = 0.5f, bool isTemporary = false, int useOnlyIngredientsWithID = -1)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, bool checkIfIsUnlockable = true, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, int maxLevel = -1, int craftCountToLevelUp = -1, float fatigueMultiplier = 0.5f, float durationMultiplier = 0.5f, bool isTemporary = false, int useOnlyIngredientsWithID = -1)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -70,6 +71,7 @@ namespace SonOfRobin
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
                 this.isReversible = isReversible;
+                this.checkIfIsUnlockable = checkIfIsUnlockable;
                 if (this.isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
                 this.useOnlyIngredientsWithID = useOnlyIngredientsWithID;
 
@@ -653,6 +655,8 @@ namespace SonOfRobin
 
             foreach (Recipe initialHiddenRecipe in HiddenRecipes)
             {
+                if (!initialHiddenRecipe.checkIfIsUnlockable) continue;
+
                 Recipe currentHiddenRecipe = initialHiddenRecipe;
 
                 bool nextLevelRecipeFound = false; // found next level in a "chain" of hidden recipes unlocking each other

@@ -85,9 +85,10 @@ namespace SonOfRobin
             CineLookForSurvivors1 = 66,
             CineLookForSurvivors2 = 67,
             CineLookForSurvivors3 = 68,
-            CineDay2 = 69,
-            CineDay3 = 70,
-            CineDay4 = 71,
+            CineLookForSurvivors4 = 77,
+            CineDay1 = 69,
+            CineDay2 = 70,
+            CineDay3 = 71,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -97,24 +98,25 @@ namespace SonOfRobin
         private static readonly List<BoardPiece> nearbyPieces = new();
 
         public readonly Type type;
-        private readonly List<Type> alsoDisables;
-        private readonly List<HintMessage> messageList;
+        private readonly Type[] alsoDisables;
+        private readonly HintMessage[] messageList;
         private readonly HashSet<PieceTemplate.Name> fieldPiecesNearby;
-        private readonly List<Tutorials.Type> tutorialsToActivate;
+        private readonly Tutorials.Type[] tutorialsToActivate;
         private readonly HintEngine.Type generalHintToActivate;
-        private readonly List<HintEngine.Type> shownGeneralHints;
+        private readonly PieceTemplate.Name[] recipesToUnlock;
+        private readonly HintEngine.Type[] shownGeneralHints;
         private readonly HashSet<Type> shownPieceHints;
-        private readonly List<Tutorials.Type> shownTutorials;
+        private readonly Tutorials.Type[] shownTutorials;
         private readonly float distanceWalkedKilometers;
         private readonly float mapDiscoveredPercentage; // 0 - 1
         private readonly int islandTimeElapsedHours;
         private readonly bool fieldPieceHasNotEmptyStorage; // can be used for checking for fruits, etc.
         private readonly HashSet<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
-        private readonly List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces;
-        private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
-        private readonly List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces;
+        private readonly PieceTemplate.Name[] playerEquipmentDoesNotContainThesePieces;
+        private readonly PieceTemplate.Name[] playerOwnsAllOfThesePieces;
+        private readonly PieceTemplate.Name[] playerDoesNotOwnAnyOfThesePieces;
         private readonly HashSet<IslandClock.PartOfDay> partsOfDay;
-        private readonly List<CountComparison> piecesCraftedCount;
+        private readonly CountComparison[] piecesCraftedCount;
         private readonly Dictionary<PieceTemplate.Name, int> usedIngredientsCount;
         private readonly Dictionary<PieceTemplate.Name, int> existingPiecesCount;
         private readonly bool fieldOnly;
@@ -122,10 +124,10 @@ namespace SonOfRobin
         private readonly bool ignoreHintSetting;
         private readonly bool showCineCurtains;
 
-        public PieceHint(Type type, HashSet<PieceTemplate.Name> fieldPiecesNearby = null, HashSet<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerEquipmentDoesNotContainThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, HashSet<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, HashSet<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false, bool showCineCurtains = false)
+        public PieceHint(Type type, HashSet<PieceTemplate.Name> fieldPiecesNearby = null, HashSet<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, PieceTemplate.Name[] playerEquipmentDoesNotContainThesePieces = null, PieceTemplate.Name[] playerDoesNotOwnAnyOfThesePieces = null, PieceTemplate.Name[] playerOwnsAllOfThesePieces = null, Type[] alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, HintMessage[] messageList = null, Tutorials.Type[] tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, PieceTemplate.Name[] recipesToUnlock = null, HashSet<IslandClock.PartOfDay> partsOfDay = null, CountComparison[] piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, HintEngine.Type[] shownGeneralHints = null, HashSet<Type> shownPieceHints = null, Tutorials.Type[] shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false, bool showCineCurtains = false)
         {
             this.type = type;
-            this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
+            this.alsoDisables = alsoDisables == null ? new Type[] { } : alsoDisables;
 
             this.fieldPiecesNearby = fieldPiecesNearby;
             this.fieldPieceHasNotEmptyStorage = fieldPieceHasNotEmptyStorage;
@@ -152,15 +154,16 @@ namespace SonOfRobin
             if (this.fieldOnly && this.menuOnly) throw new ArgumentException("fieldOnly and menuOnly cannot both be active.");
 
             this.messageList = messageList;
-            if (message != null) this.messageList = new List<HintMessage> { new HintMessage(text: message, imageList: imageList, blockInput: true) };
+            if (message != null) this.messageList = new HintMessage[] { new HintMessage(text: message, imageList: imageList, blockInput: true) };
             this.tutorialsToActivate = tutorialsToActivate;
             this.generalHintToActivate = generalHintToActivate;
+            this.recipesToUnlock = recipesToUnlock;
             this.showCineCurtains = showCineCurtains;
 
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
                 if (this.tutorialsToActivate != null) throw new ArgumentException("General hint and tutorial cannot both be active.");
-                if (this.messageList?.Count > 0) throw new ArgumentException("General hint and message list cannot both be active.");
+                if (this.messageList?.Length > 0) throw new ArgumentException("General hint and message list cannot both be active.");
             }
         }
 
@@ -213,6 +216,24 @@ namespace SonOfRobin
             }
 
             var messagesToDisplay = this.messageList.ToList();
+
+            if (this.recipesToUnlock != null)
+            {
+                string unlockedRecipesMessage = this.recipesToUnlock.Length == 1 ? "New recipe unlocked" : "New recipes unlocked:\n";
+                var imageList = new List<Texture2D>();
+
+                foreach (PieceTemplate.Name name in this.recipesToUnlock)
+                {
+                    if (!world.discoveredRecipesForPieces.Contains(name)) world.discoveredRecipesForPieces.Add(name);
+
+                    PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
+                    unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
+                    imageList.Add(unlockedPieceInfo.texture);
+                }
+
+                messagesToDisplay.AddRange(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, imageList: imageList, startingSound: SoundData.Name.Notification1) });
+            }
+
             messagesToDisplay.AddRange(this.GetTutorials(world.HintEngine.shownTutorials));
 
             if (this.fieldPiecesNearby != null)
