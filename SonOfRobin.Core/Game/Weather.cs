@@ -577,14 +577,14 @@ namespace SonOfRobin
 
             float minVal = 0.2f;
             float maxVal = 0.8f;
-            float addChanceFactor = 0.2f; // minimum value in 0 - 1 range, that will generate a single event
+            float addChanceFactor = 0.4f; // minimum value in 0 - 1 range, that will generate a single event
 
             if (this.world.random.Next(6) == 0)
             {
                 // bad weather happens from time to time
                 minVal += Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.0f, maxVal: 0.5f);
                 maxVal = 1.0f;
-                addChanceFactor = 0.0f;
+                addChanceFactor = 0.8f;
             }
 
             float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
@@ -594,6 +594,8 @@ namespace SonOfRobin
 
             // adding clouds
             this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity, addChanceFactor: addChanceFactor);
+
+            // adding wind
 
             this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(2), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(6), maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.2f, 1.0f));
 
@@ -608,7 +610,7 @@ namespace SonOfRobin
 
                     this.AddNewWeatherEvents(type: WeatherType.Rain, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: rainMaxIntensity, addChanceFactor: addChanceFactor);
 
-                    this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: windMaxIntensity, addChanceFactor: Math.Max(addChanceFactor - 0.1f, 0.0f));
+                    this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.1f, 1.0f));
                 }
             }
 
@@ -637,7 +639,7 @@ namespace SonOfRobin
             }
         }
 
-        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1, bool randomizeIntensity = true)
+        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1f, bool randomizeIntensity = true)
         {
             DateTime timeCursor = startTime;
 
@@ -664,7 +666,7 @@ namespace SonOfRobin
 
                 float intensity = randomizeIntensity ? Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity) : maxIntensity;
 
-                bool add = addChanceFactor == 0 || this.world.random.NextSingle() >= addChanceFactor;
+                bool add = addChanceFactor == 1f || this.world.random.NextSingle() < addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
                 timeCursor += duration;
@@ -711,7 +713,7 @@ namespace SonOfRobin
 
             this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 0.45f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
 
-            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromSeconds(20), maxGap: TimeSpan.FromMinutes(4), maxIntensity: 1f, addChanceFactor: 0.9f, randomizeIntensity: false);
+            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromSeconds(20), maxGap: TimeSpan.FromMinutes(8), maxIntensity: 1f, addChanceFactor: 0.5f, randomizeIntensity: false);
         }
 
         public Dictionary<string, Object> Serialize()
