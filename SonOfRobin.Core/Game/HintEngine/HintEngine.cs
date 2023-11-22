@@ -505,14 +505,14 @@ namespace SonOfRobin
                         // no disable code needed
 
                         Player player = this.world.Player;
-                        player.sprite.orientation = Sprite.Orientation.right;
+                        //player.sprite.orientation = Sprite.Orientation.right;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
                         this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no weather events are present
 
-                        this.world.solidColorManager.Add(new(color: Color.Black, viewOpacity: 0.95f));
+                        this.world.solidColorManager.Add(new(color: Color.Black, viewOpacity: 1f));
 
                         var taskChain = new List<Object>();
 
@@ -520,13 +520,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 15 } }, storeForLaterUse: true));
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(3)), storeForLaterUse: true)); // for testing
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(3)), storeForLaterUse: true)); // for testing
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 0.35f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(1)), storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 4, 0), storeForLaterUse: true));
 
@@ -540,15 +536,21 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "I've been drifting for many days now...", boxType: dialogue, delay: 60 * 5).ConvertToTask());
 
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
+
                         taskChain.Add(new HintMessage(text: "Since I left the island, the only thing I see is boundless sea.\nNo land or ship in sight.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I don't have much | food left.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried) }, boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(8), storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(24), storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "And the weather is getting even worse...", boxType: dialogue, delay: 60 * 2).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 1, executeHelper: false, storeForLaterUse: true)); // for testing
+                        taskChain.Add(new HintMessage(text: "Oh no, a storm!", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 2, executeHelper: false, storeForLaterUse: true)); // for testing
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
