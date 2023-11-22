@@ -127,6 +127,7 @@ namespace SonOfRobin
             AddWeatherEvent = 107,
             CreateVeryBadWeatherForDuration = 108,
             ClearWeatherForDuration = 109,
+            AddCameraShake = 110,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2199,6 +2200,21 @@ namespace SonOfRobin
                         {
                             TimeSpan duration = (TimeSpan)this.ExecuteHelper;
                             World.GetTopWorld()?.weather.RemoveAllEventsForDuration(duration);
+
+                            return;
+                        }
+
+                    case TaskName.AddCameraShake:
+                        {
+                            // example executeHelper for this task
+                            // var shakeData = new Dictionary<string, Object> { { "movement", new Vector2(10, 10) }, { "durationSecs", 3f } };
+
+                            var shakeData = (Dictionary<string, Object>)this.ExecuteHelper;
+
+                            Vector2 movement = (Vector2)shakeData["movement"];
+                            float durationSecs = (float)shakeData["durationSecs"];
+
+                            World.GetTopWorld()?.camera.AddShake(movement: movement, durationSecs: durationSecs);
 
                             return;
                         }

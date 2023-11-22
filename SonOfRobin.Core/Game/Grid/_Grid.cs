@@ -620,7 +620,15 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes)
+                {
+                    this.ExtBoardProps.FillWithTrue(name: name);
+                }
+                return;
+            }
 
             // setting up variables
 
