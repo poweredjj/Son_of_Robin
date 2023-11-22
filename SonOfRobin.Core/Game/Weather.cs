@@ -418,7 +418,7 @@ namespace SonOfRobin
             {
                 this.lastRainRect = cameraRect;
                 particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2.2f, height: cameraRect.Height / 2);
-                MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
+                // MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
             }
         }
 

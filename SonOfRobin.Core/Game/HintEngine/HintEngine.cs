@@ -471,21 +471,27 @@ namespace SonOfRobin
 
                         Vector2 startPlayerPos = new Vector2(player.sprite.position.X, player.sprite.position.Y);
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + ((player.sprite.position - boat.sprite.position) * 2) } }, storeForLaterUse: true));
+                        taskChain.Add(new HintMessage(text: "I cannot believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Finally, I'm leaving this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.2f } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + ((player.sprite.position - boat.sprite.position) * 2) } }, storeForLaterUse: true));
 
-                        //taskChain.Add(new HintMessage(text: "I cannot believe it. I've managed to build this boat with my own hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
-                        //taskChain.Add(new HintMessage(text: "Finally, I'm leaving this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
-                        //taskChain.Add(new HintMessage(text: "Will I miss this place? It was my home for so much time...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
-                        //taskChain.Add(new HintMessage(text: "Well... I cannot stay here forever even if I'm gonna miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, startPlayerPos } }, storeForLaterUse: true));
+                        taskChain.Add(new HintMessage(text: "Will I miss this place? It was my home for so much time...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Well... I cannot stay here forever,\neven if I'm gonna miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.6f } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.15f } }, storeForLaterUse: true));
 
-                        //taskChain.Add(new HintMessage(text: "I hope that this boat can take me home safely...", boxType: dialogue, delay: 0).ConvertToTask());
-                        //taskChain.Add(new HintMessage(text: "Alright! Let's go home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, startPlayerPos } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I hope that this boat can take me home safely...", boxType: dialogue, delay: 0).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, boat.sprite.position } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Alright! Let's go home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 0, executeHelper: openSeaLevel, storeForLaterUse: true));
 
@@ -504,17 +510,23 @@ namespace SonOfRobin
 
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
-                        this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no previous weather is present
+                        this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no weather events are present
 
                         this.world.solidColorManager.Add(new(color: Color.Black, viewOpacity: 0.95f));
 
                         var taskChain = new List<Object>();
 
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // needed for weather to update properly
+
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 15 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 1, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(3)), storeForLaterUse: true)); // for testing
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 1, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(3)), storeForLaterUse: true)); // for testing
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(60 * 24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 4, 0), storeForLaterUse: true));
 
