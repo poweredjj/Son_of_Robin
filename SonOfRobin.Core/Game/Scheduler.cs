@@ -128,6 +128,7 @@ namespace SonOfRobin
             CreateVeryBadWeatherForDuration = 108,
             ClearWeatherForDuration = 109,
             AddCameraShake = 110,
+            FlashOverlay = 111,
         }
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
@@ -2228,6 +2229,23 @@ namespace SonOfRobin
                             float durationSecs = (float)shakeData["durationSecs"];
 
                             world.camera.AddShake(movement: movement, durationSecs: durationSecs);
+
+                            return;
+                        }
+
+                    case TaskName.FlashOverlay:
+                        {
+                            // example executeHelper for this task
+                            // var flashData = new Dictionary<string, Object> { { "color", Color.Red }, { "duration", 10f / 60f } };
+
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            var flashData = (Dictionary<string, Object>)this.ExecuteHelper;
+                            Color color = (Color)flashData["color"];
+                            int duration = (int)flashData["duration"];
+
+                            world.FlashOverlay(color: color, duration: duration);
 
                             return;
                         }
