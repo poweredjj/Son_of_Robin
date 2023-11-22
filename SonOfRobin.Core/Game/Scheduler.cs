@@ -2182,8 +2182,19 @@ namespace SonOfRobin
 
                     case TaskName.AddWeatherEvent:
                         {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
                             WeatherEvent weatherEvent = (WeatherEvent)this.ExecuteHelper;
-                            World.GetTopWorld()?.weather.AddEvent(weatherEvent);
+
+                            DateTime islandDateTime = world.islandClock.IslandDateTime;
+
+                            if (weatherEvent.startTime < islandDateTime) // pushing forward event, to avoid starting "in the past"
+                            {
+                                weatherEvent = new WeatherEvent(type: weatherEvent.type, intensity: weatherEvent.intensity, startTime: islandDateTime, duration: weatherEvent.duration, transitionLength: weatherEvent.transitionLength);
+                            }
+
+                            world.weather.AddEvent(weatherEvent);
 
                             return;
                         }
