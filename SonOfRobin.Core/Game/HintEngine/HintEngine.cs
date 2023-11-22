@@ -478,32 +478,37 @@ namespace SonOfRobin
                         Vector2 walkPos3 = player.sprite.position + (walkDistanceUnit * 4) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
                         Vector2 walkPos4 = boat.sprite.position + ((walkPos3 - boat.sprite.position) / 3);
 
-                        taskChain.Add(new HintMessage(text: "I cannot believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
-                        taskChain.Add(new HintMessage(text: "Finally, I'll be leaving this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "I can't believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "The countless hours of work have finally paid off.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "At last, bidding farewell to this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos1 } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "A I gonna miss this place one day?", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Will I miss this place someday?", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "The memories here will always hold a special place in my heart...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos2 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "It was my home for so much time...", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "It was my home for such a long time...\nSurvival amidst loneliness and relentless challenges.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos3 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Well... I cannot stay here forever,\neven if I'm gonna miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Well... I can't stay here forever,\neven though I might miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.15f } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos4 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "I hope that my | boat can take me back home safely...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: dialogue, delay: 0).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "I hope that my | boat can take me back home safely...\nThe waves seem both menacing and inviting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: dialogue, delay: 0).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, boat.sprite.position } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Alright! Let's go home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Alright! It's time to head home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
