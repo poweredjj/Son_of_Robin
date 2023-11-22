@@ -1414,7 +1414,7 @@ namespace SonOfRobin
 
             if (this.weather.HeatPercentage > 0)
             {
-                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.4f, endSpriteBatch: false);
+                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.3f, endSpriteBatch: false);
                 SonOfRobinGame.SpriteBatch.End();
             }
 

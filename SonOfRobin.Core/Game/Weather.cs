@@ -76,7 +76,6 @@ namespace SonOfRobin
         }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
-        private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
         private static readonly TimeSpan heatTransitionDuration = TimeSpan.FromMinutes(25);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
@@ -125,7 +124,7 @@ namespace SonOfRobin
             this.rainGravityModifier = new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 0f };
             this.fogPieces = new List<BoardPiece>();
             this.weatherEvents = new List<WeatherEvent>();
-            this.forecastEnd = veryOldDate; // to ensure first update
+            this.forecastEnd = DateTime.MinValue; // to ensure first update
             this.firstForecastCreated = false;
 
             this.CloudsPercentage = 0f;
@@ -133,8 +132,8 @@ namespace SonOfRobin
             this.SunVisibility = 1f;
             this.WindOriginX = 0f;
             this.WindOriginY = 0f;
-            this.NextGlobalWindBlow = veryOldDate;
-            this.NextLocalizedWindBlow = veryOldDate;
+            this.NextGlobalWindBlow = DateTime.MinValue;
+            this.NextLocalizedWindBlow = DateTime.MinValue;
             this.WindPercentage = 0f;
             this.LightningPercentage = 0f;
             this.HeatPercentage = 0f;
@@ -437,7 +436,7 @@ namespace SonOfRobin
             {
                 this.WindOriginX = -1;
                 this.WindOriginY = -1;
-                this.NextGlobalWindBlow = veryOldDate;
+                this.NextGlobalWindBlow = DateTime.MinValue;
 
                 return;
             }

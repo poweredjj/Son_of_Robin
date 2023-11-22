@@ -546,17 +546,13 @@ namespace SonOfRobin
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
                         this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no weather events are present
 
-                        this.world.solidColorManager.Add(new(color: Color.Black, viewOpacity: 1f));
+                        this.world.solidColorManager.Add(new(color: Color.White, viewOpacity: 1f));
 
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // needed for weather to update properly
-
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 15 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 0.35f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(1)), storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: 0, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon)) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 4, 0), storeForLaterUse: true));
 
@@ -570,23 +566,33 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "I've been adrift for many days now.\nThe days start to blend together...", boxType: dialogue, delay: 60 * 5).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
+                        taskChain.Add(new HintMessage(text: "This heat is unbearable. I don't have any strength left to row...", boxType: dialogue, delay: 60 * 2).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "Since departing from the island,\nall I see is an endless sea.\nNo sight of land or ships.", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Since departing from the island, all I see is an endless sea.\nNo sight of land or ships.", boxType: dialogue, delay: 60 * 4).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // weather won't get updated without this
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I'm running out of | | food...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried), PieceInfo.GetTexture(PieceTemplate.Name.Apple) }, boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
+                        taskChain.Add(new HintMessage(text: "I'm starting to miss that island already...\nMaybe it wasn't such a good idea to leave.", boxType: dialogue, delay: 60 * 4).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(5)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(20)), storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Finally, rain!", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
+
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(24), storeForLaterUse: true));
-
-                        taskChain.Add(new HintMessage(text: "And the weather is getting even worse...", boxType: dialogue, delay: 60 * 2).ConvertToTask());
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: this.world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-80, 80) }, { "durationSecs", 1.0f } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-40, 40) }, { "durationSecs", 4.0f } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 2, executeHelper: false, storeForLaterUse: true)); // for testing
 
