@@ -470,12 +470,13 @@ namespace SonOfRobin
 
                         var taskChain = new List<Object>();
 
-                        Vector2 boatPos = boat.sprite.position;
+                        Vector2 walkDistanceUnit = Vector2.Clamp(value1: player.sprite.position - boat.sprite.position, min: new Vector2(-80), max: new Vector2(80));
+                        int rndDist = 100;
 
-                        Vector2 walkPos1 = player.sprite.position + ((player.sprite.position - boat.sprite.position) * 2);
-                        Vector2 walkPos2 = player.sprite.position + ((player.sprite.position - boat.sprite.position) * 3) + new Vector2(random.Next(-80, 80), random.Next(-80, 80));
-                        Vector2 walkPos3 = player.sprite.position + ((player.sprite.position - boat.sprite.position) * 4) + new Vector2(random.Next(-80, 80), random.Next(-80, 80));
-                        Vector2 walkPos4 = boatPos + ((walkPos3 - boatPos) / 2);
+                        Vector2 walkPos1 = player.sprite.position + (walkDistanceUnit * 2) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos2 = player.sprite.position + (walkDistanceUnit * 3) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos3 = player.sprite.position + (walkDistanceUnit * 4) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos4 = boat.sprite.position + ((walkPos3 - boat.sprite.position) / 3);
 
                         taskChain.Add(new HintMessage(text: "I cannot believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
                         taskChain.Add(new HintMessage(text: "Finally, I'll be leaving this island!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
@@ -498,7 +499,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos4 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "I hope that this boat can take me home safely...", boxType: dialogue, delay: 0).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "I hope that my | boat can take me back home safely...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: dialogue, delay: 0).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, boat.sprite.position } }, storeForLaterUse: true));
 
@@ -518,7 +519,8 @@ namespace SonOfRobin
                         // no disable code needed
 
                         Player player = this.world.Player;
-                        //player.sprite.orientation = Sprite.Orientation.right;
+                        player.sprite.orientation = Sprite.Orientation.right;
+                        player.sprite.CharacterStand();
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;

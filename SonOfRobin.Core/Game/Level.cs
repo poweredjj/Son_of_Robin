@@ -100,7 +100,7 @@ namespace SonOfRobin
             {
                 LevelType.Island => this.world.resDivider,
                 LevelType.Cave => 14,
-                LevelType.OpenSea => 60,
+                LevelType.OpenSea => 80,
                 _ => this.world.resDivider,
             };
 
