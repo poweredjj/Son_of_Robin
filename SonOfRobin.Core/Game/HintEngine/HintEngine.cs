@@ -466,6 +466,12 @@ namespace SonOfRobin
                         this.world.CineMode = true;
                         this.world.cineCurtains.Enabled = true;
 
+                        int fadeToWhiteDuration = 60 * 8;
+
+                        SolidColor colorOverlay = new(color: Color.White, viewOpacity: 0.0f);
+                        colorOverlay.transManager.AddTransition(new Transition(transManager: colorOverlay.transManager, outTrans: true, startDelay: 0, duration: fadeToWhiteDuration, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 1f, endRemoveScene: true));
+                        this.world.solidColorManager.Add(colorOverlay);
+
                         Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWeather: true, plansWeather: false, hasWater: true, world: this.world, width: 100000, height: 8000, seed: 0);
 
                         var taskChain = new List<Object>();
@@ -477,6 +483,12 @@ namespace SonOfRobin
                         Vector2 walkPos2 = player.sprite.position + (walkDistanceUnit * 3) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
                         Vector2 walkPos3 = player.sprite.position + (walkDistanceUnit * 4) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
                         Vector2 walkPos4 = boat.sprite.position + ((walkPos3 - boat.sprite.position) / 3);
+
+                        TimeSpan timeUntilDeparture = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2); // to depart at early morning
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: fadeToWhiteDuration / 4, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(timeUntilDeparture) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ClearWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(24), storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I can't believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
@@ -500,13 +512,15 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Well... I can't stay here forever,\neven though I might miss this place one day.", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.15f } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 0.8f }, { "zoomSpeedMultiplier", 0.15f } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos4 } }, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I hope that my | boat can take me back home safely...\nThe waves seem both menacing and inviting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: dialogue, delay: 0).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, boat.sprite.position } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.2f } }, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Alright! It's time to head home!", boxType: dialogue, delay: 60 * 1).ConvertToTask());
 
