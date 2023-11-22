@@ -435,7 +435,8 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.CreateVeryBadWeatherForDuration(TimeSpan.FromHours(24));
+                world.camera.AddShake(movement: new Vector2(-45, 45), durationSecs: 1.5f);
+                //world.camera.AddRandomShake();
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

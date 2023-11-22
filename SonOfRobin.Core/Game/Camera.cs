@@ -232,21 +232,30 @@ namespace SonOfRobin
 
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame && this.shakeVal == Vector2.Zero)
+            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
             {
-                float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
-                float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
+                if (this.shakeVal == Vector2.Zero)
+                {
+                    float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
+                    float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
 
-                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Width / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistX, clampToEdges: true);
-                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Height / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistY, clampToEdges: true);
+                    float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Width / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistX, clampToEdges: true);
+                    float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Height / 1.7, newMin: 0, newMax: defaultMovementSlowdown, oldVal: cameraDistY, clampToEdges: true);
 
-                movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
-                movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
+                    movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
+                    movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
 
-                // SonOfRobinGame.messageLog.AddMessage(text: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
+                    // SonOfRobinGame.messageLog.AddMessage(text: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
 
-                viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdownFactorX);
-                viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdownFactorY);
+                    viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdownFactorX);
+                    viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdownFactorY);
+                }
+                else
+                {
+                    // needed to smoothen the motion, when shakeVal is present
+                    viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / 2);
+                    viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / 2);
+                }
             }
             else
             {

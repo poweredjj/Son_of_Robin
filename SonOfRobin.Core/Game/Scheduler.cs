@@ -2220,12 +2220,14 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var shakeData = new Dictionary<string, Object> { { "movement", new Vector2(10, 10) }, { "durationSecs", 3f } };
 
-                            var shakeData = (Dictionary<string, Object>)this.ExecuteHelper;
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
 
+                            var shakeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Vector2 movement = (Vector2)shakeData["movement"];
                             float durationSecs = (float)shakeData["durationSecs"];
 
-                            World.GetTopWorld()?.camera.AddShake(movement: movement, durationSecs: durationSecs);
+                            world.camera.AddShake(movement: movement, durationSecs: durationSecs);
 
                             return;
                         }

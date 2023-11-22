@@ -590,9 +590,15 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(24), storeForLaterUse: true));
 
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(60, -40) }, { "durationSecs", 1.7f } }, storeForLaterUse: true));
+
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-40, 40) }, { "durationSecs", 4.0f } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-45, 45) }, { "durationSecs", 1.5f } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 2).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(20, 20) }, { "durationSecs", 2f } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 2, executeHelper: false, storeForLaterUse: true)); // for testing
 
