@@ -487,7 +487,7 @@ namespace SonOfRobin
             //{
             //    if (world == null) return;
 
-            //    new LevelEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
+            //    new LevelEvent(eventName: LevelEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

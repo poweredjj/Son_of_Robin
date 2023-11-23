@@ -461,7 +461,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    // showing on the field (WorldEvent works better for this case)
+                    // showing on the field (LevelEvent works better for this case)
                     new LevelEvent(eventName: LevelEvent.EventName.CheckForPieceHints, level: world.ActiveLevel, delay: 60 * 1, boardPiece: null, eventHelper: executeHelper);
                 }
 

@@ -750,8 +750,12 @@ namespace SonOfRobin
             Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 2f); };
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
-            var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", LevelEvent.EventName.Destruction } };
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate addLevelEventDlgt = () =>
+            {
+                if (world.HasBeenRemoved) return;
+                new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: world.ActiveLevel, delay: 60, boardPiece: crossHair);
+            };
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addLevelEventDlgt, storeForLaterUse: true));
 
             // task after the messages - added at the end, ordered normally
 

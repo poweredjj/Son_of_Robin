@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static SonOfRobin.Scheduler;
 
 namespace SonOfRobin
 {
@@ -52,12 +51,25 @@ namespace SonOfRobin
             ImportSave,
         }
 
-        public static Menu CreateConfirmationMenu(string question, Object confirmationData = null, bool blocksUpdatesBelow = false, object customOptions = null)
+        public static Menu CreateConfirmationMenu(string question, Object confirmationData = null, object customOptions = null, bool blocksUpdatesBelow = false)
         {
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
 
             if (confirmationData == null && customOptions == null) throw new ArgumentException("No options to display");
+
+            if (confirmationData != null)
+            {
+                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                Scheduler.ExecutionDelegate confirmationDlgt = () =>
+                {
+                    var confirmDict = (Dictionary<string, Object>)confirmationData;
+                    object taskHelper = confirmDict.ContainsKey("executeHelper") ? confirmDict["executeHelper"] : null;
+                    new Scheduler.Task(taskName: (Scheduler.TaskName)confirmDict["taskName"], executeHelper: taskHelper);
+                };
+                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: confirmationDlgt);
+            }
 
             if (customOptions != null)
             {
@@ -66,21 +78,8 @@ namespace SonOfRobin
                 foreach (var optionData in optionList)
                 {
                     var optionDict = (Dictionary<string, Object>)optionData;
-
-                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
+                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
                 }
-            }
-            else
-            {
-                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: TaskName.Empty);
-
-                ExecutionDelegate confirmationDlgt = () =>
-                {
-                    var confirmDict = (Dictionary<string, Object>)confirmationData;
-                    object taskHelper = confirmDict.ContainsKey("executeHelper") ? confirmDict["executeHelper"] : null;
-                    new Task(taskName: (TaskName)confirmDict["taskName"], executeHelper: taskHelper);
-                };
-                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: TaskName.ExecuteDelegate, executeHelper: confirmationDlgt);
             }
 
             return menu;
@@ -217,7 +216,9 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "plants / animals processing time", valueDict: new Dictionary<object, object> { { 0.2f, "20%" }, { 0.3f, "30%" }, { 0.4f, "40%" }, { 0.5f, "50%" }, { 0.6f, "60%" }, { 0.7f, "70%" }, { 0.8f, "80%" }, { 0.9f, "90%" }, { 0.95f, "95%" } }, targetObj: preferences, propertyName: "StateMachinesDurationFramePercent", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "max time used to process\nanimals and plants for each frame", color: Color.White, scale: 1f) });
 
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
-                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteIncompatibleSaves);
+
+                        Scheduler.ExecutionDelegate delIncompSavesDlgt = () => { SaveHeaderManager.DeleteIncompatibleSaves(); };
+                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: delIncompSavesDlgt);
 
                         foreach (Entry entry in menu.entryList)
                         {
@@ -404,7 +405,9 @@ namespace SonOfRobin
                         Menu menu = new(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, sound: SoundData.Name.NewGameStart);
-                        new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
+
+                        Scheduler.ExecutionDelegate resetSettingsDlgt = () => { Preferences.ResetNewWorldSettings(); };
+                        new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: resetSettingsDlgt, rebuildsMenu: true);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         CreateCharacterSelection(menu);

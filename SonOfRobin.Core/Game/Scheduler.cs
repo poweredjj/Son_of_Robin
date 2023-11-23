@@ -31,15 +31,11 @@ namespace SonOfRobin
             Craft = 14,
             Plant = 15,
             Hit = 16,
-            CreateNewPiece = 17,
             CreateDebugPieces = 18,
             OpenContainer = 19,
-            DeleteIncompatibleSaves = 20,
             DropFruit = 21,
             GetEaten = 22,
             GetDrinked = 23,
-            ExecuteTaskWithDelay = 24,
-            AddWorldEvent = 25,
             ShowTextWindow = 26,
             OpenShelterMenu = 27,
             OpenBoatMenu = 28,
@@ -71,7 +67,6 @@ namespace SonOfRobin
             CheckForNonSavedControls = 60,
             CheckForIncorrectPieces = 63,
             RestartIsland = 64,
-            ResetNewWorldSettings = 65,
             PlaySound = 66,
             PlaySoundByName = 67,
             AllowPiecesToBeHit = 68,
@@ -278,13 +273,13 @@ namespace SonOfRobin
 
                             workshop.TurnOn();
 
-                            var worldEventData = new Dictionary<string, object> {
-                                {"boardPiece", workshop },
-                                {"delay", 300 },
-                                {"eventName", LevelEvent.EventName.TurnOffWorkshop },
+                            ExecutionDelegate addLevelEventDlgt = () =>
+                            {
+                                if (workshop.world.HasBeenRemoved) return;
+                                new LevelEvent(eventName: LevelEvent.EventName.TurnOffWorkshop, level: workshop.level, delay: 60 * 5, boardPiece: workshop);
                             };
+                            menu.AddClosingTask(closingTask: TaskName.ExecuteDelegate, closingTaskHelper: addLevelEventDlgt);
 
-                            menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
                             return;
                         }
 
@@ -334,26 +329,6 @@ namespace SonOfRobin
                             new World(width: oldWorld.IslandLevel.width, height: oldWorld.IslandLevel.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
                             oldWorld.Remove();
 
-                            return;
-                        }
-
-                    case TaskName.ResetNewWorldSettings:
-                        {
-                            Preferences.ResetNewWorldSettings();
-                            return;
-                        }
-
-                    case TaskName.CreateNewPiece:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world != null)
-                            {
-                                var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
-                                Vector2 position = (Vector2)executeData["position"];
-                                PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-                                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName);
-                                if (piece.sprite.IsOnBoard) piece.sprite.MoveToClosestFreeSpot(position);
-                            }
                             return;
                         }
 
@@ -864,39 +839,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.DeleteIncompatibleSaves:
-                        {
-                            SaveHeaderManager.DeleteIncompatibleSaves();
-                            return;
-                        }
-
-                    case TaskName.ExecuteTaskWithDelay:
-                        {
-                            // example executeHelper for this task
-                            // var delayData = new Dictionary<string, Object> { { "taskName", TaskName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
-
-                            var delayData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            new Task(taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
-
-                            return;
-                        }
-
-                    case TaskName.AddWorldEvent:
-                        {
-                            World world = (World)Scene.GetTopSceneOfType(typeof(World));
-                            if (world == null) return;
-
-                            var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            LevelEvent.EventName eventName = (LevelEvent.EventName)worldEventData["eventName"];
-                            BoardPiece boardPiece = (BoardPiece)worldEventData["boardPiece"];
-                            int delay = (int)worldEventData["delay"];
-
-                            new LevelEvent(eventName: eventName, level: boardPiece.level, delay: delay, boardPiece: boardPiece);
-
-                            return;
-                        }
-
                     case TaskName.ShowTextWindow:
                         {
                             var textWindowData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -1165,7 +1107,7 @@ namespace SonOfRobin
 
                     case TaskName.ExecutePieceHintCheckNow:
                         {
-                            // used to deduplicate unboxing code in Scheduler and WorldEvent
+                            // used to deduplicate unboxing code in Scheduler and LevelEvent
 
                             // example executeHelper for this task
                             //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };

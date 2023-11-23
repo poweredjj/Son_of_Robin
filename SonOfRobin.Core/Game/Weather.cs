@@ -526,7 +526,7 @@ namespace SonOfRobin
             if (this.NextLocalizedWindBlow > islandDateTime) return;
 
             // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
-            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
+            // new LevelEvent(eventName: LevelEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
             // SonOfRobinGame.messageLog.AddMessage(text: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(1);
