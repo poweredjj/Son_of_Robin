@@ -168,6 +168,7 @@ namespace SonOfRobin
             Miss = 127,
             Zzz = 128,
             Heart = 129,
+            Orbiter = 233,
             MapMarker = 130,
             MusicNote = 131,
             Crosshair = 132,
@@ -816,6 +817,17 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain();
 
                         BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, allowedTerrain: allowedTerrain, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+
+                        return boardPiece;
+                    }
+
+                case Name.Orbiter:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, allowedTerrain: allowedTerrain, readableName: "orbiter", description: "Moves randomly around target.", activeState: BoardPiece.State.OscillateAroundTarget);
+
+                        // needs visualAid set to work correctly
 
                         return boardPiece;
                     }

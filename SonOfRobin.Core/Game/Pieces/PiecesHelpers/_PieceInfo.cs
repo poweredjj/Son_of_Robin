@@ -1997,6 +1997,14 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
+                    case PieceTemplate.Name.Orbiter:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
+                        break;
+
                     case PieceTemplate.Name.MapMarker:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;

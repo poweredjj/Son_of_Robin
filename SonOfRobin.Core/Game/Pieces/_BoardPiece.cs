@@ -49,6 +49,7 @@ namespace SonOfRobin
             HasteCloneFollowPlayer = 31,
             CaveEntranceDisappear = 32,
             MoveSlowlyToTheRight = 33,
+            OscillateAroundTarget = 34,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -767,6 +768,10 @@ namespace SonOfRobin
                     this.SM_MoveSlowlyToTheRight();
                     break;
 
+                case State.OscillateAroundTarget:
+                    this.SM_OscillateAroundTarget();
+                    break;
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     this.RemoveFromStateMachines();
                     break;
@@ -1133,6 +1138,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_MoveSlowlyToTheRight()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_OscillateAroundTarget()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()
