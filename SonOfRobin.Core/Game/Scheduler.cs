@@ -53,8 +53,6 @@ namespace SonOfRobin
             TempoStop = 33,
             TempoPlay = 34,
             CameraSetZoom = 37,
-            CameraSetMovementSpeed = 38,
-            CameraResetMovementSpeed = 39,
             ShowCookingProgress = 40,
             ShowBrewingProgress = 41,
             RestoreHints = 42,
@@ -111,7 +109,6 @@ namespace SonOfRobin
             ExecutePieceHintCheckNow = 93,
             TurnOnWindParticles = 94,
             DisposeSaveScreenshotsIfNoMenuPresent = 95,
-            SetGlobalWorldEffect = 96,
             SetGlobalWorldTweener = 97,
             UseEntrance = 98,
             UseBoat = 99,
@@ -1124,26 +1121,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.CameraSetMovementSpeed:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            float movementSpeed = (float)this.ExecuteHelper;
-
-                            world.camera.SetMovementSpeed(movementSpeed);
-                            return;
-                        }
-
-                    case TaskName.CameraResetMovementSpeed:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            world.camera.SetMovementSpeed(1f);
-                            return;
-                        }
-
                     case TaskName.ShowCookingProgress:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1991,14 +1968,6 @@ namespace SonOfRobin
                         {
                             if (Scene.GetTopSceneOfType(typeof(Menu)) != null) new Task(taskName: TaskName.DisposeSaveScreenshotsIfNoMenuPresent, delay: 60 * 3);
                             else SaveHeaderInfo.DisposeScreenshots();
-
-                            return;
-                        }
-
-                    case TaskName.SetGlobalWorldEffect:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world != null) world.globalEffect = (EffInstance)this.ExecuteHelper;
 
                             return;
                         }

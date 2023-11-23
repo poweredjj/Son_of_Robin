@@ -226,7 +226,7 @@ namespace SonOfRobin
 
             var taskChain = new List<Object>();
 
-            Scheduler.ExecutionDelegate enterLevelDelegate = () => { FinishConstructionAnimation(nextLevelPiece); };
+            Scheduler.ExecutionDelegate enterLevelDelegate = () => { if (!this.world.HasBeenRemoved) FinishConstructionAnimation(nextLevelPiece); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: buildDuration, executeHelper: enterLevelDelegate, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
