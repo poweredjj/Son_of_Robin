@@ -502,11 +502,14 @@ namespace SonOfRobin
                     if (piece.pieceInfo.canBePickedUp || pieceType == typeof(Animal) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
                     {
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
-
                         Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
 
-                        var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement", movement } };
-                        new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);
+                        Scheduler.ExecutionDelegate addPassiveMovementDlgt = () =>
+                        {
+                            if (!piece.world.HasBeenRemoved && piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
+                        };
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: (int)distance / 20, executeHelper: addPassiveMovementDlgt);
                     }
                 }
             }

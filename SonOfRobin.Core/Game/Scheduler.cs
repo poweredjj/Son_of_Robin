@@ -65,15 +65,9 @@ namespace SonOfRobin
             AllowPiecesToBeHit = 68,
             SetPlayerPointWalkTarget = 69,
             StopSound = 70,
-            RemoveAllScenesOfType = 71,
-            ActivateLightEngine = 73,
-            DeactivateLightEngine = 74,
-            AddPassiveMovement = 75,
-            AddFadeInAnim = 76,
             InteractWithCooker = 77,
             InteractWithLab = 78,
             InteractWithTotem = 79,
-            InventoryCombineItems = 80,
             InventoryReleaseHeldPieces = 81,
             RemoveBuffs = 82,
             ExportSave = 83,
@@ -1387,60 +1381,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.RemoveAllScenesOfType:
-                        {
-                            Type type = (Type)this.ExecuteHelper;
-                            Scene.RemoveAllScenesOfType(type);
-
-                            return;
-                        }
-
-                    case TaskName.ActivateLightEngine:
-                        {
-                            LightEngine lightEngine = (LightEngine)this.ExecuteHelper;
-                            lightEngine.Activate();
-
-                            return;
-                        }
-
-                    case TaskName.DeactivateLightEngine:
-                        {
-                            LightEngine lightEngine = (LightEngine)this.ExecuteHelper;
-                            lightEngine.Deactivate();
-
-                            return;
-                        }
-
-                    case TaskName.AddPassiveMovement:
-                        {
-                            // example executeHelper for this task
-                            // var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement",  movement }};
-
-                            var movementData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            BoardPiece piece = (BoardPiece)movementData["boardPiece"];
-                            Vector2 movement = (Vector2)movementData["movement"];
-
-                            if (piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
-
-                            return;
-                        }
-
-                    case TaskName.AddFadeInAnim: // not in use at the moment (replaced with PieceTemplate.CreateAndPlaceOnBoard() functionality)
-                        {
-                            Sprite sprite = (Sprite)this.ExecuteHelper;
-                            if (!sprite.IsOnBoard) return;
-
-                            if (sprite.IsInCameraRect)
-                            {
-                                sprite.opacity = 0f;
-                                new OpacityFade(sprite: sprite, destOpacity: 1f);
-                            }
-                            else sprite.opacity = 1f;
-
-                            return;
-                        }
-
                     case TaskName.InteractWithCooker:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1475,31 +1415,6 @@ namespace SonOfRobin
                                    blockInput: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
                                    });
                             }
-
-                            return;
-                        }
-
-                    case TaskName.InventoryCombineItems:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            StorageSlot activeSlot = inventory.ActiveSlot;
-
-                            BoardPiece piece1 = inventory.draggedPieces[0];
-                            inventory.draggedPieces.RemoveAt(0);
-                            BoardPiece piece2 = activeSlot.TopPiece;
-
-                            BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: piece1, piece2: piece2);
-                            if (combinedPiece == null) throw new ArgumentNullException($"Previously checked combination of {piece1.readableName} and {piece2.readableName} failed.");
-
-                            activeSlot.RemoveTopPiece();
-
-                            if (activeSlot.CanFitThisPiece(combinedPiece)) activeSlot.AddPiece(combinedPiece);
-                            else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
-
-                            Inventory.soundCombine.Play();
-                            new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
-
-                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
 
                             return;
                         }

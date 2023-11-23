@@ -1067,7 +1067,10 @@ namespace SonOfRobin
             if (combinedPiece != null)
             {
                 var optionList = new List<object>();
-                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryCombineItems }, { "executeHelper", this } });
+
+                Scheduler.ExecutionDelegate combineItemsDlgt = () => { if (!this.HasBeenRemoved) this.ProcessPieceCombine(); };
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", combineItemsDlgt } });
+
                 optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
                 Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
@@ -1080,6 +1083,28 @@ namespace SonOfRobin
             }
 
             return false;
+        }
+
+        private void ProcessPieceCombine()
+        {
+            StorageSlot activeSlot = this.ActiveSlot;
+
+            BoardPiece piece1 = this.draggedPieces[0];
+            this.draggedPieces.RemoveAt(0);
+            BoardPiece piece2 = activeSlot.TopPiece;
+
+            BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: piece1, piece2: piece2);
+            if (combinedPiece == null) throw new ArgumentNullException($"Previously checked combination of {piece1.readableName} and {piece2.readableName} failed.");
+
+            activeSlot.RemoveTopPiece();
+
+            if (activeSlot.CanFitThisPiece(combinedPiece)) activeSlot.AddPiece(combinedPiece);
+            else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
+
+            soundCombine.Play();
+            new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
+
+            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
         }
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)

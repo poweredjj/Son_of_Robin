@@ -321,7 +321,9 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.35f } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ActivateLightEngine, delay: 0, executeHelper: this.world.Player.sprite.lightEngine, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate activateLightEngineDlgt = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.Player.sprite.lightEngine.Activate(); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: activateLightEngineDlgt, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.FireBurst, storeForLaterUse: true));
 
