@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.Scheduler;
 
 namespace SonOfRobin
 {
@@ -1238,13 +1239,15 @@ namespace SonOfRobin
 
                     optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
 
-                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
+                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", TaskName.WaitUntilMorning }, { "executeHelper", this } });
 
                     optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
-                    var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
-
-                    new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    ExecutionDelegate showConfMenuDlgt = () =>
+                    {
+                        MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } });
+                    };
+                    new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                 }
                 else
                 {

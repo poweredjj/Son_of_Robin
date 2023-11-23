@@ -545,13 +545,19 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.RestartIsland } });
 
-                        var returnConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } };
-                        new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: returnConfirmationData);
+                        Scheduler.ExecutionDelegate showExitConfMenuDlgt = () =>
+                        {
+                            CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } });
+                        };
+                        new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showExitConfMenuDlgt);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            var quitConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
-                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: quitConfirmationData);
+                            Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
+                            {
+                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to quit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } });
+                            };
+                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -848,8 +854,11 @@ namespace SonOfRobin
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            var confirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit?" }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
-                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                            Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
+                            {
+                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to quit?" }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } });
+                            };
+                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -932,13 +941,16 @@ namespace SonOfRobin
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
                             saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
-                            var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+                            Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                            {
+                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
+                            };
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -1080,7 +1092,10 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "disable particles", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugDisableParticles");
                         new Selector(menu: menu, name: "show sounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowSounds");
                         new Selector(menu: menu, name: "show all tutorials in menu", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllTutorials");
-                        new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
+
+                        Scheduler.ExecutionDelegate restoreHintsDlgt = () => { if (!world.HasBeenRemoved) world.HintEngine.RestoreAllHints(); };
+                        new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: restoreHintsDlgt);
+
                         new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowFruitRects");
                         new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowRects");
                         new Selector(menu: menu, name: "show piece data", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPieceData");

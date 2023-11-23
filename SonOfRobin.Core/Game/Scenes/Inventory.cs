@@ -1070,8 +1070,11 @@ namespace SonOfRobin
                 optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryCombineItems }, { "executeHelper", this } });
                 optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "Combine items?" }, { "customOptionList", optionList } };
-                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
+                Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                {
+                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "Combine items?" }, { "customOptionList", optionList } });
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
 
                 return true;
             }
@@ -1121,8 +1124,11 @@ namespace SonOfRobin
                 optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryApplyPotion }, { "executeHelper", this } });
                 optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?" }, { "customOptionList", optionList } };
-                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
+                Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                {
+                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?" }, { "customOptionList", optionList } });
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
             }
             else // execute == true
             {

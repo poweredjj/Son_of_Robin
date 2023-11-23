@@ -174,8 +174,11 @@ namespace SonOfRobin
                 {
                     if (World.GetTopWorld()?.cineCurtains.showPercentage > 0)
                     {
-                        var confirmationData = new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } };
-                        new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                        Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                        {
+                            MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } });
+                        };
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                     }
                     else new Scheduler.Task(taskName: Scheduler.TaskName.SkipCinematics);
 

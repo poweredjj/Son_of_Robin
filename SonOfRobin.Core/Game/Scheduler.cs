@@ -22,7 +22,6 @@ namespace SonOfRobin
             QuitGame = 3,
             OpenMenuTemplate = 4,
             OpenMainMenu = 5,
-            OpenConfirmationMenu = 6,
             SaveGame = 7,
             LoadGame = 8,
             LoadGameNow = 9,
@@ -53,7 +52,6 @@ namespace SonOfRobin
             TempoPlay = 34,
             ShowCookingProgress = 40,
             ShowBrewingProgress = 41,
-            RestoreHints = 42,
             OpenMainMenuIfSpecialKeysArePressed = 43,
             ShowHint = 44,
             ExecuteTaskChain = 45,
@@ -72,8 +70,6 @@ namespace SonOfRobin
             ResetControls = 58,
             SaveControls = 59,
             CheckForNonSavedControls = 60,
-            RebuildMenu = 61,
-            RebuildAllMenus = 62,
             CheckForIncorrectPieces = 63,
             RestartIsland = 64,
             ResetNewWorldSettings = 65,
@@ -239,19 +235,6 @@ namespace SonOfRobin
                     case TaskName.Empty:
                         return;
 
-                    case TaskName.RebuildMenu:
-                        {
-                            Menu menu = (Menu)this.ExecuteHelper;
-                            menu.Rebuild(instantScroll: false);
-                            return;
-                        }
-
-                    case TaskName.RebuildAllMenus:
-                        {
-                            Menu.RebuildAllMenus();
-                            return;
-                        }
-
                     case TaskName.OpenMenuTemplate:
                         {
                             // example executeHelper for this task
@@ -303,12 +286,6 @@ namespace SonOfRobin
                             };
 
                             menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
-                            return;
-                        }
-
-                    case TaskName.OpenConfirmationMenu:
-                        {
-                            MenuTemplate.CreateConfirmationMenu(confirmationData: this.ExecuteHelper);
                             return;
                         }
 
@@ -860,9 +837,12 @@ namespace SonOfRobin
                                 var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", false }, { "showMessage", false } };
                                 optionList.Add(new Dictionary<string, object> { { "label", "undo changes" }, { "taskName", TaskName.ResetControls }, { "executeHelper", resetData } });
 
-                                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "There are unsaved changes." }, { "customOptionList", optionList } };
+                                ExecutionDelegate showConfMenuDlgt = () =>
+                                {
+                                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "There are unsaved changes." }, { "customOptionList", optionList } });
+                                };
 
-                                new Task(taskName: TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                             }
 
                             return;
@@ -1109,13 +1089,6 @@ namespace SonOfRobin
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
                             alchemyLab.ShowBrewingProgress();
-
-                            return;
-                        }
-
-                    case TaskName.RestoreHints:
-                        {
-                            World.GetTopWorld()?.HintEngine.RestoreAllHints();
 
                             return;
                         }
