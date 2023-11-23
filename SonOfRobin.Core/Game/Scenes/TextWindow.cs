@@ -176,7 +176,7 @@ namespace SonOfRobin
                     {
                         Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                         {
-                            MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } });
+                            MenuTemplate.CreateConfirmationMenu(question: "Do you want to skip?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } });
                         };
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                     }

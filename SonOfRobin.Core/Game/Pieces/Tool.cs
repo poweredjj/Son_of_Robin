@@ -83,8 +83,8 @@ namespace SonOfRobin
             {
                 string piecesText = targetsThatCannotBeHit.Count == 1 ? targetsThatCannotBeHit[0].readableName : $"these targets ({targetsThatCannotBeHit.Count})";
 
-                var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {piecesText}?" }, { "taskName", Scheduler.TaskName.AllowPiecesToBeHit }, { "executeHelper", targetsThatCannotBeHit }, { "blocksUpdatesBelow", true } };
-                MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+                var confirmationData = new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.AllowPiecesToBeHit }, { "executeHelper", targetsThatCannotBeHit } };
+                MenuTemplate.CreateConfirmationMenu(question: $"Do you really want to hit {piecesText}?", confirmationData: confirmationData, blocksUpdatesBelow: true);
 
                 return;
             }

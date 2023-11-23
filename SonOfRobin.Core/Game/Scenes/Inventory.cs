@@ -1072,7 +1072,7 @@ namespace SonOfRobin
 
                 Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                 {
-                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "Combine items?" }, { "customOptionList", optionList } });
+                    MenuTemplate.CreateConfirmationMenu(question: "Combine items?", customOptions: optionList, blocksUpdatesBelow: true);
                 };
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
 
@@ -1126,7 +1126,7 @@ namespace SonOfRobin
 
                 Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                 {
-                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?" }, { "customOptionList", optionList } });
+                    MenuTemplate.CreateConfirmationMenu(question: $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?", customOptions: optionList, blocksUpdatesBelow: true);
                 };
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
             }

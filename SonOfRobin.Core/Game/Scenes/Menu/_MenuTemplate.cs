@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static SonOfRobin.Scheduler;
 
 namespace SonOfRobin
 {
@@ -51,31 +52,35 @@ namespace SonOfRobin
             ImportSave,
         }
 
-        public static Menu CreateConfirmationMenu(Object confirmationData)
+        public static Menu CreateConfirmationMenu(string question, Object confirmationData = null, bool blocksUpdatesBelow = false, object customOptions = null)
         {
-            var confirmationDict = (Dictionary<string, Object>)confirmationData;
-
-            string question = (string)confirmationDict["question"];
-            bool blocksUpdatesBelow = confirmationDict.ContainsKey("blocksUpdatesBelow") && (bool)confirmationDict["blocksUpdatesBelow"];
-
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
 
-            if (confirmationDict.ContainsKey("customOptionList"))
+            if (confirmationData == null && customOptions == null) throw new ArgumentException("No options to display");
+
+            if (customOptions != null)
             {
-                var optionList = (List<object>)confirmationDict["customOptionList"];
+                var optionList = (List<object>)customOptions;
 
                 foreach (var optionData in optionList)
                 {
                     var optionDict = (Dictionary<string, Object>)optionData;
 
-                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
+                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
                 }
             }
             else
             {
-                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
-                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ProcessConfirmation, executeHelper: confirmationData);
+                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: TaskName.Empty);
+
+                ExecutionDelegate confirmationDlgt = () =>
+                {
+                    var confirmDict = (Dictionary<string, Object>)confirmationData;
+                    object taskHelper = confirmDict.ContainsKey("executeHelper") ? confirmDict["executeHelper"] : null;
+                    new Task(taskName: (TaskName)confirmDict["taskName"], executeHelper: taskHelper);
+                };
+                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: TaskName.ExecuteDelegate, executeHelper: confirmationDlgt);
             }
 
             return menu;
@@ -547,7 +552,7 @@ namespace SonOfRobin
 
                         Scheduler.ExecutionDelegate showExitConfMenuDlgt = () =>
                         {
-                            CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } });
+                            CreateConfirmationMenu(question: "Do you really want to exit? You will lose unsaved progress.", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ReturnToMainMenu } });
                         };
                         new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showExitConfMenuDlgt);
 
@@ -555,7 +560,7 @@ namespace SonOfRobin
                         {
                             Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
                             {
-                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to quit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } });
+                                CreateConfirmationMenu(question: "Do you really want to quit? You will lose unsaved progress.", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.QuitGame } });
                             };
                             new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
@@ -856,7 +861,7 @@ namespace SonOfRobin
                         {
                             Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
                             {
-                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "Do you really want to quit?" }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } });
+                                CreateConfirmationMenu(question: "Do you really want to quit?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.QuitGame } });
                             };
                             new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
@@ -948,7 +953,7 @@ namespace SonOfRobin
 
                             Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                             {
-                                CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
+                                CreateConfirmationMenu(question: "The save will be overwritten. Continue?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
                             };
                             new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }

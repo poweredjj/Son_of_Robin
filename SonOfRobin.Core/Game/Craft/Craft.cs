@@ -192,12 +192,11 @@ namespace SonOfRobin
                         var craftParams = new Dictionary<string, object> { { "recipe", this }, { "craftOnTheGround", true } };
 
                         var confirmationData = new Dictionary<string, Object> {
-                            { "question", "Not enough inventory space to craft. Craft on the ground?" },
                             { "taskName", Scheduler.TaskName.Craft },
-                            { "executeHelper", craftParams }, { "blocksUpdatesBelow", true } };
+                            { "executeHelper", craftParams } };
 
                         Sound.QuickPlay(SoundData.Name.Notification4);
-                        MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+                        MenuTemplate.CreateConfirmationMenu(question: "Not enough inventory space to craft. Craft on the ground?", confirmationData: confirmationData, blocksUpdatesBelow: true);
                         return craftedPieces;
                     }
                 }

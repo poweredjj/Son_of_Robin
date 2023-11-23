@@ -27,7 +27,6 @@ namespace SonOfRobin
             LoadGameNow = 9,
             ReturnToMainMenu = 10,
             SavePrefs = 11,
-            ProcessConfirmation = 12,
             OpenCraftMenu = 13,
             Craft = 14,
             Plant = 15,
@@ -286,14 +285,6 @@ namespace SonOfRobin
                             };
 
                             menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
-                            return;
-                        }
-
-                    case TaskName.ProcessConfirmation:
-                        {
-                            var confirmationData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
-
                             return;
                         }
 
@@ -839,7 +830,7 @@ namespace SonOfRobin
 
                                 ExecutionDelegate showConfMenuDlgt = () =>
                                 {
-                                    MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "There are unsaved changes." }, { "customOptionList", optionList } });
+                                    MenuTemplate.CreateConfirmationMenu(question: "There are unsaved changes.", customOptions: optionList, blocksUpdatesBelow: true);
                                 };
 
                                 new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);

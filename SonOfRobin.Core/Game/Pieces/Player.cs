@@ -1245,7 +1245,7 @@ namespace SonOfRobin
 
                     ExecutionDelegate showConfMenuDlgt = () =>
                     {
-                        MenuTemplate.CreateConfirmationMenu(confirmationData: new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } });
+                        MenuTemplate.CreateConfirmationMenu(question: "You are fully rested.", customOptions: optionList, blocksUpdatesBelow: true);
                     };
                     new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                 }
