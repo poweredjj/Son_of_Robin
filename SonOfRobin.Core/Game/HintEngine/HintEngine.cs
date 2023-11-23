@@ -661,7 +661,7 @@ namespace SonOfRobin
                             if (this.world.HasBeenRemoved) return;
 
                             orbiter.PlaceOnBoard(randomPlacement: false, position: player.sprite.position);
-                            orbiter.universalFloat = 4f;
+                            orbiter.universalFloat = 2f;
                             orbiter.visualAid = player;
                             this.world.camera.TrackPiece(orbiter);
                             this.world.camera.SetMovementSpeed(1f);
@@ -669,7 +669,6 @@ namespace SonOfRobin
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
-
 
                         Scheduler.ExecutionDelegate updateOrbiterDlgt1 = () =>
                         {
@@ -680,7 +679,6 @@ namespace SonOfRobin
                             this.world.camera.SetMovementSpeed(2f);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt1, storeForLaterUse: true));
-
 
                         taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 3).ConvertToTask());
 

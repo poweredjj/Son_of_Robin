@@ -848,8 +848,8 @@ namespace SonOfRobin
         {
             if (createdDecorationsCount > 0)
             {
-                TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.ActiveLevel.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
+                // TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
+                // MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.ActiveLevel.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -878,8 +878,8 @@ namespace SonOfRobin
 
             if (destroyedDecorationsCount > 0)
             {
-                TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
-                MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
+                // TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
+                // MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
             }
             return;
         }
