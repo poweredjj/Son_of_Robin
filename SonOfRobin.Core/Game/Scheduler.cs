@@ -118,13 +118,7 @@ namespace SonOfRobin
             SetGlobalWorldTweener = 97,
             UseEntrance = 98,
             UseBoat = 99,
-            IslandClockAdvance = 100,
-            ChangeActiveState = 101,
-            ChangeTipsLayout = 102,
-            ChangeTouchLayout = 103,
             AddWeatherEvent = 107,
-            AddCameraShake = 110,
-            FlashOverlay = 111,
             ExecuteDelegate = 112,
         }
 
@@ -2100,69 +2094,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.IslandClockAdvance:
-                        {
-                            // example executeHelper for this task
-                            // var clockAdvanceData = new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", 60 * 60 * 4 }, { "ignorePause", true }, { "ignoreMultiplier", false } };
-
-                            var clockAdvanceData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            IslandClock islandClock = (IslandClock)clockAdvanceData["islandClock"];
-                            int amount = (int)clockAdvanceData["amount"];
-                            bool ignorePause = clockAdvanceData.ContainsKey("ignorePause") ? (bool)clockAdvanceData["ignorePause"] : false;
-                            bool ignoreMultiplier = clockAdvanceData.ContainsKey("ignoreMultiplier") ? (bool)clockAdvanceData["ignoreMultiplier"] : false;
-
-                            islandClock.Advance(amount: amount, ignorePause: ignorePause, ignoreMultiplier: ignoreMultiplier);
-
-                            return;
-                        }
-
-                    case TaskName.ChangeActiveState:
-                        {
-                            // example executeHelper for this task
-                            // var stateData = new Dictionary<string, Object> { { "boardPiece", player }, { "state", State.PlayerControlledWalking } };
-
-                            var stateData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            BoardPiece boardPiece = (BoardPiece)stateData["boardPiece"];
-                            BoardPiece.State state = (BoardPiece.State)stateData["state"];
-
-                            boardPiece.activeState = state;
-                            boardPiece.AddToStateMachines();
-
-                            return;
-                        }
-
-                    case TaskName.ChangeTipsLayout:
-                        {
-                            // example executeHelper for this task
-                            // var tipsData = new Dictionary<string, Object> { { "scene", world }, { "layout", ControlTips.TipsLayout.Empty } };
-
-                            var tipsData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            Scene scene = (Scene)tipsData["scene"];
-                            ControlTips.TipsLayout layout = (ControlTips.TipsLayout)tipsData["layout"];
-
-                            scene.tipsLayout = layout;
-
-                            return;
-                        }
-
-                    case TaskName.ChangeTouchLayout:
-                        {
-                            // example executeHelper for this task
-                            // var touchData = new Dictionary<string, Object> { { "scene", world }, { "layout", TouchLayout.Empty } };
-
-                            var touchData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            Scene scene = (Scene)touchData["scene"];
-                            TouchLayout layout = (TouchLayout)touchData["layout"];
-
-                            scene.touchLayout = layout;
-
-                            return;
-                        }
-
                     case TaskName.OpenBoatMenu:
                         {
                             BoardPiece boatPiece = (BoardPiece)this.ExecuteHelper;
@@ -2186,40 +2117,6 @@ namespace SonOfRobin
                             }
 
                             world.weather.AddEvent(weatherEvent);
-
-                            return;
-                        }
-
-                    case TaskName.AddCameraShake:
-                        {
-                            // example executeHelper for this task
-                            // var shakeData = new Dictionary<string, Object> { { "movement", new Vector2(10, 10) }, { "durationSecs", 3f } };
-
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var shakeData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            Vector2 movement = (Vector2)shakeData["movement"];
-                            float durationSecs = (float)shakeData["durationSecs"];
-
-                            world.camera.AddShake(movement: movement, durationSecs: durationSecs);
-
-                            return;
-                        }
-
-                    case TaskName.FlashOverlay:
-                        {
-                            // example executeHelper for this task
-                            // var flashData = new Dictionary<string, Object> { { "color", Color.Red }, { "duration", 10f / 60f } };
-
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var flashData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            Color color = (Color)flashData["color"];
-                            int duration = (int)flashData["duration"];
-
-                            world.FlashOverlay(color: color, duration: duration);
 
                             return;
                         }

@@ -381,7 +381,8 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 0.15f, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsSmoothly, delay: 0, executeHelper: seaPos, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate trackCoordsDlgt = () => { this.world.camera.TrackCoords(position: seaPos, moveInstantly: false); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
@@ -555,9 +556,14 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: 0, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon)) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate clockAdvanceDlgt1 = () =>
+                        {
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon)), ignorePause: true, ignoreMultiplier: true);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clockAdvanceDlgt1, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoordsInstantly, delay: 1, executeHelper: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 15, 0), storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate trackCoordsDlgt = () => { this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 15, 0), moveInstantly: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.15f }, { "setInstantly", true } }, storeForLaterUse: true));
 
@@ -597,17 +603,25 @@ namespace SonOfRobin
                         int cameraWidth = this.world.camera.viewRect.Width;
                         int cameraHeight = this.world.camera.viewRect.Width;
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-cameraWidth / 150, -cameraHeight / 150) }, { "durationSecs", 1.7f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate addShakeDlgt1 = () =>
+                        { this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 150, -cameraHeight / 150), durationSecs: 1.7f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt1, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 60 * 2, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(cameraWidth / 40, -cameraHeight / 40) }, { "durationSecs", 2.0f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate addShakeDlgt2 = () =>
+                        { this.world.camera.AddShake(movement: new Vector2(cameraWidth / 40, -cameraHeight / 40), durationSecs: 2.0f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt2, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 3).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 0, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(cameraWidth / 30, cameraHeight / 30) }, { "durationSecs", 1.6f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate addShakeDlgt3 = () =>
+                        { this.world.camera.AddShake(movement: new Vector2(cameraWidth / 30, cameraHeight / 30), durationSecs: 1.6f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt3, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddCameraShake, delay: 60 * 2, executeHelper: new Dictionary<string, Object> { { "movement", new Vector2(-cameraWidth / 10, cameraHeight / 12) }, { "durationSecs", 1.6f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate addShakeDlgt4 = () =>
+                        { this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 10, cameraHeight / 12), durationSecs: 1.6f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt4, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Aaaaaaah!", boxType: dialogue, delay: 0).ConvertToTask());
 
@@ -615,9 +629,12 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", fadeInDuration } }, storeForLaterUse: true));
 
-                        TimeSpan timeUntilMorning = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2);
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: fadeInDuration, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate clockAdvanceDlgt2 = () =>
+                        {
+                            TimeSpan timeUntilMorning = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2);
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeInDuration, executeHelper: clockAdvanceDlgt2, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate clearWeatherDelegate = () => { this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
