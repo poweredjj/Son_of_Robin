@@ -625,7 +625,30 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.SmallProgressBar.TurnOff();
 
-            if (Keyboard.HasBeenPressed(Keys.F12)) RemoveTopScene();
+            if (Keyboard.HasBeenPressed(Keys.F12))
+            {
+                string delegateVariable = "sample variable text";
+
+                Scheduler.ExecutionDelegate delegateTest1 = () =>
+                {
+                    MessageLog.Add(text: "Hello (delegate) world!", textColor: Color.Orange);
+                    MessageLog.Add(text: "Method 1 line 2", textColor: Color.Yellow);
+                    MessageLog.Add(text: $"Method 1 line 3 - {delegateVariable}", textColor: Color.Yellow);
+
+                    delegateVariable = "changed variable text";
+                };
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: delegateTest1);
+
+                Scheduler.ExecutionDelegate delegateTest2 = () =>
+                {
+                    MessageLog.Add(text: "Method 2 line 1", textColor: Color.LimeGreen);
+                    MessageLog.Add(text: "Method 2 line 2", textColor: Color.BlueViolet);
+                    MessageLog.Add(text: $"Method 2 line 3 - {delegateVariable}", textColor: Color.BlueViolet);
+                };
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: delegateTest2);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.LeftAlt) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
             {

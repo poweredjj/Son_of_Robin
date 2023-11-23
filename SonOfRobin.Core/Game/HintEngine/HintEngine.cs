@@ -526,7 +526,8 @@ namespace SonOfRobin
 
                         //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.EnterNewLevel, delay: 0, executeHelper: openSeaLevel, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate enterLevelDelegate = () => { this.world.EnterNewLevel(openSeaLevel); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: enterLevelDelegate, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
@@ -552,13 +553,7 @@ namespace SonOfRobin
 
                         var taskChain = new List<Object>();
 
-                        //Scheduler.ExecutionDelegate delegateTest1 = () =>
-                        //{
-                        //    MessageLog.Add(text: "Hello (delegate) world!", textColor: Color.Orange);
-                        //};
-                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: delegateTest1, storeForLaterUse: true));
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 15 } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: 0, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon)) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
 
@@ -596,7 +591,8 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CreateVeryBadWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(24), storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate createBadWeatherDelegate = () => { this.world.weather.CreateVeryBadWeatherForDuration(TimeSpan.FromHours(24)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: createBadWeatherDelegate, storeForLaterUse: true));
 
                         int cameraWidth = this.world.camera.viewRect.Width;
                         int cameraHeight = this.world.camera.viewRect.Width;
@@ -623,7 +619,8 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.IslandClockAdvance, delay: fadeInDuration, executeHelper: new Dictionary<string, Object> { { "islandClock", this.world.islandClock }, { "amount", IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning) }, { "ignorePause", true }, { "ignoreMultiplier", false } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ClearWeatherForDuration, delay: 0, executeHelper: TimeSpan.FromHours(48), storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate clearWeatherDelegate = () => { this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 60 * 4, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 5 } }, storeForLaterUse: true));
 

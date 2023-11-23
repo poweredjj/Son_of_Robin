@@ -226,7 +226,8 @@ namespace SonOfRobin
 
             var taskChain = new List<Object>();
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.FinishConstructionAnimation, delay: buildDuration, executeHelper: nextLevelPiece, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate enterLevelDelegate = () => { FinishConstructionAnimation(nextLevelPiece); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: buildDuration, executeHelper: enterLevelDelegate, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
@@ -295,7 +296,7 @@ namespace SonOfRobin
                 constructionMessage = $"{Helpers.FirstCharToUpperCase(constrLevelName)} complete!\n{Helpers.FirstCharToUpperCase(constructionSite.readableName)} level up {constructionSite.constrLevel - 1} -> {constructionSite.constrLevel}.";
             }
 
-            new TextWindow(text: constructionMessage, imageList: imageList, textColor: buildingFinished ? Color.PaleGoldenrod : Color.White, bgColor: buildingFinished ? Color.DarkGoldenrod : Color.Green, useTransition: true, animate: true);
+            new TextWindow(text: constructionMessage, imageList: imageList, textColor: buildingFinished ? Color.PaleGoldenrod : Color.White, bgColor: buildingFinished ? Color.DarkGoldenrod : Color.Green, useTransition: true, animate: true, blockInputDuration: 60 * 2); // blockInputDuration is necessary, to prevent from accessing "old" construction site
         }
 
         public override Dictionary<string, Object> Serialize()

@@ -122,17 +122,14 @@ namespace SonOfRobin
             ChangeActiveState = 101,
             ChangeTipsLayout = 102,
             ChangeTouchLayout = 103,
-            FinishConstructionAnimation = 104,
-            EnterNewLevel = 105,
             AddWeatherEvent = 107,
-            CreateVeryBadWeatherForDuration = 108,
-            ClearWeatherForDuration = 109,
             AddCameraShake = 110,
             FlashOverlay = 111,
             ExecuteDelegate = 112,
         }
 
         public delegate void ExecutionDelegate();
+
         private static readonly Dictionary<int, Queue<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
 
@@ -2166,25 +2163,10 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.FinishConstructionAnimation:
-                        {
-                            BoardPiece constructionSite = (BoardPiece)this.ExecuteHelper;
-                            ConstructionSite.FinishConstructionAnimation(constructionSite);
-                            return;
-                        }
-
                     case TaskName.OpenBoatMenu:
                         {
                             BoardPiece boatPiece = (BoardPiece)this.ExecuteHelper;
                             boatPiece.world.OpenMenu(templateName: MenuTemplate.Name.Boat, executeHelper: this.ExecuteHelper);
-
-                            return;
-                        }
-
-                    case TaskName.EnterNewLevel:
-                        {
-                            Level level = (Level)this.ExecuteHelper;
-                            level.world.EnterNewLevel(level);
 
                             return;
                         }
@@ -2204,22 +2186,6 @@ namespace SonOfRobin
                             }
 
                             world.weather.AddEvent(weatherEvent);
-
-                            return;
-                        }
-
-                    case TaskName.CreateVeryBadWeatherForDuration:
-                        {
-                            TimeSpan duration = (TimeSpan)this.ExecuteHelper;
-                            World.GetTopWorld()?.weather.CreateVeryBadWeatherForDuration(duration);
-
-                            return;
-                        }
-
-                    case TaskName.ClearWeatherForDuration:
-                        {
-                            TimeSpan duration = (TimeSpan)this.ExecuteHelper;
-                            World.GetTopWorld()?.weather.RemoveAllEventsForDuration(duration);
 
                             return;
                         }
