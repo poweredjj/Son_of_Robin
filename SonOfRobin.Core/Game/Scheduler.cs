@@ -71,7 +71,6 @@ namespace SonOfRobin
             SetPlayerPointWalkTarget = 69,
             StopSound = 70,
             RemoveAllScenesOfType = 71,
-            WaitUntilMorning = 72,
             ActivateLightEngine = 73,
             DeactivateLightEngine = 74,
             AddPassiveMovement = 75,
@@ -935,13 +934,6 @@ namespace SonOfRobin
                             BoardPiece shelterPiece = (BoardPiece)this.ExecuteHelper;
                             shelterPiece.world.OpenMenu(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
 
-                            return;
-                        }
-
-                    case TaskName.WaitUntilMorning:
-                        {
-                            Player player = (Player)this.ExecuteHelper;
-                            player.sleepMode = Player.SleepMode.WaitMorning;
                             return;
                         }
 

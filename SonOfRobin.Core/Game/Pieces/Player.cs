@@ -1239,7 +1239,12 @@ namespace SonOfRobin
                     Scheduler.ExecutionDelegate wakeUpDlgt = () => { if (!this.world.HasBeenRemoved) this.WakeUp(force: true); };
                     optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", wakeUpDlgt } });
 
-                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
+                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning)
+                    {
+                        Scheduler.ExecutionDelegate waitUntilMorningDlgt = () => { if (!this.world.HasBeenRemoved) this.sleepMode = SleepMode.WaitMorning; ; };
+
+                        optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", waitUntilMorningDlgt } });
+                    }
 
                     optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
