@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Particles;
-using MonoGame.Extended.Particles.Modifiers;
-using MonoGame.Extended.Particles.Profiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,71 +15,66 @@ namespace SonOfRobin
 
             CreateNewWorld = 1,
             CreateNewWorldNow = 2,
-            OpenMenuTemplate = 4,
-            OpenMainMenu = 5,
-            SaveGame = 7,
-            LoadGame = 8,
-            LoadGameNow = 9,
-            SavePrefs = 11,
-            OpenCraftMenu = 13,
-            Craft = 14,
-            Plant = 15,
-            Hit = 16,
-            CreateDebugPieces = 18,
-            OpenContainer = 19,
-            DropFruit = 21,
-            GetEaten = 22,
-            GetDrinked = 23,
-            ShowTextWindow = 26,
-            OpenShelterMenu = 27,
-            OpenBoatMenu = 28,
-            SleepOutside = 30,
-            TempoFastForward = 32,
-            TempoStop = 33,
-            TempoPlay = 34,
-            ShowCookingProgress = 40,
-            ShowBrewingProgress = 41,
-            OpenMainMenuIfSpecialKeysArePressed = 43,
-            ExecuteTaskChain = 45,
-            RemoveScene = 48,
-            ChangeSceneInputType = 49,
-            SetCineMode = 50,
-            SetCineCurtains = 51,
-            AddTransition = 52,
-            SolidColorAddOverlay = 53,
-            SolidColorRemoveAll = 54,
-            SkipCinematics = 55,
-            SetSpectatorMode = 56,
-            SwitchLightSource = 57,
-            ResetControls = 58,
-            SaveControls = 59,
-            CheckForNonSavedControls = 60,
-            CheckForIncorrectPieces = 63,
-            RestartIsland = 64,
-            PlaySound = 66,
-            PlaySoundByName = 67,
-            AllowPiecesToBeHit = 68,
-            SetPlayerPointWalkTarget = 69,
-            StopSound = 70,
-            InteractWithCooker = 77,
-            InteractWithLab = 78,
-            InteractWithTotem = 79,
-            InventoryReleaseHeldPieces = 81,
-            RemoveBuffs = 82,
-            ExportSave = 83,
-            ImportSave = 84,
-            GCCollectIfWorldNotRemoved = 85,
-            DestroyAndDropDebris = 86,
-            MakePlayerJumpOverThisPiece = 87,
-            InventoryApplyPotion = 88,
-            OpenAndDestroyTreasureChest = 89,
-            CheckForPieceHints = 92,
-            ExecutePieceHintCheckNow = 93,
-            TurnOnWindParticles = 94,
-            DisposeSaveScreenshotsIfNoMenuPresent = 95,
-            UseEntrance = 98,
-            AddWeatherEvent = 107,
-            ExecuteDelegate = 112,
+            OpenMenuTemplate = 3,
+            OpenMainMenu = 4,
+            SaveGame = 5,
+            LoadGame = 6,
+            LoadGameNow = 7,
+            SavePrefs = 8,
+            OpenCraftMenu = 9,
+            Craft = 10,
+            Plant = 11,
+            Hit = 12,
+            CreateDebugPieces = 13,
+            OpenContainer = 14,
+            DropFruit = 15,
+            GetEaten = 16,
+            GetDrinked = 17,
+            ShowTextWindow = 18,
+            OpenShelterMenu = 19,
+            OpenBoatMenu = 20,
+            SleepOutside = 21,
+            TempoFastForward = 22,
+            TempoStop = 23,
+            TempoPlay = 24,
+            ShowCookingProgress = 25,
+            ShowBrewingProgress = 26,
+            OpenMainMenuIfSpecialKeysArePressed = 27,
+            ExecuteTaskChain = 28,
+            RemoveScene = 29,
+            ChangeSceneInputType = 30,
+            SetCineMode = 31,
+            SetCineCurtains = 32,
+            AddTransition = 33,
+            SolidColorAddOverlay = 34,
+            SolidColorRemoveAll = 35,
+            SkipCinematics = 36,
+            SetSpectatorMode = 37,
+            SwitchLightSource = 38,
+            ResetControls = 39,
+            SaveControls = 40,
+            CheckForNonSavedControls = 41,
+            CheckForIncorrectPieces = 42,
+            RestartIsland = 43,
+            PlaySound = 44,
+            PlaySoundByName = 45,
+            AllowPiecesToBeHit = 46,
+            SetPlayerPointWalkTarget = 47,
+            StopSound = 48,
+            InteractWithCooker = 49,
+            InteractWithLab = 50,
+            InteractWithTotem = 51,
+            ExportSave = 52,
+            ImportSave = 53,
+            GCCollectIfWorldNotRemoved = 54,
+            MakePlayerJumpOverThisPiece = 55,
+            OpenAndDestroyTreasureChest = 56,
+            CheckForPieceHints = 57,
+            ExecutePieceHintCheckNow = 58,
+            DisposeSaveScreenshotsIfNoMenuPresent = 59,
+            UseEntrance = 60,
+            AddWeatherEvent = 61,
+            ExecuteDelegate = 62,
         }
 
         public delegate void ExecutionDelegate();
@@ -1419,34 +1410,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.InventoryApplyPotion:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            inventory.TryToApplyPotion(slot: inventory.ActiveSlot, execute: true);
-
-                            return;
-                        }
-
-                    case TaskName.InventoryReleaseHeldPieces:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            inventory.ReleaseHeldPieces(slot: inventory.ActiveSlot, forceReleaseAll: true);
-                            return;
-                        }
-
-                    case TaskName.RemoveBuffs:
-                        {
-                            // example executeHelper for this task
-                            // var removeData = new Dictionary<string, Object> { { "storagePiece", piece }, { "buffList",  buffList }};
-
-                            var removeData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            BoardPiece storagePiece = (BoardPiece)removeData["storagePiece"];
-                            List<Buff> buffList = (List<Buff>)removeData["buffList"];
-
-                            storagePiece.buffEngine.RemoveBuffs(buffList);
-                            return;
-                        }
-
                     case TaskName.Plant:
                         {
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -1506,16 +1469,6 @@ namespace SonOfRobin
                             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} invoking GC.Collect()", textColor: new Color(255, 180, 66));
                             GC.Collect();
                             RemoveAllTasksOfName(TaskName.GCCollectIfWorldNotRemoved); // to avoid invoking GC.Collect() multiple times
-
-                            return;
-                        }
-
-                    case TaskName.DestroyAndDropDebris:
-                        {
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-
-                            piece.pieceInfo.Yield?.DropDebris(piece: piece);
-                            piece.Destroy();
 
                             return;
                         }
@@ -1591,63 +1544,6 @@ namespace SonOfRobin
                                 player.Fatigue += 10;
                             }
                             else Sound.QuickPlay(SoundData.Name.Error);
-
-                            return;
-                        }
-
-                    case TaskName.TurnOnWindParticles:
-                        {
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-                            Sprite sprite = piece.sprite;
-                            float windOriginX = piece.world.weather.WindOriginX;
-
-                            foreach (var kvp in piece.pieceInfo.windParticlesDict)
-                            {
-                                ParticleEngine.Preset preset = kvp.Key;
-                                Color color = kvp.Value;
-
-                                bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
-                                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
-
-                                Random random = piece.world.random;
-
-                                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
-                                if (!hasPreset && particleEmitter != null)
-                                {
-                                    particleEmitter.Parameters.Color = HslColor.FromRgb(color);
-                                    particleEmitter.Profile = Profile.Spray(direction: windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, spread: 2f);
-
-                                    Vector2 windDirection = new Vector2(windOriginX == 0 ? 1f : -1f, 0.2f);
-                                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windDirection, Strength = random.Next(60, 250) });
-
-                                    int vortexCount = random.Next(1, 4);
-                                    for (int i = 0; i < vortexCount; i++)
-                                    {
-                                        int vortexX = (i * 250) + (random.Next(60, 180) * (windOriginX == 0 ? 1 : -1));
-                                        if (i == 0) vortexX = 0;
-
-                                        float angle1 = random.NextSingle() * (float)Math.PI * 2;
-                                        float angle2 = angle1 - (float)Math.PI;
-                                        int distance = random.Next(100, 300);
-
-                                        Vector2 vortexOffset1 = new((int)Math.Round(distance * Math.Cos(angle1)), (int)Math.Round(distance * Math.Sin(angle1)));
-                                        Vector2 vortexOffset2 = new((int)Math.Round(distance * Math.Cos(angle2)), (int)Math.Round(distance * Math.Sin(angle2)));
-
-                                        vortexOffset1.X += vortexX;
-                                        vortexOffset2.X += vortexX;
-
-                                        foreach (Vector2 offset in new Vector2[] { vortexOffset1, vortexOffset2 })
-                                        {
-                                            particleEmitter.Modifiers.Add(new VortexModifier
-                                            {
-                                                Mass = random.Next(10, 35),
-                                                MaxSpeed = 0.5f,
-                                                Position = offset,
-                                            });
-                                        }
-                                    }
-                                }
-                            }
 
                             return;
                         }

@@ -84,8 +84,12 @@ namespace SonOfRobin
             else
             {
                 // Task allows for adding new buffs now (expanding inventory / toolbar) and removing previous buffs in the next frame
-                new Scheduler.Task(taskName: Scheduler.TaskName.RemoveBuffs, turnOffInputUntilExecution: true, delay: 1,
-                    executeHelper: new Dictionary<string, Object> { { "storagePiece", this.storage.storagePiece }, { "buffList", equipPiece.buffList } });
+
+                Scheduler.ExecutionDelegate removeBuffsDlgt = () =>
+                {
+                    if (!this.storage.storagePiece.world.HasBeenRemoved) this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, delay: 1, executeHelper: removeBuffsDlgt);
             }
         }
 

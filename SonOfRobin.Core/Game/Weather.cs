@@ -106,8 +106,10 @@ namespace SonOfRobin
         public float RainPercentage { get; private set; }
         public float LightningPercentage { get; private set; }
         public float HeatPercentage { get; private set; }
+
         public bool IsRaining
         { get { return this.RainPercentage > 0.2f; } }
+
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
@@ -487,7 +489,9 @@ namespace SonOfRobin
                         this.world.random.Next(5) == 0
                         )
                     {
-                        new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);
+                        Scheduler.ExecutionDelegate turnOnWindParticlesDlgt = () =>
+                        { if (piece.sprite.IsOnBoard && !piece.world.HasBeenRemoved) this.TurnOnWindParticlesForPiece(piece); };
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: turnOnWindParticlesDlgt, delay: delayFrames);
                     }
                 }
             }
@@ -510,6 +514,60 @@ namespace SonOfRobin
                         };
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: (int)distance / 20, executeHelper: addPassiveMovementDlgt);
+                    }
+                }
+            }
+        }
+
+        private void TurnOnWindParticlesForPiece(BoardPiece piece)
+        {
+            float windOriginX = this.WindOriginX;
+            Sprite sprite = piece.sprite;
+
+            foreach (var kvp in piece.pieceInfo.windParticlesDict)
+            {
+                ParticleEngine.Preset preset = kvp.Key;
+                Color color = kvp.Value;
+
+                bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
+                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
+
+                Random random = piece.world.random;
+
+                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
+                if (!hasPreset && particleEmitter != null)
+                {
+                    particleEmitter.Parameters.Color = HslColor.FromRgb(color);
+                    particleEmitter.Profile = Profile.Spray(direction: windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, spread: 2f);
+
+                    Vector2 windDirection = new Vector2(windOriginX == 0 ? 1f : -1f, 0.2f);
+                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windDirection, Strength = random.Next(60, 250) });
+
+                    int vortexCount = random.Next(1, 4);
+                    for (int i = 0; i < vortexCount; i++)
+                    {
+                        int vortexX = (i * 250) + (random.Next(60, 180) * (windOriginX == 0 ? 1 : -1));
+                        if (i == 0) vortexX = 0;
+
+                        float angle1 = random.NextSingle() * (float)Math.PI * 2;
+                        float angle2 = angle1 - (float)Math.PI;
+                        int distance = random.Next(100, 300);
+
+                        Vector2 vortexOffset1 = new((int)Math.Round(distance * Math.Cos(angle1)), (int)Math.Round(distance * Math.Sin(angle1)));
+                        Vector2 vortexOffset2 = new((int)Math.Round(distance * Math.Cos(angle2)), (int)Math.Round(distance * Math.Sin(angle2)));
+
+                        vortexOffset1.X += vortexX;
+                        vortexOffset2.X += vortexX;
+
+                        foreach (Vector2 offset in new Vector2[] { vortexOffset1, vortexOffset2 })
+                        {
+                            particleEmitter.Modifiers.Add(new VortexModifier
+                            {
+                                Mass = random.Next(10, 35),
+                                MaxSpeed = 0.5f,
+                                Position = offset,
+                            });
+                        }
                     }
                 }
             }

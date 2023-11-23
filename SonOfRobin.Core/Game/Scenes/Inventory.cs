@@ -1071,7 +1071,9 @@ namespace SonOfRobin
                 Scheduler.ExecutionDelegate combineItemsDlgt = () => { if (!this.HasBeenRemoved) this.ProcessPieceCombine(); };
                 optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", combineItemsDlgt } });
 
-                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
+                Scheduler.ExecutionDelegate releaseHeldPiecesDlgt = () =>
+                { if (!this.HasBeenRemoved) this.ReleaseHeldPieces(slot: this.ActiveSlot, forceReleaseAll: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.ExecuteDelegate : Scheduler.TaskName.Empty }, { "executeHelper", releaseHeldPiecesDlgt } });
 
                 Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                 {
@@ -1146,8 +1148,13 @@ namespace SonOfRobin
             if (!execute)
             {
                 var optionList = new List<object>();
-                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryApplyPotion }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
+
+                Scheduler.ExecutionDelegate applyPotionDlgt = () => { if (!this.HasBeenRemoved) this.TryToApplyPotion(slot: this.ActiveSlot, execute: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", applyPotionDlgt } });
+
+                Scheduler.ExecutionDelegate releaseHeldPiecesDlgt = () =>
+                { if (!this.HasBeenRemoved) this.ReleaseHeldPieces(slot: this.ActiveSlot, forceReleaseAll: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.ExecuteDelegate : Scheduler.TaskName.Empty }, { "executeHelper", releaseHeldPiecesDlgt } });
 
                 Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                 {

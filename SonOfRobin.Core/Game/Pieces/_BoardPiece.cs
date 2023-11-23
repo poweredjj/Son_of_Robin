@@ -589,10 +589,17 @@ namespace SonOfRobin
 
             var collidingPlants = this.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }).Where(sprite => sprite.boardPiece.GetType() == typeof(Plant) && this.sprite.ColRect.Contains(sprite.position));
 
-            foreach (Sprite collidingPlant in collidingPlants)
+            Scheduler.ExecutionDelegate destroyAndDropDebrisDlgt = () =>
             {
-                new Scheduler.Task(taskName: Scheduler.TaskName.DestroyAndDropDebris, delay: delay, executeHelper: collidingPlant.boardPiece);
-            }
+                foreach (Sprite collidingPlant in collidingPlants)
+                {
+                    BoardPiece plantPiece = collidingPlant.boardPiece;
+                    plantPiece.pieceInfo.Yield?.DropDebris(piece: plantPiece);
+                    plantPiece.Destroy();
+                }
+            };
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: destroyAndDropDebrisDlgt);
         }
 
         public void StateMachineWork()
