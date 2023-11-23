@@ -19,13 +19,11 @@ namespace SonOfRobin
 
             CreateNewWorld = 1,
             CreateNewWorldNow = 2,
-            QuitGame = 3,
             OpenMenuTemplate = 4,
             OpenMainMenu = 5,
             SaveGame = 7,
             LoadGame = 8,
             LoadGameNow = 9,
-            ReturnToMainMenu = 10,
             SavePrefs = 11,
             OpenCraftMenu = 13,
             Craft = 14,
@@ -1040,7 +1038,7 @@ namespace SonOfRobin
                         {
                             Input.GlobalInputActive = true;
                             if (InputMapper.IsPressed(InputMapper.Action.SecretLicenceBypass)) new Task(taskName: TaskName.OpenMainMenu);
-                            else new Task(taskName: TaskName.QuitGame);
+                            else CloseGame(quitGame: true);
 
                             return;
                         }
@@ -1095,16 +1093,6 @@ namespace SonOfRobin
 
                             return;
                         }
-
-                    case TaskName.ReturnToMainMenu:
-                        SonOfRobinGame.SmallProgressBar.TurnOff();
-                        CloseGame(quitGame: false);
-                        return;
-
-                    case TaskName.QuitGame:
-                        SonOfRobinGame.SmallProgressBar.TurnOff();
-                        CloseGame(quitGame: true);
-                        return;
 
                     case TaskName.RemoveScene:
                         {
@@ -1802,14 +1790,14 @@ namespace SonOfRobin
                 }
             }
 
-            private static void CloseGame(bool quitGame)
+            public static void CloseGame(bool quitGame)
             {
-                World world = World.GetTopWorld();
+                SonOfRobinGame.SmallProgressBar.TurnOff();
 
                 var worldScenes = Scene.GetAllScenesOfType(typeof(World));
                 foreach (World currWorld in worldScenes)
                 {
-                    if (!currWorld.demoMode) world.Remove();
+                    if (!currWorld.demoMode) currWorld.Remove();
                 }
 
                 Scene.RemoveAllScenesOfType(typeof(TextWindow));
