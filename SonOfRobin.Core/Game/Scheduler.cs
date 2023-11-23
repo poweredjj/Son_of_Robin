@@ -1421,15 +1421,21 @@ namespace SonOfRobin
                             if (world == null || world.demoMode) return;
 
                             // example executeHelper for this task
-                            // var solidColorData = new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f } };
+                            // var solidColorData = new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f }, { "fadeInDurationFrames", 60 * 2 } };
 
                             var solidColorData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Color color = (Color)solidColorData["color"];
                             float opacity = (float)solidColorData["opacity"];
+                            int fadeInDurationFrames = solidColorData.ContainsKey("fadeInDurationFrames") ? (int)solidColorData["fadeInDurationFrames"] : 0;
 
-                            SolidColor newOverlay = new(color: color, viewOpacity: opacity);
+                            SolidColor newOverlay = new(color: color, viewOpacity: fadeInDurationFrames > 0 ? 0 : opacity);
                             world.solidColorManager.Add(newOverlay);
+
+                            if (fadeInDurationFrames > 0)
+                            {
+                                newOverlay.transManager.AddTransition(new Transition(transManager: newOverlay.transManager, outTrans: true, startDelay: 0, duration: fadeInDurationFrames, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: opacity, endCopyToBase: true));
+                            }
 
                             return;
                         }

@@ -44,7 +44,9 @@ namespace SonOfRobin
             {
                 if (fadeOutDuration > 0)
                 {
-                    scene.transManager.AddTransition(new Transition(transManager: scene.transManager, outTrans: true, duration: fadeOutDuration, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.0f, endRemoveScene: true));
+                    scene.transManager.ClearPreviousTransitions();
+
+                    scene.transManager.AddTransition(new Transition(transManager: scene.transManager, outTrans: true, duration: fadeOutDuration, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0f, endRemoveScene: true));
                 }
                 else scene.Remove();
             }
