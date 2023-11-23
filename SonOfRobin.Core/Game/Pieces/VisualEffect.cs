@@ -300,7 +300,7 @@ namespace SonOfRobin
                 Vector2 newPos = this.visualAid.sprite.position + new Vector2(xOffset, yOffset);
 
                 this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos,
-                    duration: 0.2f + (this.universalFloat * 0.2f), delay: 0)
+                    duration: (this.universalFloat * 0.2f) + (this.world.random.NextSingle() * 0.3f), delay: 0)
                     .Easing(EasingFunctions.QuadraticInOut);
             }
 

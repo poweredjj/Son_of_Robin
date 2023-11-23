@@ -439,8 +439,7 @@ namespace SonOfRobin
 
                 VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
 
-                orbiter.universalFloat = 2f;
-
+                orbiter.universalFloat = 1f;
                 orbiter.visualAid = player;
 
                 world.camera.TrackPiece(orbiter);

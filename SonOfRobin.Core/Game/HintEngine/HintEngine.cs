@@ -644,7 +644,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "I'm starting to miss my island already...\nMaybe it wasn't such a good idea to leave?", boxType: dialogue, delay: 60 * 4).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "Finally, rain! How refreshing!", boxType: dialogue, delay: 60 * 4).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WaterDrop].texture }, boxType: dialogue, delay: 60 * 4).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
@@ -654,25 +654,45 @@ namespace SonOfRobin
                         int cameraWidth = this.world.camera.viewRect.Width;
                         int cameraHeight = this.world.camera.viewRect.Width;
 
-                        Scheduler.ExecutionDelegate addShakeDlgt1 = () =>
-                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 150, -cameraHeight / 150), durationSecs: 1.7f); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt1, storeForLaterUse: true));
+                        VisualEffect orbiter = (VisualEffect)PieceTemplate.CreatePiece(world: this.world, templateName: PieceTemplate.Name.Orbiter);
+
+                        Scheduler.ExecutionDelegate addOrbiterDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            orbiter.PlaceOnBoard(randomPlacement: false, position: player.sprite.position);
+                            orbiter.universalFloat = 4f;
+                            orbiter.visualAid = player;
+                            this.world.camera.TrackPiece(orbiter);
+                            this.world.camera.SetMovementSpeed(1f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
 
-                        Scheduler.ExecutionDelegate addShakeDlgt2 = () =>
-                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(cameraWidth / 40, -cameraHeight / 40), durationSecs: 2.0f); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt2, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate updateOrbiterDlgt1 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+                            orbiter.universalFloat = 8f;
+                            this.world.camera.SetMovementSpeed(2f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt1, storeForLaterUse: true));
+
 
                         taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 3).ConvertToTask());
 
-                        Scheduler.ExecutionDelegate addShakeDlgt3 = () =>
-                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(cameraWidth / 30, cameraHeight / 30), durationSecs: 1.6f); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt3, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate updateOrbiterDlgt2 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
 
-                        Scheduler.ExecutionDelegate addShakeDlgt4 = () =>
-                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 10, cameraHeight / 12), durationSecs: 1.6f); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt4, storeForLaterUse: true));
+                            VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+                            orbiter.universalFloat = 16f;
+                            this.world.camera.SetMovementSpeed(4f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt2, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Aaaaaaah!", boxType: dialogue, delay: 0).ConvertToTask());
 
@@ -687,6 +707,17 @@ namespace SonOfRobin
                             this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeInDuration, executeHelper: clockAdvanceDlgt2, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate deleteOrbiterDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            this.world.camera.TrackPiece(player);
+                            this.world.camera.ResetMovementSpeed();
+                            orbiter.visualAid = null; // has to be cleared, otherwise the player will be destroyed, too
+                            orbiter.Destroy();
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: deleteOrbiterDlgt, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate clearWeatherDelegate = () =>
                         { if (!this.world.HasBeenRemoved) this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
