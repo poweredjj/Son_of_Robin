@@ -101,14 +101,11 @@ namespace SonOfRobin
             MakePlayerJumpOverThisPiece = 87,
             InventoryApplyPotion = 88,
             OpenAndDestroyTreasureChest = 89,
-            SetAllNamedLocationsAsDiscovered = 90,
-            AddRumble = 91,
             CheckForPieceHints = 92,
             ExecutePieceHintCheckNow = 93,
             TurnOnWindParticles = 94,
             DisposeSaveScreenshotsIfNoMenuPresent = 95,
             UseEntrance = 98,
-            UseBoat = 99,
             AddWeatherEvent = 107,
             ExecuteDelegate = 112,
         }
@@ -1118,9 +1115,7 @@ namespace SonOfRobin
 
                     case TaskName.RestoreHints:
                         {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-                            world.HintEngine.RestoreAllHints();
+                            World.GetTopWorld()?.HintEngine.RestoreAllHints();
 
                             return;
                         }
@@ -1793,14 +1788,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.SetAllNamedLocationsAsDiscovered:
-                        {
-                            World world = (World)this.ExecuteHelper;
-                            world.Grid.namedLocations.SetAllLocationsAsDiscovered();
-
-                            return;
-                        }
-
                     case TaskName.MakePlayerJumpOverThisPiece:
                         {
                             BoardPiece obstacle = (BoardPiece)this.ExecuteHelper;
@@ -1861,27 +1848,6 @@ namespace SonOfRobin
                                 player.Fatigue += 10;
                             }
                             else Sound.QuickPlay(SoundData.Name.Error);
-
-                            return;
-                        }
-
-                    case TaskName.AddRumble:
-                        {
-                            // example executeHelper for this task
-                            // var rumbleData = new Dictionary<string, Object> { { "force", 0.3f }, { "bigMotor", true }, { "fadeInSeconds", 0.6f }, { "durationSeconds", 1.5f }, { "fadeOutSeconds", 0.6f } };
-
-                            var rumbleData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            float force = (float)rumbleData["force"];
-                            bool smallMotor = rumbleData.ContainsKey("smallMotor") && (bool)rumbleData["smallMotor"];
-                            bool bigMotor = rumbleData.ContainsKey("bigMotor") && (bool)rumbleData["bigMotor"];
-                            float fadeInSeconds = rumbleData.ContainsKey("fadeInSeconds") ? (float)rumbleData["fadeInSeconds"] : 0f;
-                            float durationSeconds = (float)rumbleData["durationSeconds"];
-                            float fadeOutSeconds = rumbleData.ContainsKey("fadeOutSeconds") ? (float)rumbleData["fadeOutSeconds"] : 0f;
-                            float minSecondsSinceLastRumbleSmallMotor = rumbleData.ContainsKey("minSecondsSinceLastRumbleSmallMotor") ? (float)rumbleData["minSecondsSinceLastRumbleSmallMotor"] : 0f;
-                            float minSecondsSinceLastRumbleBigMotor = rumbleData.ContainsKey("minSecondsSinceLastRumbleBigMotor") ? (float)rumbleData["minSecondsSinceLastRumbleBigMotor"] : 0f;
-
-                            new RumbleEvent(force: force, smallMotor: smallMotor, bigMotor: bigMotor, fadeInSeconds: fadeInSeconds, durationSeconds: durationSeconds, fadeOutSeconds: fadeOutSeconds, minSecondsSinceLastRumbleSmallMotor: minSecondsSinceLastRumbleSmallMotor, minSecondsSinceLastRumbleBigMotor: minSecondsSinceLastRumbleBigMotor);
 
                             return;
                         }
@@ -1955,14 +1921,6 @@ namespace SonOfRobin
                         {
                             Entrance entrance = (Entrance)this.ExecuteHelper;
                             entrance.Enter();
-                            return;
-                        }
-
-                    case TaskName.UseBoat:
-                        {
-                            BoardPiece boat = (BoardPiece)this.ExecuteHelper;
-                            boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
-
                             return;
                         }
 

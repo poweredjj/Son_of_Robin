@@ -104,8 +104,9 @@ namespace SonOfRobin
 
             new LevelEvent(eventName: LevelEvent.EventName.SwitchLightEngine, level: this.level, delay: IslandClock.ConvertTimeSpanToUpdates(weatherChangeDuration + weatherChangeDelay), boardPiece: this, eventHelper: false);
 
-            var rumbleData = new Dictionary<string, Object> { { "force", 0.08f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.6f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 1.3f } };
-            new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: eventsDelay, executeHelper: rumbleData);
+            Scheduler.ExecutionDelegate addRumbleDlgt = () =>
+            { new RumbleEvent(force: 0.08f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.6f, durationSeconds: 0.0f, fadeOutSeconds: 1.3f); };
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: eventsDelay, executeHelper: addRumbleDlgt);
         }
 
         public void AffectWeather(float goodOfferingMass)

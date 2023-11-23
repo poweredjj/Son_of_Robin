@@ -1063,7 +1063,11 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "show anim size change", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimSizeChangeInCamera");
                         new Selector(menu: menu, name: "fast plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugFastPlantGrowth");
                         new Selector(menu: menu, name: "show named location areas", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowNamedLocationAreas");
-                        if (world != null) new Invoker(menu: menu, name: "discover all locations", taskName: Scheduler.TaskName.SetAllNamedLocationsAsDiscovered, executeHelper: world);
+
+                        Scheduler.ExecutionDelegate discoverAllLocationsDlgt = () =>
+                        { if (!world.HasBeenRemoved) world.Grid.namedLocations.SetAllLocationsAsDiscovered(); };
+                        if (world != null) new Invoker(menu: menu, name: "discover all locations", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: discoverAllLocationsDlgt);
+
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "vertical sync", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "VSync", rebuildsMenu: true);
                         new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
@@ -1136,8 +1140,14 @@ namespace SonOfRobin
                             bgColor = Color.DarkBlue * 0.7f
                         };
 
+                        Scheduler.ExecutionDelegate useBoatDlgt = () =>
+                        {
+                            BoardPiece boat = (BoardPiece)executeHelper;
+                            if (!boat.world.HasBeenRemoved) boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
+                        };
+
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
-                        new Invoker(menu: menu, name: "use this boat to escape the island", closesMenu: true, taskName: Scheduler.TaskName.UseBoat, executeHelper: executeHelper, taskDelay: 15);
+                        new Invoker(menu: menu, name: "use this boat to escape the island", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: useBoatDlgt, taskDelay: 15);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);

@@ -103,9 +103,13 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.15f, bigMotor: true, smallMotor: false, fadeInSeconds: 0.8f, durationSeconds: 0f, fadeOutSeconds: 0.8f);
                 new RumbleEvent(force: 0.10f, bigMotor: false, smallMotor: true, fadeInSeconds: 1.2f, durationSeconds: 0f, fadeOutSeconds: 1.3f);
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 120, executeHelper: new Dictionary<string, Object> { { "force", 0.15f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.4f } });
+                Scheduler.ExecutionDelegate addRumbleDlgt1 = () =>
+                { new RumbleEvent(force: 0.15f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.0f, durationSeconds: 0.0f, fadeOutSeconds: 0.4f); };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 120, executeHelper: addRumbleDlgt1);
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 150, executeHelper: new Dictionary<string, Object> { { "force", 0.12f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.25f } });
+                Scheduler.ExecutionDelegate addRumbleDlgt2 = () =>
+                { new RumbleEvent(force: 0.12f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.0f, durationSeconds: 0.0f, fadeOutSeconds: 0.25f); };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 150, executeHelper: addRumbleDlgt2);
 
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DustPuff }, particlesToEmit: 120);
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.SmokePuff }, particlesToEmit: 40);
