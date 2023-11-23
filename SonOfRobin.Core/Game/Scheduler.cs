@@ -4,7 +4,6 @@ using MonoGame.Extended;
 using MonoGame.Extended.Particles;
 using MonoGame.Extended.Particles.Modifiers;
 using MonoGame.Extended.Particles.Profiles;
-using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +51,6 @@ namespace SonOfRobin
             TempoFastForward = 32,
             TempoStop = 33,
             TempoPlay = 34,
-            CameraSetZoom = 37,
             ShowCookingProgress = 40,
             ShowBrewingProgress = 41,
             RestoreHints = 42,
@@ -109,7 +107,6 @@ namespace SonOfRobin
             ExecutePieceHintCheckNow = 93,
             TurnOnWindParticles = 94,
             DisposeSaveScreenshotsIfNoMenuPresent = 95,
-            SetGlobalWorldTweener = 97,
             UseEntrance = 98,
             UseBoat = 99,
             AddWeatherEvent = 107,
@@ -1103,24 +1100,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.CameraSetZoom:
-                        {
-                            // example executeHelper for this task
-                            // var zoomData = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }, { "setInstantly", false } };
-
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            float zoom = (float)zoomData["zoom"];
-                            bool setInstantly = zoomData.ContainsKey("setInstantly") && (bool)zoomData["setInstantly"];
-                            float zoomSpeedMultiplier = zoomData.ContainsKey("zoomSpeedMultiplier") ? (float)zoomData["zoomSpeedMultiplier"] : 1f;
-
-                            world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier, setInstantly: setInstantly);
-
-                            return;
-                        }
-
                     case TaskName.ShowCookingProgress:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1968,48 +1947,6 @@ namespace SonOfRobin
                         {
                             if (Scene.GetTopSceneOfType(typeof(Menu)) != null) new Task(taskName: TaskName.DisposeSaveScreenshotsIfNoMenuPresent, delay: 60 * 3);
                             else SaveHeaderInfo.DisposeScreenshots();
-
-                            return;
-                        }
-
-                    case TaskName.SetGlobalWorldTweener:
-                        {
-                            // example executeHelper for this task
-                            // var tweenData = new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", true }, { "easing", "SineOut" }, { "durationSeconds", 1f } };
-
-                            World world = World.GetTopWorld();
-
-                            if (world.globalEffect == null)
-                            {
-                                MessageLog.Add(debugMessage: true, text: $"Scheduler: world doesn't have globalEffect. Cannot apply tweener.");
-                                return;
-                            }
-
-                            var tweenData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            float tweenIntensity = (float)tweenData["tweenIntensity"];
-                            bool autoreverse = tweenData.ContainsKey("autoreverse") && (bool)tweenData["autoreverse"];
-                            float durationSeconds = (float)tweenData["durationSeconds"];
-                            string easing = (string)tweenData["easing"];
-
-                            world.tweenerForGlobalEffect.CancelAndCompleteAll();
-
-                            if (tweenData.ContainsKey("startIntensity"))
-                            {
-                                float startIntensity = (float)tweenData["startIntensity"];
-                                world.globalEffect.intensityForTweener = startIntensity;
-                            }
-
-                            world.tweenerForGlobalEffect.TweenTo(target: world.globalEffect, expression: effect => effect.intensityForTweener, toValue: tweenIntensity, duration: durationSeconds);
-
-                            Tween tween = world.tweenerForGlobalEffect.FindTween(target: world.globalEffect, memberName: "intensityForTweener");
-
-                            if (autoreverse) tween.AutoReverse();
-
-                            if (easing == "QuadraticIn") tween.Easing(EasingFunctions.QuadraticIn);
-                            else if (easing == "SineInOut") tween.Easing(EasingFunctions.SineInOut);
-                            else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
-                            else if (easing == "Linear") tween.Easing(EasingFunctions.Linear);
 
                             return;
                         }

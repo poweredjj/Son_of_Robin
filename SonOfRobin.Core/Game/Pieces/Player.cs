@@ -555,7 +555,9 @@ namespace SonOfRobin
 
             Sound.QuickPlay(SoundData.Name.GameOver);
 
-            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
+            Scheduler.ExecutionDelegate camZoomDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 3f); };
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, delay: 0, executeHelper: camZoomDlgt);
+
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
         }
 

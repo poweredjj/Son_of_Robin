@@ -351,7 +351,8 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.4f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 0.4f, zoomSpeedMultiplier: 0.4f); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
             Scheduler.ExecutionDelegate camMoveSpdDlgt = () => { if (!world.HasBeenRemoved) world.camera.SetMovementSpeed(0.3f); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camMoveSpdDlgt, storeForLaterUse: true));
@@ -367,7 +368,8 @@ namespace SonOfRobin
             Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackPiece(player); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackPieceDlgt, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate camZoomDlgt2 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 1f); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 

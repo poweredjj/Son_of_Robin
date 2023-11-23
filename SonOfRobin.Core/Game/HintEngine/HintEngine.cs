@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 
@@ -310,7 +311,9 @@ namespace SonOfRobin
 
                             this.world.camera.SetZoom(zoom: 1f, setInstantly: true);
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2f, zoomSpeedMultiplier: 0.5f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 30, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "   ...    ", boxType: dialogue, delay: 0, blockInput: false).ConvertToTask());
 
@@ -322,7 +325,9 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.FireBurst, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3.5f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 3.5f, zoomSpeedMultiplier: 3f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
                             taskChain.Add(new HintMessage(text: "Don't you know how to read?", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
@@ -356,14 +361,32 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0.5f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 5f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate setGlobalTweenerDlgt1 = () =>
+                            {
+                                if (this.world.HasBeenRemoved) return;
+                                this.world.tweenerForGlobalEffect.CancelAndCompleteAll();
+                                this.world.globalEffect.intensityForTweener = 1f;
+                                this.world.tweenerForGlobalEffect.TweenTo(target: this.world.globalEffect, expression: effect => effect.intensityForTweener, toValue: 0.5f, duration: 5f).Easing(EasingFunctions.SineOut);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobalTweenerDlgt1, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
+
+                            Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                            {
+                                if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.1f);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 30, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 0.5f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 5f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate setGlobalTweenerDlgt2 = () =>
+                            {
+                                if (this.world.HasBeenRemoved) return;
+                                this.world.tweenerForGlobalEffect.CancelAndCompleteAll();
+                                this.world.tweenerForGlobalEffect.TweenTo(target: this.world.globalEffect, expression: effect => effect.intensityForTweener, toValue: 0f, duration: 5f).Easing(EasingFunctions.SineOut);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobalTweenerDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
 
@@ -407,7 +430,11 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                            {
+                                if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.55f, zoomSpeedMultiplier: 3f);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
                             taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
@@ -435,7 +462,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true)); // repeated, to make sure it will be executed (in case of waitingScenes being used)
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1.5f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1.5f, zoomSpeedMultiplier: 0.4f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
                         Vector2 basePos = player.sprite.position;
                         int distance = 30;
@@ -450,7 +479,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.8f }, { "zoomSpeedMultiplier", 2f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.8f, zoomSpeedMultiplier: 2f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                         if (this.world.PlayerName == PieceTemplate.Name.PlayerTestDemoness)
                         {
@@ -578,7 +609,8 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate trackCoordsDlgt = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 15, 0), moveInstantly: true); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.15f }, { "setInstantly", true } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.15f, setInstantly: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate camMoveSpdDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetMovementSpeed(0.05f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camMoveSpdDlgt, storeForLaterUse: true));
@@ -586,7 +618,9 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackPieceDlgt, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.025f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.025f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I've been adrift for weeks now.\nThe days start to blend together...", boxType: dialogue, delay: 60 * 7).ConvertToTask());
 
@@ -713,7 +747,8 @@ namespace SonOfRobin
 
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 2f); };
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
             var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", LevelEvent.EventName.Destruction } };
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
@@ -723,7 +758,8 @@ namespace SonOfRobin
             Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackPiece(world.Player); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackPieceDlgt, storeForLaterUse: true));
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate camZoomDlgt2 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 1f); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
