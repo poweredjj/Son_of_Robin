@@ -46,10 +46,7 @@ namespace SonOfRobin
             ShowCookingProgress = 40,
             ShowBrewingProgress = 41,
             OpenMainMenuIfSpecialKeysArePressed = 43,
-            ShowHint = 44,
             ExecuteTaskChain = 45,
-            ShowTutorialInMenu = 46,
-            ShowTutorialInGame = 47,
             RemoveScene = 48,
             ChangeSceneInputType = 49,
             SetCineMode = 50,
@@ -1095,43 +1092,6 @@ namespace SonOfRobin
                             PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
 
                             world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
-
-                            return;
-                        }
-
-                    case TaskName.ShowHint:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var hintType = (HintEngine.Type)this.ExecuteHelper;
-                            world.HintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
-
-                            return;
-                        }
-
-                    case TaskName.ShowTutorialInMenu:
-                        {
-                            Tutorials.ShowTutorialInMenu(type: (Tutorials.Type)this.ExecuteHelper);
-
-                            return;
-                        }
-
-                    case TaskName.ShowTutorialInGame:
-                        {
-                            var tutorialData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            // example executeHelper for this task
-                            // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", false }, { "ignoreIfShown", false } };
-
-                            Tutorials.Type type = (Tutorials.Type)tutorialData["tutorial"];
-                            World worldToUse = (World)tutorialData["world"];
-
-                            bool ignoreHintsSetting = tutorialData.ContainsKey("ignoreHintsSetting") && (bool)tutorialData["ignoreHintsSetting"];
-                            bool ignoreDelay = tutorialData.ContainsKey("ignoreDelay") && (bool)tutorialData["ignoreDelay"];
-                            bool ignoreIfShown = !tutorialData.ContainsKey("ignoreIfShown") || (bool)tutorialData["ignoreIfShown"];
-
-                            Tutorials.ShowTutorialOnTheField(type: type, world: worldToUse, ignoreHintsSetting: ignoreHintsSetting, ignoreDelay: ignoreDelay, ignoreIfShown: ignoreIfShown);
 
                             return;
                         }

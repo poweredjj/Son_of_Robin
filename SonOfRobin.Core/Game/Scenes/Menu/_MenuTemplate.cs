@@ -1232,7 +1232,8 @@ namespace SonOfRobin
                         {
                             if (world.HintEngine.shownTutorials.Contains(tutorial.type) || Preferences.debugShowAllTutorials)
                             {
-                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorialInMenu, executeHelper: tutorial.type);
+                                Scheduler.ExecutionDelegate showTutorialDlgt = () => { Tutorials.ShowTutorialInMenu(type: tutorial.type); };
+                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showTutorialDlgt);
                             }
                         }
 
@@ -1335,14 +1336,20 @@ namespace SonOfRobin
 
             if (player.level.levelType != Level.LevelType.Island && !Preferences.debugCraftEverywhere)
             {
-                new TextWindow(text: "I can't | craft in here.", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.KeepingAnimalsAway, world: world, ignoreDelay: true); };
+
+                new TextWindow(text: "I can't | craft in here.", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ExecuteDelegate, closingTaskHelper: showTutorialDlgt, animSound: world.DialogueSound);
 
                 return null;
             }
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby && !Preferences.debugCraftEverywhere)
             {
-                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.KeepingAnimalsAway, world: world, ignoreDelay: true); };
+
+                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ExecuteDelegate, closingTaskHelper: showTutorialDlgt, animSound: world.DialogueSound);
 
                 return null;
             }

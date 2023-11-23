@@ -330,8 +330,9 @@ namespace SonOfRobin
 
                     if (!tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
                     {
-                        var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.SmartCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                        Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                        { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.SmartCrafting, world: world, ignoreDelay: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                         tutorialAdded = true;
                     }
 
@@ -435,22 +436,28 @@ namespace SonOfRobin
 
                 if (!tutorialAdded && craftLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.GeneralCraftLevels))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.GeneralCraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.GeneralCraftLevels, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
                 if (!tutorialAdded && recipeLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.CraftRecipeLevels))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftRecipeLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.CraftRecipeLevels, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
                 if (!tutorialAdded && world.Player.ResourcefulCrafter && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.ResourcefulCrafting))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.ResourcefulCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.ResourcefulCrafting, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
