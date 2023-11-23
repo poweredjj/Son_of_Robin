@@ -39,9 +39,7 @@ namespace SonOfRobin
             ShowTextWindow = 26,
             OpenShelterMenu = 27,
             OpenBoatMenu = 28,
-            SleepInsideShelter = 29,
             SleepOutside = 30,
-            ForceWakeUp = 31,
             TempoFastForward = 32,
             TempoStop = 33,
             TempoPlay = 34,
@@ -937,22 +935,6 @@ namespace SonOfRobin
                             BoardPiece shelterPiece = (BoardPiece)this.ExecuteHelper;
                             shelterPiece.world.OpenMenu(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
 
-                            return;
-                        }
-
-                    case TaskName.SleepInsideShelter:
-                        {
-                            Shelter shelterPiece = (Shelter)this.ExecuteHelper;
-                            SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.GfxRect.Center.X, shelterPiece.sprite.GfxRect.Center.Y), checkIfSleepIsPossible: true);
-
-                            return;
-                        }
-
-                    case TaskName.ForceWakeUp:
-                        {
-                            Player player = (Player)this.ExecuteHelper;
-                            player.WakeUp(force: true);
                             return;
                         }
 

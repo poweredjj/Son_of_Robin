@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static SonOfRobin.Scheduler;
 
 namespace SonOfRobin
 {
@@ -1237,17 +1236,18 @@ namespace SonOfRobin
                 {
                     var optionList = new List<object>();
 
-                    optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
+                    Scheduler.ExecutionDelegate wakeUpDlgt = () => { if (!this.world.HasBeenRemoved) this.WakeUp(force: true); };
+                    optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", wakeUpDlgt } });
 
-                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", TaskName.WaitUntilMorning }, { "executeHelper", this } });
+                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
 
                     optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
-                    ExecutionDelegate showConfMenuDlgt = () =>
+                    Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                     {
                         MenuTemplate.CreateConfirmationMenu(question: "You are fully rested.", customOptions: optionList, blocksUpdatesBelow: true);
                     };
-                    new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
+                    new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                 }
                 else
                 {

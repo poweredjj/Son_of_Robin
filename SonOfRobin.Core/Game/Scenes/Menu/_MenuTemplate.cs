@@ -1137,7 +1137,15 @@ namespace SonOfRobin
                             bgColor = Color.DarkBlue * 0.7f
                         };
 
-                        new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.SleepInsideShelter, executeHelper: executeHelper, taskDelay: 15);
+                        Shelter shelterPiece = (Shelter)executeHelper;
+                        Scheduler.ExecutionDelegate sleepInsideShelterDlgt = () =>
+                        {
+                            if (shelterPiece.world.HasBeenRemoved) return;
+
+                            shelterPiece.world.Player.GoToSleep(sleepEngine: shelterPiece.sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.GfxRect.Center.X, shelterPiece.sprite.GfxRect.Center.Y), checkIfSleepIsPossible: true);
+                        };
+                        new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: sleepInsideShelterDlgt, taskDelay: 15);
+
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
 
                         new Separator(menu: menu, name: "", isEmpty: true);
