@@ -381,11 +381,14 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 0.15f, storeForLaterUse: true));
 
-                            Scheduler.ExecutionDelegate trackCoordsDlgt = () => { this.world.camera.TrackCoords(position: seaPos, moveInstantly: false); };
+                            Scheduler.ExecutionDelegate trackCoordsDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackCoords(position: seaPos, moveInstantly: false); };
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
+
+                            Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackPiece(player); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: trackPieceDlgt, storeForLaterUse: true));
+
                             taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: null, storeForLaterUse: true));
@@ -527,7 +530,7 @@ namespace SonOfRobin
 
                         //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate enterLevelDelegate = () => { this.world.EnterNewLevel(openSeaLevel); };
+                        Scheduler.ExecutionDelegate enterLevelDelegate = () => { if (!this.world.HasBeenRemoved) this.world.EnterNewLevel(openSeaLevel); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: enterLevelDelegate, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
@@ -562,14 +565,15 @@ namespace SonOfRobin
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clockAdvanceDlgt1, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate trackCoordsDlgt = () => { this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 15, 0), moveInstantly: true); };
+                        Scheduler.ExecutionDelegate trackCoordsDlgt = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 15, 0), moveInstantly: true); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.15f }, { "setInstantly", true } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 0, executeHelper: 0.05f, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 1, executeHelper: player, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackPieceDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60 * 1, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.025f } }, storeForLaterUse: true));
 
@@ -597,30 +601,30 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate createBadWeatherDelegate = () => { this.world.weather.CreateVeryBadWeatherForDuration(TimeSpan.FromHours(24)); };
+                        Scheduler.ExecutionDelegate createBadWeatherDelegate = () => { if (!this.world.HasBeenRemoved) this.world.weather.CreateVeryBadWeatherForDuration(TimeSpan.FromHours(24)); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: createBadWeatherDelegate, storeForLaterUse: true));
 
                         int cameraWidth = this.world.camera.viewRect.Width;
                         int cameraHeight = this.world.camera.viewRect.Width;
 
                         Scheduler.ExecutionDelegate addShakeDlgt1 = () =>
-                        { this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 150, -cameraHeight / 150), durationSecs: 1.7f); };
+                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 150, -cameraHeight / 150), durationSecs: 1.7f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt1, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0).ConvertToTask());
 
                         Scheduler.ExecutionDelegate addShakeDlgt2 = () =>
-                        { this.world.camera.AddShake(movement: new Vector2(cameraWidth / 40, -cameraHeight / 40), durationSecs: 2.0f); };
+                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(cameraWidth / 40, -cameraHeight / 40), durationSecs: 2.0f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt2, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 3).ConvertToTask());
 
                         Scheduler.ExecutionDelegate addShakeDlgt3 = () =>
-                        { this.world.camera.AddShake(movement: new Vector2(cameraWidth / 30, cameraHeight / 30), durationSecs: 1.6f); };
+                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(cameraWidth / 30, cameraHeight / 30), durationSecs: 1.6f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addShakeDlgt3, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate addShakeDlgt4 = () =>
-                        { this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 10, cameraHeight / 12), durationSecs: 1.6f); };
+                        { if (!this.world.HasBeenRemoved) this.world.camera.AddShake(movement: new Vector2(-cameraWidth / 10, cameraHeight / 12), durationSecs: 1.6f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: addShakeDlgt4, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Aaaaaaah!", boxType: dialogue, delay: 0).ConvertToTask());
@@ -632,11 +636,14 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate clockAdvanceDlgt2 = () =>
                         {
                             TimeSpan timeUntilMorning = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2);
-                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
+                            if (!this.world.HasBeenRemoved) this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeInDuration, executeHelper: clockAdvanceDlgt2, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate clearWeatherDelegate = () => { this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
+                        Scheduler.ExecutionDelegate clearWeatherDelegate = () =>
+                        {
+                            if (!this.world.HasBeenRemoved) this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48));
+                        };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 60 * 4, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 5 } }, storeForLaterUse: true));
@@ -703,7 +710,9 @@ namespace SonOfRobin
 
             // task after the messages - added at the end, ordered normally
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.Player, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world?.camera.TrackPiece(world.Player); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackPieceDlgt, storeForLaterUse: true));
+
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));

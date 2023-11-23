@@ -52,9 +52,6 @@ namespace SonOfRobin
             TempoFastForward = 32,
             TempoStop = 33,
             TempoPlay = 34,
-            CameraTrackPiece = 35,
-            CameraTrackCoordsSmoothly = 36,
-            CameraTrackCoordsInstantly = 106,
             CameraSetZoom = 37,
             CameraSetMovementSpeed = 38,
             CameraResetMovementSpeed = 39,
@@ -1105,37 +1102,6 @@ namespace SonOfRobin
                             world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
                             world.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
-
-                            return;
-                        }
-
-                    case TaskName.CameraTrackPiece:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-                            world.camera.TrackPiece(piece);
-
-                            return;
-                        }
-
-                    case TaskName.CameraTrackCoordsSmoothly:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper, moveInstantly: false);
-
-                            return;
-                        }
-
-                    case TaskName.CameraTrackCoordsInstantly:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper, moveInstantly: true);
 
                             return;
                         }
