@@ -129,8 +129,10 @@ namespace SonOfRobin
             ClearWeatherForDuration = 109,
             AddCameraShake = 110,
             FlashOverlay = 111,
+            ExecuteDelegate = 112,
         }
 
+        public delegate void ExecutionDelegate();
         private static readonly Dictionary<int, Queue<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
 
@@ -2253,6 +2255,12 @@ namespace SonOfRobin
 
                             world.FlashOverlay(color: color, duration: duration);
 
+                            return;
+                        }
+
+                    case TaskName.ExecuteDelegate:
+                        {
+                            ((Delegate)this.ExecuteHelper).DynamicInvoke();
                             return;
                         }
 
