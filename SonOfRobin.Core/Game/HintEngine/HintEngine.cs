@@ -767,7 +767,15 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
                         {
                             if (world.HasBeenRemoved) return;
-                            new RollingText();
+
+                            TextWithImages sampleText1 = new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "sample credits text line 1", imageList: new List<Texture2D> { });
+
+                            TextWithImages sampleText2 = new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "sample credits text line 2 |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) });
+
+                            Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () => // TODO replace with invoke from RollingText scene
+                            { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
+
+                            new RollingText(textList: new TextWithImages[] { sampleText1, sampleText2 }, runAtTheEndDlgt: openCineEndingPart3Dlgt);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 
