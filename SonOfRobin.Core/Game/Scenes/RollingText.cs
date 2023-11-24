@@ -15,9 +15,11 @@ namespace SonOfRobin
 
         private readonly Scheduler.ExecutionDelegate runAtTheEndDlgt;
 
+        private readonly float offsetPercentX;
+
         private int currentOffsetY;
 
-        public RollingText(List<TextWithImages> textList, Color bgColor, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.bgFramesCount = bgFramesCount;
             this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
@@ -27,6 +29,7 @@ namespace SonOfRobin
 
             this.remainingTextList = textList;
             this.currentOffsetY = -this.bgFramesCount;
+            this.offsetPercentX = offsetPercentX;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
             int currentOffsetY = SonOfRobinGame.VirtualHeight;
@@ -85,8 +88,10 @@ namespace SonOfRobin
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
+                int offsetX = (int)(SonOfRobinGame.VirtualWidth * this.offsetPercentX);
+
                 Vector2 textPos = new(
-                    x: (SonOfRobinGame.VirtualWidth / 2) - (textWithImages.textWidth / 2),
+                    x: (SonOfRobinGame.VirtualWidth / 2) - (textWithImages.textWidth / 2) + offsetX,
                     y: this.offsetByText[textWithImages] - this.currentOffsetY);
 
                 textWithImages.Draw(position: textPos, color: Color.White, drawShadow: true, textScale: 1f);

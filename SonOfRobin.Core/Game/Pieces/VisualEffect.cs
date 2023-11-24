@@ -268,7 +268,7 @@ namespace SonOfRobin
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: 6, duration: 15);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.DistortCruiseCine, particlesToEmit: 6, duration: 15);
 
-            // TODO add big water splash particles when big rain and wind are present
+            if (this.world.weather.RainPercentage > 0.7f && this.world.weather.WindPercentage > 0.7f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterSplashCine, particlesToEmit: 20, duration: 1);
         }
 
         public override void SM_OscillateAroundTarget()

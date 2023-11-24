@@ -628,7 +628,7 @@ namespace SonOfRobin
 
                         Scheduler.ExecutionDelegate clockAdvanceDlgt1 = () =>
                         {
-                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon)), ignorePause: true, ignoreMultiplier: true);
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(3)), ignorePause: true, ignoreMultiplier: true);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clockAdvanceDlgt1, storeForLaterUse: true));
 
@@ -660,7 +660,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(50)), storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Soon, I will run out of | | food...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried), PieceInfo.GetTexture(PieceTemplate.Name.Apple) }, boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "I'm so hungry, but I must endure.\nSoon, I will run out of | | food...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried), PieceInfo.GetTexture(PieceTemplate.Name.Apple) }, boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(15)), storeForLaterUse: true));
 
@@ -762,22 +762,26 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60 * 5, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
                         taskChain.Add(new HintMessage(text: "I must have passed out...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
-                        taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems to be fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
                         {
-                            if (world.HasBeenRemoved) return;
+                            if (this.world.HasBeenRemoved) return;
 
                             var textList = new List<TextWithImages>();
 
-                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "credits", imageList: new List<Texture2D> { }));
-                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "Son of Robin (C) Ahoy Games 2023", imageList: new List<Texture2D> { }));
-                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "Thank you for playing! |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
+                            FontStashSharp.SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont(60);
+                            FontStashSharp.SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(35);
+
+                            textList.Add(new TextWithImages(font: fontTitle, text: "credits", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: "Son of Robin (C) Ahoy Games 2023", imageList: new List<Texture2D>()));
+                            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
+                            textList.Add(new TextWithImages(font: fontText, text: "| Thanks for playing! |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus), TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
 
                             Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
-                            { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
+                            { if (!this.world.HasBeenRemoved) this.world.HintEngine.ShowGeneralHint(type: Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: textList, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
+                            new RollingText(textList: textList, offsetPercentX: 0.2f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 
