@@ -7,20 +7,29 @@ namespace SonOfRobin
     {
         private const int yMargin = 10;
 
-        private readonly Dictionary<TextWithImages, int> offsetByText = new();
-        private readonly Scheduler.ExecutionDelegate runAtTheEndDlgt;
+        private readonly SolidColor solidColorBg;
+        private readonly int bgFramesCount;
 
         private readonly List<TextWithImages> remainingTextList;
+        private readonly Dictionary<TextWithImages, int> offsetByText = new();
+
+        private readonly Scheduler.ExecutionDelegate runAtTheEndDlgt;
 
         private int currentOffsetY;
 
-        public RollingText(List<TextWithImages> textList, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public RollingText(List<TextWithImages> textList, Color bgColor, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.bgFramesCount = bgFramesCount;
+            this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
+            this.solidColorBg.transManager.AddTransition(new Transition(transManager: this.solidColorBg.transManager, outTrans: true, startDelay: 0, duration: this.bgFramesCount, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.3f, endCopyToBase: true));
+
+            this.MoveAboveScene(this.solidColorBg);
+
             this.remainingTextList = textList;
-            this.currentOffsetY = SonOfRobinGame.VirtualHeight;
+            this.currentOffsetY = -this.bgFramesCount;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
-            int currentOffsetY = 0;
+            int currentOffsetY = SonOfRobinGame.VirtualHeight;
             foreach (TextWithImages textWithImages in textList)
             {
                 this.offsetByText[textWithImages] = currentOffsetY;
@@ -32,7 +41,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            this.currentOffsetY--;
+            this.currentOffsetY++;
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
@@ -43,23 +52,22 @@ namespace SonOfRobin
 
             if (this.remainingTextList.Count == 0)
             {
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: this.runAtTheEndDlgt, storeForLaterUse: true);
+                this.solidColorBg.transManager.AddTransition(new Transition(transManager: this.solidColorBg.transManager, outTrans: true, startDelay: 0, duration: this.bgFramesCount, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0f, endRemoveScene: true));
+
+                if (this.runAtTheEndDlgt != null) new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: this.bgFramesCount, executeHelper: this.runAtTheEndDlgt);
+
                 this.Remove();
             }
         }
 
         private void DeleteDisplayedTexts()
         {
-            int minY = this.currentOffsetY - SonOfRobinGame.VirtualHeight;
-
             var textsToRemove = new List<TextWithImages>();
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
-                int minTextY = this.offsetByText[textWithImages];
-                int maxTextY = minTextY + textWithImages.textHeight;
-
-                if (minTextY < minY && maxTextY < minY) textsToRemove.Add(textWithImages);
+                int maxTextY = this.offsetByText[textWithImages] + textWithImages.textHeight;
+                if (maxTextY < this.currentOffsetY) textsToRemove.Add(textWithImages);
             }
 
             foreach (TextWithImages textWithImages in textsToRemove)
@@ -74,9 +82,9 @@ namespace SonOfRobin
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
-                Vector2 textPos = new Vector2(
+                Vector2 textPos = new(
                     x: (SonOfRobinGame.VirtualWidth / 2) - (textWithImages.textWidth / 2),
-                    y: this.currentOffsetY + this.offsetByText[textWithImages]);
+                    y: this.offsetByText[textWithImages] - this.currentOffsetY);
 
                 textWithImages.Draw(position: textPos, color: Color.White, drawShadow: true, textScale: 1f);
             }
