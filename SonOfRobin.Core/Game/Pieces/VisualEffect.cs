@@ -128,7 +128,7 @@ namespace SonOfRobin
 
             // pushing player / animals
 
-            if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
+            if (this.level.levelType == Level.LevelType.Island && this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
             {
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
 
@@ -262,11 +262,13 @@ namespace SonOfRobin
             this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
         }
 
-        public override void SM_MoveSlowlyToTheRight()
+        public override void SM_EndingBoatCruise()
         {
             this.sprite.Move(new Vector2(1, 0));
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: 6, duration: 15);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.DistortCruiseCine, particlesToEmit: 6, duration: 15);
+
+            // TODO add big water splash particles when big rain and wind are present
         }
 
         public override void SM_OscillateAroundTarget()

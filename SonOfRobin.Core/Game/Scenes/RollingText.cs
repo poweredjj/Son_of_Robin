@@ -67,7 +67,10 @@ namespace SonOfRobin
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
                 int maxTextY = this.offsetByText[textWithImages] + textWithImages.textHeight;
-                if (maxTextY < this.currentOffsetY) textsToRemove.Add(textWithImages);
+                bool textIsNoLongerDisplayed = maxTextY < this.currentOffsetY;
+
+                if (textIsNoLongerDisplayed) textsToRemove.Add(textWithImages);
+                else break;
             }
 
             foreach (TextWithImages textWithImages in textsToRemove)

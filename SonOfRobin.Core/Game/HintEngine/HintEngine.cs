@@ -558,7 +558,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Will I miss this place someday?", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "The memories here will always hold a special place in my | heart...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Heart) }, boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "The memories here will always hold a special place in my | heart...", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }, boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos2 } }, storeForLaterUse: true));
 
@@ -768,14 +768,16 @@ namespace SonOfRobin
                         {
                             if (world.HasBeenRemoved) return;
 
-                            TextWithImages sampleText1 = new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "credits", imageList: new List<Texture2D> { });
+                            var textList = new List<TextWithImages>();
 
-                            TextWithImages sampleText2 = new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "some text and graphics |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) });
+                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "credits", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "Son of Robin (C) Ahoy Games 2023", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: SonOfRobinGame.FontTommy.GetFont(30), text: "Thank you for playing! |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
 
-                            Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () => // TODO replace with invoke from RollingText scene
+                            Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
                             { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: new List<TextWithImages> { sampleText1, sampleText2 }, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
+                            new RollingText(textList: textList, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 

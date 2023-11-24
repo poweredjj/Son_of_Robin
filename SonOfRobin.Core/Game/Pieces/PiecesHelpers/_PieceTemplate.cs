@@ -1330,7 +1330,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteCruising, allowedTerrain: allowedTerrain, readableName: "boat", description: "Actively used to escape the island.", activeState: BoardPiece.State.MoveSlowlyToTheRight);
+                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteCruising, allowedTerrain: allowedTerrain, readableName: "boat", description: "Actively used to escape the island.", activeState: BoardPiece.State.EndingBoatCruise);
 
                         return boardPiece;
                     }

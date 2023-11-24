@@ -48,7 +48,7 @@ namespace SonOfRobin
             EmitParticles = 29,
             HasteCloneFollowPlayer = 31,
             CaveEntranceDisappear = 32,
-            MoveSlowlyToTheRight = 33,
+            EndingBoatCruise = 33,
             OscillateAroundTarget = 34,
         }
 
@@ -764,8 +764,8 @@ namespace SonOfRobin
                     this.SM_CaveEntranceDisappear();
                     break;
 
-                case State.MoveSlowlyToTheRight:
-                    this.SM_MoveSlowlyToTheRight();
+                case State.EndingBoatCruise:
+                    this.SM_EndingBoatCruise();
                     break;
 
                 case State.OscillateAroundTarget:
@@ -1137,7 +1137,7 @@ namespace SonOfRobin
         public virtual void SM_CaveEntranceDisappear()
         { throw new DivideByZeroException("This method should not be executed."); }
 
-        public virtual void SM_MoveSlowlyToTheRight()
+        public virtual void SM_EndingBoatCruise()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_OscillateAroundTarget()
