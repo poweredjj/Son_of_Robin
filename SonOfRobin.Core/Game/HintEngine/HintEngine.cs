@@ -27,12 +27,13 @@ namespace SonOfRobin
             CineSmallBase = 13,
             CineEndingPart1 = 14,
             CineEndingPart2 = 15,
-            AnimalScaredOfFire = 16,
-            AnimalCounters = 17,
-            ZoomOutLocked = 18,
-            Lightning = 19,
-            TooDarkToUseTools = 20,
-            BadSleep = 21,
+            CineEndingPart3 = 16,
+            AnimalScaredOfFire = 17,
+            AnimalCounters = 18,
+            ZoomOutLocked = 19,
+            Lightning = 20,
+            TooDarkToUseTools = 21,
+            BadSleep = 22,
         };
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -40,7 +41,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.CineEndingPart1, Type.CineEndingPart2, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.CineEndingPart1, Type.CineEndingPart2, Type.CineEndingPart3, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
 
         public HashSet<Type> shownGeneralHints = new() { };
         public HashSet<PieceHint.Type> shownPieceHints = new() { };
@@ -761,9 +762,36 @@ namespace SonOfRobin
 
                         //taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60 * 5, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
                         //taskChain.Add(new HintMessage(text: "I must have passed out...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
-                        //taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
-                        // TODO add credits and stats (RollingText scene)
+                        Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
+                        {
+                            if (world.HasBeenRemoved) return;
+                            new RollingText();
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate openCineEnding3Dlgt = () => // TODO replace with invoke from RollingText scene
+                        { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: openCineEnding3Dlgt, storeForLaterUse: true));
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+
+                        break;
+                    }
+
+                case Type.CineEndingPart3:
+                    {
+                        // no disable code needed
+                        Player player = this.world.Player;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.CineMode = true;
+                        this.world.cineCurtains.showPercentage = 1f; // no transition here
+
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
 
                         //taskChain.Add(new HintMessage(text: "Hmm...\nI'm sure there was something important on that island.\nA secret, waiting to be uncovered...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
@@ -781,8 +809,8 @@ namespace SonOfRobin
                         //Scheduler.ExecutionDelegate trackPieceDlgt2 = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
                         //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: trackPieceDlgt2, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2.5f, zoomSpeedMultiplier: 0.07f); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt3, storeForLaterUse: true));
+                        //Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2.5f, zoomSpeedMultiplier: 0.07f); };
+                        //taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt3, storeForLaterUse: true));
 
                         //taskChain.Add(new HintMessage(text: "I don't believe it! A ship!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
@@ -795,11 +823,13 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate stopSoundsDlgt = () =>
                         {
                             if (this.world.HasBeenRemoved) return;
-                            boatCruising.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating AmbientSound pieces
 
-                            var nearbySounds = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 10000);
-                            var ambientSounds = nearbySounds.Where(piece => piece.GetType() == typeof(AmbientSound));
-                            var seaWaves = nearbySounds.Where(piece => piece.name == PieceTemplate.Name.SeaWave);
+                            var nearbyPieces = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 10000);
+                            var ambientSounds = nearbyPieces.Where(piece => piece.GetType() == typeof(AmbientSound));
+                            var seaWaves = nearbyPieces.Where(piece => piece.name == PieceTemplate.Name.SeaWave);
+                            var boatsCruising = nearbyPieces.Where(piece => piece.name == PieceTemplate.Name.BoatCompleteCruising);
+
+                            foreach (BoardPiece boat in boatsCruising) boat.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating AmbientSound pieces
 
                             foreach (BoardPiece soundPiece in ambientSounds)
                             {
