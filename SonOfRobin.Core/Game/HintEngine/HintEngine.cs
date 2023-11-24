@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -607,6 +608,11 @@ namespace SonOfRobin
                         player.sprite.CharacterStand();
                         var dialogue = HintMessage.BoxType.Dialogue;
 
+                        BoardPiece boatCruising = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
+                        boatCruising.sprite.PlaceOnBoard(randomPlacement: false, position: player.sprite.position, closestFreeSpot: true);
+                        boatCruising.AddToStateMachines();
+                        new Tracking(level: player.level, targetSprite: boatCruising.sprite, followingSprite: player.sprite, offsetX: 100, offsetY: -15);
+
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
                         this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no weather events are present
@@ -667,10 +673,10 @@ namespace SonOfRobin
                             if (this.world.HasBeenRemoved) return;
 
                             orbiter.PlaceOnBoard(randomPlacement: false, position: player.sprite.position);
-                            orbiter.universalFloat = 0.3f;
+                            orbiter.universalFloat = 0.4f;
                             orbiter.visualAid = player;
                             this.world.camera.TrackPiece(orbiter);
-                            this.world.camera.SetMovementSpeed(0.25f);
+                            this.world.camera.SetMovementSpeed(0.8f);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
@@ -755,7 +761,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60 * 5, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
                         taskChain.Add(new HintMessage(text: "I must have passed out...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
-                        taskChain.Add(new HintMessage(text: "I'm glad that the storm is finally over.", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         // TODO add credits and stats (RollingText scene)
 
@@ -768,18 +774,37 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate trackCoordsDlgt2 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 5, 0)); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt2, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Ahoy there, on the boat!", boxType: HintMessage.BoxType.NPCDialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Ahoy there, on the boat!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "Need a lift to safety and civilization?", boxType: HintMessage.BoxType.NPCDialogue, delay: 60 * 0, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Need a lift to safety and civilization?", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
 
                         Scheduler.ExecutionDelegate trackPieceDlgt2 = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: trackPieceDlgt2, storeForLaterUse: true));
 
+                        Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1.5f, zoomSpeedMultiplier: 0.03f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt3, storeForLaterUse: true));
+
                         taskChain.Add(new HintMessage(text: "I don't believe it! A ship!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "At last, I'm saved!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "At last, I'm saved!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         int finalFadeInDuration = 60 * 3;
+
+                        Scheduler.ExecutionDelegate stopSoundsDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+                            boatCruising.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating sounds
+
+                            var nearbySounds = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.StateMachinesNonPlants, mainSprite: player.sprite, distance: 10000).Where(piece => piece.GetType() == typeof(AmbientSound));
+
+                            foreach (BoardPiece soundPiece in nearbySounds)
+                            {
+                                AmbientSound ambientSound = (AmbientSound)soundPiece;
+                                ambientSound.activeState = BoardPiece.State.Empty;
+                                ambientSound.activeSoundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
+                            }
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: stopSoundsDlgt, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", finalFadeInDuration } }, storeForLaterUse: true));
 

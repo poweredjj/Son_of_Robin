@@ -193,11 +193,6 @@ namespace SonOfRobin
                 else if (this.level.levelType == Level.LevelType.OpenSea)
                 {
                     this.sprite.PlaceOnBoard(randomPlacement: false, position: new Vector2(x: this.level.width / 10, y: this.level.height / 2), closestFreeSpot: true, maxDistanceOverride: int.MaxValue);
-
-                    BoardPiece boatSimulation = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
-                    boatSimulation.sprite.PlaceOnBoard(randomPlacement: false, position: this.sprite.position, closestFreeSpot: true);
-                    boatSimulation.AddToStateMachines();
-                    new Tracking(level: this.level, targetSprite: boatSimulation.sprite, followingSprite: this.sprite, offsetX: 100, offsetY: -15);
                 }
 
                 if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");

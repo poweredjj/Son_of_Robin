@@ -11,7 +11,6 @@ namespace SonOfRobin
         public enum BoxType : byte
         {
             Dialogue,
-            NPCDialogue,
             InvertedDialogue,
             GreenBox,
             BlueBox,
@@ -66,11 +65,6 @@ namespace SonOfRobin
                 case BoxType.Dialogue:
                     bgColor = Color.White;
                     textColor = Color.Black;
-                    break;
-
-                case BoxType.NPCDialogue:
-                    bgColor = Color.White;
-                    textColor = Color.DarkGreen;
                     break;
 
                 case BoxType.InvertedDialogue:

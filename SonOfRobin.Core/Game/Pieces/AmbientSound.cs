@@ -79,7 +79,7 @@ namespace SonOfRobin
             {
                 this.sprite.opacity = visFullOpacity;
                 if (!isLooped) new OpacityFade(sprite: this.sprite, destOpacity: visMinOpacity, duration: 60);
-                else this.showStatBarsTillFrame = 2147483647;
+                else this.showStatBarsTillFrame = int.MaxValue;
             }
         }
     }
