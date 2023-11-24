@@ -26,36 +26,40 @@ namespace SonOfRobin
             MeatDrying = 7,
 
             WaterWalk = 8,
-            MudWalk = 9,
-            WaterWave = 10,
-            LavaFlame = 11,
+            WaterCruiseCine = 9,
+            WaterSplashCine = 10,
+            MudWalk = 11,
+            WaterWave = 12,
+            LavaFlame = 13,
 
-            SwampGas = 12,
-            Lightning = 13,
-            Excavated = 14,
-            DustPuff = 15,
-            SmokePuff = 16,
+            SwampGas = 14,
+            Lightning = 15,
+            Excavated = 16,
+            DustPuff = 17,
+            SmokePuff = 18,
 
-            DebrisWood = 17,
-            DebrisLeaf = 18,
-            DebrisGrass = 19,
-            DebrisStone = 20,
-            DebrisCrystal = 21,
-            DebrisCeramic = 22,
-            DebrisBlood = 23,
-            DebrisStar = 24,
-            DebrisHeart = 25,
-            DebrisSoot = 26,
+            DebrisWood = 19,
+            DebrisLeaf = 20,
+            DebrisGrass = 21,
+            DebrisStone = 22,
+            DebrisCrystal = 23,
+            DebrisCeramic = 24,
+            DebrisBlood = 25,
+            DebrisStarSmall = 26,
+            DebrisStarBig = 27,
+            DebrisHeart = 28,
+            DebrisSoot = 29,
 
-            WeatherRain = 27,
+            WeatherRain = 30,
 
-            WindLeaf = 28,
-            WindPetal = 29,
+            WindLeaf = 31,
+            WindPetal = 32,
 
-            HeatSmall = 31,
-            HeatMedium = 30,
-            HeatBig = 32,
-            HeatFlame = 33,
+            HeatSmall = 33,
+            HeatMedium = 34,
+            HeatBig = 35,
+            HeatFlame = 36,
+            DistortCruiseCine = 37,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -65,6 +69,8 @@ namespace SonOfRobin
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterSplashCine, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterWave, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
@@ -82,7 +88,8 @@ namespace SonOfRobin
                 { Preset.DebrisCrystal, TextureBank.TextureName.ParticleDebrisCrystal },
                 { Preset.DebrisCeramic, TextureBank.TextureName.ParticleDebrisCeramic },
                 { Preset.DebrisBlood, TextureBank.TextureName.ParticleDebrisBlood },
-                { Preset.DebrisStar, TextureBank.TextureName.ParticleDebrisStar },
+                { Preset.DebrisStarSmall, TextureBank.TextureName.ParticleDebrisStar },
+                { Preset.DebrisStarBig, TextureBank.TextureName.ParticleDebrisStar },
                 { Preset.DebrisHeart, TextureBank.TextureName.ParticleDebrisHeart },
                 { Preset.DebrisSoot, TextureBank.TextureName.ParticleDebrisSoot },
                 { Preset.SwampGas, TextureBank.TextureName.ParticleCircleSharp },
@@ -93,6 +100,7 @@ namespace SonOfRobin
                 { Preset.HeatMedium, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatBig, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatFlame, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.DistortCruiseCine, TextureBank.TextureName.ParticleCircleSoft },
             };
 
         public class PresetData
@@ -577,6 +585,118 @@ namespace SonOfRobin
                                     }
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterCruiseCine:
+                    {
+                        defaultParticlesToEmit = 3;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 8000, TimeSpan.FromSeconds(4.0f),
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.35f),
+                                            EndValue = new Vector2(0.01f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.42f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterSplashCine:
+                    {
+                        defaultParticlesToEmit = 3;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 400, TimeSpan.FromSeconds(4f),
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = new Range<float>(0.5f, 1.4f),
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(20f, 70f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.34f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 48},
+                            }
+                        };
+                        break;
+                    }
+
+
+                case Preset.DistortCruiseCine:
+                    {
+                        defaultParticlesToEmit = 6;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 2000, TimeSpan.FromSeconds(1.8f),
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(8, 8, 8)),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.0f),
+                                            EndValue = new Vector2(2.8f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.42f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f },
                             }
                         };
                         break;
@@ -1184,7 +1304,37 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Preset.DebrisStar:
+                case Preset.DebrisStarBig:
+                    {
+                        defaultParticlesToEmit = 60;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(2f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Speed = new Range<float>(250f, 1500f),
+                                Scale = new Range<float>(0.2f, 1.2f),
+                                Rotation = new Range<float>(-2f, 2f),
+                                Mass = new Range<float>(0.5f, 1.6f),
+                            },
+
+                            Modifiers =
+                        {
+                            new DragModifier { Density = 0.2f, DragCoefficient = 25f },
+                            new AgeModifier
+                            {
+                                Interpolators =
+                                {
+                                    new OpacityInterpolator
+                                    { StartValue = 4.0f, EndValue = 0f },
+                                },
+                            },
+                          }
+                        };
+                        break;
+                    }
+
+                case Preset.DebrisStarSmall:
                     {
                         defaultParticlesToEmit = 8;
 
@@ -1575,6 +1725,14 @@ namespace SonOfRobin
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
+                case Preset.WaterCruiseCine:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;  
+                
+                case Preset.WaterSplashCine:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;
+
                 case Preset.MudWalk:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
@@ -1633,6 +1791,10 @@ namespace SonOfRobin
 
                 case Preset.HeatFlame:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.DistortCruiseCine:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 default:

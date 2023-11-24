@@ -118,6 +118,12 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.LavaGas, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
                 new PieceCreationData(name: PieceTemplate.Name.SoundCaveWaterDrip, multiplier: 1.0f, doNotReplenish: true, levelType: Level.LevelType.Cave),
+
+                // open sea (ending)
+
+                new PieceCreationData(name: PieceTemplate.Name.SeaWave, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.OpenSea),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.OpenSea),
+
                 };
 
             //{ // for testing creation of selected pieces

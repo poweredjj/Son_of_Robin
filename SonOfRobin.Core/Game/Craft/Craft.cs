@@ -53,15 +53,15 @@ namespace SonOfRobin
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
 
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceToCreate);
-                bool isEquip = pieceInfo.type == typeof(Equipment);
+                bool isEquipOrConstructionSite = pieceInfo.type == typeof(Equipment) || pieceInfo.type == typeof(ConstructionSite);
 
                 if (maxLevel == -1)
                 {
                     maxLevel = pieceInfo.canBePickedUp ? 4 : 2;
-                    if (isEquip) maxLevel = 1;
+                    if (isEquipOrConstructionSite) maxLevel = 1;
                 }
                 this.maxLevel = maxLevel;
-                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquip ? 3 : 1;
+                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquipOrConstructionSite ? 3 : 1;
                 this.craftCountToLevelUp = craftCountToLevelUp;
 
                 this.masterLevelFatigueMultiplier = fatigueMultiplier;
@@ -192,12 +192,11 @@ namespace SonOfRobin
                         var craftParams = new Dictionary<string, object> { { "recipe", this }, { "craftOnTheGround", true } };
 
                         var confirmationData = new Dictionary<string, Object> {
-                            { "question", "Not enough inventory space to craft. Craft on the ground?" },
                             { "taskName", Scheduler.TaskName.Craft },
-                            { "executeHelper", craftParams }, { "blocksUpdatesBelow", true } };
+                            { "executeHelper", craftParams } };
 
                         Sound.QuickPlay(SoundData.Name.Notification4);
-                        MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+                        MenuTemplate.CreateConfirmationMenu(question: "Not enough inventory space to craft. Craft on the ground?", confirmationData: confirmationData, blocksUpdatesBelow: true);
                         return craftedPieces;
                     }
                 }
@@ -321,18 +320,19 @@ namespace SonOfRobin
 
                 SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
 
-                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
 
                 if (world.craftStats.LastCraftWasSmart)
                 {
-                    taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                    taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                         imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                     if (!tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
                     {
-                        var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.SmartCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                        Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                        { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.SmartCrafting, world: world, ignoreDelay: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                         tutorialAdded = true;
                     }
 
@@ -349,7 +349,7 @@ namespace SonOfRobin
                     {
                         int bonusHitPoints = world.random.Next((int)(firstCraftedPiece.maxHitPoints * 0.2f), (int)(firstCraftedPiece.maxHitPoints * 0.7f));
 
-                        taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                        taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                             imageList: new List<Texture2D> { firstCraftedPiece.sprite.CroppedAnimFrame.texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight) }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                         foreach (BoardPiece craftedPiece in craftedPieces)
@@ -388,7 +388,7 @@ namespace SonOfRobin
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
                     if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
-                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 if (unlockedPieces.Count > 0)
@@ -405,7 +405,7 @@ namespace SonOfRobin
                         imageList.Add(unlockedPieceInfo.texture);
                     }
 
-                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 bool craftLevelUp = world.Player.CheckForCraftLevelUp();
@@ -421,7 +421,7 @@ namespace SonOfRobin
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture };
                     if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
-                    taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 if (!pieceInfo.canBePickedUp)
@@ -436,22 +436,28 @@ namespace SonOfRobin
 
                 if (!tutorialAdded && craftLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.GeneralCraftLevels))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.GeneralCraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.GeneralCraftLevels, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
                 if (!tutorialAdded && recipeLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.CraftRecipeLevels))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftRecipeLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.CraftRecipeLevels, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
                 if (!tutorialAdded && world.Player.ResourcefulCrafter && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.ResourcefulCrafting))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.ResourcefulCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                    { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.ResourcefulCrafting, world: world, ignoreDelay: true); };
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, storeForLaterUse: true, executeHelper: showTutorialDlgt));
                     tutorialAdded = true;
                 }
 
@@ -462,7 +468,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    // showing on the field (WorldEvent works better for this case)
+                    // showing on the field (LevelEvent works better for this case)
                     new LevelEvent(eventName: LevelEvent.EventName.CheckForPieceHints, level: world.ActiveLevel, delay: 60 * 1, boardPiece: null, eventHelper: executeHelper);
                 }
 
@@ -610,7 +616,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Notification1);
-                HintEngine.ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, blockInput: true, useTransition: true, imageList: imageList, boxType: HintMessage.BoxType.GreenBox) });
+                HintEngine.ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, blockInputDefaultDuration: true, useTransition: true, imageList: imageList, boxType: HintMessage.BoxType.GreenBox) });
             }
         }
 
@@ -651,6 +657,8 @@ namespace SonOfRobin
 
             List<Recipe> notUnlockableRecipes = new List<Recipe>();
 
+            List<PieceHint> pieceHintData = PieceHintData.GetData();
+
             foreach (Recipe initialHiddenRecipe in HiddenRecipes)
             {
                 Recipe currentHiddenRecipe = initialHiddenRecipe;
@@ -678,7 +686,20 @@ namespace SonOfRobin
                         }
                     }
 
-                    if (!nextLevelRecipeFound) break;
+                    if (!nextLevelRecipeFound)
+                    {
+                        // for recipes unlocked in PieceHints
+                        foreach (PieceHint pieceHint in pieceHintData)
+                        {
+                            if (pieceHint.recipesToUnlock != null && pieceHint.recipesToUnlock.Contains(currentHiddenRecipe.pieceToCreate))
+                            {
+                                recipeCanBeUnlocked = true;
+                                break;
+                            }
+                        }
+
+                        break;
+                    };
                 }
                 if (!recipeCanBeUnlocked) notUnlockableRecipes.Add(initialHiddenRecipe);
             }

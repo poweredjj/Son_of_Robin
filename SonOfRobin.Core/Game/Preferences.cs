@@ -300,6 +300,7 @@ namespace SonOfRobin
         public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
         private static bool debugShowWholeMap = false;
+        public static bool debugAllowConstructionWithoutMaterials = false;
         public static bool debugShowAllRecipes = false;
         public static bool debugShowAllTutorials = false;
         public static bool debugSaveEverywhere = false;

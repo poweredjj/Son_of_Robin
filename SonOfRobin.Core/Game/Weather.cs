@@ -76,7 +76,6 @@ namespace SonOfRobin
         }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
-        private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
         private static readonly TimeSpan heatTransitionDuration = TimeSpan.FromMinutes(25);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
@@ -127,7 +126,7 @@ namespace SonOfRobin
             this.rainGravityModifier = new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 0f };
             this.fogPieces = new List<BoardPiece>();
             this.weatherEvents = new List<WeatherEvent>();
-            this.forecastEnd = veryOldDate; // to ensure first update
+            this.forecastEnd = DateTime.MinValue; // to ensure first update
             this.firstForecastCreated = false;
 
             this.CloudsPercentage = 0f;
@@ -135,8 +134,8 @@ namespace SonOfRobin
             this.SunVisibility = 1f;
             this.WindOriginX = 0f;
             this.WindOriginY = 0f;
-            this.NextGlobalWindBlow = veryOldDate;
-            this.NextLocalizedWindBlow = veryOldDate;
+            this.NextGlobalWindBlow = DateTime.MinValue;
+            this.NextLocalizedWindBlow = DateTime.MinValue;
             this.WindPercentage = 0f;
             this.LightningPercentage = 0f;
             this.HeatPercentage = 0f;
@@ -185,7 +184,7 @@ namespace SonOfRobin
 
         public void Update()
         {
-            if (this.world.ActiveLevel.levelType != Level.LevelType.Island)
+            if (!this.world.ActiveLevel.hasWeather)
             {
                 this.CloudsPercentage = 0f;
                 this.FogPercentage = 0f;
@@ -201,7 +200,7 @@ namespace SonOfRobin
             }
 
             DateTime islandDateTime = this.islandClock.IslandDateTime;
-            weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
+            this.weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 
             this.UpdateCurrentIntensities();
 
@@ -323,7 +322,7 @@ namespace SonOfRobin
             {
                 foreach (BoardPiece fogPiece in this.fogPieces)
                 {
-                    if (canSeeThroughFog || !fogPiece.sprite.GfxRect.Intersects(cameraRect)) fogPiece.Destroy();
+                    if (canSeeThroughFog || !fogPiece.sprite.GfxRect.Intersects(cameraRect) || fogPiece.level != this.world.ActiveLevel) fogPiece.Destroy();
                     else
                     {
                         if (fogPiece.sprite.opacityFade == null) new OpacityFade(sprite: fogPiece.sprite, destOpacity: 0, duration: this.world.random.Next(30, 60 * 4), destroyPiece: true);
@@ -382,6 +381,12 @@ namespace SonOfRobin
 
             Rectangle cameraRect = this.world.camera.viewRect;
 
+            if (this.rainEmitter.level != this.world.ActiveLevel)
+            {
+                this.rainEmitter.level = this.world.ActiveLevel;
+                this.rainEmitter.RemoveFromBoard();
+            }
+
             bool firstRun = !this.rainEmitter.sprite.IsOnBoard;
             if (firstRun) this.rainEmitter.sprite.PlaceOnBoard(position: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), randomPlacement: false, ignoreCollisions: true, precisePlacement: true);
 
@@ -414,7 +419,7 @@ namespace SonOfRobin
             {
                 this.lastRainRect = cameraRect;
                 particleEmitter.Profile = Profile.BoxFill(width: cameraRect.Width * 2.2f, height: cameraRect.Height / 2);
-                MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
+                // MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} rain - cameraRect changed {cameraRect.Width}x{cameraRect.Height}");
             }
         }
 
@@ -433,7 +438,7 @@ namespace SonOfRobin
             {
                 this.WindOriginX = -1;
                 this.WindOriginY = -1;
-                this.NextGlobalWindBlow = veryOldDate;
+                this.NextGlobalWindBlow = DateTime.MinValue;
 
                 return;
             }
@@ -484,7 +489,9 @@ namespace SonOfRobin
                         this.world.random.Next(5) == 0
                         )
                     {
-                        new Scheduler.Task(taskName: Scheduler.TaskName.TurnOnWindParticles, executeHelper: piece, delay: delayFrames);
+                        Scheduler.ExecutionDelegate turnOnWindParticlesDlgt = () =>
+                        { if (piece.sprite.IsOnBoard && !piece.world.HasBeenRemoved) this.TurnOnWindParticlesForPiece(piece); };
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: turnOnWindParticlesDlgt, delay: delayFrames);
                     }
                 }
             }
@@ -499,11 +506,68 @@ namespace SonOfRobin
                     if (piece.pieceInfo.canBePickedUp || pieceType == typeof(Animal) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
                     {
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
-
                         Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
 
-                        var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement", movement } };
-                        new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);
+                        Scheduler.ExecutionDelegate addPassiveMovementDlgt = () =>
+                        {
+                            if (!piece.world.HasBeenRemoved && piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
+                        };
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: (int)distance / 20, executeHelper: addPassiveMovementDlgt);
+                    }
+                }
+            }
+        }
+
+        private void TurnOnWindParticlesForPiece(BoardPiece piece)
+        {
+            float windOriginX = this.WindOriginX;
+            Sprite sprite = piece.sprite;
+
+            foreach (var kvp in piece.pieceInfo.windParticlesDict)
+            {
+                ParticleEngine.Preset preset = kvp.Key;
+                Color color = kvp.Value;
+
+                bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
+                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
+
+                Random random = piece.world.random;
+
+                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
+                if (!hasPreset && particleEmitter != null)
+                {
+                    particleEmitter.Parameters.Color = HslColor.FromRgb(color);
+                    particleEmitter.Profile = Profile.Spray(direction: windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, spread: 2f);
+
+                    Vector2 windDirection = new Vector2(windOriginX == 0 ? 1f : -1f, 0.2f);
+                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windDirection, Strength = random.Next(60, 250) });
+
+                    int vortexCount = random.Next(1, 4);
+                    for (int i = 0; i < vortexCount; i++)
+                    {
+                        int vortexX = (i * 250) + (random.Next(60, 180) * (windOriginX == 0 ? 1 : -1));
+                        if (i == 0) vortexX = 0;
+
+                        float angle1 = random.NextSingle() * (float)Math.PI * 2;
+                        float angle2 = angle1 - (float)Math.PI;
+                        int distance = random.Next(100, 300);
+
+                        Vector2 vortexOffset1 = new((int)Math.Round(distance * Math.Cos(angle1)), (int)Math.Round(distance * Math.Sin(angle1)));
+                        Vector2 vortexOffset2 = new((int)Math.Round(distance * Math.Cos(angle2)), (int)Math.Round(distance * Math.Sin(angle2)));
+
+                        vortexOffset1.X += vortexX;
+                        vortexOffset2.X += vortexX;
+
+                        foreach (Vector2 offset in new Vector2[] { vortexOffset1, vortexOffset2 })
+                        {
+                            particleEmitter.Modifiers.Add(new VortexModifier
+                            {
+                                Mass = random.Next(10, 35),
+                                MaxSpeed = 0.5f,
+                                Position = offset,
+                            });
+                        }
                     }
                 }
             }
@@ -523,7 +587,7 @@ namespace SonOfRobin
             if (this.NextLocalizedWindBlow > islandDateTime) return;
 
             // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
-            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
+            // new LevelEvent(eventName: LevelEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
             // SonOfRobinGame.messageLog.AddMessage(text: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(1);
@@ -569,17 +633,18 @@ namespace SonOfRobin
             }
 
             this.forecastEnd = forecastStartTime + maxForecastDuration;
+            if (!this.world.ActiveLevel.plansWeather) return;
 
             float minVal = 0.2f;
             float maxVal = 0.8f;
-            float addChanceFactor = 0.2f; // minimum value in 0 - 1 range, that will generate a single event
+            float addChanceFactor = 0.4f; // minimum value in 0 - 1 range, that will generate a single event
 
             if (this.world.random.Next(6) == 0)
             {
                 // bad weather happens from time to time
                 minVal += Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.0f, maxVal: 0.5f);
                 maxVal = 1.0f;
-                addChanceFactor = 0.0f;
+                addChanceFactor = 0.8f;
             }
 
             float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
@@ -589,6 +654,8 @@ namespace SonOfRobin
 
             // adding clouds
             this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity, addChanceFactor: addChanceFactor);
+
+            // adding wind
 
             this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(2), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(6), maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.2f, 1.0f));
 
@@ -603,7 +670,7 @@ namespace SonOfRobin
 
                     this.AddNewWeatherEvents(type: WeatherType.Rain, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: rainMaxIntensity, addChanceFactor: addChanceFactor);
 
-                    this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: windMaxIntensity, addChanceFactor: Math.Max(addChanceFactor - 0.1f, 0.0f));
+                    this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.1f, 1.0f));
                 }
             }
 
@@ -632,7 +699,7 @@ namespace SonOfRobin
             }
         }
 
-        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1, bool randomizeIntensity = true)
+        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1f, bool randomizeIntensity = true)
         {
             DateTime timeCursor = startTime;
 
@@ -659,7 +726,7 @@ namespace SonOfRobin
 
                 float intensity = randomizeIntensity ? Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity) : maxIntensity;
 
-                bool add = addChanceFactor == 0 || this.world.random.NextSingle() >= addChanceFactor;
+                bool add = addChanceFactor == 1f || this.world.random.NextSingle() < addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
                 timeCursor += duration;
@@ -706,7 +773,7 @@ namespace SonOfRobin
 
             this.weatherEvents.Add(new WeatherEvent(type: WeatherType.Wind, intensity: 0.45f, startTime: startTime, duration: duration, transitionLength: transitionDuration));
 
-            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: 0.8f, randomizeIntensity: false);
+            this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromSeconds(20), maxGap: TimeSpan.FromMinutes(8), maxIntensity: 1f, addChanceFactor: 0.5f, randomizeIntensity: false);
         }
 
         public Dictionary<string, Object> Serialize()

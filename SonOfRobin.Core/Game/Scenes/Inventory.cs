@@ -796,8 +796,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.MeatHarvestTrigger, PieceTemplate.Name.OfferTrigger };
-            if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
+            if (slot.locked && piece.GetType() != typeof(Trigger)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
@@ -814,9 +813,10 @@ namespace SonOfRobin
             bool addHarvest = piece.name == PieceTemplate.Name.MeatHarvestTrigger;
             bool addFieldHarvest = piece.world.Player.Skill == Player.SkillName.Hunter && (this.storage.storageType == PieceStorage.StorageType.Virtual || this.storage.storageType == PieceStorage.StorageType.Inventory) && piece.GetType() == typeof(Animal) && !piece.alive;
             bool addOffer = piece.name == PieceTemplate.Name.OfferTrigger;
+            bool addConstruct = piece.name == PieceTemplate.Name.ConstructTrigger;
             bool addEmpty = piece.GetType() == typeof(Potion);
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addEmpty: addEmpty);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty);
             return;
         }
 
@@ -1067,16 +1067,46 @@ namespace SonOfRobin
             if (combinedPiece != null)
             {
                 var optionList = new List<object>();
-                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryCombineItems }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "Combine items?" }, { "customOptionList", optionList } };
-                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
+                Scheduler.ExecutionDelegate combineItemsDlgt = () => { if (!this.HasBeenRemoved) this.ProcessPieceCombine(); };
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", combineItemsDlgt } });
+
+                Scheduler.ExecutionDelegate releaseHeldPiecesDlgt = () =>
+                { if (!this.HasBeenRemoved) this.ReleaseHeldPieces(slot: this.ActiveSlot, forceReleaseAll: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.ExecuteDelegate : Scheduler.TaskName.Empty }, { "executeHelper", releaseHeldPiecesDlgt } });
+
+                Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                {
+                    MenuTemplate.CreateConfirmationMenu(question: "Combine items?", customOptions: optionList, blocksUpdatesBelow: true);
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
 
                 return true;
             }
 
             return false;
+        }
+
+        private void ProcessPieceCombine()
+        {
+            StorageSlot activeSlot = this.ActiveSlot;
+
+            BoardPiece piece1 = this.draggedPieces[0];
+            this.draggedPieces.RemoveAt(0);
+            BoardPiece piece2 = activeSlot.TopPiece;
+
+            BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: piece1, piece2: piece2);
+            if (combinedPiece == null) throw new ArgumentNullException($"Previously checked combination of {piece1.readableName} and {piece2.readableName} failed.");
+
+            activeSlot.RemoveTopPiece();
+
+            if (activeSlot.CanFitThisPiece(combinedPiece)) activeSlot.AddPiece(combinedPiece);
+            else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
+
+            soundCombine.Play();
+            new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
+
+            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
         }
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)
@@ -1118,11 +1148,19 @@ namespace SonOfRobin
             if (!execute)
             {
                 var optionList = new List<object>();
-                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryApplyPotion }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?" }, { "customOptionList", optionList } };
-                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
+                Scheduler.ExecutionDelegate applyPotionDlgt = () => { if (!this.HasBeenRemoved) this.TryToApplyPotion(slot: this.ActiveSlot, execute: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", applyPotionDlgt } });
+
+                Scheduler.ExecutionDelegate releaseHeldPiecesDlgt = () =>
+                { if (!this.HasBeenRemoved) this.ReleaseHeldPieces(slot: this.ActiveSlot, forceReleaseAll: true); };
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.ExecuteDelegate : Scheduler.TaskName.Empty }, { "executeHelper", releaseHeldPiecesDlgt } });
+
+                Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                {
+                    MenuTemplate.CreateConfirmationMenu(question: $"Apply {potion.readableName} to {targetPieces[0].readableName}{counterText}?", customOptions: optionList, blocksUpdatesBelow: true);
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, executeHelper: showConfMenuDlgt);
             }
             else // execute == true
             {

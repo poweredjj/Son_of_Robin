@@ -35,6 +35,7 @@ namespace SonOfRobin
             SoundTest,
             GfxListTest,
             Shelter,
+            Boat,
             CreateAnyPiece,
             GenericConfirm,
             CraftField,
@@ -50,31 +51,35 @@ namespace SonOfRobin
             ImportSave,
         }
 
-        public static Menu CreateConfirmationMenu(Object confirmationData)
+        public static Menu CreateConfirmationMenu(string question, Object confirmationData = null, object customOptions = null, bool blocksUpdatesBelow = false)
         {
-            var confirmationDict = (Dictionary<string, Object>)confirmationData;
-
-            string question = (string)confirmationDict["question"];
-            bool blocksUpdatesBelow = confirmationDict.ContainsKey("blocksUpdatesBelow") && (bool)confirmationDict["blocksUpdatesBelow"];
-
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
 
-            if (confirmationDict.ContainsKey("customOptionList"))
+            if (confirmationData == null && customOptions == null) throw new ArgumentException("No options to display");
+
+            if (confirmationData != null)
             {
-                var optionList = (List<object>)confirmationDict["customOptionList"];
+                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                Scheduler.ExecutionDelegate confirmationDlgt = () =>
+                {
+                    var confirmDict = (Dictionary<string, Object>)confirmationData;
+                    object taskHelper = confirmDict.ContainsKey("executeHelper") ? confirmDict["executeHelper"] : null;
+                    new Scheduler.Task(taskName: (Scheduler.TaskName)confirmDict["taskName"], executeHelper: taskHelper);
+                };
+                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: confirmationDlgt);
+            }
+
+            if (customOptions != null)
+            {
+                var optionList = (List<object>)customOptions;
 
                 foreach (var optionData in optionList)
                 {
                     var optionDict = (Dictionary<string, Object>)optionData;
-
                     new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
                 }
-            }
-            else
-            {
-                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
-                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ProcessConfirmation, executeHelper: confirmationData);
             }
 
             return menu;
@@ -104,7 +109,8 @@ namespace SonOfRobin
                             new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
                             { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Ahoy! Games.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nImageSharp library: Six Labors.\nEarcut polygon triangulation by Oberbichler + Mapbox.\nText rendering uses FontStashSharp.\nVarious free graphics assets used." },
                             { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote), ButtonScheme.dpad } },
-                            { "bgColor", new List<Byte> { 63, 167, 212 } }
+                            { "bgColor", new List<Byte> { 63, 167, 212 } },
+                            { "useTransition", true },
                             }, storeForLaterUse: true),
 
                             new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
@@ -117,7 +123,11 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: aboutTaskChain,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "information about the game", color: Color.White, scale: 1f) });
 
-                        if (SonOfRobinGame.platform != Platform.Mobile) new Invoker(menu: menu, name: "quit game", closesMenu: true, taskName: Scheduler.TaskName.QuitGame);
+                        if (SonOfRobinGame.platform != Platform.Mobile)
+                        {
+                            Scheduler.ExecutionDelegate quitGameDlgt = () => { Scheduler.Task.CloseGame(quitGame: true); };
+                            new Invoker(menu: menu, name: "quit game", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: quitGameDlgt);
+                        }
 
                         foreach (Entry entry in menu.entryList)
                         {
@@ -211,7 +221,9 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "plants / animals processing time", valueDict: new Dictionary<object, object> { { 0.2f, "20%" }, { 0.3f, "30%" }, { 0.4f, "40%" }, { 0.5f, "50%" }, { 0.6f, "60%" }, { 0.7f, "70%" }, { 0.8f, "80%" }, { 0.9f, "90%" }, { 0.95f, "95%" } }, targetObj: preferences, propertyName: "StateMachinesDurationFramePercent", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "max time used to process\nanimals and plants for each frame", color: Color.White, scale: 1f) });
 
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
-                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteIncompatibleSaves);
+
+                        Scheduler.ExecutionDelegate delIncompSavesDlgt = () => { SaveHeaderManager.DeleteIncompatibleSaves(); };
+                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: delIncompSavesDlgt);
 
                         foreach (Entry entry in menu.entryList)
                         {
@@ -398,7 +410,9 @@ namespace SonOfRobin
                         Menu menu = new(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, sound: SoundData.Name.NewGameStart);
-                        new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
+
+                        Scheduler.ExecutionDelegate resetSettingsDlgt = () => { Preferences.ResetNewWorldSettings(); };
+                        new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: resetSettingsDlgt, rebuildsMenu: true);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         CreateCharacterSelection(menu);
@@ -544,13 +558,22 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.RestartIsland } });
 
-                        var returnConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } };
-                        new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: returnConfirmationData);
+                        Scheduler.ExecutionDelegate showExitConfMenuDlgt = () =>
+                        {
+                            Scheduler.ExecutionDelegate returnToMenuDlgt = () => { Scheduler.Task.CloseGame(quitGame: false); };
+
+                            CreateConfirmationMenu(question: "Do you really want to exit? You will lose unsaved progress.", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", returnToMenuDlgt } });
+                        };
+                        new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showExitConfMenuDlgt);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            var quitConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
-                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: quitConfirmationData);
+                            Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
+                            {
+                                Scheduler.ExecutionDelegate quitGameDlgt = () => { Scheduler.Task.CloseGame(quitGame: true); };
+                                CreateConfirmationMenu(question: "Do you really want to quit? You will lose unsaved progress.", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", quitGameDlgt } });
+                            };
+                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -843,12 +866,18 @@ namespace SonOfRobin
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
                         new Invoker(menu: menu, name: "enter spectator mode", closesMenu: true, taskName: Scheduler.TaskName.SetSpectatorMode, executeHelper: true);
                         new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
-                        new Invoker(menu: menu, name: "return to main menu", closesMenu: true, taskName: Scheduler.TaskName.ReturnToMainMenu);
+
+                        Scheduler.ExecutionDelegate returnToMenuDlgt = () => { Scheduler.Task.CloseGame(quitGame: false); };
+                        new Invoker(menu: menu, name: "return to main menu", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: returnToMenuDlgt);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            var confirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit?" }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
-                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                            Scheduler.ExecutionDelegate showQuitConfMenuDlgt = () =>
+                            {
+                                Scheduler.ExecutionDelegate quitGameDlgt = () => { Scheduler.Task.CloseGame(quitGame: true); };
+                                CreateConfirmationMenu(question: "Do you really want to quit?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", quitGameDlgt } });
+                            };
+                            new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showQuitConfMenuDlgt);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -931,13 +960,16 @@ namespace SonOfRobin
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
                             saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
-                            var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
 
                             infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
 
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+                            Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                            {
+                                CreateConfirmationMenu(question: "The save will be overwritten. Continue?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
+                            };
+                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -1056,12 +1088,17 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "sound test", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.SoundTest } });
                         new Invoker(menu: menu, name: "graphics list", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.GfxListTest } });
                         new Selector(menu: menu, name: "craft anywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCraftEverywhere", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "construct without materials", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugAllowConstructionWithoutMaterials");
                         new Selector(menu: menu, name: "show all recipes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllRecipes");
                         new Selector(menu: menu, name: "show plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPlantGrowthInCamera");
                         new Selector(menu: menu, name: "show anim size change", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimSizeChangeInCamera");
                         new Selector(menu: menu, name: "fast plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugFastPlantGrowth");
                         new Selector(menu: menu, name: "show named location areas", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowNamedLocationAreas");
-                        if (world != null) new Invoker(menu: menu, name: "discover all locations", taskName: Scheduler.TaskName.SetAllNamedLocationsAsDiscovered, executeHelper: world);
+
+                        Scheduler.ExecutionDelegate discoverAllLocationsDlgt = () =>
+                        { if (!world.HasBeenRemoved) world.Grid.namedLocations.SetAllLocationsAsDiscovered(); };
+                        if (world != null) new Invoker(menu: menu, name: "discover all locations", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: discoverAllLocationsDlgt);
+
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "vertical sync", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "VSync", rebuildsMenu: true);
                         new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
@@ -1074,7 +1111,10 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "disable particles", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugDisableParticles");
                         new Selector(menu: menu, name: "show sounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowSounds");
                         new Selector(menu: menu, name: "show all tutorials in menu", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllTutorials");
-                        new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
+
+                        Scheduler.ExecutionDelegate restoreHintsDlgt = () => { if (!world.HasBeenRemoved) world.HintEngine.RestoreAllHints(); };
+                        new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: restoreHintsDlgt);
+
                         new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowFruitRects");
                         new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowRects");
                         new Selector(menu: menu, name: "show piece data", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowPieceData");
@@ -1108,8 +1148,48 @@ namespace SonOfRobin
                             bgColor = Color.DarkBlue * 0.7f
                         };
 
-                        new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.SleepInsideShelter, executeHelper: executeHelper, taskDelay: 15);
+                        Shelter shelterPiece = (Shelter)executeHelper;
+                        Scheduler.ExecutionDelegate sleepInsideShelterDlgt = () =>
+                        {
+                            if (shelterPiece.world.HasBeenRemoved) return;
+
+                            shelterPiece.world.Player.GoToSleep(sleepEngine: shelterPiece.sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.GfxRect.Center.X, shelterPiece.sprite.GfxRect.Center.Y), checkIfSleepIsPossible: true);
+                        };
+                        new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: sleepInsideShelterDlgt, taskDelay: 15);
+
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                        foreach (Entry entry in menu.entryList)
+                        {
+                            if (entry.GetType() != typeof(Separator))
+                            {
+                                entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.Message);
+                                entry.bgColor = new Color(0, 106, 199);
+                                entry.textColor = Color.White;
+                            }
+                        }
+
+                        return menu;
+                    }
+
+                case Name.Boat:
+                    {
+                        Menu menu = new(templateName: templateName, name: "BOAT", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.WoodCreak, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver)
+                        {
+                            bgColor = Color.DarkBlue * 0.7f
+                        };
+
+                        Scheduler.ExecutionDelegate useBoatDlgt = () =>
+                        {
+                            BoardPiece boat = (BoardPiece)executeHelper;
+                            if (!boat.world.HasBeenRemoved) boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
+                        };
+
+                        new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+                        new Invoker(menu: menu, name: "use this boat to escape the island", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: useBoatDlgt, taskDelay: 15);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
@@ -1163,7 +1243,8 @@ namespace SonOfRobin
                         {
                             if (world.HintEngine.shownTutorials.Contains(tutorial.type) || Preferences.debugShowAllTutorials)
                             {
-                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorialInMenu, executeHelper: tutorial.type);
+                                Scheduler.ExecutionDelegate showTutorialDlgt = () => { Tutorials.ShowTutorialInMenu(type: tutorial.type); };
+                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showTutorialDlgt);
                             }
                         }
 
@@ -1266,28 +1347,34 @@ namespace SonOfRobin
 
             if (player.level.levelType != Level.LevelType.Island && !Preferences.debugCraftEverywhere)
             {
-                new TextWindow(text: "I can't | craft in here.", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.KeepingAnimalsAway, world: world, ignoreDelay: true); };
+
+                new TextWindow(text: "I can't | craft in here.", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ExecuteDelegate, closingTaskHelper: showTutorialDlgt, animSound: world.DialogueSound);
 
                 return null;
             }
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby && !Preferences.debugCraftEverywhere)
             {
-                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.KeepingAnimalsAway, world: world, ignoreDelay: true); };
+
+                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ExecuteDelegate, closingTaskHelper: showTutorialDlgt, animSound: world.DialogueSound);
 
                 return null;
             }
 
             if (!player.CanSeeAnything && !Preferences.debugCraftEverywhere)
             {
-                new HintMessage(text: "It is too dark to craft.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "It is too dark to craft.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return null;
             }
 
             if (player.IsVeryTired && !Preferences.debugCraftEverywhere)
             {
-                new HintMessage(text: "I'm too tired to craft...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "I'm too tired to craft...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return null;
             }

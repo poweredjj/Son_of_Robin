@@ -136,8 +136,7 @@ namespace SonOfRobin
             DropArrow = 97,
             DropRope = 98,
 
-            TigerRoar = 99,
-            BearRoar = 229,
+            BearRoar = 99,
 
             EatPlayer1 = 100,
             EatPlayer2 = 101,
@@ -291,9 +290,14 @@ namespace SonOfRobin
             Rattle = 226,
             BonusItem = 227,
             Whoosh = 228,
-            Glug = 230,
-            WaterDrop = 231,
-            StonesFalling = 232,
+            Glug = 229,
+            WaterDrop = 230,
+            StonesFalling = 231,
+            WoodCreak = 232,
+            OpenSeaStormLoop = 233,
+            OpenSeaStormCrash = 234,
+            BoatHorn = 235,
+            MusicBoxEnding = 236,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -342,7 +346,6 @@ namespace SonOfRobin
             { Name.CryFrog4, "484763__inspectorj__florida-treefrog-close-in-air-vent-01-4" },
             { Name.HitFlesh1, "522091__magnuswaker__pound-of-flesh-1" },
             { Name.HitFlesh2, "620354__marb7e__whoosh-sword-hit-flesh" },
-            { Name.TigerRoar, "546399__szegvari__angry-tiger-fantasy" },
             { Name.BearRoar, "614013__aarontheonly__roar9" },
             { Name.PickUpItem, "467610__triqystudio__pickupitem" },
             { Name.DestroyCeramic1, "214336__zerolagtime__breaking-a-vase-remix" },
@@ -530,6 +533,11 @@ namespace SonOfRobin
             { Name.Glug, "221488__lloydevans09__glug" },
             { Name.WaterDrop, "349873__matrixxx__water-drop-02" },
             { Name.StonesFalling, "567251__iwanplays__stones-falling" },
+            { Name.WoodCreak, "610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld" },
+            { Name.OpenSeaStormLoop, "441008__girlwithsoundrecorder__rough-baltic-sea_loop" },
+            { Name.OpenSeaStormCrash, "441008__girlwithsoundrecorder__rough-baltic-sea_crash" },
+            { Name.BoatHorn, "441223__devy32__boat-horn" },
+            { Name.MusicBoxEnding, "72650__lg__music-box-01" },
             };
     }
 }

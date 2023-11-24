@@ -112,7 +112,7 @@ namespace SonOfRobin
             if (this.buffDict.ContainsKey(buff.id))
             {
                 // in case this happens, it is better not to crash the game
-                MessageLog.Add(debugMessage: false, text: $"Buff has been added twice - id {buff.id} type {buff.type}.", bgColor: new Color(105, 3, 18));              
+                MessageLog.Add(debugMessage: false, text: $"Buff has been added twice - id {buff.id} type {buff.type}.", bgColor: new Color(105, 3, 18));
                 return;
             }
 

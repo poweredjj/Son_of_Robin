@@ -199,7 +199,7 @@ namespace SonOfRobin
 
                 if (!world.piecesByIDForDeserialization.ContainsKey(pieceID))
                 {
-                    MessageLog.Add(debugMessage: true, text: $"WorldEvent {eventName} - cannot find boardPiece id {pieceID}.", textColor: Color.Orange);
+                    MessageLog.Add(debugMessage: true, text: $"LevelEvent {eventName} - cannot find boardPiece id {pieceID}.", textColor: Color.Orange);
                     return null;
                 }
                 boardPiece = world.piecesByIDForDeserialization[pieceID];
@@ -520,7 +520,7 @@ namespace SonOfRobin
 
                 case EventName.CheckForPieceHints:
                     {
-                        // WorldEvent variant - resistant to Scheduler.ClearQueue()
+                        // LevelEvent variant - resistant to Scheduler.ClearQueue()
 
                         // eventHelper for this event should be identical to Scheduler.TaskName.CheckForPieceHints
 

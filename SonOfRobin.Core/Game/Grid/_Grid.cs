@@ -195,19 +195,6 @@ namespace SonOfRobin
             Grid grid = new(level: level, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
             grid.namedLocations.Deserialize(gridData["namedLocations"]);
 
-            // for compatibility with older saves
-            if (gridData.ContainsKey("cellData"))
-            {
-                var cellData = (List<Object>)gridData["cellData"];
-
-                for (int i = 0; i < grid.allCells.Length; i++)
-                {
-                    var cellDict = (Dictionary<string, object>)cellData[i];
-                    grid.allCells[i].visitedByPlayer = (bool)cellDict["VisitedByPlayer"];
-                }
-            }
-
-            // current method
             if (gridData.ContainsKey("cellsVisitedByPlayer"))
             {
                 var cellsVisitedByPlayer = (ConcurrentBag<int>)gridData["cellsVisitedByPlayer"];
@@ -374,6 +361,19 @@ namespace SonOfRobin
 
                                 break;
 
+                            case Level.LevelType.OpenSea:
+
+                                this.terrainByName[Terrain.Name.Height] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: Terrain.waterLevelMax);
+
+                                this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: 0);
+
+                                this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                                    grid: this, name: Terrain.Name.Height, frequency: 0f, octaves: 0, persistence: 0f, lacunarity: 0f, gain: 0f, filledWithValue: true, valueToFill: 0);
+
+                                break;
+
                             default:
                                 throw new ArgumentException($"Unsupported levelType - {levelType}.");
                         }
@@ -387,6 +387,7 @@ namespace SonOfRobin
                     break;
 
                 case Stage.TerrainGenerate:
+
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
                         // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
@@ -566,7 +567,12 @@ namespace SonOfRobin
 
         private void ExtCalculateSea()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.Sea);
+                return;
+            }
 
             // the algorithm will only work, if water surrounds the island
 
@@ -595,7 +601,12 @@ namespace SonOfRobin
 
         private void ExtCalculateOuterBeach()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                this.ExtBoardProps.FillWithTrue(name: ExtBoardProps.Name.OuterBeach);
+                return;
+            }
 
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.Name.OuterBeach, value: true);
 
@@ -609,7 +620,15 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
-            if (this.level.levelType != Level.LevelType.Island) return;
+            if (this.level.levelType == Level.LevelType.Cave) return;
+            else if (this.level.levelType == Level.LevelType.OpenSea)
+            {
+                foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes)
+                {
+                    this.ExtBoardProps.FillWithFalse(name: name);
+                }
+                return;
+            }
 
             // setting up variables
 

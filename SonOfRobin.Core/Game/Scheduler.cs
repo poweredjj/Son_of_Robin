@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Particles;
-using MonoGame.Extended.Particles.Modifiers;
-using MonoGame.Extended.Particles.Profiles;
-using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,102 +15,69 @@ namespace SonOfRobin
 
             CreateNewWorld = 1,
             CreateNewWorldNow = 2,
-            QuitGame = 3,
-            OpenMenuTemplate = 4,
-            OpenMainMenu = 5,
-            OpenConfirmationMenu = 6,
-            SaveGame = 7,
-            LoadGame = 8,
-            LoadGameNow = 9,
-            ReturnToMainMenu = 10,
-            SavePrefs = 11,
-            ProcessConfirmation = 12,
-            OpenCraftMenu = 13,
-            Craft = 14,
-            Plant = 15,
-            Hit = 16,
-            CreateNewPiece = 17,
-            CreateDebugPieces = 18,
-            OpenContainer = 19,
-            DeleteIncompatibleSaves = 20,
-            DropFruit = 21,
-            GetEaten = 22,
-            GetDrinked = 23,
-            ExecuteTaskWithDelay = 24,
-            AddWorldEvent = 25,
-            ShowTextWindow = 26,
-            OpenShelterMenu = 27,
-            SleepInsideShelter = 28,
-            SleepOutside = 29,
-            ForceWakeUp = 30,
-            TempoFastForward = 31,
-            TempoStop = 32,
-            TempoPlay = 33,
-            CameraTrackPiece = 34,
-            CameraTrackCoords = 35,
-            CameraSetZoom = 36,
-            CameraSetMovementSpeed = 37,
-            CameraResetMovementSpeed = 38,
-            ShowCookingProgress = 39,
-            ShowBrewingProgress = 40,
-            RestoreHints = 41,
-            OpenMainMenuIfSpecialKeysArePressed = 42,
-            ShowHint = 44,
-            ExecuteTaskChain = 45,
-            ShowTutorialInMenu = 46,
-            ShowTutorialInGame = 47,
-            RemoveScene = 48,
-            ChangeSceneInputType = 49,
-            SetCineMode = 50,
-            SetCineCurtains = 51,
-            AddTransition = 52,
-            SolidColorAddOverlay = 53,
-            SolidColorRemoveAll = 54,
-            SkipCinematics = 55,
-            SetSpectatorMode = 56,
-            SwitchLightSource = 57,
-            ResetControls = 58,
-            SaveControls = 59,
-            CheckForNonSavedControls = 60,
-            RebuildMenu = 61,
-            RebuildAllMenus = 62,
-            CheckForIncorrectPieces = 63,
-            RestartIsland = 64,
-            ResetNewWorldSettings = 65,
-            PlaySound = 66,
-            PlaySoundByName = 67,
-            AllowPiecesToBeHit = 68,
-            SetPlayerPointWalkTarget = 69,
-            StopSound = 70,
-            RemoveAllScenesOfType = 71,
-            WaitUntilMorning = 72,
-            ActivateLightEngine = 73,
-            DeactivateLightEngine = 74,
-            AddPassiveMovement = 75,
-            AddFadeInAnim = 76,
-            InteractWithCooker = 77,
-            InteractWithLab = 78,
-            InteractWithTotem = 79,
-            InventoryCombineItems = 80,
-            InventoryReleaseHeldPieces = 81,
-            RemoveBuffs = 82,
-            ExportSave = 83,
-            ImportSave = 84,
-            GCCollectIfWorldNotRemoved = 85,
-            DestroyAndDropDebris = 86,
-            MakePlayerJumpOverThisPiece = 87,
-            InventoryApplyPotion = 88,
-            OpenAndDestroyTreasureChest = 89,
-            SetAllNamedLocationsAsDiscovered = 90,
-            AddRumble = 91,
-            CheckForPieceHints = 43,
-            ExecutePieceHintCheckNow = 92,
-            TurnOnWindParticles = 93,
-            DisposeSaveScreenshotsIfNoMenuPresent = 94,
-            SetGlobalWorldEffect = 95,
-            SetGlobalWorldTweener = 96,
-            UseEntrance = 97,
+            OpenMenuTemplate = 3,
+            OpenMainMenu = 4,
+            SaveGame = 5,
+            LoadGame = 6,
+            LoadGameNow = 7,
+            SavePrefs = 8,
+            OpenCraftMenu = 9,
+            Craft = 10,
+            Plant = 11,
+            Hit = 12,
+            CreateDebugPieces = 13,
+            OpenContainer = 14,
+            DropFruit = 15,
+            GetEaten = 16,
+            GetDrinked = 17,
+            ShowTextWindow = 18,
+            OpenShelterMenu = 19,
+            OpenBoatMenu = 20,
+            SleepOutside = 21,
+            TempoFastForward = 22,
+            TempoStop = 23,
+            TempoPlay = 24,
+            ShowCookingProgress = 25,
+            ShowBrewingProgress = 26,
+            OpenMainMenuIfSpecialKeysArePressed = 27,
+            ExecuteTaskChain = 28,
+            RemoveScene = 29,
+            ChangeSceneInputType = 30,
+            SetCineMode = 31,
+            SetCineCurtains = 32,
+            AddTransition = 33,
+            SolidColorAddOverlay = 34,
+            SolidColorRemoveAll = 35,
+            SkipCinematics = 36,
+            SetSpectatorMode = 37,
+            SwitchLightSource = 38,
+            ResetControls = 39,
+            SaveControls = 40,
+            CheckForNonSavedControls = 41,
+            CheckForIncorrectPieces = 42,
+            RestartIsland = 43,
+            PlaySound = 44,
+            PlaySoundByName = 45,
+            AllowPiecesToBeHit = 46,
+            SetPlayerPointWalkTarget = 47,
+            StopSound = 48,
+            InteractWithCooker = 49,
+            InteractWithLab = 50,
+            InteractWithTotem = 51,
+            ExportSave = 52,
+            ImportSave = 53,
+            GCCollectIfWorldNotRemoved = 54,
+            MakePlayerJumpOverThisPiece = 55,
+            OpenAndDestroyTreasureChest = 56,
+            CheckForPieceHints = 57,
+            ExecutePieceHintCheckNow = 58,
+            DisposeSaveScreenshotsIfNoMenuPresent = 59,
+            UseEntrance = 60,
+            AddWeatherEvent = 61,
+            ExecuteDelegate = 62,
         }
+
+        public delegate void ExecutionDelegate();
 
         private static readonly Dictionary<int, Queue<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
@@ -244,19 +206,6 @@ namespace SonOfRobin
                     case TaskName.Empty:
                         return;
 
-                    case TaskName.RebuildMenu:
-                        {
-                            Menu menu = (Menu)this.ExecuteHelper;
-                            menu.Rebuild(instantScroll: false);
-                            return;
-                        }
-
-                    case TaskName.RebuildAllMenus:
-                        {
-                            Menu.RebuildAllMenus();
-                            return;
-                        }
-
                     case TaskName.OpenMenuTemplate:
                         {
                             // example executeHelper for this task
@@ -301,26 +250,12 @@ namespace SonOfRobin
 
                             workshop.TurnOn();
 
-                            var worldEventData = new Dictionary<string, object> {
-                                {"boardPiece", workshop },
-                                {"delay", 300 },
-                                {"eventName", LevelEvent.EventName.TurnOffWorkshop },
+                            ExecutionDelegate addLevelEventDlgt = () =>
+                            {
+                                if (workshop.world.HasBeenRemoved) return;
+                                new LevelEvent(eventName: LevelEvent.EventName.TurnOffWorkshop, level: workshop.level, delay: 60 * 5, boardPiece: workshop);
                             };
-
-                            menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
-                            return;
-                        }
-
-                    case TaskName.OpenConfirmationMenu:
-                        {
-                            MenuTemplate.CreateConfirmationMenu(confirmationData: this.ExecuteHelper);
-                            return;
-                        }
-
-                    case TaskName.ProcessConfirmation:
-                        {
-                            var confirmationData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
+                            menu.AddClosingTask(closingTask: TaskName.ExecuteDelegate, closingTaskHelper: addLevelEventDlgt);
 
                             return;
                         }
@@ -371,26 +306,6 @@ namespace SonOfRobin
                             new World(width: oldWorld.IslandLevel.width, height: oldWorld.IslandLevel.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
                             oldWorld.Remove();
 
-                            return;
-                        }
-
-                    case TaskName.ResetNewWorldSettings:
-                        {
-                            Preferences.ResetNewWorldSettings();
-                            return;
-                        }
-
-                    case TaskName.CreateNewPiece:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world != null)
-                            {
-                                var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
-                                Vector2 position = (Vector2)executeData["position"];
-                                PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-                                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName);
-                                if (piece.sprite.IsOnBoard) piece.sprite.MoveToClosestFreeSpot(position);
-                            }
                             return;
                         }
 
@@ -865,9 +780,12 @@ namespace SonOfRobin
                                 var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", false }, { "showMessage", false } };
                                 optionList.Add(new Dictionary<string, object> { { "label", "undo changes" }, { "taskName", TaskName.ResetControls }, { "executeHelper", resetData } });
 
-                                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "There are unsaved changes." }, { "customOptionList", optionList } };
+                                ExecutionDelegate showConfMenuDlgt = () =>
+                                {
+                                    MenuTemplate.CreateConfirmationMenu(question: "There are unsaved changes.", customOptions: optionList, blocksUpdatesBelow: true);
+                                };
 
-                                new Task(taskName: TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                             }
 
                             return;
@@ -898,39 +816,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.DeleteIncompatibleSaves:
-                        {
-                            SaveHeaderManager.DeleteIncompatibleSaves();
-                            return;
-                        }
-
-                    case TaskName.ExecuteTaskWithDelay:
-                        {
-                            // example executeHelper for this task
-                            // var delayData = new Dictionary<string, Object> { { "taskName", TaskName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
-
-                            var delayData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            new Task(taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
-
-                            return;
-                        }
-
-                    case TaskName.AddWorldEvent:
-                        {
-                            World world = (World)Scene.GetTopSceneOfType(typeof(World));
-                            if (world == null) return;
-
-                            var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            LevelEvent.EventName eventName = (LevelEvent.EventName)worldEventData["eventName"];
-                            BoardPiece boardPiece = (BoardPiece)worldEventData["boardPiece"];
-                            int delay = (int)worldEventData["delay"];
-
-                            new LevelEvent(eventName: eventName, level: boardPiece.level, delay: delay, boardPiece: boardPiece);
-
-                            return;
-                        }
-
                     case TaskName.ShowTextWindow:
                         {
                             var textWindowData = (Dictionary<string, Object>)this.ExecuteHelper;
@@ -955,6 +840,12 @@ namespace SonOfRobin
 
                             bool animate = true;
                             if (textWindowData.ContainsKey("animate")) animate = (bool)textWindowData["animate"];
+
+                            bool autoClose = false;
+                            if (textWindowData.ContainsKey("autoClose")) autoClose = (bool)textWindowData["autoClose"];
+
+                            bool noInput = false;
+                            if (textWindowData.ContainsKey("noInput")) noInput = (bool)textWindowData["noInput"];
 
                             TaskName closingTask = TaskName.Empty;
                             if (textWindowData.ContainsKey("closingTask")) closingTask = (TaskName)textWindowData["closingTask"];
@@ -992,7 +883,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: startingSound, animSound: animSound);
+                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: startingSound, animSound: animSound, autoClose: autoClose, noInput: noInput);
                             return;
                         }
 
@@ -1029,29 +920,6 @@ namespace SonOfRobin
                             BoardPiece shelterPiece = (BoardPiece)this.ExecuteHelper;
                             shelterPiece.world.OpenMenu(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
 
-                            return;
-                        }
-
-                    case TaskName.SleepInsideShelter:
-                        {
-                            Shelter shelterPiece = (Shelter)this.ExecuteHelper;
-                            SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.GfxRect.Center.X, shelterPiece.sprite.GfxRect.Center.Y), checkIfSleepIsPossible: true);
-
-                            return;
-                        }
-
-                    case TaskName.ForceWakeUp:
-                        {
-                            Player player = (Player)this.ExecuteHelper;
-                            player.WakeUp(force: true);
-                            return;
-                        }
-
-                    case TaskName.WaitUntilMorning:
-                        {
-                            Player player = (Player)this.ExecuteHelper;
-                            player.sleepMode = Player.SleepMode.WaitMorning;
                             return;
                         }
 
@@ -1102,65 +970,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.CameraTrackPiece:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-                            world.camera.TrackPiece(piece);
-
-                            return;
-                        }
-
-                    case TaskName.CameraTrackCoords:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper);
-
-                            return;
-                        }
-
-                    case TaskName.CameraSetZoom:
-                        {
-                            // example executeHelper for this task
-                            // var zoomData = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }, { "setInstantly", false } };
-
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            float zoom = (float)zoomData["zoom"];
-                            bool setInstantly = zoomData.ContainsKey("setInstantly") && (bool)zoomData["setInstantly"];
-                            float zoomSpeedMultiplier = zoomData.ContainsKey("zoomSpeedMultiplier") ? (float)zoomData["zoomSpeedMultiplier"] : 1f;
-
-                            world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier, setInstantly: setInstantly);
-
-                            return;
-                        }
-
-                    case TaskName.CameraSetMovementSpeed:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            float movementSpeed = (float)this.ExecuteHelper;
-
-                            world.camera.SetMovementSpeed(movementSpeed);
-                            return;
-                        }
-
-                    case TaskName.CameraResetMovementSpeed:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            world.camera.SetMovementSpeed(1f);
-                            return;
-                        }
-
                     case TaskName.ShowCookingProgress:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1173,15 +982,6 @@ namespace SonOfRobin
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
                             alchemyLab.ShowBrewingProgress();
-
-                            return;
-                        }
-
-                    case TaskName.RestoreHints:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-                            world.HintEngine.RestoreAllHints();
 
                             return;
                         }
@@ -1229,7 +1029,7 @@ namespace SonOfRobin
                         {
                             Input.GlobalInputActive = true;
                             if (InputMapper.IsPressed(InputMapper.Action.SecretLicenceBypass)) new Task(taskName: TaskName.OpenMainMenu);
-                            else new Task(taskName: TaskName.QuitGame);
+                            else CloseGame(quitGame: true);
 
                             return;
                         }
@@ -1267,7 +1067,7 @@ namespace SonOfRobin
 
                     case TaskName.ExecutePieceHintCheckNow:
                         {
-                            // used to deduplicate unboxing code in Scheduler and WorldEvent
+                            // used to deduplicate unboxing code in Scheduler and LevelEvent
 
                             // example executeHelper for this task
                             //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
@@ -1284,53 +1084,6 @@ namespace SonOfRobin
 
                             return;
                         }
-
-                    case TaskName.ShowHint:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            var hintType = (HintEngine.Type)this.ExecuteHelper;
-                            world.HintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
-
-                            return;
-                        }
-
-                    case TaskName.ShowTutorialInMenu:
-                        {
-                            Tutorials.ShowTutorialInMenu(type: (Tutorials.Type)this.ExecuteHelper);
-
-                            return;
-                        }
-
-                    case TaskName.ShowTutorialInGame:
-                        {
-                            var tutorialData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            // example executeHelper for this task
-                            // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", false }, { "ignoreIfShown", false } };
-
-                            Tutorials.Type type = (Tutorials.Type)tutorialData["tutorial"];
-                            World worldToUse = (World)tutorialData["world"];
-
-                            bool ignoreHintsSetting = tutorialData.ContainsKey("ignoreHintsSetting") && (bool)tutorialData["ignoreHintsSetting"];
-                            bool ignoreDelay = tutorialData.ContainsKey("ignoreDelay") && (bool)tutorialData["ignoreDelay"];
-                            bool ignoreIfShown = !tutorialData.ContainsKey("ignoreIfShown") || (bool)tutorialData["ignoreIfShown"];
-
-                            Tutorials.ShowTutorialOnTheField(type: type, world: worldToUse, ignoreHintsSetting: ignoreHintsSetting, ignoreDelay: ignoreDelay, ignoreIfShown: ignoreIfShown);
-
-                            return;
-                        }
-
-                    case TaskName.ReturnToMainMenu:
-                        SonOfRobinGame.SmallProgressBar.TurnOff();
-                        CloseGame(quitGame: false);
-                        return;
-
-                    case TaskName.QuitGame:
-                        SonOfRobinGame.SmallProgressBar.TurnOff();
-                        CloseGame(quitGame: true);
-                        return;
 
                     case TaskName.RemoveScene:
                         {
@@ -1397,15 +1150,21 @@ namespace SonOfRobin
                             if (world == null || world.demoMode) return;
 
                             // example executeHelper for this task
-                            // var solidColorData = new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f } };
+                            // var solidColorData = new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f }, { "fadeInDurationFrames", 60 * 2 } };
 
                             var solidColorData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Color color = (Color)solidColorData["color"];
                             float opacity = (float)solidColorData["opacity"];
+                            int fadeInDurationFrames = solidColorData.ContainsKey("fadeInDurationFrames") ? (int)solidColorData["fadeInDurationFrames"] : 0;
 
-                            SolidColor newOverlay = new(color: color, viewOpacity: opacity);
+                            SolidColor newOverlay = new(color: color, viewOpacity: fadeInDurationFrames > 0 ? 0 : opacity);
                             world.solidColorManager.Add(newOverlay);
+
+                            if (fadeInDurationFrames > 0)
+                            {
+                                newOverlay.transManager.AddTransition(new Transition(transManager: newOverlay.transManager, outTrans: true, startDelay: 0, duration: fadeInDurationFrames, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: opacity, endCopyToBase: true));
+                            }
 
                             return;
                         }
@@ -1619,60 +1378,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.RemoveAllScenesOfType:
-                        {
-                            Type type = (Type)this.ExecuteHelper;
-                            Scene.RemoveAllScenesOfType(type);
-
-                            return;
-                        }
-
-                    case TaskName.ActivateLightEngine:
-                        {
-                            LightEngine lightEngine = (LightEngine)this.ExecuteHelper;
-                            lightEngine.Activate();
-
-                            return;
-                        }
-
-                    case TaskName.DeactivateLightEngine:
-                        {
-                            LightEngine lightEngine = (LightEngine)this.ExecuteHelper;
-                            lightEngine.Deactivate();
-
-                            return;
-                        }
-
-                    case TaskName.AddPassiveMovement:
-                        {
-                            // example executeHelper for this task
-                            // var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement",  movement }};
-
-                            var movementData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            BoardPiece piece = (BoardPiece)movementData["boardPiece"];
-                            Vector2 movement = (Vector2)movementData["movement"];
-
-                            if (piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
-
-                            return;
-                        }
-
-                    case TaskName.AddFadeInAnim: // not in use at the moment (replaced with PieceTemplate.CreateAndPlaceOnBoard() functionality)
-                        {
-                            Sprite sprite = (Sprite)this.ExecuteHelper;
-                            if (!sprite.IsOnBoard) return;
-
-                            if (sprite.IsInCameraRect)
-                            {
-                                sprite.opacity = 0f;
-                                new OpacityFade(sprite: sprite, destOpacity: 1f);
-                            }
-                            else sprite.opacity = 1f;
-
-                            return;
-                        }
-
                     case TaskName.InteractWithCooker:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
@@ -1704,63 +1409,10 @@ namespace SonOfRobin
 
                                 HintEngine.ShowMessageDuringPause(new List<HintMessage> {
                                    new HintMessage(text: $"I cannot approach this | {totem.readableName} now.\n{timeLeftString}.",
-                                   blockInput: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
+                                   blockInputDefaultDuration: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
                                    });
                             }
 
-                            return;
-                        }
-
-                    case TaskName.InventoryCombineItems:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            StorageSlot activeSlot = inventory.ActiveSlot;
-
-                            BoardPiece piece1 = inventory.draggedPieces[0];
-                            inventory.draggedPieces.RemoveAt(0);
-                            BoardPiece piece2 = activeSlot.TopPiece;
-
-                            BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: piece1, piece2: piece2);
-                            if (combinedPiece == null) throw new ArgumentNullException($"Previously checked combination of {piece1.readableName} and {piece2.readableName} failed.");
-
-                            activeSlot.RemoveTopPiece();
-
-                            if (activeSlot.CanFitThisPiece(combinedPiece)) activeSlot.AddPiece(combinedPiece);
-                            else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
-
-                            Inventory.soundCombine.Play();
-                            new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
-
-                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
-
-                            return;
-                        }
-
-                    case TaskName.InventoryApplyPotion:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            inventory.TryToApplyPotion(slot: inventory.ActiveSlot, execute: true);
-
-                            return;
-                        }
-
-                    case TaskName.InventoryReleaseHeldPieces:
-                        {
-                            Inventory inventory = (Inventory)this.ExecuteHelper;
-                            inventory.ReleaseHeldPieces(slot: inventory.ActiveSlot, forceReleaseAll: true);
-                            return;
-                        }
-
-                    case TaskName.RemoveBuffs:
-                        {
-                            // example executeHelper for this task
-                            // var removeData = new Dictionary<string, Object> { { "storagePiece", piece }, { "buffList",  buffList }};
-
-                            var removeData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            BoardPiece storagePiece = (BoardPiece)removeData["storagePiece"];
-                            List<Buff> buffList = (List<Buff>)removeData["buffList"];
-
-                            storagePiece.buffEngine.RemoveBuffs(buffList);
                             return;
                         }
 
@@ -1827,16 +1479,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.DestroyAndDropDebris:
-                        {
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-
-                            piece.pieceInfo.Yield?.DropDebris(piece: piece);
-                            piece.Destroy();
-
-                            return;
-                        }
-
                     case TaskName.OpenAndDestroyTreasureChest:
                         {
                             Container treasureChest = (Container)this.ExecuteHelper;
@@ -1844,14 +1486,6 @@ namespace SonOfRobin
                             treasureChest.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
                             new LevelEvent(eventName: LevelEvent.EventName.Destruction, delay: 60 * 2, level: treasureChest.level, boardPiece: treasureChest, eventHelper: 30);
-
-                            return;
-                        }
-
-                    case TaskName.SetAllNamedLocationsAsDiscovered:
-                        {
-                            World world = (World)this.ExecuteHelper;
-                            world.Grid.namedLocations.SetAllLocationsAsDiscovered();
 
                             return;
                         }
@@ -1920,138 +1554,10 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.AddRumble:
-                        {
-                            // example executeHelper for this task
-                            // var rumbleData = new Dictionary<string, Object> { { "force", 0.3f }, { "bigMotor", true }, { "fadeInSeconds", 0.6f }, { "durationSeconds", 1.5f }, { "fadeOutSeconds", 0.6f } };
-
-                            var rumbleData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            float force = (float)rumbleData["force"];
-                            bool smallMotor = rumbleData.ContainsKey("smallMotor") && (bool)rumbleData["smallMotor"];
-                            bool bigMotor = rumbleData.ContainsKey("bigMotor") && (bool)rumbleData["bigMotor"];
-                            float fadeInSeconds = rumbleData.ContainsKey("fadeInSeconds") ? (float)rumbleData["fadeInSeconds"] : 0f;
-                            float durationSeconds = (float)rumbleData["durationSeconds"];
-                            float fadeOutSeconds = rumbleData.ContainsKey("fadeOutSeconds") ? (float)rumbleData["fadeOutSeconds"] : 0f;
-                            float minSecondsSinceLastRumbleSmallMotor = rumbleData.ContainsKey("minSecondsSinceLastRumbleSmallMotor") ? (float)rumbleData["minSecondsSinceLastRumbleSmallMotor"] : 0f;
-                            float minSecondsSinceLastRumbleBigMotor = rumbleData.ContainsKey("minSecondsSinceLastRumbleBigMotor") ? (float)rumbleData["minSecondsSinceLastRumbleBigMotor"] : 0f;
-
-                            new RumbleEvent(force: force, smallMotor: smallMotor, bigMotor: bigMotor, fadeInSeconds: fadeInSeconds, durationSeconds: durationSeconds, fadeOutSeconds: fadeOutSeconds, minSecondsSinceLastRumbleSmallMotor: minSecondsSinceLastRumbleSmallMotor, minSecondsSinceLastRumbleBigMotor: minSecondsSinceLastRumbleBigMotor);
-
-                            return;
-                        }
-
-                    case TaskName.TurnOnWindParticles:
-                        {
-                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
-                            Sprite sprite = piece.sprite;
-                            float windOriginX = piece.world.weather.WindOriginX;
-
-                            foreach (var kvp in piece.pieceInfo.windParticlesDict)
-                            {
-                                ParticleEngine.Preset preset = kvp.Key;
-                                Color color = kvp.Value;
-
-                                bool hasPreset = sprite.particleEngine != null && sprite.particleEngine.HasPreset(preset); // to prevent from adding modifiers more than once
-                                ParticleEngine.TurnOn(sprite: sprite, preset: preset, particlesToEmit: sprite.BlocksMovement ? 5 : 2, duration: sprite.BlocksMovement ? 2 : 1);
-
-                                Random random = piece.world.random;
-
-                                ParticleEmitter particleEmitter = ParticleEngine.GetEmitterForPreset(sprite: sprite, preset: preset);
-                                if (!hasPreset && particleEmitter != null)
-                                {
-                                    particleEmitter.Parameters.Color = HslColor.FromRgb(color);
-                                    particleEmitter.Profile = Profile.Spray(direction: windOriginX == 0 ? Vector2.UnitX : -Vector2.UnitX, spread: 2f);
-
-                                    Vector2 windDirection = new Vector2(windOriginX == 0 ? 1f : -1f, 0.2f);
-                                    particleEmitter.Modifiers.Add(new LinearGravityModifier { Direction = windDirection, Strength = random.Next(60, 250) });
-
-                                    int vortexCount = random.Next(1, 4);
-                                    for (int i = 0; i < vortexCount; i++)
-                                    {
-                                        int vortexX = (i * 250) + (random.Next(60, 180) * (windOriginX == 0 ? 1 : -1));
-                                        if (i == 0) vortexX = 0;
-
-                                        float angle1 = random.NextSingle() * (float)Math.PI * 2;
-                                        float angle2 = angle1 - (float)Math.PI;
-                                        int distance = random.Next(100, 300);
-
-                                        Vector2 vortexOffset1 = new((int)Math.Round(distance * Math.Cos(angle1)), (int)Math.Round(distance * Math.Sin(angle1)));
-                                        Vector2 vortexOffset2 = new((int)Math.Round(distance * Math.Cos(angle2)), (int)Math.Round(distance * Math.Sin(angle2)));
-
-                                        vortexOffset1.X += vortexX;
-                                        vortexOffset2.X += vortexX;
-
-                                        foreach (Vector2 offset in new Vector2[] { vortexOffset1, vortexOffset2 })
-                                        {
-                                            particleEmitter.Modifiers.Add(new VortexModifier
-                                            {
-                                                Mass = random.Next(10, 35),
-                                                MaxSpeed = 0.5f,
-                                                Position = offset,
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-
-                            return;
-                        }
-
                     case TaskName.DisposeSaveScreenshotsIfNoMenuPresent:
                         {
                             if (Scene.GetTopSceneOfType(typeof(Menu)) != null) new Task(taskName: TaskName.DisposeSaveScreenshotsIfNoMenuPresent, delay: 60 * 3);
                             else SaveHeaderInfo.DisposeScreenshots();
-
-                            return;
-                        }
-
-                    case TaskName.SetGlobalWorldEffect:
-                        {
-                            World world = World.GetTopWorld();
-                            if (world != null) world.globalEffect = (EffInstance)this.ExecuteHelper;
-
-                            return;
-                        }
-
-                    case TaskName.SetGlobalWorldTweener:
-                        {
-                            // example executeHelper for this task
-                            // var tweenData = new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0f }, { "autoreverse", true }, { "easing", "SineOut" }, { "durationSeconds", 1f } };
-
-                            World world = World.GetTopWorld();
-
-                            if (world.globalEffect == null)
-                            {
-                                MessageLog.Add(debugMessage: true, text: $"Scheduler: world doesn't have globalEffect. Cannot apply tweener.");
-                                return;
-                            }
-
-                            var tweenData = (Dictionary<string, Object>)this.ExecuteHelper;
-
-                            float tweenIntensity = (float)tweenData["tweenIntensity"];
-                            bool autoreverse = tweenData.ContainsKey("autoreverse") && (bool)tweenData["autoreverse"];
-                            float durationSeconds = (float)tweenData["durationSeconds"];
-                            string easing = (string)tweenData["easing"];
-
-                            world.tweenerForGlobalEffect.CancelAndCompleteAll();
-
-                            if (tweenData.ContainsKey("startIntensity"))
-                            {
-                                float startIntensity = (float)tweenData["startIntensity"];
-                                world.globalEffect.intensityForTweener = startIntensity;
-                            }
-
-                            world.tweenerForGlobalEffect.TweenTo(target: world.globalEffect, expression: effect => effect.intensityForTweener, toValue: tweenIntensity, duration: durationSeconds);
-
-                            Tween tween = world.tweenerForGlobalEffect.FindTween(target: world.globalEffect, memberName: "intensityForTweener");
-
-                            if (autoreverse) tween.AutoReverse();
-
-                            if (easing == "QuadraticIn") tween.Easing(EasingFunctions.QuadraticIn);
-                            else if (easing == "SineInOut") tween.Easing(EasingFunctions.SineInOut);
-                            else if (easing == "SineOut") tween.Easing(EasingFunctions.SineOut);
-                            else if (easing == "Linear") tween.Easing(EasingFunctions.Linear);
 
                             return;
                         }
@@ -2063,19 +1569,52 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.OpenBoatMenu:
+                        {
+                            BoardPiece boatPiece = (BoardPiece)this.ExecuteHelper;
+                            boatPiece.world.OpenMenu(templateName: MenuTemplate.Name.Boat, executeHelper: this.ExecuteHelper);
+
+                            return;
+                        }
+
+                    case TaskName.AddWeatherEvent:
+                        {
+                            World world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            WeatherEvent weatherEvent = (WeatherEvent)this.ExecuteHelper;
+
+                            DateTime islandDateTime = world.islandClock.IslandDateTime;
+
+                            if (weatherEvent.startTime < islandDateTime) // pushing forward event, to avoid starting "in the past"
+                            {
+                                weatherEvent = new WeatherEvent(type: weatherEvent.type, intensity: weatherEvent.intensity, startTime: islandDateTime, duration: weatherEvent.duration, transitionLength: weatherEvent.transitionLength);
+                            }
+
+                            world.weather.AddEvent(weatherEvent);
+
+                            return;
+                        }
+
+                    case TaskName.ExecuteDelegate:
+                        {
+                            ((Delegate)this.ExecuteHelper).DynamicInvoke();
+                            return;
+                        }
+
                     default:
                         throw new ArgumentException($"Unsupported taskName - {taskName}.");
                 }
             }
 
-            private static void CloseGame(bool quitGame)
+            public static void CloseGame(bool quitGame)
             {
-                World world = World.GetTopWorld();
+                SonOfRobinGame.SmallProgressBar.TurnOff();
 
                 var worldScenes = Scene.GetAllScenesOfType(typeof(World));
                 foreach (World currWorld in worldScenes)
                 {
-                    if (!currWorld.demoMode) world.Remove();
+                    if (!currWorld.demoMode) currWorld.Remove();
                 }
 
                 Scene.RemoveAllScenesOfType(typeof(TextWindow));

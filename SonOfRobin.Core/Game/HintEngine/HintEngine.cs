@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -15,20 +17,23 @@ namespace SonOfRobin
             Starving = 3,
             Tired = 4,
             VeryTired = 5,
-            SmallInventory = 7,
-            MapNegative = 8,
-            Lava = 9,
-            BreakingItem = 10,
-            BrokenItem = 11,
-            BurntOutTorch = 12,
-            CineIntroduction = 13,
-            CineSmallBase = 14,
-            AnimalScaredOfFire = 15,
-            AnimalCounters = 16,
-            ZoomOutLocked = 17,
-            Lightning = 18,
-            TooDarkToUseTools = 19,
-            BadSleep = 20,
+            SmallInventory = 6,
+            MapNegative = 7,
+            Lava = 8,
+            BreakingItem = 9,
+            BrokenItem = 10,
+            BurntOutTorch = 11,
+            CineIntroduction = 12,
+            CineSmallBase = 13,
+            CineEndingPart1 = 14,
+            CineEndingPart2 = 15,
+            CineEndingPart3 = 16,
+            AnimalScaredOfFire = 17,
+            AnimalCounters = 18,
+            ZoomOutLocked = 19,
+            Lightning = 20,
+            TooDarkToUseTools = 21,
+            BadSleep = 22,
         };
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -36,7 +41,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new() { Type.CineIntroduction, Type.CineSmallBase, Type.CineEndingPart1, Type.CineEndingPart2, Type.CineEndingPart3, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.TooDarkToUseTools, Type.BadSleep };
 
         public HashSet<Type> shownGeneralHints = new() { };
         public HashSet<PieceHint.Type> shownPieceHints = new() { };
@@ -102,10 +107,10 @@ namespace SonOfRobin
                 case Type.Hungry:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm getting hungry.", blockInput: true),
-                            new HintMessage(text: "Time to look for | | | something to eat.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato)}, blockInput: true),
-                            new HintMessage(text: "It would be a good idea to | eat now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
-                            new HintMessage(text: "Hmm... | Dinner time?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal) }, blockInput: true),
+                            new HintMessage(text: "I'm getting hungry.", blockInputDefaultDuration: true),
+                            new HintMessage(text: "Time to look for | | | something to eat.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "It would be a good idea to | eat now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "Hmm... | Dinner time?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal) }, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -119,8 +124,8 @@ namespace SonOfRobin
                 case Type.VeryHungry:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm getting really | | | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato)}, blockInput: true),
-                            new HintMessage(text: "I'm really | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
+                            new HintMessage(text: "I'm getting really | | | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm really | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -134,9 +139,9 @@ namespace SonOfRobin
                 case Type.Starving:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInput: true),
-                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
-                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
+                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -150,9 +155,9 @@ namespace SonOfRobin
                 case Type.Tired:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm tired |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
-                            new HintMessage(text: "I'm kinda sleepy |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
-                            new HintMessage(text: "I'm exhausted |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
+                            new HintMessage(text: "I'm tired |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm kinda sleepy |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm exhausted |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerYawn);
@@ -166,10 +171,10 @@ namespace SonOfRobin
                 case Type.VeryTired:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm getting very sleepy |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
-                            new HintMessage(text: "I'm so sleepy... |", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
-                            new HintMessage(text: "I have to sleep | now...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
-                            new HintMessage(text: "I'm gonna collapse if I don't go to sleep | now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
+                            new HintMessage(text: "I'm getting very sleepy |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm so sleepy... |", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I have to sleep | now...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm gonna collapse if I don't go to sleep | now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerYawn);
@@ -193,7 +198,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Sleeping here was really uncomfortable.\nI should really build a | better place to sleep in...", blockInput: true, imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.TentMedium).texture }),
+                            new HintMessage(text: "Sleeping here was really uncomfortable.\nI should really build a | better place to sleep in...", blockInputDefaultDuration: true, imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.TentMedium).texture }),
                         });
                         break;
                     }
@@ -202,7 +207,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "I cannot carry many items right now.\nWith some | leather I should be able to make a | backpack.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall) }, blockInput: true) });
+                            new HintMessage(text: "I cannot carry many items right now.\nWith some | leather I should be able to make a | backpack.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall) }, blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -210,7 +215,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"I don't have a map.\nIf I had some | leather and a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName} - I could make one.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic) }, blockInput: true) });
+                            new HintMessage(text: $"I don't have a map.\nIf I had some | leather and a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName} - I could make one.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic) }, blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -218,7 +223,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true) });
+                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -226,7 +231,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Aaah! Lightning just hit the water.", blockInput: true) });
+                            new HintMessage(text: "Aaah! Lightning just hit the water.", blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -234,8 +239,8 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"My | {text} is getting damaged. It won't last forever.", blockInput: true, imageList: new List<Texture2D> { texture }),
-                            new HintMessage(text: "I should watch my tools durability.", blockInput: true),
+                            new HintMessage(text: $"My | {text} is getting damaged. It won't last forever.", blockInputDefaultDuration: true, imageList: new List<Texture2D> { texture }),
+                            new HintMessage(text: "I should watch my tools durability.", blockInputDefaultDuration: true),
                         });
                         break;
                     }
@@ -246,7 +251,7 @@ namespace SonOfRobin
                         this.world.Player.pieceInfo.Yield.DropDebris(piece: this.world.Player, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood, ParticleEngine.Preset.DebrisStone }, particlesToEmit: 7);
 
                         Sound.QuickPlay(SoundData.Name.DestroyWood);
-                        ShowMessageDuringPause(new HintMessage(text: $"My | {text} has fallen apart.", imageList: new List<Texture2D> { texture }, blockInput: true));
+                        ShowMessageDuringPause(new HintMessage(text: $"My | {text} has fallen apart.", imageList: new List<Texture2D> { texture }, blockInputDefaultDuration: true));
 
                         break;
                     }
@@ -254,7 +259,7 @@ namespace SonOfRobin
                 case Type.BurntOutTorch:
                     {
                         this.Disable(type: type, delay: 0);
-                        ShowMessageDuringPause(new HintMessage(text: $"My | {text} has burnt out.", imageList: new List<Texture2D> { texture }, blockInput: true));
+                        ShowMessageDuringPause(new HintMessage(text: $"My | {text} has burnt out.", imageList: new List<Texture2D> { texture }, blockInputDefaultDuration: true));
                         break;
                     }
 
@@ -263,8 +268,8 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
-                            new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)}, blockInput: true)
+                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture}, blockInputDefaultDuration: true),
+                            new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)}, blockInputDefaultDuration: true)
                         });
                         break;
                     }
@@ -274,7 +279,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
+                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.CroppedAnimFrame.texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInputDefaultDuration: true),
                         });
                         break;
                     }
@@ -285,7 +290,7 @@ namespace SonOfRobin
 
                         Sound.QuickPlay(SoundData.Name.Error);
 
-                        ShowMessageDuringPause(new HintMessage(text: "'Zoom out' is disabled, when world scale is less than 1.", boxType: HintMessage.BoxType.RedBox, blockInput: true));
+                        ShowMessageDuringPause(new HintMessage(text: "'Zoom out' is disabled, when world scale is less than 1.", boxType: HintMessage.BoxType.RedBox, blockInputDefaultDuration: true));
                         break;
                     }
 
@@ -308,23 +313,29 @@ namespace SonOfRobin
 
                             this.world.camera.SetZoom(zoom: 1f, setInstantly: true);
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2f, zoomSpeedMultiplier: 0.5f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 30, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "   ...    ", boxType: dialogue, delay: 0, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "   ...    ", boxType: dialogue, delay: 0, blockInputDefaultDuration: false).ConvertToTask());
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + new Vector2(0, 10) } }, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.35f } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ActivateLightEngine, delay: 0, executeHelper: this.world.Player.sprite.lightEngine, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate activateLightEngineDlgt = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.Player.sprite.lightEngine.Activate(); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: activateLightEngineDlgt, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.FireBurst, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3.5f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 3.5f, zoomSpeedMultiplier: 3f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
-                            taskChain.Add(new HintMessage(text: "Don't you know how to read?", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
-                            taskChain.Add(new HintMessage(text: "It was clearly stated, that i will BREAK your game.", boxType: invertedDialogue, delay: 80, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: invertedDialogue, delay: 30, blockInputDefaultDuration: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Don't you know how to read?", boxType: invertedDialogue, delay: 30, blockInputDefaultDuration: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "It was clearly stated, that i will BREAK your game.", boxType: invertedDialogue, delay: 80, blockInputDefaultDuration: false).ConvertToTask());
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 300 } }, storeForLaterUse: true));
 
@@ -340,27 +351,48 @@ namespace SonOfRobin
 
                             this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
-                            SolidColor whiteOverlay = new(color: Color.White, viewOpacity: 1f);
-                            this.world.solidColorManager.Add(whiteOverlay);
+                            this.world.solidColorManager.Add(new(color: Color.White, viewOpacity: 1f));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: new MosaicInstance(textureSize: new Vector2(this.world.FinalRenderTarget.Width, this.world.FinalRenderTarget.Height), blurSize: new Vector2(18, 18), framesLeft: -1), storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate setGlobEffectDlgt = () =>
+                            {
+                                if (!world.HasBeenRemoved) world.globalEffect = new MosaicInstance(textureSize: new Vector2(this.world.FinalRenderTarget.Width, this.world.FinalRenderTarget.Height), blurSize: new Vector2(18, 18), framesLeft: -1);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobEffectDlgt, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInputDefaultDuration: false).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120, blockInputDefaultDuration: false).ConvertToTask());
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 1f }, { "tweenIntensity", 0.5f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 5f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate setGlobalTweenerDlgt1 = () =>
+                            {
+                                if (this.world.HasBeenRemoved) return;
+                                this.world.tweenerForGlobalEffect.CancelAndCompleteAll();
+                                this.world.globalEffect.intensityForTweener = 1f;
+                                this.world.tweenerForGlobalEffect.TweenTo(target: this.world.globalEffect, expression: effect => effect.intensityForTweener, toValue: 0.5f, duration: 5f).Easing(EasingFunctions.SineOut);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobalTweenerDlgt1, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInputDefaultDuration: false).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
+                            Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                            {
+                                if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.1f);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 30, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldTweener, delay: 0, executeHelper: new Dictionary<string, Object> { { "startIntensity", 0.5f }, { "tweenIntensity", 0f }, { "autoreverse", false }, { "easing", "SineOut" }, { "durationSeconds", 5f } }, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInputDefaultDuration: false).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
+                            Scheduler.ExecutionDelegate setGlobalTweenerDlgt2 = () =>
+                            {
+                                if (this.world.HasBeenRemoved) return;
+                                this.world.tweenerForGlobalEffect.CancelAndCompleteAll();
+                                this.world.tweenerForGlobalEffect.TweenTo(target: this.world.globalEffect, expression: effect => effect.intensityForTweener, toValue: 0f, duration: 5f).Easing(EasingFunctions.SineOut);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobalTweenerDlgt2, storeForLaterUse: true));
+
+                            taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInputDefaultDuration: false).ConvertToTask());
 
                             Vector2 seaOffset = new(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
 
@@ -378,21 +410,35 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 0.15f, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camMoveSpdDlgt1 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetMovementSpeed(0.15f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 40, executeHelper: camMoveSpdDlgt1, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 0, executeHelper: seaPos, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate trackCoordsDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackCoords(position: seaPos, moveInstantly: false); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
+
+                            Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackPiece(player); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: trackPieceDlgt, storeForLaterUse: true));
+
                             taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetGlobalWorldEffect, delay: 0, executeHelper: null, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate clearGlobEffectDlgt = () =>
+                            {
+                                if (!world.HasBeenRemoved) world.globalEffect = null;
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearGlobEffectDlgt, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetMovementSpeed, delay: 40, executeHelper: 1f, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camMoveSpdDlgt2 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetMovementSpeed(1f); };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 40, executeHelper: camMoveSpdDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+                            Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                            {
+                                if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.55f, zoomSpeedMultiplier: 3f);
+                            };
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
                             taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
@@ -420,7 +466,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true)); // repeated, to make sure it will be executed (in case of waitingScenes being used)
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1.5f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1.5f, zoomSpeedMultiplier: 0.4f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
                         Vector2 basePos = player.sprite.position;
                         int distance = 30;
@@ -435,7 +483,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.8f }, { "zoomSpeedMultiplier", 2f } }, storeForLaterUse: true));
+                        Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.8f, zoomSpeedMultiplier: 2f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                         if (this.world.PlayerName == PieceTemplate.Name.PlayerTestDemoness)
                         {
@@ -447,6 +497,366 @@ namespace SonOfRobin
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+
+                        break;
+                    }
+
+                case Type.CineEndingPart1:
+                    {
+                        // no disable code needed
+
+                        BoardPiece boat = piece;
+                        Player player = this.world.Player;
+                        Random random = player.world.random;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.CineMode = true;
+                        this.world.cineCurtains.Enabled = true;
+
+                        int fadeToWhiteDuration = 60 * 8;
+
+                        SolidColor colorOverlay = new(color: Color.White, viewOpacity: 0.0f);
+                        colorOverlay.transManager.AddTransition(new Transition(transManager: colorOverlay.transManager, outTrans: true, startDelay: 0, duration: fadeToWhiteDuration, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 1f, endRemoveScene: true));
+                        this.world.solidColorManager.Add(colorOverlay);
+
+                        var taskChain = new List<Object>();
+
+                        Vector2 walkDistanceUnit = Vector2.Clamp(value1: player.sprite.position - boat.sprite.position, min: new Vector2(-80), max: new Vector2(80));
+                        int rndDist = 100;
+
+                        Vector2 walkPos1 = player.sprite.position + (walkDistanceUnit * 2) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos2 = player.sprite.position + (walkDistanceUnit * 3) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos3 = player.sprite.position + (walkDistanceUnit * 4) + new Vector2(random.Next(-rndDist, rndDist), random.Next(-rndDist, rndDist));
+                        Vector2 walkPos4 = boat.sprite.position + ((walkPos3 - boat.sprite.position) / 3);
+
+                        TimeSpan timeUntilDeparture = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2); // to depart at early morning
+
+                        Scheduler.ExecutionDelegate clockAdvanceDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilDeparture), ignorePause: true, ignoreMultiplier: true);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeToWhiteDuration / 4, executeHelper: clockAdvanceDlgt, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate clearWeatherDelegate = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(24)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I can't believe it. I've managed to build this boat with my own two hands!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "The countless hours of work have finally paid off.", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "At last, bidding farewell to this island!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos1 } }, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camZoomDlgt1 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.4f, zoomSpeedMultiplier: 0.1f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: camZoomDlgt1, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Will I miss this place someday?", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "The memories here will always hold a special place in my | heart...", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }, boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos2 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "It was my home for such a long time...\nSurvival amidst loneliness and relentless challenges.", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos3 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Well... I can't stay here forever,\neven though I might miss this place one day.", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.8f, zoomSpeedMultiplier: 0.15f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: camZoomDlgt2, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, walkPos4 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I hope that my | boat can take me back home safely...\nThe waves seem both menacing and inviting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, boat.sprite.position } }, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camZoomDlgt3 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.2f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: camZoomDlgt3, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Alright! It's time to head home!", boxType: dialogue, delay: 30, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        int fadeToWhiteFrames = 60 * 2;
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.White }, { "opacity", 1f }, { "fadeInDurationFrames", fadeToWhiteFrames } }, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: fadeToWhiteFrames + 60, executeHelper: false, storeForLaterUse: true));
+
+                        Level openSeaLevel = new Level(type: Level.LevelType.OpenSea, hasWeather: true, plansWeather: false, hasWater: true, world: this.world, width: 100000, height: 8000, seed: 0);
+
+                        Scheduler.ExecutionDelegate enterLevelDelegate = () => { if (!this.world.HasBeenRemoved) this.world.EnterNewLevel(openSeaLevel); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: enterLevelDelegate, storeForLaterUse: true));
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+
+                        break;
+                    }
+
+                case Type.CineEndingPart2:
+                    {
+                        // no disable code needed
+
+                        Player player = this.world.Player;
+                        player.sprite.orientation = Sprite.Orientation.right;
+                        player.sprite.CharacterStand();
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        BoardPiece boatCruising = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
+                        boatCruising.sprite.PlaceOnBoard(randomPlacement: false, position: player.sprite.position, closestFreeSpot: true);
+                        boatCruising.AddToStateMachines();
+                        new Tracking(level: player.level, targetSprite: boatCruising.sprite, followingSprite: player.sprite, offsetX: 100, offsetY: -15);
+
+                        this.world.CineMode = true;
+                        this.world.cineCurtains.showPercentage = 1f; // no transition here
+                        this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromDays(100)); // to make sure no weather events are present
+
+                        this.world.solidColorManager.RemoveAll();
+
+                        this.world.solidColorManager.Add(new(color: Color.White, viewOpacity: 1f));
+
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate clockAdvanceDlgt1 = () =>
+                        {
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(3)), ignorePause: true, ignoreMultiplier: true);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clockAdvanceDlgt1, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate trackCoordsDlgt1 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 6, 0), moveInstantly: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt1, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.15f, setInstantly: true); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camMoveSpdDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetMovementSpeed(0.08f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camMoveSpdDlgt, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate trackPieceDlgt1 = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackPieceDlgt1, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camZoomDlgt2 = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.025f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: camZoomDlgt2, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I've been adrift for weeks now.\nThe days start to blend together...", boxType: dialogue, delay: 60 * 7, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "Since departing from the island, all I see is an endless sea.\nNo sight of land or ships.", boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "This heat is unbearable. I don't have any strength left to row...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // weather won't get updated without this
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1.0f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(60)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(50)), storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I'm so hungry, but I must endure.\nSoon, I will run out of | | food...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatDried), PieceInfo.GetTexture(PieceTemplate.Name.Apple) }, boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(15)), storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I'm starting to miss my island already...\nMaybe it wasn't such a good idea to leave?", boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        VisualEffect orbiter = (VisualEffect)PieceTemplate.CreatePiece(world: this.world, templateName: PieceTemplate.Name.Orbiter);
+                        Scheduler.ExecutionDelegate addOrbiterDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            orbiter.PlaceOnBoard(randomPlacement: false, position: player.sprite.position);
+                            orbiter.universalFloat = 0.4f;
+                            orbiter.visualAid = player;
+                            this.world.camera.TrackPiece(orbiter);
+                            this.world.camera.SetMovementSpeed(0.8f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WaterDrop].texture }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate createBadWeatherDelegate = () => { if (!this.world.HasBeenRemoved) this.world.weather.CreateVeryBadWeatherForDuration(TimeSpan.FromHours(24)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: createBadWeatherDelegate, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Sound soundStormLoop = new Sound(name: SoundData.Name.OpenSeaStormLoop, isLooped: true, volumeFadeFrames: 90, ignore3DAlways: true);
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySound, delay: 60 * 5, executeHelper: soundStormLoop, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate updateOrbiterDlgt1 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            orbiter.universalFloat = 2f;
+                            this.world.camera.SetMovementSpeed(0.8f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt1, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I'm heading into the heart of the storm!", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate updateOrbiterDlgt2 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+                            orbiter.universalFloat = 2f;
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt2, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Hold on tight! The boat's rocking violently!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate updateOrbiterDlgt3 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            orbiter.universalFloat = 4f;
+                            this.world.camera.SetMovementSpeed(4f);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt3, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.OpenSeaStormCrash, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Aaaaaaah!", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        int fadeInDuration = 60 * 3;
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", fadeInDuration } }, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate clockAdvanceDlgt2 = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+                            TimeSpan timeUntilMorning = this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(2);
+                            this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeInDuration, executeHelper: clockAdvanceDlgt2, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate stopSoundDlgt = () => { if (!this.world.HasBeenRemoved) soundStormLoop.Stop(); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: stopSoundDlgt, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate deleteOrbiterDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            this.world.camera.TrackPiece(player);
+                            this.world.camera.ResetMovementSpeed();
+                            orbiter.visualAid = null; // has to be cleared, otherwise the player will be destroyed, too
+                            orbiter.Destroy();
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: deleteOrbiterDlgt, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate clearWeatherDelegate = () =>
+                        { if (!this.world.HasBeenRemoved) this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 60 * 4, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 5 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60 * 5, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "I must have passed out...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Somehow, I've survived the storm. My boat seems to be fine, too...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            var textList = new List<TextWithImages>();
+
+                            FontStashSharp.SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont(60);
+                            FontStashSharp.SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(35);
+
+                            textList.Add(new TextWithImages(font: fontTitle, text: "credits", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: "Son of Robin (C) Ahoy Games 2023", imageList: new List<Texture2D>()));
+                            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
+                            textList.Add(new TextWithImages(font: fontText, text: "| Thanks for playing! |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus), TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
+
+                            Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
+                            { if (!this.world.HasBeenRemoved) this.world.HintEngine.ShowGeneralHint(type: Type.CineEndingPart3, ignoreDelay: true); };
+
+                            new RollingText(textList: textList, offsetPercentX: 0.2f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+
+                        break;
+                    }
+
+                case Type.CineEndingPart3:
+                    {
+                        // no disable code needed
+                        Player player = this.world.Player;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        this.world.CineMode = true;
+                        this.world.cineCurtains.showPercentage = 1f; // no transition here
+
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Hmm...\nI'm sure there was something important on that island.\nA secret, waiting to be uncovered...", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.BoatHorn, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "What???", boxType: dialogue, delay: 30, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate trackCoordsDlgt2 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 5, 0)); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt2, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Ahoy there, on the boat!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 1, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "Need a lift to safety and civilization?", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate trackPieceDlgt2 = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: trackPieceDlgt2, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2.5f, zoomSpeedMultiplier: 0.07f); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt3, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "I don't believe it! A ship!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new HintMessage(text: "At last, I'm saved!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        int finalFadeInDuration = 60 * 3;
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", finalFadeInDuration } }, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate stopSoundsDlgt = () =>
+                        {
+                            if (this.world.HasBeenRemoved) return;
+
+                            var nearbyPieces = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 10000);
+                            var ambientSounds = nearbyPieces.Where(piece => piece.GetType() == typeof(AmbientSound));
+                            var seaWaves = nearbyPieces.Where(piece => piece.name == PieceTemplate.Name.SeaWave);
+                            var boatsCruising = nearbyPieces.Where(piece => piece.name == PieceTemplate.Name.BoatCompleteCruising);
+
+                            foreach (BoardPiece boat in boatsCruising) boat.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating AmbientSound pieces
+
+                            foreach (BoardPiece soundPiece in ambientSounds)
+                            {
+                                AmbientSound ambientSound = (AmbientSound)soundPiece;
+                                ambientSound.activeState = BoardPiece.State.Empty;
+                                ambientSound.activeSoundPack.Stop(PieceSoundPackTemplate.Action.Ambient); // will fade out
+                            }
+                            foreach (BoardPiece wavePiece in seaWaves) wavePiece.Destroy();
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: finalFadeInDuration, executeHelper: stopSoundsDlgt, storeForLaterUse: true));
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 60 * 2, executeHelper: SoundData.Name.MusicBoxEnding, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "  ~ THE END ~  ", boxType: HintMessage.BoxType.GoldBox, delay: 0, autoClose: true, blockInputDuration: 60 * 25, noInput: true).ConvertToTask());
+
+                        Scheduler.ExecutionDelegate returnToMenuDlgt = () => { Scheduler.Task.CloseGame(quitGame: false); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 4, executeHelper: returnToMenuDlgt, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
@@ -497,15 +907,23 @@ namespace SonOfRobin
 
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 2f); };
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt1, storeForLaterUse: true));
 
-            var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", LevelEvent.EventName.Destruction } };
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate addLevelEventDlgt = () =>
+            {
+                if (world.HasBeenRemoved) return;
+                new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: world.ActiveLevel, delay: 60, boardPiece: crossHair);
+            };
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addLevelEventDlgt, storeForLaterUse: true));
 
             // task after the messages - added at the end, ordered normally
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.Player, storeForLaterUse: true));
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+            Scheduler.ExecutionDelegate trackPieceDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackPiece(world.Player); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackPieceDlgt, storeForLaterUse: true));
+
+            Scheduler.ExecutionDelegate camZoomDlgt2 = () => { if (!world.HasBeenRemoved) world.camera.SetZoom(zoom: 1f); };
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 

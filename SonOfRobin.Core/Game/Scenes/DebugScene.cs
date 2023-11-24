@@ -423,13 +423,36 @@ namespace SonOfRobin
             //    world.globalEffect = new BlurInstance(textureSize: new Vector2(world.CameraViewRenderTarget.Width, world.CameraViewRenderTarget.Height), startBlurSize: new Vector2(6, 6), framesLeft: 30);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    //world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
-                // world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+                Player player = world.Player;
+
+                VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+
+                orbiter.universalFloat = 1f;
+                orbiter.visualAid = player;
+
+                world.camera.TrackPiece(orbiter);
+                world.camera.SetMovementSpeed(4f);
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    world.camera.AddShake(movement: new Vector2(-45, 45), durationSecs: 1.5f);
+            //    world.camera.AddRandomShake();
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
@@ -479,7 +502,7 @@ namespace SonOfRobin
             //{
             //    if (world == null) return;
 
-            //    new LevelEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
+            //    new LevelEvent(eventName: LevelEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
@@ -617,8 +640,6 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.SmallProgressBar.TurnOff();
 
-            if (Keyboard.HasBeenPressed(Keys.F12)) RemoveTopScene();
-
             if (Keyboard.HasBeenPressed(Keys.LeftAlt) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
             {
                 if (world == null) return;
@@ -672,7 +693,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.TigerWhite };
+                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack };
                     var packageName = packageNames[BoardPiece.Random.Next(packageNames.Count)];
                     if (packageName != currentPackageName)
                     {

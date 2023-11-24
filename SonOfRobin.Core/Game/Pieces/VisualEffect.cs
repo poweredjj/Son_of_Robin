@@ -9,12 +9,14 @@ namespace SonOfRobin
     public class VisualEffect : BoardPiece
     {
         private Tweener tweener;
+        public float universalFloat; // universal usage within state machines
 
         public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine)
         {
+            this.universalFloat = 1f;
         }
 
         public override void SM_ScarePredatorsAway()
@@ -60,7 +62,7 @@ namespace SonOfRobin
         {
             Rectangle cameraIntersectRect = this.sprite.GfxRect;
             cameraIntersectRect.Inflate(cameraIntersectRect.Width, 0);
-            if (!this.world.camera.viewRect.Intersects(cameraIntersectRect)) return; // sprite.IsInCameraRect would leave some "stuck" waves at camera edges         
+            if (!this.world.camera.viewRect.Intersects(cameraIntersectRect)) return; // sprite.IsInCameraRect would leave some "stuck" waves at camera edges
 
             if (this.tweener == null) this.tweener = new Tweener();
 
@@ -126,7 +128,7 @@ namespace SonOfRobin
 
             // pushing player / animals
 
-            if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
+            if (this.level.levelType == Level.LevelType.Island && this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(2) == 0)
             {
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.Visible });
 
@@ -258,6 +260,56 @@ namespace SonOfRobin
             }
 
             this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
+        }
+
+        public override void SM_EndingBoatCruise()
+        {
+            this.sprite.Move(new Vector2(1, 0));
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: 6, duration: 15);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.DistortCruiseCine, particlesToEmit: 6, duration: 15);
+
+            if (this.world.weather.RainPercentage > 0.7f && this.world.weather.WindPercentage > 0.7f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterSplashCine, particlesToEmit: 20, duration: 1);
+        }
+
+        public override void SM_OscillateAroundTarget()
+        {
+            if (this.visualAid == null || !this.visualAid.exists || !this.visualAid.sprite.IsOnBoard)
+            {
+                this.Destroy();
+                return;
+            }
+
+            if (this.tweener == null)
+            {
+                this.sprite.SetNewPosition(this.visualAid.sprite.position);
+                this.tweener = new Tweener();
+            }
+
+            Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
+            if (tweenPos == null)
+            {
+                Vector2 targetPosDiff = this.visualAid.sprite.position - this.sprite.position;
+
+                int baseOffsetDist = (int)(30 * this.universalFloat);
+
+                int xDist = (int)Math.Abs(this.sprite.position.X - this.visualAid.sprite.position.X);
+                int yDist = (int)Math.Abs(this.sprite.position.Y - this.visualAid.sprite.position.Y);
+
+                int xOffset = this.world.random.Next(baseOffsetDist / 3, (int)(baseOffsetDist * 1.4f * this.universalFloat));
+                int yOffset = this.world.random.Next(baseOffsetDist / 3, (int)(baseOffsetDist * 1.4f * this.universalFloat));
+
+                if (this.sprite.position.X > this.visualAid.sprite.position.X) xOffset *= -1; // placing on opposite side of target
+                if (this.sprite.position.Y > this.visualAid.sprite.position.Y) yOffset *= -1; // placing on opposite side of target
+
+                Vector2 newPos = this.visualAid.sprite.position + new Vector2(xOffset, yOffset);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos,
+                    duration: (this.universalFloat * 0.2f) + (this.world.random.NextSingle() * 0.3f), delay: 0)
+                    .Easing(EasingFunctions.QuadraticInOut);
+            }
+
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
         }
     }
 }

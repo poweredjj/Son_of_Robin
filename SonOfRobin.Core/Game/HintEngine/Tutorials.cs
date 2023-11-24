@@ -42,6 +42,7 @@ namespace SonOfRobin
             HarvestMeat = 30,
             MeatHarvestLevels = 31,
             Caves = 32,
+            ConstructionSites = 33,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -85,7 +86,7 @@ namespace SonOfRobin
             {
                 this.type = type;
                 this.name = name;
-                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false, startingSound: SoundData.Name.Notification2);
+                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInputDefaultDuration: false, startingSound: SoundData.Name.Notification2);
                 this.messages = messages;
                 this.isShownInTutorialsMenu = isShownInTutorialsMenu;
 
@@ -394,6 +395,14 @@ namespace SonOfRobin
                 new HintMessage(text: "| Crafting isn't possible inside the cave.\nOnce you exit, the | entrance collapses,\nso don't leave | important items behind.",
                 imageList: new List<Texture2D>{ TextureBank.GetTexture(TextureBank.TextureName.VirtButtonCraft), PieceInfo.GetTexture(PieceTemplate.Name.CaveEntranceOutside),  PieceInfo.GetTexture(PieceTemplate.Name.Crystal) }, boxType: messageTextType),
                 new HintMessage(text:"Be ready |.\nEnsure you're | well-rested.\n\nGrab lots of:\n- | light sources\n- | food\n- | tools", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps), TextureBank.GetTexture(TextureBank.TextureName.Bed), PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron) }, boxType: messageTextType),
+                });
+
+            new Tutorial(type: Type.ConstructionSites, name: "construction sites", title: "Construction sites.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "Some | structures are too big to be built at once.\nYou have to build a | construction site first.",  imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding), PieceInfo.GetTexture(PieceTemplate.Name.BoatConstructionSite) }, boxType: messageTextType),
+                new HintMessage(text:"Every construction site have construction levels, that are built one at a time.", boxType: messageTextType),
+                new HintMessage(text:"To proceed with the next construction level,\nyou have to fill every construction slot\nwith a | | | corresponding material.\nThen, use | the 'construct' function.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.IronNail), PieceInfo.GetTexture(PieceTemplate.Name.IronPlate), PieceInfo.GetTexture(PieceTemplate.Name.ConstructTrigger) }, boxType: messageTextType),
+                new HintMessage(text:"After proceeding with final construction level,\n| construction site will turn\ninto the | desired structure.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BoatConstructionSite), PieceInfo.GetTexture(PieceTemplate.Name.BoatCompleteStanding) }, boxType: messageTextType),
                 });
 
             CheckData();

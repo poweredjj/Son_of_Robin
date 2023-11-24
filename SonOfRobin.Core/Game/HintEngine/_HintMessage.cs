@@ -24,22 +24,27 @@ namespace SonOfRobin
         public readonly BoxType boxType;
         public readonly int delay;
         public readonly bool fieldOnly;
-        public readonly bool blockInput;
+        public readonly int blockInputDuration;
         public readonly bool animate;
         public readonly bool useTransition;
+        public readonly bool autoClose;
+        public readonly bool noInput;
         public readonly SoundData.Name startingSound;
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, SoundData.Name startingSound = SoundData.Name.Empty)
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInputDefaultDuration = false, int blockInputDuration = 0, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, bool autoClose = false, bool noInput = false, SoundData.Name startingSound = SoundData.Name.Empty)
         {
             this.text = text;
             this.imageList = imageList == null ? new List<Texture2D>() : imageList;
             this.boxType = boxType;
             this.delay = delay;
             this.fieldOnly = fieldOnly;
-            this.blockInput = blockInput;
+            if (blockInputDefaultDuration) blockInputDuration = HintEngine.blockInputDuration;
+            this.blockInputDuration = blockInputDuration;
             this.animate = animate;
             this.useTransition = useTransition;
             this.startingSound = startingSound;
+            this.autoClose = autoClose;
+            this.noInput = noInput;
 
             this.ValidateImagesCount();
         }
@@ -111,7 +116,9 @@ namespace SonOfRobin
                 { "blocksUpdatesBelow", false },
                 { "startingSound", this.startingSound },
                 { "animSound", animSound },
-                { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
+                { "autoClose", this.autoClose },
+                { "noInput", this.noInput },
+                { "blockInputDuration", this.blockInputDuration }
             };
 
             if (!playSound) textWindowData.Remove("sound");

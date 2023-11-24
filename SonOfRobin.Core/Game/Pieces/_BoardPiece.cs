@@ -48,6 +48,8 @@ namespace SonOfRobin
             EmitParticles = 29,
             HasteCloneFollowPlayer = 31,
             CaveEntranceDisappear = 32,
+            EndingBoatCruise = 33,
+            OscillateAroundTarget = 34,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -426,7 +428,7 @@ namespace SonOfRobin
             if (this.bioWear > 0) pieceData["base_bioWear"] = this.bioWear;
             if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
             if (this.readableName != pieceInfo.readableName) pieceData["base_readableName"] = this.readableName;
-            if (this.description != pieceInfo.description) pieceData["base_description"] = this.readableName;
+            if (this.description != pieceInfo.description) pieceData["base_description"] = this.description;
             if (this.showStatBarsTillFrame > this.world.CurrentUpdate) pieceData["base_showStatBarsTillFrame"] = this.showStatBarsTillFrame;
 
             return pieceData;
@@ -588,10 +590,17 @@ namespace SonOfRobin
 
             var collidingPlants = this.sprite.GetCollidingSprites(new List<Cell.Group> { Cell.Group.Visible }).Where(sprite => sprite.boardPiece.GetType() == typeof(Plant) && this.sprite.ColRect.Contains(sprite.position));
 
-            foreach (Sprite collidingPlant in collidingPlants)
+            Scheduler.ExecutionDelegate destroyAndDropDebrisDlgt = () =>
             {
-                new Scheduler.Task(taskName: Scheduler.TaskName.DestroyAndDropDebris, delay: delay, executeHelper: collidingPlant.boardPiece);
-            }
+                foreach (Sprite collidingPlant in collidingPlants)
+                {
+                    BoardPiece plantPiece = collidingPlant.boardPiece;
+                    plantPiece.pieceInfo.Yield?.DropDebris(piece: plantPiece);
+                    plantPiece.Destroy();
+                }
+            };
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: destroyAndDropDebrisDlgt);
         }
 
         public void StateMachineWork()
@@ -753,6 +762,14 @@ namespace SonOfRobin
 
                 case State.CaveEntranceDisappear:
                     this.SM_CaveEntranceDisappear();
+                    break;
+
+                case State.EndingBoatCruise:
+                    this.SM_EndingBoatCruise();
+                    break;
+
+                case State.OscillateAroundTarget:
+                    this.SM_OscillateAroundTarget();
                     break;
 
                 case State.Empty: // this state should be removed from execution (for performance reasons)
@@ -1118,6 +1135,12 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_CaveEntranceDisappear()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_EndingBoatCruise()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_OscillateAroundTarget()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_PlayAmbientSound()

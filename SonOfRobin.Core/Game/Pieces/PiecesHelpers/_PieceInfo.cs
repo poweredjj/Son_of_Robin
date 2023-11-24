@@ -936,6 +936,16 @@ namespace SonOfRobin
                         this.getsPushedByWaves = true;
                         break;
 
+                    case PieceTemplate.Name.HideCloth:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.startingMass = 100;
+                        this.fireAffinity = 0.8f;
+                        this.canBePickedUp = true;
+                        this.stackSize = 4;
+                        this.placeMaxDistance = 1000;
+                        this.getsPushedByWaves = true;
+                        break;
+
                     case PieceTemplate.Name.Burger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.startingMass = 560;
@@ -1018,37 +1028,6 @@ namespace SonOfRobin
                               new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
                               new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) }
                           );
-                        break;
-
-                    case PieceTemplate.Name.Tiger:
-                        this.category = BoardPiece.Category.Flesh;
-                        this.startingMass = 80;
-                        this.fireAffinity = 0.65f;
-                        this.maxMassForSize = new int[] { 500, 2000 };
-                        this.blocksMovement = true;
-                        this.placeMinDistance = 10;
-                        this.placeMaxDistance = 45;
-                        this.animalMaxMass = 15000;
-                        this.animalMassBurnedMultiplier = 0.5f;
-                        this.animalAwareness = 50;
-                        this.animalMatureAge = 4000;
-                        this.animalPregnancyDuration = 3500;
-                        this.animalMaxChildren = 5;
-                        this.animalRetaliateChance = 1f;
-                        this.animalSightRange = 700;
-                        this.canBePickedUp = true;
-                        this.getsPushedByWaves = true;
-
-                        customSoundsForActions[PieceSoundPackTemplate.Action.Cry] = new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f);
-                        customSoundsForActions[PieceSoundPackTemplate.Action.Eat] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60);
-
-                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisBlood },
-                          firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                          finalDroppedPieces: new List<Yield.DroppedPiece> {
-                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.MeatRawPrime, chanceToDrop: 100, maxNumberToDrop: 3),
-                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2),
-                              new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2)
-                          });
                         break;
 
                     case PieceTemplate.Name.Bear:
@@ -1374,7 +1353,7 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
-                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
+                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarSmall });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
 
                         break;
@@ -1388,7 +1367,7 @@ namespace SonOfRobin
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
-                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStar });
+                        this.appearDebris = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStarSmall });
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.Chime);
                         break;
 
@@ -1553,6 +1532,39 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
+                        break;
+
+                    case PieceTemplate.Name.BoatConstructionSite:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        this.allowedDensity = new AllowedDensity(radius: 1000, forbidOverlapSameClass: true);
+                        this.hasFlatShadow = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.WoodCreak, ignore3DAlways: true);
+                        break;
+
+                    case PieceTemplate.Name.BoatCompleteStanding:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.boardTask = Scheduler.TaskName.OpenBoatMenu;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
+                        break;
+
+                    case PieceTemplate.Name.BoatCompleteCruising:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
+                        this.serialize = false;
+                        this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
                         break;
 
                     case PieceTemplate.Name.Totem:
@@ -1985,6 +1997,14 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
+                    case PieceTemplate.Name.Orbiter:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 0;
+                        this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
+                        break;
+
                     case PieceTemplate.Name.MapMarker:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
@@ -2060,6 +2080,11 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.OfferTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
+                    case PieceTemplate.Name.ConstructTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         break;

@@ -13,7 +13,7 @@ namespace SonOfRobin
         public List<BoardPiece> pieceList;
         public byte stackLimit;
         public string label;
-
+        public PieceTemplate.Name pieceTextureShownWhenEmpty;
         public bool locked;
         public bool hidden;
         public HashSet<PieceTemplate.Name> allowedPieceNames;
@@ -26,6 +26,7 @@ namespace SonOfRobin
             this.locked = false;
             this.hidden = false;
             this.label = "";
+            this.pieceTextureShownWhenEmpty = PieceTemplate.Name.Empty;
             this.stackLimit = stackLimit;
             this.allowedPieceNames = allowedPieceNames;
         }
@@ -83,8 +84,12 @@ namespace SonOfRobin
             else
             {
                 // Task allows for adding new buffs now (expanding inventory / toolbar) and removing previous buffs in the next frame
-                new Scheduler.Task(taskName: Scheduler.TaskName.RemoveBuffs, turnOffInputUntilExecution: true, delay: 1,
-                    executeHelper: new Dictionary<string, Object> { { "storagePiece", this.storage.storagePiece }, { "buffList", equipPiece.buffList } });
+
+                Scheduler.ExecutionDelegate removeBuffsDlgt = () =>
+                {
+                    if (!this.storage.storagePiece.world.HasBeenRemoved) this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, delay: 1, executeHelper: removeBuffsDlgt);
             }
         }
 
@@ -182,6 +187,7 @@ namespace SonOfRobin
                 { "label", this.label},
                 { "allowedPieceNames", this.allowedPieceNames },
                 { "stackLimit", this.stackLimit },
+                { "pieceTextureShownWhenEmpty", this.pieceTextureShownWhenEmpty },
                 { "pieceList", pieceList },
             };
 
@@ -198,6 +204,7 @@ namespace SonOfRobin
             this.allowedPieceNames = (HashSet<PieceTemplate.Name>)slotDict["allowedPieceNames"];
             this.stackLimit = (byte)(Int64)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
+            if (slotDict.ContainsKey("pieceTextureShownWhenEmpty")) this.pieceTextureShownWhenEmpty = (PieceTemplate.Name)(Int64)slotDict["pieceTextureShownWhenEmpty"];
 
             // repeated in World
 
@@ -215,7 +222,18 @@ namespace SonOfRobin
 
         public void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
         {
-            if (this.hidden || this.IsEmpty) return;
+            if (this.hidden) return;
+
+            if (this.IsEmpty)
+            {
+                if (this.pieceTextureShownWhenEmpty != PieceTemplate.Name.Empty)
+                {
+                    Helpers.DrawTextureInsideRect(texture: PieceInfo.GetTexture(this.pieceTextureShownWhenEmpty), rectangle: destRect, color: Color.White * opacity * 0.3f);
+                }
+
+                return;
+            }
+
             Sprite sprite = this.TopPiece.sprite;
             BoardPiece piece = sprite.boardPiece;
             World world = piece.world;

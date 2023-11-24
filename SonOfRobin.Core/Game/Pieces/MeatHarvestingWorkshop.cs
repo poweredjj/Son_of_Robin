@@ -114,21 +114,24 @@ namespace SonOfRobin
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
             {
-                new TextWindow(text: "I can't harvest meat with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                Scheduler.ExecutionDelegate showTutorialDlgt = () =>
+                { if (!world.HasBeenRemoved) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.KeepingAnimalsAway, world: world, ignoreDelay: true); };
+
+                new TextWindow(text: "I can't harvest meat with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, closingTask: Scheduler.TaskName.ExecuteDelegate, closingTaskHelper: showTutorialDlgt, animSound: world.DialogueSound);
 
                 return;
             }
 
             if (!player.CanSeeAnything)
             {
-                new HintMessage(text: "It is too dark to harvest meat.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "It is too dark to harvest meat.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return;
             }
 
             if (player.IsVeryTired)
             {
-                new HintMessage(text: "I'm too tired to harvest meat...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "I'm too tired to harvest meat...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return;
             }
@@ -188,7 +191,7 @@ namespace SonOfRobin
                         imageList.Add(pieceInfo.texture);
                     }
 
-                    taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());
                 }
 
                 // placing pieces inside storage
@@ -215,7 +218,7 @@ namespace SonOfRobin
             }
             else
             {
-                taskChain.Add(new HintMessage(text: String.Join("\n", "Could not harvest anything..."), boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask());
+                taskChain.Add(new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInputDefaultDuration: false).ConvertToTask());
             }
 
             // registering stats and checking level up

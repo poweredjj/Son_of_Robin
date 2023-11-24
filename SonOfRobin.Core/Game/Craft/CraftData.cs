@@ -77,6 +77,8 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.HotPlate, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.Stone, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.CookingPot }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 3 }, { PieceTemplate.Name.IronPlate, 3 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BoatConstructionSite, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.ShovelStone, 3 },  { PieceTemplate.Name.WoodPlank, 12 } }, fatigue: fatigueStructureSmall, isReversible: false, isHidden: true),
                 };
         }
 
@@ -208,25 +210,27 @@ namespace SonOfRobin
         {
             return new List<Craft.Recipe>
             {
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.HideCloth, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false ),
+
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsProtective, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Rope, 2 }, { PieceTemplate.Name.IronNail, 10 }, { PieceTemplate.Name.IronPlate, 1 }}, fatigue: fatigueItemMedium, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.BootsMountain }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsMountain, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 4 }, { PieceTemplate.Name.Rope, 3 }, { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.BottleOfOil, 1 }, { PieceTemplate.Name.IronPlate, 1 }}, fatigue: fatigueItemBig, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.BootsAllTerrain }, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsAllTerrain, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 8 }, { PieceTemplate.Name.Rope, 5 }, { PieceTemplate.Name.IronNail, 40 }, { PieceTemplate.Name.BottleOfOil, 3 }, { PieceTemplate.Name.IronPlate, 1 }, { PieceTemplate.Name.Crystal, 3 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BootsAllTerrain, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 8 }, { PieceTemplate.Name.HideCloth, 1 }, { PieceTemplate.Name.Rope, 5 }, { PieceTemplate.Name.IronNail, 40 }, { PieceTemplate.Name.BottleOfOil, 3 }, { PieceTemplate.Name.IronPlate, 1 }, { PieceTemplate.Name.Crystal, 3 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }, { PieceTemplate.Name.Rope, 4 }, { PieceTemplate.Name.IronNail, 10 }}, fatigue: fatigueItemMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackBig }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 8 }, { PieceTemplate.Name.Rope, 6 }, { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.IronRod, 2 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackLuxurious }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 2 }, { PieceTemplate.Name.Rope, 6 }, { PieceTemplate.Name.IronNail, 20 }, { PieceTemplate.Name.IronRod, 2 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackLuxurious }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackLuxurious, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 14 }, { PieceTemplate.Name.Rope, 9 }, { PieceTemplate.Name.IronNail, 60 }, { PieceTemplate.Name.IronRod, 3 }, { PieceTemplate.Name.Crystal, 8 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackLuxurious, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 4 }, { PieceTemplate.Name.Rope, 9 }, { PieceTemplate.Name.IronNail, 60 }, { PieceTemplate.Name.IronRod, 3 }, { PieceTemplate.Name.Crystal, 8 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Dungarees, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.IronNail, 15 }}, fatigue: fatigueItemMedium, isReversible: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Dungarees, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 2 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.IronNail, 15 }}, fatigue: fatigueItemMedium, isReversible: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 2 },{ PieceTemplate.Name.Rope, 2 }}, fatigue: fatigueItemMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltBig }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 },{ PieceTemplate.Name.Rope, 3 }, { PieceTemplate.Name.IronNail, 15 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltLuxurious }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 1 },{ PieceTemplate.Name.Rope, 3 }, { PieceTemplate.Name.IronNail, 15 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemBig, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltLuxurious }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltLuxurious, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 },{ PieceTemplate.Name.Rope, 4 }, { PieceTemplate.Name.IronNail, 25 }, { PieceTemplate.Name.BottleOfOil, 3 }, { PieceTemplate.Name.Crystal, 3 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltLuxurious, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 2 },{ PieceTemplate.Name.Rope, 4 }, { PieceTemplate.Name.IronNail, 25 }, { PieceTemplate.Name.BottleOfOil, 3 }, { PieceTemplate.Name.Crystal, 3 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
             };
         }
     }

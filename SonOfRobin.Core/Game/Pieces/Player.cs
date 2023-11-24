@@ -166,25 +166,33 @@ namespace SonOfRobin
                 }
             }
 
+            this.pointWalkTarget = Vector2.Zero;
             this.UpdateLastFrameSMProcessed(); // otherwise player would freeze for some time
 
             if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
             else
             {
-                foreach (PieceTemplate.Name pieceName in new List<PieceTemplate.Name> { PieceTemplate.Name.CaveExit, PieceTemplate.Name.CaveExitEmergency })
+                if (this.level.levelType == Level.LevelType.Cave)
                 {
-                    BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: pieceName, world: this.world);
-
-                    for (int tryIndex = 0; tryIndex < 100000; tryIndex++)
+                    foreach (PieceTemplate.Name pieceName in new List<PieceTemplate.Name> { PieceTemplate.Name.CaveExit, PieceTemplate.Name.CaveExitEmergency })
                     {
-                        if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
-                            this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
-                        {
-                            break;
-                        }
-                    }
+                        BoardPiece caveExit = PieceTemplate.CreatePiece(templateName: pieceName, world: this.world);
 
-                    if (this.sprite.IsOnBoard) break;
+                        for (int tryIndex = 0; tryIndex < 100000; tryIndex++)
+                        {
+                            if (caveExit.PlaceOnBoard(position: Vector2.Zero, randomPlacement: true) &&
+                                this.PlaceOnBoard(randomPlacement: false, position: caveExit.sprite.position, closestFreeSpot: true))
+                            {
+                                break;
+                            }
+                        }
+
+                        if (this.sprite.IsOnBoard) break;
+                    }
+                }
+                else if (this.level.levelType == Level.LevelType.OpenSea)
+                {
+                    this.sprite.PlaceOnBoard(randomPlacement: false, position: new Vector2(x: this.level.width / 10, y: this.level.height / 2), closestFreeSpot: true, maxDistanceOverride: int.MaxValue);
                 }
 
                 if (!this.sprite.IsOnBoard) throw new ArgumentException("Cannot place player sprite.");
@@ -325,7 +333,7 @@ namespace SonOfRobin
         {
             get
             {
-                bool canSeeAnything = (this.level.levelType == Level.LevelType.Island && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) || this.world.Player.sprite.IsInLightSourceRange;
+                bool canSeeAnything = ((this.level.levelType == Level.LevelType.Island || this.level.levelType == Level.LevelType.OpenSea) && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) || this.world.Player.sprite.IsInLightSourceRange;
 
                 if (!canSeeAnything) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToSeeAnything, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
                 return canSeeAnything;
@@ -491,6 +499,16 @@ namespace SonOfRobin
                 { new Point(0,2), Equipment.EquipType.Map },
             };
 
+            var pieceNamesToDisplayForEquipTypes = new Dictionary<Equipment.EquipType, PieceTemplate.Name>
+            {
+                { Equipment.EquipType.Head, PieceTemplate.Name.HatSimple },
+                { Equipment.EquipType.Chest, PieceTemplate.Name.Dungarees },
+                { Equipment.EquipType.Legs, PieceTemplate.Name.BootsMountain },
+                { Equipment.EquipType.Backpack, PieceTemplate.Name.BackpackMedium },
+                { Equipment.EquipType.Belt, PieceTemplate.Name.BeltMedium },
+                { Equipment.EquipType.Map, PieceTemplate.Name.Map },
+            };
+
             if (this.Skill == SkillName.Fashionista) equipTypeBySlotCoords[new Point(2, 2)] = Equipment.EquipType.Accessory;
 
             foreach (var kvp in equipTypeBySlotCoords)
@@ -502,7 +520,9 @@ namespace SonOfRobin
                 slot.locked = false;
                 slot.hidden = false;
                 slot.allowedPieceNames = PieceInfo.GetNamesForEquipType(equipType);
-                slot.label = equipType.ToString().ToLower();
+
+                if (pieceNamesToDisplayForEquipTypes.ContainsKey(equipType)) slot.pieceTextureShownWhenEmpty = pieceNamesToDisplayForEquipTypes[equipType];
+                else slot.label = equipType.ToString().ToLower();
             }
         }
 
@@ -530,7 +550,9 @@ namespace SonOfRobin
 
             Sound.QuickPlay(SoundData.Name.GameOver);
 
-            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
+            Scheduler.ExecutionDelegate camZoomDlgt = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 3f); };
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, turnOffInputUntilExecution: true, delay: 0, executeHelper: camZoomDlgt);
+
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
         }
 
@@ -966,7 +988,7 @@ namespace SonOfRobin
 
             // var crosshairForPointTarget = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.pointWalkTarget, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForPointTarget.sprite.color = Color.Cyan; // for testing
-            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
+            // new LevelEvent(eventName: LevelEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForPointTarget); // for testing
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
@@ -983,7 +1005,7 @@ namespace SonOfRobin
 
             // var crosshairForGoal = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: goalPosition, templateName: PieceTemplate.Name.Crosshair); // for testing
             // crosshairForGoal.sprite.color = Color.Violet; // for testing
-            // new LevelEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
+            // new LevelEvent(eventName: LevelEvent.EventName.Destruction, world: this.world, delay: 1, boardPiece: crosshairForGoal); // for testing
 
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
             if (hasBeenMoved)
@@ -1209,15 +1231,23 @@ namespace SonOfRobin
                 {
                     var optionList = new List<object>();
 
-                    optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
+                    Scheduler.ExecutionDelegate wakeUpDlgt = () => { if (!this.world.HasBeenRemoved) this.WakeUp(force: true); };
+                    optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", wakeUpDlgt } });
 
-                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
+                    if (this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Morning)
+                    {
+                        Scheduler.ExecutionDelegate waitUntilMorningDlgt = () => { if (!this.world.HasBeenRemoved) this.sleepMode = SleepMode.WaitMorning; ; };
+
+                        optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", waitUntilMorningDlgt } });
+                    }
 
                     optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
-                    var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
-
-                    new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
+                    {
+                        MenuTemplate.CreateConfirmationMenu(question: "You are fully rested.", customOptions: optionList, blocksUpdatesBelow: true);
+                    };
+                    new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt);
                 }
                 else
                 {
@@ -1499,7 +1529,7 @@ namespace SonOfRobin
 
             if (meatPieces.Count == 0)
             {
-                Scheduler.Task hintTask = new HintMessage(text: String.Join("\n", "Could not harvest anything..."), boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask();
+                Scheduler.Task hintTask = new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInputDefaultDuration: false).ConvertToTask();
                 hintTask.Execute();
             }
             else if (meatPieces.Count >= 2)

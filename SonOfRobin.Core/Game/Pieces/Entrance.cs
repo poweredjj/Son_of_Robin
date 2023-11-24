@@ -9,17 +9,19 @@ namespace SonOfRobin
     {
         private Level targetLevel;
         private bool isBlocked;
+        private readonly bool hasWater;
         private readonly bool goesDown;
         private readonly int maxDepth;
         private readonly Level.LevelType levelType;
 
-        public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, Level.LevelType levelType, int maxDepth,
+        public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, bool hasWater, Level.LevelType levelType, int maxDepth,
              byte animSize = 0, string animName = "default", int maxHitPoints = 1, bool rotatesWhenDropped = false, State activeState = State.Empty) :
 
              base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: activeState, rotatesWhenDropped: rotatesWhenDropped)
         {
             this.levelType = levelType;
             this.goesDown = goesDown;
+            this.hasWater = hasWater;
             this.isBlocked = false;
             this.maxDepth = maxDepth;
 
@@ -50,17 +52,13 @@ namespace SonOfRobin
                 }
 
                 int levelSize = 7000 + (1200 * (this.level.depth - 1));
-                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize);
+                this.targetLevel = new Level(type: this.levelType, world: this.world, seed: this.world.random.Next(1, 9999), width: levelSize, height: levelSize, hasWater: this.hasWater);
             }
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)
             {
-                var confirmationData = new Dictionary<string, Object> {
-                            { "question", "Want to exit? You won't be able to come back." },
-                            { "taskName", Scheduler.TaskName.UseEntrance },
-                            { "executeHelper", this }, { "blocksUpdatesBelow", true } };
-
-                MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+                var confirmationData = new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.UseEntrance } };
+                MenuTemplate.CreateConfirmationMenu(question: "Want to exit? You won't be able to come back.", confirmationData: confirmationData, blocksUpdatesBelow: true);
                 return;
             }
 
@@ -101,9 +99,13 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.15f, bigMotor: true, smallMotor: false, fadeInSeconds: 0.8f, durationSeconds: 0f, fadeOutSeconds: 0.8f);
                 new RumbleEvent(force: 0.10f, bigMotor: false, smallMotor: true, fadeInSeconds: 1.2f, durationSeconds: 0f, fadeOutSeconds: 1.3f);
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 120, executeHelper: new Dictionary<string, Object> { { "force", 0.15f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.4f } });
+                Scheduler.ExecutionDelegate addRumbleDlgt1 = () =>
+                { new RumbleEvent(force: 0.15f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.0f, durationSeconds: 0.0f, fadeOutSeconds: 0.4f); };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 120, executeHelper: addRumbleDlgt1);
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.AddRumble, delay: 150, executeHelper: new Dictionary<string, Object> { { "force", 0.12f }, { "bigMotor", true }, { "smallMotor", true }, { "fadeInSeconds", 0.0f }, { "durationSeconds", 0.0f }, { "fadeOutSeconds", 0.25f } });
+                Scheduler.ExecutionDelegate addRumbleDlgt2 = () =>
+                { new RumbleEvent(force: 0.12f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.0f, durationSeconds: 0.0f, fadeOutSeconds: 0.25f); };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 150, executeHelper: addRumbleDlgt2);
 
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DustPuff }, particlesToEmit: 120);
                 new Yield().DropDebris(piece: this, debrisTypeListOverride: new List<ParticleEngine.Preset> { ParticleEngine.Preset.SmokePuff }, particlesToEmit: 40);

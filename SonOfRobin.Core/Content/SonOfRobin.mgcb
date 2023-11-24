@@ -511,6 +511,90 @@
 /processorParam:TextureFormat=Color
 /build:gfx/big_torch_on.png
 
+#begin gfx/boat/boat_complete.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_complete.png
+
+#begin gfx/boat/boat_construction_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_0.png
+
+#begin gfx/boat/boat_construction_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_1.png
+
+#begin gfx/boat/boat_construction_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_2.png
+
+#begin gfx/boat/boat_construction_3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_3.png
+
+#begin gfx/boat/boat_construction_4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_4.png
+
+#begin gfx/boat/boat_construction_5.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/boat/boat_construction_5.png
+
 #begin gfx/boots_all_terrain.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1170,18 +1254,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/characters/recolor_pt2.png
-
-#begin gfx/characters/tiger.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/characters/tiger.png
 
 #begin gfx/cherry.png
 /importer:TextureImporter
@@ -2155,6 +2227,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/grass_regular_x3.png
 
+#begin gfx/hammer.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/hammer.png
+
 #begin gfx/hat_simple.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2298,6 +2382,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/herbs_yellow.png
+
+#begin gfx/hidecloth.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/hidecloth.png
 
 #begin gfx/hole.png
 /importer:TextureImporter
@@ -9301,6 +9397,24 @@
 /processorParam:Quality=Best
 /build:sound/434895__julius-galla__steps-on-loose-stones-actions-3.ogg
 
+#begin sound/441008__girlwithsoundrecorder__rough-baltic-sea_crash.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441008__girlwithsoundrecorder__rough-baltic-sea_crash.ogg
+
+#begin sound/441008__girlwithsoundrecorder__rough-baltic-sea_loop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441008__girlwithsoundrecorder__rough-baltic-sea_loop.ogg
+
+#begin sound/441223__devy32__boat-horn.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441223__devy32__boat-horn.ogg
+
 #begin sound/442956__qubodup__creepy-cave.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -9733,12 +9847,6 @@
 /processorParam:Quality=Best
 /build:sound/546322__micahlg__munchin-4.ogg
 
-#begin sound/546399__szegvari__angry-tiger-fantasy.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/546399__szegvari__angry-tiger-fantasy.ogg
-
 #begin sound/547585__f-m-audio__grit-spray.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -9888,6 +9996,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/60968__ifartinurgeneraldirection__night-sounds.ogg
+
+#begin sound/610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld.ogg
 
 #begin sound/614013__aarontheonly__roar9.ogg
 /importer:OggImporter
@@ -10050,6 +10164,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/69480__aboe__knifesha4.ogg
+
+#begin sound/72650__lg__music-box-01.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/72650__lg__music-box-01.ogg
 
 #begin sound/79560__robinhood76__01259-wet-sand-digging-1.ogg
 /importer:OggImporter

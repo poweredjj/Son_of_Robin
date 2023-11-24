@@ -88,7 +88,7 @@ namespace SonOfRobin
                 var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
                 gridSerializedData = (Dictionary<string, Object>)saveGameDataDict["grid"];
             }
-            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, seed: this.seed, width: width, height: height, cellWidthOverride: cellWidthOverride, cellHeightOverride: cellHeightOverride, gridSerializedData: gridSerializedData);
+            this.IslandLevel = new Level(world: this, type: Level.LevelType.Island, hasWater: true, hasWeather: true, plansWeather: true, seed: this.seed, width: width, height: height, cellWidthOverride: cellWidthOverride, cellHeightOverride: cellHeightOverride, gridSerializedData: gridSerializedData);
             this.ActiveLevel = this.IslandLevel;
 
             this.demoMode = demoMode;
@@ -432,17 +432,20 @@ namespace SonOfRobin
                 }
             }
 
-            bool newGameStarted = this.saveGameData == null;
+            bool saveDataActive = this.saveGameData != null;
 
-            if (newGameStarted)
+            if (!saveDataActive)
             {
                 if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: true);
                 else
                 {
-                    this.CreateAndPlacePlayer();
+                    if (this.ActiveLevel.levelType == Level.LevelType.Island)
+                    {
+                        this.CreateAndPlacePlayer();
 
-                    if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
-                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
+                        if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                        PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
+                    }
                 }
             }
             else
@@ -494,8 +497,13 @@ namespace SonOfRobin
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
-            if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
-            else Craft.UnlockRecipesAddedInGameUpdate(world: this);
+            if (!this.demoMode)
+            {
+                if (!saveDataActive) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                else Craft.UnlockRecipesAddedInGameUpdate(world: this);
+
+                if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);
+            }
         }
 
         private void ProcessAllPopulatingSteps()
@@ -840,8 +848,8 @@ namespace SonOfRobin
         {
             if (createdDecorationsCount > 0)
             {
-                TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.ActiveLevel.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
+                // TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
+                // MessageLog.Add(debugMessage: true, text: $"Temp decors created: {createdDecorationsCount} total: {this.ActiveLevel.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -870,8 +878,8 @@ namespace SonOfRobin
 
             if (destroyedDecorationsCount > 0)
             {
-                TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
-                MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
+                // TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
+                // MessageLog.Add(debugMessage: true, text: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
             }
             return;
         }
@@ -1196,19 +1204,16 @@ namespace SonOfRobin
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 
             Yield debrisYield = new Yield(firstDebrisTypeList:
-                new List<ParticleEngine.Preset> { plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStar });
+                new List<ParticleEngine.Preset> { plantMode ? ParticleEngine.Preset.DebrisLeaf : ParticleEngine.Preset.DebrisStarSmall });
 
-            if (plantMode)
-            {
-                Sound.QuickPlay(SoundData.Name.Planting);
-            }
+            if (plantMode) Sound.QuickPlay(SoundData.Name.Planting);
             else
             {
                 Sound.QuickPlay(SoundData.Name.Sawing);
                 Sound.QuickPlay(SoundData.Name.Hammering);
             }
 
-            this.Player.simulatedPieceToBuild.Destroy();
+            this.Player.simulatedPieceToBuild?.Destroy();
             this.Player.simulatedPieceToBuild = null;
 
             builtPiece.sprite.opacity = 0f;
@@ -1228,22 +1233,26 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
 
-            this.Player.level.stateMachineTypesManager.DisableMultiplier();
-            this.Player.level.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+            this.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
+            this.ActiveLevel.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             this.islandClock.Resume();
 
+            this.Player.simulatedPieceToBuild?.Destroy();
+            this.Player.simulatedPieceToBuild = null;
+
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
-            if (restoreCraftMenu) craftMenu?.MoveToTop(); // there is no craft menu if planting
+            if (restoreCraftMenu)  // there is no craft menu if planting
+            {
+                if (craftMenu != null)
+                {
+                    Menu rebuiltCraftMenu = ((Menu)craftMenu).Rebuild(instantScroll: true); // rebuilding, to avoid counting simulated piece as built piece
+                    rebuiltCraftMenu?.MoveToTop();
+                }
+            }
             else craftMenu?.Remove();
 
             if (showCraftMessages) this.Player.recipeToBuild.UnlockNewRecipesAndShowSummary(this);
-
             this.Player.recipeToBuild = null;
-            if (this.Player.simulatedPieceToBuild != null)
-            {
-                this.Player.simulatedPieceToBuild.Destroy();
-                this.Player.simulatedPieceToBuild = null;
-            }
 
             this.BuildMode = false;
         }
@@ -1258,8 +1267,7 @@ namespace SonOfRobin
 
         public void FlashRedOverlay()
         {
-            SolidColor redOverlay = new(color: Color.Red, viewOpacity: 0.0f);
-            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+            this.FlashOverlay(color: Color.Red * 0.5f, duration: 20);
 
             this.globalEffect = new MosaicInstance(textureSize: new Vector2(this.cameraViewRenderTarget.Width, this.cameraViewRenderTarget.Height), blurSize: new Vector2(8, 8), framesLeft: 20);
             this.globalEffect.intensityForTweener = 0f;
@@ -1267,6 +1275,12 @@ namespace SonOfRobin
                 .TweenTo(target: this.globalEffect, expression: effect => effect.intensityForTweener, toValue: 1f, duration: 10f / 60f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticIn);
+        }
+
+        public void FlashOverlay(Color color, int duration)
+        {
+            SolidColor redOverlay = new(color: color, viewOpacity: 0.0f);
+            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: duration, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 1f, endRemoveScene: true));
 
             this.solidColorManager.Add(redOverlay);
         }
@@ -1388,7 +1402,7 @@ namespace SonOfRobin
 
             if (this.weather.HeatPercentage > 0)
             {
-                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.4f, endSpriteBatch: false);
+                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.3f, endSpriteBatch: false);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1576,7 +1590,7 @@ namespace SonOfRobin
 
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, this.ActiveLevel);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel);
             Rectangle cameraRect = this.camera.viewRect;
 
             // drawing ambient light

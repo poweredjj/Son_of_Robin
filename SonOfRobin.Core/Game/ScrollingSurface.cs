@@ -28,7 +28,7 @@ namespace SonOfRobin
 
             this.world = world;
 
-            // to properly scroll, every ScrollingSurface needs to have effInstance = DistortInstance set 
+            // to properly scroll, every ScrollingSurface needs to have effInstance = DistortInstance set
 
             Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
 

@@ -552,7 +552,7 @@ namespace SonOfRobin
                     if (playerTarget.Fatigue > playerTarget.maxFatigue * 0.8f) playerTarget.Fatigue = playerTarget.maxFatigue * 0.8f;  // to avoid hit-sleep loop
                     playerTarget.WakeUp(force: true);
                     HintEngine.ShowPieceDuringPause(world: world, pieceToShow: this,
-                        messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue, blockInput: true) });
+                        messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue, blockInputDefaultDuration: true) });
                 }
 
                 targetSpeed = playerTarget.speed;

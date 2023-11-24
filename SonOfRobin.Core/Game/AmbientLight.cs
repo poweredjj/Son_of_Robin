@@ -54,7 +54,7 @@ namespace SonOfRobin
                 {
                     // setting next and previous light values
 
-                    if (i < lightDataList.Count) nextLightData = sunDataList[i];
+                    if (i < lightDataArray.Length) nextLightData = sunDataList[i];
                     else nextLightData = sunDataList[0];
 
                     prevLightData = sunDataList[i - 1];
@@ -113,10 +113,10 @@ namespace SonOfRobin
 
         private static readonly Dictionary<Level.LevelType, AmbientLightData> staticAmbientLightForLevelType = new Dictionary<Level.LevelType, AmbientLightData>
         {
-            { Level.LevelType.Cave, new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.85f, lightColor: Color.Transparent) }
+            { Level.LevelType.Cave, new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.85f, lightColor: Color.Transparent) },
         };
 
-        private static readonly List<AmbientLightData> lightDataList = new List<AmbientLightData>
+        private static readonly AmbientLightData[] lightDataArray = new AmbientLightData[]
         {
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.9f, lightColor: Color.Transparent),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(3), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
@@ -169,13 +169,13 @@ namespace SonOfRobin
 
             // return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black * 0.7f, lightColor: Color.Transparent); // for testing
 
-            for (int i = 1; i <= lightDataList.Count; i++) // from 1 to count of elements, to properly check the whole range
+            for (int i = 1; i <= lightDataArray.Length; i++) // from 1 to count of elements, to properly check the whole range
             {
                 // setting next and previous ambient light values
 
                 // after the last element, the first one should be used (with added 24h)
-                AmbientLightData nextLightData = i < lightDataList.Count ? lightDataList[i] : AmbientLightData.MakeCopyPlus24H(lightDataList[0]);
-                AmbientLightData prevLightData = lightDataList[i - 1];
+                AmbientLightData nextLightData = i < lightDataArray.Length ? lightDataArray[i] : AmbientLightData.MakeCopyPlus24H(lightDataArray[0]);
+                AmbientLightData prevLightData = lightDataArray[i - 1];
 
                 // checking for time match
 
