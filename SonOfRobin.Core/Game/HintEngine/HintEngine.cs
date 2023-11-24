@@ -683,6 +683,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Oh no, a storm approaches!", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
+                        Sound soundStormLoop = new Sound(name: SoundData.Name.OpenSeaStormLoop, isLooped: true, volumeFadeFrames: 90, ignore3DAlways: true);
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySound, delay: 60 * 5, executeHelper: soundStormLoop, storeForLaterUse: true));
+
                         Scheduler.ExecutionDelegate updateOrbiterDlgt1 = () =>
                         {
                             if (this.world.HasBeenRemoved) return;
@@ -716,6 +719,8 @@ namespace SonOfRobin
 
                         taskChain.Add(new HintMessage(text: "Aaaaaaah!", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.OpenSeaStormCrash, storeForLaterUse: true));
+
                         int fadeInDuration = 60 * 3;
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", fadeInDuration } }, storeForLaterUse: true));
@@ -727,6 +732,9 @@ namespace SonOfRobin
                             this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(timeUntilMorning), ignorePause: true, ignoreMultiplier: true);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: fadeInDuration, executeHelper: clockAdvanceDlgt2, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate stopSoundDlgt = () => { if (!this.world.HasBeenRemoved) soundStormLoop.Stop(); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: stopSoundDlgt, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate deleteOrbiterDlgt = () =>
                         {
@@ -748,6 +756,8 @@ namespace SonOfRobin
                         taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60 * 5, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
                         taskChain.Add(new HintMessage(text: "I must have passed out...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
                         taskChain.Add(new HintMessage(text: "I'm glad that the storm is finally over.", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 60 * 5, executeHelper: SoundData.Name.BoatHorn, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 60 * 2, executeHelper: false, storeForLaterUse: true)); // for testing
 

@@ -9397,6 +9397,24 @@
 /processorParam:Quality=Best
 /build:sound/434895__julius-galla__steps-on-loose-stones-actions-3.ogg
 
+#begin sound/441008__girlwithsoundrecorder__rough-baltic-sea_crash.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441008__girlwithsoundrecorder__rough-baltic-sea_crash.ogg
+
+#begin sound/441008__girlwithsoundrecorder__rough-baltic-sea_loop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441008__girlwithsoundrecorder__rough-baltic-sea_loop.ogg
+
+#begin sound/441223__devy32__boat-horn.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/441223__devy32__boat-horn.ogg
+
 #begin sound/442956__qubodup__creepy-cave.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

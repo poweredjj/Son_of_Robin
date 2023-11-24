@@ -294,6 +294,9 @@ namespace SonOfRobin
             WaterDrop = 230,
             StonesFalling = 231,
             WoodCreak = 232,
+            OpenSeaStormLoop = 233,
+            OpenSeaStormCrash = 234,
+            BoatHorn = 235,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -530,6 +533,9 @@ namespace SonOfRobin
             { Name.WaterDrop, "349873__matrixxx__water-drop-02" },
             { Name.StonesFalling, "567251__iwanplays__stones-falling" },
             { Name.WoodCreak, "610886__jakobgille__doorcreak-openclose_tur-holzschrank-10_ioka_none_hofefeld" },
+            { Name.OpenSeaStormLoop, "441008__girlwithsoundrecorder__rough-baltic-sea_loop" },
+            { Name.OpenSeaStormCrash, "441008__girlwithsoundrecorder__rough-baltic-sea_crash" },
+            { Name.BoatHorn, "441223__devy32__boat-horn" },
             };
     }
 }
