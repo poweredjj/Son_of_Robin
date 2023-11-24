@@ -775,13 +775,9 @@ namespace SonOfRobin
                             Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () => // TODO replace with invoke from RollingText scene
                             { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: new TextWithImages[] { sampleText1, sampleText2 }, runAtTheEndDlgt: openCineEndingPart3Dlgt);
+                            new RollingText(textList: new List<TextWithImages> { sampleText1, sampleText2 }, runAtTheEndDlgt: openCineEndingPart3Dlgt);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
-
-                        Scheduler.ExecutionDelegate openCineEnding3Dlgt = () => // TODO replace with invoke from RollingText scene
-                        { if (!world.HasBeenRemoved) world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart3, ignoreDelay: true); };
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: openCineEnding3Dlgt, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
