@@ -793,16 +793,19 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate stopSoundsDlgt = () =>
                         {
                             if (this.world.HasBeenRemoved) return;
-                            boatCruising.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating sounds
+                            boatCruising.activeState = BoardPiece.State.Empty; // stopping boat, to prevent from generating AmbientSound pieces
 
-                            var nearbySounds = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.StateMachinesNonPlants, mainSprite: player.sprite, distance: 10000).Where(piece => piece.GetType() == typeof(AmbientSound));
+                            var nearbySounds = player.level.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 10000);
+                            var ambientSounds = nearbySounds.Where(piece => piece.GetType() == typeof(AmbientSound));
+                            var seaWaves = nearbySounds.Where(piece => piece.name == PieceTemplate.Name.SeaWave);
 
-                            foreach (BoardPiece soundPiece in nearbySounds)
+                            foreach (BoardPiece soundPiece in ambientSounds)
                             {
                                 AmbientSound ambientSound = (AmbientSound)soundPiece;
                                 ambientSound.activeState = BoardPiece.State.Empty;
                                 ambientSound.activeSoundPack.Stop(PieceSoundPackTemplate.Action.Ambient);
                             }
+                            foreach (BoardPiece wavePiece in seaWaves) wavePiece.Destroy();
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: stopSoundsDlgt, storeForLaterUse: true));
 
