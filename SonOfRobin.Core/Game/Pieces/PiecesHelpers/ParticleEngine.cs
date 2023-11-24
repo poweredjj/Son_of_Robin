@@ -26,37 +26,38 @@ namespace SonOfRobin
             MeatDrying = 7,
 
             WaterWalk = 8,
-            MudWalk = 9,
-            WaterWave = 10,
-            LavaFlame = 11,
+            WaterCruiseCine = 9,
+            MudWalk = 10,
+            WaterWave = 11,
+            LavaFlame = 12,
 
-            SwampGas = 12,
-            Lightning = 13,
-            Excavated = 14,
-            DustPuff = 15,
-            SmokePuff = 16,
+            SwampGas = 13,
+            Lightning = 14,
+            Excavated = 15,
+            DustPuff = 16,
+            SmokePuff = 17,
 
-            DebrisWood = 17,
-            DebrisLeaf = 18,
-            DebrisGrass = 19,
-            DebrisStone = 20,
-            DebrisCrystal = 21,
-            DebrisCeramic = 22,
-            DebrisBlood = 23,
-            DebrisStarSmall = 24,
-            DebrisStarBig = 25,
-            DebrisHeart = 26,
-            DebrisSoot = 27,
+            DebrisWood = 18,
+            DebrisLeaf = 19,
+            DebrisGrass = 20,
+            DebrisStone = 21,
+            DebrisCrystal = 22,
+            DebrisCeramic = 23,
+            DebrisBlood = 24,
+            DebrisStarSmall = 25,
+            DebrisStarBig = 26,
+            DebrisHeart = 27,
+            DebrisSoot = 28,
 
-            WeatherRain = 28,
+            WeatherRain = 29,
 
-            WindLeaf = 29,
-            WindPetal = 30,
+            WindLeaf = 30,
+            WindPetal = 31,
 
-            HeatSmall = 31,
-            HeatMedium = 32,
-            HeatBig = 33,
-            HeatFlame = 34,
+            HeatSmall = 32,
+            HeatMedium = 33,
+            HeatBig = 34,
+            HeatFlame = 35,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -66,6 +67,7 @@ namespace SonOfRobin
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterWave, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
@@ -555,6 +557,45 @@ namespace SonOfRobin
                             Parameters = new ParticleReleaseParameters
                             {
                                 Scale = new Range<float>(0.1f, 0.4f),
+                                Color = HslColor.FromRgb(Color.Cyan),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.35f),
+                                            EndValue = new Vector2(0.01f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.42f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterCruiseCine:
+                    {
+                        defaultParticlesToEmit = 3;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 8000, TimeSpan.FromSeconds(4.0f),
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = new Range<float>(0.1f, 4.5f),
                                 Color = HslColor.FromRgb(Color.Cyan),
                                 Speed = new Range<float>(6f, 25f),
                                 Quantity = 0,
@@ -1604,6 +1645,10 @@ namespace SonOfRobin
                     break;
 
                 case Preset.WaterWalk:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;
+
+                case Preset.WaterCruiseCine:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 

@@ -265,6 +265,7 @@ namespace SonOfRobin
         public override void SM_MoveSlowlyToTheRight()
         {
             this.sprite.Move(new Vector2(1, 0));
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: 6, duration: 15);
         }
 
         public override void SM_OscillateAroundTarget()
