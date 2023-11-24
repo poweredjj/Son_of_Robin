@@ -625,7 +625,7 @@ namespace SonOfRobin
             {
                 foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes)
                 {
-                    this.ExtBoardProps.FillWithTrue(name: name);
+                    this.ExtBoardProps.FillWithFalse(name: name);
                 }
                 return;
             }

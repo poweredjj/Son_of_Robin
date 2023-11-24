@@ -12,6 +12,7 @@ namespace SonOfRobin
     {
         private readonly SpriteFontBase font;
         private readonly bool autoClose;
+        private readonly bool noInput;
         private int blockingFramesLeft;
         private readonly TextWithImages textWithImages;
         private readonly Color textColor;
@@ -24,13 +25,13 @@ namespace SonOfRobin
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
 
-        private int MaxWindowWidth
+        private static int MaxWindowWidth
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
 
-        private int MaxWindowHeight
+        private static int MaxWindowHeight
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
 
-        private int Margin
+        private static int Margin
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
 
         private bool IsADuplicate
@@ -45,7 +46,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, int maxWidth = 90, bool drawShadow = true, Helpers.AlignX imageAlignX = Helpers.AlignX.Center) :
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, bool noInput = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, int maxWidth = 90, bool drawShadow = true, Helpers.AlignX imageAlignX = Helpers.AlignX.Center) :
 
             base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound, waitForOtherScenesOfTypeToEnd: true)
         {
@@ -61,7 +62,8 @@ namespace SonOfRobin
             this.useTransitionOpen = useTransitionOpen;
             this.useTransitionClose = useTransitionClose;
             this.blockingFramesLeft = blockInputDuration;
-            this.autoClose = autoClose;
+            this.noInput = noInput;
+            this.autoClose = autoClose || noInput; // no input, to prevent from blocking forever
 
             this.closingTask = closingTask;
             this.closingTaskHelper = closingTaskHelper;
@@ -81,8 +83,8 @@ namespace SonOfRobin
         private void SetTipsAndTouchLayout()
         {
             World world = World.GetTopWorld();
-            bool addOkButton = this.blockingFramesLeft == 0;
-            bool addCancelButton = world != null && world.CineMode;
+            bool addOkButton = !this.noInput && this.blockingFramesLeft == 0;
+            bool addCancelButton = !this.noInput && world != null && world.CineMode;
 
             if (addOkButton && addCancelButton)
             {
@@ -115,7 +117,7 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            //   SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Removing TextWindow '{this.text}' (frame {SonOfRobinGame.currentUpdate}).");
+            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Removing TextWindow '{this.text}' (frame {SonOfRobinGame.currentUpdate}).");
 
             if (!this.transManager.IsEnding)
             {
@@ -167,7 +169,7 @@ namespace SonOfRobin
             this.UpdateViewParams();
 
             bool okButtonPressed = false;
-            bool cancelButtonPressed = this.CheckForInputCancel();
+            bool cancelButtonPressed = !this.noInput && InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip);
             if (cancelButtonPressed)
             {
                 if (this.tipsLayout == ControlTips.TipsLayout.TextWindowCancel || this.tipsLayout == ControlTips.TipsLayout.TextWindowOkCancel)
@@ -199,7 +201,7 @@ namespace SonOfRobin
 
         public bool CheckForInputOk()
         {
-            if (this.blockingFramesLeft > 0) return false;
+            if (this.noInput || this.blockingFramesLeft > 0) return false;
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) return true;
 
@@ -209,15 +211,10 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool CheckForInputCancel()
-        {
-            return InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip);
-        }
-
         private void UpdateViewParams()
         {
-            int maxTextWidth = this.MaxWindowWidth - (this.Margin * 2);
-            int maxTextHeight = this.MaxWindowHeight - (this.Margin * 2);
+            int maxTextWidth = MaxWindowWidth - (Margin * 2);
+            int maxTextHeight = MaxWindowHeight - (Margin * 2);
 
             float lineHeightWithoutScaling = this.textWithImages.font.LineHeight;
             int minHorizontalLines = SonOfRobinGame.platform == Platform.Mobile ? 14 : 20;
@@ -233,8 +230,8 @@ namespace SonOfRobin
             int scaledTextWidth = (int)(this.textWithImages.textWidth * this.textScale);
             int scaledTextHeight = (int)(this.textWithImages.textHeight * this.textScale);
 
-            this.viewParams.Width = scaledTextWidth + (this.Margin * 2);
-            this.viewParams.Height = scaledTextHeight + (this.Margin * 2);
+            this.viewParams.Width = scaledTextWidth + (Margin * 2);
+            this.viewParams.Height = scaledTextHeight + (Margin * 2);
 
             this.viewParams.PosX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2);
             this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * 0.8f) - this.viewParams.Height;
@@ -244,7 +241,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            int margin = this.Margin;
+            int margin = Margin;
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
             int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.002f, 1);
 

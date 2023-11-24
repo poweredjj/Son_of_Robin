@@ -101,7 +101,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.LeatherPositive,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, blockInput: true)},
+                    new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, blockInputDefaultDuration: true)},
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(
@@ -115,7 +115,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.BackpackPositive,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "This backpack | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, blockInput: true)},
+                    new HintMessage(text: "This backpack | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, blockInputDefaultDuration: true)},
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall },
                     playerEquipmentDoesNotContainThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.BackpackSmall },
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.Equip }
@@ -313,8 +313,8 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.TorchNegative,
                     messageList: new HintMessage[] {
-                        new HintMessage("It's getting dark.", blockInput: true),
-                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)  }, blockInput: true)},
+                        new HintMessage("It's getting dark.", blockInputDefaultDuration: true),
+                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)  }, blockInputDefaultDuration: true)},
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{PieceTemplate.Name.TorchSmall},
                     partsOfDay: new HashSet<IslandClock.PartOfDay> {IslandClock.PartOfDay.Evening, IslandClock.PartOfDay.Night}),
 
@@ -405,8 +405,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                    messageList: new HintMessage[] {
-                    new HintMessage(text: "Are there other | | survivors?", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.PlayerBoy), PieceInfo.GetTexture(PieceTemplate.Name.PlayerGirl)}, blockInput: true),
-                    new HintMessage(text: "I should look for them... ", blockInput: true)},
+                    new HintMessage(text: "Are there other | | survivors?", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.PlayerBoy), PieceInfo.GetTexture(PieceTemplate.Name.PlayerGirl)}, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I should look for them... ", blockInputDefaultDuration: true)},
                     islandTimeElapsedHours: 1,
                     distanceWalkedKilometers: 1f),
 
@@ -415,8 +415,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "I don't see any survivors.", blockInput: true),
-                    new HintMessage(text: "Let's not lose hope... ", blockInput: true)},
+                    new HintMessage(text: "I don't see any survivors.", blockInputDefaultDuration: true),
+                    new HintMessage(text: "Let's not lose hope... ", blockInputDefaultDuration: true)},
                     distanceWalkedKilometers: 8f,
                     shownPieceHints: new HashSet<PieceHint.Type> { PieceHint.Type.CineLookForSurvivors1 }),
 
@@ -425,8 +425,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInput: true),
-                    new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true)},
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)},
 
                     mapDiscoveredPercentage: 0.18f,
                     distanceWalkedKilometers: 20f,
@@ -438,8 +438,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, blockInput: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.BoatCompleteStanding].texture }, blockInput: true)},
+                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.BoatCompleteStanding].texture }, blockInputDefaultDuration: true)},
 
                     mapDiscoveredPercentage: 0.19f,
                     distanceWalkedKilometers: 23f,
@@ -452,8 +452,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "A day has passed already.\nIs there any way for me to return home?", blockInput: true),
-                    new HintMessage(text: "Right now, there are more important matters.\nLike | food, | shelter...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInput: true)},
+                    new HintMessage(text: "A day has passed already.\nIs there any way for me to return home?", blockInputDefaultDuration: true),
+                    new HintMessage(text: "Right now, there are more important matters.\nLike | food, | shelter...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true)},
                     partsOfDay: new HashSet<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning, IslandClock.PartOfDay.Noon },
                     islandTimeElapsedHours: 20),
 
@@ -462,8 +462,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "Another day has passed.", blockInput: true),
-                    new HintMessage(text: "I guess I'm gonna | live here for a while...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInput: true),
+                    new HintMessage(text: "Another day has passed.", blockInputDefaultDuration: true),
+                    new HintMessage(text: "I guess I'm gonna | live here for a while...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true),
                     },
                     partsOfDay: new HashSet<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning },
                     islandTimeElapsedHours: 40,
@@ -474,9 +474,9 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "What day is it?", blockInput: true),
-                    new HintMessage(text: "I've lost the track of time already...", blockInput: true),
-                    new HintMessage(text: "Well, what matters is that I can | survive.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) }, blockInput: true),
+                    new HintMessage(text: "What day is it?", blockInputDefaultDuration: true),
+                    new HintMessage(text: "I've lost the track of time already...", blockInputDefaultDuration: true),
+                    new HintMessage(text: "Well, what matters is that I can | survive.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) }, blockInputDefaultDuration: true),
                     },
                     partsOfDay: new HashSet<IslandClock.PartOfDay> { IslandClock.PartOfDay.Morning },
                     islandTimeElapsedHours: 6 * 24,

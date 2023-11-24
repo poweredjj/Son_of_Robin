@@ -320,12 +320,12 @@ namespace SonOfRobin
 
                 SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
 
-                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
 
                 if (world.craftStats.LastCraftWasSmart)
                 {
-                    taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                    taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                         imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                     if (!tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
@@ -349,7 +349,7 @@ namespace SonOfRobin
                     {
                         int bonusHitPoints = world.random.Next((int)(firstCraftedPiece.maxHitPoints * 0.2f), (int)(firstCraftedPiece.maxHitPoints * 0.7f));
 
-                        taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                        taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
                             imageList: new List<Texture2D> { firstCraftedPiece.sprite.CroppedAnimFrame.texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight) }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                         foreach (BoardPiece craftedPiece in craftedPieces)
@@ -388,7 +388,7 @@ namespace SonOfRobin
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
                     if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
-                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 if (unlockedPieces.Count > 0)
@@ -405,7 +405,7 @@ namespace SonOfRobin
                         imageList.Add(unlockedPieceInfo.texture);
                     }
 
-                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 bool craftLevelUp = world.Player.CheckForCraftLevelUp();
@@ -421,7 +421,7 @@ namespace SonOfRobin
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture };
                     if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
 
-                    taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 if (!pieceInfo.canBePickedUp)
@@ -616,7 +616,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Notification1);
-                HintEngine.ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, blockInput: true, useTransition: true, imageList: imageList, boxType: HintMessage.BoxType.GreenBox) });
+                HintEngine.ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, blockInputDefaultDuration: true, useTransition: true, imageList: imageList, boxType: HintMessage.BoxType.GreenBox) });
             }
         }
 

@@ -124,14 +124,14 @@ namespace SonOfRobin
 
             if (!player.CanSeeAnything)
             {
-                new HintMessage(text: "It is too dark to harvest meat.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "It is too dark to harvest meat.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return;
             }
 
             if (player.IsVeryTired)
             {
-                new HintMessage(text: "I'm too tired to harvest meat...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
+                new HintMessage(text: "I'm too tired to harvest meat...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInputDefaultDuration: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return;
             }
@@ -191,7 +191,7 @@ namespace SonOfRobin
                         imageList.Add(pieceInfo.texture);
                     }
 
-                    taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());
                 }
 
                 // placing pieces inside storage
@@ -218,7 +218,7 @@ namespace SonOfRobin
             }
             else
             {
-                taskChain.Add(new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInput: false).ConvertToTask());
+                taskChain.Add(new HintMessage(text: "Could not harvest anything...", boxType: HintMessage.BoxType.Dialogue, delay: 0, blockInputDefaultDuration: false).ConvertToTask());
             }
 
             // registering stats and checking level up

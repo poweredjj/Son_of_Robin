@@ -154,7 +154,7 @@ namespace SonOfRobin
             if (this.fieldOnly && this.menuOnly) throw new ArgumentException("fieldOnly and menuOnly cannot both be active.");
 
             this.messageList = messageList;
-            if (message != null) this.messageList = new HintMessage[] { new HintMessage(text: message, imageList: imageList, blockInput: true) };
+            if (message != null) this.messageList = new HintMessage[] { new HintMessage(text: message, imageList: imageList, blockInputDefaultDuration: true) };
             this.tutorialsToActivate = tutorialsToActivate;
             this.generalHintToActivate = generalHintToActivate;
             this.recipesToUnlock = recipesToUnlock;

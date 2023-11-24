@@ -86,7 +86,7 @@ namespace SonOfRobin
             {
                 this.type = type;
                 this.name = name;
-                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false, startingSound: SoundData.Name.Notification2);
+                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInputDefaultDuration: false, startingSound: SoundData.Name.Notification2);
                 this.messages = messages;
                 this.isShownInTutorialsMenu = isShownInTutorialsMenu;
 

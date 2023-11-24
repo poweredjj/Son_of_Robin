@@ -360,7 +360,7 @@ namespace SonOfRobin
             Scheduler.ExecutionDelegate trackCoordsDlgt = () => { if (!world.HasBeenRemoved) world.camera.TrackCoords(position: pointToShow, moveInstantly: false); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: trackCoordsDlgt, storeForLaterUse: true));
 
-            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInput: false, useTransition: true, startingSound: SoundData.Name.TrumpetChime).ConvertToTask());
+            taskChain.Add(new HintMessage(text: $"Discovered '{this.playerLocation.name}'.", boxType: HintMessage.BoxType.GreenBox, delay: 40, blockInputDefaultDuration: false, useTransition: true, startingSound: SoundData.Name.TrumpetChime).ConvertToTask());
 
             Scheduler.ExecutionDelegate resetCameraSpeedDlgt = () => { if (!world.HasBeenRemoved) world.camera.SetMovementSpeed(1f); };
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: resetCameraSpeedDlgt, storeForLaterUse: true));

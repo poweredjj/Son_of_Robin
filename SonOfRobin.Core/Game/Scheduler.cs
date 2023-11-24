@@ -841,6 +841,12 @@ namespace SonOfRobin
                             bool animate = true;
                             if (textWindowData.ContainsKey("animate")) animate = (bool)textWindowData["animate"];
 
+                            bool autoClose = false;
+                            if (textWindowData.ContainsKey("autoClose")) autoClose = (bool)textWindowData["autoClose"];
+
+                            bool noInput = false;
+                            if (textWindowData.ContainsKey("noInput")) noInput = (bool)textWindowData["noInput"];
+
                             TaskName closingTask = TaskName.Empty;
                             if (textWindowData.ContainsKey("closingTask")) closingTask = (TaskName)textWindowData["closingTask"];
 
@@ -877,7 +883,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: startingSound, animSound: animSound);
+                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: startingSound, animSound: animSound, autoClose: autoClose, noInput: noInput);
                             return;
                         }
 
@@ -1403,7 +1409,7 @@ namespace SonOfRobin
 
                                 HintEngine.ShowMessageDuringPause(new List<HintMessage> {
                                    new HintMessage(text: $"I cannot approach this | {totem.readableName} now.\n{timeLeftString}.",
-                                   blockInput: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
+                                   blockInputDefaultDuration: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.texture }),
                                    });
                             }
 
