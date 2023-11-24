@@ -774,14 +774,14 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate trackCoordsDlgt2 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 5, 0)); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt2, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Ahoy there, on the boat!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Ahoy there, on the boat!", boxType: dialogue, delay: 60 * 3, autoClose: true, blockInputDuration: 60 * 1, noInput: true).ConvertToTask());
 
                         taskChain.Add(new HintMessage(text: "Need a lift to safety and civilization?", boxType: dialogue, delay: 0, autoClose: true, blockInputDuration: 60 * 3, noInput: true).ConvertToTask());
 
                         Scheduler.ExecutionDelegate trackPieceDlgt2 = () => { if (!this.world.HasBeenRemoved) this.world.camera.TrackPiece(player); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 1, executeHelper: trackPieceDlgt2, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 1.5f, zoomSpeedMultiplier: 0.03f); };
+                        Scheduler.ExecutionDelegate camZoomDlgt3 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 2.0f, zoomSpeedMultiplier: 0.07f); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: camZoomDlgt3, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "I don't believe it! A ship!", boxType: dialogue, delay: 60 * 1, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
@@ -811,7 +811,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Black }, { "opacity", 1f }, { "fadeInDurationFrames", finalFadeInDuration } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "~ THE END ~", boxType: HintMessage.BoxType.GoldBox, delay: finalFadeInDuration, autoClose: true, blockInputDuration: 60 * 15, noInput: true).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: finalFadeInDuration, executeHelper: SoundData.Name.MusicBoxEnding, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "  ~ THE END ~  ", boxType: HintMessage.BoxType.GoldBox, delay: 0, autoClose: true, blockInputDuration: 60 * 25, noInput: true).ConvertToTask());
 
                         Scheduler.ExecutionDelegate returnToMenuDlgt = () => { Scheduler.Task.CloseGame(quitGame: false); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: returnToMenuDlgt, storeForLaterUse: true));

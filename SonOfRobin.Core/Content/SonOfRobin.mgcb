@@ -10165,6 +10165,12 @@
 /processorParam:Quality=Best
 /build:sound/69480__aboe__knifesha4.ogg
 
+#begin sound/72650__lg__music-box-01.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/72650__lg__music-box-01.ogg
+
 #begin sound/79560__robinhood76__01259-wet-sand-digging-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

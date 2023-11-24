@@ -297,6 +297,7 @@ namespace SonOfRobin
             OpenSeaStormLoop = 233,
             OpenSeaStormCrash = 234,
             BoatHorn = 235,
+            MusicBoxEnding = 236,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new()
@@ -536,6 +537,7 @@ namespace SonOfRobin
             { Name.OpenSeaStormLoop, "441008__girlwithsoundrecorder__rough-baltic-sea_loop" },
             { Name.OpenSeaStormCrash, "441008__girlwithsoundrecorder__rough-baltic-sea_crash" },
             { Name.BoatHorn, "441223__devy32__boat-horn" },
+            { Name.MusicBoxEnding, "72650__lg__music-box-01" },
             };
     }
 }
