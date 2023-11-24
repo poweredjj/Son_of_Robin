@@ -58,6 +58,7 @@ namespace SonOfRobin
             HeatMedium = 33,
             HeatBig = 34,
             HeatFlame = 35,
+            DistortCruiseCine = 36,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -97,6 +98,7 @@ namespace SonOfRobin
                 { Preset.HeatMedium, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatBig, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatFlame, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.DistortCruiseCine, TextureBank.TextureName.ParticleCircleSoft },
             };
 
         public class PresetData
@@ -620,6 +622,46 @@ namespace SonOfRobin
                                     }
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+
+                case Preset.DistortCruiseCine:
+                    {
+                        defaultParticlesToEmit = 6;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 2000, TimeSpan.FromSeconds(1.8f),
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(8, 8, 8)),
+                                Speed = new Range<float>(6f, 25f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.0f),
+                                            EndValue = new Vector2(2.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.42f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f },
                             }
                         };
                         break;
@@ -1710,6 +1752,10 @@ namespace SonOfRobin
 
                 case Preset.HeatFlame:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
+                    break;
+
+                case Preset.DistortCruiseCine:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 
                 default:
