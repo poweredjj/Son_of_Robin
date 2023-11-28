@@ -772,7 +772,7 @@ namespace SonOfRobin
                             imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MealStandard].texture);
 
                             textLines.Add($"\n| Ingredients used:");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.HerbsCyan].texture);
+                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
 
                             textLines.Add($"Unique types: {world.cookStats.IngredientNamesCount}");
                             textLines.Add($"Total: {world.cookStats.AllIngredientsCount}");
