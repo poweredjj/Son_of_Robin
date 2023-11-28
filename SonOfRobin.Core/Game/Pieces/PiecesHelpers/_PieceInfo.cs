@@ -1567,6 +1567,16 @@ namespace SonOfRobin
                         this.floatsOnWater = true;
                         break;
 
+                    case PieceTemplate.Name.ShipRescue:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.isAffectedByWind = false;
+                        this.hasFlatShadow = true;
+                        this.serialize = false;
+                        this.ignoresCollisions = true;
+                        this.floatsOnWater = true;
+                        break;
+
                     case PieceTemplate.Name.Totem:
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.0f; // protected from fire
