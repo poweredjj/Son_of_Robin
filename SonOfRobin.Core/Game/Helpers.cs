@@ -624,7 +624,7 @@ namespace SonOfRobin
 
             textList.Add(new TextWithImages(font: fontTitle, text: "|  Son of Robin\n", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx) }));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
             textList.Add(new TextWithImages(font: fontText, text: "Developed with  |  MonoGame framework", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.MonoGame) }));
             textList.Add(new TextWithImages(font: fontText, text: "Sounds:  |  freesound.org", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote) }));
@@ -636,11 +636,11 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Earcut polygon triangulation library: Oberbichler + Mapbox", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Free graphics assets: RPGMaker forums, opengameart.org, other sites", imageList: new List<Texture2D>()));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
             textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.dpad }));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
             textList.Add(new TextWithImages(font: fontText, text: "Faye", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Hellwoman", imageList: new List<Texture2D>()));
@@ -648,7 +648,7 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Kaeru  |", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Frog) }));
             textList.Add(new TextWithImages(font: fontText, text: "Retro Marek", imageList: new List<Texture2D>()));
 
-            textList.Add(new TextWithImages(font: fontText, text: "", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2023", imageList: new List<Texture2D>()));
 
             return textList;

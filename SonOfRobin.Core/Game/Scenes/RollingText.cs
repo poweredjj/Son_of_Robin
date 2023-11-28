@@ -23,7 +23,7 @@ namespace SonOfRobin
 
         public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int scrollEveryNthFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, bool canBeSkipped = false, int priority = 1) :
 
-            base(inputType: InputTypes.Normal, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: canBeSkipped ? TouchLayout.TextWindowOk : TouchLayout.Empty, tipsLayout: canBeSkipped ? ControlTips.TipsLayout.TextWindowOk : ControlTips.TipsLayout.Empty)
+            base(inputType: InputTypes.Normal, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: canBeSkipped ? TouchLayout.TextWindowCancel : TouchLayout.Empty, tipsLayout: canBeSkipped ? ControlTips.TipsLayout.TextWindowCancel : ControlTips.TipsLayout.Empty)
         {
             this.bgFramesCount = bgFramesCount;
             this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
@@ -59,7 +59,7 @@ namespace SonOfRobin
 
             this.DeleteDisplayedTexts();
 
-            bool executeSkip = this.canBeSkipped && InputMapper.IsPressed(InputMapper.Action.GlobalConfirm);
+            bool executeSkip = this.canBeSkipped && InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip);
 
             if (this.remainingTextList.Count == 0 || executeSkip)
             {

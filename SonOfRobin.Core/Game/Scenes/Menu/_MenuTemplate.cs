@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -106,21 +107,21 @@ namespace SonOfRobin
 
                         Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
                         {
-                            new RollingText(textList: Helpers.MakeCreditsTextList(), canBeSkipped: true, scrollEveryNthFrame: 2, offsetPercentX: -0.15f, bgFramesCount: 15, bgColor: Color.Black * 0.5f, priority: 0);
+                            var textList = Helpers.MakeCreditsTextList();
+
+                            float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
+
+                            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont((int)(17f * fontSizeMultiplier));
+
+                            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: $"Last updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: "This is a very early alpha version of the game.", imageList: new List<Texture2D> { }));                         
+
+                            new RollingText(textList: textList, canBeSkipped: true, scrollEveryNthFrame: 1, offsetPercentX: 0f, bgFramesCount: 15, bgColor: Color.Black * 0.5f, priority: 0);
                         };
 
-                        var aboutTaskChain = new List<object>
-                        {
-                            new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game." },
-                            { "bgColor", new List<Byte> { 63, 167, 212 } },
-                            { "useTransition", true },
-                            }, storeForLaterUse: true),
-
-                            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true)
-                        };
-
-                        new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: aboutTaskChain,
+                        new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: makeRollingTextSceneDlgt,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "information about the game", color: Color.White, scale: 1f) });
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
