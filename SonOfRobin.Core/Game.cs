@@ -146,7 +146,7 @@ namespace SonOfRobin
             GradientTop = TextureBank.GetTexture("gradient_top");
             GradientBottom = TextureBank.GetTexture("gradient_bottom");
 
-            SplashScreenTexture = TextureBank.GetTexture("loading_gfx");
+            SplashScreenTexture = TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx);
             ErrorLog = new ErrorLog();
             SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             solidColor.MoveToBottom();

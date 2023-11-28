@@ -10,6 +10,7 @@ namespace SonOfRobin
         private readonly SolidColor solidColorBg;
         private readonly int bgFramesCount;
         private readonly int scrollEveryNthFrame;
+        private readonly bool canBeSkipped;
 
         private readonly List<TextWithImages> remainingTextList;
         private readonly Dictionary<TextWithImages, int> offsetByText = new();
@@ -20,7 +21,9 @@ namespace SonOfRobin
 
         private int currentOffsetY;
 
-        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int scrollEveryNthFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int scrollEveryNthFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, bool canBeSkipped = false, int priority = 1) :
+
+            base(inputType: InputTypes.Normal, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: canBeSkipped ? TouchLayout.TextWindowOk : TouchLayout.Empty, tipsLayout: canBeSkipped ? ControlTips.TipsLayout.TextWindowOk : ControlTips.TipsLayout.Empty)
         {
             this.bgFramesCount = bgFramesCount;
             this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
@@ -32,6 +35,7 @@ namespace SonOfRobin
             this.currentOffsetY = -this.bgFramesCount;
             this.offsetPercentX = offsetPercentX;
             this.scrollEveryNthFrame = scrollEveryNthFrame;
+            this.canBeSkipped = canBeSkipped;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
             int currentOffsetY = SonOfRobinGame.VirtualHeight;
@@ -55,7 +59,9 @@ namespace SonOfRobin
 
             this.DeleteDisplayedTexts();
 
-            if (this.remainingTextList.Count == 0)
+            bool executeSkip = this.canBeSkipped && InputMapper.IsPressed(InputMapper.Action.GlobalConfirm);
+
+            if (this.remainingTextList.Count == 0 || executeSkip)
             {
                 this.solidColorBg.transManager.AddTransition(new Transition(transManager: this.solidColorBg.transManager, outTrans: true, startDelay: 0, duration: this.bgFramesCount, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0f, endRemoveScene: true));
 

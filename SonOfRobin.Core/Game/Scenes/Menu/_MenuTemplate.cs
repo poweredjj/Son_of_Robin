@@ -104,20 +104,20 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Options } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "options, settings, etc.", color: Color.White, scale: 1f) });
 
+                        Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
+                        {
+                            new RollingText(textList: Helpers.MakeCreditsTextList(), canBeSkipped: true, scrollEveryNthFrame: 2, offsetPercentX: 0.15f, bgFramesCount: 15, bgColor: Color.Black, priority: 0);
+                        };
+
                         var aboutTaskChain = new List<object>
                         {
                             new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Ahoy! Games.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nImageSharp library: Six Labors.\nEarcut polygon triangulation by Oberbichler + Mapbox.\nText rendering uses FontStashSharp.\nVarious free graphics assets used." },
-                            { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote), ButtonScheme.dpad } },
+                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game." },
                             { "bgColor", new List<Byte> { 63, 167, 212 } },
                             { "useTransition", true },
                             }, storeForLaterUse: true),
 
-                            new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"| Testers |\n\nFaye\nHellwoman\nGlonfindel\nRetro Marek" },
-                            { "imageList", new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture, AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture } },
-                            { "bgColor", new List<Byte> { 85, 189, 113 } }
-                            }, storeForLaterUse: true)
+                            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true)
                         };
 
                         new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: aboutTaskChain,
