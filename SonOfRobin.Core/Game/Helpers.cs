@@ -622,12 +622,14 @@ namespace SonOfRobin
 
             var textList = new List<TextWithImages>();
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "| Son of Robin\n", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx) }));
+            textList.Add(new TextWithImages(font: fontTitle, text: "|  Son of Robin\n", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx) }));
 
-            textList.Add(new TextWithImages(font: fontText, text: "Sounds: | freesound.org", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote) }));
+            textList.Add(new TextWithImages(font: fontText, text: "", imageList: new List<Texture2D>()));
 
+            textList.Add(new TextWithImages(font: fontText, text: "Developed with  |  MonoGame framework", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.MonoGame) }));
+            textList.Add(new TextWithImages(font: fontText, text: "Sounds:  |  freesound.org", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote) }));
             textList.Add(new TextWithImages(font: fontText, text: "Text rendering: FontStashSharp library", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Controller icons: | Nicolae (Xelu) Berbece", imageList: new List<Texture2D> { ButtonScheme.dpad }));
+            textList.Add(new TextWithImages(font: fontText, text: "Controller icons:  |  Nicolae (Xelu) Berbece", imageList: new List<Texture2D> { ButtonScheme.dpad }));
             textList.Add(new TextWithImages(font: fontText, text: "FastNoiseLite library: Jordan Peck", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Studies.Joystick library: Luiz Ossinho", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "ImageSharp library: Six Labors", imageList: new List<Texture2D>()));
@@ -636,16 +638,17 @@ namespace SonOfRobin
 
             textList.Add(new TextWithImages(font: fontText, text: "", imageList: new List<Texture2D>()));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "| Testers |", imageList: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.dpad }));
+            textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.dpad }));
 
             textList.Add(new TextWithImages(font: fontText, text: "", imageList: new List<Texture2D>()));
 
             textList.Add(new TextWithImages(font: fontText, text: "Faye", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Hellwoman", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Glonfindel", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Kaeru  |", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Frog) }));
             textList.Add(new TextWithImages(font: fontText, text: "Retro Marek", imageList: new List<Texture2D>()));
 
-            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: "", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2023", imageList: new List<Texture2D>()));
 
             return textList;

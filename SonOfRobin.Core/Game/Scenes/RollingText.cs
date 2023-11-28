@@ -27,7 +27,7 @@ namespace SonOfRobin
         {
             this.bgFramesCount = bgFramesCount;
             this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
-            this.solidColorBg.transManager.AddTransition(new Transition(transManager: this.solidColorBg.transManager, outTrans: true, startDelay: 0, duration: this.bgFramesCount, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.3f, endCopyToBase: true));
+            this.solidColorBg.transManager.AddTransition(new Transition(transManager: this.solidColorBg.transManager, outTrans: true, startDelay: 0, duration: this.bgFramesCount, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 1.0f, endCopyToBase: true));
 
             this.MoveAboveScene(this.solidColorBg);
 

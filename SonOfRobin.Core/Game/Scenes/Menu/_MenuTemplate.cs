@@ -106,7 +106,7 @@ namespace SonOfRobin
 
                         Scheduler.ExecutionDelegate makeRollingTextSceneDlgt = () =>
                         {
-                            new RollingText(textList: Helpers.MakeCreditsTextList(), canBeSkipped: true, scrollEveryNthFrame: 2, offsetPercentX: 0.15f, bgFramesCount: 15, bgColor: Color.Black, priority: 0);
+                            new RollingText(textList: Helpers.MakeCreditsTextList(), canBeSkipped: true, scrollEveryNthFrame: 2, offsetPercentX: -0.15f, bgFramesCount: 15, bgColor: Color.Black * 0.5f, priority: 0);
                         };
 
                         var aboutTaskChain = new List<object>

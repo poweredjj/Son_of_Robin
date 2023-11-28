@@ -24,6 +24,7 @@ namespace SonOfRobin
             WhiteCircleSmall = 10,
             Biceps = 11,
             WhiteHorizontalLine = 12,
+            MonoGame = 150,
 
             SimpleArrowUp = 13,
             SimpleArrowRight = 14,
@@ -193,6 +194,7 @@ namespace SonOfRobin
             { TextureName.WhiteCircleSmall, "small_white_circle" },
             { TextureName.Biceps, "biceps" },
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
+            { TextureName.MonoGame, "monogame" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },
