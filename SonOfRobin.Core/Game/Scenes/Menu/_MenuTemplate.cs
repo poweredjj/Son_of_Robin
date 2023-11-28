@@ -1185,7 +1185,11 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate useBoatDlgt = () =>
                         {
                             BoardPiece boat = (BoardPiece)executeHelper;
-                            if (!boat.world.HasBeenRemoved) boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
+                            if (boat.world.HasBeenRemoved) return;
+
+                            if (!boat.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.CineIntroduction)) boat.world.HintEngine.shownGeneralHints.Add(HintEngine.Type.CineIntroduction); // if, for whatever reason, introduction would not be marked as shown, it would be shown now instead
+
+                            boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
                         };
 
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
