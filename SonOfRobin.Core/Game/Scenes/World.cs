@@ -1406,7 +1406,6 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            BlendState multiplyBlend = new BlendState
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
 
             this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw particles properly

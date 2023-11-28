@@ -674,7 +674,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(70, 70, 70)),
+                                Color = HslColor.FromRgb(new Color(80, 80, 80)),
                                 Speed = new Range<float>(6f, 25f),
                                 Quantity = 0,
                             },
@@ -688,7 +688,7 @@ namespace SonOfRobin
                                         new ScaleInterpolator
                                         {
                                             StartValue = new Vector2(0.0f),
-                                            EndValue = new Vector2(3.5f)
+                                            EndValue = new Vector2(4.0f)
                                         },
                                         new OpacityInterpolator
                                         {
