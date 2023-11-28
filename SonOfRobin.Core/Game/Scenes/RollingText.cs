@@ -9,6 +9,7 @@ namespace SonOfRobin
 
         private readonly SolidColor solidColorBg;
         private readonly int bgFramesCount;
+        private readonly int scrollEveryNthFrame;
 
         private readonly List<TextWithImages> remainingTextList;
         private readonly Dictionary<TextWithImages, int> offsetByText = new();
@@ -19,7 +20,7 @@ namespace SonOfRobin
 
         private int currentOffsetY;
 
-        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int scrollEveryNthFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, int priority = 1) : base(inputType: InputTypes.None, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.bgFramesCount = bgFramesCount;
             this.solidColorBg = new SolidColor(color: bgColor, viewOpacity: 0f);
@@ -30,6 +31,7 @@ namespace SonOfRobin
             this.remainingTextList = textList;
             this.currentOffsetY = -this.bgFramesCount;
             this.offsetPercentX = offsetPercentX;
+            this.scrollEveryNthFrame = scrollEveryNthFrame;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
             int currentOffsetY = SonOfRobinGame.VirtualHeight;
@@ -44,7 +46,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            this.currentOffsetY++;
+            if (SonOfRobinGame.CurrentUpdate % this.scrollEveryNthFrame == 0) this.currentOffsetY++;
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
@@ -94,7 +96,7 @@ namespace SonOfRobin
                     x: (SonOfRobinGame.VirtualWidth / 2) - (textWithImages.textWidth / 2) + offsetX,
                     y: this.offsetByText[textWithImages] - this.currentOffsetY);
 
-                textWithImages.Draw(position: textPos, color: Color.White, drawShadow: true, textScale: 1f);
+                textWithImages.Draw(position: textPos, color: Color.White, drawShadow: true, shadowColor: Color.Black * 0.85f, textScale: 1f);
             }
 
             SonOfRobinGame.SpriteBatch.End();

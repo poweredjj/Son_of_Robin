@@ -60,6 +60,7 @@ namespace SonOfRobin
             HeatBig = 35,
             HeatFlame = 36,
             DistortCruiseCine = 37,
+            DistortStormCine = 38,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
@@ -101,6 +102,7 @@ namespace SonOfRobin
                 { Preset.HeatBig, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatFlame, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.DistortCruiseCine, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.DistortStormCine, TextureBank.TextureName.ParticleCircleSoft },
             };
 
         public class PresetData
@@ -282,8 +284,8 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(5, 5, 5)),
-                                Speed = new Range<float>(5f, 20f),
+                                Color = HslColor.FromRgb(new Color(110, 110, 110)),
+                                Speed = new Range<float>(8f, 30f),
                                 Quantity = 0,
                             },
 
@@ -295,8 +297,8 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.3f),
-                                            EndValue = new Vector2(3.0f)
+                                            StartValue = new Vector2(0.1f),
+                                            EndValue = new Vector2(4.0f)
                                         },
                                         new OpacityInterpolator
                                         {
@@ -316,14 +318,13 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 1;
                         drawAsDistortion = true;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 70, TimeSpan.FromSeconds(2.6),
+                        particleEmitter = new ParticleEmitter(textureRegion, 140, TimeSpan.FromSeconds(3.0),
                             Profile.BoxFill(width: this.sprite.GfxRect.Width / 2, height: this.sprite.GfxRect.Height / 2))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(5, 5, 5)),
-                                Speed = new Range<float>(5f, 35f),
-                                Quantity = 0,
+                                Color = HslColor.FromRgb(new Color(80, 80, 80)),
+                                Speed = new Range<float>(5f, 40f),
                             },
 
                             Modifiers =
@@ -334,12 +335,12 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(1.0f),
-                                            EndValue = new Vector2(3.6f)
+                                            StartValue = new Vector2(0.1f),
+                                            EndValue = new Vector2(4.8f)
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 1f,
+                                            StartValue = 0.25f,
                                             EndValue = 0f
                                         },
                                     }
@@ -360,7 +361,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(5, 5, 5)),
+                                Color = HslColor.FromRgb(new Color(100, 100, 100)),
                                 Speed = new Range<float>(10f, 35f),
                                 Quantity = 0,
                             },
@@ -378,7 +379,7 @@ namespace SonOfRobin
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.17f,
+                                            StartValue = 0.25f,
                                             EndValue = 0f
                                         },
                                     }
@@ -399,7 +400,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(4, 4, 4)),
+                                Color = HslColor.FromRgb(new Color(80, 80, 80)),
                                 Speed = new Range<float>(10f, 35f),
                                 Quantity = 0,
                             },
@@ -413,7 +414,7 @@ namespace SonOfRobin
                                         new ScaleInterpolator
                                         {
                                             StartValue = new Vector2(0.5f),
-                                            EndValue = new Vector2(7.0f)
+                                            EndValue = new Vector2(7.5f)
                                         },
                                         new OpacityInterpolator
                                         {
@@ -673,7 +674,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(8, 8, 8)),
+                                Color = HslColor.FromRgb(new Color(70, 70, 70)),
                                 Speed = new Range<float>(6f, 25f),
                                 Quantity = 0,
                             },
@@ -687,7 +688,7 @@ namespace SonOfRobin
                                         new ScaleInterpolator
                                         {
                                             StartValue = new Vector2(0.0f),
-                                            EndValue = new Vector2(2.8f)
+                                            EndValue = new Vector2(3.5f)
                                         },
                                         new OpacityInterpolator
                                         {
@@ -697,6 +698,42 @@ namespace SonOfRobin
                                     }
                                 },
                                 new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f },
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.DistortStormCine:
+                    {
+                        defaultParticlesToEmit = 10;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 10, TimeSpan.FromSeconds(2.0f), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(180, 180, 180)),
+                                Speed = new Range<float>(60f, 95f),
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.0f),
+                                            EndValue = new Vector2(110.0f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.33f,
+                                            EndValue = 0.0f
+                                        },
+                                    }
+                                }
                             }
                         };
                         break;
@@ -1727,8 +1764,8 @@ namespace SonOfRobin
 
                 case Preset.WaterCruiseCine:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;  
-                
+                    break;
+
                 case Preset.WaterSplashCine:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
@@ -1794,6 +1831,10 @@ namespace SonOfRobin
                     break;
 
                 case Preset.DistortCruiseCine:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
+                    break;
+
+                case Preset.DistortStormCine:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
                     break;
 

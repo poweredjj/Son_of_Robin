@@ -114,12 +114,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement, compareWithCameraRect: true);
-
-                    foreach (BoardPiece piece in visiblePieces)
-                    {
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.HeatBig, duration: 0, update: true);
-                    }
+                    ParticleEngine.TurnOn(sprite: world.Player.sprite, preset: ParticleEngine.Preset.DistortStormCine, duration: 1);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))

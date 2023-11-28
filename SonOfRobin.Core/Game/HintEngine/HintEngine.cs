@@ -783,7 +783,7 @@ namespace SonOfRobin
                             Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
                             { if (!this.world.HasBeenRemoved) this.world.HintEngine.ShowGeneralHint(type: Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: textList, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
+                            new RollingText(textList: textList, scrollEveryNthFrame: 2, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 

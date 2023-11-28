@@ -1407,17 +1407,7 @@ namespace SonOfRobin
             }
 
             BlendState multiplyBlend = new BlendState
-            {
-                AlphaBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.One,
-            };
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: multiplyBlend);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
 
             this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw particles properly
 
