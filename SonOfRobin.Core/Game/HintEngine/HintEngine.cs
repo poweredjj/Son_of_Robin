@@ -772,21 +772,53 @@ namespace SonOfRobin
 
                             var textList = Helpers.MakeCreditsTextList();
 
+                            Level islandLevel = this.world.IslandLevel;
+
                             float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
 
                             SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont((int)(30f * fontSizeMultiplier));
                             SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont((int)(17f * fontSizeMultiplier));
 
+                            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
+
+                            textList.Add(new TextWithImages(font: fontTitle, text: "...and now about your adventure:", imageList: new List<Texture2D>()));
+
+                            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
+
+                            string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(this.world.TimePlayed.TotalHours), this.world.TimePlayed.Minutes);
+                            textList.Add(new TextWithImages(font: fontText, text: $"| time played: {timePlayedString}", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass) }, minMarkerWidthMultiplier: 2f));
+
+                            textList.Add(new TextWithImages(font: fontText, text: $"| distance walked: {player.DistanceWalkedKilometers} km", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsAllTerrain) }, minMarkerWidthMultiplier: 2f));
+
+                            textList.Add(new TextWithImages(font: fontText, text: $"| map discovered: {Math.Round(islandLevel.grid.VisitedCellsPercentage * 100, 1)}%", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Map) }, minMarkerWidthMultiplier: 2f));
+
+                            textList.Add(new TextWithImages(font: fontText, text: $"| caves visited: {player.cavesVisited}", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CaveEntranceOutside) }, minMarkerWidthMultiplier: 2f));
+
+                            textList.Add(new TextWithImages(font: fontText, text: $"| locations found: {islandLevel.grid.namedLocations.DiscoveredLocationsCount}/{islandLevel.grid.namedLocations.AllLocationsCount}", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MapMarker) }, minMarkerWidthMultiplier: 2f));
+
+                            textList.Add(new TextWithImages(font: fontText, text: $"days spent on the island: {this.world.islandClock.CurrentDayNo}", imageList: new List<Texture2D> { }, minMarkerWidthMultiplier: 2f));
+
+                            if (this.world.craftStats.CraftedPiecesTotal > 0)
+                            {
+                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
+
+                                textList.Add(new TextWithImages(font: fontText, text: "| General craft stats", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.AxeIron].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WoodLogRegular].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.ChestIron].texture }, minMarkerWidthMultiplier: 2f));
+                            }
+
                             textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
                             textList.Add(new TextWithImages(font: fontText, text: "|  Thank you for playing!  |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus), TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
 
-                            // TODO add stats
-
                             Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
                             { if (!this.world.HasBeenRemoved) this.world.HintEngine.ShowGeneralHint(type: Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: textList, scrollEveryNthFrame: 2, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black * 0.35f);
+                            new RollingText(textList: textList, scrollEveryNthFrame: 2, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black * 0.45f);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 
