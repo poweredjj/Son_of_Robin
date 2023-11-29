@@ -918,12 +918,16 @@ namespace SonOfRobin
                                 soundName = SoundData.Name.Empty;
                             }
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"|   {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
-
-                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
-
-                            Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+                            Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                             // sound won't play here, because loading game stops all sounds
+
+                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            {
+                                loadInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"|   {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+                                loadInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
+                            };
+
+                            loadInvoker.infoTextListDlgt = infoTextListDlgt;
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
                             {
@@ -959,15 +963,19 @@ namespace SonOfRobin
                         {
                             saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
-
-                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
-
                             Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                             {
                                 CreateConfirmationMenu(question: "The save will be overwritten. Continue?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
                             };
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+                            Invoker saveInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+
+                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            {
+                                saveInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+                                saveInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
+                            };
+
+                            saveInvoker.infoTextListDlgt = infoTextListDlgt;
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -987,11 +995,14 @@ namespace SonOfRobin
 
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+                            Invoker exportInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
 
-                            infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
-
-                            new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: infoTextList, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
+                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            {
+                                exportInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
+                                exportInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
+                            };
+                            exportInvoker.infoTextListDlgt = infoTextListDlgt;
                         }
 
                         foreach (Entry entry in menu.entryList)

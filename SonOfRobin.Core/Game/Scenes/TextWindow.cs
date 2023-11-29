@@ -25,14 +25,9 @@ namespace SonOfRobin
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
 
-        private static int MaxWindowWidth
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
-
-        private static int MaxWindowHeight
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
-
-        private static int Margin
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
+        private static int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
+        private static int MaxWindowHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
+        private static int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
 
         private bool IsADuplicate
         {

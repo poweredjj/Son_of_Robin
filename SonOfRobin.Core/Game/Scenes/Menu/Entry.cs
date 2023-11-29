@@ -22,6 +22,7 @@ namespace SonOfRobin
         protected readonly bool rebuildsMenu;
         protected readonly bool rebuildsMenuInstantScroll;
         protected readonly bool rebuildsAllMenus;
+        public Scheduler.ExecutionDelegate infoTextListDlgt; // for on-demand data retrieval
         public List<InfoWindow.TextEntry> infoTextList;
         private readonly float infoWindowMaxLineHeightPercentOverride;
 
@@ -170,6 +171,12 @@ namespace SonOfRobin
 
         protected void UpdateHintWindow()
         {
+            if (this.infoTextList == null && this.infoTextListDlgt != null)
+            {
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: this.infoTextListDlgt, delay: 0);
+                this.infoTextListDlgt = null;
+            }
+
             if (this.infoTextList == null || !this.menu.inputActive)
             {
                 SonOfRobinGame.HintWindow.TurnOff();
