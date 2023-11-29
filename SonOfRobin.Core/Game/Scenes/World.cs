@@ -1540,16 +1540,20 @@ namespace SonOfRobin
                     1f);
 
                 // first pass - drawing shadows
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlend);
-                foreach (Sprite shadowSprite in blockingLightSpritesList)
+                if (lightSprite.lightEngine.castShadows)
                 {
-                    if (shadowSprite == lightSprite || !lightSprite.lightEngine.castShadows || !lightRect.Intersects(shadowSprite.GfxRect)) continue;
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlend);
 
-                    float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: lightSprite.GfxRect.Center, end: shadowSprite.position);
+                    foreach (Sprite shadowSprite in blockingLightSpritesList)
+                    {
+                        if (shadowSprite == lightSprite || !lightRect.Intersects(shadowSprite.GfxRect) || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
 
-                    Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
+                        float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: lightSprite.GfxRect.Center, end: shadowSprite.position);
+
+                        Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
+                    }
+                    SonOfRobinGame.SpriteBatch.End();
                 }
-                SonOfRobinGame.SpriteBatch.End();
 
                 // second pass - erasing shadow from original sprites' position
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);

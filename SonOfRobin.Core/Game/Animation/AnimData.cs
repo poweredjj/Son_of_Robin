@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000025f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -1087,12 +1087,12 @@ namespace SonOfRobin
 
                 for (int animSize = 0; animSize <= 5; animSize++)
                 {
-                    AddFrameList(animPackage: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
+                    AddFrameList(animPackage: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
                 }
 
-                AddFrameList(animPackage: PkgName.BoatCompleteStanding, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true));
+                AddFrameList(animPackage: PkgName.BoatCompleteStanding, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
 
-                AddFrameList(animPackage: PkgName.BoatCompleteCruising, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true));
+                AddFrameList(animPackage: PkgName.BoatCompleteCruising, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
             }
 
             AddFrameList(animPackage: PkgName.DigSiteGlass, animName: "default", frameList: new List<AnimFrame>

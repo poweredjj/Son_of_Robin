@@ -1293,7 +1293,7 @@ namespace SonOfRobin
 
                         foreach (Sprite shadowSprite in blockingLightSpritesList)
                         {
-                            if (!shadowSprite.Visible) continue;
+                            if (!shadowSprite.Visible || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
 
                             Rectangle cameraRect = this.world.camera.viewRect;
 

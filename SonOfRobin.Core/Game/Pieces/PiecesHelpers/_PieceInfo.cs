@@ -99,6 +99,7 @@ namespace SonOfRobin
             public readonly bool visFogExplodesWhenBurns;
             public readonly bool destroysPlantsWhenBuilt;
             public readonly bool hasFlatShadow;
+            public readonly bool shadowNotDrawn;
             public readonly float fertileGroundSoilWealthMultiplier;
             public readonly int inOpacityFadeDuration;
             public readonly int toolRange;
@@ -235,6 +236,7 @@ namespace SonOfRobin
                 this.visFogExplodesWhenBurns = false;
                 this.destroysPlantsWhenBuilt = false;
                 this.hasFlatShadow = false;
+                this.shadowNotDrawn = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
                 this.inOpacityFadeDuration = 0;
                 this.toolMultiplierByCategory = null;
@@ -3127,7 +3129,7 @@ namespace SonOfRobin
                     if (this.plantReproductionData == null) throw new ArgumentNullException($"{this.name} - plantReproductionData not set.");
                     if (this.plantBestEnvironment == null) throw new ArgumentNullException($"{this.name} - plantBestEnvironment not set.");
                 }
-                if (this.type == typeof(Animal))
+                else if (this.type == typeof(Animal))
                 {
                     if (this.animalMaxMass == 0) throw new ArgumentNullException($"{this.name} - animalMaxMass not set.");
                     if (this.animalMassBurnedMultiplier == 0) throw new ArgumentNullException($"{this.name} - animalMassBurnedMultiplier not set.");
@@ -3138,9 +3140,13 @@ namespace SonOfRobin
                     if (this.animalRetaliateChance == -1) throw new ArgumentNullException($"{this.name} - animalRetaliateChance not set.");
                     if (this.animalSightRange == 0) throw new ArgumentNullException($"{this.name} - animalSightRange not set.");
                 }
-                if (this.type == typeof(AmbientSound))
+                else if (this.type == typeof(AmbientSound))
                 {
                     if (this.ambsoundPlayDelay == -1) throw new ArgumentNullException($"{this.name} - ambsoundPlayDelay not set.");
+                }
+                else if (this.type == typeof(ConstructionSite))
+                {
+                    this.shadowNotDrawn = true;
                 }
             }
 
