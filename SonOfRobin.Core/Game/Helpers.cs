@@ -638,8 +638,6 @@ namespace SonOfRobin
 
             textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.dpad }));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
-
             textList.Add(new TextWithImages(font: fontText, text: "Faye", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Hellwoman", imageList: new List<Texture2D>()));
             textList.Add(new TextWithImages(font: fontText, text: "Glonfindel", imageList: new List<Texture2D>()));

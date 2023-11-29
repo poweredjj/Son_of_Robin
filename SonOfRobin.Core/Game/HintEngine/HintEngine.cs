@@ -800,8 +800,6 @@ namespace SonOfRobin
 
                             if (this.world.craftStats.CraftedPiecesTotal > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
-
                                 textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.AxeIron].texture }, minMarkerWidthMultiplier: 2f));
@@ -809,42 +807,44 @@ namespace SonOfRobin
                                 textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.WoodLogRegular].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.ChestIron].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
                             }
 
                             if (this.world.cookStats.TotalCookCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
-
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.CookingPot].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| meals made: {this.world.cookStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.MealStandard].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.cookStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
                             }
 
                             if (this.world.brewStats.TotalCookCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
-
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.AlchemyLabStandard].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| potions made: {this.world.brewStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.HerbsCyan].texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
                             }
 
                             if (this.world.meatHarvestStats.TotalHarvestCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
-
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| animals processed: {this.world.meatHarvestStats.TotalHarvestCount}", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Rabbit) }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| items obtained: {this.world.meatHarvestStats.ObtainedTotalPieceCount}", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
                             }
 
-                            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
+                            textList.Add(new TextWithImages(font: fontTitle, text: "\n\n ", imageList: new List<Texture2D>()));
 
                             textList.Add(new TextWithImages(font: fontTitle, text: "|  Thank you for playing!  |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus), TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) }));
 
