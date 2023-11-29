@@ -150,6 +150,7 @@ namespace SonOfRobin
                 this.containerStorageIsGlobal = false;
                 this.getsPushedByWaves = false;
 
+                this.convertsToWhenUsed = PieceTemplate.Name.Empty;
                 this.convertsWhenUsed = false;
                 if (this.type == typeof(Potion))
                 {

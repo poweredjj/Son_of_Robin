@@ -220,6 +220,27 @@ namespace SonOfRobin
 
             int buildDuration = 60 * 3;
 
+            var emptyContainersToDrop = new List<BoardPiece>();
+            foreach (BoardPiece piece in this.PieceStorage.GetAllPieces())
+            {
+                if (piece.pieceInfo.convertsToWhenUsed != PieceTemplate.Name.Empty)
+                {
+                    BoardPiece emptyContainer = PieceTemplate.CreatePiece(world: this.world, templateName: piece.pieceInfo.convertsToWhenUsed);
+                    if (!player.PieceStorage.AddPiece(emptyContainer)) emptyContainersToDrop.Add(emptyContainer);
+                }
+            }
+
+            if (emptyContainersToDrop.Count > 0)
+            {
+                Vector2 containerPlacementPos = player.sprite.position + (player.sprite.position - this.sprite.position); // to avoid containers "falling under" construction site
+
+                foreach (BoardPiece piece in emptyContainersToDrop)
+                {
+                    piece.PlaceOnBoard(randomPlacement: false, position: containerPlacementPos + new Vector2(this.world.random.Next(-15, 15), this.world.random.Next(-15, 15)), closestFreeSpot: true);
+                    piece.sprite.rotation = this.world.random.NextSingle() * (float)Math.PI;
+                }
+            }
+
             this.PieceStorage.DestroyAllPieces(); // to avoid dropping "used" materials on the ground
 
             nextLevelPiece.sprite.opacity = 0f;
