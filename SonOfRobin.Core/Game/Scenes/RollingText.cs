@@ -9,19 +9,19 @@ namespace SonOfRobin
 
         private readonly SolidColor solidColorBg;
         private readonly int bgFramesCount;
-        private readonly int scrollEveryNthFrame;
+        private readonly int pixelsToScrollEachFrame;
         private readonly bool canBeSkipped;
-
         private readonly List<TextWithImages> remainingTextList;
         private readonly Dictionary<TextWithImages, int> offsetByText = new();
-
         private readonly Scheduler.ExecutionDelegate runAtTheEndDlgt;
-
         private readonly float offsetPercentX;
 
         private int currentOffsetY;
+        private static float FontSizeMultiplier { get { return (float)SonOfRobinGame.VirtualWidth * 0.0008f; } }
+        public static int TitleFontSize { get { return (int)(30f * FontSizeMultiplier); } }
+        public static int RegularFontSize { get { return (int)(17f * FontSizeMultiplier); } }
 
-        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int scrollEveryNthFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, bool canBeSkipped = false, int priority = 1) :
+        public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int pixelsToScrollEachFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, bool canBeSkipped = false, int priority = 1) :
 
             base(inputType: InputTypes.Normal, priority: priority, alwaysUpdates: false, alwaysDraws: false, touchLayout: canBeSkipped ? TouchLayout.TextWindowCancel : TouchLayout.Empty, tipsLayout: canBeSkipped ? ControlTips.TipsLayout.TextWindowCancel : ControlTips.TipsLayout.Empty)
         {
@@ -34,7 +34,7 @@ namespace SonOfRobin
             this.remainingTextList = textList;
             this.currentOffsetY = -this.bgFramesCount;
             this.offsetPercentX = offsetPercentX;
-            this.scrollEveryNthFrame = scrollEveryNthFrame;
+            this.pixelsToScrollEachFrame = pixelsToScrollEachFrame;
             this.canBeSkipped = canBeSkipped;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
@@ -50,7 +50,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            if (SonOfRobinGame.CurrentUpdate % this.scrollEveryNthFrame == 0) this.currentOffsetY++;
+            this.currentOffsetY += this.pixelsToScrollEachFrame;
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {

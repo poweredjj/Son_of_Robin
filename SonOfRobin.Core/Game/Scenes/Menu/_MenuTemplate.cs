@@ -109,16 +109,13 @@ namespace SonOfRobin
                         {
                             var textList = Helpers.MakeCreditsTextList();
 
-                            float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
-
-                            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont((int)(17f * fontSizeMultiplier));
+                            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(RollingText.RegularFontSize);
 
                             textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D> { }));
                             textList.Add(new TextWithImages(font: fontText, text: $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}", imageList: new List<Texture2D> { }));
-                            textList.Add(new TextWithImages(font: fontText, text: $"Last updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}", imageList: new List<Texture2D> { }));
-                            textList.Add(new TextWithImages(font: fontText, text: "This is a very early alpha version of the game.", imageList: new List<Texture2D> { }));                         
-
-                            new RollingText(textList: textList, canBeSkipped: true, scrollEveryNthFrame: 1, offsetPercentX: 0f, bgFramesCount: 15, bgColor: Color.Black * 0.5f, priority: 0);
+                            textList.Add(new TextWithImages(font: fontText, text: $"Last updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd}", imageList: new List<Texture2D> { }));
+                            textList.Add(new TextWithImages(font: fontText, text: "(this is an alpha version of the game)", imageList: new List<Texture2D> { }));
+                            new RollingText(textList: textList, canBeSkipped: true, pixelsToScrollEachFrame: 1, offsetPercentX: 0f, bgFramesCount: 15, bgColor: Color.Black * 0.5f, priority: 0);
                         };
 
                         new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: makeRollingTextSceneDlgt,

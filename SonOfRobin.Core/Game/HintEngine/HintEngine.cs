@@ -776,8 +776,8 @@ namespace SonOfRobin
 
                             float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
 
-                            SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont((int)(30f * fontSizeMultiplier));
-                            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont((int)(17f * fontSizeMultiplier));
+                            SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont(RollingText.TitleFontSize);
+                            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(RollingText.RegularFontSize);
 
                             textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
@@ -851,7 +851,7 @@ namespace SonOfRobin
                             Scheduler.ExecutionDelegate openCineEndingPart3Dlgt = () =>
                             { if (!this.world.HasBeenRemoved) this.world.HintEngine.ShowGeneralHint(type: Type.CineEndingPart3, ignoreDelay: true); };
 
-                            new RollingText(textList: textList, scrollEveryNthFrame: 1, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black * 0.45f);
+                            new RollingText(textList: textList, pixelsToScrollEachFrame: 1, offsetPercentX: 0.15f, runAtTheEndDlgt: openCineEndingPart3Dlgt, bgColor: Color.Black * 0.45f);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: makeRollingTextSceneDlgt, storeForLaterUse: true));
 

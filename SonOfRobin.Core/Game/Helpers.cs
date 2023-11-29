@@ -615,10 +615,8 @@ namespace SonOfRobin
 
         public static List<TextWithImages> MakeCreditsTextList()
         {
-            float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
-
-            SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont((int)(30f * fontSizeMultiplier));
-            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont((int)(17f * fontSizeMultiplier));
+            SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont(RollingText.TitleFontSize);
+            SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(RollingText.RegularFontSize);
 
             var textList = new List<TextWithImages>();
 
