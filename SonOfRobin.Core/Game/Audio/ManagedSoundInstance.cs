@@ -22,7 +22,8 @@ namespace SonOfRobin
         public ManagedSoundInstance(SoundData.Name soundName)
         {
             this.soundName = soundName;
-            this.instance = SoundData.soundsDict[soundName].CreateInstance();
+
+            this.instance = SoundData.GetSound(soundName).CreateInstance();
             this.lastPlayed = DateTime.Now; // to have a proper value
             this.currentSoundID = -1;
 

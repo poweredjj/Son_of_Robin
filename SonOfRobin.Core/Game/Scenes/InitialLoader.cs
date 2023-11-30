@@ -128,7 +128,6 @@ namespace SonOfRobin
 
         private void ProcessBackgroundTasks1()
         {
-            SoundData.LoadAllSounds();
             SonOfRobinGame.LoadEffects();
         }
 

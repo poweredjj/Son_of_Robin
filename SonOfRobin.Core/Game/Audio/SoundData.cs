@@ -6,17 +6,28 @@ namespace SonOfRobin
 {
     public class SoundData
     {
-        public static readonly Dictionary<Name, SoundEffect> soundsDict = new();
+        private static readonly Dictionary<Name, SoundEffect> soundsDict = new();
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
-        public static void LoadAllSounds()
+        public static void LoadMostSounds() // not needed anymore
         {
             if (soundsDict.Count > 0) throw new ArgumentException("Sounds has already been loaded.");
 
-            foreach (var kvp in soundFilenamesDict)
+            foreach (Name soundName in soundFilenamesDict.Keys)
             {
-                soundsDict[kvp.Key] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{kvp.Value}");
+                LoadOneSound(soundName: soundName);
             }
+        }
+
+        public static SoundEffect GetSound(Name soundName)
+        {
+            if (!soundsDict.ContainsKey(soundName)) LoadOneSound(soundName);
+            return soundsDict[soundName];
+        }
+
+        public static void LoadOneSound(Name soundName)
+        {
+            if (!soundsDict.ContainsKey(soundName)) soundsDict[soundName] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{soundFilenamesDict[soundName]}");
         }
 
         public enum Name : byte
