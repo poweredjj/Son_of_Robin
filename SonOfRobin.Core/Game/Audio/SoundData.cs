@@ -27,7 +27,8 @@ namespace SonOfRobin
 
         public static void LoadOneSound(Name soundName)
         {
-            if (!soundsDict.ContainsKey(soundName)) soundsDict[soundName] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{soundFilenamesDict[soundName]}");
+            MessageLog.Add(debugMessage: true, text: $"Loading sound: {soundName}");          
+            soundsDict[soundName] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{soundFilenamesDict[soundName]}");
         }
 
         public enum Name : byte
