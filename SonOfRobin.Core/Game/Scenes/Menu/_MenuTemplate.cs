@@ -635,7 +635,7 @@ namespace SonOfRobin
                             {
                                 textLines.Add($"| Resourceful crafter |");
                                 imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).texture);
-                                imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture);
+                                imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
                             }
 
                             textLines.Add($"| Cooking level: {player.CookLevel}");

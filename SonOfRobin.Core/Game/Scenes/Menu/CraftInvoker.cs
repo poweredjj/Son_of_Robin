@@ -279,7 +279,7 @@ namespace SonOfRobin
 
             if (recipeLevelCurrent == recipeLevelMax)
             {
-                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
+                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Star) }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
             }
             else entryList.Add(new InfoWindow.TextEntry(text: $"Level {recipeLevelCurrent + 1}/{recipeLevelMax + 1}", color: Color.GreenYellow, scale: 1f, animate: true, charsPerFrame: 1));
 

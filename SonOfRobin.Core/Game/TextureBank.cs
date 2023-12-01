@@ -25,6 +25,8 @@ namespace SonOfRobin
             Biceps = 11,
             WhiteHorizontalLine = 12,
             MonoGame = 13,
+            BackpackMediumOutline = 151,
+            Star = 152,
 
             SimpleArrowUp = 14,
             SimpleArrowRight = 15,
@@ -195,6 +197,8 @@ namespace SonOfRobin
             { TextureName.Biceps, "biceps" },
             { TextureName.WhiteHorizontalLine, "line_horizontal_white" },
             { TextureName.MonoGame, "monogame" },
+            { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
+            { TextureName.Star, "star" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },

@@ -156,7 +156,7 @@ namespace SonOfRobin
                 int counterSize = CounterSize;
                 Rectangle counterRect = this.CounterRect;
 
-                AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BackpackMediumOutline).DrawAndKeepInRectBounds(destBoundsRect: counterRect, color: Color.White * this.viewParams.drawOpacity, opacity: 0.85f);
+                Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.BackpackMediumOutline), rectangle: counterRect, color: Color.White * this.viewParams.drawOpacity * 0.85f);
 
                 int occupiedSlotCount = player.PieceStorage.OccupiedSlots.Count + (player.ToolStorage.OccupiedSlots.Count - 1); // -1 to count out hand "tool"
                 int totalSlotCount = player.PieceStorage.AllSlots.Count + (player.ToolStorage.AllSlots.Count - 1); // -1 to count out hand "tool"

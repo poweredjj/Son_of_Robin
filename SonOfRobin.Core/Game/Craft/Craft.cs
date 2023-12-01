@@ -386,7 +386,7 @@ namespace SonOfRobin
                     string recipeNewLevelName = levelMaster ? "master |" : $"{recipeLevel + 1}";
 
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).Texture };
-                    if (levelMaster) imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture);
+                    if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                     taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
@@ -419,7 +419,7 @@ namespace SonOfRobin
                     string newLevelName = levelMaster ? "master |" : $"{player.CraftLevel}";
 
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).Texture };
-                    if (levelMaster) imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture);
+                    if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                     taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
