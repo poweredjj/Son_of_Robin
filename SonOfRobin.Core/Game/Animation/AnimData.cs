@@ -10,6 +10,7 @@ namespace SonOfRobin
         public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
 
         private static readonly HashSet<PkgName> loadedPkgs = new HashSet<PkgName>();
+        public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -397,6 +398,14 @@ namespace SonOfRobin
 
             BackpackMediumOutlineObsolete = 201,
             StarObsolete = 271,
+        }
+
+        public static void LoadAllPackages()
+        {
+            foreach (PkgName pkgName in allPkgNames)
+            {
+                LoadPackage(pkgName);
+            }
         }
 
         public static void LoadPackage(PkgName pkgName)
@@ -1955,12 +1964,20 @@ namespace SonOfRobin
 
                         AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
                         AddFrameList(pkgName: pkgName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
-                        AddFrameList(pkgName: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
 
                         break;
                     }
 
                 case PkgName.CaveExit:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
+                    break;
+
+                case PkgName.BackpackMediumOutlineObsolete:
+                    // TODO remove - kept for compatibility with old saves
+                    break;
+
+                case PkgName.StarObsolete:
+                    // TODO remove - kept for compatibility with old saves
                     break;
 
                 default:
