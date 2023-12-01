@@ -127,6 +127,7 @@ namespace SonOfRobin
                 AnimData.jsonDict[this.id] = new Dictionary<string, Object> {
                     { "colBounds", colBounds },
                 };
+                AnimData.SaveJsonDict();
             }
 
             this.colWidth = (int)(colBounds.Width * scale);

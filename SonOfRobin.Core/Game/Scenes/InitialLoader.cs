@@ -17,7 +17,6 @@ namespace SonOfRobin
             StartBgTasks,
             CreateMeshDefinitions,
             LoadAnimsJson,
-            SaveAnimsJson,
             BuildMappings,
             MakeItemsInfo,
             MakeCraftRecipes,
@@ -46,7 +45,6 @@ namespace SonOfRobin
             { Step.StartBgTasks, "starting background tasks" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animations (json)" },
-            { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.BuildMappings, "building input mappings" },
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
@@ -153,10 +151,6 @@ namespace SonOfRobin
 
                 case Step.LoadAnimsJson:
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    break;
-
-                case Step.SaveAnimsJson:
-                    AnimData.SaveJsonDict();
                     break;
 
                 case Step.BuildMappings:
