@@ -441,29 +441,44 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.FlowersYellow1:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
-                    break;
+                    {
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 352, width: 32, height: 32));
+                        break;
+                    }
 
                 case PkgName.FlowersYellow2:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
-                    break;
+                    {
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.FlowersRed:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 64, y: 352, width: 32, height: 32));
-                    break;
+                    {
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 64, y: 352, width: 32, height: 32));
+                        break;
+                    }
 
                 case PkgName.Rushes:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
-                    break;
+                    {
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
+                        break;
+                    }
 
                 case PkgName.GrassDesert:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 160, y: 224, width: 24, height: 24));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 288, y: 160, width: 32, height: 32));
-                    break;
+                    {
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: layer, x: 160, y: 224, width: 24, height: 24));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: layer, x: 288, y: 160, width: 32, height: 32));
+                        break;
+                    }
 
                 case PkgName.GrassRegular:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
@@ -478,58 +493,93 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.CoffeeShrub:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
+                        break;
+                    }
 
                 case PkgName.CarrotPlant:
-                    AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: 1, scale: 0.1f));
-                    AddFrameList(pkgName: pkgName, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: 1, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: layer, scale: 0.1f));
+                        AddFrameList(pkgName: pkgName, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: layer, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
+                        break;
+                    }
 
                 case PkgName.TomatoPlant:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: 1, scale: 0.1f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: 1, scale: 0.08f));
-                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: 1, scale: 0.08f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: layer, scale: 0.1f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: layer, scale: 0.08f));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: layer, scale: 0.08f));
+
+                        break;
+                    }
 
                 case PkgName.MushroomPlant:
-                    AddFrameList(pkgName: pkgName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.6f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.8f));
-                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 1.0f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 0.6f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 0.8f));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 1.0f));
+                        break;
+                    }
 
                 case PkgName.Cactus:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 352, y: 320, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 288, y: 320, width: 32, height: 64));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: layer, x: 352, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: layer, x: 288, y: 320, width: 32, height: 64));
+                        break;
+                    }
 
                 case PkgName.PalmTree:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: 1, scale: 0.7f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 123, y: 326, width: 69, height: 80, crop: false));
-                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 8, y: 145, width: 66, height: 102, crop: false));
-                    AddFrameList(pkgName: pkgName, animSize: 3, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 108, y: 145, width: 72, height: 102, crop: false));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: layer, scale: 0.7f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 123, y: 326, width: 69, height: 80, crop: false));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 8, y: 145, width: 66, height: 102, crop: false));
+                        AddFrameList(pkgName: pkgName, animSize: 3, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 108, y: 145, width: 72, height: 102, crop: false));
+                        break;
+                    }
 
                 case PkgName.TreeBig:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_tall", layer: 1, scale: 0.5f));
-                    AddFrameList(pkgName: pkgName, animSize: 1,
-                    frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 199, y: 382, width: 47, height: 66));
-                    AddFrameList(pkgName: pkgName, animSize: 2,
-                    frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 0, y: 0, width: 63, height: 97));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_tall", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: layer, x: 199, y: 382, width: 47, height: 66));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: layer, x: 0, y: 0, width: 63, height: 97));
+                        break;
+                    }
 
                 case PkgName.TreeSmall1:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 192, y: 352, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 160, y: 320, width: 32, height: 64));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 192, y: 352, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 160, y: 320, width: 32, height: 64));
+                        break;
+                    }
 
                 case PkgName.TreeSmall2:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 128, y: 192, width: 32, height: 32));
-                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 160, y: 192, width: 32, height: 64));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: layer, x: 128, y: 192, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: layer, x: 160, y: 192, width: 32, height: 64));
+                        break;
+                    }
 
                 case PkgName.TreeStump:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tree_stump", layer: 1, scale: 1f));
@@ -746,58 +796,88 @@ namespace SonOfRobin
 
                 case PkgName.Crate:
                     {
+                        int layer = 1;
+
                         AddFrameList(pkgName: pkgName,
-                        frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 128, y: 0, width: 32, height: 48));
+                        frameList: ConvertImageToFrameList(atlasName: "chests", layer: layer, x: 128, y: 0, width: 32, height: 48));
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6),
-                            ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6),
-                            ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48, duration: 0)
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 96, width: 32, height: 48, duration: 6),
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 48, width: 32, height: 48, duration: 6),
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 0, width: 32, height: 48, duration: 0)
                         };
                         AddFrameList(pkgName: pkgName, animName: "closing", frameList: frameList);
                         break;
                     }
 
                 case PkgName.WorkshopEssential:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopBasic:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopAdvanced:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopMaster:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopMeatHarvesting:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_off", layer: 1, scale: 0.5f));
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_on", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_off", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_on", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopLeatherBasic:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.WorkshopLeatherAdvanced:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.MeatDryingRackRegular:
                     {
@@ -826,37 +906,54 @@ namespace SonOfRobin
                     }
 
                 case PkgName.AlchemyLabStandard:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.AlchemyLabAdvanced:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
 
                 case PkgName.Furnace:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: 1, x: 0, y: 144, width: 48, height: 48));
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: 1, x: 48, y: 144, width: 48, height: 48));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 0, y: 144, width: 48, height: 48));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 48, y: 144, width: 48, height: 48));
+                        break;
+                    }
 
                 case PkgName.Anvil:
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: 1));
-                    // the same as "off"
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: 1));
-                    break;
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: layer));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: layer));
+                        break;
+                    }
 
                 case PkgName.HotPlate:
                     {
-                        AddFrameList(pkgName: pkgName, animName: "off",
-          frameList: ConvertImageToFrameList(atlasName: "hot_plate_off", layer: 1));
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "hot_plate_off", layer: layer));
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "hot_plate_on_1", layer: 1, duration: 6),
-                            ConvertImageToFrame(atlasName: "hot_plate_on_2", layer: 1, duration: 6),
-                            ConvertImageToFrame(atlasName: "hot_plate_on_3", layer: 1, duration: 6)
+                            ConvertImageToFrame(atlasName: "hot_plate_on_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "hot_plate_on_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "hot_plate_on_3", layer: layer, duration: 6)
                         };
                         AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
                         break;
@@ -864,13 +961,15 @@ namespace SonOfRobin
 
                 case PkgName.CookingPot:
                     {
-                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "Candacis_flames1", layer: 1, x: 192, y: 144, width: 32, height: 32));
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "Candacis_flames1", layer: layer, x: 192, y: 144, width: 32, height: 32));
 
                         var frameListOn = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 0, y: 144, width: 32, height: 32, duration: 6),
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 32, y: 144, width: 32, height: 32, duration: 6),
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 64, y: 144, width: 32, height: 32, duration: 6)
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 0, y: 144, width: 32, height: 32, duration: 6),
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 32, y: 144, width: 32, height: 32, duration: 6),
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 64, y: 144, width: 32, height: 32, duration: 6)
                         };
                         AddFrameList(pkgName: pkgName, animName: "on", frameList: frameListOn);
 
@@ -1090,9 +1189,12 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.ArrowExploding:
-                    AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
-                    AddFrameList(pkgName: pkgName, animName: "burning", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
-                    break;
+                    {
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: layer, scale: 0.75f));
+                        AddFrameList(pkgName: pkgName, animName: "burning", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: layer, scale: 0.75f));
+                        break;
+                    }
 
                 case PkgName.CoalDeposit:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 0, y: 96, width: 48, height: 48, scale: 1f));
@@ -1115,16 +1217,19 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.DigSiteGlass:
-                    AddFrameList(pkgName: pkgName, animName: "default", frameList: new List<AnimFrame>
                     {
-                        ConvertImageToFrame(atlasName: "dig_site_glass", layer: 0, duration: 450),
-                        ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
-                        ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: 0, duration: 1),
-                        ConvertImageToFrame(atlasName: "dig_site_glass_shine_3", layer: 0, duration: 1),
-                        ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: 0, duration: 1),
-                        ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
-                    });
-                    break;
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "dig_site_glass", layer: layer, duration: 450),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_3", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
+                        });
+                        break;
+                    }
 
                 case PkgName.DigSiteRuins:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "dig_site_ruins", layer: 0, scale: 0.35f));
@@ -1406,36 +1511,51 @@ namespace SonOfRobin
                 case PkgName.Lantern:
                     {
                         float scale = 0.075f;
+                        int layer = 0;
 
-                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: 0, scale: scale));
-                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
-                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: layer, scale: scale));
 
                         break;
                     }
 
                 case PkgName.SmallTorch:
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "small_torch_on", layer: 0, scale: 0.07f));
-                    AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
-                    break;
+                    {
+                        float scale = 0.07f;
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "small_torch_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: layer, scale: scale));
+
+                        break;
+                    }
 
                 case PkgName.BigTorch:
-                    AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "big_torch_on", layer: 0, scale: 0.1f));
-                    AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
-                    AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
-                    break;
+                    {
+                        float scale = 0.1f;
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "big_torch_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: layer, scale: scale));
+
+                        break;
+                    }
 
                 case PkgName.CampfireSmall:
                     {
+                        int layer = 1;
+
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
-                            ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false),
-                            ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false)
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false),
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false)
                         };
                         AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
-                        frameList = ConvertImageToFrameList(atlasName: "flames", layer: 1, x: 288, y: 96, width: 48, height: 48, crop: false);
+                        frameList = ConvertImageToFrameList(atlasName: "flames", layer: layer, x: 288, y: 96, width: 48, height: 48, crop: false);
                         AddFrameList(pkgName: pkgName, frameList);
                         AddFrameList(pkgName: pkgName, animName: "off", frameList: frameList);
 
@@ -1444,15 +1564,16 @@ namespace SonOfRobin
 
                 case PkgName.CampfireMedium:
                     {
+                        int layer = 1;
+
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: 1, duration: 6, crop: false),
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: 1, duration: 6, crop: false),
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: 1, duration: 6, crop: false)
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: layer, duration: 6, crop: false)
                         };
                         AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
-                        frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
-                        AddFrameList(pkgName: pkgName, frameList);
+                        AddFrameList(pkgName: pkgName, ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: layer, crop: false));
                         AddFrameList(pkgName: pkgName, animName: "off", frameList: frameList);
 
                         break;
@@ -1637,11 +1758,13 @@ namespace SonOfRobin
 
                 case PkgName.Attack:
                     {
+                        int layer = 2;
+
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 0, y: 20, width: 23, height: 23),
-                            ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 22, y: 13, width: 29, height: 33),
-                            ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 50, y: 0, width: 36, height: 65)
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 0, y: 20, width: 23, height: 23),
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 22, y: 13, width: 29, height: 33),
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 50, y: 0, width: 36, height: 65)
                         };
                         AddFrameList(pkgName: pkgName, frameList: frameList);
 
@@ -1654,15 +1777,17 @@ namespace SonOfRobin
 
                 case PkgName.Backlight:
                     {
+                        int layer = 0;
+
                         var frameList = new List<AnimFrame>
                         {
-                            ConvertImageToFrame(atlasName: "backlight_1", layer: 0, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_2", layer: 0, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_3", layer: 0, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_4", layer: 0, duration: 20),
-                            ConvertImageToFrame(atlasName: "backlight_3", layer: 0, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_2", layer: 0, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_1", layer: 0, duration: 6)
+                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_4", layer: layer, duration: 20),
+                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6)
                         };
                         AddFrameList(pkgName: pkgName, frameList: frameList);
                         break;
@@ -1675,13 +1800,15 @@ namespace SonOfRobin
                 case PkgName.Flame:
                     {
                         byte animSize = 0;
+                        int layer = 1;
+
                         foreach (float scale in new List<float> { 0.5f, 0.75f, 1f, 1.25f })
                         {
                             var frameList = new List<AnimFrame>
                             {
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: true, scale: scale)
                             };
                             AddFrameList(pkgName: pkgName, animSize: animSize, frameList: frameList);
 
@@ -1692,9 +1819,9 @@ namespace SonOfRobin
                         {
                             var frameList = new List<AnimFrame>
                             {
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 0, width: 48, height: 48, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 0, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 0, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 0, width: 48, height: 48, crop: true, scale: scale)
                             };
                             AddFrameList(pkgName: pkgName, animSize: animSize, frameList: frameList);
 
@@ -2068,27 +2195,6 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
-        }
-
-        public static void DeleteUsedAtlases()
-        {
-            // Should be used after loading textures from all atlasses.
-            // Deleted textures will not be available for use any longer.
-
-            var usedAtlasNames = new HashSet<string>();
-
-            foreach (List<AnimFrame> frameList in frameListById.Values)
-            {
-                foreach (AnimFrame animFrame in frameList)
-                {
-                    if (animFrame.atlasName != null && !usedAtlasNames.Contains(animFrame.atlasName)) usedAtlasNames.Add(animFrame.atlasName);
-                }
-            }
-
-            foreach (string atlasName in usedAtlasNames)
-            {
-                TextureBank.DisposeTexture(atlasName);
-            }
         }
     }
 }

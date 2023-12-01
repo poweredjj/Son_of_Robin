@@ -20,7 +20,6 @@ namespace SonOfRobin
             SaveAnimsJson,
             BuildMappings,
             MakeItemsInfo,
-            RemoveUnneededData,
             MakeCraftRecipes,
             CreateScenes,
             WaitForBackgroundTasksToFinish,
@@ -52,7 +51,6 @@ namespace SonOfRobin
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
-            { Step.RemoveUnneededData, "removing unneeded data" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
@@ -167,10 +165,6 @@ namespace SonOfRobin
 
                 case Step.MakeItemsInfo:
                     PieceInfo.CreateAllInfo();
-                    break;
-
-                case Step.RemoveUnneededData:
-                    // AnimData.DeleteUsedAtlases();
                     break;
 
                 case Step.MakeCraftRecipes:
