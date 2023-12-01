@@ -57,7 +57,7 @@ namespace SonOfRobin
 
             if (this.targetLevel.depth == 0 && Scene.GetTopSceneOfType(type: typeof(Menu), includeEndingScenes: true) == null)
             {
-                var confirmationData = new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.UseEntrance } };
+                var confirmationData = new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.UseEntrance }, { "executeHelper", this } };
                 MenuTemplate.CreateConfirmationMenu(question: "Want to exit? You won't be able to come back.", confirmationData: confirmationData, blocksUpdatesBelow: true);
                 return;
             }
