@@ -215,7 +215,7 @@ namespace SonOfRobin
             int frameMaxWidth = 0;
             int frameMaxHeight = 0;
 
-            foreach (var kvp in AnimData.frameListById)
+            foreach (var kvp in AnimData.frameArrayById)
             {
                 foreach (AnimFrame frame in kvp.Value)
                 {

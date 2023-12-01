@@ -13,7 +13,7 @@ namespace SonOfRobin
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
-        public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
+        public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
         private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
         public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
@@ -1987,7 +1987,7 @@ namespace SonOfRobin
             }
 
             string completeAnimID = $"{pkgName}-{animSize}-{animName}";
-            frameListById[completeAnimID] = new List<AnimFrame>(frameList);
+            frameArrayById[completeAnimID] = frameList.ToArray();
         }
 
         public static List<AnimFrame> ConvertImageToFrameList(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)

@@ -315,9 +315,9 @@ namespace SonOfRobin
         {
             int duration = 0;
 
-            if (AnimData.frameListById.ContainsKey(this.CompleteAnimID))
+            if (AnimData.frameArrayById.ContainsKey(this.CompleteAnimID))
             {
-                foreach (var frame in AnimData.frameListById[this.CompleteAnimID])
+                foreach (var frame in AnimData.frameArrayById[this.CompleteAnimID])
                 { duration += frame.duration; }
             }
 
@@ -700,8 +700,8 @@ namespace SonOfRobin
 
             try
             {
-                if (forceRewind || this.currentFrameIndex >= AnimData.frameListById[this.CompleteAnimID].Count) this.RewindAnim();
-                this.AnimFrame = AnimData.frameListById[this.CompleteAnimID][this.currentFrameIndex];
+                if (forceRewind || this.currentFrameIndex >= AnimData.frameArrayById[this.CompleteAnimID].Length) this.RewindAnim();
+                this.AnimFrame = AnimData.frameArrayById[this.CompleteAnimID][this.currentFrameIndex];
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
@@ -730,19 +730,19 @@ namespace SonOfRobin
         public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.AnimSize, animName: this.AnimName);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public bool CheckIfAnimSizeExists(byte animSizeToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: animSizeToCheck, animName: this.AnimName);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public bool CheckIfAnimNameExists(string animNameToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: this.AnimSize, animName: animNameToCheck);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public void RewindAnim()

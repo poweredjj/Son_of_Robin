@@ -1335,7 +1335,7 @@ namespace SonOfRobin
 
                             var textureByName = new Dictionary<object, object>();
 
-                            foreach (var kvp in AnimData.frameListById)
+                            foreach (var kvp in AnimData.frameArrayById)
                             {
                                 if (!kvp.Key.StartsWith($"{pkgName}-")) continue;
 
