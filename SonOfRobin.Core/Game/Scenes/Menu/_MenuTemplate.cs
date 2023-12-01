@@ -1157,6 +1157,15 @@ namespace SonOfRobin
                         };
                         new Invoker(menu: menu, name: "load all keys textures", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllKeysDlgt);
 
+                        Scheduler.ExecutionDelegate loadAllTexturesDlgt = () =>
+                        {
+                            DateTime startTime = DateTime.Now;
+                            TextureBank.LoadAllTextures();
+                            TimeSpan loadingDuration = DateTime.Now - startTime;
+                            MessageLog.Add(debugMessage: true, text: $"Misc textures loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+                        };
+                        new Invoker(menu: menu, name: "load all misc. textures", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllTexturesDlgt);
+
                         if (nonDemoWorldActive)
                         {
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);

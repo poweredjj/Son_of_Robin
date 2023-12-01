@@ -369,6 +369,14 @@ namespace SonOfRobin
             return filenamesForTextureNames[textureName];
         }
 
+        public static void LoadAllTextures()
+        {
+            foreach (string filename in filenamesForTextureNames.Values)
+            {
+                GetTexturePersistent(filename);
+            }
+        }
+
         public static Texture2D GetTexture(TextureName textureName, bool persistent = true)
         {
             return GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent);
