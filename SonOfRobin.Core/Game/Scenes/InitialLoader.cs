@@ -22,7 +22,7 @@ namespace SonOfRobin
             LoadAnimsMisc1,
             LoadAnimsMisc2,
             SaveAnimsJson,
-            LoadKeysGfx,
+            BuildMappings,
             MakeItemsInfo,
             RemoveUnneededData,
             MakeCraftRecipes,
@@ -56,7 +56,7 @@ namespace SonOfRobin
             { Step.LoadAnimsMisc1, "loading animations (others 1)" },
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
-            { Step.LoadKeysGfx, "loading keyboard textures" },
+            { Step.BuildMappings, "building input mappings" },
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
@@ -185,8 +185,7 @@ namespace SonOfRobin
                     AnimData.SaveJsonDict();
                     break;
 
-                case Step.LoadKeysGfx:
-                    KeyboardScheme.LoadAllKeys();
+                case Step.BuildMappings:
                     InputMapper.RebuildMappings();
                     break;
 

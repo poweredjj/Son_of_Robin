@@ -21,7 +21,11 @@ namespace SonOfRobin
 
         public static SoundEffect GetSound(Name soundName)
         {
-            if (!soundsDict.ContainsKey(soundName)) soundsDict[soundName] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{soundFilenamesDict[soundName]}");
+            if (!soundsDict.ContainsKey(soundName))
+            {
+                MessageLog.Add(debugMessage: true, text: $"Loading sound: {soundName}");
+                soundsDict[soundName] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{soundFilenamesDict[soundName]}");
+            }
             return soundsDict[soundName];
         }
 

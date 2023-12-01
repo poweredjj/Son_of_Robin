@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,9 +8,10 @@ namespace SonOfRobin
 {
     public class KeyboardScheme
     {
-        public static Dictionary<Keys, Texture2D> KeyTextures { get; private set; } = new Dictionary<Keys, Texture2D>();
+        public static readonly Keys[] allKeys = (Keys[])Enum.GetValues(typeof(Keys));
+        private static readonly Dictionary<Keys, Texture2D> keyTextureDict = new();
 
-        private static readonly Dictionary<Keys, string> keyNames = new Dictionary<Keys, string>
+        private static readonly Dictionary<Keys, string> filenamesForKeys = new()
         {
             { Keys.Back, "Backspace_Alt_Key_Light" },
             { Keys.Tab, "Tab_Key_Light" },
@@ -112,21 +114,38 @@ namespace SonOfRobin
             { Keys.OemBackslash, "Backslash_Key_Light" }
         };
 
-        public static void LoadAllKeys()
-        { LoadKeys(keyNames.Keys.ToList()); }
-
-        public static void LoadKeys(List<Keys> keyList)
+        public static Dictionary<Keys, Texture2D> GetAllKeysDict()
         {
-            foreach (Keys key in keyList)
+            LoadAllKeys();
+            return keyTextureDict;
+        }
+
+        public static void LoadAllKeys()
+        {
+            foreach (Keys key in filenamesForKeys.Keys.ToArray())
             {
-                KeyTextures[key] = TextureBank.GetTexture($"input/Keyboard/{keyNames[key]}");
+                LoadOneKey(key);
             }
+        }
+
+        public static void LoadOneKey(Keys key)
+        {
+            if (keyTextureDict.ContainsKey(key)) return;
+
+            if (!filenamesForKeys.ContainsKey(key))
+            {
+                MessageLog.Add(debugMessage: true, text: $"Key texture not found: {key}");
+                return;
+            }
+
+            keyTextureDict[key] = TextureBank.GetTexture($"input/Keyboard/{filenamesForKeys[key]}");
         }
 
         public static Texture2D GetTexture(Keys key)
         {
-            if (!KeyTextures.ContainsKey(key)) return null;
-            return KeyTextures[key];
+            if (!keyTextureDict.ContainsKey(key)) LoadOneKey(key);
+
+            return keyTextureDict.ContainsKey(key) ? keyTextureDict[key] : null;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class InputGrabber : Scene
     {
         public static readonly List<Buttons> allButtons = new List<Buttons> { Buttons.A, Buttons.B, Buttons.X, Buttons.Y, Buttons.LeftShoulder, Buttons.RightShoulder, Buttons.LeftTrigger, Buttons.RightTrigger, Buttons.Start, Buttons.Back, Buttons.LeftStick, Buttons.RightStick, Buttons.DPadLeft, Buttons.DPadRight, Buttons.DPadUp, Buttons.DPadDown };
-        public static readonly List<Keys> allKeys = KeyboardScheme.KeyTextures.Keys.ToList();
+        public static readonly Keys[] allKeys = KeyboardScheme.allKeys.ToArray();
 
         private readonly bool grabButtons;
         private readonly bool grabKeys;

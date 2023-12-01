@@ -392,7 +392,7 @@ namespace SonOfRobin
                         bool gamepad = false;
                         Menu menu = new(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
-                        Dictionary<object, object> allKeysDict = KeyboardScheme.KeyTextures.ToDictionary(k => (object)new StoredInput(k.Key), k => (object)k.Value);
+                        Dictionary<object, object> allKeysDict = KeyboardScheme.GetAllKeysDict().ToDictionary(k => (object)new StoredInput(k.Key), k => (object)k.Value);
                         CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: null, keysOrButtonsDict: allKeysDict);
 
                         foreach (Entry entry in menu.entryList)

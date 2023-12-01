@@ -179,7 +179,7 @@ namespace SonOfRobin
             TriSliceBGMenuGrayRight = 150,
         }
 
-        private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new Dictionary<TextureName, string>
+        private static readonly Dictionary<TextureName, string> filenamesForTextureNames = new()
         {
             { TextureName.Empty, "missing_texture" },
             { TextureName.LoadingWheel, "loading_wheel" },
@@ -355,6 +355,8 @@ namespace SonOfRobin
 
         private static readonly Dictionary<string, Texture2D> textureByNamePersistent = new();
         private static readonly Dictionary<string, Texture2D> textureByNameTemporary = new();
+        public static int LoadedTexturesCountPersistent { get { return textureByNamePersistent.Values.Count; } }
+        public static int LoadedTexturesCountTemporary { get { return textureByNameTemporary.Values.Count; } }
 
         public static void AssignContentManagers(ContentManager persistentManager, ContentManager temporaryManager)
         {
@@ -380,14 +382,22 @@ namespace SonOfRobin
 
         private static Texture2D GetTexturePersistent(string fileName)
         {
-            if (!textureByNamePersistent.ContainsKey(fileName)) textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
+            if (!textureByNamePersistent.ContainsKey(fileName))
+            {
+                MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
+                textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
+            }
 
             return textureByNamePersistent[fileName];
         }
 
         private static Texture2D GetTextureTemporary(string fileName)
         {
-            if (!textureByNameTemporary.ContainsKey(fileName)) textureByNameTemporary[fileName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
+            if (!textureByNameTemporary.ContainsKey(fileName))
+            {
+                MessageLog.Add(debugMessage: true, text: $"Loading texture (temporary): {fileName}");
+                textureByNameTemporary[fileName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
+            }
 
             return textureByNameTemporary[fileName];
         }
