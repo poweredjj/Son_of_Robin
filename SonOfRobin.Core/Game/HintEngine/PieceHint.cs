@@ -197,7 +197,7 @@ namespace SonOfRobin
             {
                 if (!shownTutorials.Contains(type))
                 {
-                    messageList.AddRange(Tutorials.tutorials[type].MessagesToDisplay);
+                    messageList.AddRange(Tutorials.GetTutorial(type).MessagesToDisplay);
                     shownTutorials.Add(type);
                 }
             }

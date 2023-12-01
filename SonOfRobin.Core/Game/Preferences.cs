@@ -387,7 +387,6 @@ namespace SonOfRobin
                 controlTipsScheme = value;
                 ButtonScheme.ChangeType(value);
                 InputVis.Refresh();
-                Tutorials.RefreshData();
                 PieceHint.RefreshData();
                 ControlTips.RefreshTopTipsLayout();
             }
