@@ -10,8 +10,7 @@ namespace SonOfRobin
         public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
-        private static readonly HashSet<PkgName> loadedPkgs = new HashSet<PkgName>();
-        public static int LoadedPkgsCount { get { return loadedPkgs.Count; } }
+        public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
@@ -20,15 +19,6 @@ namespace SonOfRobin
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
         public static Dictionary<string, Object> jsonDict = new();
-
-        public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
-        {
-            LoadPackage(pkgName);
-            if (croppedFramesForPkgs.ContainsKey(pkgName)) return croppedFramesForPkgs[pkgName];
-
-            LoadPackage(PkgName.NoAnim);
-            return croppedFramesForPkgs[PkgName.NoAnim];
-        }
 
         public enum PkgName : ushort
         {
@@ -411,7 +401,7 @@ namespace SonOfRobin
 
         public static void LoadPackage(PkgName pkgName)
         {
-            if (loadedPkgs.Contains(pkgName)) return;
+            if (LoadedPkgs.Contains(pkgName)) return;
 
             MessageLog.Add(debugMessage: true, text: $"Loading anim package: {pkgName}");
 
@@ -1985,7 +1975,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
             }
 
-            loadedPkgs.Add(pkgName);
+            LoadedPkgs.Add(pkgName);
         }
 
         public static void AddFrameList(PkgName pkgName, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
@@ -2213,6 +2203,15 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+        }
+
+        public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
+        {
+            LoadPackage(pkgName);
+            if (croppedFramesForPkgs.ContainsKey(pkgName)) return croppedFramesForPkgs[pkgName];
+
+            LoadPackage(PkgName.NoAnim);
+            return croppedFramesForPkgs[PkgName.NoAnim];
         }
     }
 }

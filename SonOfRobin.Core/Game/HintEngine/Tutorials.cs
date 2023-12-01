@@ -128,8 +128,8 @@ namespace SonOfRobin
             hintEngine.shownTutorials.Add(type);
         }
 
-        public static List<Tutorial> TutorialsInMenu
-        { get { return tutorials.Values.Where(tutorial => tutorial.isShownInTutorialsMenu).ToList(); } }
+        public static Tutorial[] TutorialsInMenu
+        { get { return tutorials.Values.Where(tutorial => tutorial.isShownInTutorialsMenu).ToArray(); } }
 
         public static void RefreshData()
         {

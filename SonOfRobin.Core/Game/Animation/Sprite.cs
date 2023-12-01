@@ -40,6 +40,7 @@ namespace SonOfRobin
 
         public float opacity;
         public OpacityFade opacityFade;
+        private bool animPackageNotLoaded;
         public AnimFrame AnimFrame { get; private set; }
         public AnimFrame CroppedAnimFrame { get { return AnimData.GetCroppedFrameForPackage(this.AnimPackage); } }
         public Color color;
@@ -90,6 +91,7 @@ namespace SonOfRobin
             this.IsOnBoard = false;
             this.opacity = 1f;
 
+            this.animPackageNotLoaded = false;
             this.AssignFrame(checkForCollision: false);
             this.gridGroups = this.GetGridGroups();
 
@@ -687,7 +689,12 @@ namespace SonOfRobin
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            AnimData.LoadPackage(this.AnimPackage);
+            if (!AnimData.LoadedPkgs.Contains(this.AnimPackage))
+            {
+                this.animPackageNotLoaded = true;
+                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim);
+                return false;
+            }
 
             AnimFrame oldAnimFrame = this.AnimFrame;
 
@@ -765,6 +772,14 @@ namespace SonOfRobin
         public void Draw(bool calculateSubmerge = true)
         {
             if (!this.boardPiece.exists) return;
+
+            if (this.animPackageNotLoaded)
+            {
+                // package loading must be invoked on main thread, otherwise it is very slow (reason unknown)
+                AnimData.LoadPackage(this.AnimPackage);
+                this.AssignFrame(checkForCollision: false);
+                this.animPackageNotLoaded = false;
+            }
 
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.GfxRect)) this.hasBeenDiscovered = true;
 
