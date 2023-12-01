@@ -18,8 +18,26 @@ namespace SonOfRobin
 
         private int currentOffsetY;
         private static float FontSizeMultiplier { get { return (float)SonOfRobinGame.VirtualWidth * 0.0008f; } }
-        public static int TitleFontSize { get { return (int)(30f * FontSizeMultiplier); } }
-        public static int RegularFontSize { get { return (int)(17f * FontSizeMultiplier); } }
+
+        public static int TitleFontSize
+        {
+            get
+            {
+                float size = 30f;
+                if (SonOfRobinGame.platform == Platform.Mobile) size *= 1.8f;
+                return (int)(size * FontSizeMultiplier);
+            }
+        }
+
+        public static int RegularFontSize
+        {
+            get
+            {
+                float size = 17f;
+                if (SonOfRobinGame.platform == Platform.Mobile) size *= 1.8f;
+                return (int)(size * FontSizeMultiplier);
+            }
+        }
 
         public RollingText(List<TextWithImages> textList, Color bgColor, float offsetPercentX = 0, int pixelsToScrollEachFrame = 1, int bgFramesCount = 60 * 2, Scheduler.ExecutionDelegate runAtTheEndDlgt = null, bool canBeSkipped = false, int priority = 1) :
 
