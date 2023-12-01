@@ -908,6 +908,19 @@ namespace SonOfRobin
                 return;
             }
 
+            bool animPkgsLoaded = false;
+            while (true)
+            {               
+                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
+                {
+                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
+                    sprite.LoadPackageAndAssignFrame();
+                    animPkgsLoaded = true;
+                }
+                else break;             
+            }
+            if (animPkgsLoaded) AnimData.SaveJsonDict();
+            
             this.ProcessInput();
             this.UpdateViewParams();
             MeshDefinition.UpdateAllDefs();

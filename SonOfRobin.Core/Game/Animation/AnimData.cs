@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000027f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -397,6 +397,7 @@ namespace SonOfRobin
             {
                 LoadPackage(pkgName);
             }
+            SaveJsonDict();
         }
 
         public static void LoadPackage(PkgName pkgName)
@@ -2203,6 +2204,7 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+            MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
         public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)

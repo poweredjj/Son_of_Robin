@@ -75,7 +75,6 @@ namespace SonOfRobin
             UseEntrance = 60,
             AddWeatherEvent = 61,
             ExecuteDelegate = 62,
-            SaveAnimJsonDict = 63,
         }
 
         public delegate void ExecutionDelegate();
@@ -1600,16 +1599,6 @@ namespace SonOfRobin
                     case TaskName.ExecuteDelegate:
                         {
                             ((Delegate)this.ExecuteHelper).DynamicInvoke();
-                            return;
-                        }
-
-                    case TaskName.SaveAnimJsonDict:
-                        {
-                            RemoveAllTasksOfName(TaskName.SaveAnimJsonDict); // to prevent from saving multiple times
-
-                            MessageLog.Add(debugMessage: true, text: "Saving anim json");
-                            AnimData.SaveJsonDict();
-
                             return;
                         }
 
