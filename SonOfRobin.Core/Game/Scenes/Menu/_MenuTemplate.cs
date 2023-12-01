@@ -1139,6 +1139,15 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "show all stat bars", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowStatBars");
 
+                        Scheduler.ExecutionDelegate loadAllSoundsDlgt = () =>
+                        {
+                            DateTime startTime = DateTime.Now;
+                            SoundData.LoadAllSounds();
+                            TimeSpan loadingDuration = DateTime.Now - startTime;
+                            MessageLog.Add(debugMessage: true, text: $"Sounds loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+                        };
+                        new Invoker(menu: menu, name: "load all sounds", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllSoundsDlgt);
+
                         if (nonDemoWorldActive)
                         {
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);

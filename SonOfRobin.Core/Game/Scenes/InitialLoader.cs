@@ -27,8 +27,7 @@ namespace SonOfRobin
             RemoveUnneededData,
             MakeCraftRecipes,
             CreateScenes,
-            WaitForBackgroundTasksToFinish1,
-            WaitForBackgroundTasksToFinish2,
+            WaitForBackgroundTasksToFinish,
             MakeDemoWorld,
             SetControlTips,
             OpenMainMenu,
@@ -58,8 +57,7 @@ namespace SonOfRobin
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
-            { Step.WaitForBackgroundTasksToFinish1, "waiting for background tasks to finish (first batch)" },
-            { Step.WaitForBackgroundTasksToFinish2, "waiting for background tasks to finish (second batch)" },
+            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.RemoveUnneededData, "removing unneeded data" },
@@ -70,8 +68,7 @@ namespace SonOfRobin
         };
 
         private readonly DateTime startTime;
-        private Task backgroundTask1;
-        private Task backgroundTask2;
+        private Task backgroundTask;
         private Step currentStep;
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
@@ -126,14 +123,10 @@ namespace SonOfRobin
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
 
-        private void ProcessBackgroundTasks1()
-        {
-            SonOfRobinGame.LoadEffects();
-        }
-
-        private void ProcessBackgroundTasks2()
+        private void ProcessBackgroundTasks()
         {
             SonOfRobinGame.LoadFonts();
+            SonOfRobinGame.LoadEffects();
             GridTemplate.DeleteObsolete();
         }
 
@@ -156,13 +149,11 @@ namespace SonOfRobin
                 case Step.StartBgTasks:
                     if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
                     {
-                        this.ProcessBackgroundTasks1();
-                        this.ProcessBackgroundTasks2();
+                        this.ProcessBackgroundTasks();
                     }
                     else
                     {
-                        this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
-                        this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
+                        this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
                     }
                     break;
 
@@ -219,34 +210,16 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
 
-                case Step.WaitForBackgroundTasksToFinish1:
+                case Step.WaitForBackgroundTasksToFinish:
                     {
                         bool tasksCompleted = false;
 
-                        if (this.backgroundTask1 == null || (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted)) tasksCompleted = true;
-                        else if (this.backgroundTask1.IsFaulted || this.TimeoutReached)
+                        if (this.backgroundTask == null || (this.backgroundTask != null && this.backgroundTask.IsCompleted)) tasksCompleted = true;
+                        else if (this.backgroundTask.IsFaulted || this.TimeoutReached)
                         {
-                            SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask1.Exception, showTextWindow: false);
+                            SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
 
-                            this.ProcessBackgroundTasks1();
-                            tasksCompleted = true;
-                        }
-
-                        if (!tasksCompleted) currentStep--;
-
-                        break;
-                    }
-
-                case Step.WaitForBackgroundTasksToFinish2:
-                    {
-                        bool tasksCompleted = false;
-
-                        if (this.backgroundTask2 == null || (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted)) tasksCompleted = true;
-                        else if (this.backgroundTask2.IsFaulted || this.TimeoutReached)
-                        {
-                            SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask2.Exception, showTextWindow: false);
-
-                            this.ProcessBackgroundTasks2();
+                            this.ProcessBackgroundTasks();
                             tasksCompleted = true;
                         }
 
