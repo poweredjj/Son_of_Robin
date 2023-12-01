@@ -9,8 +9,9 @@ namespace SonOfRobin
     {
         public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
 
-        private static readonly HashSet<PkgName> loadedPkgs = new HashSet<PkgName>();
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
+        private static readonly HashSet<PkgName> loadedPkgs = new HashSet<PkgName>();
+        public static int LoadedPkgsCount { get { return loadedPkgs.Count; } }
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();

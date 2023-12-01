@@ -127,7 +127,7 @@ namespace SonOfRobin
                 AnimData.jsonDict[this.id] = new Dictionary<string, Object> {
                     { "colBounds", colBounds },
                 };
-                AnimData.SaveJsonDict();
+                new Scheduler.Task(taskName: Scheduler.TaskName.SaveAnimJsonDict, delay: 60 * 30);
             }
 
             this.colWidth = (int)(colBounds.Width * scale);

@@ -1326,8 +1326,10 @@ namespace SonOfRobin
                     {
                         Menu menu = new(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
-                        foreach (AnimData.PkgName pkgName in (AnimData.PkgName[])Enum.GetValues(typeof(AnimData.PkgName)))
+                        foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
                         {
+                            AnimData.LoadPackage(pkgName);
+
                             var textureByName = new Dictionary<object, object>();
 
                             foreach (var kvp in AnimData.frameListById)
