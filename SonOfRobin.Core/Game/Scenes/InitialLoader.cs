@@ -17,9 +17,6 @@ namespace SonOfRobin
             StartBgTasks,
             CreateMeshDefinitions,
             LoadAnimsJson,
-            LoadAnimsPlants,
-            LoadAnimsChars,
-            LoadAnimsMisc,
             SaveAnimsJson,
             BuildMappings,
             MakeItemsInfo,
@@ -50,9 +47,6 @@ namespace SonOfRobin
             { Step.StartBgTasks, "starting background tasks" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animations (json)" },
-            { Step.LoadAnimsPlants, "loading animations (plants)" },
-            { Step.LoadAnimsChars, "loading animations (characters)" },
-            { Step.LoadAnimsMisc, "loading animations (others)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.BuildMappings, "building input mappings" },
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
@@ -161,18 +155,6 @@ namespace SonOfRobin
 
                 case Step.LoadAnimsJson:
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    break;
-
-                case Step.LoadAnimsPlants:
-                    AnimData.CreateAnimsPlants();
-                    break;
-
-                case Step.LoadAnimsChars:
-                    AnimData.CreateAnimsCharacters();
-                    break;
-
-                case Step.LoadAnimsMisc:
-                    AnimData.CreateAnimsMisc2();
                     break;
 
                 case Step.SaveAnimsJson:

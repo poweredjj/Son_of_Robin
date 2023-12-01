@@ -441,18 +441,28 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.FlowersYellow1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
                     break;
 
                 case PkgName.FlowersYellow2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
                     break;
 
                 case PkgName.FlowersRed:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 64, y: 352, width: 32, height: 32));
                     break;
 
                 case PkgName.Rushes:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
                     break;
 
                 case PkgName.GrassDesert:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 160, y: 224, width: 24, height: 24));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 288, y: 160, width: 32, height: 32));
                     break;
 
                 case PkgName.GrassRegular:
@@ -468,21 +478,37 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.CoffeeShrub:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
                     break;
 
                 case PkgName.CarrotPlant:
+                    AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: 1, scale: 0.1f));
+                    AddFrameList(pkgName: pkgName, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: 1, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
                     break;
 
                 case PkgName.TomatoPlant:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: 1, scale: 0.1f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: 1, scale: 0.08f));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: 1, scale: 0.08f));
                     break;
 
                 case PkgName.MushroomPlant:
+                    AddFrameList(pkgName: pkgName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.6f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.8f));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 1.0f));
                     break;
 
                 case PkgName.Cactus:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 352, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 288, y: 320, width: 32, height: 64));
                     break;
 
                 case PkgName.PalmTree:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: 1, scale: 0.7f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 123, y: 326, width: 69, height: 80, crop: false));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 8, y: 145, width: 66, height: 102, crop: false));
+                    AddFrameList(pkgName: pkgName, animSize: 3, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 108, y: 145, width: 72, height: 102, crop: false));
                     break;
 
                 case PkgName.TreeBig:
@@ -494,9 +520,15 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.TreeSmall1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 192, y: 352, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 160, y: 320, width: 32, height: 64));
                     break;
 
                 case PkgName.TreeSmall2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 128, y: 192, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 160, y: 192, width: 32, height: 64));
                     break;
 
                 case PkgName.TreeStump:
@@ -665,21 +697,27 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.ChestWooden:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.ChestStone:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.ChestIron:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.ChestCrystal:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.ChestTreasureBlue:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.ChestTreasureRed:
+                    AddChestPackage(pkgName);
                     break;
 
                 case PkgName.WoodLogRegular:
@@ -892,6 +930,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Tomato:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
                     break;
 
                 case PkgName.Carrot:
@@ -1120,108 +1159,151 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.PlayerBoy:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
                     break;
 
                 case PkgName.PlayerGirl:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
                     break;
 
                 case PkgName.PlayerTestDemoness:
-                    break;
-
-                case PkgName.FoxBlack:
-                    break;
-
-                case PkgName.FoxBrown:
-                    break;
-
-                case PkgName.FoxChocolate:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
                     break;
 
                 case PkgName.FoxGinger:
-                    break;
-
-                case PkgName.FoxGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.FoxRed:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.FoxWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxChocolate:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.FoxYellow:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog1:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog2:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog3:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog4:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog5:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog6:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog7:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.Frog8:
-                    break;
-
-                case PkgName.RabbitBeige:
-                    break;
-
-                case PkgName.RabbitBlack:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.RabbitBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.RabbitDarkBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.RabbitGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
-                case PkgName.RabbitLightBrown:
+                case PkgName.RabbitBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.RabbitLightGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitBeige:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.RabbitWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitLightBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                     break;
 
                 case PkgName.BearBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearOrange:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearDarkBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearRed:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.BearBeige:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                     break;
 
                 case PkgName.TentModern:
@@ -1361,15 +1443,40 @@ namespace SonOfRobin
                     }
 
                 case PkgName.CampfireMedium:
-                    break;
+                    {
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: 1, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: 1, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: 1, duration: 6, crop: false)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
+                        frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
+                        AddFrameList(pkgName: pkgName, frameList);
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: frameList);
+
+                        break;
+                    }
 
                 case PkgName.BoatConstruction:
-                    break;
+                    {
+                        float depthPercent = 0.7f;
+                        float scale = 0.7f;
+
+                        for (int animSize = 0; animSize <= 5; animSize++)
+                        {
+                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
+                        }
+
+                        break;
+                    }
 
                 case PkgName.BoatCompleteStanding:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                     break;
 
                 case PkgName.BoatCompleteCruising:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                     break;
 
                 case PkgName.ShipRescue:
@@ -1493,7 +1600,24 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Explosion:
-                    break;
+                    {
+                        for (byte size = 0; size < 4; size++)
+                        {
+                            var frameList = new List<AnimFrame> { };
+
+                            for (int y = 0; y < 4; y++)
+                            {
+                                for (int x = 0; x < 4; x++)
+                                {
+                                    frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false, ignoreWhenCalculatingMaxSize: true));
+                                }
+                            }
+
+                            AddFrameList(pkgName: pkgName, animSize: size, animName: "default", frameList: frameList);
+                        }
+
+                        break;
+                    }
 
                 case PkgName.SkullAndBones:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "skull_and_bones", layer: 2, scale: 1f));
@@ -1698,7 +1822,16 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.CaveEntrance:
-                    break;
+                    {
+                        float scale = 2f;
+                        float depthPercent = 0.95f;
+
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
+                        AddFrameList(pkgName: pkgName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
+                        AddFrameList(pkgName: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
+
+                        break;
+                    }
 
                 case PkgName.CaveExit:
                     break;
@@ -1722,273 +1855,6 @@ namespace SonOfRobin
             frameListById[completeAnimID] = new List<AnimFrame>(frameList);
         }
 
-        // animation loading should be split in multiple methods, to avoid loading them all at once
-
-        public static void CreateAnimsPlants()
-        {
-            {
-                PkgName packageName = PkgName.GrassDesert;
-                AddFrameList(pkgName: packageName,
-                frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 160, y: 224, width: 24, height: 24));
-                AddFrameList(pkgName: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 288, y: 160, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.FlowersYellow1;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.MushroomPlant;
-                AddFrameList(pkgName: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.6f));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.8f));
-                AddFrameList(pkgName: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 1.0f));
-            }
-            {
-                PkgName packageName = PkgName.FlowersYellow2;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x",
-                    layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x",
-                    layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.FlowersRed;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 64, y: 352, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.Rushes;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.Cactus;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 352, y: 320, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 288, y: 320, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.PalmTree;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: 1, scale: 0.7f));
-                AddFrameList(pkgName: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 123, y: 326, width: 69, height: 80, crop: false));
-                AddFrameList(pkgName: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 8, y: 145, width: 66, height: 102, crop: false));
-                AddFrameList(pkgName: packageName, animSize: 3,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 108, y: 145, width: 72, height: 102, crop: false));
-            }
-            {
-                PkgName packageName = PkgName.TreeSmall1;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                AddFrameList(pkgName: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 192, y: 352, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 160, y: 320, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.TreeSmall2;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                AddFrameList(pkgName: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 128, y: 192, width: 32, height: 32));
-                AddFrameList(pkgName: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 160, y: 192, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.TomatoPlant;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: 1, scale: 0.1f));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: 1, scale: 0.08f));
-                AddFrameList(pkgName: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: 1, scale: 0.08f));
-            }
-            AddFrameList(pkgName: PkgName.Tomato, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
-            {
-                PkgName packageName = PkgName.CoffeeShrub;
-                AddFrameList(pkgName: packageName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-                AddFrameList(pkgName: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-            }
-            AddFrameList(pkgName: PkgName.CarrotPlant, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: 1, scale: 0.1f));
-            AddFrameList(pkgName: PkgName.CarrotPlant, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: 1, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-        }
-
-        public static void CreateAnimsCharacters()
-        {
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerBoy, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerGirl, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerTestDemoness, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
-
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
-            {
-                string atlasName = "characters/rabbits";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
-
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitDarkBrown, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitGray, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitLightGray, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBeige, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitWhite, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitLightBrown, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
-            {
-                string atlasName = "characters/fox";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
-
-                AddRPGMakerPackageV2(packageName: PkgName.FoxGinger, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxRed, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxWhite, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxGray, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxBlack, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxChocolate, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxBrown, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxYellow, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
-            {
-                string atlasName = "characters/bear";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
-
-                AddRPGMakerPackageV2(packageName: PkgName.BearBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearWhite, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearOrange, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearDarkBrown, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearGray, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearRed, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearBeige, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-            {
-                float scale = 1f;
-                byte animSize = 0;
-                string atlasName = "characters/frogs_small";
-                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-
-            foreach (var kvp in new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } })
-            {
-                string atlasName = "characters/frogs_big";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
-
-                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-        }
-
-        public static void CreateAnimsMisc2()
-        {
-            var chestDict = new Dictionary<PkgName, string> {
-                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
-                { PkgName.ChestStone, "chest_stone/chest_stone_" },
-                { PkgName.ChestIron, "chest_iron/chest_iron_" },
-                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
-                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
-                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
-            };
-
-            foreach (var kvp in chestDict)
-            {
-                PkgName packageName = kvp.Key;
-                string chestPath = kvp.Value;
-
-                float scale = 0.18f;
-                bool crop = false;
-                float depthPercent = 0.47f;
-                int duration = 3;
-
-                var openingFrameList = new List<AnimFrame>();
-                for (int i = 2; i <= 6; i++)
-                {
-                    openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
-                }
-                AddFrameList(pkgName: packageName, animName: "opening", frameList: openingFrameList);
-
-                var closingFrameList = new List<AnimFrame>();
-                for (int i = 5; i >= 1; i--)
-                {
-                    closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
-                }
-                AddFrameList(pkgName: packageName, animName: "closing", frameList: closingFrameList);
-
-                AddFrameList(pkgName: packageName, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
-                AddFrameList(pkgName: packageName, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
-            }
-
-            {
-                PkgName packageName = PkgName.CampfireMedium;
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: 1, duration: 6, crop: false),
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: 1, duration: 6, crop: false),
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: 1, duration: 6, crop: false)
-                };
-                AddFrameList(pkgName: packageName, animName: "on", frameList: frameList);
-                frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
-                AddFrameList(pkgName: packageName, frameList);
-                AddFrameList(pkgName: packageName, animName: "off", frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.CaveEntrance;
-
-                float scale = 2f;
-                float depthPercent = 0.95f;
-
-                AddFrameList(pkgName: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
-                AddFrameList(pkgName: packageName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
-
-                AddFrameList(pkgName: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
-            }
-            {
-                PkgName packageName = PkgName.Explosion;
-
-                for (byte size = 0; size < 4; size++)
-                {
-                    var frameList = new List<AnimFrame> { };
-
-                    for (int y = 0; y < 4; y++)
-                    {
-                        for (int x = 0; x < 4; x++)
-                        {
-                            frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false, ignoreWhenCalculatingMaxSize: true));
-                        }
-                    }
-
-                    AddFrameList(pkgName: packageName, animSize: size, animName: "default", frameList: frameList);
-                }
-            }
-
-            {
-                float depthPercent = 0.7f;
-                float scale = 0.7f;
-
-                for (int animSize = 0; animSize <= 5; animSize++)
-                {
-                    AddFrameList(pkgName: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
-                }
-
-                AddFrameList(pkgName: PkgName.BoatCompleteStanding, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
-
-                AddFrameList(pkgName: PkgName.BoatCompleteCruising, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
-            }
-        }
-
         public static List<AnimFrame> ConvertImageToFrameList(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             List<AnimFrame> frameList = new()
@@ -2007,7 +1873,43 @@ namespace SonOfRobin
             return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
-        public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
+        private static void AddChestPackage(PkgName pkgName)
+        {
+            var chestDict = new Dictionary<PkgName, string> {
+                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
+                { PkgName.ChestStone, "chest_stone/chest_stone_" },
+                { PkgName.ChestIron, "chest_iron/chest_iron_" },
+                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
+                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
+                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
+            };
+
+            string chestPath = chestDict[pkgName];
+
+            float scale = 0.18f;
+            bool crop = false;
+            float depthPercent = 0.47f;
+            int duration = 3;
+
+            var openingFrameList = new List<AnimFrame>();
+            for (int i = 2; i <= 6; i++)
+            {
+                openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+            }
+            AddFrameList(pkgName: pkgName, animName: "opening", frameList: openingFrameList);
+
+            var closingFrameList = new List<AnimFrame>();
+            for (int i = 5; i >= 1; i--)
+            {
+                closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+            }
+            AddFrameList(pkgName: pkgName, animName: "closing", frameList: closingFrameList);
+
+            AddFrameList(pkgName: pkgName, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+            AddFrameList(pkgName: pkgName, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+        }
+
+        public static void AddRPGMakerPackageV1(PkgName pkgName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 96;
             int offsetY = setNoY * 128;
@@ -2029,7 +1931,7 @@ namespace SonOfRobin
                      AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
-                AddFrameList(pkgName: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
             }
 
             // walking
@@ -2042,13 +1944,23 @@ namespace SonOfRobin
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: (width * 2) + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
-                AddFrameList(pkgName: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(pkgName: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
+            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddRPGMakerPackageV2(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
+        public static void AddRPGMakerPackageV2ForSizeDict(PkgName pkgName, string atlasName, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict)
+        {
+            foreach (var kvp in scaleForSizeDict)
+            {
+                byte animSize = kvp.Key;
+                float scale = kvp.Value;
+                AddRPGMakerPackageV2(pkgName: pkgName, atlasName: atlasName, setNoX: setNoX, setNoY: setNoY, animSize: animSize, scale: scale);
+            }
+        }
+
+        public static void AddRPGMakerPackageV2(PkgName pkgName, string atlasName, int setNoX, int setNoY, byte animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 144;
             int offsetY = setNoY * 192;
@@ -2070,7 +1982,7 @@ namespace SonOfRobin
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
-                AddFrameList(pkgName: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
             }
 
             // walking
@@ -2091,10 +2003,10 @@ namespace SonOfRobin
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
-                AddFrameList(pkgName: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(pkgName: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
+            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
         private static string JsonDataPath
