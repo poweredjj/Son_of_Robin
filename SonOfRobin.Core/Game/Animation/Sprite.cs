@@ -769,17 +769,20 @@ namespace SonOfRobin
         public void CharacterWalk(bool setEvenIfMissing = true)
         { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
 
+
+        private void LoadAnimPackage()
+        {
+            if (!this.animPackageNotLoaded) return;
+
+            // package loading must be invoked on main thread, otherwise it is very slow (reason unknown)
+            AnimData.LoadPackage(this.AnimPackage);
+            this.AssignFrame(checkForCollision: false);
+            this.animPackageNotLoaded = false;
+        }
+
         public void Draw(bool calculateSubmerge = true)
         {
             if (!this.boardPiece.exists) return;
-
-            if (this.animPackageNotLoaded)
-            {
-                // package loading must be invoked on main thread, otherwise it is very slow (reason unknown)
-                AnimData.LoadPackage(this.AnimPackage);
-                this.AssignFrame(checkForCollision: false);
-                this.animPackageNotLoaded = false;
-            }
 
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.GfxRect)) this.hasBeenDiscovered = true;
 
@@ -842,6 +845,8 @@ namespace SonOfRobin
 
         public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
         {
+            this.LoadAnimPackage();
+
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
             {
@@ -888,6 +893,7 @@ namespace SonOfRobin
                     // drawing with rotation, taking sway into account
 
                     Sprite fruitSprite = fruit.sprite;
+                    fruit.sprite.LoadAnimPackage();
 
                     Vector2 rotationOriginOverride = new Vector2(this.GfxRect.Left, this.GfxRect.Top) - new Vector2(fruitSprite.GfxRect.Left, fruitSprite.GfxRect.Top);
                     rotationOriginOverride += new Vector2((float)this.AnimFrame.gfxWidth * 0.5f, this.AnimFrame.gfxHeight);
@@ -905,6 +911,8 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
+            this.LoadAnimPackage();
+
             AnimFrame frameToDraw = this.AnimFrame.cropped ? this.AnimFrame : this.CroppedAnimFrame;
             frameToDraw.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
         }
@@ -925,6 +933,8 @@ namespace SonOfRobin
 
         public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
         {
+            shadowSprite.LoadAnimPackage();
+
             float distance = Vector2.Distance(lightPos, shadowSprite.position);
             AnimFrame frame = shadowSprite.AnimFrame;
 
