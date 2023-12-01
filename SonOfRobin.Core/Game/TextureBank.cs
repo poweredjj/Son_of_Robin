@@ -392,7 +392,7 @@ namespace SonOfRobin
         {
             if (!textureByNamePersistent.ContainsKey(fileName))
             {
-                MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
+                // MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
                 textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
             }
 
@@ -403,7 +403,7 @@ namespace SonOfRobin
         {
             if (!textureByNameTemporary.ContainsKey(fileName))
             {
-                MessageLog.Add(debugMessage: true, text: $"Loading texture (temporary): {fileName}");
+                // MessageLog.Add(debugMessage: true, text: $"Loading texture (temporary): {fileName}");
                 textureByNameTemporary[fileName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
             }
 
