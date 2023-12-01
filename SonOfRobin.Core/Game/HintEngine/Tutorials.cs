@@ -455,16 +455,11 @@ namespace SonOfRobin
             }
         }
 
-        public static void RefreshData()
-        {
-            CheckData();
-        }
-
-        private static void CheckData()
+        public static void CheckData()
         {
             foreach (Type type in allTypes)
             {
-                Tutorial tutorial = GetTutorial(type);
+                GetTutorial(type);
             }
         }
     }

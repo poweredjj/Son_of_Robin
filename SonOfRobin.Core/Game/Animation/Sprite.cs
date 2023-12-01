@@ -769,8 +769,7 @@ namespace SonOfRobin
         public void CharacterWalk(bool setEvenIfMissing = true)
         { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
 
-
-        private void LoadAnimPackage()
+        public void LoadAnimPackage()
         {
             if (!this.animPackageNotLoaded) return;
 

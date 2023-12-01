@@ -663,6 +663,7 @@ namespace SonOfRobin
 
                 if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
 
+                sprite.LoadAnimPackage();
                 sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
             }
 
