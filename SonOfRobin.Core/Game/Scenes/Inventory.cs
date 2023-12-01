@@ -352,7 +352,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[selectedPiece.sprite.AnimPackage].texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(selectedPiece.sprite.AnimPackage).texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -410,7 +410,7 @@ namespace SonOfRobin
             {
                 Seed seeds = (Seed)selectedPiece;
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: smallScale, color: new Color(208, 255, 199)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).Texture }, scale: smallScale, color: new Color(208, 255, 199)));
             }
 
             if (selectedPiece.GetType() == typeof(Projectile))

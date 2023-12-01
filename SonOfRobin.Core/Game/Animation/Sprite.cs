@@ -41,7 +41,7 @@ namespace SonOfRobin
         public float opacity;
         public OpacityFade opacityFade;
         public AnimFrame AnimFrame { get; private set; }
-        public AnimFrame CroppedAnimFrame { get { return AnimData.croppedFramesForPkgs[this.AnimPackage]; } }
+        public AnimFrame CroppedAnimFrame { get { return AnimData.GetCroppedFrameForPackage(this.AnimPackage); } }
         public Color color;
         private bool visible;
 
@@ -687,6 +687,8 @@ namespace SonOfRobin
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
+            AnimData.LoadPackage(this.AnimPackage);
+
             AnimFrame oldAnimFrame = this.AnimFrame;
 
             try
@@ -696,8 +698,8 @@ namespace SonOfRobin
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
-                MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.croppedFramesForPkgs[AnimData.PkgName.NoAnim];
+                // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
+                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;

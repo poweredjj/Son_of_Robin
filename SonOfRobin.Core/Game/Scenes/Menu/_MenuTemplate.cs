@@ -606,46 +606,46 @@ namespace SonOfRobin
                             imageList.Add(PieceInfo.GetTexture(Player.skillTextures[player.Skill]));
 
                             textLines.Add($"| Strength: {player.strength}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.AxeIron].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AxeIron).texture);
 
                             textLines.Add($"| Speed: {Math.Round(player.speed)}");
                             imageList.Add(TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal));
 
                             textLines.Add($"| HP: {Math.Round(player.HitPoints)} / {Math.Round(player.maxHitPoints)}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Heart].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).texture);
 
                             textLines.Add($"| Fatigue: {Math.Round(player.FatiguePercent * 100)}%");
                             imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Bed));
 
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Burger].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).texture);
 
                             textLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.BackpackMedium].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BackpackMedium).texture);
 
                             string toolbarText = $"| Toolbar size: {player.ToolbarWidth}";
                             if (player.ToolbarHeight > 1) toolbarText += $"x{player.ToolbarHeight}";
                             textLines.Add(toolbarText);
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.BeltSmall].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BeltSmall).texture);
 
                             textLines.Add($"| Crafting level: {player.CraftLevel}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).texture);
 
                             if (world.Player.ResourcefulCrafter)
                             {
                                 textLines.Add($"| Resourceful crafter |");
-                                imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
-                                imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                                imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).texture);
+                                imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture);
                             }
 
                             textLines.Add($"| Cooking level: {player.CookLevel}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MealStandard].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).texture);
 
                             textLines.Add($"| Brewing level: {player.BrewLevel}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture);
 
                             textLines.Add($"| Meat harvesting level: {player.HarvestLevel}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
@@ -699,16 +699,16 @@ namespace SonOfRobin
                             textLines.Add("Island info\n");
 
                             textLines.Add($"| Size: {islandLevel.width}x{islandLevel.height}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Map].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Map).texture);
 
                             textLines.Add($"| All Objects: {world.PieceCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Stone].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Stone).texture);
 
                             textLines.Add($"| Plants: {plantCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.GrassRegular].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.GrassRegular).texture);
 
                             textLines.Add($"| Animals: {animalCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.FoxGinger].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.FoxGinger).texture);
 
                             string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
                             textLines.Add($"Time played: {timePlayedString}");
@@ -733,16 +733,16 @@ namespace SonOfRobin
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("| General craft stats\n");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).texture);
 
                             textLines.Add($"|  Items crafted: {world.craftStats.CraftedPiecesTotal}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.AxeIron].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AxeIron).texture);
 
                             textLines.Add($"|  Ingredients used: {world.craftStats.UsedIngredientsTotal}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.WoodLogRegular].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WoodLogRegular).texture);
 
                             textLines.Add($"|  Ingredients saved: {world.craftStats.SmartCraftingReducedIngredientCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.ChestIron].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.ChestIron).texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
@@ -764,13 +764,13 @@ namespace SonOfRobin
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("| Cooking stats\n");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.CookingPot].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CookingPot).texture);
 
                             textLines.Add($"| Meals made: {world.cookStats.TotalCookCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MealStandard].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).texture);
 
                             textLines.Add($"\n| Ingredients used:");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture);
 
                             textLines.Add($"Unique types: {world.cookStats.IngredientNamesCount}");
                             textLines.Add($"Total: {world.cookStats.AllIngredientsCount}");
@@ -789,13 +789,13 @@ namespace SonOfRobin
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("| Potion brewing stats\n");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.AlchemyLabStandard].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AlchemyLabStandard).texture);
 
                             textLines.Add($"| Potions made: {world.brewStats.TotalCookCount}");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture);
 
                             textLines.Add($"\n| Ingredients used:");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.HerbsCyan].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.HerbsCyan).texture);
 
                             textLines.Add($"Unique types: {world.brewStats.IngredientNamesCount}");
                             textLines.Add($"Total: {world.brewStats.AllIngredientsCount}");
@@ -816,7 +816,7 @@ namespace SonOfRobin
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("| Meat harvesting stats");
-                            imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture);
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture);
 
                             textLines.Add("\nProcessed:");
                             foreach (var kvp in world.meatHarvestStats.HarvestedAnimalCountByName)
@@ -826,7 +826,7 @@ namespace SonOfRobin
                                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(animalName);
 
                                 textLines.Add($"|  x{harvestCount} {pieceInfo.readableName}");
-                                imageList.Add(pieceInfo.texture);
+                                imageList.Add(pieceInfo.Texture);
                             }
 
                             textLines.Add("\nObtained:");
@@ -842,7 +842,7 @@ namespace SonOfRobin
                                 string basePlusBonusText = obtainedBonusPieceCountByName.ContainsKey(animalName) ? $" ({harvestCount}+{bonusCount}) " : "";
 
                                 textLines.Add($"|  x{harvestCount + bonusCount}{basePlusBonusText} {pieceInfo.readableName}");
-                                imageList.Add(pieceInfo.texture);
+                                imageList.Add(pieceInfo.Texture);
                             }
 
                             textLines.Add($"\nTotal animals processed: {world.meatHarvestStats.TotalHarvestCount}");
@@ -901,7 +901,7 @@ namespace SonOfRobin
                                 taskName = Scheduler.TaskName.ShowTextWindow;
                                 saveExecuteHelper = new Dictionary<string, Object> {
                                     { "text", $"| This save version ({saveInfo.saveVersion}) is not compatible with current save version ({SaveHeaderManager.saveVersion})." },
-                                    { "imageList", new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture } },
+                                    { "imageList", new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BubbleExclamationRed).texture } },
                                     { "bgColor", new List<Byte> { 200, 0, 0 } },
                                     { "animate", false },
                                     };
@@ -1335,7 +1335,7 @@ namespace SonOfRobin
 
                             if (textureByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
                             else if (textureByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: textureByName, targetObj: preferences, propertyName: "neededForMenus");
-                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[pkgName].texture }, taskName: Scheduler.TaskName.Empty, playSound: false);
+                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(pkgName).texture }, taskName: Scheduler.TaskName.Empty, playSound: false);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -1366,7 +1366,7 @@ namespace SonOfRobin
             foreach (PieceTemplate.Name itemName in Preferences.startingItemNames)
             {
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(itemName);
-                startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.texture };
+                startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.Texture };
             }
 
             new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "the one item you would take to a deserted island", color: Color.White, scale: 1f) });

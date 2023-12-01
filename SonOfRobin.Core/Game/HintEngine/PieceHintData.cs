@@ -299,7 +299,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     message: "| I can start brewing\n| potions now!",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture },
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.PotionBrew}),
 
                 new PieceHint(
@@ -340,7 +340,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.CanBuildWorkshop,
                     message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
+                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).Texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.BuildWorkshop },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.WoodLogRegular },
                     piecesCraftedCount: new CountComparison[] {
@@ -382,7 +382,7 @@ namespace SonOfRobin
                     ignoreHintSetting: true,
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.RuinsWall, PieceTemplate.Name.RuinsColumn, PieceTemplate.Name.RuinsRubble, PieceTemplate.Name.RuinsDigSite },
                     message: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
-                    imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.RuinsWallHorizontal1].texture }),
+                    imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.RuinsWallHorizontal1).texture }),
 
                  new PieceHint(
                     type: PieceHint.Type.CineCave,
@@ -390,7 +390,7 @@ namespace SonOfRobin
                     ignoreHintSetting: true,
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CaveEntranceOutside },
                     message: "This looks like a | cave.\nI wonder what's inside?\nStill, it might be dangerous...",
-                    imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.CaveEntrance].texture },
+                    imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CaveEntrance).texture },
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.Caves }),
 
                  new PieceHint(
@@ -425,7 +425,7 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.SkullAndBones].texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).texture }, blockInputDefaultDuration: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)},
 
                     mapDiscoveredPercentage: 0.18f,
@@ -438,8 +438,8 @@ namespace SonOfRobin
                     showCineCurtains: true,
                     ignoreHintSetting: true,
                     messageList: new HintMessage[] {
-                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.PalmTree].texture }, blockInputDefaultDuration: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.croppedFramesForPkgs[AnimData.PkgName.BoatCompleteStanding].texture }, blockInputDefaultDuration: true)},
+                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BoatCompleteStanding).texture }, blockInputDefaultDuration: true)},
 
                     mapDiscoveredPercentage: 0.19f,
                     distanceWalkedKilometers: 23f,
@@ -496,7 +496,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
                     message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
-                    imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
+                    imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.ArrowExploding }),
 
@@ -527,7 +527,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.MakeOilNegative,
                     message: $"If I had an | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName},\nI could make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom this | {PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName}.",
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.Fat },
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 0 } }
                     ),
@@ -535,7 +535,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.MakeOilPositiveFat,
                     message: $"I could use my | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName}\nto make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom this | {PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName}.",
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.Fat },
                     piecesCraftedCount: new CountComparison[] {
                         new CountComparison(name: PieceTemplate.Name.AlchemyLabStandard, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) },
@@ -545,7 +545,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.MakeOilPositiveSeeds,
                     message: $"I could use my | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName}\nto make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom these | {PieceInfo.GetInfo(PieceTemplate.Name.SeedsGeneric).readableName}.",
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) },
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.SeedsGeneric },
                     piecesCraftedCount: new CountComparison[] {
                         new CountComparison(name: PieceTemplate.Name.AlchemyLabStandard, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) },

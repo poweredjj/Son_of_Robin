@@ -188,7 +188,7 @@ namespace SonOfRobin
 
                         if (count == 1) textLines.Add($"| {pieceInfo.readableName}");
                         else textLines.Add($"| {pieceInfo.readableName} x{count}");
-                        imageList.Add(pieceInfo.texture);
+                        imageList.Add(pieceInfo.Texture);
                     }
 
                     taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());

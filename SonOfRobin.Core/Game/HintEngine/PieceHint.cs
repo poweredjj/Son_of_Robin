@@ -228,7 +228,7 @@ namespace SonOfRobin
 
                     PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
                     unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
-                    imageList.Add(unlockedPieceInfo.texture);
+                    imageList.Add(unlockedPieceInfo.Texture);
                 }
 
                 messagesToDisplay.AddRange(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, imageList: imageList, startingSound: SoundData.Name.Notification1) });

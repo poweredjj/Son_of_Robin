@@ -198,7 +198,7 @@ namespace SonOfRobin
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
                 textLines.Add($"|  x{pieceCount}  {pieceInfo.readableName}");
-                imageList.Add(pieceInfo.texture);
+                imageList.Add(pieceInfo.Texture);
 
                 pieceCounter++;
                 if (pieceCounter >= entriesPerPage || pieceName == pieceNames.Last())

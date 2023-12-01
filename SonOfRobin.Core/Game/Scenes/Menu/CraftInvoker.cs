@@ -182,7 +182,7 @@ namespace SonOfRobin
             bool canBeCrafted = this.recipe.CheckIfStorageContainsAllIngredients(storageList);
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { PieceInfo.GetInfo(this.recipe.pieceToCreate).texture }, text:$"|  {pieceInfo.readableName}" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { PieceInfo.GetInfo(this.recipe.pieceToCreate).Texture }, text:$"|  {pieceInfo.readableName}" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
                 new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White, animate: true, charsPerFrame: 2)};
 
             if (pieceInfo.buffList != null)
@@ -268,7 +268,7 @@ namespace SonOfRobin
                 {
                     PieceInfo.Info missingPieceInfo = PieceInfo.GetInfo(kvp.Key);
                     ingredientsTextLines.Add($"|  {missingPieceInfo.readableName} x{kvp.Value}");
-                    missingIngredientsImages.Add(missingPieceInfo.texture);
+                    missingIngredientsImages.Add(missingPieceInfo.Texture);
                 }
 
                 entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 1.2f, imageAlignX: Helpers.AlignX.Center));
@@ -279,7 +279,7 @@ namespace SonOfRobin
 
             if (recipeLevelCurrent == recipeLevelMax)
             {
-                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
+                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Star).texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
             }
             else entryList.Add(new InfoWindow.TextEntry(text: $"Level {recipeLevelCurrent + 1}/{recipeLevelMax + 1}", color: Color.GreenYellow, scale: 1f, animate: true, charsPerFrame: 1));
 

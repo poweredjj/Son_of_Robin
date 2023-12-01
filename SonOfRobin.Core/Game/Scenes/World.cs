@@ -499,7 +499,7 @@ namespace SonOfRobin
 
             if (!this.demoMode)
             {
-                if (!saveDataActive) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                if (!saveDataActive && this.ActiveLevel.levelType == Level.LevelType.Island) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
                 else Craft.UnlockRecipesAddedInGameUpdate(world: this);
 
                 if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);

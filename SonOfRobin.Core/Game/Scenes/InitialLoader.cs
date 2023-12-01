@@ -19,8 +19,7 @@ namespace SonOfRobin
             LoadAnimsJson,
             LoadAnimsPlants,
             LoadAnimsChars,
-            LoadAnimsMisc1,
-            LoadAnimsMisc2,
+            LoadAnimsMisc,
             SaveAnimsJson,
             BuildMappings,
             MakeItemsInfo,
@@ -53,8 +52,7 @@ namespace SonOfRobin
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
             { Step.LoadAnimsChars, "loading animations (characters)" },
-            { Step.LoadAnimsMisc1, "loading animations (others 1)" },
-            { Step.LoadAnimsMisc2, "loading animations (others 2)" },
+            { Step.LoadAnimsMisc, "loading animations (others)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.BuildMappings, "building input mappings" },
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
@@ -173,11 +171,7 @@ namespace SonOfRobin
                     AnimData.CreateAnimsCharacters();
                     break;
 
-                case Step.LoadAnimsMisc1:
-                    AnimData.CreateAnimsMisc1();
-                    break;
-
-                case Step.LoadAnimsMisc2:
+                case Step.LoadAnimsMisc:
                     AnimData.CreateAnimsMisc2();
                     break;
 
@@ -194,9 +188,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.RemoveUnneededData:
-                    AnimData.DeleteUsedAtlases();
-                    AnimData.textureDict.Clear(); // not needed afterwards
-                    AnimData.jsonDict.Clear(); // not needed afterwards
+                    // AnimData.DeleteUsedAtlases();
                     break;
 
                 case Step.MakeCraftRecipes:
