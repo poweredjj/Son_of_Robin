@@ -406,6 +406,12 @@ namespace SonOfRobin
 
             if (this.saveGameData == null && this.PopulatingInProgress)
             {
+                foreach (PieceCreationData pieceCreationData in this.ActiveLevel.creationDataArrayRegular)
+                {
+                    // much faster, when executed on main thread (prevents from slowdown when populating)
+                    AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
+                }
+
                 if (this.demoMode)
                 {
                     CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
