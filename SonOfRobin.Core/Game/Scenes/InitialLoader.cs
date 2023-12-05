@@ -38,7 +38,8 @@ namespace SonOfRobin
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
-        private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
+        private static readonly Dictionary<Step, string> namesForSteps = new()
+        {
             { Step.Initial, "starting" },
             { Step.LoadFonts, "loading fonts" },
             { Step.LoadEffects, "loading effects" },
@@ -61,7 +62,7 @@ namespace SonOfRobin
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
-        private List<string> usedFunnyWordsList;
+        private readonly List<string> usedFunnyWordsList;
 
         private string FunnyActionName
         {
@@ -135,7 +136,6 @@ namespace SonOfRobin
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
                     AnimData.LoadPackage(AnimData.PkgName.Loading);
                     PieceHint.PopulateData();
-
                     break;
 
                 case Step.BuildMappings:
@@ -181,14 +181,12 @@ namespace SonOfRobin
                 case Step.OpenMainMenu:
                     Preferences.FrameSkip = Preferences.FrameSkip; // to apply valid FrameSkip value
 
-                    if (SonOfRobinGame.LicenceValid)
-                    {
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-                    }
+                    if (SonOfRobinGame.LicenceValid) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                     else
                     {
                         new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
                     }
+
                     Preferences.ShowFpsCounter = Preferences.ShowFpsCounter; // to display fps counter (if set)
                     break;
 
@@ -216,7 +214,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(Color.DarkBlue);
 
-            Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
+            Rectangle splashRect = new(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
             splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
 
             Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
@@ -237,8 +235,8 @@ namespace SonOfRobin
             int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
             int barPosY = textPosY + (int)(textSize.Y * 1.5);
 
-            Rectangle progressBarFullRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
-            Rectangle progressBarFilledRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarCurrentLength, height: progressBarFullRect.Height);
+            Rectangle progressBarFullRect = new(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
+            Rectangle progressBarFilledRect = new(x: barPosX, y: barPosY, width: progressBarCurrentLength, height: progressBarFullRect.Height);
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFilledRect, Color.White * 1f);
