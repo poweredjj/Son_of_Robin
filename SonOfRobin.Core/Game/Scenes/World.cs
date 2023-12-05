@@ -417,7 +417,10 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
-                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    if (this.backgroundTask == null)
+                    {
+                        this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    }
                     else
                     {
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;

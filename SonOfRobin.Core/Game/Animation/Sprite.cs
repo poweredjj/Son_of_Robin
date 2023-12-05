@@ -200,7 +200,7 @@ namespace SonOfRobin
         {
             this.position = Vector2.Zero; // needed for placement purposes
 
-            if (!randomPlacement && !ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();
+            if (randomPlacement && !ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();
 
             bool placedCorrectly;
 
@@ -702,7 +702,7 @@ namespace SonOfRobin
                 if (forceRewind || this.currentFrameIndex >= AnimData.frameArrayById[this.CompleteAnimID].Length) this.RewindAnim();
                 this.AnimFrame = AnimData.frameArrayById[this.CompleteAnimID][this.currentFrameIndex];
             }
-            catch (KeyNotFoundException) // placeholder frame if the animation was missing
+            catch (KeyNotFoundException)
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
                 this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
