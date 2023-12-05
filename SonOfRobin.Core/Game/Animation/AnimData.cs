@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -9,18 +11,19 @@ namespace SonOfRobin
     {
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
         public const float currentVersion = 1.000029f; // version number should be incremented when any existing asset is updated
+
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
 
-        public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
-        public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
-        private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
-        public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
+        public static readonly ConcurrentDictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
+        public static readonly ConcurrentDictionary<string, AnimFrame[]> frameArrayById = new();
+        private static readonly ConcurrentDictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
+        public static readonly ConcurrentDictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
-        public static readonly Dictionary<string, Texture2D> textureDict = new();
-        public static Dictionary<string, Object> jsonDict = new();
+        public static readonly ConcurrentDictionary<string, Texture2D> textureDict = new();
+        public static ConcurrentDictionary<string, Object> jsonDict = new();
 
         public enum PkgName : ushort
         {
@@ -395,10 +398,10 @@ namespace SonOfRobin
 
         public static void LoadAllPackages()
         {
-            foreach (PkgName pkgName in allPkgNames)
+            Parallel.ForEach(allPkgNames, SonOfRobinGame.defaultParallelOptions, pkgName =>
             {
                 LoadPackage(pkgName);
-            }
+            });
             SaveJsonDict();
         }
 
@@ -2154,14 +2157,14 @@ namespace SonOfRobin
         {
             // one big json is used to speed up loading / saving data
 
-            Dictionary<string, Object> loadedJsonDict;
+            ConcurrentDictionary<string, Object> loadedJsonDict;
 
             try
             {
                 var loadedJson = FileReaderWriter.Load(path: JsonDataPath);
                 if (loadedJson == null) return false;
 
-                loadedJsonDict = (Dictionary<string, Object>)loadedJson;
+                loadedJsonDict = (ConcurrentDictionary<string, Object>)loadedJson;
             }
             catch (InvalidCastException)
             { return false; }

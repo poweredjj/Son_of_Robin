@@ -406,11 +406,11 @@ namespace SonOfRobin
 
             if (this.saveGameData == null && this.PopulatingInProgress)
             {
-                foreach (PieceCreationData pieceCreationData in this.ActiveLevel.creationDataArrayRegular)
+                Parallel.ForEach(this.ActiveLevel.creationDataArrayRegular, SonOfRobinGame.defaultParallelOptions, pieceCreationData =>
                 {
                     // much faster, when executed on main thread (prevents from slowdown when populating)
                     AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                }
+                });
 
                 if (this.demoMode)
                 {
@@ -917,18 +917,16 @@ namespace SonOfRobin
                 return;
             }
 
-            bool animPkgsLoaded = false;
-            while (true)
+            if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
             {
-                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
+                Parallel.ForEach(this.ActiveLevel.spritesWithAnimPackagesToLoad, SonOfRobinGame.defaultParallelOptions, sprite =>
                 {
-                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
                     sprite.LoadPackageAndAssignFrame();
-                    animPkgsLoaded = true;
-                }
-                else break;
+                });
+
+                this.ActiveLevel.spritesWithAnimPackagesToLoad.Clear();
+                AnimData.SaveJsonDict();
             }
-            if (animPkgsLoaded) AnimData.SaveJsonDict();
 
             this.ProcessInput();
             this.UpdateViewParams();

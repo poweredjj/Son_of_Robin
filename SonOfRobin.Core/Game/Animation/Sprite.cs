@@ -706,7 +706,7 @@ namespace SonOfRobin
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
                 this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
-                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
+                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Add(this);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
