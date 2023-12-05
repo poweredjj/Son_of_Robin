@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -13,26 +12,26 @@ namespace SonOfRobin
         public enum Step : byte
         {
             Initial,
-            MobileWait,
-            StartBgTasks,
+            LoadFonts,
+            LoadEffects,
+            DeleteObsoleteTemplates,
             CreateMeshDefinitions,
             LoadAnimsJson,
             BuildMappings,
             MakeItemsInfo,
             MakeCraftRecipes,
             CreateScenes,
-            WaitForBackgroundTasksToFinish,
             MakeDemoWorld,
             SetControlTips,
             OpenMainMenu,
         }
 
-        private static readonly List<string> firstWordList = new List<string>
+        private static readonly string[] firstWordArray = new string[]
         {
             "counting", "placing", "brushing", "sewing", "fixing", "swabbing", "dodging", "taming", "battling", "training", "catching", "solving", "removing", "inserting", "mourning", "burying", "tickling", "scanning", "chasing", "rebuilding", "digitizing", "enumerating", "downloading", "transmitting", "placing", "reading", "indexing", "herding", "checking", "migrating", "resolving", "binding", "initializing", "creating", "making", "preparing", "opening", "closing", "conquering", "moving", "inviting", "importing", "serializing", "polishing", "enumerating", "decompressing", "expanding", "deconstructing", "building", "naming"
         };
 
-        private static readonly List<string> secondWordList = new List<string>
+        private static readonly string[] secondWordArray = new string[]
         {
             "foxes", "holes", "pirate ships", "goat horns", "tigers", "rabbits", "puzzles", "pebbles", "healthy meals", "drops of water", "grass blades", "skeletons", "crabs", "seagulls", "mermaids", "goats", "lambs", "treasure chests", "bananas", "apples", "parrots", "seashells", "polygons", "pixels", "waves", "monkeys", "apes", "treasures", "coconuts", "barrels of rum"
         };
@@ -41,12 +40,12 @@ namespace SonOfRobin
 
         private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
-            { Step.MobileWait, "adding mobile waiting time" },
-            { Step.StartBgTasks, "starting background tasks" },
+            { Step.LoadFonts, "loading fonts" },
+            { Step.LoadEffects, "loading effects" },
+            { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animation data" },
             { Step.BuildMappings, "building input mappings" },
-            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
@@ -56,14 +55,9 @@ namespace SonOfRobin
         };
 
         private readonly DateTime startTime;
-        private Task backgroundTask;
         private Step currentStep;
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
-        private int mobileWaitingTimes;
-
-        private bool TimeoutReached
-        { get { return DateTime.Now - this.startTime > TimeSpan.FromSeconds(15); } }
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -77,14 +71,14 @@ namespace SonOfRobin
 
                 this.lastFunnyActionNameCreated = DateTime.Now;
 
-                var tempFirstWordList = firstWordList.Where(word => !usedFunnyWordsList.Contains(word)).ToList();
-                var tempSecondWordList = secondWordList.Where(word => !usedFunnyWordsList.Contains(word)).ToList();
+                var tempFirstWordList = firstWordArray.Where(word => !usedFunnyWordsList.Contains(word)).ToArray();
+                var tempSecondWordList = secondWordArray.Where(word => !usedFunnyWordsList.Contains(word)).ToArray();
 
-                if (tempFirstWordList.Count == 0) tempFirstWordList = firstWordList;
-                if (tempSecondWordList.Count == 0) tempSecondWordList = secondWordList;
+                if (tempFirstWordList.Length == 0) tempFirstWordList = firstWordArray;
+                if (tempSecondWordList.Length == 0) tempSecondWordList = secondWordArray;
 
-                string firstWord = tempFirstWordList[SonOfRobinGame.random.Next(tempFirstWordList.Count)];
-                string secondWord = tempSecondWordList[SonOfRobinGame.random.Next(tempSecondWordList.Count)];
+                string firstWord = tempFirstWordList[SonOfRobinGame.random.Next(tempFirstWordList.Length)];
+                string secondWord = tempSecondWordList[SonOfRobinGame.random.Next(tempSecondWordList.Length)];
 
                 this.usedFunnyWordsList.Add(firstWord);
                 this.usedFunnyWordsList.Add(secondWord);
@@ -106,16 +100,8 @@ namespace SonOfRobin
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
-            this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
-        }
-
-        private void ProcessBackgroundTasks()
-        {
-            SonOfRobinGame.LoadFonts();
-            SonOfRobinGame.LoadEffects();
-            GridTemplate.DeleteObsolete();
         }
 
         public override void Update()
@@ -129,18 +115,16 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateControlTips();
                     break;
 
-                case Step.MobileWait:
-                    this.mobileWaitingTimes--;
-                    if (this.mobileWaitingTimes > 0) currentStep--;
+                case Step.LoadFonts:
+                    SonOfRobinGame.LoadFonts();
                     break;
 
-                case Step.StartBgTasks:
-                    if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
-                    {
-                        this.ProcessBackgroundTasks();
-                    }
-                    else this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
+                case Step.LoadEffects:
+                    SonOfRobinGame.LoadEffects();
+                    break;
 
+                case Step.DeleteObsoleteTemplates:
+                    GridTemplate.DeleteObsolete();
                     break;
 
                 case Step.CreateMeshDefinitions:
@@ -171,24 +155,6 @@ namespace SonOfRobin
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
-
-                case Step.WaitForBackgroundTasksToFinish:
-                    {
-                        bool tasksCompleted = false;
-
-                        if (this.backgroundTask == null || (this.backgroundTask != null && this.backgroundTask.IsCompleted)) tasksCompleted = true;
-                        else if (this.backgroundTask.IsFaulted || this.TimeoutReached)
-                        {
-                            SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
-
-                            this.ProcessBackgroundTasks();
-                            tasksCompleted = true;
-                        }
-
-                        if (!tasksCompleted) currentStep--;
-
-                        break;
-                    }
 
                 case Step.MakeDemoWorld:
                     if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
