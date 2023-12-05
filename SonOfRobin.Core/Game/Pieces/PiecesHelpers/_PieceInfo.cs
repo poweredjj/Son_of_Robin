@@ -1,15 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
     public class PieceInfo
     {
-        private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info>();
-        public static readonly Dictionary<Type, List<PieceTemplate.Name>> namesForType = new Dictionary<Type, List<PieceTemplate.Name>>();
+        private static readonly Dictionary<PieceTemplate.Name, Info> info = new();
+        public static readonly Dictionary<Type, List<PieceTemplate.Name>> namesForType = new();
         public static bool HasBeenInitialized { get; private set; } = false;
 
         public class Info
@@ -25,8 +27,7 @@ namespace SonOfRobin
             public bool isCarnivorous;
             public readonly List<Buff> buffList;
             public readonly AnimData.PkgName animPkgName;
-            public AnimFrame CroppedFrame
-            { get { return AnimData.GetCroppedFrameForPackage(this.animPkgName); } }
+            public AnimFrame CroppedFrame { get { return AnimData.GetCroppedFrameForPackage(this.animPkgName); } }
             public Texture2D Texture { get { return this.CroppedFrame.texture; } }
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
@@ -3235,10 +3236,16 @@ namespace SonOfRobin
         {
             // creates one instance of every piece type - to get required info out of it
 
-            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+            ConcurrentDictionary<PieceTemplate.Name, Info> infoByNameConcurrentDict = new();
+            Parallel.ForEach(PieceTemplate.allNames, SonOfRobinGame.defaultParallelOptions, name =>
             {
                 BoardPiece piece = PieceTemplate.CreatePiece(templateName: name, world: null);
-                info[name] = new Info(piece: piece);
+                infoByNameConcurrentDict[name] = new Info(piece: piece);
+            });
+
+            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+            {
+                info[name] = infoByNameConcurrentDict[name];
             }
 
             // getting isEatenBy data

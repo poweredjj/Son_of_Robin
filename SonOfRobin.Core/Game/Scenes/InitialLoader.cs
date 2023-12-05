@@ -109,6 +109,8 @@ namespace SonOfRobin
         {
             bool finish = false;
 
+            DateTime stageStartTime = DateTime.Now;
+
             switch (this.currentStep)
             {
                 case Step.Initial:
@@ -195,6 +197,12 @@ namespace SonOfRobin
 
                     finish = true;
                     break;
+            }
+
+            if (!finish)
+            {
+                TimeSpan stageDuration = DateTime.Now - stageStartTime;
+                MessageLog.Add(debugMessage: true, text: $"{this.currentStep} - time: {stageDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
             }
 
             this.currentStep++;
