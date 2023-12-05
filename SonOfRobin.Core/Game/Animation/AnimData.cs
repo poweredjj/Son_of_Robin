@@ -405,9 +405,9 @@ namespace SonOfRobin
             SaveJsonDict();
         }
 
-        public static void LoadPackage(PkgName pkgName)
+        public static bool LoadPackage(PkgName pkgName)
         {
-            if (LoadedPkgs.Contains(pkgName)) return;
+            if (LoadedPkgs.Contains(pkgName)) return false;
 
             MessageLog.Add(debugMessage: true, text: $"Loading anim package: {pkgName}");
 
@@ -1982,6 +1982,8 @@ namespace SonOfRobin
             }
 
             LoadedPkgs.Add(pkgName);
+
+            return true;
         }
 
         public static void AddFrameList(PkgName pkgName, List<AnimFrame> frameList, int animSize = 0, string animName = "default")

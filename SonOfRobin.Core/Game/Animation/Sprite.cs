@@ -681,10 +681,11 @@ namespace SonOfRobin
             }
         }
 
-        public void LoadPackageAndAssignFrame()
+        public bool LoadPackageAndAssignFrame()
         {
-            AnimData.LoadPackage(this.AnimPackage);
+            bool packageLoaded = AnimData.LoadPackage(this.AnimPackage);
             this.AssignFrame(checkForCollision: false);
+            return packageLoaded;
         }
 
         public void AssignFrameForce(AnimFrame animFrame)
@@ -706,7 +707,7 @@ namespace SonOfRobin
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
                 this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
-                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Add(this);
+                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
@@ -917,16 +918,18 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
+            bool anyPackageLoaded = false;
+            while (true)
             {
-                Parallel.ForEach(this.ActiveLevel.spritesWithAnimPackagesToLoad, SonOfRobinGame.defaultParallelOptions, sprite =>
+                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
                 {
-                    sprite.LoadPackageAndAssignFrame();
-                });
-
-                this.ActiveLevel.spritesWithAnimPackagesToLoad.Clear();
-                AnimData.SaveJsonDict();
+                    // parallel should not be used here, because it could crash (concurrent access to cell HashSet)
+                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
+                    anyPackageLoaded = sprite.LoadPackageAndAssignFrame() || anyPackageLoaded;
+                }
+                else break;
             }
+            if (anyPackageLoaded) AnimData.SaveJsonDict();
 
             this.ProcessInput();
             this.UpdateViewParams();

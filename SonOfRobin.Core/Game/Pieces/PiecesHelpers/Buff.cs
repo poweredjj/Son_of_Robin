@@ -233,7 +233,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.HP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffHPMinus),
                 BuffEngine.BuffType.MaxHP => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPPlus) : TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPMinus),
                 BuffEngine.BuffType.MaxFatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
-                BuffEngine.BuffType.EnableMap => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Map).texture,
+                BuffEngine.BuffType.EnableMap => TextureBank.GetTexture(TextureBank.TextureName.Map),
                 BuffEngine.BuffType.RegenPoison => this.isPositive ? TextureBank.GetTexture(TextureBank.TextureName.BuffRegen) : TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),
                 BuffEngine.BuffType.Haste => TextureBank.GetTexture(TextureBank.TextureName.BuffHaste),
                 BuffEngine.BuffType.Fatigue => TextureBank.GetTexture(TextureBank.TextureName.Bed),
@@ -249,7 +249,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.Wet => TextureBank.GetTexture(TextureBank.TextureName.BuffWet),
                 BuffEngine.BuffType.HeatLevelLocked => null,
                 BuffEngine.BuffType.FastMountainWalking => TextureBank.GetTexture(TextureBank.TextureName.BuffMountainWalking),
-                BuffEngine.BuffType.CanSeeThroughFog => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WeatherFog1).texture,
+                BuffEngine.BuffType.CanSeeThroughFog => TextureBank.GetTexture(TextureBank.TextureName.FogCloud),
                 BuffEngine.BuffType.RemovePoison => TextureBank.GetTexture(TextureBank.TextureName.BuffPoisonRemove),
                 _ => throw new ArgumentException($"Unsupported buff type - {this.type}."),
             };
