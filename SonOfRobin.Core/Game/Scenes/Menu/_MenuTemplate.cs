@@ -1175,6 +1175,15 @@ namespace SonOfRobin
                         };
                         new Invoker(menu: menu, name: "load all anims", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllAnimsDlgt);
 
+                        Scheduler.ExecutionDelegate checkAllPieceHintsDlgt = () =>
+                        {
+                            foreach (PieceHint.Type type in PieceHint.allTypes)
+                            {
+                                PieceHintData.GetMessageList(type);
+                            }
+                        };
+                        new Invoker(menu: menu, name: "check all PieceHints", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: checkAllPieceHintsDlgt);
+
                         Scheduler.ExecutionDelegate checkAllTutorialsDlgt = () => { Tutorials.CheckData(); };
                         new Invoker(menu: menu, name: "check all tutorials", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: checkAllTutorialsDlgt);
 

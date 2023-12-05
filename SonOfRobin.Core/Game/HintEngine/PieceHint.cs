@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public struct PieceHint
+    public readonly struct PieceHint
     {
         public enum Type : byte
         {
@@ -99,7 +99,6 @@ namespace SonOfRobin
 
         public readonly Type type;
         private readonly Type[] alsoDisables;
-        private readonly HintMessage[] messageList;
         private readonly HashSet<PieceTemplate.Name> fieldPiecesNearby;
         private readonly Tutorials.Type[] tutorialsToActivate;
         private readonly HintEngine.Type generalHintToActivate;
@@ -124,7 +123,7 @@ namespace SonOfRobin
         private readonly bool ignoreHintSetting;
         private readonly bool showCineCurtains;
 
-        public PieceHint(Type type, HashSet<PieceTemplate.Name> fieldPiecesNearby = null, HashSet<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, PieceTemplate.Name[] playerEquipmentDoesNotContainThesePieces = null, PieceTemplate.Name[] playerDoesNotOwnAnyOfThesePieces = null, PieceTemplate.Name[] playerOwnsAllOfThesePieces = null, Type[] alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, HintMessage[] messageList = null, Tutorials.Type[] tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, PieceTemplate.Name[] recipesToUnlock = null, HashSet<IslandClock.PartOfDay> partsOfDay = null, CountComparison[] piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, HintEngine.Type[] shownGeneralHints = null, HashSet<Type> shownPieceHints = null, Tutorials.Type[] shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false, bool showCineCurtains = false)
+        public PieceHint(Type type, HashSet<PieceTemplate.Name> fieldPiecesNearby = null, HashSet<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, PieceTemplate.Name[] playerEquipmentDoesNotContainThesePieces = null, PieceTemplate.Name[] playerDoesNotOwnAnyOfThesePieces = null, PieceTemplate.Name[] playerOwnsAllOfThesePieces = null, Type[] alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, Tutorials.Type[] tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, PieceTemplate.Name[] recipesToUnlock = null, HashSet<IslandClock.PartOfDay> partsOfDay = null, CountComparison[] piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, HintEngine.Type[] shownGeneralHints = null, HashSet<Type> shownPieceHints = null, Tutorials.Type[] shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false, bool showCineCurtains = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new Type[] { } : alsoDisables;
@@ -153,8 +152,6 @@ namespace SonOfRobin
 
             if (this.fieldOnly && this.menuOnly) throw new ArgumentException("fieldOnly and menuOnly cannot both be active.");
 
-            this.messageList = messageList;
-            if (message != null) this.messageList = new HintMessage[] { new HintMessage(text: message, imageList: imageList, blockInputDefaultDuration: true) };
             this.tutorialsToActivate = tutorialsToActivate;
             this.generalHintToActivate = generalHintToActivate;
             this.recipesToUnlock = recipesToUnlock;
@@ -163,7 +160,7 @@ namespace SonOfRobin
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
                 if (this.tutorialsToActivate != null) throw new ArgumentException("General hint and tutorial cannot both be active.");
-                if (this.messageList?.Length > 0) throw new ArgumentException("General hint and message list cannot both be active.");
+                if (PieceHintData.GetMessageList(this.type).Count > 0) throw new ArgumentException("General hint and message list cannot both be active.");
             }
         }
 
@@ -188,7 +185,7 @@ namespace SonOfRobin
             return nearbyPieces;
         }
 
-        private readonly List<HintMessage> GetTutorials(HashSet<Tutorials.Type> shownTutorials)
+        private List<HintMessage> GetTutorials(HashSet<Tutorials.Type> shownTutorials)
         {
             var messageList = new List<HintMessage> { };
             if (this.tutorialsToActivate == null || !Preferences.showHints) return messageList;
@@ -215,7 +212,7 @@ namespace SonOfRobin
                 return;
             }
 
-            var messagesToDisplay = this.messageList.ToList();
+            var messagesToDisplay = PieceHintData.GetMessageList(this.type);
 
             if (this.recipesToUnlock != null)
             {
@@ -413,7 +410,7 @@ namespace SonOfRobin
             return true;
         }
 
-        private readonly BoardPiece GetFirstCorrectFieldPieceNearby(Player player)
+        private BoardPiece GetFirstCorrectFieldPieceNearby(Player player)
         {
             foreach (BoardPiece piece in GetNearbyPieces(player))
             {
