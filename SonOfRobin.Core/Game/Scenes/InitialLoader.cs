@@ -202,7 +202,7 @@ namespace SonOfRobin
             if (!finish)
             {
                 TimeSpan stageDuration = DateTime.Now - stageStartTime;
-                MessageLog.Add(debugMessage: true, text: $"{this.currentStep} - time: {stageDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
+                MessageLog.Add(debugMessage: true, text: $"Initial loader, stage '{this.currentStep}' - time: {stageDuration:hh\\:mm\\:ss\\.fff}");
             }
 
             this.currentStep++;
@@ -210,7 +210,7 @@ namespace SonOfRobin
             if (finish)
             {
                 TimeSpan loadingDuration = DateTime.Now - this.startTime;
-                MessageLog.Add(debugMessage: true, text: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+                MessageLog.Add(debugMessage: true, text: $"Initial loader, all stages - time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 
                 this.Remove();
             }
