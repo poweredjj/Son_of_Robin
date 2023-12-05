@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000027f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000028f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -23,6 +23,7 @@ namespace SonOfRobin
         public enum PkgName : ushort
         {
             NoAnim = 0,
+            Loading = 201,
             Empty = 1,
 
             WhiteSpotLayerMinus1 = 2,
@@ -387,7 +388,6 @@ namespace SonOfRobin
 
             // obsolete below (kept for compatibility with old saves)
 
-            BackpackMediumOutlineObsolete = 201,
             StarObsolete = 271,
         }
 
@@ -413,7 +413,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.NoAnim:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "no_anim", layer: 1, x: 0, y: 0, width: 0, height: 0));
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "no_anim", layer: 2));
+                    break;
+
+                case PkgName.Loading:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "loading", layer: 2));
                     break;
 
                 case PkgName.WhiteSpotLayerMinus1:
@@ -1962,10 +1966,6 @@ namespace SonOfRobin
 
                 case PkgName.CaveExit:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
-                    break;
-
-                case PkgName.BackpackMediumOutlineObsolete:
-                    // TODO remove - kept for compatibility with old saves
                     break;
 
                 case PkgName.StarObsolete:

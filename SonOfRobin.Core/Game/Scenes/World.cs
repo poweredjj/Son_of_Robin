@@ -583,7 +583,7 @@ namespace SonOfRobin
 
                     var spriteData = (Dictionary<string, Object>)pieceData["base_sprite"];
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((int)(Int64)spriteData["posX"], (int)(Int64)spriteData["posY"]), templateName: templateName, ignoreCollisions: true, id: (int)(Int64)pieceData["base_id"]);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((int)(Int64)spriteData["posX"], (int)(Int64)spriteData["posY"]), templateName: templateName, ignoreCollisions: true, precisePlacement: true, id: (int)(Int64)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
@@ -910,17 +910,17 @@ namespace SonOfRobin
 
             bool animPkgsLoaded = false;
             while (true)
-            {               
+            {
                 if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
                 {
                     Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
                     sprite.LoadPackageAndAssignFrame();
                     animPkgsLoaded = true;
                 }
-                else break;             
+                else break;
             }
             if (animPkgsLoaded) AnimData.SaveJsonDict();
-            
+
             this.ProcessInput();
             this.UpdateViewParams();
             MeshDefinition.UpdateAllDefs();

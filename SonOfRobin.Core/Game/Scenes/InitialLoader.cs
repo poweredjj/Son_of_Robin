@@ -139,10 +139,8 @@ namespace SonOfRobin
                     {
                         this.ProcessBackgroundTasks();
                     }
-                    else
-                    {
-                        this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
-                    }
+                    else this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
+
                     break;
 
                 case Step.CreateMeshDefinitions:
@@ -150,11 +148,9 @@ namespace SonOfRobin
                     break;
 
                 case Step.LoadAnimsJson:
-                    if (!AnimData.LoadJsonDict())
-                    {
-                        AnimData.PurgeDiskCache();
-                        AnimData.LoadAllPackages();
-                    }
+                    if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
+                    AnimData.LoadPackage(AnimData.PkgName.Loading);
+
                     break;
 
                 case Step.BuildMappings:

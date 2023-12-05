@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +74,6 @@ namespace SonOfRobin
             this.lastOrientationChangeFrame = 0;
             this.OrientationAngle = 0f;
             this.AnimPackage = animPackage;
-            if (!AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
             this.AnimSize = animSize;
             this.AnimName = animName;
             this.color = Color.White;
@@ -202,7 +200,7 @@ namespace SonOfRobin
         {
             this.position = Vector2.Zero; // needed for placement purposes
 
-            if (!ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();        
+            if (!randomPlacement && !ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();
 
             bool placedCorrectly;
 
@@ -707,7 +705,8 @@ namespace SonOfRobin
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim);
+                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
+                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
