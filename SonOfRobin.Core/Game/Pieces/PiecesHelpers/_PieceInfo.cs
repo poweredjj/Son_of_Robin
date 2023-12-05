@@ -3235,17 +3235,11 @@ namespace SonOfRobin
         public static void CreateAllInfo()
         {
             // creates one instance of every piece type - to get required info out of it
-
-            ConcurrentDictionary<PieceTemplate.Name, Info> infoByNameConcurrentDict = new();
-            Parallel.ForEach(PieceTemplate.allNames, SonOfRobinGame.defaultParallelOptions, name =>
             {
-                BoardPiece piece = PieceTemplate.CreatePiece(templateName: name, world: null);
-                infoByNameConcurrentDict[name] = new Info(piece: piece);
-            });
-
-            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
-            {
-                info[name] = infoByNameConcurrentDict[name];
+                foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                {
+                    info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
+                }
             }
 
             // getting isEatenBy data
