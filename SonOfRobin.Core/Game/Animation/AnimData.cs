@@ -7,11 +7,14 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000026f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000028f; // version number should be incremented when any existing asset is updated
+
+        public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
+        public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
-        public static readonly Dictionary<string, List<AnimFrame>> frameListById = new();
-        public static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
+        public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
+        private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
         public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
@@ -20,6 +23,7 @@ namespace SonOfRobin
         public enum PkgName : ushort
         {
             NoAnim = 0,
+            Loading = 201,
             Empty = 1,
 
             WhiteSpotLayerMinus1 = 2,
@@ -268,8 +272,6 @@ namespace SonOfRobin
             TentMedium = 199,
             TentBig = 200,
 
-            BackpackMediumOutline = 201,
-
             BackpackSmall = 202,
             BackpackMedium = 203,
             BackpackBig = 204,
@@ -349,7 +351,6 @@ namespace SonOfRobin
             Flame = 268,
             Upgrade = 269,
             WaterDrop = 270,
-            Star = 271,
             Zzz = 272,
             Heart = 273,
             Hammer = 274,
@@ -386,809 +387,1608 @@ namespace SonOfRobin
             CaveExit = 300,
 
             // obsolete below (kept for compatibility with old saves)
+
+            StarObsolete = 271,
         }
 
-        public static void AddFrameList(PkgName animPackage, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
+        public static void LoadAllPackages()
         {
-            if (!animSizesForPkgs.ContainsKey(animPackage) || animSizesForPkgs[animPackage] < animSize)
+            foreach (PkgName pkgName in allPkgNames)
             {
-                croppedFramesForPkgs[animPackage] = frameList[0].GetCroppedFrameCopy();
-                animSizesForPkgs[animPackage] = animSize;
+                LoadPackage(pkgName);
             }
-
-            string completeAnimID = $"{animPackage}-{animSize}-{animName}";
-            frameListById[completeAnimID] = new List<AnimFrame>(frameList);
+            SaveJsonDict();
         }
 
-        // animation loading should be split in multiple methods, to avoid loading them all at once
-
-        public static void CreateAnimsPlants()
+        public static void LoadPackage(PkgName pkgName)
         {
-            {
-                PkgName packageName = PkgName.GrassRegular;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 32, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "grass_regular_x3", layer: 1));
-            }
-            {
-                PkgName packageName = PkgName.GrassDesert;
-                AddFrameList(animPackage: packageName,
-                frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 160, y: 224, width: 24, height: 24));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "flowers", layer: 0, x: 288, y: 160, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.FlowersYellow1;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 352, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.MushroomPlant;
-                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.6f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 0.8f));
-                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: 1, scale: 1.0f));
-            }
-            {
-                PkgName packageName = PkgName.FlowersYellow2;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x",
-                    layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x",
-                    layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.FlowersRed;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 64, y: 352, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.FlowersWhite;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 32, y: 352, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.Rushes;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
-            }
-            {
-                PkgName packageName = PkgName.Cactus;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 352, y: 320, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: 1, x: 288, y: 320, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.PalmTree;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: 1, scale: 0.7f));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 123, y: 326, width: 69, height: 80, crop: false));
-                AddFrameList(animPackage: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 8, y: 145, width: 66, height: 102, crop: false));
-                AddFrameList(animPackage: packageName, animSize: 3,
-                frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: 1, x: 108, y: 145, width: 72, height: 102, crop: false));
-            }
-            {
-                PkgName packageName = PkgName.TreeSmall1;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 192, y: 352, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 160, y: 320, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.TreeSmall2;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: 1, scale: 0.5f));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 128, y: 192, width: 32, height: 32));
-                AddFrameList(animPackage: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "tileb", layer: 1, x: 160, y: 192, width: 32, height: 64));
-            }
-            {
-                PkgName packageName = PkgName.TreeBig;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "sapling_tall", layer: 1, scale: 0.5f));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 199, y: 382, width: 47, height: 66));
-                AddFrameList(animPackage: packageName, animSize: 2,
-                frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 0, y: 0, width: 63, height: 97));
-            }
-            {
-                PkgName packageName = PkgName.TomatoPlant;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: 1, scale: 0.1f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: 1, scale: 0.08f));
-                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: 1, scale: 0.08f));
-            }
-            AddFrameList(animPackage: PkgName.Tomato, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
-            {
-                PkgName packageName = PkgName.CoffeeShrub;
-                AddFrameList(animPackage: packageName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
-            }
-            AddFrameList(animPackage: PkgName.CarrotPlant, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: 1, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.CarrotPlant, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: 1, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-        }
+            if (LoadedPkgs.Contains(pkgName)) return;
 
-        public static void CreateAnimsCharacters()
-        {
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerBoy, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerGirl, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerTestDemoness, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
+            MessageLog.Add(debugMessage: true, text: $"Loading anim package: {pkgName}");
 
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
+            switch (pkgName)
             {
-                string atlasName = "characters/rabbits";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
+                case PkgName.Empty:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
+                    break;
 
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitDarkBrown, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitGray, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitLightGray, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitBeige, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitWhite, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.RabbitLightBrown, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
+                case PkgName.NoAnim:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "no_anim", layer: 2));
+                    break;
 
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
-            {
-                string atlasName = "characters/fox";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
+                case PkgName.Loading:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "loading", layer: 2));
+                    break;
 
-                AddRPGMakerPackageV2(packageName: PkgName.FoxGinger, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxRed, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxWhite, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxGray, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxBlack, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxChocolate, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxBrown, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.FoxYellow, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
+                case PkgName.WhiteSpotLayerMinus1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: -1, scale: 1f));
+                    break;
 
-            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
-            {
-                string atlasName = "characters/bear";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
+                case PkgName.WhiteSpotLayerZero:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
+                    break;
 
-                AddRPGMakerPackageV2(packageName: PkgName.BearBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearWhite, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearOrange, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearDarkBrown, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearGray, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearRed, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.BearBeige, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-            {
-                float scale = 1f;
-                byte animSize = 0;
-                string atlasName = "characters/frogs_small";
-                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
+                case PkgName.WhiteSpotLayerOne:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
+                    break;
 
-            foreach (var kvp in new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } })
-            {
-                string atlasName = "characters/frogs_big";
-                byte animSize = kvp.Key;
-                float scale = kvp.Value;
+                case PkgName.WhiteSpotLayerTwo:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
+                    break;
 
-                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
-            }
-        }
+                case PkgName.WhiteSpotLayerThree:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 3, scale: 1f));
+                    break;
 
-        public static void CreateAnimsMisc1()
-        {
-            AddFrameList(animPackage: PkgName.NoAnim, frameList: ConvertImageToFrameList(atlasName: "no_anim", layer: 1, x: 0, y: 0, width: 0, height: 0));
+                case PkgName.FlowersWhite:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 32, y: 352, width: 32, height: 32));
+                    break;
 
-            AddFrameList(animPackage: PkgName.MineralsBig1, frameList: ConvertImageToFrameList(atlasName: "minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig2, frameList: ConvertImageToFrameList(atlasName: "minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig3, frameList: ConvertImageToFrameList(atlasName: "minerals_big_3", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig4, frameList: ConvertImageToFrameList(atlasName: "minerals_big_4", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig5, frameList: ConvertImageToFrameList(atlasName: "minerals_big_5", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig6, frameList: ConvertImageToFrameList(atlasName: "minerals_big_6", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig7, frameList: ConvertImageToFrameList(atlasName: "minerals_big_7", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig8, frameList: ConvertImageToFrameList(atlasName: "minerals_big_8", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig9, frameList: ConvertImageToFrameList(atlasName: "minerals_big_9", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig10, frameList: ConvertImageToFrameList(atlasName: "minerals_big_10", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig11, frameList: ConvertImageToFrameList(atlasName: "minerals_big_11", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig12, frameList: ConvertImageToFrameList(atlasName: "minerals_big_12", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig13, frameList: ConvertImageToFrameList(atlasName: "minerals_big_13", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsBig14, frameList: ConvertImageToFrameList(atlasName: "minerals_big_14", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-
-            AddFrameList(animPackage: PkgName.MineralsSmall1, frameList: ConvertImageToFrameList(atlasName: "minerals_small_1", layer: 1, scale: 0.3f, depthPercent: 0.35f));
-            AddFrameList(animPackage: PkgName.MineralsSmall2, frameList: ConvertImageToFrameList(atlasName: "minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
-            AddFrameList(animPackage: PkgName.MineralsSmall3, frameList: ConvertImageToFrameList(atlasName: "minerals_small_3", layer: 1, scale: 0.3f, depthPercent: 0.35f));
-            AddFrameList(animPackage: PkgName.MineralsSmall4, frameList: ConvertImageToFrameList(atlasName: "minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
-
-            AddFrameList(animPackage: PkgName.MineralsMossyBig1, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig2, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig3, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig4, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig5, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig6, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig7, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig8, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig9, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig10, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig11, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig12, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.4f));
-
-            AddFrameList(animPackage: PkgName.MineralsMossySmall1, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall2, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall3, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall4, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
-
-            AddFrameList(animPackage: PkgName.MineralsCave, frameList: ConvertImageToFrameList(atlasName: "cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
-
-            AddFrameList(animPackage: PkgName.WaterLily1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.WaterLily2, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.WaterLily3, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 448, y: 0, width: 32, height: 32));
-
-            AddFrameList(animPackage: PkgName.BloodSplatter1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 416, y: 320, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.BloodSplatter2, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 320, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.BloodSplatter3, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
-
-            AddFrameList(animPackage: PkgName.WoodPlank, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 32, y: 0, width: 32, height: 32, scale: 0.8f));
-            AddFrameList(animPackage: PkgName.Stick, frameList: ConvertImageToFrameList(atlasName: "sticks", layer: 0, x: 26, y: 73, width: 25, height: 21));
-            AddFrameList(animPackage: PkgName.Banana, frameList: ConvertImageToFrameList(atlasName: "banana", layer: 0, scale: 0.08f));
-            AddFrameList(animPackage: PkgName.Cherry, frameList: ConvertImageToFrameList(atlasName: "cherry", layer: 0, scale: 0.12f));
-            AddFrameList(animPackage: PkgName.Apple, frameList: ConvertImageToFrameList(atlasName: "apple", layer: 0, scale: 0.075f));
-            AddFrameList(animPackage: PkgName.BowBasic, frameList: ConvertImageToFrameList(atlasName: "bow_basic", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.BowAdvanced, frameList: ConvertImageToFrameList(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.SeedBag, frameList: ConvertImageToFrameList(atlasName: "seed_bag", layer: 0, scale: 0.08f));
-            AddFrameList(animPackage: PkgName.CoffeeRaw, frameList: ConvertImageToFrameList(atlasName: "coffee_raw", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.CoffeeRoasted, frameList: ConvertImageToFrameList(atlasName: "coffee_roasted", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.WoodLogRegular, frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.WoodLogHard, frameList: ConvertImageToFrameList(atlasName: "wood_hard", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.SkullAndBones, frameList: ConvertImageToFrameList(atlasName: "skull_and_bones", layer: 2, scale: 1f));
-            AddFrameList(animPackage: PkgName.IronPlate, frameList: ConvertImageToFrameList(atlasName: "iron_plate", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.IronRod, frameList: ConvertImageToFrameList(atlasName: "iron_rod", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.AxeCrystal, frameList: ConvertImageToFrameList(atlasName: "axe_crystal", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Stone, frameList: ConvertImageToFrameList(atlasName: "stone", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Granite, frameList: ConvertImageToFrameList(atlasName: "granite", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.Crystal, frameList: ConvertImageToFrameList(atlasName: "crystal", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.CrystalDepositSmall, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_small", layer: 1));
-            AddFrameList(animPackage: PkgName.CrystalDepositBig, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_big", layer: 1));
-            AddFrameList(animPackage: PkgName.DigSite, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
-            AddFrameList(animPackage: PkgName.Burger, frameList: ConvertImageToFrameList(atlasName: "burger", layer: 0, scale: 0.07f));
-            AddFrameList(animPackage: PkgName.PotionBlack, frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionDarkViolet, frameList: ConvertImageToFrameList(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionDarkYellow, frameList: ConvertImageToFrameList(atlasName: "potion_dark_yellow", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionDarkGreen, frameList: ConvertImageToFrameList(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionBrown, frameList: ConvertImageToFrameList(atlasName: "potion_brown", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionTransparent, frameList: ConvertImageToFrameList(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionLightYellow, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.WaterDrop, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.ShipRescue, frameList: ConvertImageToFrameList(atlasName: "ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.SeaWave, frameList: ConvertImageToFrameList(atlasName: "wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog1, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog2, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog3, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog4, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog5, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog6, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog7, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog8, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.WeatherFog9, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.BubbleExclamationRed, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_red", layer: 2, scale: 0.2f));
-            AddFrameList(animPackage: PkgName.BubbleExclamationBlue, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_blue", layer: 2, scale: 0.2f));
-            AddFrameList(animPackage: PkgName.BubbleCraftGreen, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
-            AddFrameList(animPackage: PkgName.PlantPoison, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
-            AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
-            AddFrameList(animPackage: PkgName.Map, frameList: ConvertImageToFrameList(atlasName: "map_item", layer: 0, scale: 0.06f, crop: false));
-            AddFrameList(animPackage: PkgName.BackpackMediumOutline, frameList: ConvertImageToFrameList(atlasName: "backpack_medium_outline", layer: 1, scale: 0.2f));
-            AddFrameList(animPackage: PkgName.BackpackSmall, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.BackpackMedium, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.BackpackBig, frameList: ConvertImageToFrameList(atlasName: "backpack_big", layer: 1, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.BackpackLuxurious, frameList: ConvertImageToFrameList(atlasName: "backpack_luxurious", layer: 1, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.Miss, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
-            AddFrameList(animPackage: PkgName.Zzz, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
-            AddFrameList(animPackage: PkgName.Heart, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
-            AddFrameList(animPackage: PkgName.Hammer, frameList: ConvertImageToFrameList(atlasName: "hammer", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.Fog1, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog2, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog3, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Fog4, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Empty, frameList: ConvertImageToFrameList(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
-            AddFrameList(animPackage: PkgName.Star, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.Crosshair, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
-            AddFrameList(animPackage: PkgName.ScytheStone, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
-            AddFrameList(animPackage: PkgName.ScytheIron, frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));
-            AddFrameList(animPackage: PkgName.ScytheCrystal, frameList: ConvertImageToFrameList(atlasName: "scythe_crystal", layer: 0));
-            AddFrameList(animPackage: PkgName.EmptyBottle, frameList: ConvertImageToFrameList(atlasName: "bottle_empty", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Acorn, frameList: ConvertImageToFrameList(atlasName: "acorn", layer: 0, scale: 0.13f));
-            AddFrameList(animPackage: PkgName.ArrowWood, frameList: ConvertImageToFrameList(atlasName: "arrow_wood", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.ArrowStone, frameList: ConvertImageToFrameList(atlasName: "arrow_stone", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.ArrowIron, frameList: ConvertImageToFrameList(atlasName: "arrow_iron", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.ArrowCrystal, frameList: ConvertImageToFrameList(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.KnifeSimple, frameList: ConvertImageToFrameList(atlasName: "knife_simple", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.BeltSmall, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.BeltMedium, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
-            AddFrameList(animPackage: PkgName.BeltBig, frameList: ConvertImageToFrameList(atlasName: "belt_big", layer: 0, scale: 0.06f));
-            AddFrameList(animPackage: PkgName.BeltLuxurious, frameList: ConvertImageToFrameList(atlasName: "belt_luxurious", layer: 0, scale: 0.06f));
-            AddFrameList(animPackage: PkgName.HatSimple, frameList: ConvertImageToFrameList(atlasName: "hat_simple", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.BootsProtective, frameList: ConvertImageToFrameList(atlasName: "boots_protective", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.BootsMountain, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.BootsSpeed, frameList: ConvertImageToFrameList(atlasName: "boots_speed", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.BootsAllTerrain, frameList: ConvertImageToFrameList(atlasName: "boots_all_terrain", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.GlovesStrength, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.GlassesBlue, frameList: ConvertImageToFrameList(atlasName: "glasses_blue", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.HerbsGreen, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsBlack, frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsBlue, frameList: ConvertImageToFrameList(atlasName: "herbs_blue", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsCyan, frameList: ConvertImageToFrameList(atlasName: "herbs_cyan", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsYellow, frameList: ConvertImageToFrameList(atlasName: "herbs_yellow", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsRed, frameList: ConvertImageToFrameList(atlasName: "herbs_red", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsViolet, frameList: ConvertImageToFrameList(atlasName: "herbs_violet", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsBrown, frameList: ConvertImageToFrameList(atlasName: "herbs_brown", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsDarkViolet, frameList: ConvertImageToFrameList(atlasName: "herbs_dark_violet", layer: 0));
-            AddFrameList(animPackage: PkgName.HerbsDarkGreen, frameList: ConvertImageToFrameList(atlasName: "herbs_dark_green", layer: 0));
-            AddFrameList(animPackage: PkgName.SpearWood, frameList: ConvertImageToFrameList(atlasName: "spear_wood", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.SpearStone, frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.SpearIron, frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.SpearCrystal, frameList: ConvertImageToFrameList(atlasName: "spear_crystal", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Fat, frameList: ConvertImageToFrameList(atlasName: "fat", layer: 0, scale: 0.08f));
-            AddFrameList(animPackage: PkgName.ShovelStone, frameList: ConvertImageToFrameList(atlasName: "shovel_stone", layer: 0, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.ShovelIron, frameList: ConvertImageToFrameList(atlasName: "shovel_iron", layer: 0, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.ShovelCrystal, frameList: ConvertImageToFrameList(atlasName: "shovel_crystal", layer: 0, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.Clay, frameList: ConvertImageToFrameList(atlasName: "clay", layer: 0, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.Hole, frameList: ConvertImageToFrameList(atlasName: "hole", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.MeatRawRegular, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.MeatRawPrime, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.FertileGroundSmall, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
-            AddFrameList(animPackage: PkgName.FertileGroundMedium, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
-            AddFrameList(animPackage: PkgName.FertileGroundLarge, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1.3f));
-            AddFrameList(animPackage: PkgName.FenceHorizontalShort, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_short", layer: 1, depthPercent: 0.2f));
-            AddFrameList(animPackage: PkgName.FenceVerticalShort, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
-            AddFrameList(animPackage: PkgName.FenceHorizontalLong, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
-            AddFrameList(animPackage: PkgName.FenceVerticalLong, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
-            AddFrameList(animPackage: PkgName.Totem, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
-            AddFrameList(animPackage: PkgName.RuinsColumn, frameList: ConvertImageToFrameList(atlasName: "ruins_column", layer: 1));
-            AddFrameList(animPackage: PkgName.RuinsRubble, frameList: ConvertImageToFrameList(atlasName: "ruins_rubble", layer: 1));
-            AddFrameList(animPackage: PkgName.RuinsWallHorizontal1, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_1", layer: 1));
-            AddFrameList(animPackage: PkgName.RuinsWallHorizontal2, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_2", layer: 1));
-            AddFrameList(animPackage: PkgName.RuinsWallWallVertical, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
-            AddFrameList(animPackage: PkgName.MeatDried, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.JarWhole, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
-            AddFrameList(animPackage: PkgName.JarBroken, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
-            AddFrameList(animPackage: PkgName.TreeStump, frameList: ConvertImageToFrameList(atlasName: "tree_stump", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.Carrot, frameList: ConvertImageToFrameList(atlasName: "carrot", layer: 0, scale: 0.08f));
-            AddFrameList(animPackage: PkgName.MusicNoteSmall, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
-            AddFrameList(animPackage: PkgName.MusicNoteBig, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayerMinus1, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: -1, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayerZero, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayerOne, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 1, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayerTwo, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 2, scale: 1f));
-            AddFrameList(animPackage: PkgName.WhiteSpotLayerThree, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 3, scale: 1f));
-            AddFrameList(animPackage: PkgName.Upgrade, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Rope, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.MapMarker, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
-            AddFrameList(animPackage: PkgName.Candle, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.1f));
-            AddFrameList(animPackage: PkgName.Dungarees, frameList: ConvertImageToFrameList(atlasName: "dungarees", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.Mushroom, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.HideCloth, frameList: ConvertImageToFrameList(atlasName: "hidecloth", layer: 0, scale: 0.1f));
-        }
-
-        public static void CreateAnimsMisc2()
-        {
-            var chestDict = new Dictionary<PkgName, string> {
-                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
-                { PkgName.ChestStone, "chest_stone/chest_stone_" },
-                { PkgName.ChestIron, "chest_iron/chest_iron_" },
-                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
-                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
-                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
-            };
-
-            foreach (var kvp in chestDict)
-            {
-                PkgName packageName = kvp.Key;
-                string chestPath = kvp.Value;
-
-                float scale = 0.18f;
-                bool crop = false;
-                float depthPercent = 0.47f;
-                int duration = 3;
-
-                var openingFrameList = new List<AnimFrame>();
-                for (int i = 2; i <= 6; i++)
-                {
-                    openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
-                }
-                AddFrameList(animPackage: packageName, animName: "opening", frameList: openingFrameList);
-
-                var closingFrameList = new List<AnimFrame>();
-                for (int i = 5; i >= 1; i--)
-                {
-                    closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
-                }
-                AddFrameList(animPackage: packageName, animName: "closing", frameList: closingFrameList);
-
-                AddFrameList(animPackage: packageName, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
-                AddFrameList(animPackage: packageName, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
-            }
-
-            {
-                PkgName packageName = PkgName.Crate;
-                AddFrameList(animPackage: packageName,
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 128, y: 0, width: 32, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animName: "closing", frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.WorkshopEssential;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopBasic;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopAdvanced;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopMaster;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopLeatherBasic;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopLeatherAdvanced;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.WorkshopMeatHarvesting;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_off", layer: 1, scale: 0.5f));
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_on", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.MeatDryingRackRegular;
-                float depthPercent = 0.6f;
-
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
-
-                for (int i = 1; i <= 4; i++)
-                {
-                    AddFrameList(animPackage: packageName, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
-                }
-            }
-            {
-                PkgName packageName = PkgName.MeatDryingRackWide;
-                float depthPercent = 0.6f;
-
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
-
-                for (int i = 1; i <= 6; i++)
-                {
-                    AddFrameList(animPackage: packageName, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
-                }
-            }
-            {
-                PkgName packageName = PkgName.AlchemyLabStandard;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.AlchemyLabAdvanced;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
-            }
-            {
-                PkgName packageName = PkgName.Furnace;
-                AddFrameList(animPackage: packageName, animName: "off",
-                frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: 1, x: 0, y: 144, width: 48, height: 48));
-                AddFrameList(animPackage: packageName, animName: "on",
-                frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: 1, x: 48, y: 144, width: 48, height: 48));
-            }
-            {
-                PkgName packageName = PkgName.Anvil;
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: 1));
-                // the same as "off"
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: 1));
-            }
-            {
-                PkgName packageName = PkgName.CookingPot;
-
-                AddFrameList(animPackage: packageName, animName: "off",
-                    frameList: ConvertImageToFrameList(atlasName: "Candacis_flames1", layer: 1, x: 192, y: 144, width: 32, height: 32));
-
-                var frameListOn = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 0, y: 144, width: 32, height: 32, duration: 6),
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 32, y: 144, width: 32, height: 32, duration: 6),
-                    ConvertImageToFrame(atlasName: "Candacis_flames1", layer: 1, x: 64, y: 144, width: 32, height: 32, duration: 6)
-                };
-                AddFrameList(animPackage: packageName, animName: "on", frameList: frameListOn);
-            }
-            {
-                PkgName packageName = PkgName.HotPlate;
-
-                AddFrameList(animPackage: packageName, animName: "off",
-                    frameList: ConvertImageToFrameList(atlasName: "hot_plate_off", layer: 1));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "hot_plate_on_1", layer: 1, duration: 6),
-                    ConvertImageToFrame(atlasName: "hot_plate_on_2", layer: 1, duration: 6),
-                    ConvertImageToFrame(atlasName: "hot_plate_on_3", layer: 1, duration: 6)
-                };
-                AddFrameList(animPackage: packageName, animName: "on", frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.Backlight;
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "backlight_1", layer: 0, duration: 6),
-                    ConvertImageToFrame(atlasName: "backlight_2", layer: 0, duration: 6),
-                    ConvertImageToFrame(atlasName: "backlight_3", layer: 0, duration: 6),
-                    ConvertImageToFrame(atlasName: "backlight_4", layer: 0, duration: 20),
-                    ConvertImageToFrame(atlasName: "backlight_3", layer: 0, duration: 6),
-                    ConvertImageToFrame(atlasName: "backlight_2", layer: 0, duration: 6),
-                    ConvertImageToFrame(atlasName: "backlight_1", layer: 0, duration: 6)
-                };
-                AddFrameList(animPackage: packageName, frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.Attack;
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 0, y: 20, width: 23, height: 23),
-                    ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 22, y: 13, width: 29, height: 33),
-                    ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 50, y: 0, width: 36, height: 65)
-                };
-                AddFrameList(animPackage: packageName, frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.Flame;
-
-                byte animSize = 0;
-                foreach (float scale in new List<float> { 0.5f, 0.75f, 1f, 1.25f })
-                {
-                    var frameList = new List<AnimFrame>
+                case PkgName.FlowersYellow1:
                     {
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: true, scale: scale)
-                    };
-                    AddFrameList(animPackage: packageName, animSize: animSize, frameList: frameList);
+                        int layer = 0;
 
-                    animSize++;
-                }
-
-                foreach (float scale in new List<float> { 1f, 1.5f, 1.8f, 2f })
-                {
-                    var frameList = new List<AnimFrame>
-                    {
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 0, width: 48, height: 48, crop: true, scale: scale)
-                    };
-                    AddFrameList(animPackage: packageName, animSize: animSize, frameList: frameList);
-
-                    animSize++;
-                }
-            }
-            {
-                PkgName packageName = PkgName.SmallTorch;
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "small_torch_on", layer: 0, scale: 0.07f));
-                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
-            }
-            {
-                PkgName packageName = PkgName.BigTorch;
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "big_torch_on", layer: 0, scale: 0.1f));
-                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
-            }
-            {
-                float scale = 0.075f;
-
-                AddFrameList(animPackage: PkgName.LanternFrame, frameList: ConvertImageToFrameList(atlasName: "lantern_frame", layer: 0, scale: scale));
-
-                PkgName packageName = PkgName.Lantern;
-                AddFrameList(animPackage: packageName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: 0, scale: scale));
-                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
-                AddFrameList(animPackage: packageName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: 0, scale: scale));
-            }
-            {
-                PkgName packageName = PkgName.CampfireSmall;
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false),
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false)
-                };
-                AddFrameList(animPackage: packageName, animName: "on", frameList: frameList);
-                frameList = ConvertImageToFrameList(atlasName: "flames", layer: 1, x: 288, y: 96, width: 48, height: 48, crop: false);
-                AddFrameList(animPackage: packageName, frameList);
-                AddFrameList(animPackage: packageName, animName: "off", frameList: frameList);
-            }
-
-            {
-                PkgName packageName = PkgName.CampfireMedium;
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: 1, duration: 6, crop: false),
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: 1, duration: 6, crop: false),
-                    ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: 1, duration: 6, crop: false)
-                };
-                AddFrameList(animPackage: packageName, animName: "on", frameList: frameList);
-                frameList = ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: 1, crop: false);
-                AddFrameList(animPackage: packageName, frameList);
-                AddFrameList(animPackage: packageName, animName: "off", frameList: frameList);
-            }
-            {
-                PkgName packageName = PkgName.CaveEntrance;
-
-                float scale = 2f;
-                float depthPercent = 0.95f;
-
-                AddFrameList(animPackage: packageName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
-                AddFrameList(animPackage: packageName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
-
-                AddFrameList(animPackage: PkgName.CaveExit, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: scale, layer: 1, depthPercent: depthPercent));
-            }
-            {
-                PkgName packageName = PkgName.Explosion;
-
-                for (byte size = 0; size < 4; size++)
-                {
-                    var frameList = new List<AnimFrame> { };
-
-                    for (int y = 0; y < 4; y++)
-                    {
-                        for (int x = 0; x < 4; x++)
-                        {
-                            frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false, ignoreWhenCalculatingMaxSize: true));
-                        }
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 352, width: 32, height: 32));
+                        break;
                     }
 
-                    AddFrameList(animPackage: packageName, animSize: size, animName: "default", frameList: frameList);
-                }
+                case PkgName.FlowersYellow2:
+                    {
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.FlowersRed:
+                    {
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 64, y: 352, width: 32, height: 32));
+                        break;
+                    }
+
+                case PkgName.Rushes:
+                    {
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
+                        break;
+                    }
+
+                case PkgName.GrassDesert:
+                    {
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: layer, x: 160, y: 224, width: 24, height: 24));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "flowers", layer: layer, x: 288, y: 160, width: 32, height: 32));
+                        break;
+                    }
+
+                case PkgName.GrassRegular:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 1, x: 32, y: 320, width: 32, height: 32));
+                    AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "grass_regular_x3", layer: 1));
+
+                    break;
+
+                case PkgName.PlantPoison:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
+                    AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
+                    break;
+
+                case PkgName.CoffeeShrub:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
+                        break;
+                    }
+
+                case PkgName.CarrotPlant:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: layer, scale: 0.1f));
+                        AddFrameList(pkgName: pkgName, animName: "has_fruits", frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: layer, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
+                        break;
+                    }
+
+                case PkgName.TomatoPlant:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: layer, scale: 0.1f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: layer, scale: 0.08f));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: layer, scale: 0.08f));
+
+                        break;
+                    }
+
+                case PkgName.MushroomPlant:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 0.6f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 0.8f));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "mushroom_plant", layer: layer, scale: 1.0f));
+                        break;
+                    }
+
+                case PkgName.Cactus:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: layer, x: 352, y: 320, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "qYFvsmq", layer: layer, x: 288, y: 320, width: 32, height: 64));
+                        break;
+                    }
+
+                case PkgName.PalmTree:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "palmtree_small", layer: layer, scale: 0.7f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 123, y: 326, width: 69, height: 80, crop: false));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 8, y: 145, width: 66, height: 102, crop: false));
+                        AddFrameList(pkgName: pkgName, animSize: 3, frameList: ConvertImageToFrameList(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 108, y: 145, width: 72, height: 102, crop: false));
+                        break;
+                    }
+
+                case PkgName.TreeBig:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_tall", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: layer, x: 199, y: 382, width: 47, height: 66));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: layer, x: 0, y: 0, width: 63, height: 97));
+                        break;
+                    }
+
+                case PkgName.TreeSmall1:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 192, y: 352, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: layer, x: 160, y: 320, width: 32, height: 64));
+                        break;
+                    }
+
+                case PkgName.TreeSmall2:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: layer, x: 128, y: 192, width: 32, height: 32));
+                        AddFrameList(pkgName: pkgName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tileb", layer: layer, x: 160, y: 192, width: 32, height: 64));
+                        break;
+                    }
+
+                case PkgName.TreeStump:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tree_stump", layer: 1, scale: 1f));
+                    break;
+
+                case PkgName.WaterLily1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
+                    break;
+
+                case PkgName.WaterLily2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));
+                    break;
+
+                case PkgName.WaterLily3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 448, y: 0, width: 32, height: 32));
+                    break;
+
+                case PkgName.MineralsBig1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_3", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_4", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig5:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_5", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig6:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_6", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig7:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_7", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig8:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_8", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig9:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_9", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig10:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_10", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig11:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_11", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig12:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_12", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig13:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_13", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsBig14:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_big_14", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsSmall1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_small_1", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_small_3", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsMossyBig1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig5:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig6:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig7:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+
+                    break;
+
+                case PkgName.MineralsMossyBig8:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig9:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig10:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig11:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossyBig12:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    break;
+
+                case PkgName.MineralsMossySmall1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.MineralsMossySmall2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.MineralsMossySmall3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.MineralsMossySmall4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.MineralsCave:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
+                    break;
+
+                case PkgName.JarWhole:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
+                    break;
+
+                case PkgName.JarBroken:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
+                    break;
+
+                case PkgName.ChestWooden:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.ChestStone:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.ChestIron:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.ChestCrystal:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.ChestTreasureBlue:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.ChestTreasureRed:
+                    AddChestPackage(pkgName);
+                    break;
+
+                case PkgName.WoodLogRegular:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
+                    break;
+
+                case PkgName.WoodLogHard:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "wood_hard", layer: 1, scale: 0.5f));
+                    break;
+
+                case PkgName.WoodPlank:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 32, y: 0, width: 32, height: 32, scale: 0.8f));
+                    break;
+
+                case PkgName.Nail:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 0, y: 0, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.Rope:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.HideCloth:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "hidecloth", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.Crate:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName,
+                        frameList: ConvertImageToFrameList(atlasName: "chests", layer: layer, x: 128, y: 0, width: 32, height: 48));
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 96, width: 32, height: 48, duration: 6),
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 48, width: 32, height: 48, duration: 6),
+                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 0, width: 32, height: 48, duration: 0)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "closing", frameList: frameList);
+                        break;
+                    }
+
+                case PkgName.WorkshopEssential:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopBasic:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopAdvanced:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopMaster:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopMeatHarvesting:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_off", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_meat_harvesting_on", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopLeatherBasic:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.WorkshopLeatherAdvanced:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.MeatDryingRackRegular:
+                    {
+                        float depthPercent = 0.6f;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
+
+                        for (int i = 1; i <= 4; i++)
+                        {
+                            AddFrameList(pkgName: pkgName, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
+                        }
+                        break;
+                    }
+
+                case PkgName.MeatDryingRackWide:
+                    {
+                        float depthPercent = 0.6f;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
+
+                        for (int i = 1; i <= 6; i++)
+                        {
+                            AddFrameList(pkgName: pkgName, animName: $"on_{i}", frameList: ConvertImageToFrameList(atlasName: $"meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
+                        }
+                        break;
+                    }
+
+                case PkgName.AlchemyLabStandard:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.AlchemyLabAdvanced:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        break;
+                    }
+
+                case PkgName.Furnace:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 0, y: 144, width: 48, height: 48));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 48, y: 144, width: 48, height: 48));
+                        break;
+                    }
+
+                case PkgName.Anvil:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: layer));
+                        // the same as "off"
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "anvil", layer: layer));
+                        break;
+                    }
+
+                case PkgName.HotPlate:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "hot_plate_off", layer: layer));
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "hot_plate_on_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "hot_plate_on_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "hot_plate_on_3", layer: layer, duration: 6)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
+                        break;
+                    }
+
+                case PkgName.CookingPot:
+                    {
+                        int layer = 1;
+
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "Candacis_flames1", layer: layer, x: 192, y: 144, width: 32, height: 32));
+
+                        var frameListOn = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 0, y: 144, width: 32, height: 32, duration: 6),
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 32, y: 144, width: 32, height: 32, duration: 6),
+                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 64, y: 144, width: 32, height: 32, duration: 6)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: frameListOn);
+
+                        break;
+                    }
+
+                case PkgName.Totem:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
+                    break;
+
+                case PkgName.RuinsWallHorizontal1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_1", layer: 1));
+                    break;
+
+                case PkgName.RuinsWallHorizontal2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_horizontal_2", layer: 1));
+                    break;
+
+                case PkgName.RuinsWallWallVertical:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
+                    break;
+
+                case PkgName.RuinsColumn:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ruins_column", layer: 1));
+                    break;
+
+                case PkgName.RuinsRubble:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ruins_rubble", layer: 1));
+                    break;
+
+                case PkgName.Stick:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "sticks", layer: 0, x: 26, y: 73, width: 25, height: 21));
+                    break;
+
+                case PkgName.Stone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "stone", layer: 1, scale: 0.5f));
+                    break;
+
+                case PkgName.Granite:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "granite", layer: 1, scale: 1f));
+                    break;
+
+                case PkgName.Clay:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "clay", layer: 0, scale: 0.7f));
+                    break;
+
+                case PkgName.Apple:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "apple", layer: 0, scale: 0.075f));
+                    break;
+
+                case PkgName.Banana:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "banana", layer: 0, scale: 0.08f));
+                    break;
+
+                case PkgName.Cherry:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cherry", layer: 0, scale: 0.12f));
+                    break;
+
+                case PkgName.Tomato:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
+                    break;
+
+                case PkgName.Carrot:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "carrot", layer: 0, scale: 0.08f));
+                    break;
+
+                case PkgName.Acorn:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "acorn", layer: 0, scale: 0.13f));
+                    break;
+
+                case PkgName.Mushroom:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "mushroom", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.SeedBag:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "seed_bag", layer: 0, scale: 0.08f));
+                    break;
+
+                case PkgName.CoffeeRaw:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_raw", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.CoffeeRoasted:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "coffee_roasted", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.Clam:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 128, y: 256, width: 64, height: 64, scale: 0.5f));
+                    break;
+
+                case PkgName.MeatRawRegular:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.MeatRawPrime:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.MeatDried:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.Fat:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fat", layer: 0, scale: 0.08f));
+                    break;
+
+                case PkgName.Burger:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "burger", layer: 0, scale: 0.07f));
+                    break;
+
+                case PkgName.MealStandard:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fancy_food2", layer: 0, x: 288, y: 64, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.Leather:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 96, y: 96, width: 32, height: 32, scale: 0.75f));
+                    break;
+
+                case PkgName.KnifeSimple:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "knife_simple", layer: 1, scale: 1f));
+                    break;
+
+                case PkgName.AxeWood:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "axe_wooden", layer: 0, x: 0, y: 0, width: 30, height: 32, scale: 0.7f));
+                    break;
+
+                case PkgName.AxeStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis", layer: 0, x: 0, y: 0, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.AxeIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis", layer: 0, x: 48, y: 0, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.AxeCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "axe_crystal", layer: 1, scale: 0.5f));
+                    break;
+
+                case PkgName.PickaxeWood:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 0, y: 384, width: 48, height: 48, scale: 0.7f));
+                    break;
+
+                case PkgName.PickaxeStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 384, width: 48, height: 48, scale: 0.7f));
+                    break;
+
+                case PkgName.PickaxeIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 384, width: 48, height: 48, scale: 0.7f));
+                    break;
+
+                case PkgName.PickaxeCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 384, y: 384, width: 48, height: 48, scale: 0.7f));
+                    break;
+
+                case PkgName.ScytheStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
+                    break;
+
+                case PkgName.ScytheIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));
+                    break;
+
+                case PkgName.ScytheCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "scythe_crystal", layer: 0));
+                    break;
+
+                case PkgName.SpearWood:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "spear_wood", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.SpearStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.SpearIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.SpearCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "spear_crystal", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.ShovelStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "shovel_stone", layer: 0, scale: 0.7f));
+                    break;
+
+                case PkgName.ShovelIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "shovel_iron", layer: 0, scale: 0.7f));
+                    break;
+
+                case PkgName.ShovelCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "shovel_crystal", layer: 0, scale: 0.7f));
+                    break;
+
+                case PkgName.BowBasic:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bow_basic", layer: 0, scale: 0.25f));
+                    break;
+
+                case PkgName.BowAdvanced:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
+                    break;
+
+                case PkgName.ArrowWood:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "arrow_wood", layer: 0, scale: 0.75f));
+                    break;
+
+                case PkgName.ArrowStone:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "arrow_stone", layer: 0, scale: 0.75f));
+                    break;
+
+                case PkgName.ArrowIron:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "arrow_iron", layer: 0, scale: 0.75f));
+                    break;
+
+                case PkgName.ArrowCrystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
+                    break;
+
+                case PkgName.ArrowExploding:
+                    {
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: layer, scale: 0.75f));
+                        AddFrameList(pkgName: pkgName, animName: "burning", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: layer, scale: 0.75f));
+                        break;
+                    }
+
+                case PkgName.CoalDeposit:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 0, y: 96, width: 48, height: 48, scale: 1f));
+                    break;
+
+                case PkgName.IronDeposit:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 96, y: 96, width: 48, height: 48, scale: 1f));
+                    break;
+
+                case PkgName.CrystalDepositSmall:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_small", layer: 1));
+                    break;
+
+                case PkgName.CrystalDepositBig:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_big", layer: 1));
+                    break;
+
+                case PkgName.DigSite:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
+                    break;
+
+                case PkgName.DigSiteGlass:
+                    {
+                        int layer = 0;
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "dig_site_glass", layer: layer, duration: 450),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_3", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
+                        });
+                        break;
+                    }
+
+                case PkgName.DigSiteRuins:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "dig_site_ruins", layer: 0, scale: 0.35f));
+                    break;
+
+                case PkgName.Coal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 288, y: 144, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.IronOre:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 144, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.IronBar:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 96, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.IronRod:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "iron_rod", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.IronPlate:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "iron_plate", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.GlassSand:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 144, width: 48, height: 48, scale: 0.5f));
+                    break;
+
+                case PkgName.Crystal:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "crystal", layer: 1, scale: 0.5f));
+                    break;
+
+                case PkgName.PlayerBoy:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
+                    break;
+
+                case PkgName.PlayerGirl:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
+                    break;
+
+                case PkgName.PlayerTestDemoness:
+                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
+                    break;
+
+                case PkgName.FoxGinger:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxRed:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxChocolate:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.FoxYellow:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog1:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog2:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog3:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog4:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 0, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog5:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog6:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog7:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.Frog8:
+                    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: 1f);
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitDarkBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitLightGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitBeige:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.RabbitLightBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
+                    break;
+
+                case PkgName.BearBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearWhite:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearOrange:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearBlack:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearDarkBrown:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearGray:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearRed:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.BearBeige:
+                    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
+                    break;
+
+                case PkgName.TentModern:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
+                    break;
+
+                case PkgName.TentModernPacked:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tent_modern_packed", layer: 1, scale: 0.12f));
+                    break;
+
+                case PkgName.TentSmall:
+                    // TODO replace with A - frame tent asset(when found)
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 0.5f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.TentMedium:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 1f, depthPercent: 0.45f));
+                    break;
+
+                case PkgName.TentBig:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tent_big", layer: 1, x: 15, y: 0, width: 191, height: 162, scale: 1f, depthPercent: 0.6f));
+                    break;
+
+                case PkgName.BackpackSmall:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
+                    break;
+
+                case PkgName.BackpackMedium:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
+                    break;
+
+                case PkgName.BackpackBig:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "backpack_big", layer: 1, scale: 0.1f));
+                    break;
+
+                case PkgName.BackpackLuxurious:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "backpack_luxurious", layer: 1, scale: 0.1f));
+                    break;
+
+                case PkgName.BeltSmall:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.BeltMedium:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
+                    break;
+
+                case PkgName.BeltBig:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "belt_big", layer: 0, scale: 0.06f));
+                    break;
+
+                case PkgName.BeltLuxurious:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "belt_luxurious", layer: 0, scale: 0.06f));
+                    break;
+
+                case PkgName.Map:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "map_item", layer: 0, scale: 0.06f, crop: false));
+                    break;
+
+                case PkgName.HatSimple:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "hat_simple", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.BootsProtective:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boots_protective", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.BootsMountain:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boots_mountain", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.BootsSpeed:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boots_speed", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.BootsAllTerrain:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boots_all_terrain", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.GlovesStrength:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
+                    break;
+
+                case PkgName.GlassesBlue:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "glasses_blue", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.Dungarees:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "dungarees", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.LanternFrame:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "lantern_frame", layer: 0, scale: 0.075f));
+                    break;
+
+                case PkgName.Candle:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "candle", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.Lantern:
+                    {
+                        float scale = 0.075f;
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "lantern_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "lantern_off", layer: layer, scale: scale));
+
+                        break;
+                    }
+
+                case PkgName.SmallTorch:
+                    {
+                        float scale = 0.07f;
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "small_torch_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: layer, scale: scale));
+
+                        break;
+                    }
+
+                case PkgName.BigTorch:
+                    {
+                        float scale = 0.1f;
+                        int layer = 0;
+
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "big_torch_on", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: layer, scale: scale));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: layer, scale: scale));
+
+                        break;
+                    }
+
+                case PkgName.CampfireSmall:
+                    {
+                        int layer = 1;
+
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false),
+                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
+                        frameList = ConvertImageToFrameList(atlasName: "flames", layer: layer, x: 288, y: 96, width: 48, height: 48, crop: false);
+                        AddFrameList(pkgName: pkgName, frameList);
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: frameList);
+
+                        break;
+                    }
+
+                case PkgName.CampfireMedium:
+                    {
+                        int layer = 1;
+
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: layer, duration: 6, crop: false)
+                        };
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: frameList);
+                        AddFrameList(pkgName: pkgName, ConvertImageToFrameList(atlasName: "campfire_medium_off", layer: layer, crop: false));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: frameList);
+
+                        break;
+                    }
+
+                case PkgName.BoatConstruction:
+                    {
+                        float depthPercent = 0.7f;
+                        float scale = 0.7f;
+
+                        for (int animSize = 0; animSize <= 5; animSize++)
+                        {
+                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
+                        }
+
+                        break;
+                    }
+
+                case PkgName.BoatCompleteStanding:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
+                    break;
+
+                case PkgName.BoatCompleteCruising:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
+                    break;
+
+                case PkgName.ShipRescue:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.HerbsBlack:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));
+                    break;
+
+                case PkgName.HerbsCyan:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_cyan", layer: 0));
+                    break;
+
+                case PkgName.HerbsBlue:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_blue", layer: 0));
+                    break;
+
+                case PkgName.HerbsGreen:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
+                    break;
+
+                case PkgName.HerbsYellow:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_yellow", layer: 0));
+                    break;
+
+                case PkgName.HerbsRed:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_red", layer: 0));
+                    break;
+
+                case PkgName.HerbsViolet:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_violet", layer: 0));
+                    break;
+
+                case PkgName.HerbsBrown:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_brown", layer: 0));
+                    break;
+
+                case PkgName.HerbsDarkViolet:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_dark_violet", layer: 0));
+                    break;
+
+                case PkgName.HerbsDarkGreen:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "herbs_dark_green", layer: 0));
+                    break;
+
+                case PkgName.EmptyBottle:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bottle_empty", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionRed:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 384, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionBlue:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 448, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionViolet:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 416, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionYellow:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 352, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionCyan:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 288, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionGreen:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 320, y: 128, width: 32, height: 32, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionBlack:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionDarkViolet:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionDarkYellow:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_dark_yellow", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionDarkGreen:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionLightYellow:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionTransparent:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.PotionBrown:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "potion_brown", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.BloodSplatter1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 416, y: 320, width: 32, height: 32));
+                    break;
+
+                case PkgName.BloodSplatter2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 320, width: 32, height: 32));
+                    break;
+
+                case PkgName.BloodSplatter3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
+                    break;
+
+                case PkgName.HumanSkeleton:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "tile_rtp-addons", layer: 0, x: 320, y: 160, width: 32, height: 32));
+                    break;
+
+                case PkgName.Hole:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "hole", layer: 0, scale: 1f));
+                    break;
+
+                case PkgName.Explosion:
+                    {
+                        for (byte size = 0; size < 4; size++)
+                        {
+                            var frameList = new List<AnimFrame> { };
+
+                            for (int y = 0; y < 4; y++)
+                            {
+                                for (int x = 0; x < 4; x++)
+                                {
+                                    frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false, ignoreWhenCalculatingMaxSize: true));
+                                }
+                            }
+
+                            AddFrameList(pkgName: pkgName, animSize: size, animName: "default", frameList: frameList);
+                        }
+
+                        break;
+                    }
+
+                case PkgName.SkullAndBones:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "skull_and_bones", layer: 2, scale: 1f));
+                    break;
+
+                case PkgName.MusicNoteSmall:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
+                    break;
+
+                case PkgName.MusicNoteBig:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
+                    break;
+
+                case PkgName.Miss:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
+                    break;
+
+                case PkgName.Attack:
+                    {
+                        int layer = 2;
+
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 0, y: 20, width: 23, height: 23),
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 22, y: 13, width: 29, height: 33),
+                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 50, y: 0, width: 36, height: 65)
+                        };
+                        AddFrameList(pkgName: pkgName, frameList: frameList);
+
+                        break;
+                    }
+
+                case PkgName.MapMarker:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.Backlight:
+                    {
+                        int layer = 0;
+
+                        var frameList = new List<AnimFrame>
+                        {
+                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_4", layer: layer, duration: 20),
+                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6)
+                        };
+                        AddFrameList(pkgName: pkgName, frameList: frameList);
+                        break;
+                    }
+
+                case PkgName.Crosshair:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
+                    break;
+
+                case PkgName.Flame:
+                    {
+                        byte animSize = 0;
+                        int layer = 1;
+
+                        foreach (float scale in new List<float> { 0.5f, 0.75f, 1f, 1.25f })
+                        {
+                            var frameList = new List<AnimFrame>
+                            {
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: true, scale: scale)
+                            };
+                            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: frameList);
+
+                            animSize++;
+                        }
+
+                        foreach (float scale in new List<float> { 1f, 1.5f, 1.8f, 2f })
+                        {
+                            var frameList = new List<AnimFrame>
+                            {
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 0, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 0, width: 48, height: 48, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 0, width: 48, height: 48, crop: true, scale: scale)
+                            };
+                            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: frameList);
+
+                            animSize++;
+                        }
+
+                        break;
+                    }
+
+                case PkgName.Upgrade:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WaterDrop:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
+                    break;
+
+                case PkgName.Zzz:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
+                    break;
+
+                case PkgName.Heart:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
+                    break;
+
+                case PkgName.Hammer:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "hammer", layer: 0, scale: 0.1f));
+                    break;
+
+                case PkgName.Fog1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.Fog2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+
+                    break;
+
+                case PkgName.Fog3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.Fog4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.BubbleExclamationRed:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_red", layer: 2, scale: 0.2f));
+                    break;
+
+                case PkgName.BubbleExclamationBlue:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bubble_exclamation_blue", layer: 2, scale: 0.2f));
+                    break;
+
+                case PkgName.BubbleCraftGreen:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
+                    break;
+
+                case PkgName.SeaWave:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog1:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog2:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog3:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog4:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog5:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog6:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog7:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog8:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.WeatherFog9:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    break;
+
+                case PkgName.FertileGroundSmall:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
+                    break;
+
+                case PkgName.FertileGroundMedium:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
+                    break;
+
+                case PkgName.FertileGroundLarge:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fertile_ground_big", layer: -1, scale: 1.3f));
+                    break;
+
+                case PkgName.FenceHorizontalShort:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_short", layer: 1, depthPercent: 0.2f));
+                    break;
+
+                case PkgName.FenceVerticalShort:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
+                    break;
+
+                case PkgName.FenceHorizontalLong:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
+                    break;
+
+                case PkgName.FenceVerticalLong:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
+                    break;
+
+                case PkgName.CaveEntrance:
+                    {
+                        float scale = 2f;
+                        float depthPercent = 0.95f;
+
+                        AddFrameList(pkgName: pkgName, animName: "default", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
+                        AddFrameList(pkgName: pkgName, animName: "blocked", frameList: ConvertImageToFrameList(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
+
+                        break;
+                    }
+
+                case PkgName.CaveExit:
+                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
+                    break;
+
+                case PkgName.StarObsolete:
+                    // TODO remove - kept for compatibility with old saves
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
             }
 
+            LoadedPkgs.Add(pkgName);
+        }
+
+        public static void AddFrameList(PkgName pkgName, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
+        {
+            if (!animSizesForPkgs.ContainsKey(pkgName) || animSizesForPkgs[pkgName] < animSize)
             {
-                float depthPercent = 0.7f;
-                float scale = 0.7f;
-
-                for (int animSize = 0; animSize <= 5; animSize++)
-                {
-                    AddFrameList(animPackage: PkgName.BoatConstruction, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
-                }
-
-                AddFrameList(animPackage: PkgName.BoatCompleteStanding, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
-
-                AddFrameList(animPackage: PkgName.BoatCompleteCruising, frameList: ConvertImageToFrameList(atlasName: "boat/boat_complete", layer: 0, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false));
+                croppedFramesForPkgs[pkgName] = frameList[0].GetCroppedFrameCopy();
+                animSizesForPkgs[pkgName] = animSize;
             }
 
-            AddFrameList(animPackage: PkgName.DigSiteGlass, animName: "default", frameList: new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "dig_site_glass", layer: 0, duration: 450),
-                    ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
-                    ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: 0, duration: 1),
-                    ConvertImageToFrame(atlasName: "dig_site_glass_shine_3", layer: 0, duration: 1),
-                    ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: 0, duration: 1),
-                    ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
-                });
-
-            AddFrameList(animPackage: PkgName.DigSite, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
-            AddFrameList(animPackage: PkgName.DigSiteRuins, frameList: ConvertImageToFrameList(atlasName: "dig_site_ruins", layer: 0, scale: 0.35f));
-
-            AddFrameList(animPackage: PkgName.ArrowExploding, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.ArrowExploding, animName: "burning", frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
-
-            AddFrameList(animPackage: PkgName.Clam,
-                frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 128, y: 256, width: 64, height: 64, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.MealStandard,
-                frameList: ConvertImageToFrameList(atlasName: "fancy_food2", layer: 0, x: 288, y: 64, width: 32, height: 32, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.AxeWood, frameList: ConvertImageToFrameList(atlasName: "axe_wooden", layer: 0, x: 0, y: 0, width: 30, height: 32, scale: 0.7f));
-            AddFrameList(animPackage: PkgName.AxeStone, frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis",
-                layer: 0, x: 0, y: 0, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.AxeIron, frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis",
-                layer: 0, x: 48, y: 0, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.PickaxeWood,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 0, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            AddFrameList(animPackage: PkgName.PickaxeStone,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            AddFrameList(animPackage: PkgName.PickaxeIron,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            AddFrameList(animPackage: PkgName.PickaxeCrystal,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 384, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            AddFrameList(animPackage: PkgName.IronDeposit,
-                frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 96, y: 96, width: 48, height: 48, scale: 1f));
-
-            AddFrameList(animPackage: PkgName.CoalDeposit,
-                frameList: ConvertImageToFrameList(atlasName: "gems__rpg_maker_mv__by_petschko-d9euoxr", layer: 1, x: 0, y: 96, width: 48, height: 48, scale: 1f));
-
-            AddFrameList(animPackage: PkgName.IronOre,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 144, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.GlassSand,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 144, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.IronBar,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 48, y: 96, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Coal,
-                frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 288, y: 144, width: 48, height: 48, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Leather,
-                frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 96, y: 96, width: 32, height: 32, scale: 0.75f));
-
-            AddFrameList(animPackage: PkgName.Nail,
-                frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 0, y: 0, width: 32, height: 32, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.TentModern,
-                frameList: ConvertImageToFrameList(atlasName: "tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
-
-            AddFrameList(animPackage: PkgName.TentModernPacked, frameList: ConvertImageToFrameList(atlasName: "tent_modern_packed", layer: 1, scale: 0.12f));
-
-            AddFrameList(animPackage: PkgName.TentSmall, // TODO replace with A - frame tent asset(when found)
-                frameList: ConvertImageToFrameList(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 0.5f, depthPercent: 0.45f));
-
-            AddFrameList(animPackage: PkgName.TentMedium,
-                frameList: ConvertImageToFrameList(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 1f, depthPercent: 0.45f));
-
-            AddFrameList(animPackage: PkgName.TentBig,
-                frameList: ConvertImageToFrameList(atlasName: "tent_big", layer: 1, x: 15, y: 0, width: 191, height: 162, scale: 1f, depthPercent: 0.6f));
-
-            AddFrameList(animPackage: PkgName.HumanSkeleton,
-                frameList: ConvertImageToFrameList(atlasName: "tile_rtp-addons", layer: 0, x: 320, y: 160, width: 32, height: 32));
-
-            AddFrameList(animPackage: PkgName.PotionRed,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 384, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionBlue,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 448, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionViolet,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 416, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionYellow,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 352, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionCyan,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 288, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionGreen,
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 320, y: 128, width: 32, height: 32, scale: 0.5f));
+            string completeAnimID = $"{pkgName}-{animSize}-{animName}";
+            frameArrayById[completeAnimID] = frameList.ToArray();
         }
 
         public static List<AnimFrame> ConvertImageToFrameList(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
@@ -1209,7 +2009,43 @@ namespace SonOfRobin
             return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
-        public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
+        private static void AddChestPackage(PkgName pkgName)
+        {
+            var chestDict = new Dictionary<PkgName, string> {
+                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
+                { PkgName.ChestStone, "chest_stone/chest_stone_" },
+                { PkgName.ChestIron, "chest_iron/chest_iron_" },
+                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
+                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
+                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
+            };
+
+            string chestPath = chestDict[pkgName];
+
+            float scale = 0.18f;
+            bool crop = false;
+            float depthPercent = 0.47f;
+            int duration = 3;
+
+            var openingFrameList = new List<AnimFrame>();
+            for (int i = 2; i <= 6; i++)
+            {
+                openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i < 6 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+            }
+            AddFrameList(pkgName: pkgName, animName: "opening", frameList: openingFrameList);
+
+            var closingFrameList = new List<AnimFrame>();
+            for (int i = 5; i >= 1; i--)
+            {
+                closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: (short)(i > 1 ? duration : 0), crop: crop, scale: scale, depthPercent: depthPercent));
+            }
+            AddFrameList(pkgName: pkgName, animName: "closing", frameList: closingFrameList);
+
+            AddFrameList(pkgName: pkgName, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+            AddFrameList(pkgName: pkgName, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+        }
+
+        public static void AddRPGMakerPackageV1(PkgName pkgName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 96;
             int offsetY = setNoY * 128;
@@ -1231,7 +2067,7 @@ namespace SonOfRobin
                      AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
-                AddFrameList(animPackage: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
             }
 
             // walking
@@ -1244,13 +2080,23 @@ namespace SonOfRobin
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: (width * 2) + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
-                AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
+            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddRPGMakerPackageV2(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
+        public static void AddRPGMakerPackageV2ForSizeDict(PkgName pkgName, string atlasName, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict)
+        {
+            foreach (var kvp in scaleForSizeDict)
+            {
+                byte animSize = kvp.Key;
+                float scale = kvp.Value;
+                AddRPGMakerPackageV2(pkgName: pkgName, atlasName: atlasName, setNoX: setNoX, setNoY: setNoY, animSize: animSize, scale: scale);
+            }
+        }
+
+        public static void AddRPGMakerPackageV2(PkgName pkgName, string atlasName, int setNoX, int setNoY, byte animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 144;
             int offsetY = setNoY * 192;
@@ -1272,7 +2118,7 @@ namespace SonOfRobin
                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
-                AddFrameList(animPackage: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
             }
 
             // walking
@@ -1293,10 +2139,10 @@ namespace SonOfRobin
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
-                AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
+                AddFrameList(pkgName: pkgName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
 
-            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[packageName] }); // adding default frame
+            AddFrameList(pkgName: pkgName, animSize: animSize, frameList: new List<AnimFrame> { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
         private static string JsonDataPath
@@ -1358,27 +2204,16 @@ namespace SonOfRobin
             jsonDict["currentVersion"] = currentVersion;
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+            MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
-        public static void DeleteUsedAtlases()
+        public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
         {
-            // Should be used after loading textures from all atlasses.
-            // Deleted textures will not be available for use any longer.
+            LoadPackage(pkgName);
+            if (croppedFramesForPkgs.ContainsKey(pkgName)) return croppedFramesForPkgs[pkgName];
 
-            var usedAtlasNames = new HashSet<string>();
-
-            foreach (List<AnimFrame> frameList in frameListById.Values)
-            {
-                foreach (AnimFrame animFrame in frameList)
-                {
-                    if (animFrame.atlasName != null && !usedAtlasNames.Contains(animFrame.atlasName)) usedAtlasNames.Add(animFrame.atlasName);
-                }
-            }
-
-            foreach (string atlasName in usedAtlasNames)
-            {
-                TextureBank.DisposeTexture(atlasName);
-            }
+            LoadPackage(PkgName.NoAnim);
+            return croppedFramesForPkgs[PkgName.NoAnim];
         }
     }
 }

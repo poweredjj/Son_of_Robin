@@ -417,7 +417,10 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
-                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    if (this.backgroundTask == null)
+                    {
+                        this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    }
                     else
                     {
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
@@ -499,7 +502,7 @@ namespace SonOfRobin
 
             if (!this.demoMode)
             {
-                if (!saveDataActive) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                if (!saveDataActive && this.ActiveLevel.levelType == Level.LevelType.Island) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
                 else Craft.UnlockRecipesAddedInGameUpdate(world: this);
 
                 if (this.ActiveLevel.levelType == Level.LevelType.OpenSea) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart2, ignoreDelay: true);
@@ -582,10 +585,8 @@ namespace SonOfRobin
                     PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
                     var spriteData = (Dictionary<string, Object>)pieceData["base_sprite"];
-                    int spritePosX = (int)(Int64)spriteData["posX"];
-                    int spritePosY = (int)(Int64)spriteData["posY"];
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, ignoreCollisions: true, id: (int)(Int64)pieceData["base_id"]);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((int)(Int64)spriteData["posX"], (int)(Int64)spriteData["posY"]), templateName: templateName, ignoreCollisions: true, precisePlacement: true, id: (int)(Int64)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
@@ -909,6 +910,19 @@ namespace SonOfRobin
                 this.CompleteCreation();
                 return;
             }
+
+            bool animPkgsLoaded = false;
+            while (true)
+            {
+                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
+                {
+                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
+                    sprite.LoadPackageAndAssignFrame();
+                    animPkgsLoaded = true;
+                }
+                else break;
+            }
+            if (animPkgsLoaded) AnimData.SaveJsonDict();
 
             this.ProcessInput();
             this.UpdateViewParams();

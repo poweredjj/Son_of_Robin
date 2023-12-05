@@ -1571,8 +1571,8 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.MealStandard].texture };
-                if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).texture };
+                if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
@@ -1616,8 +1616,8 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.PotionRed].texture };
-                if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture };
+                if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Alchemy level up!\n       Level {this.BrewLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
@@ -1659,8 +1659,8 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.croppedFramesForPkgs[AnimData.PkgName.MeatRawPrime].texture };
-                if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture };
+                if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Meat harvesting level up!\n       Level {this.HarvestLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 

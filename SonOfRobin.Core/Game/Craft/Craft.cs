@@ -321,12 +321,12 @@ namespace SonOfRobin
                 SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
 
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).Texture }, startingSound: soundName).ConvertToTask());
 
                 if (world.craftStats.LastCraftWasSmart)
                 {
                     taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true,
-                        imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+                        imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).Texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                     if (!tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
                     {
@@ -385,8 +385,8 @@ namespace SonOfRobin
                     bool levelMaster = recipeLevel == this.maxLevel;
                     string recipeNewLevelName = levelMaster ? "master |" : $"{recipeLevel + 1}";
 
-                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
-                    if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).Texture };
+                    if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                     taskChain.Add(new HintMessage(text: $"{pieceName} |\nRecipe level up!\n       {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
@@ -402,7 +402,7 @@ namespace SonOfRobin
                     {
                         PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
                         unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
-                        imageList.Add(unlockedPieceInfo.texture);
+                        imageList.Add(unlockedPieceInfo.Texture);
                     }
 
                     taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
@@ -418,8 +418,8 @@ namespace SonOfRobin
 
                     string newLevelName = levelMaster ? "master |" : $"{player.CraftLevel}";
 
-                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture };
-                    if (levelMaster) imageList.Add(AnimData.croppedFramesForPkgs[AnimData.PkgName.Star].texture);
+                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).Texture };
+                    if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                     taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInputDefaultDuration: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
@@ -612,7 +612,7 @@ namespace SonOfRobin
                 {
                     PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
                     unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
-                    imageList.Add(unlockedPieceInfo.texture);
+                    imageList.Add(unlockedPieceInfo.Texture);
                 }
 
                 Sound.QuickPlay(SoundData.Name.Notification1);
@@ -657,8 +657,6 @@ namespace SonOfRobin
 
             List<Recipe> notUnlockableRecipes = new List<Recipe>();
 
-            List<PieceHint> pieceHintData = PieceHintData.GetData();
-
             foreach (Recipe initialHiddenRecipe in HiddenRecipes)
             {
                 Recipe currentHiddenRecipe = initialHiddenRecipe;
@@ -689,7 +687,7 @@ namespace SonOfRobin
                     if (!nextLevelRecipeFound)
                     {
                         // for recipes unlocked in PieceHints
-                        foreach (PieceHint pieceHint in pieceHintData)
+                        foreach (PieceHint pieceHint in PieceHint.pieceHintList)
                         {
                             if (pieceHint.recipesToUnlock != null && pieceHint.recipesToUnlock.Contains(currentHiddenRecipe.pieceToCreate))
                             {

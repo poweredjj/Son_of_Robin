@@ -41,7 +41,7 @@ namespace SonOfRobin
         public float opacity;
         public OpacityFade opacityFade;
         public AnimFrame AnimFrame { get; private set; }
-        public AnimFrame CroppedAnimFrame { get { return AnimData.croppedFramesForPkgs[this.AnimPackage]; } }
+        public AnimFrame CroppedAnimFrame { get { return AnimData.GetCroppedFrameForPackage(this.AnimPackage); } }
         public Color color;
         private bool visible;
 
@@ -200,6 +200,8 @@ namespace SonOfRobin
         {
             this.position = Vector2.Zero; // needed for placement purposes
 
+            if (randomPlacement && !ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();
+
             bool placedCorrectly;
 
             if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
@@ -313,9 +315,9 @@ namespace SonOfRobin
         {
             int duration = 0;
 
-            if (AnimData.frameListById.ContainsKey(this.CompleteAnimID))
+            if (AnimData.frameArrayById.ContainsKey(this.CompleteAnimID))
             {
-                foreach (var frame in AnimData.frameListById[this.CompleteAnimID])
+                foreach (var frame in AnimData.frameArrayById[this.CompleteAnimID])
                 { duration += frame.duration; }
             }
 
@@ -679,6 +681,12 @@ namespace SonOfRobin
             }
         }
 
+        public void LoadPackageAndAssignFrame()
+        {
+            AnimData.LoadPackage(this.AnimPackage);
+            this.AssignFrame(checkForCollision: false);
+        }
+
         public void AssignFrameForce(AnimFrame animFrame)
         {
             // does not check collisions, use with caution
@@ -691,13 +699,14 @@ namespace SonOfRobin
 
             try
             {
-                if (forceRewind || this.currentFrameIndex >= AnimData.frameListById[this.CompleteAnimID].Count) this.RewindAnim();
-                this.AnimFrame = AnimData.frameListById[this.CompleteAnimID][this.currentFrameIndex];
+                if (forceRewind || this.currentFrameIndex >= AnimData.frameArrayById[this.CompleteAnimID].Length) this.RewindAnim();
+                this.AnimFrame = AnimData.frameArrayById[this.CompleteAnimID][this.currentFrameIndex];
             }
-            catch (KeyNotFoundException) // placeholder frame if the animation was missing
+            catch (KeyNotFoundException)
             {
-                MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.croppedFramesForPkgs[AnimData.PkgName.NoAnim];
+                // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
+                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
+                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
@@ -721,19 +730,19 @@ namespace SonOfRobin
         public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.AnimSize, animName: this.AnimName);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public bool CheckIfAnimSizeExists(byte animSizeToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: animSizeToCheck, animName: this.AnimName);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public bool CheckIfAnimNameExists(string animNameToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: this.AnimSize, animName: animNameToCheck);
-            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
         }
 
         public void RewindAnim()

@@ -290,7 +290,10 @@ namespace SonOfRobin
                 return fileStream;
             }
             catch (FileNotFoundException)
-            { MessageLog.Add(debugMessage: true, text: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
+            {
+                // turned off, because it makes a lot of messages when loading anims for the first time
+                // MessageLog.Add(debugMessage: true, text: $"FileNotFoundException while trying to read {Path.GetFileName(path)}.");
+            }
             catch (IOException) // png file corrupted
             { MessageLog.Add(debugMessage: true, text: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted

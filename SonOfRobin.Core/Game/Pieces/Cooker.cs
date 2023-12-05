@@ -144,7 +144,7 @@ namespace SonOfRobin
                 int cookingDuration = this.cookingDoneFrame - this.cookingStartFrame;
                 int cookingCurrentFrame = this.world.CurrentUpdate - this.cookingStartFrame;
 
-                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
+                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
             }
 
             base.DrawStatBar();
@@ -179,7 +179,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).texture);
+                    imageList.Add(PieceInfo.GetInfo(fuel).Texture);
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -196,7 +196,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name ingredient in ingredientNames)
                 {
                     ingredientMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(ingredient).texture);
+                    imageList.Add(PieceInfo.GetInfo(ingredient).Texture);
                 }
 
                 new TextWindow(text: $"I don't have any {ingredientMarkers} ingredients.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);

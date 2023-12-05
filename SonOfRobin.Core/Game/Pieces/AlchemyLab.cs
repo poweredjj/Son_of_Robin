@@ -152,7 +152,7 @@ namespace SonOfRobin
                 int brewingDuration = this.brewingDoneFrame - this.brewingStartFrame;
                 int brewingCurrentFrame = this.world.CurrentUpdate - this.brewingStartFrame;
 
-                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
+                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
             }
 
             base.DrawStatBar();
@@ -198,7 +198,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).texture);
+                    imageList.Add(PieceInfo.GetInfo(fuel).Texture);
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -213,7 +213,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name baseName in baseNames)
                 {
                     baseMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(baseName).texture);
+                    imageList.Add(PieceInfo.GetInfo(baseName).Texture);
                 }
 
                 new TextWindow(text: $"I don't have any {baseMarkers} base.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);

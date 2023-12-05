@@ -73,14 +73,14 @@ namespace SonOfRobin
             return category switch
             {
                 Category.Wood => PieceInfo.GetTexture(PieceTemplate.Name.TreeBig),
-                Category.Stone => AnimData.croppedFramesForPkgs[AnimData.PkgName.MineralsSmall3].texture,
+                Category.Stone => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MineralsSmall3).texture,
                 Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
                 Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
                 Category.Flesh => TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal),
-                Category.Leather => AnimData.croppedFramesForPkgs[AnimData.PkgName.Leather].texture,
+                Category.Leather => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Leather).texture,
                 Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
                 Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
-                _ => AnimData.croppedFramesForPkgs[AnimData.PkgName.NoAnim].texture,
+                _ => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim).texture,
             }; ;
         }
 
@@ -474,9 +474,9 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Heart].texture);
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).texture);
 
-            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Flame].texture);
+            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
 
             StatBar.FinishThisBatch();
         }

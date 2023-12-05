@@ -309,7 +309,7 @@ namespace SonOfRobin
             if (buildingFinished)
             {
                 constructionMessage = $"| {Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
-                imageList.Add(nextLevelPiece.pieceInfo.texture);
+                imageList.Add(nextLevelPiece.pieceInfo.Texture);
             }
             else
             {
@@ -347,7 +347,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.croppedFramesForPkgs[AnimData.PkgName.Hammer].texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Hammer).texture);
 
             base.DrawStatBar();
         }
