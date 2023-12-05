@@ -8,18 +8,10 @@ namespace SonOfRobin
 {
     public class GridTemplate
     {
-        private const float currentVersion = 1.32f;
+        private const float currentVersion = 1.321f;
         private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
-        private static Point properCellSize = new(1, 1);
-        private static Point ProperCellSize
-        {
-            get
-            {
-                if (properCellSize.X == 1 && properCellSize.Y == 1) properCellSize = CalculateCellSize();
-                return properCellSize;
-            }
-        }
+        public static readonly Point ProperCellSize = new(228, 246); // must be calculated manually after updating anim packages
 
         public readonly int seed;
         public readonly int width;
@@ -200,9 +192,11 @@ namespace SonOfRobin
 
         public static Point CalculateCellSize()
         {
+            // should only be invoked after loading all anim packages
+
             Vector2 maxFrameSize = CalculateMaxFrameSize();
-            int cellWidth = (int)(maxFrameSize.X * 1.1);
-            int cellHeight = (int)(maxFrameSize.Y * 1.1);
+            int cellWidth = (int)maxFrameSize.X + 2;
+            int cellHeight = (int)maxFrameSize.Y + 2;
 
             cellWidth = (int)Math.Ceiling(cellWidth / 2d) * 2;
             cellHeight = (int)Math.Ceiling(cellHeight / 2d) * 2;

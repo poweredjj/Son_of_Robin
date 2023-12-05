@@ -1171,9 +1171,12 @@ namespace SonOfRobin
                             DateTime startTime = DateTime.Now;
                             AnimData.LoadAllPackages();
                             TimeSpan loadingDuration = DateTime.Now - startTime;
-                            MessageLog.Add(debugMessage: true, text: $"Sounds loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+                            MessageLog.Add(debugMessage: true, text: $"Anims loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
+
+                            Point cellSize = GridTemplate.CalculateCellSize();
+                            MessageLog.Add(debugMessage: true, text: $"Cell size: {cellSize.X} x {cellSize.Y}", textColor: Color.GreenYellow);
                         };
-                        new Invoker(menu: menu, name: "load all anims", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllAnimsDlgt);
+                        new Invoker(menu: menu, name: "load all anims & calculate cell size", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllAnimsDlgt);
 
                         Scheduler.ExecutionDelegate checkAllPieceHintsDlgt = () =>
                         {

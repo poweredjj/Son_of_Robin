@@ -7,7 +7,9 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000028f; // version number should be incremented when any existing asset is updated
+        // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
+        public const float currentVersion = 1.000029f; // version number should be incremented when any existing asset is updated
+        // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();

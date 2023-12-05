@@ -107,7 +107,7 @@ namespace SonOfRobin
 
             if (cellWidth == 0 && cellHeight == 0)
             {
-                Point cellSize = GridTemplate.CalculateCellSize();
+                Point cellSize = GridTemplate.ProperCellSize;
                 this.cellWidth = cellSize.X;
                 this.cellHeight = cellSize.Y;
             }
