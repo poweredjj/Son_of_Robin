@@ -13,7 +13,8 @@ namespace SonOfRobin
                 // hints that disable other hints, should go before those
 
                 new PieceHint(
-                    type: PieceHint.Type.CrateAnother, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateRegular}),
+                    type: PieceHint.Type.CrateAnother,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CrateRegular}),
 
                 new PieceHint(
                     type: PieceHint.Type.TentModernPacked,
@@ -100,7 +101,8 @@ namespace SonOfRobin
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.ShootProjectile}),
 
                 new PieceHint(
-                    type: PieceHint.Type.AnimalAxe, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
+                    type: PieceHint.Type.AnimalAxe,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     alsoDisables: new PieceHint.Type[] {PieceHint.Type.AnimalNegative},
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal}),
 
@@ -111,28 +113,34 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.SpearWood, PieceTemplate.Name.SpearStone, PieceTemplate.Name.SpearIron, PieceTemplate.Name.SpearCrystal}),
 
                 new PieceHint(
-                    type: PieceHint.Type.AnimalBow, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
+                    type: PieceHint.Type.AnimalBow,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     alsoDisables: new PieceHint.Type[] {PieceHint.Type.AnimalNegative},
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced }),
 
                 new PieceHint(
-                    type: PieceHint.Type.AnimalNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
+                    type: PieceHint.Type.AnimalNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{ PieceTemplate.Name.BowBasic, PieceTemplate.Name.SpearStone, PieceTemplate.Name.BowAdvanced }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSitePositive,  fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
+                    type: PieceHint.Type.DigSitePositive,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
                     alsoDisables: new PieceHint.Type[] { PieceHint.Type.DigSiteNegative },
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSiteNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
+                    type: PieceHint.Type.DigSiteNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSiteGlass, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.GlassDigSite }),
+                    type: PieceHint.Type.DigSiteGlass,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.GlassDigSite }),
 
                 new PieceHint(
-                    type: PieceHint.Type.WoodNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
+                    type: PieceHint.Type.WoodNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal }),
 
                 new PieceHint(
@@ -149,16 +157,19 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.StoneNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.MineralsMossyBig, PieceTemplate.Name.MineralsMossySmall},
+                    type: PieceHint.Type.StoneNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.MineralsMossyBig, PieceTemplate.Name.MineralsMossySmall},
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.CrystalPositive, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
+                    type: PieceHint.Type.CrystalPositive,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
                     alsoDisables: new PieceHint.Type[] {PieceHint.Type.CrystalNegative},
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(
-                    type: PieceHint.Type.CrystalNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
+                    type: PieceHint.Type.CrystalNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
                     playerDoesNotOwnAnyOfThesePieces: new PieceTemplate.Name[]{ PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(
@@ -202,16 +213,19 @@ namespace SonOfRobin
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.ShakeFruit}),
 
                 new PieceHint(
-                    type: PieceHint.Type.CarrotPlant, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CarrotPlant},
+                    type: PieceHint.Type.CarrotPlant,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CarrotPlant},
                     fieldPieceHasNotEmptyStorage: true,
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.ShakeFruit}),
 
                 new PieceHint(
-                    type: PieceHint.Type.HotPlate, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.HotPlate},
+                    type: PieceHint.Type.HotPlate,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.HotPlate},
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.Cook}),
 
                 new PieceHint(
-                    type: PieceHint.Type.Cooker, fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CookingPot},
+                    type: PieceHint.Type.Cooker,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.CookingPot},
                     alsoDisables: new PieceHint.Type[] {PieceHint.Type.HotPlate },
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.Cook}),
 
@@ -221,7 +235,8 @@ namespace SonOfRobin
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.HarvestMeat}),
 
                 new PieceHint(
-                    type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
+                    type: PieceHint.Type.AlchemyLab,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.PotionBrew}),
 
                 new PieceHint(
@@ -295,7 +310,8 @@ namespace SonOfRobin
                  new PieceHint(
                     showCineCurtains: true,
                     ignoreHintSetting: true,
-                    type: PieceHint.Type.CineTotem, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Totem }),
+                    type: PieceHint.Type.CineTotem,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Totem }),
 
                 new PieceHint(
                     type: PieceHint.Type.CineLookForSurvivors1,
@@ -359,15 +375,18 @@ namespace SonOfRobin
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.ConstructionSites }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DangerousBear, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Bear }),
+                    type: PieceHint.Type.DangerousBear,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Bear }),
 
                 new PieceHint(
-                    type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
+                    type: PieceHint.Type.ExplosiveGas,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
                     playerOwnsAnyOfThesePieces: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
                     playerOwnsAllOfThesePieces: new PieceTemplate.Name[] { PieceTemplate.Name.ArrowExploding }),
 
                 new PieceHint(
-                    type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor }),
+                    type: PieceHint.Type.TreasureJar,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor }),
 
                 new PieceHint(
                     type: PieceHint.Type.CandleForLantern,
@@ -410,15 +429,18 @@ namespace SonOfRobin
                     piecesCraftedCount: new CountComparison[] { new CountComparison(name: PieceTemplate.Name.FertileGroundSmall, count: 0, comparison: CountComparison.Comparison.Equal) }),
 
                new PieceHint(
-                    type: PieceHint.Type.PlantingPositive, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
+                    type: PieceHint.Type.PlantingPositive,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall },
                     alsoDisables: new PieceHint.Type[] { PieceHint.Type.PlantingNegative },
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.Plant }),
 
                new PieceHint(
-                    type: PieceHint.Type.WoodenFenceNegative, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall }),
+                    type: PieceHint.Type.WoodenFenceNegative,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FertileGroundSmall }),
 
                new PieceHint(
-                    type: PieceHint.Type.WoodenFencePositive, fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort },
+                    type: PieceHint.Type.WoodenFencePositive,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort },
                     alsoDisables: new PieceHint.Type[] { PieceHint.Type.WoodenFenceNegative }),
 
                new PieceHint(
