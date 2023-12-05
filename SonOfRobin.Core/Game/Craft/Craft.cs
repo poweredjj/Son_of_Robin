@@ -657,8 +657,6 @@ namespace SonOfRobin
 
             List<Recipe> notUnlockableRecipes = new List<Recipe>();
 
-            List<PieceHint> pieceHintData = PieceHintData.GetData();
-
             foreach (Recipe initialHiddenRecipe in HiddenRecipes)
             {
                 Recipe currentHiddenRecipe = initialHiddenRecipe;
@@ -689,7 +687,7 @@ namespace SonOfRobin
                     if (!nextLevelRecipeFound)
                     {
                         // for recipes unlocked in PieceHints
-                        foreach (PieceHint pieceHint in pieceHintData)
+                        foreach (PieceHint pieceHint in PieceHint.pieceHintList)
                         {
                             if (pieceHint.recipesToUnlock != null && pieceHint.recipesToUnlock.Contains(currentHiddenRecipe.pieceToCreate))
                             {

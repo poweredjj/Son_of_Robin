@@ -44,7 +44,7 @@ namespace SonOfRobin
             { Step.MobileWait, "adding mobile waiting time" },
             { Step.StartBgTasks, "starting background tasks" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
-            { Step.LoadAnimsJson, "loading animations" },
+            { Step.LoadAnimsJson, "loading animation data" },
             { Step.BuildMappings, "building input mappings" },
             { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
@@ -150,6 +150,7 @@ namespace SonOfRobin
                 case Step.LoadAnimsJson:
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
                     AnimData.LoadPackage(AnimData.PkgName.Loading);
+                    PieceHint.PopulateData();
 
                     break;
 

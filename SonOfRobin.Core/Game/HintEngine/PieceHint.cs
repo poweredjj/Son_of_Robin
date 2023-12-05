@@ -164,9 +164,9 @@ namespace SonOfRobin
             }
         }
 
-        public static void RefreshData()
+        public static void PopulateData()
         {
-            pieceHintList.Clear();
+            if (pieceHintList.Count > 0) throw new ArgumentException("PieceHint data should not be populated more than once.");
             pieceHintList.AddRange(PieceHintData.GetData());
         }
 
