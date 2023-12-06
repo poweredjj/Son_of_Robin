@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
-        public const float currentVersion = 1.000029f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000030f; // version number should be incremented when any existing asset is updated
 
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
@@ -139,7 +139,8 @@ namespace SonOfRobin
             AlchemyLabStandard = 87,
             AlchemyLabAdvanced = 88,
 
-            Furnace = 89,
+            FurnaceConstructionSite = 271,
+            FurnaceComplete = 89,
             Anvil = 90,
             HotPlate = 91,
             CookingPot = 92,
@@ -392,8 +393,6 @@ namespace SonOfRobin
             CaveExit = 300,
 
             // obsolete below (kept for compatibility with old saves)
-
-            StarObsolete = 271,
         }
 
         public static void LoadAllPackages()
@@ -918,29 +917,44 @@ namespace SonOfRobin
                 case PkgName.AlchemyLabStandard:
                     {
                         int layer = 1;
+                        float scale = 0.5f;
 
-                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: scale));
                         // the same as "off"
-                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: layer, scale: scale));
                         break;
                     }
 
                 case PkgName.AlchemyLabAdvanced:
                     {
                         int layer = 1;
+                        float scale = 0.5f;
 
-                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: scale));
                         // the same as "off"
-                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: 0.5f));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: layer, scale: scale));
                         break;
                     }
 
-                case PkgName.Furnace:
+                case PkgName.FurnaceConstructionSite:
+                    {
+                        float scale = 0.2f;
+
+                        for (int animSize = 0; animSize <= 2; animSize++)
+                        {
+                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"furnace/furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize);
+                        }
+
+                        break;
+                    }
+
+                case PkgName.FurnaceComplete:
                     {
                         int layer = 1;
+                        float scale = 0.2f;
 
-                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 0, y: 144, width: 48, height: 48));
-                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "mv_blacksmith_by_schwarzenacht_dapf6ek", layer: layer, x: 48, y: 144, width: 48, height: 48));
+                        AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "furnace/furnace_off", layer: layer, scale: scale, crop: false));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "furnace/furnace_off", layer: layer, scale: scale, crop: false));
                         break;
                     }
 
@@ -1971,10 +1985,6 @@ namespace SonOfRobin
 
                 case PkgName.CaveExit:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
-                    break;
-
-                case PkgName.StarObsolete:
-                    // TODO remove - kept for compatibility with old saves
                     break;
 
                 default:

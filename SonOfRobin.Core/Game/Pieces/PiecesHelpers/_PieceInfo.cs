@@ -1472,7 +1472,19 @@ namespace SonOfRobin
                         this.isAffectedByWind = true;
                         break;
 
-                    case PieceTemplate.Name.Furnace:
+                    case PieceTemplate.Name.FurnaceConstructionSite:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.fireAffinity = 0.0f; // protected from fire
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = false;
+                        this.allowedDensity = new AllowedDensity(radius: 500, forbidOverlapSameClass: true);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.FireBurst, ignore3DAlways: true);
+                        break;
+
+                    case PieceTemplate.Name.FurnaceComplete:
                         this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
@@ -3236,9 +3248,25 @@ namespace SonOfRobin
         {
             // creates one instance of every piece type - to get required info out of it
             {
-                foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                if (SonOfRobinGame.platform == Platform.Mobile) // using parallel will freeze on mobile
                 {
-                    info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
+                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                    {
+                        info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
+                    }
+                }
+                else
+                {
+                    ConcurrentDictionary<PieceTemplate.Name, Info> infoByNameConcurrentDict = new();
+                    Parallel.ForEach(PieceTemplate.allNames, SonOfRobinGame.defaultParallelOptions, name =>
+                    {
+                        infoByNameConcurrentDict[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
+                    });
+
+                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                    {
+                        info[name] = infoByNameConcurrentDict[name];
+                    }
                 }
             }
 

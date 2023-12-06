@@ -16,7 +16,7 @@ namespace SonOfRobin
             return new List<Craft.Recipe> {
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic, PieceTemplate.Name.HotPlate, PieceTemplate.Name.WorkshopMeatHarvesting, PieceTemplate.Name.WorkshopLeatherBasic }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.FurnaceConstructionSite }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.IronNail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.AlchemyLabStandard, PieceTemplate.Name.WorkshopLeatherAdvanced }),
 
@@ -70,7 +70,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Crystal, 3 },{ PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.IronNail, 20 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.Granite, 6 }, { PieceTemplate.Name.WoodPlank, 16 }, { PieceTemplate.Name.Clay, 2 }}, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.Anvil }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.FurnaceConstructionSite, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.ShovelStone, 2 }}, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.Anvil }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Anvil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 3 }, { PieceTemplate.Name.Granite, 3 }, { PieceTemplate.Name.WoodLogHard, 3 }}, fatigue: fatigueItemMedium, isReversible: true, isHidden: true),
 

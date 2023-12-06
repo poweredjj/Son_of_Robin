@@ -704,8 +704,8 @@ namespace SonOfRobin
 
                 case PieceHint.Type.CoffeeRaw:
                     return new List<HintMessage> {
-                        new HintMessage(text: $"This is | {PieceInfo.GetInfo(PieceTemplate.Name.CoffeeRaw).readableName}!\nI could roast it in a | {PieceInfo.GetInfo(PieceTemplate.Name.Furnace).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Furnace) })};
+                        new HintMessage(text: $"This is | {PieceInfo.GetInfo(PieceTemplate.Name.CoffeeRaw).readableName}!\nI could roast it in a | {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.",
+                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete) })};
 
                 case PieceHint.Type.SharedChest:
                     return new List<HintMessage> {

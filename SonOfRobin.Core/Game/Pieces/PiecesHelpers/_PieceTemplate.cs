@@ -123,7 +123,8 @@ namespace SonOfRobin
             FenceHorizontalLong = 89,
             FenceVerticalLong = 90,
 
-            Furnace = 91,
+            FurnaceConstructionSite = 235,
+            FurnaceComplete = 91,
             Anvil = 92,
             HotPlate = 93,
             CookingPot = 94,
@@ -1165,9 +1166,43 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
-                case Name.Furnace:
+                case Name.FurnaceConstructionSite:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Furnace, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        Dictionary<int, Dictionary<Name, int>> ingredientsForLevels = new()
+                        {
+                            { 0, new Dictionary<Name, int>{
+                                { Name.WoodPlank, 4 },
+                                { Name.Stone, 5 },
+                                { Name.Stick, 4 },
+                            } },
+
+                            { 1, new Dictionary<Name, int>{
+                                { Name.Granite, 5 },
+                                { Name.Stone, 2 },
+                            } },
+
+                            { 2, new Dictionary<Name, int>{
+                                { Name.Clay, 3 },
+                                { Name.Fat, 5 },
+                                { Name.HideCloth, 3 },
+                            } },
+                        };
+
+                        Dictionary<int, string> descriptionsForLevels = new()
+                        {
+                            { 0, "base" },
+                            { 1, "top" },
+                            { 2, "insulation" },
+                        };
+
+                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceConstructionSite, allowedTerrain: AllowedTerrain.GetFieldCraft(), materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.FurnaceComplete, readableName: "furnace construction site", description: "Furnace construction site.");
+
+                        return boardPiece;
+                    }
+
+                case Name.FurnaceComplete:
+                    {
+                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceComplete, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), canBeUsedDuringRain: false);
 
                         return boardPiece;
