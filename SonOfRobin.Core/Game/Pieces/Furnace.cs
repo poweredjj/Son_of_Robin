@@ -15,6 +15,8 @@ namespace SonOfRobin
             { PieceTemplate.Name.CoffeeRaw, PieceTemplate.Name.CoffeeRoasted },
         };
 
+        private readonly byte storageWidth;
+
         private int smeltingStartFrame;
         private int smeltingDoneFrame;
         public bool IsOn { get; private set; }
@@ -27,10 +29,11 @@ namespace SonOfRobin
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
         {
+            this.storageWidth = 5;
             this.IsOn = false;
             this.smeltingDoneFrame = 0;
 
-            this.PieceStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Smelting, stackLimit: 1);
+            this.PieceStorage = new PieceStorage(width: this.storageWidth, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Smelting, stackLimit: 1);
             this.ConfigureStorage();
         }
 
@@ -38,21 +41,34 @@ namespace SonOfRobin
         {
             get
             {
-                var matSlots = new List<StorageSlot>();
-                for (int i = 0; i <= 2; i++)
+                var matSlots = new StorageSlot[this.storageWidth];
+
+                for (int i = 0; i < this.storageWidth; i++)
                 {
-                    matSlots.Add(this.PieceStorage.GetSlot(i, 0));
+                    matSlots[i] = this.PieceStorage.GetSlot(i, 0);
                 }
 
-                return matSlots.ToArray();
+                return matSlots;
             }
         }
 
-        private StorageSlot FuelSlot
-        { get { return this.PieceStorage.GetSlot(1, 1); } }
+        private StorageSlot[] FuelSlots
+        {
+            get
+            {
+                var fuelSlots = new StorageSlot[this.storageWidth];
+
+                for (int i = 0; i < this.storageWidth; i++)
+                {
+                    fuelSlots[i] = this.PieceStorage.GetSlot(i, 1);
+                }
+
+                return fuelSlots;
+            }
+        }
 
         private StorageSlot FlameTriggerSlot
-        { get { return this.PieceStorage.GetSlot(1, 2); } }
+        { get { return this.PieceStorage.GetSlot(this.storageWidth / 2, 2); } }
 
         private void ConfigureStorage()
         {
@@ -69,19 +85,22 @@ namespace SonOfRobin
             if (flameTriggerSlot.IsEmpty) flameTriggerSlot.AddPiece(PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.SmeltingTrigger, world: this.world));
             flameTriggerSlot.locked = true;
 
-            StorageSlot fuelSlot = this.FuelSlot;
-            fuelSlot.locked = false;
-            fuelSlot.hidden = false;
-            fuelSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Coal };
-            fuelSlot.label = "coal";
-            fuelSlot.stackLimit = 255;
-
             foreach (StorageSlot matSlot in this.MatSlots)
             {
                 matSlot.locked = false;
                 matSlot.hidden = false;
                 matSlot.label = "material";
+                matSlot.stackLimit = 1;
                 matSlot.allowedPieceNames = new HashSet<PieceTemplate.Name>(transformDict.Keys);
+            }
+
+            foreach (StorageSlot fuelSlot in this.FuelSlots)
+            {
+                fuelSlot.locked = false;
+                fuelSlot.hidden = false;
+                fuelSlot.label = "coal";
+                fuelSlot.stackLimit = 1;
+                fuelSlot.allowedPieceNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Coal };
             }
         }
 
@@ -147,6 +166,13 @@ namespace SonOfRobin
 
             var allowedMaterials = transformDict.Keys.ToHashSet();
             StorageSlot[] matSlots = this.MatSlots;
+            StorageSlot[] fuelSlots = this.FuelSlots;
+
+            List<BoardPiece> storedFuel = new();
+            foreach (StorageSlot fuelSlot in fuelSlots)
+            {
+                storedFuel.AddRange(fuelSlot.GetAllPieces(remove: false));
+            }
 
             List<BoardPiece> storedMats = new();
             foreach (StorageSlot matSlot in matSlots)
@@ -164,11 +190,9 @@ namespace SonOfRobin
                 return;
             }
 
-            var storedFuel = this.FuelSlot.GetAllPieces(remove: false);
-
             if (storedMats.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need at least one | | | material and some | coal to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need at least one | | | material and some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -180,18 +204,21 @@ namespace SonOfRobin
 
             if (storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need some | coal to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
-            this.FuelSlot.GetAllPieces(remove: true);
+            if (storedMats.Count > storedFuel.Count)
+            {
+                new TextWindow(text: $"I need more | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
 
             Player player = this.world.Player;
 
-            // calculating meal mass
+            // calculating smelting time
 
-            int smeltingTime = (int)(60 * 60 * 3);
-            if (Preferences.debugInstantCookBrewSmelt) smeltingTime = 30;
+            int smeltingTime = Preferences.debugInstantCookBrewSmelt ? 30 : 60 * 60 * storedMats.Count;
 
             // registering stats
 
@@ -210,6 +237,16 @@ namespace SonOfRobin
                     matSlot.AddPiece(processedMaterial);
                     matSlot.allowedPieceNames.Remove(processedMaterial.name);
                 }
+            }
+
+            // removing used coal
+
+            int fuelRemovedCount = 0;
+            foreach (StorageSlot fuelSlot in fuelSlots)
+            {
+                List<BoardPiece> fuelPieces = fuelSlot.GetAllPieces(remove: true);
+                fuelRemovedCount += fuelPieces.Count;
+                if (fuelRemovedCount >= storedMats.Count) break;
             }
 
             // blocking the furnace for "smelting duration"

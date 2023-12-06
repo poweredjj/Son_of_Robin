@@ -1364,11 +1364,7 @@ namespace SonOfRobin
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
 
-                            if (cooker.IsOn)
-                            {
-                                ExecutionDelegate showProgressDlgt = () => { cooker.ShowCookingProgress(); };
-                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
-                            }
+                            if (cooker.IsOn) cooker.ShowCookingProgress();
                             else new Task(taskName: TaskName.OpenContainer, executeHelper: cooker, delay: 0);
 
                             return;
@@ -1378,11 +1374,7 @@ namespace SonOfRobin
                         {
                             Furnace furnace = (Furnace)this.ExecuteHelper;
 
-                            if (furnace.IsOn)
-                            {
-                                ExecutionDelegate showProgressDlgt = () => { furnace.ShowSmeltingProgress(); };
-                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
-                            }
+                            if (furnace.IsOn) furnace.ShowSmeltingProgress();
                             else new Task(taskName: TaskName.OpenContainer, executeHelper: furnace, delay: 0);
 
                             return;
@@ -1392,11 +1384,7 @@ namespace SonOfRobin
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
 
-                            if (alchemyLab.IsOn)
-                            {
-                                ExecutionDelegate showProgressDlgt = () => { alchemyLab.ShowBrewingProgress(); };
-                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
-                            }
+                            if (alchemyLab.IsOn) alchemyLab.ShowBrewingProgress();
                             else new Task(taskName: TaskName.OpenContainer, executeHelper: alchemyLab, delay: 0);
 
                             return;
