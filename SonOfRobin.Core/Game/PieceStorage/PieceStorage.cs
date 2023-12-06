@@ -22,6 +22,7 @@ namespace SonOfRobin
             Lab = 10,
             Totem = 11,
             Construction = 12,
+            Smelting = 13,
         }
 
         public readonly World world;

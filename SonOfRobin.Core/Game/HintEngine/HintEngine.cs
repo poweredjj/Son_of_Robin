@@ -833,6 +833,15 @@ namespace SonOfRobin
                                 textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.HerbsCyan).texture }, minMarkerWidthMultiplier: 2f));
                             }
 
+                            if (this.world.smeltStats.TotalCookCount > 0)
+                            {
+                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
+
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronBar).texture }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| materials processed: {this.world.smeltStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronOre).texture }, minMarkerWidthMultiplier: 2f));
+                            }
+
                             if (this.world.meatHarvestStats.TotalHarvestCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));

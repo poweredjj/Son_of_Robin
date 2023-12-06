@@ -127,6 +127,8 @@ namespace SonOfRobin
             Destruction = 2,
             TurnOffWorkshop = 3,
             FinishCooking = 4,
+            FinishSmelting = 23,
+            FinishBrewing = 16,
             RestorePieceCreation = 5,
             FadeOutSprite = 6,
             RestoreHint = 7,
@@ -138,7 +140,6 @@ namespace SonOfRobin
             PlaySoundByName = 13,
             YieldDropDebris = 14,
             AnimalCallForHelp = 15,
-            FinishBrewing = 16,
             StopBurning = 17,
             TurnOffHarvestingWorkshop = 18,
             DropDebris = 19,
@@ -287,6 +288,13 @@ namespace SonOfRobin
                     {
                         AlchemyLab alchemyLab = (AlchemyLab)this.boardPiece;
                         alchemyLab.TurnOff();
+                        return;
+                    }
+
+                case EventName.FinishSmelting:
+                    {
+                        Furnace furnace = (Furnace)this.boardPiece;
+                        furnace.TurnOff();
                         return;
                     }
 

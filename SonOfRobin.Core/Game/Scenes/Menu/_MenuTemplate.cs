@@ -809,6 +809,25 @@ namespace SonOfRobin
                             invoker.bgColor = color;
                         }
 
+                        // smelting stats
+                        if (world.smeltStats.TotalCookCount > 0)
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("| Smelting stats\n");
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronBar).texture);
+
+                            textLines.Add($"| Materials processed: {world.smeltStats.AllIngredientsCount}");
+                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronOre).texture);
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
+
+                            Invoker invoker = new(menu: menu, name: "smelting stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(102, 212, 157);
+                            invoker.bgColor = color;
+                        }
+
                         // harvesting stats
                         if (world.meatHarvestStats.TotalHarvestCount > 0)
                         {
@@ -1113,7 +1132,7 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "enable extreme zoom levels", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableExtremeZoomLevels", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "enable extreme map sizes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableExtremeMapSizes", rebuildsAllMenus: true);
-                        new Selector(menu: menu, name: "instant cooking and brewing", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugInstantCookBrew", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "instant cooking, brewing and smelting", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugInstantCookBrewSmelt", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugGodMode", rebuildsMenu: true);
                         new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowWholeMap");
                         new Selector(menu: menu, name: "allow fullscreen map animation", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugAllowMapAnimation");
@@ -1285,9 +1304,6 @@ namespace SonOfRobin
 
                 case Name.CraftMaster:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Master, label: "MASTER WORKSHOP", soundOpen: SoundData.Name.ToolsMove);
-
-                case Name.CraftFurnace:
-                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.Furnace, label: "FURNACE", soundOpen: SoundData.Name.FireBurst);
 
                 case Name.CraftAnvil:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Anvil, label: "ANVIL", soundOpen: SoundData.Name.HammerHits);

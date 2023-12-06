@@ -15,7 +15,6 @@ namespace SonOfRobin
             Basic,
             Advanced,
             Master,
-            Furnace,
             Anvil,
             LeatherBasic,
             LeatherAdvanced,
@@ -552,13 +551,6 @@ namespace SonOfRobin
                 masterRecipes.InsertRange(0, advancedRecipes);
 
                 AddCategory(category: Category.Master, recipeList: masterRecipes);
-            }
-
-            {
-                // furnace
-
-                var furnaceRecipes = CraftData.GetFurnaceRecipes();
-                AddCategory(category: Category.Furnace, recipeList: furnaceRecipes);
             }
 
             {

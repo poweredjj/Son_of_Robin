@@ -39,6 +39,7 @@ namespace SonOfRobin
             TempoPlay = 24,
             ShowCookingProgress = 25,
             ShowBrewingProgress = 26,
+            ShowSmeltingProgress = 64,
             OpenMainMenuIfSpecialKeysArePressed = 27,
             ExecuteTaskChain = 28,
             RemoveScene = 29,
@@ -62,6 +63,7 @@ namespace SonOfRobin
             SetPlayerPointWalkTarget = 47,
             StopSound = 48,
             InteractWithCooker = 49,
+            InteractWithFurnace = 63,
             InteractWithLab = 50,
             InteractWithTotem = 51,
             ExportSave = 52,
@@ -986,6 +988,14 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.ShowSmeltingProgress:
+                        {
+                            Furnace furnace = (Furnace)this.ExecuteHelper;
+                            furnace.ShowSmeltingProgress();
+
+                            return;
+                        }
+
                     case TaskName.ExecuteTaskChain:
                         {
                             // making a copy of the original taskChain, to avoid modifying it - needed for menus
@@ -1382,6 +1392,14 @@ namespace SonOfRobin
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
                             TaskName taskName = cooker.IsOn ? TaskName.ShowCookingProgress : TaskName.OpenContainer;
+                            new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+                            return;
+                        }
+
+                    case TaskName.InteractWithFurnace:
+                        {
+                            Furnace furnace = (Furnace)this.ExecuteHelper;
+                            TaskName taskName = furnace.IsOn ? TaskName.ShowSmeltingProgress : TaskName.OpenContainer;
                             new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
                             return;
                         }

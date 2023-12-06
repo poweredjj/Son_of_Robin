@@ -1485,11 +1485,21 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FurnaceComplete:
-                        this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
+
+
+                        this.category = BoardPiece.Category.Metal;
+                        this.boardTask = Scheduler.TaskName.InteractWithFurnace;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Cooking, isLooped: true); // TODO replace with a proper smelting sound
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.FireBurst, ignore3DAlways: true);
                         break;
+
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;
@@ -1756,9 +1766,9 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)},
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 2)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)});
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
@@ -1830,7 +1840,7 @@ namespace SonOfRobin
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
                                 finalDroppedPieces: new List<Yield.DroppedPiece> {
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 4),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
                         break;
 
@@ -1847,7 +1857,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureBig, chanceToDrop: 2, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.ChestTreasureNormal, chanceToDrop: 8, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.JarTreasureRich, chanceToDrop: 15, maxNumberToDrop: 1),
-                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 20, maxNumberToDrop: 2),
+                                    new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 15, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1),
                                     new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
                         break;
@@ -2092,6 +2102,11 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CookingTrigger:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.canBePickedUp = true;
+                        break;
+
+                    case PieceTemplate.Name.SmeltingTrigger:
                         this.category = BoardPiece.Category.Indestructible;
                         this.canBePickedUp = true;
                         break;

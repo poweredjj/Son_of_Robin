@@ -164,19 +164,6 @@ namespace SonOfRobin
                 };
         }
 
-        public static List<Craft.Recipe> GetFurnaceRecipes()
-        {
-            return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CoffeeRoasted, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.CoffeeRaw, 3 }, { PieceTemplate.Name.Coal, 1 }}, fatigue: fatigueItemSmall, isReversible: false),
-
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.IronBar, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronOre, 1 }, { PieceTemplate.Name.Coal, 1 }}, fatigue: fatigueItemMedium, isReversible: false),
-
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.EmptyBottle, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.GlassSand, 3 }, { PieceTemplate.Name.Coal, 1 }}, fatigue: fatigueItemMedium, isReversible: false),
-
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.EmptyBottle, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.GlassSand, 8 }, { PieceTemplate.Name.Coal, 2 }}, fatigue: fatigueItemBig, isReversible: false),
-                };
-        }
-
         public static List<Craft.Recipe> GetAnvilRecipes()
         {
             return new List<Craft.Recipe> {

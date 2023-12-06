@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
@@ -48,6 +47,7 @@ namespace SonOfRobin
         public readonly CraftStats craftStats;
         public readonly KitchenStats cookStats;
         public readonly KitchenStats brewStats;
+        public readonly KitchenStats smeltStats;
         public readonly MeatHarvestStats meatHarvestStats;
 
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
@@ -145,6 +145,7 @@ namespace SonOfRobin
             this.craftStats = new CraftStats();
             this.cookStats = new KitchenStats();
             this.brewStats = new KitchenStats();
+            this.smeltStats = new KitchenStats();
             this.meatHarvestStats = new MeatHarvestStats();
             this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.KnifeSimple };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
@@ -565,6 +566,7 @@ namespace SonOfRobin
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
                 this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]);
                 this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
+                if (headerData.ContainsKey("smeltStats")) this.smeltStats.Deserialize((Dictionary<string, Object>)headerData["smeltStats"]); // for compatibility with old saves
                 this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
                 if (headerData.ContainsKey("mapData")) this.map.Deserialize(headerData["mapData"]);

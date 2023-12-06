@@ -182,6 +182,7 @@ namespace SonOfRobin
             Explosion = 138,
 
             CookingTrigger = 139,
+            SmeltingTrigger = 236,
             UpgradeTrigger = 140,
             BrewTrigger = 141,
             MeatHarvestTrigger = 142,
@@ -889,6 +890,15 @@ namespace SonOfRobin
                         return boardPiece;
                     }
 
+                case Name.SmeltingTrigger:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+
+                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "smelting starter", description: "Starts smelting.");
+
+                        return boardPiece;
+                    }
+
                 case Name.BrewTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
@@ -1202,8 +1212,8 @@ namespace SonOfRobin
 
                 case Name.FurnaceComplete:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceComplete, allowedTerrain: AllowedTerrain.GetFieldCraft(),
-                              craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), canBeUsedDuringRain: false);
+                        BoardPiece boardPiece = new Furnace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceComplete, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                            maxHitPoints: 200, readableName: "furnace", description: "For ore smelting.");
 
                         return boardPiece;
                     }
