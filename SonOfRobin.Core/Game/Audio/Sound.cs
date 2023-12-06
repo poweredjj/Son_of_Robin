@@ -208,7 +208,13 @@ namespace SonOfRobin
             if (!skipFade && !this.VolumeFadeEnded)
             {
                 // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.id} {this.soundNameList[0]} starting fade out...");
-                new Scheduler.Task(taskName: Scheduler.TaskName.StopSound, delay: this.volumeFadeFrames, executeHelper: this);
+
+                Scheduler.ExecutionDelegate stopSoundDlgt = () =>
+                {
+                    // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
+                    this.Stop(skipFade: true);
+                };
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: this.volumeFadeFrames, executeHelper: stopSoundDlgt);
                 return;
             }
 

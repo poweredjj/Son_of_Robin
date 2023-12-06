@@ -57,7 +57,6 @@ namespace SonOfRobin
             PlaySoundByName = 43,
             AllowPiecesToBeHit = 44,
             SetPlayerPointWalkTarget = 45,
-            StopSound = 46,
             InteractWithCooker = 47,
             InteractWithFurnace = 48,
             InteractWithLab = 49,
@@ -1344,16 +1343,6 @@ namespace SonOfRobin
                             if (world == null || world.Player == null || !world.Player.alive) return;
 
                             world.Player.pointWalkTarget = (Vector2)this.ExecuteHelper;
-
-                            return;
-                        }
-
-                    case TaskName.StopSound:
-                        {
-                            Sound sound = (Sound)this.ExecuteHelper;
-                            sound.Stop(skipFade: true);
-
-                            // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
 
                             return;
                         }

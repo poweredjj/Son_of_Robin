@@ -20,6 +20,7 @@ namespace SonOfRobin
             BurnFlame = 1,
             Cooking = 2,
             Brewing = 3,
+            Smelting = 39,
             CookingFinish = 4,
             BrewingFinish = 5,
             BloodDripping = 6,
@@ -68,6 +69,7 @@ namespace SonOfRobin
                 { Preset.BurnFlame, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.WeatherRain, TextureBank.TextureName.ParticleWeatherRain },
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.Smelting, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
@@ -482,6 +484,44 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 1;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(5f, 20f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.02f),
+                                            EndValue = new Vector2(0.5f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.5f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                        };
+                        break;
+                    }
+
+
+                case Preset.Smelting:
+                    {
+                        defaultParticlesToEmit = 3;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 400, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.GfxRect.Width * 0.7f, height: 20))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -1752,6 +1792,10 @@ namespace SonOfRobin
 
                 case Preset.Cooking:
                     position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
+                    break;
+
+                case Preset.Smelting:
+                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Top);
                     break;
 
                 case Preset.Brewing:

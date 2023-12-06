@@ -98,6 +98,11 @@ namespace SonOfRobin
                 this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
                 this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.SteamHit));
             }
+            else if (pieceInfo.type == typeof(Furnace))
+            {
+                this.AddAction(action: Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig, pitchChange: -0.3f));
+                this.AddAction(action: Action.TurnOff, sound: new Sound(name: SoundData.Name.SteamHit, pitchChange: -0.3f));
+            }
             else if (pieceInfo.type == typeof(Fireplace))
             {
                 this.AddAction(action: Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
