@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
-        public const float currentVersion = 1.000030f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000031f; // version number should be incremented when any existing asset is updated
 
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
@@ -941,8 +941,8 @@ namespace SonOfRobin
                         float scale = 0.2f;
 
                         for (int animSize = 0; animSize <= 2; animSize++)
-                        {
-                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"furnace/furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize);
+                        {                            
+                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"furnace/furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
                         }
 
                         break;
@@ -1610,7 +1610,7 @@ namespace SonOfRobin
 
                         for (int animSize = 0; animSize <= 5; animSize++)
                         {
-                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize);
+                            AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
                         }
 
                         break;
@@ -1996,9 +1996,9 @@ namespace SonOfRobin
             return true;
         }
 
-        public static void AddFrameList(PkgName pkgName, List<AnimFrame> frameList, int animSize = 0, string animName = "default")
+        public static void AddFrameList(PkgName pkgName, List<AnimFrame> frameList, int animSize = 0, string animName = "default", bool updateCroppedFramesForPkgs = true)
         {
-            if (!animSizesForPkgs.ContainsKey(pkgName) || animSizesForPkgs[pkgName] < animSize)
+            if (updateCroppedFramesForPkgs && (!animSizesForPkgs.ContainsKey(pkgName) || animSizesForPkgs[pkgName] < animSize))
             {
                 croppedFramesForPkgs[pkgName] = frameList[0].GetCroppedFrameCopy();
                 animSizesForPkgs[pkgName] = animSize;

@@ -371,7 +371,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.ConstructionSite,
-                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.BoatConstructionSite },
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> { PieceTemplate.Name.FurnaceConstructionSite },
                     tutorialsToActivate: new Tutorials.Type[] { Tutorials.Type.ConstructionSites }),
 
                 new PieceHint(
