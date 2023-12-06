@@ -4843,6 +4843,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/VirtButton/sleep.png
 
+#begin gfx/input/VirtButton/smelt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/VirtButton/smelt.png
+
 #begin gfx/input/VirtButton/sort.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9738,6 +9750,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/521114__d-jones__turn-the-page.ogg
+
+#begin sound/521118__smand__wood-burning-in-the-stove.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/521118__smand__wood-burning-in-the-stove.ogg
 
 #begin sound/521587__fission9__hiking-boot-footsteps-on-grass-1.ogg
 /importer:OggImporter

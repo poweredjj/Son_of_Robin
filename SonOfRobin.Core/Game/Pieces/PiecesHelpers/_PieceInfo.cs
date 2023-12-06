@@ -1473,7 +1473,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FurnaceConstructionSite:
-                        this.category = BoardPiece.Category.Indestructible;
+                        this.category = BoardPiece.Category.Stone;
                         this.fireAffinity = 0.0f; // protected from fire
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
@@ -1485,21 +1485,15 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.FurnaceComplete:
-                        this.boardTask = Scheduler.TaskName.OpenCraftMenu;
-                        this.blocksMovement = true;
-                        this.destroysPlantsWhenBuilt = true;
-
-
-                        this.category = BoardPiece.Category.Metal;
+                        this.category = BoardPiece.Category.Stone;
                         this.boardTask = Scheduler.TaskName.InteractWithFurnace;
-                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonSmelt;
                         this.blocksMovement = true;
                         this.destroysPlantsWhenBuilt = true;
-                        this.isAffectedByWind = true;
-                        customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Cooking, isLooped: true); // TODO replace with a proper smelting sound
+                        this.isAffectedByWind = false;
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Smelting, isLooped: true);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.FireBurst, ignore3DAlways: true);
                         break;
-
 
                     case PieceTemplate.Name.Anvil:
                         this.category = BoardPiece.Category.Metal;

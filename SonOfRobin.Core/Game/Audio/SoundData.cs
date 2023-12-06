@@ -111,6 +111,7 @@ namespace SonOfRobin
             Torch = 68,
             FryingPan = 69,
             Cooking = 70,
+            Smelting = 237,
 
             PotLid = 71,
             StoneMove1 = 72,
@@ -451,6 +452,7 @@ namespace SonOfRobin
             { Name.DunDunDun, "45654__simon-lacelle__dun-dun-dun" },
             { Name.FryingPan, "571670__nachtmahrtv__frying-in-a-pan" },
             { Name.Cooking, "212610__taira-komori__boiling-opening" },
+            { Name.Smelting, "521118__smand__wood-burning-in-the-stove" },
             { Name.HitMetal, "525167__sophia-c__metal-impact-4-soft" },
             { Name.DestroyMetal, "587442__samsterbirdies__dropping-sheet-metal-1" },
             { Name.DropIronPlate, "587442__samsterbirdies__dropping-sheet-metal-2" },

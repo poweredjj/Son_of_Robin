@@ -180,11 +180,11 @@ namespace SonOfRobin
                 storedMats.AddRange(matSlot.GetAllPieces(remove: false));
             }
 
-            var processedMats = storedMats.Where(piece => !allowedMaterials.Contains(piece.name)).ToArray();
+            int processedMatsCount = storedMats.Where(piece => !allowedMaterials.Contains(piece.name)).Count();
 
-            if (processedMats.Length > 0)
+            if (processedMatsCount > 0)
             {
-                string matText = processedMats.Length == 1 ? "material" : "materials";
+                string matText = processedMatsCount == 1 ? "material" : "materials";
 
                 new TextWindow(text: $"I have to take out processed {matText} first.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
