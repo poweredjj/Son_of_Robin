@@ -954,7 +954,7 @@ namespace SonOfRobin
                         float scale = 0.2f;
 
                         AddFrameList(pkgName: pkgName, animName: "off", frameList: ConvertImageToFrameList(atlasName: "furnace/furnace_off", layer: layer, scale: scale, crop: false));
-                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "furnace/furnace_off", layer: layer, scale: scale, crop: false));
+                        AddFrameList(pkgName: pkgName, animName: "on", frameList: ConvertImageToFrameList(atlasName: "furnace/furnace_on", layer: layer, scale: scale, crop: false));
                         break;
                     }
 

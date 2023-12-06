@@ -12,7 +12,6 @@ namespace SonOfRobin
         public enum TaskName : byte
         {
             Empty = 0,
-
             CreateNewWorld = 1,
             CreateNewWorldNow = 2,
             OpenMenuTemplate = 3,
@@ -37,46 +36,43 @@ namespace SonOfRobin
             TempoFastForward = 22,
             TempoStop = 23,
             TempoPlay = 24,
-            ShowCookingProgress = 25,
-            ShowBrewingProgress = 26,
-            ShowSmeltingProgress = 64,
-            OpenMainMenuIfSpecialKeysArePressed = 27,
-            ExecuteTaskChain = 28,
-            RemoveScene = 29,
-            ChangeSceneInputType = 30,
-            SetCineMode = 31,
-            SetCineCurtains = 32,
-            AddTransition = 33,
-            SolidColorAddOverlay = 34,
-            SolidColorRemoveAll = 35,
-            SkipCinematics = 36,
-            SetSpectatorMode = 37,
-            SwitchLightSource = 38,
-            ResetControls = 39,
-            SaveControls = 40,
-            CheckForNonSavedControls = 41,
-            CheckForIncorrectPieces = 42,
-            RestartIsland = 43,
-            PlaySound = 44,
-            PlaySoundByName = 45,
-            AllowPiecesToBeHit = 46,
-            SetPlayerPointWalkTarget = 47,
-            StopSound = 48,
-            InteractWithCooker = 49,
-            InteractWithFurnace = 63,
-            InteractWithLab = 50,
-            InteractWithTotem = 51,
-            ExportSave = 52,
-            ImportSave = 53,
-            GCCollectIfWorldNotRemoved = 54,
-            MakePlayerJumpOverThisPiece = 55,
-            OpenAndDestroyTreasureChest = 56,
-            CheckForPieceHints = 57,
-            ExecutePieceHintCheckNow = 58,
-            DisposeSaveScreenshotsIfNoMenuPresent = 59,
-            UseEntrance = 60,
-            AddWeatherEvent = 61,
-            ExecuteDelegate = 62,
+            OpenMainMenuIfSpecialKeysArePressed = 25,
+            ExecuteTaskChain = 26,
+            RemoveScene = 27,
+            ChangeSceneInputType = 28,
+            SetCineMode = 29,
+            SetCineCurtains = 30,
+            AddTransition = 31,
+            SolidColorAddOverlay = 32,
+            SolidColorRemoveAll = 33,
+            SkipCinematics = 34,
+            SetSpectatorMode = 35,
+            SwitchLightSource = 36,
+            ResetControls = 37,
+            SaveControls = 38,
+            CheckForNonSavedControls = 39,
+            CheckForIncorrectPieces = 40,
+            RestartIsland = 41,
+            PlaySound = 42,
+            PlaySoundByName = 43,
+            AllowPiecesToBeHit = 44,
+            SetPlayerPointWalkTarget = 45,
+            StopSound = 46,
+            InteractWithCooker = 47,
+            InteractWithFurnace = 48,
+            InteractWithLab = 49,
+            InteractWithTotem = 50,
+            ExportSave = 51,
+            ImportSave = 52,
+            GCCollectIfWorldNotRemoved = 53,
+            MakePlayerJumpOverThisPiece = 54,
+            OpenAndDestroyTreasureChest = 55,
+            CheckForPieceHints = 56,
+            ExecutePieceHintCheckNow = 57,
+            DisposeSaveScreenshotsIfNoMenuPresent = 58,
+            UseEntrance = 59,
+            AddWeatherEvent = 60,
+            ExecuteDelegate = 61,
         }
 
         public delegate void ExecutionDelegate();
@@ -972,30 +968,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.ShowCookingProgress:
-                        {
-                            Cooker cooker = (Cooker)this.ExecuteHelper;
-                            cooker.ShowCookingProgress();
-
-                            return;
-                        }
-
-                    case TaskName.ShowBrewingProgress:
-                        {
-                            AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
-                            alchemyLab.ShowBrewingProgress();
-
-                            return;
-                        }
-
-                    case TaskName.ShowSmeltingProgress:
-                        {
-                            Furnace furnace = (Furnace)this.ExecuteHelper;
-                            furnace.ShowSmeltingProgress();
-
-                            return;
-                        }
-
                     case TaskName.ExecuteTaskChain:
                         {
                             // making a copy of the original taskChain, to avoid modifying it - needed for menus
@@ -1391,24 +1363,42 @@ namespace SonOfRobin
                     case TaskName.InteractWithCooker:
                         {
                             Cooker cooker = (Cooker)this.ExecuteHelper;
-                            TaskName taskName = cooker.IsOn ? TaskName.ShowCookingProgress : TaskName.OpenContainer;
-                            new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+
+                            if (cooker.IsOn)
+                            {
+                                ExecutionDelegate showProgressDlgt = () => { cooker.ShowCookingProgress(); };
+                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
+                            }
+                            else new Task(taskName: TaskName.OpenContainer, executeHelper: cooker, delay: 0);
+
                             return;
                         }
 
                     case TaskName.InteractWithFurnace:
                         {
                             Furnace furnace = (Furnace)this.ExecuteHelper;
-                            TaskName taskName = furnace.IsOn ? TaskName.ShowSmeltingProgress : TaskName.OpenContainer;
-                            new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+
+                            if (furnace.IsOn)
+                            {
+                                ExecutionDelegate showProgressDlgt = () => { furnace.ShowSmeltingProgress(); };
+                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
+                            }
+                            else new Task(taskName: TaskName.OpenContainer, executeHelper: furnace, delay: 0);
+
                             return;
                         }
 
                     case TaskName.InteractWithLab:
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
-                            TaskName taskName = alchemyLab.IsOn ? TaskName.ShowBrewingProgress : TaskName.OpenContainer;
-                            new Task(taskName: taskName, delay: 0, executeHelper: this.ExecuteHelper);
+
+                            if (alchemyLab.IsOn)
+                            {
+                                ExecutionDelegate showProgressDlgt = () => { alchemyLab.ShowBrewingProgress(); };
+                                new Task(taskName: TaskName.ExecuteDelegate, executeHelper: showProgressDlgt);
+                            }
+                            else new Task(taskName: TaskName.OpenContainer, executeHelper: alchemyLab, delay: 0);
+
                             return;
                         }
 
