@@ -1340,12 +1340,10 @@ namespace SonOfRobin
 
                     case TaskName.SetPlayerPointWalkTarget:
                         {
-                            var setData = (Dictionary<Player, Vector2>)this.ExecuteHelper;
+                            World world = World.GetTopWorld();
+                            if (world == null || world.Player == null || !world.Player.alive) return;
 
-                            foreach (var kvp in setData)
-                            {
-                                kvp.Key.pointWalkTarget = kvp.Value;
-                            }
+                            world.Player.pointWalkTarget = (Vector2)this.ExecuteHelper;
 
                             return;
                         }
