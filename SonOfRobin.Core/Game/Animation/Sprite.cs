@@ -835,6 +835,8 @@ namespace SonOfRobin
 
         public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
         {
+            if (!this.IsOnBoard) return;
+
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
             {
