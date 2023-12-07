@@ -60,16 +60,18 @@ namespace SonOfRobin
             HeatMedium = 34,
             HeatBig = 35,
             HeatFlame = 36,
+            HeatSmelting = 40,
             DistortCruiseCine = 37,
             DistortStormCine = 38,
         }
 
-        private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new Dictionary<Preset, TextureBank.TextureName> {
+        private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new()
+        {
                 { Preset.Fireplace, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.BurnFlame, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.WeatherRain, TextureBank.TextureName.ParticleWeatherRain },
                 { Preset.Cooking, TextureBank.TextureName.ParticleCircleSharp },
-                { Preset.Smelting, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.Smelting, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
@@ -103,6 +105,7 @@ namespace SonOfRobin
                 { Preset.HeatMedium, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatBig, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.HeatFlame, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.HeatSmelting, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.DistortCruiseCine, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.DistortStormCine, TextureBank.TextureName.ParticleCircleSoft },
             };
@@ -519,13 +522,13 @@ namespace SonOfRobin
 
                 case Preset.Smelting:
                     {
-                        defaultParticlesToEmit = 3;
+                        defaultParticlesToEmit = 16;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 400, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.GfxRect.Width * 0.7f, height: 20))
+                        particleEmitter = new ParticleEmitter(textureRegion, 5000, TimeSpan.FromSeconds(2.0), Profile.BoxFill(width: this.sprite.GfxRect.Width * 0.53f, height: 5))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(Color.White),
+                                Color = new Range<HslColor>(HslColor.FromRgb(new Color(0, 0, 0)), HslColor.FromRgb(new Color(170, 170, 170))),
                                 Speed = new Range<float>(5f, 20f),
                                 Quantity = 0,
                             },
@@ -538,12 +541,49 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.02f),
-                                            EndValue = new Vector2(0.5f)
+                                            StartValue = new Vector2(0.06f),
+                                            EndValue = new Vector2(1.3f)
                                         },
                                         new OpacityInterpolator
                                         {
                                             StartValue = 0.5f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
+                                new LinearGravityModifier {Direction = -Vector2.UnitY, Strength = 45f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.HeatSmelting:
+                    {
+                        defaultParticlesToEmit = 1;
+                        drawAsDistortion = true;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(1.3), Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(new Color(80, 80, 80)),
+                                Speed = new Range<float>(5f, 15f),
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.1f),
+                                            EndValue = new Vector2(2.9f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.14f,
                                             EndValue = 0f
                                         },
                                     }
@@ -1786,7 +1826,7 @@ namespace SonOfRobin
             {
                 Preset.Fireplace => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.Cooking => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top),
-                Preset.Smelting => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Top),
+                Preset.Smelting => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5),
                 Preset.Brewing => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.WaterWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
@@ -1806,6 +1846,7 @@ namespace SonOfRobin
                 Preset.HeatMedium => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.HeatBig => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.HeatFlame => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.HeatSmelting => this.sprite.position,
                 Preset.DistortCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.DistortStormCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 _ => this.sprite.position,
