@@ -3257,14 +3257,7 @@ namespace SonOfRobin
         {
             // creates one instance of every piece type - to get required info out of it
             {
-                if (SonOfRobinGame.platform == Platform.Mobile) // using parallel will freeze on mobile
-                {
-                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
-                    {
-                        info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
-                    }
-                }
-                else
+                if (SonOfRobinGame.os == OS.Windows) // using parallel here freezes on mobile and linux
                 {
                     ConcurrentDictionary<PieceTemplate.Name, Info> infoByNameConcurrentDict = new();
                     Parallel.ForEach(PieceTemplate.allNames, SonOfRobinGame.defaultParallelOptions, name =>
@@ -3275,6 +3268,13 @@ namespace SonOfRobin
                     foreach (PieceTemplate.Name name in PieceTemplate.allNames)
                     {
                         info[name] = infoByNameConcurrentDict[name];
+                    }
+                }
+                else
+                {
+                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                    {
+                        info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
                     }
                 }
             }
