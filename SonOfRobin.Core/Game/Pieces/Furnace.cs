@@ -128,16 +128,16 @@ namespace SonOfRobin
         {
             if (this.visualAid == null || !this.visualAid.exists)
             {
-                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.ParticleEmitterEnding, world: this.world, position: new Vector2(this.sprite.position.X, this.sprite.position.Y - 3), randomPlacement: false, precisePlacement: true);
+                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.ParticleEmitterEnding, world: this.world, position: new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5), randomPlacement: false, precisePlacement: true);
                 this.visualAid.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.WhiteSpotLayerTwo, checkForCollision: false);
                 this.visualAid.sprite.opacity = 0.001f; // to draw particles only
-                ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.HeatSmelting, update: true);
+                ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
             }
 
             this.IsOn = true;
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
-            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.Smelting);
+            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
         }
@@ -147,8 +147,10 @@ namespace SonOfRobin
             this.IsOn = false;
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
-            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.Smelting);
-            if (this.visualAid != null) ParticleEngine.TurnOff(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.HeatSmelting);
+
+            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
+            if (this.visualAid != null) ParticleEngine.TurnOff(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
+
             this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.CookingFinish, duration: 8);

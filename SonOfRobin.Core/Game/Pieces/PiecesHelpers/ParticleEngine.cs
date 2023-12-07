@@ -1826,7 +1826,6 @@ namespace SonOfRobin
             {
                 Preset.Fireplace => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.Cooking => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top),
-                Preset.Smelting => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5),
                 Preset.Brewing => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.WaterWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
