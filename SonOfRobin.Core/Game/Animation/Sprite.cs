@@ -622,21 +622,17 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            Rectangle gfxRect = new(
+            this.GfxRect = new(
                 x: (int)(position.X + this.AnimFrame.gfxOffset.X),
                 y: (int)(position.Y + this.AnimFrame.gfxOffset.Y),
                 width: this.AnimFrame.gfxWidth,
                 height: this.AnimFrame.gfxHeight);
 
-            this.GfxRect = gfxRect;
-
-            Rectangle colRect = new(
+            this.ColRect = new(
                 x: (int)(position.X + this.AnimFrame.colOffset.X),
                 y: (int)(position.Y + this.AnimFrame.colOffset.Y),
                 width: this.AnimFrame.colWidth,
                 height: this.AnimFrame.colHeight);
-
-            this.ColRect = colRect;
         }
 
         public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)

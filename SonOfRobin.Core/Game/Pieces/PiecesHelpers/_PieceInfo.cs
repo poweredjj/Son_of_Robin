@@ -1760,9 +1760,9 @@ namespace SonOfRobin
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 2)},
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 4)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Coal, chanceToDrop: 100, maxNumberToDrop: 10)});
                         break;
 
                     case PieceTemplate.Name.IronDeposit:

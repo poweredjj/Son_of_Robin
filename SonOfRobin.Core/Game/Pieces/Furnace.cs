@@ -120,11 +120,17 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.smeltingStartFrame = (int)(Int64)pieceData["furnace_smeltingStartFrame"];
             this.smeltingDoneFrame = (int)(Int64)pieceData["furnace_smeltingDoneFrame"];
-            if ((bool)pieceData["furnace_IsOn"]) this.TurnOn();
+
+            if ((bool)pieceData["furnace_IsOn"])
+            {
+                this.sprite.LoadPackageAndAssignFrame(); // loading anim package, to make sure that visualAid will be placed correctly
+                this.TurnOn(playSounds: false);
+            }
+
             this.ConfigureStorage();
         }
 
-        public void TurnOn()
+        public void TurnOn(bool playSounds = true)
         {
             if (this.visualAid == null || !this.visualAid.exists)
             {
@@ -139,8 +145,12 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
-            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
-            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
+
+            if (playSounds)
+            {
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOn);
+                this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsOn);
+            }
         }
 
         public void TurnOff()
@@ -149,8 +159,8 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
 
-            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
             if (this.visualAid != null) ParticleEngine.TurnOff(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
+            ParticleEngine.TurnOff(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
 
             this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.IsOn);
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.TurnOff);
