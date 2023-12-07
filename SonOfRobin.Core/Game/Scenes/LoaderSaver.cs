@@ -448,7 +448,7 @@ namespace SonOfRobin
 
         private void FinishSaving() // steps that have to run on main thread
         {
-            GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.WorkMaskAndFinalRenderTarget, maxWidth: 640, maxHeight: 480); // screenshot should not be too large (because many might be loaded at once)
+            GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.FinalRenderTarget, maxWidth: 800, maxHeight: 600);
 
             MessageLog.Add(debugMessage: true, text: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
 

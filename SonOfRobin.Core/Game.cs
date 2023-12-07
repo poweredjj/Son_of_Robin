@@ -34,7 +34,7 @@ namespace SonOfRobin
         public static Game Game { get; private set; }
 
         public static Platform platform;
-        public static OS os;
+        private static OS os;
         public static bool fakeMobileMode = false;
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
@@ -121,6 +121,8 @@ namespace SonOfRobin
 
         public static bool KeepScreenOn
         { set { if (platform == Platform.Mobile && !fakeMobileMode) DeviceDisplay.KeepScreenOn = value; } }
+
+        public static OS Os { get => os; set => os = value; }
 
         public SonOfRobinGame()
         {
