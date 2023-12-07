@@ -1747,7 +1747,7 @@ namespace SonOfRobin
 
             if (activePresetsList.Count == 0) return null;
 
-            Dictionary<string, Object> particleData = new Dictionary<string, object>
+            Dictionary<string, Object> particleData = new()
             {
                 { "activePresetsList", activePresetsList },
             };
@@ -1782,110 +1782,34 @@ namespace SonOfRobin
             if (this.dataByPreset.Count == 0) return;
 
             Preset preset = this.dataByPreset.First().Key;
-            Vector2 position;
-
-            switch (preset)
+            var position = preset switch
             {
-                case Preset.Fireplace:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.Cooking:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top);
-                    break;
-
-                case Preset.Smelting:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Top);
-                    break;
-
-                case Preset.Brewing:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.WaterWalk:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                case Preset.WaterCruiseCine:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                case Preset.WaterSplashCine:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                case Preset.MudWalk:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                case Preset.BurnFlame:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.DebrisSoot:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.DustPuff:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.SmokePuff:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.WindLeaf:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.WindPetal:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.BloodDripping:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 5));
-                    break;
-
-                case Preset.Lightning:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2));
-                    break;
-
-                case Preset.MeatDrying:
-                    position = new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6));
-                    break;
-
-                case Preset.WeatherRain:
-                    position = new Vector2(this.sprite.position.X, this.sprite.position.Y - this.sprite.world.camera.viewRect.Height);
-                    break;
-
-                case Preset.HeatSmall:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.HeatMedium:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.HeatBig:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.HeatFlame:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y);
-                    break;
-
-                case Preset.DistortCruiseCine:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                case Preset.DistortStormCine:
-                    position = new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom);
-                    break;
-
-                default:
-                    position = this.sprite.position;
-                    break;
-            }
+                Preset.Fireplace => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.Cooking => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top),
+                Preset.Smelting => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Top),
+                Preset.Brewing => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.WaterWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.WaterCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.WaterSplashCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.MudWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.BurnFlame => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.DebrisSoot => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.DustPuff => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.SmokePuff => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.WindLeaf => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.WindPetal => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.BloodDripping => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 5)),
+                Preset.Lightning => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top - (this.sprite.world.camera.viewRect.Height / 2)),
+                Preset.MeatDrying => new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Center.Y - (this.sprite.GfxRect.Height / 6)),
+                Preset.WeatherRain => new Vector2(this.sprite.position.X, this.sprite.position.Y - this.sprite.world.camera.viewRect.Height),
+                Preset.HeatSmall => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.HeatMedium => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.HeatBig => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.HeatFlame => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
+                Preset.DistortCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.DistortStormCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                _ => this.sprite.position,
+            };
 
             this.particleEffectDraw.Position = position;
             this.particleEffectDistortion.Position = position;
