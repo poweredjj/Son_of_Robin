@@ -39,7 +39,7 @@ namespace SonOfRobin
         public RenderTarget2D FinalRenderTarget { get; private set; }
         public EffInstance globalEffect;
         public EffInstance heatMaskDistortInstance;
-        public MosaicInstance mosaicInstance;
+        public MosaicInstance sunShadowsBlurEffect;
         public readonly Tweener tweenerForGlobalEffect;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
@@ -129,7 +129,7 @@ namespace SonOfRobin
             this.darknessAndHeatMask = null;
             this.globalEffect = null;
             this.heatMaskDistortInstance = null;
-            this.mosaicInstance = null;
+            this.sunShadowsBlurEffect = null;
             this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
@@ -1436,8 +1436,8 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
                 if (sunLightData.shadowBlurSize > 0)
                 {
-                    this.mosaicInstance.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    this.mosaicInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: sunShadowsColor);
+                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
+                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: sunShadowsColor);
                 }
                 SonOfRobinGame.SpriteBatch.Draw(this.darknessAndHeatMask, this.darknessAndHeatMask.Bounds, sunShadowsColor);
                 SonOfRobinGame.SpriteBatch.End();
@@ -1564,7 +1564,7 @@ namespace SonOfRobin
             // preparing and drawing shadow masks
 
             // BlendFunction.Min and BlendFunction.Max will not work on Android!
-            var shadowBlend = new BlendState
+            BlendState shadowBlend = new()
             {
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 AlphaSourceBlend = Blend.One,
@@ -1575,7 +1575,7 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One,
             };
 
-            var shadowBlendRedraw = new BlendState
+            BlendState shadowBlendRedraw = new()
             {
                 AlphaBlendFunction = BlendFunction.Add,
                 AlphaSourceBlend = Blend.One,
@@ -1586,7 +1586,7 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.InverseSourceColor,
             };
 
-            BlendState lightBlend = new BlendState
+            BlendState lightBlend = new()
             {
                 AlphaBlendFunction = BlendFunction.Add,
                 AlphaSourceBlend = Blend.InverseSourceAlpha,
@@ -1782,7 +1782,7 @@ namespace SonOfRobin
             }
 
             this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.darknessAndHeatMask);
-            this.mosaicInstance = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(this.darknessAndHeatMask.Width, this.darknessAndHeatMask.Height));
+            this.sunShadowsBlurEffect = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(this.darknessAndHeatMask.Width, this.darknessAndHeatMask.Height));
         }
     }
 }
