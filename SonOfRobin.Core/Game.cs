@@ -33,13 +33,13 @@ namespace SonOfRobin
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
         public static Game Game { get; private set; }
 
-        public const bool fakeMobileMode = false;
+        public static bool fakeMobileMode = false;
         public static Platform platform;
-        private static OS os;
+        public static OS os;
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
