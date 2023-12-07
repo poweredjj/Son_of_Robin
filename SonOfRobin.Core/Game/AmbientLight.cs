@@ -6,33 +6,35 @@ namespace SonOfRobin
 {
     public class AmbientLight
     {
-        public struct SunLightData
+        public readonly struct SunLightData
         {
-            private static readonly SunLightData noSun = new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent);
+            private static readonly SunLightData noSun = new(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent, shadowBlurSize: 0f);
 
-            private static readonly List<SunLightData> sunDataList = new List<SunLightData>
+            private static readonly SunLightData[] sunDataArray = new SunLightData[]
             {
-                new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(4), sunPos: new Vector2(400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(5), sunPos: new Vector2(350, -225), sunShadowsLength: 2.65f, sunShadowsColor: Color.Black * 0.4f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(6), sunPos: new Vector2(300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(12), sunPos: new Vector2(0, 1000), sunShadowsLength: 0.2f, sunShadowsColor: Color.Black * 0.6f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(18), sunPos: new Vector2(-300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(20), sunPos: new Vector2(-400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(24), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(4), sunPos: new Vector2(400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(5), sunPos: new Vector2(350, -225), sunShadowsLength: 2.65f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 3.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(6), sunPos: new Vector2(300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 1.5f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(12), sunPos: new Vector2(0, 1000), sunShadowsLength: 0.2f, sunShadowsColor: Color.Black * 0.6f, shadowBlurSize: 0.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(18), sunPos: new Vector2(-300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 1.5f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(20), sunPos: new Vector2(-400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(24), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3f),
             };
 
             public readonly TimeSpan timeOfDay;
             public readonly Vector2 sunPos;
             public readonly float sunShadowsLength;
             public readonly Color sunShadowsColor;
+            public readonly float shadowBlurSize;
 
-            public SunLightData(TimeSpan timeOfDay, Vector2 sunPos, float sunShadowsLength, Color sunShadowsColor)
+            public SunLightData(TimeSpan timeOfDay, Vector2 sunPos, float sunShadowsLength, Color sunShadowsColor, float shadowBlurSize)
             {
                 this.timeOfDay = timeOfDay;
                 this.sunPos = sunPos;
                 this.sunShadowsLength = sunShadowsLength;
                 this.sunShadowsColor = sunShadowsColor;
+                this.shadowBlurSize = shadowBlurSize;
             }
 
             public static SunLightData CalculateSunLight(DateTime currentDateTime, Weather weather)
@@ -45,19 +47,19 @@ namespace SonOfRobin
                     int sunPosX = (int)(((weather.LightningPosMultiplier.X * 2) - 1f) * 400);
                     int sunPosY = (int)(((weather.LightningPosMultiplier.Y * 2) - 1f) * 400);
 
-                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black);
+                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black, shadowBlurSize: 0f);
                 }
 
                 SunLightData prevLightData, nextLightData;
 
-                for (int i = 1; i <= sunDataList.Count; i++) // from 1 to count of elements, to properly check the whole range
+                for (int i = 1; i <= sunDataArray.Length; i++) // from 1 to count of elements, to properly check the whole range
                 {
                     // setting next and previous light values
 
-                    if (i < lightDataArray.Length) nextLightData = sunDataList[i];
-                    else nextLightData = sunDataList[0];
+                    if (i < lightDataArray.Length) nextLightData = sunDataArray[i];
+                    else nextLightData = sunDataArray[0];
 
-                    prevLightData = sunDataList[i - 1];
+                    prevLightData = sunDataArray[i - 1];
 
                     // checking for time match
 
@@ -80,8 +82,9 @@ namespace SonOfRobin
 
                         float newSunShadowsLength = (prevLightData.sunShadowsLength * prevColorOpacity) + (nextLightData.sunShadowsLength * nextColorOpacity);
                         Vector2 newSunPos = (prevLightData.sunPos * prevColorOpacity) + (nextLightData.sunPos * nextColorOpacity);
+                        float newshadowBlurSize = (prevLightData.shadowBlurSize * prevColorOpacity) + (nextLightData.shadowBlurSize * nextColorOpacity);
 
-                        return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: newSunPos, sunShadowsLength: newSunShadowsLength, sunShadowsColor: newSunShadowsColor);
+                        return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: newSunPos, sunShadowsLength: newSunShadowsLength, sunShadowsColor: newSunShadowsColor, shadowBlurSize: newshadowBlurSize);
                     }
                 }
 

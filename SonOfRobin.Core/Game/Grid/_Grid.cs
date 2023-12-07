@@ -1276,57 +1276,47 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public List<BoardPiece> DrawSprites(List<Sprite> blockingLightSpritesList)
+        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData)
+        {
+            foreach (Sprite shadowSprite in blockingLightSpritesArray)
+            {
+                if (!shadowSprite.Visible || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
+
+                Rectangle cameraRect = this.world.camera.viewRect;
+
+                if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
+                {
+                    bool shadowLeftSide = sunLightData.sunPos.X < 0;
+                    bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
+
+                    if (shadowSprite.position.Y < cameraRect.Top &&
+                        (shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))
+                        continue;
+
+                    if (shadowSprite.position.Y > cameraRect.Bottom &&
+                        (!shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Bottom - shadowSprite.position.Y)))
+                        continue;
+
+                    if (shadowSprite.position.X > cameraRect.Right &&
+                        (shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Right - shadowSprite.position.X)))
+                        continue;
+
+                    if (shadowSprite.position.X < cameraRect.Left &&
+                        (!shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Left - shadowSprite.position.X)))
+                        continue;
+                }
+
+                Vector2 sunPos = new(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
+                float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
+
+                Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+            }
+        }
+
+        public List<BoardPiece> DrawSprites()
         {
             // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
             // in cases of sprites overlapping cell boundaries.
-
-            if (Preferences.drawSunShadows)
-            {
-                AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.world.islandClock.IslandDateTime, weather: this.world.weather);
-                if (sunLightData.sunShadowsColor != Color.Transparent)
-                {
-                    float sunVisibility = Math.Max(this.world.weather.SunVisibility, this.world.weather.LightningPercentage); // lightning emulates sun
-                    if (sunVisibility > 0f)
-                    {
-                        Color sunShadowsColor = sunLightData.sunShadowsColor * sunVisibility;
-
-                        foreach (Sprite shadowSprite in blockingLightSpritesList)
-                        {
-                            if (!shadowSprite.Visible || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
-
-                            Rectangle cameraRect = this.world.camera.viewRect;
-
-                            if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
-                            {
-                                bool shadowLeftSide = sunLightData.sunPos.X < 0;
-                                bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
-
-                                if (shadowSprite.position.Y < cameraRect.Top &&
-                                    (shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))
-                                    continue;
-
-                                if (shadowSprite.position.Y > cameraRect.Bottom &&
-                                    (!shadowTopSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Bottom - shadowSprite.position.Y)))
-                                    continue;
-
-                                if (shadowSprite.position.X > cameraRect.Right &&
-                                    (shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Right - shadowSprite.position.X)))
-                                    continue;
-
-                                if (shadowSprite.position.X < cameraRect.Left &&
-                                    (!shadowLeftSide || shadowSprite.GfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Left - shadowSprite.position.X)))
-                                    continue;
-                            }
-
-                            Vector2 sunPos = new(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
-                            float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
-
-                            Sprite.DrawShadow(color: sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
-                        }
-                    }
-                }
-            }
 
             var visiblePieces = this.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
             var offScreenParticleEmitterPieces = this.level.recentParticlesManager.OffScreenPieces;
