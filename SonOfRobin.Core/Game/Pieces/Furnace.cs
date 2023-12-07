@@ -128,6 +128,7 @@ namespace SonOfRobin
         {
             if (this.visualAid == null || !this.visualAid.exists)
             {
+                // visualAid is needed to emit particles from the chimney (cannot emit from secondary location using only one emitter)
                 this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.ParticleEmitterEnding, world: this.world, position: new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5), randomPlacement: false, precisePlacement: true);
                 this.visualAid.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.WhiteSpotLayerTwo, checkForCollision: false);
                 this.visualAid.sprite.opacity = 0.001f; // to draw particles only
