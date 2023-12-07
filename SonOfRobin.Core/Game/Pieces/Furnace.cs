@@ -151,10 +151,10 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate < this.smeltingDoneFrame)
             {
-                int cookingDuration = this.smeltingDoneFrame - this.smeltingStartFrame;
-                int cookingCurrentFrame = this.world.CurrentUpdate - this.smeltingStartFrame;
+                int smeltingDuration = this.smeltingDoneFrame - this.smeltingStartFrame;
+                int smeltingCurrentFrame = this.world.CurrentUpdate - this.smeltingStartFrame;
 
-                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
+                new StatBar(label: "", value: smeltingCurrentFrame, valueMax: smeltingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
             }
 
             base.DrawStatBar();
@@ -261,7 +261,8 @@ namespace SonOfRobin
 
             new LevelEvent(eventName: LevelEvent.EventName.FinishSmelting, level: this.level, delay: smeltingTime, boardPiece: this);
 
-            // TODO add hint disabling here
+            this.world.HintEngine.Disable(PieceHint.Type.Furnace);
+            this.world.HintEngine.Disable(Tutorials.Type.Smelt);
         }
 
         public void ShowSmeltingProgress()
