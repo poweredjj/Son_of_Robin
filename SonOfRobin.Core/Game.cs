@@ -26,16 +26,22 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 0.602f;
+        public const float version = 0.603f;
         public static readonly DateTime lastChanged = new(2023, 12, 07);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
         public static Game Game { get; private set; }
 
+        public const bool fakeMobileMode = false;
         public static Platform platform;
         private static OS os;
-        public static bool fakeMobileMode = false;
+
+        private static void MoveWindowOnWorkMachine(Game game)
+        {
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+        }
+
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static RasterizerState RasterizeStateNoCulling { get; private set; }
@@ -110,11 +116,6 @@ namespace SonOfRobin
 
         public static int VirtualHeight
         { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
-
-        private static void MoveWindowOnWorkMachine(Game game)
-        {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
-        }
 
         public static bool LicenceValid
         { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }
