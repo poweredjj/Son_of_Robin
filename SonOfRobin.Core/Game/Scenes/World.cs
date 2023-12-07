@@ -98,9 +98,8 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly Random random;
         public readonly Camera camera;
-        private RenderTarget2D darknessAndHeatMask; // used for darkness and for heat
         private RenderTarget2D cameraViewRenderTarget;
-        public RenderTarget2D FinalRenderTarget { get; private set; }
+        public RenderTarget2D WorkMaskAndFinalRenderTarget { get; private set; } // used also as temp mask for effects (shadows, distortion map, etc.)
         public EffInstance globalEffect;
         public EffInstance heatMaskDistortInstance;
         public MosaicInstance sunShadowsBlurEffect;
@@ -189,8 +188,7 @@ namespace SonOfRobin
             this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(Vector2.Zero);
             this.cameraViewRenderTarget = null;
-            this.FinalRenderTarget = null;
-            this.darknessAndHeatMask = null;
+            this.WorkMaskAndFinalRenderTarget = null;
             this.globalEffect = null;
             this.heatMaskDistortInstance = null;
             this.sunShadowsBlurEffect = null;
@@ -224,9 +222,8 @@ namespace SonOfRobin
             Sound.StopAll();
             RumbleManager.StopAll();
             base.Remove();
-            this.darknessAndHeatMask?.Dispose();
             this.cameraViewRenderTarget?.Dispose();
-            this.FinalRenderTarget?.Dispose();
+            this.WorkMaskAndFinalRenderTarget?.Dispose();
             DestroyedNotReleasedWorldCount++;
             new Scheduler.Task(taskName: Scheduler.TaskName.GCCollectIfWorldNotRemoved, delay: 60 * 10, executeHelper: 6); // needed to properly release memory after removing world
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} world seed {this.seed} id {this.id} {this.IslandLevel.width}x{this.IslandLevel.height} remove() completed.", textColor: new Color(255, 180, 66));
@@ -1487,7 +1484,7 @@ namespace SonOfRobin
             Color sunShadowsColor = this.CalculateSunShadowsColor(sunLightData);
             if (sunShadowsColor != Color.Transparent)
             {
-                SetRenderTarget(this.darknessAndHeatMask);
+                SetRenderTarget(this.WorkMaskAndFinalRenderTarget);
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                 this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData);
@@ -1503,7 +1500,7 @@ namespace SonOfRobin
                     this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
                     this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: sunShadowsColor);
                 }
-                SonOfRobinGame.SpriteBatch.Draw(this.darknessAndHeatMask, this.darknessAndHeatMask.Bounds, sunShadowsColor);
+                SonOfRobinGame.SpriteBatch.Draw(this.WorkMaskAndFinalRenderTarget, this.WorkMaskAndFinalRenderTarget.Bounds, sunShadowsColor);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1537,7 +1534,7 @@ namespace SonOfRobin
             }
 
             // drawing heat deformation
-            SetRenderTarget(this.darknessAndHeatMask);
+            SetRenderTarget(this.WorkMaskAndFinalRenderTarget);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             if (this.weather.HeatPercentage > 0)
@@ -1553,7 +1550,8 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing all effects
-            SetRenderTarget(this.FinalRenderTarget);
+            SetRenderTarget(this.WorkMaskAndFinalRenderTarget);
+            SonOfRobinGame.GfxDev.Clear(Color.Transparent);
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
             this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
@@ -1578,7 +1576,7 @@ namespace SonOfRobin
                 if (this.globalEffect.framesLeft == 0) this.globalEffect = null;
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(this.FinalRenderTarget, this.FinalRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.WorkMaskAndFinalRenderTarget, this.WorkMaskAndFinalRenderTarget.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing field tips
@@ -1609,7 +1607,7 @@ namespace SonOfRobin
 
             if (ambientLightData.darknessColor == Color.Transparent) return lightSprites;
 
-            SetRenderTarget(this.darknessAndHeatMask);
+            SetRenderTarget(this.WorkMaskAndFinalRenderTarget);
             SonOfRobinGame.GfxDev.Clear(ambientLightData.darknessColor);
 
             Matrix worldMatrix = this.TransformMatrix;
@@ -1667,7 +1665,7 @@ namespace SonOfRobin
 
                 // subtracting shadow mask from darkness
 
-                SetRenderTarget(this.darknessAndHeatMask);
+                SetRenderTarget(this.WorkMaskAndFinalRenderTarget);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
                 SonOfRobinGame.SpriteBatch.End();
@@ -1728,7 +1726,7 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.SpriteBatch.End();
                     SonOfRobinGame.SpriteBatch.Begin();
-                    SonOfRobinGame.SpriteBatch.Draw(this.darknessAndHeatMask, this.darknessAndHeatMask.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.Draw(this.WorkMaskAndFinalRenderTarget, this.WorkMaskAndFinalRenderTarget.Bounds, Color.White);
                 }
             }
 
@@ -1770,22 +1768,15 @@ namespace SonOfRobin
                 MessageLog.Add(debugMessage: true, text: $"Creating new camera view target (world) - {this.cameraViewRenderTarget.Width}x{this.cameraViewRenderTarget.Height}");
             }
 
-            if (this.FinalRenderTarget == null || this.FinalRenderTarget.Width != newWidth || this.FinalRenderTarget.Height != newHeight)
+            if (this.WorkMaskAndFinalRenderTarget == null || this.WorkMaskAndFinalRenderTarget.Width != newWidth || this.WorkMaskAndFinalRenderTarget.Height != newHeight)
             {
-                this.FinalRenderTarget?.Dispose();
-                this.FinalRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None);
-                MessageLog.Add(debugMessage: true, text: $"Creating new final render target (world) - {this.FinalRenderTarget.Width}x{this.FinalRenderTarget.Height}");
+                this.WorkMaskAndFinalRenderTarget?.Dispose();
+                this.WorkMaskAndFinalRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                MessageLog.Add(debugMessage: true, text: $"Creating new work mask / final render target (world) - {this.WorkMaskAndFinalRenderTarget.Width}x{this.WorkMaskAndFinalRenderTarget.Height}");
             }
 
-            if (this.darknessAndHeatMask == null || this.darknessAndHeatMask.Width != newWidth || this.darknessAndHeatMask.Height != newHeight)
-            {
-                this.darknessAndHeatMask?.Dispose();
-                this.darknessAndHeatMask = new RenderTarget2D(SonOfRobinGame.GfxDev, newWidth, newHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                MessageLog.Add(debugMessage: true, text: $"Creating new darkness mask (world) - {this.darknessAndHeatMask.Width}x{this.darknessAndHeatMask.Height}");
-            }
-
-            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.darknessAndHeatMask);
-            this.sunShadowsBlurEffect = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(this.darknessAndHeatMask.Width, this.darknessAndHeatMask.Height));
+            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.cameraViewRenderTarget, distortTexture: this.WorkMaskAndFinalRenderTarget);
+            this.sunShadowsBlurEffect = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(this.WorkMaskAndFinalRenderTarget.Width, this.WorkMaskAndFinalRenderTarget.Height));
         }
     }
 }
