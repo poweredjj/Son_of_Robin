@@ -230,6 +230,11 @@ namespace SonOfRobin
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.Cook}),
 
                 new PieceHint(
+                    type: PieceHint.Type.Furnace,
+                    fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.FurnaceComplete},
+                    tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.Smelt}),
+
+                new PieceHint(
                     type: PieceHint.Type.HarvestingWorkshop,
                     fieldPiecesNearby: new HashSet<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMeatHarvesting},
                     tutorialsToActivate: new Tutorials.Type[] {Tutorials.Type.HarvestMeat}),
@@ -587,6 +592,11 @@ namespace SonOfRobin
                     return new List<HintMessage> {
                         new HintMessage(text: "| Now I can cook like a pro!",
                         imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot) })};
+
+                case PieceHint.Type.Furnace:
+                    return new List<HintMessage> {
+                        new HintMessage(text: "Finally! Now I can | smelt!",
+                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete) })};
 
                 case PieceHint.Type.LeatherPositive:
                     return new List<HintMessage> {

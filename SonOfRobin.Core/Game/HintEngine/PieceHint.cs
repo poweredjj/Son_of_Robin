@@ -74,6 +74,7 @@ namespace SonOfRobin
             DeadAnimal = 61,
             HarvestingWorkshop = 62,
             SwampDigSite = 63,
+            Furnace = 78,
 
             CineCrateStarting = 64,
             CineTentModernCantPack = 65,

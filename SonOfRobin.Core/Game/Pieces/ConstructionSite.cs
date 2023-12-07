@@ -194,6 +194,7 @@ namespace SonOfRobin
             if (buildingFinished)
             {
                 nextLevelPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.convertsIntoWhenFinished, world: this.world, position: this.sprite.position, ignoreCollisions: true, createdByPlayer: true);
+                new LevelEvent(eventName: LevelEvent.EventName.CheckForPieceHints, level: this.world.ActiveLevel, delay: 60 * 1, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "fieldPiece", nextLevelPiece.name } });
             }
             else
             {

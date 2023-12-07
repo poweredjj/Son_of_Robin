@@ -43,6 +43,7 @@ namespace SonOfRobin
             MeatHarvestLevels = 31,
             Caves = 32,
             ConstructionSites = 33,
+            Smelt = 34,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -267,6 +268,15 @@ namespace SonOfRobin
                     new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    });
+
+                case Type.Smelt:
+                    return new Tutorial(type: type, name: "smelting", title: "How to smelt.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text:$"1. Stand next to the | { PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName } and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
+                    new HintMessage(text:$"2. Place some | | | materials into | the {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete)}, boxType: messageTextType),
+                    new HintMessage(text: $"3. You will also need to put one | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} for every material.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, boxType: messageTextType),
+                    new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.IronOre), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetTexture(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
                     });
 
                 case Type.ShakeFruit:

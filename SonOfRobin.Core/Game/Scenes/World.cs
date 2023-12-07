@@ -1463,8 +1463,9 @@ namespace SonOfRobin
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
                 blockingLightSpritesArray = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement)
-                    .OrderBy(o => o.sprite.GfxRect.Bottom)
-                    .Select(o => o.sprite).ToArray();
+                    .OrderBy(p => p.sprite.GfxRect.Bottom)
+                    .Select(p => p.sprite)
+                    .ToArray();
             }
 
             // turning on camera view RenderTarget
@@ -1596,9 +1597,10 @@ namespace SonOfRobin
             // searching for light sources
 
             var lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
-                .OrderBy(o => o.sprite.AnimFrame.layer)
-                .ThenBy(o => o.sprite.GfxRect.Bottom)
-                .Select(o => o.sprite)
+                .Where(p => p.sprite.IsOnBoard)
+                .OrderBy(p => p.sprite.AnimFrame.layer)
+                .ThenBy(p => p.sprite.GfxRect.Bottom)
+                .Select(p => p.sprite)
                 .ToArray();
 
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel);
@@ -1614,15 +1616,14 @@ namespace SonOfRobin
 
             // preparing and drawing shadow masks
 
+            if (SonOfRobinGame.tempShadowMask == null) SonOfRobinGame.tempShadowMask = new RenderTarget2D(graphicsDevice: SonOfRobinGame.GfxDev, width: SonOfRobinGame.lightSphere.Width, height: SonOfRobinGame.lightSphere.Height);
+            RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMask;
+
             foreach (var lightSprite in lightSprites)
             {
-                if (SonOfRobinGame.tempShadowMask == null) SonOfRobinGame.tempShadowMask = new RenderTarget2D(graphicsDevice: SonOfRobinGame.GfxDev, width: SonOfRobinGame.lightSphere.Width, height: SonOfRobinGame.lightSphere.Height);
-
                 Rectangle lightRect = lightSprite.lightEngine.Rect;
 
                 // drawing shadows onto shadow mask
-
-                RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMask;
 
                 SetRenderTarget(tempShadowMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Black);
