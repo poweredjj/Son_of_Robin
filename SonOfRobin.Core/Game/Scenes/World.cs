@@ -12,6 +12,70 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
+        private static readonly BlendState darknessMaskBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.ReverseSubtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
+
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
+        private static readonly BlendState shadowBlend = new()
+        {
+            // BlendFunction.Min and BlendFunction.Max will not work on Android (causing crashes)
+
+            AlphaBlendFunction = BlendFunction.ReverseSubtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
+
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
+        private static readonly BlendState shadowBlendRedraw = new()
+        {
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.Zero,
+            ColorDestinationBlend = Blend.InverseSourceColor,
+        };
+
+        private static readonly BlendState lightBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.InverseSourceAlpha,
+            AlphaDestinationBlend = Blend.SourceAlpha,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.Zero,
+            ColorDestinationBlend = Blend.DestinationColor,
+        };
+
+        private static readonly BlendState ambientBlend = new()
+        {
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.DestinationColor,
+            ColorDestinationBlend = Blend.One
+        };
+
+        private static readonly BlendState colorLightBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;
         public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
@@ -1550,52 +1614,7 @@ namespace SonOfRobin
 
             Matrix worldMatrix = this.TransformMatrix;
 
-            var darknessMaskBlend = new BlendState
-            {
-                AlphaBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.ReverseSubtract,
-                ColorSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.One,
-            };
-
             // preparing and drawing shadow masks
-
-            // BlendFunction.Min and BlendFunction.Max will not work on Android!
-            BlendState shadowBlend = new()
-            {
-                AlphaBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.ReverseSubtract,
-                ColorSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.One,
-            };
-
-            BlendState shadowBlendRedraw = new()
-            {
-                AlphaBlendFunction = BlendFunction.Add,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.Zero,
-                ColorDestinationBlend = Blend.InverseSourceColor,
-            };
-
-            BlendState lightBlend = new()
-            {
-                AlphaBlendFunction = BlendFunction.Add,
-                AlphaSourceBlend = Blend.InverseSourceAlpha,
-                AlphaDestinationBlend = Blend.SourceAlpha,
-
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.Zero,
-                ColorDestinationBlend = Blend.DestinationColor,
-            };
 
             foreach (var lightSprite in lightSprites)
             {
@@ -1667,28 +1686,12 @@ namespace SonOfRobin
 
             // drawing ambient light
 
-            BlendState ambientBlend = new()
-            {
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.DestinationColor,
-                ColorDestinationBlend = Blend.One
-            };
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: ambientBlend);
             if (ambientLightData.lightColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cameraRect, ambientLightData.lightColor);
 
             // drawing point lights
 
             SonOfRobinGame.SpriteBatch.End();
-            BlendState colorLightBlend = new()
-            {
-                AlphaBlendFunction = BlendFunction.Add,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.One,
-            };
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: colorLightBlend);
 
