@@ -13,12 +13,12 @@ namespace SonOfRobin
             private static readonly SunLightData[] sunDataArray = new SunLightData[]
             {
                 new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent, shadowBlurSize: 0f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(4), sunPos: new Vector2(400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3.5f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(5), sunPos: new Vector2(350, -225), sunShadowsLength: 2.65f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 2.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(4), sunPos: new Vector2(400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 6.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(5), sunPos: new Vector2(350, -225), sunShadowsLength: 2.65f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 4.0f),
                 new SunLightData(timeOfDay: TimeSpan.FromHours(6), sunPos: new Vector2(300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 1.0f),
                 new SunLightData(timeOfDay: TimeSpan.FromHours(12), sunPos: new Vector2(0, 1000), sunShadowsLength: 0.2f, sunShadowsColor: Color.Black * 0.6f, shadowBlurSize: 0.0f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(18), sunPos: new Vector2(-300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 2.0f),
-                new SunLightData(timeOfDay: TimeSpan.FromHours(20), sunPos: new Vector2(-400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 3.5f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(18), sunPos: new Vector2(-300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f, shadowBlurSize: 4.0f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(20), sunPos: new Vector2(-400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent, shadowBlurSize: 6.0f),
                 new SunLightData(timeOfDay: TimeSpan.FromHours(24), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent, shadowBlurSize: 0f),
             };
 
