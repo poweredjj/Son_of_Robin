@@ -472,20 +472,20 @@ namespace SonOfRobin
             {
                 var creationDataArray = this.ActiveLevel.creationDataArrayRegular;
 
-                if (SonOfRobinGame.platform == Platform.Mobile && this.demoMode) // will freeze on mobile if using parallel here (for demo world)
-                {
-                    foreach (PieceCreationData pieceCreationData in creationDataArray)
-                    {
-                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                    }
-                }
-                else
+                if (SonOfRobinGame.os == OS.Windows) // will freeze on mobile if using parallel here (for demo world)
                 {
                     Parallel.ForEach(creationDataArray, SonOfRobinGame.defaultParallelOptions, pieceCreationData =>
                     {
                         // much faster, when executed on main thread (prevents from slowdown when populating)
                         AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
                     });
+                }
+                else
+                {
+                    foreach (PieceCreationData pieceCreationData in creationDataArray)
+                    {
+                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
+                    }
                 }
 
                 if (this.demoMode)
