@@ -228,7 +228,7 @@ namespace SonOfRobin
                 { "version", Mesh.currentVersion },
                 { "meshArray", meshBagSerialized.ToArray() },
             };
-            FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
+            FileReaderWriter.SaveJson(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
         public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, TextureBank.TextureName textureName)

@@ -581,7 +581,7 @@ namespace SonOfRobin
             prefsData["smartCamera"] = smartCamera;
             prefsData["softSunShadows"] = softSunShadows;
 
-            FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
+            FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
             MessageLog.Add(debugMessage: true, text: "Preferences saved.", textColor: Color.White);
         }

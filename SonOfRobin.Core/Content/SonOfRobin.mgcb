@@ -91,8 +91,8 @@
 #begin fonts/VCR_OSD_MONO_1.001.ttf
 /copy:fonts/VCR_OSD_MONO_1.001.ttf
 
-#begin gfx/_DragonBones/TestSheep/Sheep_Ani_ske.dbbin
-/copy:gfx/_DragonBones/TestSheep/Sheep_Ani_ske.dbbin
+#begin gfx/_DragonBones/TestSheep/Sheep_Ani_ske.json
+/copy:gfx/_DragonBones/TestSheep/Sheep_Ani_ske.json
 
 #begin gfx/_DragonBones/TestSheep/Sheep_Ani_tex.json
 /copy:gfx/_DragonBones/TestSheep/Sheep_Ani_tex.json

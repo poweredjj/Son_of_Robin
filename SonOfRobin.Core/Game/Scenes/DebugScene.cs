@@ -101,17 +101,7 @@ namespace SonOfRobin
 
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
-            int headerLength;
-
-            var test = DragonBones.BinaryDataParser.DeserializeBinaryJsonData(bytes: FileReaderWriter.LoadBytes("Content/gfx/_DragonBones/TestSheep/Sheep_Ani_ske.dbbin"), headerLength: out headerLength);
-
-            // DragonBones.DragonBonesData dragonBonesData = DragonBones.BaseFactory.ParseDragonBonesData(rawData: SonOfRobinGame.ContentMgr.Load<string>("Content/Sheep_Ani_ske.json"));
-
-            //var atlas = TextureAtlas.FromJson("Content/AnimationAtlas.json");
-            //var atlas.LoadContent(SonOfRobinGame.ContentMgr);
-            //_armature = DragonBones.FromJson("Content/Armature.json", atlas, SonOfRobinGame.GfxDev).Armature;
-
-
+            DragonBonesTest.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
         }

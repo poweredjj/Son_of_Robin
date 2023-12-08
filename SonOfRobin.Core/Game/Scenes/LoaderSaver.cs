@@ -313,7 +313,7 @@ namespace SonOfRobin
             };
 
                 string headerPath = Path.Combine(this.saveTempPath, headerName);
-                FileReaderWriter.Save(path: headerPath, savedObj: headerData, compress: false);
+                FileReaderWriter.SaveJson(path: headerPath, savedObj: headerData, compress: false);
             }
 
             // saving hints data
@@ -323,7 +323,7 @@ namespace SonOfRobin
 
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
                 var hintsData = this.world.HintEngine.Serialize();
-                FileReaderWriter.Save(path: hintsPath, savedObj: hintsData, compress: true);
+                FileReaderWriter.SaveJson(path: hintsPath, savedObj: hintsData, compress: true);
             }
 
             // saving weather data
@@ -333,7 +333,7 @@ namespace SonOfRobin
 
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
                 var weatherData = this.world.weather.Serialize();
-                FileReaderWriter.Save(path: weatherPath, savedObj: weatherData, compress: true);
+                FileReaderWriter.SaveJson(path: weatherPath, savedObj: weatherData, compress: true);
             }
 
             // saving grid data
@@ -343,7 +343,7 @@ namespace SonOfRobin
 
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
                 var gridData = this.world.Grid.Serialize();
-                FileReaderWriter.Save(path: gridPath, savedObj: gridData, compress: true);
+                FileReaderWriter.SaveJson(path: gridPath, savedObj: gridData, compress: true);
             }
 
             // saving pieces data
@@ -380,7 +380,7 @@ namespace SonOfRobin
                             if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
                         }
 
-                        FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
+                        FileReaderWriter.SaveJson(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
                     });
 
                     this.currentPiecePackageNo += packagesToProcess.Count;
@@ -398,7 +398,7 @@ namespace SonOfRobin
                 var trackingData = this.world.ActiveLevel.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
-                FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
+                FileReaderWriter.SaveJson(path: trackingPath, savedObj: trackingData, compress: true);
             }
 
             // saving world event data
@@ -409,7 +409,7 @@ namespace SonOfRobin
                 var eventData = this.world.IslandLevel.levelEventManager.Serialize();
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
-                FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
+                FileReaderWriter.SaveJson(path: eventPath, savedObj: eventData, compress: true);
             }
 
             if (this.HasBeenRemoved) // in case of cancelled save

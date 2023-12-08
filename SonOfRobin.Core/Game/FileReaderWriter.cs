@@ -12,7 +12,7 @@ namespace SonOfRobin
             Formatting = Formatting.Indented,
         };
 
-        public static void Save(object savedObj, string path, bool compress)
+        public static void SaveJson(object savedObj, string path, bool compress)
         {
             string json = JsonConvert.SerializeObject(savedObj, serializerSettings);
 
@@ -88,10 +88,10 @@ namespace SonOfRobin
 
         private static byte[] Compress(string str)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true))
-                using (StreamWriter writer = new StreamWriter(gzip))
+                using (GZipStream gzip = new(ms, CompressionMode.Compress, true))
+                using (StreamWriter writer = new(gzip))
                 {
                     writer.Write(str);
                 }
@@ -101,10 +101,10 @@ namespace SonOfRobin
 
         private static string Decompress(byte[] compressedBytes)
         {
-            using (MemoryStream ms = new MemoryStream(compressedBytes))
+            using (MemoryStream ms = new(compressedBytes))
             {
-                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
-                using (StreamReader reader = new StreamReader(gzip))
+                using (GZipStream gzip = new(ms, CompressionMode.Decompress))
+                using (StreamReader reader = new(gzip))
                 {
                     try
                     {

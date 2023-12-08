@@ -2220,7 +2220,7 @@ namespace SonOfRobin
         {
             jsonDict["currentVersion"] = currentVersion;
 
-            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+            FileReaderWriter.SaveJson(path: JsonDataPath, savedObj: jsonDict, compress: true);
             MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
