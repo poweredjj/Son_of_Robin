@@ -1199,7 +1199,7 @@ namespace SonOfRobin
                         {
                             foreach (PieceHint.Type type in PieceHint.allTypes)
                             {
-                                PieceHintData.GetMessageList(type);
+                                PieceHintData.GetMessageList(type: type, world: null);
                             }
                         };
                         new Invoker(menu: menu, name: "check all PieceHints", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: checkAllPieceHintsDlgt);

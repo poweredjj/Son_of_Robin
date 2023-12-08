@@ -459,7 +459,7 @@ namespace SonOfRobin
             return newPieceHintList;
         }
 
-        public static List<HintMessage> GetMessageList(PieceHint.Type type)
+        public static List<HintMessage> GetMessageList(PieceHint.Type type, World world)
         {
             switch (type)
             {
@@ -773,7 +773,11 @@ namespace SonOfRobin
                         imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort) })};
 
                 case PieceHint.Type.DeadAnimal:
-                    return new List<HintMessage> {
+                    return world != null && world.Player.Skill == Player.SkillName.Hunter ?
+                        new List<HintMessage> {
+                        new HintMessage(text: $"I know how to | process this animal right now,\nbut if I had a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName}, I could get more | meat.",
+                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) })} :
+                        new List<HintMessage> {
                         new HintMessage(text: $"I need to use | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName}\nto process this animal.",
                         imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting) })};
 

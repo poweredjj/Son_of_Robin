@@ -161,7 +161,7 @@ namespace SonOfRobin
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
                 if (this.tutorialsToActivate != null) throw new ArgumentException("General hint and tutorial cannot both be active.");
-                if (PieceHintData.GetMessageList(this.type).Count > 0) throw new ArgumentException("General hint and message list cannot both be active.");
+                if (PieceHintData.GetMessageList(type: this.type, world: null).Count > 0) throw new ArgumentException("General hint and message list cannot both be active.");
             }
         }
 
@@ -213,7 +213,7 @@ namespace SonOfRobin
                 return;
             }
 
-            var messagesToDisplay = PieceHintData.GetMessageList(this.type);
+            var messagesToDisplay = PieceHintData.GetMessageList(type: this.type, world: world);
 
             if (this.recipesToUnlock != null)
             {
