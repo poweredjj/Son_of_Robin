@@ -26,6 +26,8 @@ namespace DragonBonesMG.Display
         public void LoadContent(ContentManager content)
         {
             // ContentManager doesn't like extensions
+            var dsdas = ImagePath;
+
             var name = Path.GetFileNameWithoutExtension(ImagePath);
             _texture = content.Load<Texture2D>(name);
         }

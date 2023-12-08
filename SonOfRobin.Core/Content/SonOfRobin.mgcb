@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin DemonTexture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:DemonTexture.png
+
 #begin effects/Blur.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -91,62 +103,17 @@
 #begin fonts/VCR_OSD_MONO_1.001.ttf
 /copy:fonts/VCR_OSD_MONO_1.001.ttf
 
-#begin gfx/_DragonBones/Culling.json
-/copy:gfx/_DragonBones/Culling.json
-
-#begin gfx/_DragonBones/Culling.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/Culling.png
-
 #begin gfx/_DragonBones/Demon.json
 /copy:gfx/_DragonBones/Demon.json
 
 #begin gfx/_DragonBones/DemonTexture.json
 /copy:gfx/_DragonBones/DemonTexture.json
 
-#begin gfx/_DragonBones/DemonTexture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/DemonTexture.png
+#begin gfx/_DragonBones/Sheep_Ani_ske.json
+/copy:gfx/_DragonBones/Sheep_Ani_ske.json
 
-#begin gfx/_DragonBones/Dragon.json
-/copy:gfx/_DragonBones/Dragon.json
-
-#begin gfx/_DragonBones/Meshes.json
-/copy:gfx/_DragonBones/Meshes.json
-
-#begin gfx/_DragonBones/SolveCulling.json
-/copy:gfx/_DragonBones/SolveCulling.json
-
-#begin gfx/_DragonBones/texture.json
-/copy:gfx/_DragonBones/texture.json
-
-#begin gfx/_DragonBones/texture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/texture.png
+#begin gfx/_DragonBones/Sheep_Ani_tex.json
+/copy:gfx/_DragonBones/Sheep_Ani_tex.json
 
 #begin gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
 /importer:TextureImporter
@@ -8943,6 +8910,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/zzz.png
+
+#begin Sheep_Ani_tex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sheep_Ani_tex.png
 
 #begin sound/114201__edgardedition__glassthud9.ogg
 /importer:OggImporter
