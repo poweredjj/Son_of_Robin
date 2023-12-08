@@ -105,6 +105,7 @@ namespace SonOfRobin
         public static bool alwaysRun = false;
         public static bool destroyMapMarkerWhenReached = true;
         public static bool smartCamera = true;
+        public static bool softSunShadows = true;
         public static bool mapShowLocationNames = true; // not saved
         public static bool pickupsHighlighted = false; // not saved
         public static bool zoomedOut = false; // used to store virtual button value
@@ -578,6 +579,7 @@ namespace SonOfRobin
             prefsData["alwaysRun"] = alwaysRun;
             prefsData["destroyMapMarkerWhenReached"] = destroyMapMarkerWhenReached;
             prefsData["smartCamera"] = smartCamera;
+            prefsData["softSunShadows"] = softSunShadows;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -648,6 +650,7 @@ namespace SonOfRobin
                     messageLogScale = (float)(double)prefsData["messageLogScale"];
                     messageLogAtRight = (bool)prefsData["messageLogAtRight"];
                     smartCamera = (bool)prefsData["smartCamera"];
+                    softSunShadows = (bool)prefsData["softSunShadows"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

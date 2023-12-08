@@ -1495,7 +1495,7 @@ namespace SonOfRobin
                 SetRenderTarget(cameraViewRenderTarget);
 
                 SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
-                if (sunLightData.shadowBlurSize > 0)
+                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
                 {
                     this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
                     this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: sunShadowsColor);
