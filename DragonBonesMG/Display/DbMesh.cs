@@ -79,6 +79,8 @@ namespace DragonBonesMG.Display
         /// <param name="state"></param>
         public void Update(MeshTimeline state)
         {
+            if (state == null) return;
+
             var offset = state.Vertices.Any() ? state.Offset : _originalVertices.Length;
 
             for (int i = 0; i < offset; i += 2)

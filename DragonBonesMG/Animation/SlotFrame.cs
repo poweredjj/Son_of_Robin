@@ -13,7 +13,7 @@ namespace DragonBonesMG.Animation {
             StartFrame = startFrame;
             DisplayIndex = f.DisplayIndex;
             ZOrder = f.Z;
-            Color = f.Color;
+            Color = f.Color == null ? Color.White : f.Color ;
             TweenCurve = f.TweenEasing == null ? new NoTweenCurve() : TweenFactory.FromArray(f.TweenCurve);
         }
 

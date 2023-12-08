@@ -59,8 +59,8 @@ namespace DragonBonesMG.Animation {
                     (prev.Offset - next.Offset) * 4);
             }
             for (int i = maxOffset - Offset; i < Vertices.Length; i++) {
-                var prevIndex = i - prev.Offset;
-                var nextIndex = i - next.Offset;
+                var prevIndex = Math.Max(i - prev.Offset, 0);
+                var nextIndex = Math.Max(i - next.Offset, 0);
                 Vertices[i] = MathHelper.Lerp(prev.Vertices[prevIndex],
                     next.Vertices[nextIndex], Weight);
             }
