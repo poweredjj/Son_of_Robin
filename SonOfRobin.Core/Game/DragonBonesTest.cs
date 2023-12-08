@@ -14,7 +14,7 @@ namespace SonOfRobin
         {
             if (demonArmature == null)
             {
-                var demonAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/DemonTexture.json");
+                TextureAtlas demonAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/DemonTexture.json");
                 demonAtlas.LoadContent(SonOfRobinGame.ContentMgr);
                 demonArmature = DragonBones.FromJson("Content/gfx/_DragonBones/Demon.json", demonAtlas, SonOfRobinGame.GfxDev).Armature;
                 demonArmature.GotoAndPlay(animation: "run", loop: false);
@@ -22,7 +22,7 @@ namespace SonOfRobin
 
             if (sheepArmature == null)
             {
-                var sheepAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/Sheep_Ani_tex.json");
+                TextureAtlas sheepAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/Sheep_Ani_tex.json");
                 sheepAtlas.LoadContent(SonOfRobinGame.ContentMgr);
                 sheepArmature = DragonBones.FromJson("Content/gfx/_DragonBones/Sheep_Ani_ske.json", sheepAtlas, SonOfRobinGame.GfxDev).Armature;
             }
@@ -30,7 +30,7 @@ namespace SonOfRobin
             demonArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
 
             if (demonArmature.IsDoneAnimating()) {
-                var animationNames = demonArmature.Animations.Select(a => a.Name).ToArray();
+                string[] animationNames = demonArmature.Animations.Select(a => a.Name).ToArray();
                 string animName = animationNames[BoardPiece.Random.Next(animationNames.Length)];
                 demonArmature.GotoAndPlay(animation: animName, loop: false);
             }
