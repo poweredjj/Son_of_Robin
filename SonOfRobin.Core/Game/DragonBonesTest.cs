@@ -1,6 +1,7 @@
 ﻿using DragonBonesMG;
 using DragonBonesMG.Display;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -16,8 +17,7 @@ namespace SonOfRobin
                 var demonAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/DemonTexture.json");
                 demonAtlas.LoadContent(SonOfRobinGame.ContentMgr);
                 demonArmature = DragonBones.FromJson("Content/gfx/_DragonBones/Demon.json", demonAtlas, SonOfRobinGame.GfxDev).Armature;
-                demonArmature.GotoAndPlay("run");
-
+                demonArmature.GotoAndPlay(animation: "run", loop: false);
             }
 
             if (sheepArmature == null)
@@ -25,14 +25,20 @@ namespace SonOfRobin
                 var sheepAtlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/Sheep_Ani_tex.json");
                 sheepAtlas.LoadContent(SonOfRobinGame.ContentMgr);
                 sheepArmature = DragonBones.FromJson("Content/gfx/_DragonBones/Sheep_Ani_ske.json", sheepAtlas, SonOfRobinGame.GfxDev).Armature;
-                // sheepArmature.GotoAndPlay("goat_walk_anim");
             }
 
-            demonArmature.Update(SonOfRobinGame.CurrentGameTime.TotalGameTime);
-            // sheepArmature.Update(SonOfRobinGame.CurrentGameTime.TotalGameTime);
+            demonArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
 
-            //sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(200f, 250f), rotation: 0f, scale: new Vector2(0.5f, 0.3f), color: Color.White);
-            demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(300f, 220f), rotation: 0f, scale: new Vector2(0.3f, 0.3f), color: Color.White);
+            if (demonArmature.IsDoneAnimating()) {
+                var animationNames = demonArmature.Animations.Select(a => a.Name).ToArray();
+                string animName = animationNames[BoardPiece.Random.Next(animationNames.Length)];
+                demonArmature.GotoAndPlay(animation: animName, loop: false);
+            }
+
+            // sheepArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+
+            sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(600f, 800f), rotation: 0f, scale: new Vector2(1.0f, 1.0f), color: Color.White);
+            demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(400f, 600f), rotation: 0f, scale: new Vector2(1.0f, 1.0f), color: Color.White);
         }
     }
 }
