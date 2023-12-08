@@ -1605,7 +1605,7 @@ namespace SonOfRobin
                 case Name.Coal:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
-                             readableName: "coal", description: "Crafting material and fuel.");
+                             readableName: "coal", description: "Used for smelting (using a funace).");
 
                         return boardPiece;
                     }
@@ -1621,7 +1621,7 @@ namespace SonOfRobin
                 case Name.IronOre:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
-                             readableName: "iron ore", description: "Can be used to make iron bars.");
+                             readableName: "iron ore", description: "Can be used to make iron bars (using a furnace).");
 
                         return boardPiece;
                     }
@@ -1629,7 +1629,7 @@ namespace SonOfRobin
                 case Name.GlassSand:
                     {
                         BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
-                             readableName: "glass sand", description: "Can be used to make glass.");
+                             readableName: "glass sand", description: "Can be used to make glass (using a furnace).");
 
                         return boardPiece;
                     }
@@ -1679,7 +1679,7 @@ namespace SonOfRobin
 
                 case Name.CoffeeRaw:
                     {
-                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "raw coffee", description: "Can be planted or roasted.");
+                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "raw coffee", description: "Can be planted or roasted (using a furnace).");
 
                         ((Seed)coffeeRaw).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
 

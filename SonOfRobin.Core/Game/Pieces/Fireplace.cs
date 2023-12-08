@@ -14,7 +14,6 @@ namespace SonOfRobin
             { PieceTemplate.Name.WoodLogRegular, 60 * 60 * 1 },
             { PieceTemplate.Name.WoodLogHard, 60 * 60 * 3 },
             { PieceTemplate.Name.WoodPlank, 60 * 60 * 1 },
-            { PieceTemplate.Name.Coal, 60 * 60 * 5 },
         };
 
         private static readonly List<PieceTemplate.Name> fuelNames = fuelFramesByName.Keys.ToList();
