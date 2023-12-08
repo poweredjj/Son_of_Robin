@@ -987,14 +987,8 @@ namespace SonOfRobin
             // width and height are set once in constructor
         }
 
-        public override void Update()
+        public void LoadAnimPackages()
         {
-            if (this.ActiveLevel.creationInProgress)
-            {
-                this.CompleteCreation();
-                return;
-            }
-
             bool anyPackageLoaded = false;
             while (true)
             {
@@ -1007,6 +1001,17 @@ namespace SonOfRobin
                 else break;
             }
             if (anyPackageLoaded) AnimData.SaveJsonDict();
+        }
+
+        public override void Update()
+        {
+            if (this.ActiveLevel.creationInProgress)
+            {
+                this.CompleteCreation();
+                return;
+            }
+
+            this.LoadAnimPackages();
 
             this.ProcessInput();
             this.UpdateViewParams();

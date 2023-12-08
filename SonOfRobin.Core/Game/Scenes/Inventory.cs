@@ -508,6 +508,8 @@ namespace SonOfRobin
                 this.otherInventory.UpdateViewParams();
             }
 
+            this.storage.storagePiece.world.LoadAnimPackages();
+
             if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
             this.UpdateViewParams();
