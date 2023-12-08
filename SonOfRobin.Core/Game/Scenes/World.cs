@@ -1479,7 +1479,7 @@ namespace SonOfRobin
                 SetRenderTarget(DarknessAndHeatMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData, worldMatrix: worldMatrix);
+                this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1500,24 +1500,6 @@ namespace SonOfRobin
 
             var drawnPieces = this.Grid.DrawSprites();
 
-            // drawing mask with sun shadows onto camera view RenderTarget
-
-            if (sunShadowsOpacity > 0f)
-            {
-                SonOfRobinGame.SpriteBatch.End(); // ending previous spritebatch
-
-                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
-                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
-                {
-                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
-                }
-                SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, Color.White * sunShadowsOpacity);
-                SonOfRobinGame.SpriteBatch.End();
-
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix); // starting new spritebatch with previous settings
-            }
-
             // updating debugText
             if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count} tris {trianglesDrawn}";
 
@@ -1527,6 +1509,20 @@ namespace SonOfRobin
             // drawing light and darkness
             if (Preferences.debugShowOutsideCamera) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.camera.viewRect, color: Color.White, thickness: 3f);
             SonOfRobinGame.SpriteBatch.End();
+
+            // drawing mask with sun shadows onto camera view RenderTarget
+
+            if (sunShadowsOpacity > 0f)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
+                {
+                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
+                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
+                }
+                SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, Color.White * sunShadowsOpacity);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             // drawing darkness
 

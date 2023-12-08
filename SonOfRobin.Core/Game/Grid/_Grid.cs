@@ -1276,7 +1276,7 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData, Matrix worldMatrix)
+        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData)
         {
             Rectangle cameraRect = this.world.camera.viewRect;
 
