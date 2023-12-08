@@ -97,7 +97,7 @@ namespace SonOfRobin
         {
             string checkedHeaderPath = Path.Combine(templatePath, headerName);
 
-            var headerData = FileReaderWriter.Load(path: checkedHeaderPath);
+            var headerData = FileReaderWriter.LoadJson(path: checkedHeaderPath);
             if (headerData == null) return null;
 
             GridTemplate gridTemplate = Deserialize(headerData);

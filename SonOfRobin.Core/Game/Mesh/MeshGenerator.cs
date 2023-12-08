@@ -195,7 +195,7 @@ namespace SonOfRobin
 
         public static Mesh[] LoadFromTemplate(string meshesFilePath)
         {
-            var loadedData = FileReaderWriter.Load(path: meshesFilePath);
+            var loadedData = FileReaderWriter.LoadJson(path: meshesFilePath);
             if (loadedData == null) return null;
 
             var loadedDict = (Dictionary<string, Object>)loadedData;

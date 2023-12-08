@@ -590,7 +590,7 @@ namespace SonOfRobin
         {
             bool prefsLoaded = false;
 
-            var prefsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: SonOfRobinGame.prefsPath);
+            var prefsData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: SonOfRobinGame.prefsPath);
             if (prefsData != null)
             {
                 try

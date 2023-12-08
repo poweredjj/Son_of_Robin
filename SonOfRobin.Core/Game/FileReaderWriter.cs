@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class FileReaderWriter
     {
-        private static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings serializerSettings = new()
         {
             TypeNameHandling = TypeNameHandling.All,
             Formatting = Formatting.Indented,
@@ -49,7 +49,17 @@ namespace SonOfRobin
             }
         }
 
-        public static object Load(string path)
+        public static byte[] LoadBytes(string path)
+        {
+            try
+            {
+                return File.ReadAllBytes(path);
+            }
+            catch (FileNotFoundException) { return null; }
+            catch (DirectoryNotFoundException) { return null; }
+        }
+
+        public static object LoadJson(string path)
         {
             string compressedPath = $"{path}.gzip";
 
