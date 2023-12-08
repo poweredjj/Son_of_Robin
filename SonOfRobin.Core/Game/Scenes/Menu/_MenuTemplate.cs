@@ -262,7 +262,9 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true);
 
-                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softSunShadows");
+                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softSunShadows"); 
+                        
+                        new Selector(menu: menu, name: "draw shadows", valueDict: new Dictionary<object, object> { { true, "all" }, { false, "some" } }, targetObj: preferences, propertyName: "drawAllShadows");
 
                         new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell");
 

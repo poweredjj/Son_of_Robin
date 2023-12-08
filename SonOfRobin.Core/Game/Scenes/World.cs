@@ -1470,7 +1470,7 @@ namespace SonOfRobin
                 sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible)
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement)
                     .OrderBy(p => p.sprite.AnimFrame.layer)
                     .ThenBy(p => p.sprite.GfxRect.Bottom)
                     .Select(p => p.sprite)
