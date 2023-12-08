@@ -1,2 +1,0 @@
-C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\DragonBonesMG.csproj.AssemblyReference.cache
-C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\DragonBonesMG.csproj.CoreCompileInputs.cache
