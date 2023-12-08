@@ -82,6 +82,7 @@ namespace SonOfRobin
 
         // render targets are static, to avoid using more when more worlds are in use (demo, new world during loading, etc.)
         private static RenderTarget2D cameraViewRenderTarget;
+
         public static RenderTarget2D DarknessAndHeatMask { get; private set; } // used for darkness and for heat
         public static RenderTarget2D FinalRenderTarget { get; private set; } // used also as temp mask for effects (shadows, distortion map, etc.)
 
@@ -1436,15 +1437,15 @@ namespace SonOfRobin
             return true;
         }
 
-        public Color CalculateSunShadowsColor(AmbientLight.SunLightData sunLightData)
+        public float CalculateSunShadowsOpacity(AmbientLight.SunLightData sunLightData)
         {
-            Color sunShadowsColor = Color.Transparent;
-            if (!Preferences.drawSunShadows || sunLightData.sunShadowsColor == Color.Transparent) return sunShadowsColor;
+            float sunShadowsOpacity = 0f;
+            if (!Preferences.drawSunShadows || sunLightData.sunShadowsOpacity == 0f) return sunShadowsOpacity;
 
             float sunVisibility = Math.Max(this.weather.SunVisibility, this.weather.LightningPercentage); // lightning emulates sun
-            if (sunVisibility <= 0f) return sunShadowsColor;
+            if (sunVisibility <= 0f) return sunShadowsOpacity;
 
-            return sunLightData.sunShadowsColor * sunVisibility;
+            return sunLightData.sunShadowsOpacity * sunVisibility;
         }
 
         public override void RenderToTarget()
@@ -1457,8 +1458,11 @@ namespace SonOfRobin
 
             var blockingLightSpritesArray = Array.Empty<Sprite>();
 
+            AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
+            float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
+
             if ((Preferences.drawSunShadows &&
-                AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).sunShadowsColor != Color.Transparent) ||
+                sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
                 blockingLightSpritesArray = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement)
@@ -1467,7 +1471,18 @@ namespace SonOfRobin
                     .ToArray();
             }
 
-            // turning on camera view RenderTarget
+            // drawing sun shadows onto darkness mask
+
+            if (sunShadowsOpacity > 0f)
+            {
+                SetRenderTarget(DarknessAndHeatMask);
+                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
+                this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData, worldMatrix: worldMatrix);
+                SonOfRobinGame.SpriteBatch.End();
+            }
+
+            // switching to camera view RenderTarget
             SetRenderTarget(cameraViewRenderTarget);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 
@@ -1478,37 +1493,29 @@ namespace SonOfRobin
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
             int trianglesDrawn = this.Grid.DrawBackground();
 
-            // drawing sun shadows onto darkness mask
-
-            AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
-            Color sunShadowsColor = this.CalculateSunShadowsColor(sunLightData);
-            if (sunShadowsColor != Color.Transparent)
-            {
-                SetRenderTarget(DarknessAndHeatMask);
-                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData);
-                SonOfRobinGame.SpriteBatch.End();
-
-                // drawing mask with sun shadows onto camera view RenderTarget
-
-                SetRenderTarget(cameraViewRenderTarget);
-
-                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
-                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
-                {
-                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: sunShadowsColor);
-                }
-                SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, sunShadowsColor);
-                SonOfRobinGame.SpriteBatch.End();
-            }
-
             // drawing sprites
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
             var drawnPieces = this.Grid.DrawSprites();
+
+            // drawing mask with sun shadows onto camera view RenderTarget
+
+            if (sunShadowsOpacity > 0f)
+            {
+                SonOfRobinGame.SpriteBatch.End(); // ending previous spritebatch
+
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
+                {
+                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
+                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
+                }
+                SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, Color.White * sunShadowsOpacity);
+                SonOfRobinGame.SpriteBatch.End();
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix); // starting new spritebatch with previous settings
+            }
 
             // updating debugText
             if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count} tris {trianglesDrawn}";

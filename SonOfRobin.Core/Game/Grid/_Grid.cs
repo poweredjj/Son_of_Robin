@@ -1276,13 +1276,13 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData)
+        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData, Matrix worldMatrix)
         {
+            Rectangle cameraRect = this.world.camera.viewRect;
+
             foreach (Sprite shadowSprite in blockingLightSpritesArray)
             {
                 if (!shadowSprite.Visible || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
-
-                Rectangle cameraRect = this.world.camera.viewRect;
 
                 if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
                 {
@@ -1309,7 +1309,9 @@ namespace SonOfRobin
                 Vector2 sunPos = new(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
                 float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
 
-                Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+                Sprite.DrawShadow(color: Color.Black, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+
+                if (cameraRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
             }
         }
 
