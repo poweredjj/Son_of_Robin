@@ -1316,14 +1316,14 @@ namespace SonOfRobin
             }
         }
 
-        public List<BoardPiece> DrawSprites()
+        public BoardPiece[] DrawSprites()
         {
             // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
             // in cases of sprites overlapping cell boundaries.
 
-            var visiblePieces = this.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+            List<BoardPiece> visiblePieces = this.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
             var offScreenParticleEmitterPieces = this.level.recentParticlesManager.OffScreenPieces;
-            var piecesToDraw = visiblePieces.Concat(offScreenParticleEmitterPieces).ToList();
+            var piecesToDraw = visiblePieces.Concat(offScreenParticleEmitterPieces).ToArray();
 
             foreach (BoardPiece piece in piecesToDraw
                 .OrderBy(o => o.sprite.AnimFrame.layer)

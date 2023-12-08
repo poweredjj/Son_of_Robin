@@ -1498,10 +1498,10 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
 
-            var drawnPieces = this.Grid.DrawSprites();
+            BoardPiece[] drawnPieces = this.Grid.DrawSprites();
 
             // updating debugText
-            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Count} tris {trianglesDrawn}";
+            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {drawnPieces.Length} tris {trianglesDrawn}";
 
             // drawing debug cell data
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
@@ -1514,8 +1514,10 @@ namespace SonOfRobin
 
             if (sunShadowsOpacity > 0f)
             {
-                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
-                if (Preferences.softSunShadows && sunLightData.shadowBlurSize > 0)
+                bool softShadows = Preferences.softSunShadows && sunLightData.shadowBlurSize > 0;
+
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: softShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+                if (softShadows)
                 {
                     this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
                     this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
@@ -1737,7 +1739,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        private void DrawHighlightedPieces(List<BoardPiece> drawnPieces)
+        private void DrawHighlightedPieces(BoardPiece[] drawnPieces)
         {
             if (this.demoMode || !this.Player.CanSeeAnything) return;
 
