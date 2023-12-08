@@ -3,3 +3,10 @@ C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\Dragon
 C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.AssemblyInfoInputs.cache
 C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.AssemblyInfo.cs
 C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.csproj.CoreCompileInputs.cache
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\bin\Release\net6.0\DragonBonesMG.deps.json
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\bin\Release\net6.0\DragonBonesMG.dll
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\bin\Release\net6.0\DragonBonesMG.pdb
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.dll
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\refint\DragonBonesMG.dll
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.pdb
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\ref\DragonBonesMG.dll
