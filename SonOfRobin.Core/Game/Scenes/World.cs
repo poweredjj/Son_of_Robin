@@ -1461,7 +1461,7 @@ namespace SonOfRobin
 
             // getting blocking light sprites
 
-            var blockingLightSpritesArray = Array.Empty<Sprite>();
+            Sprite[] spritesCastingShadows = Array.Empty<Sprite>();
 
             AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
@@ -1470,7 +1470,7 @@ namespace SonOfRobin
                 sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                blockingLightSpritesArray = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible)
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible)
                     .OrderBy(p => p.sprite.AnimFrame.layer)
                     .ThenBy(p => p.sprite.GfxRect.Bottom)
                     .Select(p => p.sprite)
@@ -1484,7 +1484,7 @@ namespace SonOfRobin
                 SetRenderTarget(DarknessAndHeatMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.Grid.DrawSunShadows(blockingLightSpritesArray: blockingLightSpritesArray, sunLightData: sunLightData);
+                this.Grid.DrawSunShadows(blockingLightSpritesArray: spritesCastingShadows, sunLightData: sunLightData);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1533,7 +1533,7 @@ namespace SonOfRobin
 
             // drawing darkness
 
-            Sprite[] lightSprites = this.UpdateDarknessMask(blockingLightSpritesArray: blockingLightSpritesArray);
+            Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
             this.DrawLightAndDarkness(lightSprites);
 
             // drawing highlighted pieces
@@ -1602,7 +1602,7 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.halfFramerate ? 2 : 1;
         }
 
-        private Sprite[] UpdateDarknessMask(Sprite[] blockingLightSpritesArray)
+        private Sprite[] UpdateDarknessMask(Sprite[] spritesCastingShadows)
         {
             // searching for light sources
 
@@ -1648,7 +1648,7 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlend);
 
-                    foreach (Sprite shadowSprite in blockingLightSpritesArray)
+                    foreach (Sprite shadowSprite in spritesCastingShadows)
                     {
                         if (shadowSprite == lightSprite || !lightRect.Intersects(shadowSprite.GfxRect) || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
 
@@ -1661,7 +1661,7 @@ namespace SonOfRobin
 
                 // second pass - erasing shadow from original sprites' position
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);
-                foreach (Sprite shadowSprite in blockingLightSpritesArray)
+                foreach (Sprite shadowSprite in spritesCastingShadows)
                 {
                     // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
                     if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y);

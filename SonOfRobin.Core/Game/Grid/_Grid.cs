@@ -1282,7 +1282,7 @@ namespace SonOfRobin
 
             foreach (Sprite shadowSprite in blockingLightSpritesArray)
             {
-                if (!shadowSprite.Visible || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
+                if (shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
 
                 Rectangle gfxRect = shadowSprite.GfxRect;
 
@@ -1312,7 +1312,7 @@ namespace SonOfRobin
 
                 Sprite.DrawShadow(color: Color.Black, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
 
-                if (shadowSprite.IsInCameraRect) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
+                if (cameraRect.Intersects(gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
             }
         }
 
