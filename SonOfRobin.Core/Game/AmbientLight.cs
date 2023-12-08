@@ -37,6 +37,16 @@ namespace SonOfRobin
                 this.shadowBlurSize = shadowBlurSize;
             }
 
+            public static SunLightData MergeTwo(TimeSpan timeOfDay, SunLightData sunLightData1, SunLightData sunLightData2, float firstOpacity, float secondOpacity)
+            {
+                return new SunLightData(
+                    timeOfDay: timeOfDay,
+                    sunPos: (sunLightData1.sunPos * firstOpacity) + (sunLightData2.sunPos * secondOpacity),
+                    sunShadowsLength: (sunLightData1.sunShadowsLength * firstOpacity) + (sunLightData2.sunShadowsLength * secondOpacity),
+                    sunShadowsOpacity: (sunLightData1.sunShadowsOpacity * firstOpacity) + (sunLightData2.sunShadowsOpacity * secondOpacity),
+                    shadowBlurSize: (sunLightData1.shadowBlurSize * firstOpacity) + (sunLightData2.shadowBlurSize * secondOpacity));
+            }
+
             public static SunLightData CalculateSunLight(DateTime currentDateTime, Weather weather)
             {
                 TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
@@ -73,13 +83,7 @@ namespace SonOfRobin
                         float prevColorOpacity = 1f - (float)((currentTimeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes) / minutesBetween);
                         float nextColorOpacity = 1f - (float)((nextLightData.timeOfDay.TotalMinutes - currentTimeOfDay.TotalMinutes) / minutesBetween);
 
-                        float newSunShadowsOpacity = (prevLightData.sunShadowsOpacity * prevColorOpacity) + (nextLightData.sunShadowsOpacity * nextColorOpacity);
-
-                        float newSunShadowsLength = (prevLightData.sunShadowsLength * prevColorOpacity) + (nextLightData.sunShadowsLength * nextColorOpacity);
-                        Vector2 newSunPos = (prevLightData.sunPos * prevColorOpacity) + (nextLightData.sunPos * nextColorOpacity);
-                        float newshadowBlurSize = (prevLightData.shadowBlurSize * prevColorOpacity) + (nextLightData.shadowBlurSize * nextColorOpacity);
-
-                        return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: newSunPos, sunShadowsLength: newSunShadowsLength, sunShadowsOpacity: newSunShadowsOpacity, shadowBlurSize: newshadowBlurSize);
+                        return MergeTwo(timeOfDay: currentTimeOfDay, sunLightData1: prevLightData, sunLightData2: nextLightData, firstOpacity: prevColorOpacity, secondOpacity: nextColorOpacity);
                     }
                 }
 
