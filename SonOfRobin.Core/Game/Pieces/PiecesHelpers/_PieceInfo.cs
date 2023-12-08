@@ -237,7 +237,7 @@ namespace SonOfRobin
                 this.ambsoundGeneratesWind = false;
                 this.visFogExplodesWhenBurns = false;
                 this.destroysPlantsWhenBuilt = false;
-                this.hasFlatShadow = false;
+                this.hasFlatShadow = true;
                 this.shadowNotDrawn = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
                 this.inOpacityFadeDuration = 0;
@@ -265,6 +265,7 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 65535;
                         this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
@@ -276,6 +277,7 @@ namespace SonOfRobin
                         this.startingMass = 50000;
                         this.fireAffinity = 0.5f;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 65535;
                         this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
@@ -286,6 +288,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 50000;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 65535;
                         this.getsPushedByWaves = true;
                         this.Yield = CreatePlayerYield();
@@ -545,6 +548,7 @@ namespace SonOfRobin
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 60 } };
                         this.plantDropSeedChance = 50;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 600;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
@@ -590,6 +594,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.3f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 50;
                         this.placeMaxDistance = 300;
                         this.allowedDensity = new AllowedDensity(radius: 300, maxNoOfPiecesSameName: 1);
@@ -617,6 +622,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 22000, bioWear: 0.37f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 210 } };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
@@ -647,6 +653,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.DropFruit;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
@@ -676,6 +683,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.DropFruit;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
@@ -705,6 +713,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.DropFruit;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 40;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 360, maxNoOfPiecesSameName: 1);
@@ -732,6 +741,7 @@ namespace SonOfRobin
                         this.plantReproductionData = new PlantReproductionData(massNeeded: 40000, massLost: 20000, bioWear: 0.6f);
                         this.plantBestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 170 } };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
@@ -761,6 +771,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.DropFruit;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonDropFruit;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 200;
                         this.placeMaxDistance = 400;
                         this.allowedDensity = new AllowedDensity(radius: 400, maxNoOfPiecesSameName: 2);
@@ -977,6 +988,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 200, 500 };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.animalMaxMass = 5000;
@@ -1009,6 +1021,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 1000 };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.animalMaxMass = 15000;
@@ -1041,6 +1054,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 500, 2000 };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.animalMaxMass = 15000;
@@ -1072,6 +1086,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.15f;
                         this.maxMassForSize = new int[] { 300, 800 };
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMinDistance = 10;
                         this.placeMaxDistance = 45;
                         this.animalMaxMass = 1200;
@@ -1100,6 +1115,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
                         this.delayAfterCreationMinutes = 60;
 
@@ -1115,6 +1131,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
                         this.delayAfterCreationMinutes = 60;
 
@@ -1130,6 +1147,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
@@ -1147,6 +1165,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(radius: 130, maxNoOfPiecesSameName: 0);
@@ -1165,6 +1184,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
@@ -1194,6 +1214,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 50;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
@@ -1222,6 +1243,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.5f;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
@@ -1263,6 +1285,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 50;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
@@ -1293,6 +1316,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
@@ -1324,6 +1348,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
@@ -1355,6 +1380,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenAndDestroyTreasureChest;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.inOpacityFadeDuration = 30;
                         this.isAffectedByWind = true;
                         this.getsPushedByWaves = true;
@@ -1381,6 +1407,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseCampfire;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -1389,6 +1416,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseCampfire;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -1398,6 +1426,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1408,6 +1437,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1418,6 +1448,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1428,6 +1459,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1438,6 +1470,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1448,6 +1481,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1458,6 +1492,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithLab;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonBrew;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1468,6 +1503,7 @@ namespace SonOfRobin
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonBrew;
                         this.fireAffinity = 0.3f;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1478,6 +1514,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCraft;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 500, forbidOverlapSameClass: true);
@@ -1489,6 +1526,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithFurnace;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonSmelt;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Smelting, isLooped: true);
@@ -1500,6 +1538,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenCraftMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonUseAnvil;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -1508,6 +1547,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.FryingPan, isLooped: true);
                         customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true);
@@ -1519,6 +1559,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithCooker;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonCook;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsOn] = new Sound(name: SoundData.Name.Cooking, isLooped: true);
@@ -1531,6 +1572,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonHarvestMeat;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = true;
                         break;
@@ -1540,6 +1582,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = false;
+                        this.hasFlatShadow = true;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
@@ -1550,6 +1593,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.boardTask = Scheduler.TaskName.OpenContainer;
                         this.blocksMovement = false;
+                        this.hasFlatShadow = true;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
@@ -1564,7 +1608,6 @@ namespace SonOfRobin
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 1000, forbidOverlapSameClass: true);
-                        this.hasFlatShadow = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.WoodCreak, ignore3DAlways: true);
                         break;
 
@@ -1573,9 +1616,9 @@ namespace SonOfRobin
                         this.fireAffinity = 0.0f; // protected from fire
                         this.boardTask = Scheduler.TaskName.OpenBoatMenu;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = true;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
-                        this.hasFlatShadow = true;
                         break;
 
                     case PieceTemplate.Name.BoatCompleteCruising:
@@ -1604,6 +1647,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.InteractWithTotem;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOffer;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         this.isAffectedByWind = false;
                         this.allowedDensity = new AllowedDensity(radius: 2000, maxNoOfPiecesSameName: 0);
@@ -1613,6 +1657,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.allowedDensity = new AllowedDensity(radius: 200, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1626,6 +1671,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1639,6 +1685,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.allowedDensity = new AllowedDensity(radius: 150, maxNoOfPiecesSameName: 0);
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1744,6 +1791,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
@@ -1757,6 +1805,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1769,6 +1818,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1877,6 +1927,7 @@ namespace SonOfRobin
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 1000;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCrystal },
@@ -1889,6 +1940,7 @@ namespace SonOfRobin
                     case PieceTemplate.Name.CrystalDepositBig:
                         this.category = BoardPiece.Category.Crystal;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 1000;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisCrystal },
@@ -1969,6 +2021,7 @@ namespace SonOfRobin
                         this.canBePickedUp = true;
                         this.stackSize = 12;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 1000;
                         this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropCrystal, cooldown: 15, maxPitchVariation: 0.6f);
@@ -2443,6 +2496,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -2452,6 +2506,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -2461,6 +2516,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -2470,6 +2526,7 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.OpenShelterMenu;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonGoToSleep;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.destroysPlantsWhenBuilt = true;
                         break;
 
@@ -2852,6 +2909,7 @@ namespace SonOfRobin
                         this.fireAffinity = 0.8f;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
+                        this.hasFlatShadow = false;
                         this.placeMaxDistance = 500;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyStump);
 

@@ -1465,8 +1465,9 @@ namespace SonOfRobin
                 sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                blockingLightSpritesArray = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement)
-                    .OrderBy(p => p.sprite.GfxRect.Bottom)
+                blockingLightSpritesArray = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible)
+                    .OrderBy(p => p.sprite.AnimFrame.layer)
+                    .ThenBy(p => p.sprite.GfxRect.Bottom)
                     .Select(p => p.sprite)
                     .ToArray();
             }
@@ -1602,7 +1603,7 @@ namespace SonOfRobin
         {
             // searching for light sources
 
-            var lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
+            Sprite[] lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
                 .Where(p => p.sprite.IsOnBoard)
                 .OrderBy(p => p.sprite.AnimFrame.layer)
                 .ThenBy(p => p.sprite.GfxRect.Bottom)
@@ -1625,7 +1626,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.tempShadowMask == null) SonOfRobinGame.tempShadowMask = new RenderTarget2D(graphicsDevice: SonOfRobinGame.GfxDev, width: SonOfRobinGame.lightSphere.Width, height: SonOfRobinGame.lightSphere.Height);
             RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMask;
 
-            foreach (var lightSprite in lightSprites)
+            foreach (Sprite lightSprite in lightSprites)
             {
                 Rectangle lightRect = lightSprite.lightEngine.Rect;
 

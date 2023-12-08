@@ -1286,7 +1286,7 @@ namespace SonOfRobin
 
                 Rectangle gfxRect = shadowSprite.GfxRect;
 
-                if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
+                if (!shadowSprite.IsInCameraRect && shadowSprite.BlocksMovement && !shadowSprite.boardPiece.HasFlatShadow)
                 {
                     bool shadowLeftSide = sunLightData.sunPos.X < 0;
                     bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
