@@ -1,0 +1,5 @@
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.csproj.AssemblyReference.cache
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.AssemblyInfoInputs.cache
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.AssemblyInfo.cs
+C:\Users\msmidowi\Documents\Son_of_Robin\DragonBonesMG\obj\Release\net6.0\DragonBonesMG.csproj.CoreCompileInputs.cache

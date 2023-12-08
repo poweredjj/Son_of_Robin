@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "EH2LIfY7T9NymcY35c2ACIVRtOAGPmG8S7orTibs2UV3SqJKTRYQf9YQyEQsy73AHp9/RX3+cqWhv+mpKCkBdQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\msmidowi\\Documents\\Son_of_Robin\\DragonBonesMG\\DragonBonesMG.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\msmidowi\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\msmidowi\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

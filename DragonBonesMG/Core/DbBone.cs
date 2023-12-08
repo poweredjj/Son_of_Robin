@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using DragonBonesMG.Animation;
+﻿using DragonBonesMG.Animation;
 using DragonBonesMG.JsonData;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
-namespace DragonBonesMG.Core {
+namespace DragonBonesMG.Core
+{
 
     /// <summary>
     /// Basic building block of skeletal animations. A bone can have slots that inherit transform from the bone.
@@ -12,7 +14,8 @@ namespace DragonBonesMG.Core {
     /// <seealso cref="DbSlot"/>
     /// <seealso cref="TransformTimelineState"/>
     /// </summary>
-    public class DbBone : DbObject {
+    public class DbBone : DbObject
+    {
 
         /// <summary>
         /// Contains the original position of this bone relative to its parent.
@@ -32,12 +35,12 @@ namespace DragonBonesMG.Core {
         /// <summary>
         /// The global rotation of this bone.
         /// </summary>
-        public Quaternion Rotation => CurrentGlobalTransform.Rotation;
+        public Quaternion Rotation => Quaternion.CreateFromRotationMatrix(CurrentGlobalTransform);
 
         /// <summary>
         /// The global scale of this bone.
         /// </summary>
-        public Vector2 Scale => new Vector2(CurrentGlobalTransform.Scale.X, CurrentGlobalTransform.Scale.Y);
+        public Vector2 Scale => new((float)Math.Sqrt(CurrentGlobalTransform.M11 * CurrentGlobalTransform.M11 + CurrentGlobalTransform.M12 * CurrentGlobalTransform.M12), (float)Math.Sqrt(CurrentGlobalTransform.M21 * CurrentGlobalTransform.M21 + CurrentGlobalTransform.M22 * CurrentGlobalTransform.M22));
 
         /// <summary>
         /// The length of this bone. This is exported by DragonBonesPro, but not used outside the editor for now.
@@ -56,7 +59,8 @@ namespace DragonBonesMG.Core {
 
         private DbTransform _tween;
 
-        internal DbBone(DbArmature armature, BoneData data) : base(data.Name, armature, data.Parent) {
+        internal DbBone(DbArmature armature, BoneData data) : base(data.Name, armature, data.Parent)
+        {
             Origin = new DbTransform(data.Transform);
             _tween = DbTransform.Identity;
             CurrentGlobalTransform = Origin.GetMatrix();
@@ -69,7 +73,8 @@ namespace DragonBonesMG.Core {
         /// Add the given bone to this bone as its child.
         /// Also adds the bone to this bones armature for fast lookups.
         /// </summary>
-        public void AddBone(DbBone bone) {
+        public void AddBone(DbBone bone)
+        {
             Bones.Add(bone);
             Armature.AddBone(bone);
         }
@@ -77,14 +82,16 @@ namespace DragonBonesMG.Core {
         /// <summary>
         /// Attach a slot to this bone.
         /// </summary>
-        public void AddSlot(DbSlot slot) {
+        public void AddSlot(DbSlot slot)
+        {
             Slots.Add(slot);
             Armature.AddSlot(slot);
         }
 
         // TODO: remove slots/bones
 
-        internal void UpdateRecursive(TransformTimelineState state) {
+        internal void UpdateRecursive(TransformTimelineState state)
+        {
             var parentTransform = Parent?.CurrentGlobalTransform ?? Matrix.Identity;
             // get the current tween transform
             _tween = state.GetState(Name);
@@ -98,7 +105,8 @@ namespace DragonBonesMG.Core {
                 child.UpdateRecursive(state);
         }
 
-        internal void ResetRecursive() {
+        internal void ResetRecursive()
+        {
             _tween = DbTransform.Identity;
             var parentTransform = Parent?.CurrentGlobalTransform ?? Matrix.Identity;
             CurrentGlobalTransform = Origin.GetMatrix() * parentTransform;
