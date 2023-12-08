@@ -1,4 +1,6 @@
 .vs
+DragonBonesMG/bin
+DragonBonesMG/obj
 SonOfRobin.Android/bin
 SonOfRobin.Android/obj
 SonOfRobin.Core/bin
@@ -14,8 +16,6 @@ SonOfRobin.WindowsDX/bin
 SonOfRobin.WindowsDX/obj
 SonOfRobin.WindowsUWP/bin
 SonOfRobin.WindowsUWP/obj
-DragonBonesMG/bin
-DragonBonesMG/obj
 SonOfRobin_Windows.zip
 SonOfRobin_Linux.zip
 SonOfRobin_OSX.zip
