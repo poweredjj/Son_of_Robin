@@ -1461,7 +1461,7 @@ namespace SonOfRobin
 
             // getting blocking light sprites
 
-            Sprite[] spritesCastingShadows = Array.Empty<Sprite>();
+            IEnumerable<Sprite> spritesCastingShadows = Array.Empty<Sprite>();
 
             AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
@@ -1470,11 +1470,7 @@ namespace SonOfRobin
                 sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement)
-                    .OrderBy(p => p.sprite.AnimFrame.layer)
-                    .ThenBy(p => p.sprite.GfxRect.Bottom)
-                    .Select(p => p.sprite)
-                    .ToArray();
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);
             }
 
             // drawing sun shadows onto darkness mask
@@ -1484,7 +1480,7 @@ namespace SonOfRobin
                 SetRenderTarget(DarknessAndHeatMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.Grid.DrawSunShadows(blockingLightSpritesArray: spritesCastingShadows, sunLightData: sunLightData);
+                this.Grid.DrawSunShadows(spritesCastingShadows: spritesCastingShadows, sunLightData: sunLightData);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1602,7 +1598,7 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.halfFramerate ? 2 : 1;
         }
 
-        private Sprite[] UpdateDarknessMask(Sprite[] spritesCastingShadows)
+        private Sprite[] UpdateDarknessMask(IEnumerable<Sprite> spritesCastingShadows)
         {
             // searching for light sources
 
