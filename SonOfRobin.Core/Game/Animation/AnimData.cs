@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -23,12 +22,11 @@ namespace SonOfRobin
         public static readonly ConcurrentDictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
         public static readonly ConcurrentDictionary<string, Texture2D> textureDict = new();
-        public static ConcurrentDictionary<string, Object> jsonDict = new();
+        public static ConcurrentDictionary<string, object> jsonDict = new();
 
         public enum PkgName : ushort
         {
             NoAnim = 0,
-            Loading = 201,
             Empty = 1,
 
             WhiteSpotLayerMinus1 = 2,
@@ -397,10 +395,10 @@ namespace SonOfRobin
 
         public static void LoadAllPackages()
         {
-            Parallel.ForEach(allPkgNames, SonOfRobinGame.defaultParallelOptions, pkgName =>
+            foreach (AnimFrame animFrame in frameById.Values)
             {
-                LoadPackage(pkgName);
-            });
+            }
+
             SaveJsonDict();
         }
 
@@ -418,10 +416,6 @@ namespace SonOfRobin
 
                 case PkgName.NoAnim:
                     AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "no_anim", layer: 2));
-                    break;
-
-                case PkgName.Loading:
-                    AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: "loading", layer: 2));
                     break;
 
                 case PkgName.WhiteSpotLayerMinus1:
@@ -941,7 +935,7 @@ namespace SonOfRobin
                         float scale = 0.2f;
 
                         for (int animSize = 0; animSize <= 2; animSize++)
-                        {                            
+                        {
                             AddFrameList(pkgName: pkgName, frameList: ConvertImageToFrameList(atlasName: $"furnace/furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
                         }
 
@@ -2226,11 +2220,26 @@ namespace SonOfRobin
 
         public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
         {
-            LoadPackage(pkgName);
-            if (croppedFramesForPkgs.ContainsKey(pkgName)) return croppedFramesForPkgs[pkgName];
+            return croppedFramesForPkgs[pkgName];
+        }
 
-            LoadPackage(PkgName.NoAnim);
-            return croppedFramesForPkgs[PkgName.NoAnim];
+        public static void DeleteUsedAtlases()
+        {
+            // Should be used after loading textures from all atlasses.
+            // Deleted textures will not be available for use any longer.
+
+            var usedAtlasNames = new HashSet<string>();
+            foreach (AnimFrame[] frameList in frameArrayById.Values)
+            {
+                foreach (AnimFrame frameArray in frameList)
+                {
+                    if (frameArray.atlasName != null && !usedAtlasNames.Contains(frameArray.atlasName)) usedAtlasNames.Add(frameArray.atlasName);
+                }
+            }
+            foreach (string atlasName in usedAtlasNames)
+            {
+                TextureBank.DisposeTexture(atlasName);
+            }
         }
     }
 }

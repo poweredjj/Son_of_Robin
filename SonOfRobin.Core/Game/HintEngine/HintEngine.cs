@@ -140,9 +140,9 @@ namespace SonOfRobin
                 case Type.Starving:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).texture}, blockInputDefaultDuration: true),
-                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
-                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BubbleExclamationRed).texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Meal), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).Texture}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).Texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BubbleExclamationRed).Texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -224,7 +224,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture}, blockInputDefaultDuration: true) });
+                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture}, blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -269,7 +269,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.CroppedAnimFrame.texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture}, blockInputDefaultDuration: true),
+                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.CroppedAnimFrame.Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture}, blockInputDefaultDuration: true),
                             new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)}, blockInputDefaultDuration: true)
                         });
                         break;
@@ -280,7 +280,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.CroppedAnimFrame.texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BloodSplatter1).texture}, blockInputDefaultDuration: true),
+                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.CroppedAnimFrame.Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BloodSplatter1).Texture}, blockInputDefaultDuration: true),
                         });
                         break;
                     }
@@ -340,11 +340,11 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 300 } }, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
 
                             taskChain.Add(new HintMessage(text: "My contract says, that I'm here to help test this game, human.", boxType: invertedDialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
                         }
                         else
                         {
@@ -442,7 +442,7 @@ namespace SonOfRobin
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
-                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).texture }, boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).Texture }, boxType: dialogue, delay: 0).ConvertToTask());
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
@@ -682,7 +682,7 @@ namespace SonOfRobin
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).texture }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).Texture }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
@@ -781,7 +781,7 @@ namespace SonOfRobin
 
                             textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
-                            textList.Add(new TextWithImages(font: fontTitle, text: "...and now about | your adventure:", imageList: new List<Texture2D> { player.pieceInfo.CroppedFrame.texture }));
+                            textList.Add(new TextWithImages(font: fontTitle, text: "...and now about | your adventure:", imageList: new List<Texture2D> { player.pieceInfo.CroppedFrame.Texture }));
 
                             textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
 
@@ -802,51 +802,51 @@ namespace SonOfRobin
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
-                                textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WorkshopAdvanced).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AxeIron).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AxeIron).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WoodLogRegular).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WoodLogRegular).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.ChestIron).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.ChestIron).Texture }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.cookStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CookingPot).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CookingPot).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| meals made: {this.world.cookStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| meals made: {this.world.cookStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.cookStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.cookStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).Texture }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.brewStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AlchemyLabStandard).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.AlchemyLabStandard).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| potions made: {this.world.brewStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| potions made: {this.world.brewStats.TotalCookCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.HerbsCyan).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.HerbsCyan).Texture }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.smeltStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronBar).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronBar).Texture }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| materials processed: {this.world.smeltStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronOre).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| materials processed: {this.world.smeltStats.AllIngredientsCount}", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.IronOre).Texture }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.meatHarvestStats.TotalHarvestCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).Texture }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| animals processed: {this.world.meatHarvestStats.TotalHarvestCount}", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Rabbit) }, minMarkerWidthMultiplier: 2f));
 

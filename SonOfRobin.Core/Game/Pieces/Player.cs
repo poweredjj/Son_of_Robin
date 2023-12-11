@@ -769,7 +769,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 if (canBuildHere) this.world.BuildPiece();
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { simulatedPieceSprite.CroppedAnimFrame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { simulatedPieceSprite.CroppedAnimFrame.Texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
             }
         }
 
@@ -1397,7 +1397,7 @@ namespace SonOfRobin
                 closestPiece.HeatLevel = 0f;
                 if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar
 
-                MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", texture: closestPiece.sprite.CroppedAnimFrame.texture);
+                MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", texture: closestPiece.sprite.CroppedAnimFrame.Texture);
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
@@ -1405,7 +1405,7 @@ namespace SonOfRobin
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.SmallInventory, ignoreDelay: true);
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.CroppedAnimFrame.texture, avoidDuplicates: true);
+                MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), texture: closestPiece.sprite.CroppedAnimFrame.Texture, avoidDuplicates: true);
             }
         }
 
@@ -1428,14 +1428,14 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.Texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
 
                     return false;
                 }
 
                 if (activeTool.CheckForAmmo(removePiece: false) == null)
                 {
-                    new TextWindow(text: $"No ammo for | {activeToolbarPiece.readableName}.", imageList: new List<Texture2D> { activeToolbarPiece.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"No ammo for | {activeToolbarPiece.readableName}.", imageList: new List<Texture2D> { activeToolbarPiece.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
                     return false;
                 }
@@ -1463,7 +1463,7 @@ namespace SonOfRobin
             {
                 if (!highlightOnly && !buttonHeld) // buttonHeld check is needed in case of destroying the only (plant) light source
                 {
-                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.CroppedAnimFrame.texture);
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.CroppedAnimFrame.Texture);
                 }
                 return false;
             }
@@ -1472,7 +1472,7 @@ namespace SonOfRobin
             {
                 if (!buttonHeld)
                 {
-                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                    MessageLog.Add(text: $"Cannot use {activeToolbarPiece.readableName} in water.", texture: activeToolbarPiece.pieceInfo.CroppedFrame.Texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                     Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
                 }
 
@@ -1571,7 +1571,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).texture };
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MealStandard).Texture };
                 if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
@@ -1616,7 +1616,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture };
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture };
                 if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Alchemy level up!\n       Level {this.BrewLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
@@ -1659,7 +1659,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture };
+                var imageList = new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).Texture };
                 if (levelMaster) imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Meat harvesting level up!\n       Level {this.HarvestLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);

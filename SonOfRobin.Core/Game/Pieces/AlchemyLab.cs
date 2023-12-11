@@ -152,7 +152,7 @@ namespace SonOfRobin
                 int brewingDuration = this.brewingDoneFrame - this.brewingStartFrame;
                 int brewingCurrentFrame = this.world.CurrentUpdate - this.brewingStartFrame;
 
-                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
+                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
             }
 
             base.DrawStatBar();
@@ -174,7 +174,7 @@ namespace SonOfRobin
                 BoardPiece bottle = BottleSlot.TopPiece;
                 if (bottle.name != PieceTemplate.Name.EmptyBottle)
                 {
-                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<Texture2D> { bottle.sprite.CroppedAnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<Texture2D> { bottle.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }

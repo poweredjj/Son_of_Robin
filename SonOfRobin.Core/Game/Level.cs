@@ -40,7 +40,6 @@ namespace SonOfRobin
         public readonly bool hasWater;
         public readonly bool hasWeather;
         public readonly bool plansWeather;
-        public readonly Queue<Sprite> spritesWithAnimPackagesToLoad;
 
         public bool creationInProgress;
 
@@ -58,7 +57,6 @@ namespace SonOfRobin
             this.width = width;
             this.height = height;
             this.levelRect = new Rectangle(x: 0, y: 0, width: this.width, height: this.height);
-            this.spritesWithAnimPackagesToLoad = new Queue<Sprite>();
 
             this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
             MessageLog.Add(debugMessage: true, text: $"maxAnimalsPerName {maxAnimalsPerName}");

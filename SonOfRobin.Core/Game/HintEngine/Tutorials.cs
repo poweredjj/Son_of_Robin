@@ -229,7 +229,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                     new HintMessage(text: "When | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Bear), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopAdvanced), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
 
-                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture}, boxType: messageTextType),
+                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture}, boxType: messageTextType),
                 });
 
                 case Type.ShootProjectile:
@@ -267,7 +267,7 @@ namespace SonOfRobin
                     new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
-                    new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
                     });
 
                 case Type.Smelt:
@@ -276,7 +276,7 @@ namespace SonOfRobin
                     new HintMessage(text:$"1. Stand next to the | { PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName } and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:$"2. Place some | | | materials into | the {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete)}, boxType: messageTextType),
                     new HintMessage(text: $"3. You will also need to put one | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} for every material.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, boxType: messageTextType),
-                    new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.IronOre), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetTexture(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
+                    new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, PieceInfo.GetTexture(PieceTemplate.Name.IronOre), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetTexture(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
                     });
 
                 case Type.ShakeFruit:
@@ -300,31 +300,31 @@ namespace SonOfRobin
                 Preferences.ShowTouchTips ?
                 new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType):
                 new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType),
-                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),
-                new HintMessage(text:"5. To extinguish the | fire,\npress | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
+                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),
+                new HintMessage(text:"5. To extinguish the | fire,\npress | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
                 new HintMessage(text: "Keep in mind, that the | torch\nwill burn out after some time.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType)});
 
                 case Type.Fireplace:
                     return new Tutorial(type: type, name: "using fireplace", title: "Using fireplace.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
-                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Stick), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture}, boxType: messageTextType),
-                new HintMessage(text: "3. Use | to start the fire.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture}, boxType: messageTextType),
+                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Stick), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture}, boxType: messageTextType),
+                new HintMessage(text: "3. Use | to start the fire.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture}, boxType: messageTextType),
                 new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Stick), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank) }, boxType: messageTextType),
-                new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).texture}, boxType: messageTextType)});
+                new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).Texture}, boxType: messageTextType)});
 
                 case Type.TooDarkToReadMap:
                     return new Tutorial(type: type, name: "reading map at night", title: "Reading map at night.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "The | map can't be read at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Map) }, boxType: messageTextType),
-                new HintMessage(text: "You must use a | torch\nor be near to light source |\nto read map at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture }, boxType: messageTextType)
+                new HintMessage(text: "You must use a | torch\nor be near to light source |\nto read map at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture }, boxType: messageTextType)
                 });
 
                 case Type.TooDarkToSeeAnything:
                     return new Tutorial(type: type, name: "when it is dark", title: "When it is dark.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "At night, you cannot:\n-pick up any items ||\n-use most tools ||\n-craft |\n-use other stuff |||", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Stone), PieceInfo.GetTexture(PieceTemplate.Name.AxeStone), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.Anvil), PieceInfo.GetTexture(PieceTemplate.Name.ChestIron), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot) }, boxType: messageTextType),
-                new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
+                new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
                 });
 
                 case Type.Heat:
@@ -332,7 +332,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                 new HintMessage(text: "It is getting really hot.\nI feel dizzy...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                 new HintMessage(text: "At noon, if no clouds are present,\nhigh temperature makes you get tired much faster.", boxType: messageTextType),
-                new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).texture }, boxType: messageTextType),
+                new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).Texture }, boxType: messageTextType),
                 new HintMessage(text: "The best solution is to wear equipment, that protects from heat |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HatSimple) }, boxType: messageTextType)
                 });
 
@@ -350,7 +350,7 @@ namespace SonOfRobin
                     new HintMessage(text: "Ouch!.\nMy feet burn!", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                     new HintMessage(text: "Swamp areas are poisonous.", boxType: messageTextType),
                     new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType),
-                    new HintMessage(text: "To get rid of the poison, you need to wait or drink an | antidote potion.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionBlue).texture }, boxType: messageTextType),
+                    new HintMessage(text: "To get rid of the poison, you need to wait or drink an | antidote potion.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionBlue).Texture }, boxType: messageTextType),
                     });
 
                 case Type.SmartCrafting:
@@ -394,7 +394,7 @@ namespace SonOfRobin
                     new HintMessage(text:$"2. Place ingredients | | | into | the { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard) }, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to insert some | | fuel.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank) }, boxType: messageTextType),
                     new HintMessage(text:"4. Inserting boosters | | |\nis optional, but beneficial.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue) }, boxType: messageTextType),
-                    new HintMessage(text: "5. Use the | flame to start brewing |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture}, boxType: messageTextType),
+                    new HintMessage(text: "5. Use the | flame to start brewing |.", imageList: new List<Texture2D> {AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture}, boxType: messageTextType),
                 });
 
                 case Type.CookLevels:
@@ -408,8 +408,8 @@ namespace SonOfRobin
                 case Type.BrewLevels:
                     return new Tutorial(type: type, name: "brewing levels", title: "Brewing skill levels.",
                 messages: new List<HintMessage> {
-                    new HintMessage(text: "Your | brewing skills get better over time.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass) }, boxType: messageTextType),
+                    new HintMessage(text: "Your | brewing skills get better over time.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture, TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass), TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass) }, boxType: messageTextType),
                     new HintMessage(text: "Try using unique | | ingredients\nand | | boosters, to level up faster.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetTexture(PieceTemplate.Name.HerbsCyan), PieceInfo.GetTexture(PieceTemplate.Name.HerbsGreen) }, boxType: messageTextType),
                 });
 
@@ -439,8 +439,8 @@ namespace SonOfRobin
                 case Type.MeatHarvestLevels:
                     return new Tutorial(type: type, name: "meat harvesting levels", title: "Meat harvesting levels.",
                 messages: new List<HintMessage> {
-                    new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture }, boxType: messageTextType),
-                    new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Fat).texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Leather).texture }, boxType: messageTextType),
+                    new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).Texture }, boxType: messageTextType),
+                    new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MeatRawPrime).Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Fat).Texture, AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Leather).Texture }, boxType: messageTextType),
                 });
 
                 case Type.Caves:

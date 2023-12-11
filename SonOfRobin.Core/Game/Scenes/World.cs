@@ -471,24 +471,6 @@ namespace SonOfRobin
 
             if (this.saveGameData == null && this.PopulatingInProgress)
             {
-                var creationDataArray = this.ActiveLevel.creationDataArrayRegular;
-
-                if (SonOfRobinGame.os == OS.Windows) // will freeze on mobile if using parallel here (for demo world)
-                {
-                    Parallel.ForEach(creationDataArray, SonOfRobinGame.defaultParallelOptions, pieceCreationData =>
-                    {
-                        // much faster, when executed on main thread (prevents from slowdown when populating)
-                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                    });
-                }
-                else
-                {
-                    foreach (PieceCreationData pieceCreationData in creationDataArray)
-                    {
-                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                    }
-                }
-
                 if (this.demoMode)
                 {
                     CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
@@ -987,22 +969,6 @@ namespace SonOfRobin
             // width and height are set once in constructor
         }
 
-        public void LoadAnimPackages()
-        {
-            bool anyPackageLoaded = false;
-            while (true)
-            {
-                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
-                {
-                    // parallel should not be used here, because it could crash (concurrent access to cell HashSet)
-                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
-                    anyPackageLoaded = sprite.LoadPackageAndAssignFrame() || anyPackageLoaded;
-                }
-                else break;
-            }
-            if (anyPackageLoaded) AnimData.SaveJsonDict();
-        }
-
         public override void Update()
         {
             if (this.ActiveLevel.creationInProgress)
@@ -1010,8 +976,6 @@ namespace SonOfRobin
                 this.CompleteCreation();
                 return;
             }
-
-            this.LoadAnimPackages();
 
             this.ProcessInput();
             this.UpdateViewParams();

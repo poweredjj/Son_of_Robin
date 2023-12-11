@@ -141,9 +141,9 @@ namespace SonOfRobin
 
                 StatBar.ChangeBatchFont(spriteFontBase: SonOfRobinGame.FontFreeSansBold.GetFont(12));
 
-                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).texture);
+                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).Texture);
                 new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: TextureBank.GetTexture(TextureBank.TextureName.Bed));
-                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).texture);
+                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture);
 
                 currentPosY = StatBar.BatchHeight + 5; // must be invoked before drawing bars
 
@@ -289,7 +289,7 @@ namespace SonOfRobin
 
                         Camera camera = this.world.camera;
                         Vector2 markerPos = markerPiece.sprite.position;
-                        Texture2D markerTexture = markerPiece.sprite.AnimFrame.texture;
+                        Texture2D markerTexture = markerPiece.sprite.AnimFrame.Texture;
 
                         float tipsHeight = 0; // to avoid drawing marker under ControlTips
                         if (Preferences.ShowControlTips)

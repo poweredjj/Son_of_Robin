@@ -700,7 +700,7 @@ namespace SonOfRobin
                 case PieceHint.Type.ExplosiveGas:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) })};
+                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) })};
 
                 case PieceHint.Type.TreasureJar:
                     return new List<HintMessage> {
@@ -730,7 +730,7 @@ namespace SonOfRobin
                 case PieceHint.Type.AlchemyLab:
                     return new List<HintMessage> {
                         new HintMessage(text: "| I can start brewing\n| potions now!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).texture })};
+                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture })};
 
                 case PieceHint.Type.PoisonousMeat:
                     return new List<HintMessage> {
@@ -813,12 +813,12 @@ namespace SonOfRobin
                 case PieceHint.Type.CineRuins:
                     return new List<HintMessage> {
                         new HintMessage(text: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.RuinsWallHorizontal1).texture })};
+                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.RuinsWallHorizontal1).Texture })};
 
                 case PieceHint.Type.CineCave:
                     return new List<HintMessage> {
                         new HintMessage(text: "This looks like a | cave.\nI wonder what's inside?\nStill, it might be dangerous...",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CaveEntrance).texture })};
+                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CaveEntrance).Texture })};
 
                 case PieceHint.Type.CineTotem:
                     return new List<HintMessage> {
@@ -837,13 +837,13 @@ namespace SonOfRobin
 
                 case PieceHint.Type.CineLookForSurvivors3:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).Texture }, blockInputDefaultDuration: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineLookForSurvivors4:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).texture }, blockInputDefaultDuration: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BoatCompleteStanding).texture }, blockInputDefaultDuration: true)};
+                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).Texture }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BoatCompleteStanding).Texture }, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineDay1:
                     return new List<HintMessage> {

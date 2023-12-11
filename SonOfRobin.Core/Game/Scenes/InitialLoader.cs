@@ -18,6 +18,8 @@ namespace SonOfRobin
             DeleteObsoleteTemplates,
             CreateMeshDefinitions,
             LoadAnimsJson,
+            ProcessAnims,
+            PopulatePieceHints,
             BuildMappings,
             MakeItemsInfo,
             MakeCraftRecipes,
@@ -48,6 +50,8 @@ namespace SonOfRobin
             { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animation data" },
+            { Step.ProcessAnims, "processing animation data" },
+            { Step.PopulatePieceHints, "populating hints data" },
             { Step.BuildMappings, "building input mappings" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
@@ -62,6 +66,7 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
+        private bool animsJsonLoaded;
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -105,6 +110,7 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
+            this.animsJsonLoaded = false;
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -124,7 +130,7 @@ namespace SonOfRobin
 
                 case Step.MobileWait:
                     this.mobileWaitingTimes--;
-                    if (this.mobileWaitingTimes > 0) currentStep--;
+                    if (this.mobileWaitingTimes > 0) this.currentStep--;
                     break;
 
                 case Step.LoadFonts:
@@ -144,8 +150,38 @@ namespace SonOfRobin
                     break;
 
                 case Step.LoadAnimsJson:
-                    if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    AnimData.LoadPackage(AnimData.PkgName.Loading);
+                    this.animsJsonLoaded = AnimData.LoadJsonDict();
+                    if (!this.animsJsonLoaded) AnimData.PurgeDiskCache();
+                    break;
+
+                case Step.ProcessAnims:
+                    if (!this.animsJsonLoaded)
+                    {
+                        int animsLoaded = 0;
+                        bool lastAnimLoaded = false;
+                        foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
+                        {
+                            if (!AnimData.LoadedPkgs.Contains(pkgName))
+                            {
+                                AnimData.LoadPackage(pkgName);
+
+                                lastAnimLoaded = pkgName == AnimData.allPkgNames.Last();
+                                animsLoaded++;
+                                if (animsLoaded >= 5) break;
+                            }
+                        }
+
+                        if (lastAnimLoaded)
+                        {
+                            AnimData.SaveJsonDict();
+                            AnimData.DeleteUsedAtlases();
+                        }
+                        else this.currentStep--;
+                    }
+
+                    break;
+
+                case Step.PopulatePieceHints:
                     PieceHint.PopulateData();
                     break;
 

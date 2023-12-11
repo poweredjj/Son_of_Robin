@@ -150,7 +150,7 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
 
                     textList.Add($"| {pieceInfo.readableName} x{missingCount}");
-                    imageList.Add(pieceInfo.CroppedFrame.texture);
+                    imageList.Add(pieceInfo.CroppedFrame.Texture);
                 }
 
                 string materialsList = String.Join("\n", textList);
@@ -348,7 +348,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Hammer).texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Hammer).Texture);
 
             base.DrawStatBar();
         }

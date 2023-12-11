@@ -28,7 +28,7 @@ namespace SonOfRobin
             public readonly List<Buff> buffList;
             public readonly AnimData.PkgName animPkgName;
             public AnimFrame CroppedFrame { get { return AnimData.GetCroppedFrameForPackage(this.animPkgName); } }
-            public Texture2D Texture { get { return this.CroppedFrame.texture; } }
+            public Texture2D Texture { get { return this.CroppedFrame.Texture; } }
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;

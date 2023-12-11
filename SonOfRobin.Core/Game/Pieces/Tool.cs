@@ -42,7 +42,7 @@ namespace SonOfRobin
             if (!this.pieceInfo.toolIndestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
-                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.Texture);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -190,9 +190,9 @@ namespace SonOfRobin
                     this.HitPoints -= player.Skill == Player.SkillName.Maintainer ? 0.7f : 1f;
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.texture);
+                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.Texture);
 
-                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.texture);
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.Texture);
                 }
             }
         }

@@ -200,8 +200,6 @@ namespace SonOfRobin
         {
             this.position = Vector2.Zero; // needed for placement purposes
 
-            if (randomPlacement && !ignoreCollisions && !AnimData.LoadedPkgs.Contains(this.AnimPackage)) this.LoadPackageAndAssignFrame();
-
             bool placedCorrectly;
 
             if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
@@ -677,13 +675,6 @@ namespace SonOfRobin
             }
         }
 
-        public bool LoadPackageAndAssignFrame()
-        {
-            bool packageLoaded = AnimData.LoadPackage(this.AnimPackage);
-            this.AssignFrame(checkForCollision: false);
-            return packageLoaded;
-        }
-
         public void AssignFrameForce(AnimFrame animFrame)
         {
             // does not check collisions, use with caution
@@ -702,8 +693,7 @@ namespace SonOfRobin
             catch (KeyNotFoundException)
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Loading);
-                this.world?.ActiveLevel.spritesWithAnimPackagesToLoad.Enqueue(this);
+                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim);
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
@@ -948,7 +938,7 @@ namespace SonOfRobin
                 if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
 
                 SonOfRobinGame.SpriteBatch.Draw(
-                    frame.texture,
+                    frame.Texture,
                     position:
                     new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
                     sourceRectangle: frame.textureRect,
