@@ -40,18 +40,9 @@ namespace SonOfRobin
         {
             get
             {
-                return this.LoadAndGetTexture();
-
-                if (this.texture != null) return this.texture;
-                else return this.LoadAndGetTexture();
-                //return TextureBank.GetTexture(TextureBank.TextureName.LoadingText);
+                if (this.texture == null) this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                return this.texture;
             }
-        }
-
-        public Texture2D LoadAndGetTexture()
-        {
-            if (this.texture == null) this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
-            return this.texture;
         }
 
         public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
@@ -70,6 +61,13 @@ namespace SonOfRobin
 
             if (jsonData != null) return new AnimFrame(jsonData);
             else return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
+        }
+
+        public static AnimFrame DeserializeFrame(Dictionary<string, Object> frameData)
+        {
+            AnimFrame animFrame = new AnimFrame(frameData);
+            AnimData.frameById[animFrame.id] = animFrame;
+            return animFrame;
         }
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent)

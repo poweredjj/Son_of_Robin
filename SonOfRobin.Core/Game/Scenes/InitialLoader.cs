@@ -157,7 +157,8 @@ namespace SonOfRobin
                 case Step.ProcessAnims:
                     if (!this.animsJsonLoaded)
                     {
-                        int animsLoaded = 0;
+                        DateTime loadingStartTime = DateTime.Now;
+                        TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
                         bool lastAnimLoaded = false;
                         foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
                         {
@@ -166,8 +167,9 @@ namespace SonOfRobin
                                 AnimData.LoadPackage(pkgName);
 
                                 lastAnimLoaded = pkgName == AnimData.allPkgNames.Last();
-                                animsLoaded++;
-                                if (animsLoaded >= 5) break;
+
+                                TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
+                                if (loadingDuration > maxLoadingDuration) break;
                             }
                         }
 

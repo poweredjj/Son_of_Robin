@@ -1,28 +1,28 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class AnimData
     {
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
-        public const float currentVersion = 1.000031f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000032f; // version number should be incremented when any existing asset is updated
 
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
 
-        public static readonly ConcurrentDictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
-        public static readonly ConcurrentDictionary<string, AnimFrame[]> frameArrayById = new();
-        private static readonly ConcurrentDictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
-        public static readonly ConcurrentDictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
+        public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
+        public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
+        private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
+        public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
 
-        public static readonly ConcurrentDictionary<string, Texture2D> textureDict = new();
-        public static ConcurrentDictionary<string, object> jsonDict = new();
+        public static readonly Dictionary<string, Texture2D> textureDict = new();
+        public static Dictionary<string, object> jsonDict = new();
 
         public enum PkgName : ushort
         {
@@ -395,11 +395,11 @@ namespace SonOfRobin
 
         public static void LoadAllPackages()
         {
+            var loadedTextures = new List<Texture2D>();
             foreach (AnimFrame animFrame in frameById.Values)
             {
+                loadedTextures.Add(animFrame.Texture);
             }
-
-            SaveJsonDict();
         }
 
         public static bool LoadPackage(PkgName pkgName)
@@ -2163,28 +2163,42 @@ namespace SonOfRobin
         {
             // one big json is used to speed up loading / saving data
 
-            ConcurrentDictionary<string, Object> loadedJsonDict;
-
             try
             {
                 var loadedJson = FileReaderWriter.Load(path: JsonDataPath);
                 if (loadedJson == null) return false;
 
-                loadedJsonDict = (ConcurrentDictionary<string, Object>)loadedJson;
+                jsonDict = (Dictionary<string, Object>)loadedJson;
             }
             catch (InvalidCastException)
             { return false; }
 
-            try
-            {
-                float jsonVersion = (float)(double)loadedJsonDict["currentVersion"];
-                if (jsonVersion != currentVersion) return false;
-            }
-            catch (InvalidCastException) { return false; }
-            catch (KeyNotFoundException) { return false; }
+            if (!jsonDict.ContainsKey("croppedFrameIDsForPackages")) return false;
 
-            jsonDict = loadedJsonDict;
+            foreach (var kvp in jsonDict)
+            {
+                string id = kvp.Key;
+                if (id != "croppedFrameIDsForPackages" && id != "currentVersion") AnimFrame.DeserializeFrame((Dictionary<string, Object>)kvp.Value);
+            }
+
+            foreach (var kvp in (Dictionary<PkgName, string>)jsonDict["croppedFrameIDsForPackages"])
+            {
+                PkgName pkgName = kvp.Key;
+                string id = kvp.Value;
+
+                croppedFramesForPkgs[pkgName] = frameById[id];
+            }
+
             return true;
+        }
+
+        public static void SaveJsonDict()
+        {
+            jsonDict["currentVersion"] = currentVersion;
+            jsonDict["croppedFrameIDsForPackages"] = croppedFramesForPkgs.ToDictionary(entry => entry.Key, entry => entry.Value.id);
+
+            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+            MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
         public static void PurgeDiskCache()
@@ -2208,14 +2222,6 @@ namespace SonOfRobin
             }
 
             MessageLog.Add(debugMessage: true, text: "Anim cache purged.");
-        }
-
-        public static void SaveJsonDict()
-        {
-            jsonDict["currentVersion"] = currentVersion;
-
-            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
-            MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
         public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
