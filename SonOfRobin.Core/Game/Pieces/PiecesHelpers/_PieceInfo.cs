@@ -1833,6 +1833,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1849,6 +1850,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1865,6 +1867,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1880,6 +1883,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1894,6 +1898,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1912,6 +1917,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
+                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -3033,6 +3039,8 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.floatsOnWater = true;
+                        this.shadowNotDrawn = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f);
                         break;
 
