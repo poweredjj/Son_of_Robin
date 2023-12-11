@@ -376,7 +376,7 @@ namespace SonOfRobin
                         var pieceDataPackage = new List<object> { };
                         foreach (BoardPiece piece in package)
                         {
-                            if (piece.sprite.opacityFade != null) piece.sprite.opacityFade.Finish(); // Finish() might destroy the piece...
+                            piece.sprite.opacityFade?.Finish(); // Finish() might destroy the piece...
                             if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
                         }
 
