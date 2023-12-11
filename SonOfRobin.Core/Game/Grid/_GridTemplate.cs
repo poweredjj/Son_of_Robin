@@ -209,25 +209,22 @@ namespace SonOfRobin
             int frameMaxWidth = 0;
             int frameMaxHeight = 0;
 
-            foreach (var kvp in AnimData.frameArrayById)
+            foreach (AnimFrame frame in AnimData.frameById.Values)
             {
-                foreach (AnimFrame frame in kvp.Value)
+                if (frame.ignoreWhenCalculatingMaxSize) continue;
+
+                int scaledWidth = (int)(frame.gfxWidth * frame.scale);
+                int scaledHeight = (int)(frame.gfxHeight * frame.scale);
+
+                if (scaledWidth > frameMaxWidth)
                 {
-                    if (frame.ignoreWhenCalculatingMaxSize) continue;
-
-                    int scaledWidth = (int)(frame.gfxWidth * frame.scale);
-                    int scaledHeight = (int)(frame.gfxHeight * frame.scale);
-
-                    if (scaledWidth > frameMaxWidth)
-                    {
-                        frameMaxWidth = scaledWidth;
-                        // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
-                    }
-                    if (scaledHeight > frameMaxHeight)
-                    {
-                        frameMaxHeight = scaledHeight;
-                        // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
-                    }
+                    frameMaxWidth = scaledWidth;
+                    // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxWidth {frameMaxWidth}: {kvp.Key}");
+                }
+                if (scaledHeight > frameMaxHeight)
+                {
+                    frameMaxHeight = scaledHeight;
+                    // SonOfRobinGame.messageLog.AddMessage(text: $"frameMaxHeight {frameMaxHeight}: {kvp.Key}");
                 }
             }
 

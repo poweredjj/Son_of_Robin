@@ -155,7 +155,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.ProcessAnims:
-                    if (!this.animsJsonLoaded)
+                    //if (!this.animsJsonLoaded)
                     {
                         DateTime loadingStartTime = DateTime.Now;
                         TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);

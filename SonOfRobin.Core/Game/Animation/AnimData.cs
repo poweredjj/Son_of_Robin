@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -391,15 +390,6 @@ namespace SonOfRobin
             CaveExit = 300,
 
             // obsolete below (kept for compatibility with old saves)
-        }
-
-        public static void LoadAllPackages()
-        {
-            var loadedTextures = new List<Texture2D>();
-            foreach (AnimFrame animFrame in frameById.Values)
-            {
-                loadedTextures.Add(animFrame.Texture);
-            }
         }
 
         public static bool LoadPackage(PkgName pkgName)
@@ -2175,27 +2165,12 @@ namespace SonOfRobin
             catch (InvalidCastException)
             { return false; }
 
-            if (!loadedJsonDict.ContainsKey("croppedFrameIDsForPackages") ||
-                !loadedJsonDict.ContainsKey("version") ||
+            if (!loadedJsonDict.ContainsKey("version") ||
                 !loadedJsonDict.ContainsKey("frameDict")) return false;
 
             if ((float)(double)loadedJsonDict["version"] != currentVersion) return false;
 
             jsonDict = (Dictionary<string, Object>)loadedJsonDict["frameDict"];
-
-            foreach (var kvp in jsonDict)
-            {
-                string id = kvp.Key;
-                if (id != "croppedFrameIDsForPackages" && id != "version") AnimFrame.DeserializeFrame((Dictionary<string, Object>)kvp.Value);
-            }
-
-            foreach (var kvp in (Dictionary<Int64, string>)loadedJsonDict["croppedFrameIDsForPackages"])
-            {
-                PkgName pkgName = (PkgName)kvp.Key;
-                string id = kvp.Value;
-
-                croppedFramesForPkgs[pkgName] = frameById[id];
-            }
 
             return true;
         }
@@ -2205,7 +2180,6 @@ namespace SonOfRobin
             var savedDict = new Dictionary<string, object>
             {
                 { "version", currentVersion },
-                { "croppedFrameIDsForPackages", croppedFramesForPkgs.ToDictionary(entry => (int)entry.Key, entry => entry.Value.id) },
                 { "frameDict", jsonDict },
             };
 

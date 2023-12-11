@@ -1188,7 +1188,13 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate loadAllAnimsDlgt = () =>
                         {
                             DateTime startTime = DateTime.Now;
-                            AnimData.LoadAllPackages();
+
+                            var loadedTextures = new List<Texture2D>();
+                            foreach (AnimFrame animFrame in AnimData.frameById.Values)
+                            {
+                                loadedTextures.Add(animFrame.Texture);
+                            }
+
                             TimeSpan loadingDuration = DateTime.Now - startTime;
                             MessageLog.Add(debugMessage: true, text: $"Anims loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 

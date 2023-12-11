@@ -35,6 +35,7 @@ namespace SonOfRobin
         public readonly int srcAtlasY;
         public readonly int srcWidth;
         public readonly int srcHeight;
+        private bool PngPathExists { get { return File.Exists(this.pngPath); } }
 
         public Texture2D Texture
         {
@@ -59,15 +60,13 @@ namespace SonOfRobin
             catch (InvalidCastException) { }
             catch (KeyNotFoundException) { }
 
-            if (jsonData != null) return new AnimFrame(jsonData);
-            else return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
-        }
+            if (jsonData != null)
+            {
+                AnimFrame deserializedFrame = new(jsonData);
+                if (deserializedFrame.PngPathExists) return deserializedFrame;
+            }
 
-        public static AnimFrame DeserializeFrame(Dictionary<string, Object> frameData)
-        {
-            AnimFrame animFrame = new AnimFrame(frameData);
-            AnimData.frameById[animFrame.id] = animFrame;
-            return animFrame;
+            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent)
@@ -133,6 +132,8 @@ namespace SonOfRobin
             this.srcAtlasY = (int)(Int64)jsonData["srcAtlasY"];
             this.srcWidth = (int)(Int64)jsonData["srcWidth"];
             this.srcHeight = (int)(Int64)jsonData["srcHeight"];
+
+            AnimData.frameById[this.id] = this;
         }
 
         public AnimFrame GetCroppedFrameCopy()
