@@ -81,39 +81,6 @@ namespace SonOfRobin
             return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
         }
 
-        private Dictionary<string, object> Serialize()
-        {
-            return new Dictionary<string, Object> {
-                    { "atlasName", this.atlasName },
-                    { "id", this.id },
-                    { "textureID", this.textureID },
-                    { "depthPercent", this.depthPercent },
-                    { "colWidth", this.colWidth },
-                    { "colHeight", this.colHeight },
-                    { "gfxWidth", this.gfxWidth },
-                    { "gfxHeight", this.gfxHeight },
-                    { "colOffsetX", this.colOffset.X },
-                    { "colOffsetY", this.colOffset.Y },
-                    { "gfxOffsetX", this.gfxOffset.X },
-                    { "gfxOffsetY", this.gfxOffset.Y },
-                    { "textureSizeX", this.textureSize.X },
-                    { "textureSizeY", this.textureSize.Y },
-                    { "textureRect", this.textureRect },
-                    { "rotationOriginX", this.rotationOrigin.X },
-                    { "rotationOriginY", this.rotationOrigin.Y },
-                    { "pngPath", this.pngPath },
-                    { "layer", this.layer },
-                    { "duration", this.duration },
-                    { "scale", this.scale },
-                    { "ignoreWhenCalculatingMaxSize", this.ignoreWhenCalculatingMaxSize },
-                    { "cropped", this.cropped },
-                    { "srcAtlasX", this.srcAtlasX },
-                    { "srcAtlasY", this.srcAtlasY },
-                    { "srcWidth", this.srcWidth },
-                    { "srcHeight", this.srcHeight },
-                    };
-        }
-
         private AnimFrame(Dictionary<string, Object> jsonData)
         {
             this.atlasName = (string)jsonData["atlasName"];
@@ -173,13 +140,10 @@ namespace SonOfRobin
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
 
-            bool textureFound = AnimData.textureDict.ContainsKey(this.textureID);
-
-            if (textureFound) this.texture = AnimData.textureDict[this.textureID];
-            else this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
-
-            if (!textureFound)
+            if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
+            else
             {
+                this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
                 Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
                 Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
 
@@ -211,6 +175,39 @@ namespace SonOfRobin
             AnimData.jsonDict[this.id] = this.Serialize();
         }
 
+        private Dictionary<string, object> Serialize()
+        {
+            return new Dictionary<string, Object> {
+                { "atlasName", this.atlasName },
+                { "id", this.id },
+                { "textureID", this.textureID },
+                { "depthPercent", this.depthPercent },
+                { "colWidth", this.colWidth },
+                { "colHeight", this.colHeight },
+                { "gfxWidth", this.gfxWidth },
+                { "gfxHeight", this.gfxHeight },
+                { "colOffsetX", this.colOffset.X },
+                { "colOffsetY", this.colOffset.Y },
+                { "gfxOffsetX", this.gfxOffset.X },
+                { "gfxOffsetY", this.gfxOffset.Y },
+                { "textureSizeX", this.textureSize.X },
+                { "textureSizeY", this.textureSize.Y },
+                { "textureRect", this.textureRect },
+                { "rotationOriginX", this.rotationOrigin.X },
+                { "rotationOriginY", this.rotationOrigin.Y },
+                { "pngPath", this.pngPath },
+                { "layer", this.layer },
+                { "duration", this.duration },
+                { "scale", this.scale },
+                { "ignoreWhenCalculatingMaxSize", this.ignoreWhenCalculatingMaxSize },
+                { "cropped", this.cropped },
+                { "srcAtlasX", this.srcAtlasX },
+                { "srcAtlasY", this.srcAtlasY },
+                { "srcWidth", this.srcWidth },
+                { "srcHeight", this.srcHeight },
+                };
+        }
+
         private Rectangle FindCollisionBounds()
         {
             int sliceWidth = this.texture.Width;
@@ -226,7 +223,7 @@ namespace SonOfRobin
             int sliceX = 0;
             int sliceY = this.texture.Height - sliceHeight;
 
-            var boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
+            Rectangle boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
 
             // bounds value would be incorrect without adding the base slice value
 
