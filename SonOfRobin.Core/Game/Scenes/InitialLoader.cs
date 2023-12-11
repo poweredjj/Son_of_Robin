@@ -274,8 +274,11 @@ namespace SonOfRobin
 
             this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
+            float currentStepNo = (int)this.currentStep + (AnimData.LoadedPkgs.Count / 10);
+            float allSteps = allStepsCount + (AnimData.allPkgNames.Length / 10);
+
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
-            int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
+            int progressBarCurrentLength = (int)(progressBarFullLength * (currentStepNo / allSteps));
 
             int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
             int barPosY = textPosY + (int)(textSize.Y * 1.5);
