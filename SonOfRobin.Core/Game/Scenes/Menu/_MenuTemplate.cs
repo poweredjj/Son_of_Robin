@@ -1199,7 +1199,10 @@ namespace SonOfRobin
                             MessageLog.Add(debugMessage: true, text: $"Anims loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", textColor: Color.GreenYellow);
 
                             Point cellSize = GridTemplate.CalculateCellSize();
-                            MessageLog.Add(debugMessage: true, text: $"Cell size: {cellSize.X} x {cellSize.Y}", textColor: Color.GreenYellow);
+
+                            bool cellSizeCorrect = cellSize == GridTemplate.ProperCellSize;
+
+                            new TextWindow(text: cellSizeCorrect ? $"Proper cell size: {cellSize.X}x{cellSize.Y} - OK" : $"Proper cell size: {cellSize.X}x{cellSize.Y}\nSaved cell size: {GridTemplate.ProperCellSize.X}x{GridTemplate.ProperCellSize.Y}\nUPDATE NEEDED", animate: false, useTransition: false, bgColor: cellSizeCorrect ? Color.Green : Color.DarkRed, textColor: Color.White);
                         };
                         new Invoker(menu: menu, name: "load all anims & calculate cell size", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: loadAllAnimsDlgt);
 

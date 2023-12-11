@@ -8,8 +8,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
-        public const float currentVersion = 1.000032f; // version number should be incremented when any existing asset is updated
-
+        public const float currentVersion = 1.000033f; // version number should be incremented when any existing asset is updated
         // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
@@ -2149,9 +2148,6 @@ namespace SonOfRobin
         private static string JsonDataPath
         { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
 
-        private static string ZippedJsonDataPath
-        { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json.gzip"); } }
-
         public static bool LoadJsonDict()
         {
             // one big json is used to speed up loading / saving data
@@ -2188,16 +2184,6 @@ namespace SonOfRobin
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: savedDict, compress: true);
             // MessageLog.Add(debugMessage: true, text: "Animation json saved.");
-        }
-
-        public static void DeleteJson()
-        {
-            try
-            { File.Delete(ZippedJsonDataPath); }
-            catch (UnauthorizedAccessException)
-            { } // ignore read-only files
-            catch (IOException)
-            { } // ignore locked files
         }
 
         public static void PurgeDiskCache()

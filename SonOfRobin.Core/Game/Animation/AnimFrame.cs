@@ -46,7 +46,8 @@ namespace SonOfRobin
                     if (this.texture == null)
                     {
                         this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxBroken);
-                        AnimData.DeleteJson(); // deleting json to force rebuild at next restart
+                        AnimData.jsonDict.Remove(this.id); // deleting json entry...
+                        AnimData.SaveJsonDict(); // ...and saving it, to be rebuilt on next run
                     }
                 }
                 return this.texture;
