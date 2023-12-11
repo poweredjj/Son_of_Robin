@@ -2149,6 +2149,9 @@ namespace SonOfRobin
         private static string JsonDataPath
         { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
 
+        private static string ZippedJsonDataPath
+        { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json.gzip"); } }
+
         public static bool LoadJsonDict()
         {
             // one big json is used to speed up loading / saving data
@@ -2187,12 +2190,22 @@ namespace SonOfRobin
             MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
+        public static void DeleteJson()
+        {
+            try
+            { File.Delete(ZippedJsonDataPath); }
+            catch (UnauthorizedAccessException)
+            { } // ignore read-only files
+            catch (IOException)
+            { } // ignore locked files
+        }
+
         public static void PurgeDiskCache()
         {
             try
             {
                 var directory = new DirectoryInfo(SonOfRobinGame.animCachePath);
-                foreach (var file in directory.GetFiles())
+                foreach (FileInfo file in directory.GetFiles())
                 {
                     try
                     { file.Delete(); }

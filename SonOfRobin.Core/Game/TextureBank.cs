@@ -28,6 +28,7 @@ namespace SonOfRobin
             BackpackMediumOutline = 151,
             Star = 152,
             FogCloud = 153,
+            GfxBroken = 155,
 
             SimpleArrowUp = 14,
             SimpleArrowRight = 15,
@@ -202,6 +203,7 @@ namespace SonOfRobin
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
             { TextureName.FogCloud, "weather_fog_1" },
+            { TextureName.GfxBroken, "gfx_broken" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },
@@ -400,7 +402,7 @@ namespace SonOfRobin
         {
             if (!textureByNamePersistent.ContainsKey(fileName))
             {
-                // MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
+                MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
                 textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
             }
 
@@ -411,7 +413,7 @@ namespace SonOfRobin
         {
             if (!textureByNameTemporary.ContainsKey(fileName))
             {
-                // MessageLog.Add(debugMessage: true, text: $"Loading texture (temporary): {fileName}");
+                MessageLog.Add(debugMessage: true, text: $"Loading texture (temporary): {fileName}");
                 textureByNameTemporary[fileName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
             }
 

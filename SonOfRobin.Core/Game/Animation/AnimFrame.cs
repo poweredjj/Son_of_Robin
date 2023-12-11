@@ -41,7 +41,16 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.texture == null) this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                if (this.texture == null)
+                {
+                    MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
+                    this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                    if (this.texture == null)
+                    {
+                        this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxBroken);
+                        AnimData.DeleteJson(); // deleting json to force rebuild at next restart
+                    }
+                }
                 return this.texture;
             }
         }
