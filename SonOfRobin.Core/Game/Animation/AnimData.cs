@@ -2163,7 +2163,7 @@ namespace SonOfRobin
         {
             // one big json is used to speed up loading / saving data
 
-            Dictionary<string, Object> loadedJsonDict = new();
+            Dictionary<string, Object> loadedJsonDict;
 
             try
             {
@@ -2189,9 +2189,9 @@ namespace SonOfRobin
                 if (id != "croppedFrameIDsForPackages" && id != "version") AnimFrame.DeserializeFrame((Dictionary<string, Object>)kvp.Value);
             }
 
-            foreach (var kvp in (Dictionary<PkgName, string>)loadedJsonDict["croppedFrameIDsForPackages"])
+            foreach (var kvp in (Dictionary<Int64, string>)loadedJsonDict["croppedFrameIDsForPackages"])
             {
-                PkgName pkgName = kvp.Key;
+                PkgName pkgName = (PkgName)kvp.Key;
                 string id = kvp.Value;
 
                 croppedFramesForPkgs[pkgName] = frameById[id];
@@ -2205,7 +2205,7 @@ namespace SonOfRobin
             var savedDict = new Dictionary<string, object>
             {
                 { "version", currentVersion },
-                { "croppedFrameIDsForPackages", croppedFramesForPkgs.ToDictionary(entry => entry.Key, entry => entry.Value.id) },
+                { "croppedFrameIDsForPackages", croppedFramesForPkgs.ToDictionary(entry => (int)entry.Key, entry => entry.Value.id) },
                 { "frameDict", jsonDict },
             };
 

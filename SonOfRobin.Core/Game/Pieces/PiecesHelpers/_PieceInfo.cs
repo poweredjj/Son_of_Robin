@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -3343,27 +3341,9 @@ namespace SonOfRobin
         public static void CreateAllInfo()
         {
             // creates one instance of every piece type - to get required info out of it
+            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
             {
-                if (SonOfRobinGame.os == OS.Windows) // using parallel here freezes on mobile and linux
-                {
-                    ConcurrentDictionary<PieceTemplate.Name, Info> infoByNameConcurrentDict = new();
-                    Parallel.ForEach(PieceTemplate.allNames, SonOfRobinGame.defaultParallelOptions, name =>
-                    {
-                        infoByNameConcurrentDict[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
-                    });
-
-                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
-                    {
-                        info[name] = infoByNameConcurrentDict[name];
-                    }
-                }
-                else
-                {
-                    foreach (PieceTemplate.Name name in PieceTemplate.allNames)
-                    {
-                        info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
-                    }
-                }
+                info[name] = new Info(piece: PieceTemplate.CreatePiece(templateName: name, world: null));
             }
 
             // getting isEatenBy data
@@ -3373,7 +3353,7 @@ namespace SonOfRobin
                 if (potentialPrey.eats != null)
                 {
                     // animal will either hunt the player or run away
-                    if (!ContainsPlayer(potentialPrey.eats)) potentialPrey.isEatenBy.AddRange(PieceInfo.GetPlayerNames());
+                    if (!ContainsPlayer(potentialPrey.eats)) potentialPrey.isEatenBy.AddRange(GetPlayerNames());
 
                     foreach (Info potentialPredator in info.Values)
                     {

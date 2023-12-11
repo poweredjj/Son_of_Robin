@@ -14,7 +14,6 @@ namespace SonOfRobin
 
             LoadingGfx = 1,
             LoadingWheel = 2,
-            LoadingText = 155,
             LightSphereWhite = 3,
             Cursor = 4,
             Bed = 5,
@@ -203,7 +202,6 @@ namespace SonOfRobin
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
             { TextureName.FogCloud, "weather_fog_1" },
-            { TextureName.LoadingText, "loading" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },
