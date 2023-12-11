@@ -396,7 +396,7 @@ namespace SonOfRobin
         {
             if (LoadedPkgs.Contains(pkgName)) return false;
 
-            MessageLog.Add(debugMessage: true, text: $"Loading anim package: {pkgName}");
+            // MessageLog.Add(debugMessage: true, text: $"Loading anim package: {pkgName}");
 
             switch (pkgName)
             {
@@ -2187,7 +2187,7 @@ namespace SonOfRobin
             };
 
             FileReaderWriter.Save(path: JsonDataPath, savedObj: savedDict, compress: true);
-            MessageLog.Add(debugMessage: true, text: "Animation json saved.");
+            // MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
         public static void DeleteJson()
