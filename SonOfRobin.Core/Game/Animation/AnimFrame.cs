@@ -23,13 +23,11 @@ namespace SonOfRobin
         public readonly Vector2 textureSize;
         public readonly Rectangle textureRect;
         public readonly Vector2 rotationOrigin;
-
         public readonly int layer;
         public readonly short duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
         private Texture2D texture;
-
         public readonly bool cropped;
         public readonly int srcAtlasX;
         public readonly int srcAtlasY;
@@ -211,8 +209,6 @@ namespace SonOfRobin
             this.gfxOffset *= scale;
 
             AnimData.jsonDict[this.id] = this.Serialize();
-
-            if (!this.cropped) this.GetCroppedFrameCopy(); // creating cropped copy also, in case it's needed
         }
 
         private Rectangle FindCollisionBounds()

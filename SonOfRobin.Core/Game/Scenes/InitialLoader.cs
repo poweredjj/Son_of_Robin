@@ -66,7 +66,6 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
-        private bool animsJsonLoaded;
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -110,7 +109,6 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
-            this.animsJsonLoaded = false;
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -150,36 +148,28 @@ namespace SonOfRobin
                     break;
 
                 case Step.LoadAnimsJson:
-                    this.animsJsonLoaded = AnimData.LoadJsonDict();
-                    if (!this.animsJsonLoaded) AnimData.PurgeDiskCache();
+                    if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
                     break;
 
                 case Step.ProcessAnims:
-                    //if (!this.animsJsonLoaded)
+                    DateTime loadingStartTime = DateTime.Now;
+                    TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
+                    bool lastAnimLoaded = false;
+
+                    foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
                     {
-                        DateTime loadingStartTime = DateTime.Now;
-                        TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
-                        bool lastAnimLoaded = false;
-                        foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
+                        if (!AnimData.LoadedPkgs.Contains(pkgName))
                         {
-                            if (!AnimData.LoadedPkgs.Contains(pkgName))
-                            {
-                                AnimData.LoadPackage(pkgName);
+                            AnimData.LoadPackage(pkgName);
 
-                                lastAnimLoaded = pkgName == AnimData.allPkgNames.Last();
-
-                                TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
-                                if (loadingDuration > maxLoadingDuration) break;
-                            }
+                            lastAnimLoaded = pkgName == AnimData.allPkgNames.Last();
+                            TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
+                            if (loadingDuration > maxLoadingDuration) break;
                         }
-
-                        if (lastAnimLoaded)
-                        {
-                            AnimData.SaveJsonDict();
-                            AnimData.DeleteUsedAtlases();
-                        }
-                        else this.currentStep--;
                     }
+
+                    if (lastAnimLoaded) AnimData.SaveJsonDict();
+                    else this.currentStep--;
 
                     break;
 
