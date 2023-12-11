@@ -2163,25 +2163,33 @@ namespace SonOfRobin
         {
             // one big json is used to speed up loading / saving data
 
+            Dictionary<string, Object> loadedJsonDict = new();
+
             try
             {
                 var loadedJson = FileReaderWriter.Load(path: JsonDataPath);
                 if (loadedJson == null) return false;
 
-                jsonDict = (Dictionary<string, Object>)loadedJson;
+                loadedJsonDict = (Dictionary<string, Object>)loadedJson;
             }
             catch (InvalidCastException)
             { return false; }
 
-            if (!jsonDict.ContainsKey("croppedFrameIDsForPackages")) return false;
+            if (!loadedJsonDict.ContainsKey("croppedFrameIDsForPackages") ||
+                !loadedJsonDict.ContainsKey("version") ||
+                !loadedJsonDict.ContainsKey("frameDict")) return false;
+
+            if ((float)(double)loadedJsonDict["version"] != currentVersion) return false;
+
+            jsonDict = (Dictionary<string, Object>)loadedJsonDict["frameDict"];
 
             foreach (var kvp in jsonDict)
             {
                 string id = kvp.Key;
-                if (id != "croppedFrameIDsForPackages" && id != "currentVersion") AnimFrame.DeserializeFrame((Dictionary<string, Object>)kvp.Value);
+                if (id != "croppedFrameIDsForPackages" && id != "version") AnimFrame.DeserializeFrame((Dictionary<string, Object>)kvp.Value);
             }
 
-            foreach (var kvp in (Dictionary<PkgName, string>)jsonDict["croppedFrameIDsForPackages"])
+            foreach (var kvp in (Dictionary<PkgName, string>)loadedJsonDict["croppedFrameIDsForPackages"])
             {
                 PkgName pkgName = kvp.Key;
                 string id = kvp.Value;
@@ -2194,10 +2202,14 @@ namespace SonOfRobin
 
         public static void SaveJsonDict()
         {
-            jsonDict["currentVersion"] = currentVersion;
-            jsonDict["croppedFrameIDsForPackages"] = croppedFramesForPkgs.ToDictionary(entry => entry.Key, entry => entry.Value.id);
+            var savedDict = new Dictionary<string, object>
+            {
+                { "version", currentVersion },
+                { "croppedFrameIDsForPackages", croppedFramesForPkgs.ToDictionary(entry => entry.Key, entry => entry.Value.id) },
+                { "frameDict", jsonDict },
+            };
 
-            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
+            FileReaderWriter.Save(path: JsonDataPath, savedObj: savedDict, compress: true);
             MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
