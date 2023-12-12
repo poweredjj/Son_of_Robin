@@ -102,8 +102,6 @@ namespace SonOfRobin
             font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: debugText, position: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, effect: FontSystemEffect.Stroked, effectAmount: 3);
 
             SonOfRobinGame.SpriteBatch.End();
-
-            DragonBonesTest.Draw();
         }
 
         public void ProcessDebugInput()

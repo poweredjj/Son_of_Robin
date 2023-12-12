@@ -29,7 +29,9 @@ namespace DragonBonesMG.Display
             // having to do this explicitly makes me sad :( better solutions welcome
             // this could be done at initialization passing the spriteeffect to this function
 
-            Vector2 scale = new((float)Math.Sqrt(transform.M11 * transform.M11 + transform.M12 * transform.M12), (float)Math.Sqrt(transform.M21 * transform.M21 + transform.M22 * transform.M22));
+            Vector2 scale = new(
+                (float)Math.Sqrt((transform.M11 * transform.M11) + (transform.M12 * transform.M12)),
+                (float)Math.Sqrt((transform.M21 * transform.M21) + (transform.M22 * transform.M22)));
 
             var effect = SpriteEffects.None;
             if (scale.X < 0 && scale.Y > 0)

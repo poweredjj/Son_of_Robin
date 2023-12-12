@@ -26,10 +26,9 @@ namespace DragonBonesMG.Display
         public void LoadContent(ContentManager content)
         {
             // ContentManager doesn't like extensions
-            var dsdas = ImagePath;
 
-            var name = Path.GetFileNameWithoutExtension(ImagePath);
-            _texture = content.Load<Texture2D>(name);
+            string name = Path.GetFileNameWithoutExtension(ImagePath);
+            _texture = content.Load<Texture2D>(Path.Combine("gfx\\_DragonBones", name)); // using constant path, to avoid manual json editing after export
         }
 
         /// <summary>
