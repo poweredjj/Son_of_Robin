@@ -944,13 +944,11 @@ namespace SonOfRobin
                             Invoker loadInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
                             // sound won't play here, because loading game stops all sounds
 
-                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            loadInvoker.infoTextListDlgt = () =>
                             {
                                 loadInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"|   {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
                                 loadInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
                             };
-
-                            loadInvoker.infoTextListDlgt = infoTextListDlgt;
 
                             if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
                             {
@@ -992,13 +990,11 @@ namespace SonOfRobin
                             };
                             Invoker saveInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
 
-                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            saveInvoker.infoTextListDlgt = () =>
                             {
                                 saveInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
                                 saveInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
                             };
-
-                            saveInvoker.infoTextListDlgt = infoTextListDlgt;
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -1020,12 +1016,11 @@ namespace SonOfRobin
                         {
                             Invoker exportInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoTextureList, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
 
-                            Scheduler.ExecutionDelegate infoTextListDlgt = () =>
+                            exportInvoker.infoTextListDlgt = () =>
                             {
                                 exportInvoker.infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: saveInfo.AddInfoTextureList, color: Color.White, scale: 1f) };
                                 exportInvoker.infoTextList.AddRange(saveInfo.ScreenshotTextEntryList);
                             };
-                            exportInvoker.infoTextListDlgt = infoTextListDlgt;
                         }
 
                         foreach (Entry entry in menu.entryList)
