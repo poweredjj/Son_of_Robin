@@ -49,6 +49,7 @@ namespace SonOfRobin
                         AnimData.jsonDict.Remove(this.id); // deleting json entry...
                         AnimData.SaveJsonDict(); // ...and saving it, to be rebuilt on next run
                     }
+                    else AnimData.loadedFramesCount++;
                 }
                 return this.texture;
             }

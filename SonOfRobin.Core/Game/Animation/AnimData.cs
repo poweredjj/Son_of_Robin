@@ -7,9 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
         public const float currentVersion = 1.000033f; // version number should be incremented when any existing asset is updated
-        // REMEMBER TO UPDATE GridTemplate.ProperCellSize after updating animations
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -18,6 +16,7 @@ namespace SonOfRobin
         public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
         private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
         public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
+        public static int loadedFramesCount = 0;
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
         public static Dictionary<string, object> jsonDict = new();

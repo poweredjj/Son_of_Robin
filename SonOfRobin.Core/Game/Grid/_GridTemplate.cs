@@ -233,7 +233,7 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
-            Dictionary<string, Object> templateDict = new Dictionary<string, object>
+            Dictionary<string, Object> templateDict = new()
             {
                 { "seed", this.seed },
                 { "width", this.width },

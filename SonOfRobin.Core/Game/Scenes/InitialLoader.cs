@@ -19,6 +19,7 @@ namespace SonOfRobin
             CreateMeshDefinitions,
             LoadAnimsJson,
             ProcessAnims,
+            CheckCellSize,
             PopulatePieceHints,
             BuildMappings,
             MakeItemsInfo,
@@ -51,6 +52,7 @@ namespace SonOfRobin
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animation data" },
             { Step.ProcessAnims, "processing animation data" },
+            { Step.CheckCellSize, "checking cell size" },
             { Step.PopulatePieceHints, "populating hints data" },
             { Step.BuildMappings, "building input mappings" },
             { Step.CreateScenes, "creating helper scenes" },
@@ -66,6 +68,7 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
+        private readonly Queue<AnimData.PkgName> animPackagesToLoadQueue;
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -75,7 +78,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(0.8f)) return this.lastFunnyActionName;
+                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(1.3f)) return this.lastFunnyActionName;
 
                 this.lastFunnyActionNameCreated = DateTime.Now;
 
@@ -109,6 +112,7 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
+            this.animPackagesToLoadQueue = new Queue<AnimData.PkgName>(AnimData.allPkgNames);
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -154,22 +158,31 @@ namespace SonOfRobin
                 case Step.ProcessAnims:
                     DateTime loadingStartTime = DateTime.Now;
                     TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
-                    bool lastAnimLoaded = false;
 
-                    foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
+                    while (true)
                     {
-                        if (!AnimData.LoadedPkgs.Contains(pkgName))
-                        {
-                            AnimData.LoadPackage(pkgName);
+                        if (this.animPackagesToLoadQueue.Count > 0) AnimData.LoadPackage(this.animPackagesToLoadQueue.Dequeue());
 
-                            lastAnimLoaded = pkgName == AnimData.allPkgNames.Last();
-                            TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
-                            if (loadingDuration > maxLoadingDuration) break;
-                        }
+                        TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
+                        if (loadingDuration > maxLoadingDuration || this.animPackagesToLoadQueue.Count == 0) break;
                     }
 
-                    if (lastAnimLoaded) AnimData.SaveJsonDict();
-                    else this.currentStep--;
+                    if (this.animPackagesToLoadQueue.Count > 0) this.currentStep--;
+                    else AnimData.SaveJsonDict();
+
+                    break;
+
+                case Step.CheckCellSize:
+                    if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
+                    {
+                        Point cellSize = GridTemplate.CalculateCellSize();
+                        bool cellSizeCorrect = cellSize == GridTemplate.ProperCellSize;
+
+                        if (!cellSizeCorrect)
+                        {
+                            new TextWindow(text: $"Proper cell size --> {cellSize.X}x{cellSize.Y} <--\nSaved cell size: {GridTemplate.ProperCellSize.X}x{GridTemplate.ProperCellSize.Y}\nUPDATE NEEDED", animate: false, useTransition: false, bgColor: Color.DarkRed, textColor: Color.White);
+                        }
+                    }
 
                     break;
 
