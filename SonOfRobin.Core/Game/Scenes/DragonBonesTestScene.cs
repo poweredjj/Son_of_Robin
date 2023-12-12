@@ -70,9 +70,11 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(220f, 220f), rotation: 0f, scale: new Vector2(-0.4f, 0.4f), color: Color.White);
-            // this.sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(700f, 550f), rotation: 0f, scale: new Vector2(0.8f, 0.8f), color: Color.White);
-            // this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(1200f, 550f), rotation: 0f, scale: new Vector2(0.8f, 0.8f), color: Color.White);
+            float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
+
+            this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.4f, 0.4f) * scale, color: Color.White);
+            this.sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(300f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
+            this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(450f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
         }
     }
 }

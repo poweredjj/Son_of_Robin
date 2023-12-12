@@ -9,13 +9,12 @@ namespace DragonBonesMG.Display
 {
     public class DbMesh : DbDisplay
     {
-
         private readonly IDrawableDb _drawable;
         private Texture2D _texture;
 
-        private float[] _originalVertices;
-        private short[] _indices;
-        private float[] _uvs;
+        private readonly float[] _originalVertices;
+        private readonly short[] _indices;
+        private readonly float[] _uvs;
         private VertexPositionColorTexture[] _vertices;
         private VertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;
@@ -41,19 +40,24 @@ namespace DragonBonesMG.Display
         {
             var s = new SpriteBatch(graphicsDevice);
             var vp = graphicsDevice.Viewport;
-            _cameraMatrix =
-                Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1);
+            _cameraMatrix = Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1);
 
             _texture = _drawable.RenderToTexture(s);
 
             // TODO these are all structs, so efficiency can be improved by working with pointers!
-            for (int i = 0; i < _originalVertices.Length; i += 2)
+
+            var originalVerticesAsSpan = _originalVertices.AsSpan();
+            var verticesAsSpan = _vertices.AsSpan();
+            var uvsAsSpan = _uvs.AsSpan();
+
+            for (int i = 0; i < originalVerticesAsSpan.Length; i += 2)
             {
-                var v = new VertexPositionColorTexture(
-                    new Vector3(_originalVertices[i], _originalVertices[i + 1], 0f),
+                VertexPositionColorTexture v = new(
+                    new Vector3(originalVerticesAsSpan[i], originalVerticesAsSpan[i + 1], 0f),
                     Color.White,
-                    new Vector2(_uvs[i], _uvs[i + 1]));
-                _vertices[i / 2] = v;
+                    new Vector2(uvsAsSpan[i], uvsAsSpan[i + 1]));
+
+                verticesAsSpan[i / 2] = v;
             }
 
             _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short),
@@ -81,16 +85,22 @@ namespace DragonBonesMG.Display
         {
             if (state == null) return;
 
-            var offset = state.Vertices.Any() ? state.Offset : _originalVertices.Length;
+            var originalVerticesAsSpan = _originalVertices.AsSpan();
+            var verticesAsSpan = _vertices.AsSpan();
+            var stateVerticesAsSpan = state.Vertices.AsSpan();
+
+            var offset = state.Vertices.Any() ? state.Offset : originalVerticesAsSpan.Length;
 
             for (int i = 0; i < offset; i += 2)
-                _vertices[i / 2].Position = new Vector3(_originalVertices[i],
-                    _originalVertices[i + 1], 0f);
-            for (int i = offset; i < _originalVertices.Length; i += 2)
             {
-                _vertices[i / 2].Position = new Vector3(
-                    _originalVertices[i] + state.Vertices[i - offset],
-                    _originalVertices[i + 1] + state.Vertices[i - offset + 1], 0);
+                verticesAsSpan[i / 2].Position = new Vector3(originalVerticesAsSpan[i], originalVerticesAsSpan[i + 1], 0f);
+            }
+
+            for (int i = offset; i < originalVerticesAsSpan.Length; i += 2)
+            {
+                verticesAsSpan[i / 2].Position = new Vector3(
+                    originalVerticesAsSpan[i] + stateVerticesAsSpan[i - offset],
+                    originalVerticesAsSpan[i + 1] + stateVerticesAsSpan[i - offset + 1], 0);
             }
         }
 
@@ -104,9 +114,10 @@ namespace DragonBonesMG.Display
         {
             // TODO use the color, probably best to write a shader for this, so we can also handle negative scale/culling there
 
-            Vector2 scale = new((float)Math.Sqrt(transform.M11 * transform.M11 + transform.M12 * transform.M12), (float)Math.Sqrt(transform.M21 * transform.M21 + transform.M22 * transform.M22));
+            bool scaleXPositive = transform.M11 >= 0;
+            bool scaleYPositive = transform.M22 >= 0;
 
-            var reverseCull = scale.X * scale.Y < 0;
+            var reverseCull = !scaleXPositive || !scaleYPositive;
 
             var projection = transform * _cameraMatrix;
 
@@ -129,8 +140,7 @@ namespace DragonBonesMG.Display
             foreach (var pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                s.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                    _indices.Length / 3);
+                s.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _indices.Length / 3);
             }
             s.GraphicsDevice.RasterizerState = rasterizerState;
         }

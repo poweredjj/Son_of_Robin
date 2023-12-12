@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using DragonBonesMG.Animation;
+﻿using DragonBonesMG.Animation;
 using DragonBonesMG.Display;
 using DragonBonesMG.JsonData;
 using DragonBonesMG.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
-namespace DragonBonesMG.Core {
+namespace DragonBonesMG.Core
+{
 
     public delegate void SoundEventHandler(object sender, DbAnimationEventArgs e);
 
@@ -26,7 +27,8 @@ namespace DragonBonesMG.Core {
     /// <seealso cref="DbSlot"/>
     /// <seealso cref="DbAnimation"/>
     /// </summary>
-    public class DbArmature : DbDisplay, IAnimatable {
+    public class DbArmature : DbDisplay, IAnimatable
+    {
 
         /// <summary>The framerate set in DragonBonesPro editor. Used to determine expected playback speed.</summary>
         public int FrameRate { get; private set; }
@@ -78,7 +80,8 @@ namespace DragonBonesMG.Core {
         #region Initialization
 
         internal DbArmature(string name, ITextureSupplier texturer, GraphicsDevice graphics, DragonBones creator)
-            : base(name) {
+            : base(name)
+        {
             Creator = creator;
             Texturer = texturer;
             GraphicsDevice = graphics;
@@ -89,24 +92,29 @@ namespace DragonBonesMG.Core {
             IkConstraints = new List<DbIkConstraint>();
         }
 
-        internal void Initialize(ArmatureData data) {
+        internal void Initialize(ArmatureData data)
+        {
             FrameRate = data.FrameRate;
 
-            if (data.Bones.Any()) {
+            if (data.Bones.Any())
+            {
                 Bones.Add(new DbBone(this, data.Bones[0]));
-                for (var i = 1; i < data.Bones.Length; i++) {
+                for (var i = 1; i < data.Bones.Length; i++)
+                {
                     var bone = data.Bones[i];
                     var parentBone = Bones[bone.Parent];
                     parentBone.AddBone(new DbBone(this, bone));
                 }
             }
 
-            foreach (var slot in data.Slots) {
+            foreach (var slot in data.Slots)
+            {
                 var parentBone = Bones[slot.Parent];
                 parentBone.AddSlot(new DbSlot(this, slot));
             }
 
-            foreach (var fill in data.Skins[0].SlotFills) {
+            foreach (var fill in data.Skins[0].SlotFills)
+            {
                 var slot = Slots[fill.SlotName];
                 foreach (var display in fill.Displays)
                     slot.AddDisplay(display);
@@ -134,14 +142,16 @@ namespace DragonBonesMG.Core {
         /// <summary>
         /// Reset the bones of this armature to their original positions.
         /// </summary>
-        public void ResetBones() {
+        public void ResetBones()
+        {
             RootBone?.ResetRecursive();
         }
 
         /// <summary>
         /// Get the bone with the given name or null if it doesn't exist.
         /// </summary>
-        public DbBone GetBone(string name) {
+        public DbBone GetBone(string name)
+        {
             DbBone bone;
             Bones.TryGet(name, out bone);
             return bone;
@@ -152,9 +162,11 @@ namespace DragonBonesMG.Core {
         /// collections of bones and slots for quick lookups.
         /// </summary>
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        internal void AddBone(DbBone bone) {
-            IEnumerable<DbBone> bones = new[] {bone};
-            while (bones.Any()) {
+        internal void AddBone(DbBone bone)
+        {
+            IEnumerable<DbBone> bones = new[] { bone };
+            while (bones.Any())
+            {
                 Bones.AddRange(bones);
                 var slots = bones.SelectMany(b => b.Slots);
                 Slots.AddRange(slots);
@@ -171,7 +183,8 @@ namespace DragonBonesMG.Core {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public DbSlot GetSlot(string name) {
+        public DbSlot GetSlot(string name)
+        {
             DbSlot slot;
             Slots.TryGet(name, out slot);
             return slot;
@@ -181,14 +194,16 @@ namespace DragonBonesMG.Core {
         /// Add a slot to this armature.
         /// </summary>
         /// <param name="slot"></param>
-        public void AddSlot(DbSlot slot) {
+        public void AddSlot(DbSlot slot)
+        {
             Slots.Add(slot);
         }
 
         /// <summary>
         /// Sort slots by zorder.
         /// </summary>
-        private void SortSlots() {
+        private void SortSlots()
+        {
             SortedSlots = Slots.OrderBy(s => s.ZOrder);
             SlotsChanged = false;
         }
@@ -204,8 +219,10 @@ namespace DragonBonesMG.Core {
         /// <seealso cref="DbAnimation.Update"/>
         /// </summary>
         /// <param name="elapsed">The time elapsed since the last call to update.</param>
-        public void Update(TimeSpan elapsed) {
-            if (IsAnimating()) {
+        public void Update(TimeSpan elapsed)
+        {
+            if (IsAnimating())
+            {
                 _currentAnimation.Update(elapsed);
                 var animationState = _currentAnimation.GetCurrentState();
                 // update bones
@@ -226,7 +243,8 @@ namespace DragonBonesMG.Core {
         /// <param name="rotation">Rotation of the armature in radians</param>
         /// <param name="scale">Scale of the armature along X and Y axis, Vector2.One when not passed</param>
         public void Draw(SpriteBatch s, Vector2? position = null, float rotation = 0f, Vector2? scale = null,
-            Color? color = null) {
+            Color? color = null)
+        {
             var p = position ?? Vector2.Zero;
             var sc = scale ?? Vector2.One;
             var c = color ?? Color.White;
@@ -243,7 +261,8 @@ namespace DragonBonesMG.Core {
         /// <param name="s">A spritebatch</param>
         /// <param name="transform">The transformation matrix to apply</param>
         /// <param name="colorTransform">The color transformation to apply</param>
-        public override void Draw(SpriteBatch s, Matrix transform, Color colorTransform) {
+        public override void Draw(SpriteBatch s, Matrix transform, Color colorTransform)
+        {
             foreach (var slot in SortedSlots)
                 slot.Draw(s, transform, colorTransform);
         }
@@ -261,18 +280,21 @@ namespace DragonBonesMG.Core {
         /// Play the current animation if one is set.
         /// </summary>
         /// <param name="loop">If false the animation will stop after one full play, otherwise it will loop</param>
-        public void PlayAnimation(bool loop) {
+        public void PlayAnimation(bool loop)
+        {
             _currentAnimation?.Play(loop);
         }
 
         /// <summary>
         /// Pause the current animation if it is set.
         /// </summary>
-        public void PauseAnimation() {
+        public void PauseAnimation()
+        {
             _currentAnimation?.Pause();
         }
 
-        private void GotoAnimation(string animation) {
+        private void GotoAnimation(string animation)
+        {
             if (!Animations.Contains(animation)) throw new ArgumentException(nameof(animation));
             _currentAnimation = Animations[animation];
             _currentAnimation.Reset();
@@ -283,7 +305,8 @@ namespace DragonBonesMG.Core {
         /// </summary>
         /// <param name="animation">The name of the animation to play</param>
         /// <param name="loop">If false the animation will stop after one full play, otherwise it will loop</param>
-        public void GotoAndPlay(string animation, bool loop = true) {
+        public void GotoAndPlay(string animation, bool loop = true)
+        {
             GotoAnimation(animation);
             PlayAnimation(loop);
         }
@@ -294,7 +317,8 @@ namespace DragonBonesMG.Core {
         /// <param name="animation">The name of the animation to play</param>
         /// <param name="time">The time in the animation to start playing at.</param>
         /// <param name="loop">If false the animation will stop after one full play, otherwise it will loop</param>
-        public void GotoAndPlay(string animation, float time, bool loop = true) {
+        public void GotoAndPlay(string animation, float time, bool loop = true)
+        {
             GotoAnimation(animation);
             _currentAnimation?.SetTime(time);
             PlayAnimation(loop);
@@ -305,7 +329,8 @@ namespace DragonBonesMG.Core {
         /// </summary>
         /// <param name="animation">The name of the animation to go to.</param>
         /// <param name="time">The time in the animation to set.</param>
-        public void GotoAndStop(string animation, float time) {
+        public void GotoAndStop(string animation, float time)
+        {
             GotoAnimation(animation);
             _currentAnimation?.SetTime(time);
             if (_currentAnimation != null)
@@ -313,14 +338,16 @@ namespace DragonBonesMG.Core {
         }
 
         /// <summary>True if an animation is loaded and it is playing, false otherwise</summary>
-        public bool IsAnimating() {
+        public bool IsAnimating()
+        {
             return _currentAnimation != null && _currentAnimation.IsPlaying;
         }
 
         /// <summary>
         /// True if no animation is loaded or <see cref="DbAnimation.IsComplete"/> is true for the current animation.
         /// </summary>
-        public bool IsDoneAnimating() {
+        public bool IsDoneAnimating()
+        {
             return _currentAnimation == null || _currentAnimation.IsComplete;
         }
 
@@ -350,25 +377,23 @@ namespace DragonBonesMG.Core {
 
         public event ActionEventHandler DoAction;
 
-        internal void OnAction(DbAnimationEventArgs e) {
+        internal void OnAction(DbAnimationEventArgs e)
+        {
             DoAction?.Invoke(this, e);
         }
 
         public event SoundEventHandler PlaySound;
 
-        internal void OnSound(DbAnimationEventArgs e) {
+        internal void OnSound(DbAnimationEventArgs e)
+        {
             PlaySound?.Invoke(this, e);
         }
 
         public event AnimationEventHandler AnimationEvent;
 
-        internal void OnAnimationEvent(DbAnimationEventArgs e) {
-            AnimationEvent?.Invoke(this, e);
-        }
-
-        public object Select(Func<object, object> value)
+        internal void OnAnimationEvent(DbAnimationEventArgs e)
         {
-            throw new NotImplementedException();
+            AnimationEvent?.Invoke(this, e);
         }
 
         #endregion
