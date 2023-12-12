@@ -127,6 +127,24 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/Dragon_tex.png
 
+#begin gfx/_DragonBones/mecha_2903_ske.json
+/copy:gfx/_DragonBones/mecha_2903_ske.json
+
+#begin gfx/_DragonBones/mecha_2903_tex.json
+/copy:gfx/_DragonBones/mecha_2903_tex.json
+
+#begin gfx/_DragonBones/mecha_2903_tex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_DragonBones/mecha_2903_tex.png
+
 #begin gfx/_DragonBones/Sheep_ske.json
 /copy:gfx/_DragonBones/Sheep_ske.json
 

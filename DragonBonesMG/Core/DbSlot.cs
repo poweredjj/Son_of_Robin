@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using DragonBonesMG.Animation;
+﻿using DragonBonesMG.Animation;
 using DragonBonesMG.Display;
 using DragonBonesMG.JsonData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
-namespace DragonBonesMG.Core {
+namespace DragonBonesMG.Core
+{
     /// <summary>
     /// Slots can be attached to a bone to inherit its transform. Add displays (<see cref="DbDisplay"/>)
-    /// to a slot to have them rendered when a slot is drawn. 
+    /// to a slot to have them rendered when a slot is drawn.
     /// </summary>
-    public class DbSlot : DbObject {
+    public class DbSlot : DbObject
+    {
         #region Fields
 
         /// <summary>
@@ -33,7 +35,8 @@ namespace DragonBonesMG.Core {
         public int ZOrder
         {
             get { return _zOrder; }
-            private set {
+            private set
+            {
                 if (value == _zOrder) return;
                 Armature.SlotsChanged = true;
                 _zOrder = value;
@@ -41,18 +44,18 @@ namespace DragonBonesMG.Core {
         }
 
         /// <summary>
-        /// The current color transform applied to a slot. This is used in 
+        /// The current color transform applied to a slot. This is used in
         /// <see cref="SpriteBatch.Draw(Texture2D,Vector2?,Rectangle?,Rectangle?,Vector2?,float,Vector2?,Color?,SpriteEffects,float)"/>
         /// as the passed in color.
         /// </summary>
         public Color ColorTransform { get; private set; }
 
-        #endregion
+        #endregion Fields
 
         /// <summary>
         /// This list is up for grabs for easier editing, but be careful with the transforms.
         /// </summary>
-        // reformatted so transform is not INSIDE a display, in case you want the same display 
+        // reformatted so transform is not INSIDE a display, in case you want the same display
         // nested in different other animations. Why the hell do you want that?
         // TODO is this ever userful? Would be neater without the extra indirection
         public readonly List<DisplayTransform> Displays;
@@ -65,7 +68,8 @@ namespace DragonBonesMG.Core {
         public bool Visible => DisplayIndex != -1;
 
         internal DbSlot(DbArmature armature, SlotData data) :
-            base(data.Name, armature, data.Parent) {
+            base(data.Name, armature, data.Parent)
+        {
             _originalZOrder = data.Z;
             ZOrder = data.Z;
             Displays = new List<DisplayTransform>();
@@ -77,7 +81,8 @@ namespace DragonBonesMG.Core {
         /// <summary>
         /// Draw this slot's active display, if any, applying the current matrix and color transform.
         /// </summary>
-        public void Draw(SpriteBatch s, Matrix transform, Color parentColor) {
+        public void Draw(SpriteBatch s, Matrix transform, Color parentColor)
+        {
             if (Displays.Count == 0 || !Visible) return;
 
             var display = Displays[DisplayIndex];
@@ -92,13 +97,15 @@ namespace DragonBonesMG.Core {
         /// </summary>
         /// <param name="displayState"></param>
         /// <param name="ffdState"></param>
-        internal void Update(DisplayTimelineState displayState, FFDTimelineState ffdState) {
+        internal void Update(DisplayTimelineState displayState, FFDTimelineState ffdState)
+        {
             var s = displayState.GetState(Name);
-            if (s != null) {
-                var slotState = (SlotState) s;
+            if (s != null)
+            {
+                var slotState = (SlotState)s;
                 DisplayIndex = slotState.DisplayIndex;
                 if (slotState.ZOrder != null)
-                    ZOrder = (int) slotState.ZOrder;
+                    ZOrder = (int)slotState.ZOrder;
                 ColorTransform = slotState.Color;
             }
 
@@ -109,7 +116,7 @@ namespace DragonBonesMG.Core {
             mesh?.Update(ffdState.GetVertices(Name));
         }
 
-        #endregion
+        #endregion Draw and Update
 
         #region Add and Remove Displays
 
@@ -118,7 +125,8 @@ namespace DragonBonesMG.Core {
         /// </summary>
         /// <param name="display">The display to add and show.</param>
         /// <param name="transform">The transform of the display.</param>
-        public void SetNewDisplay(DbDisplay display, Matrix transform) {
+        public void SetNewDisplay(DbDisplay display, Matrix transform)
+        {
             Displays.Add(new DisplayTransform(display, transform));
             DisplayIndex = Displays.Count - 1;
         }
@@ -128,7 +136,8 @@ namespace DragonBonesMG.Core {
         /// Uses the Identity matrix as transfomr for the display.
         /// </summary>
         /// <param name="display">The display to add and show.</param>
-        public void SetNewDisplay(DbDisplay display) {
+        public void SetNewDisplay(DbDisplay display)
+        {
             SetNewDisplay(display, Matrix.Identity);
         }
 
@@ -136,50 +145,62 @@ namespace DragonBonesMG.Core {
         /// Set the display of this slot to the one with the given name, or nothing if no display with the given name is present.
         /// </summary>
         /// <param name="name">The name of the display to set the active display to.</param>
-        public void SetDisplay(string name) {
+        public void SetDisplay(string name)
+        {
             DisplayIndex = Displays.FindIndex(d => d.Display.Name == name);
         }
 
-        internal void AddDisplay(DisplayData data) {
+        internal void AddDisplay(DisplayData data)
+        {
             var transform = data.Transform?.ToMatrix() ?? Matrix.Identity;
-            switch (data.Type) {
-            case "Armature":
-                // TODO defaultActions.
-                Displays.Add(new DisplayTransform(Armature.Creator.GetArmature(data.Name),
-                    transform));
-                break;
-            case "image":
-                Displays.Add(new DisplayTransform(new DbImage(data.Name, Armature.Texturer),
-                    transform));
-                break;
-            case "mesh":
-                Displays.Add(new DisplayTransform(new DbMesh(data, Armature.Texturer, Armature.GraphicsDevice),
-                    transform));
-                break;
-            default:
-                throw new ArgumentException(nameof(data));
+            switch (data.Type)
+            {
+                case "Armature":
+                    // TODO defaultActions.
+                    Displays.Add(new DisplayTransform(Armature.Creator.GetArmature(data.Name),
+                        transform));
+                    break;
+
+                case "image":
+                    Displays.Add(new DisplayTransform(new DbImage(data.Name, Armature.Texturer),
+                        transform));
+                    break;
+
+                case "boundingBox": // TODO correct this
+                    Displays.Add(new DisplayTransform(new DbImage(data.Name, Armature.Texturer),
+                        transform));
+                    break;
+
+                case "mesh":
+                    Displays.Add(new DisplayTransform(new DbMesh(data, Armature.Texturer, Armature.GraphicsDevice),
+                        transform));
+                    break;
+
+                default:
+                    throw new ArgumentException(nameof(data));
             }
         }
 
-        #endregion
+        #endregion Add and Remove Displays
 
         /// <summary>
         /// Wraps a display with its current transform so a display can be reused and have a different transform
         /// in another slot.
         /// </summary>
-        public class DisplayTransform {
+        public class DisplayTransform
+        {
             public DbDisplay Display;
             public Matrix Transform;
 
-            public DisplayTransform(DbDisplay display) : this(display, Matrix.Identity) {
+            public DisplayTransform(DbDisplay display) : this(display, Matrix.Identity)
+            {
             }
 
-            public DisplayTransform(DbDisplay display, Matrix transform) {
+            public DisplayTransform(DbDisplay display, Matrix transform)
+            {
                 Display = display;
                 Transform = transform;
             }
-
         }
-
     }
 }

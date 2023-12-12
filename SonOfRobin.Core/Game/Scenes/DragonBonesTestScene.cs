@@ -16,6 +16,9 @@ namespace SonOfRobin
         private readonly DragonBonesMG.Core.DbArmature dragonArmature;
         private readonly string[] dragonAnimNames;
 
+        private readonly DragonBonesMG.Core.DbArmature mechaArmature;
+        private readonly string[] mechaAnimNames;
+
         public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             {
@@ -25,7 +28,6 @@ namespace SonOfRobin
                 this.demonAnimNames = this.demonArmature.Animations.Select(a => a.Name).ToArray();
                 this.demonArmature.GotoAndPlay(animation: this.demonAnimNames[0], loop: false);
             }
-
             {
                 TextureAtlas atlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/Sheep_tex.json");
                 atlas.LoadContent(SonOfRobinGame.ContentMgr);
@@ -33,13 +35,19 @@ namespace SonOfRobin
                 this.sheepAnimNames = this.sheepArmature.Animations.Select(a => a.Name).ToArray();
                 this.sheepArmature.GotoAndPlay(animation: this.sheepAnimNames[0], loop: false);
             }
-
             {
                 TextureAtlas atlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/Dragon_tex.json");
                 atlas.LoadContent(SonOfRobinGame.ContentMgr);
                 this.dragonArmature = DragonBones.FromJson("Content/gfx/_DragonBones/Dragon_ske.json", atlas, SonOfRobinGame.GfxDev).Armature;
                 this.dragonAnimNames = this.dragonArmature.Animations.Select(a => a.Name).ToArray();
                 this.dragonArmature.GotoAndPlay(animation: this.dragonAnimNames[0], loop: false);
+            }
+            {
+                TextureAtlas atlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/mecha_2903_tex.json");
+                atlas.LoadContent(SonOfRobinGame.ContentMgr);
+                this.mechaArmature = DragonBones.FromJson("Content/gfx/_DragonBones/mecha_2903_ske.json", atlas, SonOfRobinGame.GfxDev).Armature;
+                this.mechaAnimNames = this.mechaArmature.Animations.Select(a => a.Name).ToArray();
+                this.mechaArmature.GotoAndPlay(animation: this.mechaAnimNames[0], loop: false);
             }
         }
 
@@ -48,6 +56,7 @@ namespace SonOfRobin
             this.demonArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
             this.sheepArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
             this.dragonArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+            this.mechaArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
 
             if (demonArmature.IsDoneAnimating())
             {
@@ -74,7 +83,8 @@ namespace SonOfRobin
 
             this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.4f, 0.4f) * scale, color: Color.White);
             this.sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(300f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
-            this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(450f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
+            //this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(450f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
+            this.mechaArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(480f, 120f) * scale, rotation: 0f, scale: new Vector2(0.4f, 0.4f) * scale, color: Color.White);
         }
     }
 }
