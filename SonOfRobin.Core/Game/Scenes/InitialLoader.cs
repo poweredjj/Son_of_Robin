@@ -12,7 +12,6 @@ namespace SonOfRobin
         public enum Step : byte
         {
             Initial,
-            MobileWait,
             LoadFonts,
             LoadEffects,
             DeleteObsoleteTemplates,
@@ -45,7 +44,6 @@ namespace SonOfRobin
         private static readonly Dictionary<Step, string> namesForSteps = new()
         {
             { Step.Initial, "starting" },
-            { Step.MobileWait, "adding mobile waiting time" },
             { Step.LoadFonts, "loading fonts" },
             { Step.LoadEffects, "loading effects" },
             { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
@@ -67,7 +65,6 @@ namespace SonOfRobin
         private Step currentStep;
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
-        private int mobileWaitingTimes;
         private readonly Queue<AnimData.PkgName> animPackagesToLoadQueue;
 
         private DateTime lastFunnyActionNameCreated;
@@ -111,7 +108,6 @@ namespace SonOfRobin
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
-            this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
             this.animPackagesToLoadQueue = new Queue<AnimData.PkgName>(AnimData.allPkgNames);
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
@@ -128,11 +124,6 @@ namespace SonOfRobin
                 case Step.Initial:
                     SonOfRobinGame.LoadInitialTextures();
                     SonOfRobinGame.CreateControlTips();
-                    break;
-
-                case Step.MobileWait:
-                    this.mobileWaitingTimes--;
-                    if (this.mobileWaitingTimes > 0) this.currentStep--;
                     break;
 
                 case Step.LoadFonts:
