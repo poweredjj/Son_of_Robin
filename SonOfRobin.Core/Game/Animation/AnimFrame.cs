@@ -151,7 +151,7 @@ namespace SonOfRobin
 
                 // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
                 this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
-                GfxConverter.SaveTextureAsPNG(pngPath: pngPath, texture: this.texture);
+                GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
 
                 AnimData.textureDict[this.textureID] = this.texture;
             }
