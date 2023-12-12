@@ -52,20 +52,14 @@ namespace DragonBonesMG.Display
 
             for (int i = 0; i < originalVerticesAsSpan.Length; i += 2)
             {
-                VertexPositionColorTexture v = new(
+                verticesAsSpan[i / 2] = new VertexPositionColorTexture(
                     new Vector3(originalVerticesAsSpan[i], originalVerticesAsSpan[i + 1], 0f),
                     Color.White,
                     new Vector2(uvsAsSpan[i], uvsAsSpan[i + 1]));
-
-                verticesAsSpan[i / 2] = v;
             }
 
-            _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short),
-                _indices.Length, BufferUsage.WriteOnly);
-
-            _vertexBuffer = new DynamicVertexBuffer(graphicsDevice,
-                typeof(VertexPositionColorTexture),
-                _vertices.Length, BufferUsage.WriteOnly);
+            _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short), _indices.Length, BufferUsage.WriteOnly);
+            _vertexBuffer = new DynamicVertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), _vertices.Length, BufferUsage.WriteOnly);
 
             _effect = new BasicEffect(s.GraphicsDevice)
             {
@@ -117,21 +111,12 @@ namespace DragonBonesMG.Display
             bool scaleXPositive = transform.M11 >= 0;
             bool scaleYPositive = transform.M22 >= 0;
 
-            var reverseCull = !scaleXPositive || !scaleYPositive;
+            bool reverseCull = !scaleXPositive || !scaleYPositive;
 
-            var projection = transform * _cameraMatrix;
+            RasterizerState rasterizerState = s.GraphicsDevice.RasterizerState;
+            if (reverseCull) s.GraphicsDevice.RasterizerState = new RasterizerState { CullMode = CullMode.CullClockwiseFace };
 
-            var rasterizerState = s.GraphicsDevice.RasterizerState;
-            if (reverseCull)
-            {
-                s.GraphicsDevice.RasterizerState =
-                    new RasterizerState
-                    {
-                        CullMode = CullMode.CullClockwiseFace
-                    };
-            }
-
-            _effect.Projection = projection;
+            _effect.Projection = transform * _cameraMatrix;
             _indexBuffer.SetData(_indices);
             _vertexBuffer.SetData(_vertices);
             s.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
