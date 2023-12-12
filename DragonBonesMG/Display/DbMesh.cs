@@ -122,7 +122,7 @@ namespace DragonBonesMG.Display
             s.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
             s.GraphicsDevice.Indices = _indexBuffer;
 
-            foreach (var pass in _effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 s.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _indices.Length / 3);
