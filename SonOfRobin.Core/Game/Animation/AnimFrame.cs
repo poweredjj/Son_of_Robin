@@ -33,7 +33,9 @@ namespace SonOfRobin
         public readonly int srcAtlasY;
         public readonly int srcWidth;
         public readonly int srcHeight;
-        private bool PngPathExists { get { return File.Exists(this.pngPath); } }
+
+        private string PngName { get { return $"{this.textureID}.png"; } }
+        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName); } }
 
         public Texture2D Texture
         {
@@ -127,7 +129,7 @@ namespace SonOfRobin
             this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, scale: 0, depthPercent: 0);
 
             AnimData.frameById[this.id] = this;
-            this.pngPath = Path.Combine(SonOfRobinGame.animCachePath, $"{this.textureID}.png");
+            this.pngPath = Path.Combine(SonOfRobinGame.animCachePath, this.PngName);
 
             this.cropped = crop;
             this.srcAtlasX = atlasX;
@@ -152,6 +154,7 @@ namespace SonOfRobin
                 // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
                 this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
                 GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
+                AnimData.foundFramePngs.Add(this.PngName);
 
                 AnimData.textureDict[this.textureID] = this.texture;
             }

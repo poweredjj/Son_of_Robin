@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -11,6 +12,8 @@ namespace SonOfRobin
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
+
+        public static HashSet<string> foundFramePngs = new DirectoryInfo(SonOfRobinGame.animCachePath).GetFiles().Select(f => f.Name).Where(f => f.EndsWith(".png")).ToHashSet();
 
         public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
@@ -2182,6 +2185,8 @@ namespace SonOfRobin
 
         public static void PurgeDiskCache()
         {
+            foundFramePngs.Clear();
+
             try
             {
                 var directory = new DirectoryInfo(SonOfRobinGame.animCachePath);
