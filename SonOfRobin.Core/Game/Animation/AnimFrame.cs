@@ -93,7 +93,7 @@ namespace SonOfRobin
             this.colHeight = (int)(Int64)jsonData["colHeight"];
             this.gfxWidth = (int)(Int64)jsonData["gfxWidth"];
             this.gfxHeight = (int)(Int64)jsonData["gfxHeight"];
-            this.colOffset = new Vector2((float)(double)jsonData["colOffsetY"], (float)(double)jsonData["colOffsetY"]);
+            this.colOffset = new Vector2((float)(double)jsonData["colOffsetX"], (float)(double)jsonData["colOffsetY"]);
             this.gfxOffset = new Vector2((float)(double)jsonData["gfxOffsetX"], (float)(double)jsonData["gfxOffsetY"]);
             this.textureSize = new Vector2((float)(double)jsonData["textureSizeX"], (float)(double)jsonData["textureSizeY"]);
             this.textureRect = (Rectangle)jsonData["textureRect"];
