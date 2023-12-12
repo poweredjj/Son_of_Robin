@@ -43,9 +43,9 @@ namespace SonOfRobin
                 this.dragonArmature.GotoAndPlay(animation: this.dragonAnimNames[0], loop: false);
             }
             {
-                TextureAtlas atlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/mecha_2903_tex.json");
+                TextureAtlas atlas = TextureAtlas.FromJson("Content/gfx/_DragonBones/mecha_1004d_show_tex.json");
                 atlas.LoadContent(SonOfRobinGame.ContentMgr);
-                this.mechaArmature = DragonBones.FromJson("Content/gfx/_DragonBones/mecha_2903_ske.json", atlas, SonOfRobinGame.GfxDev).Armature;
+                this.mechaArmature = DragonBones.FromJson("Content/gfx/_DragonBones/mecha_1004d_show_ske.json", atlas, SonOfRobinGame.GfxDev).Armature;
                 this.mechaAnimNames = this.mechaArmature.Animations.Select(a => a.Name).ToArray();
                 this.mechaArmature.GotoAndPlay(animation: this.mechaAnimNames[0], loop: false);
             }
@@ -75,16 +75,22 @@ namespace SonOfRobin
                 string animName = this.dragonAnimNames[SonOfRobinGame.random.Next(dragonAnimNames.Length)];
                 dragonArmature.GotoAndPlay(animation: animName, loop: false);
             }
+
+            if (mechaArmature.IsDoneAnimating())
+            {
+                string animName = this.mechaAnimNames[SonOfRobinGame.random.Next(mechaAnimNames.Length)];
+                mechaArmature.GotoAndPlay(animation: animName, loop: false);
+            }
         }
 
         public override void Draw()
         {
             float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
 
-            this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.4f, 0.4f) * scale, color: Color.White);
+            this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.35f, 0.35f) * scale, color: Color.White);
             this.sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(300f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
             //this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(450f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
-            this.mechaArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(480f, 120f) * scale, rotation: 0f, scale: new Vector2(0.4f, 0.4f) * scale, color: Color.White);
+            this.mechaArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(520f, 210f) * scale, rotation: 0f, scale: new Vector2(0.4f, 0.4f) * scale, color: Color.White);
         }
     }
 }

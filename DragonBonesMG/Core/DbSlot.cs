@@ -104,8 +104,7 @@ namespace DragonBonesMG.Core
             {
                 var slotState = (SlotState)s;
                 DisplayIndex = slotState.DisplayIndex;
-                if (slotState.ZOrder != null)
-                    ZOrder = (int)slotState.ZOrder;
+                if (slotState.ZOrder != null) ZOrder = (int)slotState.ZOrder;
                 ColorTransform = slotState.Color;
             }
 

@@ -1,70 +1,77 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
-namespace DragonBonesMG.Animation {
-    public class MeshTimeline : SingleTimeline {
-
-
+namespace DragonBonesMG.Animation
+{
+    public class MeshTimeline : SingleTimeline
+    {
         private readonly MeshFrame[] _frames;
 
         /// <summary>
         /// Offset of the vertices in this timeline
         /// </summary>
         public int Offset;
-
         public float[] Vertices;
 
         // ReSharper disable once CoVariantArrayConversion
         protected override Frame[] Frames => _frames;
 
-        public MeshTimeline(MeshFrame[] frames) {
+        public MeshTimeline(MeshFrame[] frames)
+        {
             _frames = frames;
-            if (frames.Length > 0)
-                Vertices = frames[0].Vertices;
+            if (frames.Length > 0) Vertices = frames[0].Vertices;
         }
 
-        protected override void UpdateState() {
+        protected override void UpdateState()
+        {
             var prev = _frames[FrameIndex];
             var next = _frames[(FrameIndex + 1) % _frames.Length];
 
-            if (!prev.Vertices.Any()) {
+            if (!prev.Vertices.Any())
+            {
                 Offset = next.Offset;
                 Vertices = new float[next.Vertices.Length];
                 for (var i = 0; i < Vertices.Length; i++)
+                {
                     Vertices[i] = next.Vertices[i] * Weight;
+                }
                 return;
             }
-            if (!next.Vertices.Any()) {
+            if (!next.Vertices.Any())
+            {
                 Offset = prev.Offset;
                 Vertices = new float[prev.Vertices.Length];
                 var revWeight = 1 - Weight;
                 for (var i = 0; i < Vertices.Length; i++)
+                {
                     Vertices[i] = prev.Vertices[i] * revWeight;
+                }
                 return;
             }
 
             int maxOffset;
-            if (prev.Offset < next.Offset) {
+            if (prev.Offset < next.Offset)
+            {
                 Vertices = new float[prev.Vertices.Length];
                 Offset = prev.Offset;
                 maxOffset = next.Offset;
-                Buffer.BlockCopy(prev.Vertices, 0, Vertices, 0,
-                    (next.Offset - prev.Offset) * 4);
-            } else {
+                Buffer.BlockCopy(prev.Vertices, 0, Vertices, 0, (next.Offset - prev.Offset) * 4);
+            }
+            else
+            {
                 Vertices = new float[next.Vertices.Length];
                 Offset = next.Offset;
                 maxOffset = prev.Offset;
-                Buffer.BlockCopy(next.Vertices, 0, Vertices, 0,
-                    (prev.Offset - next.Offset) * 4);
+                Buffer.BlockCopy(next.Vertices, 0, Vertices, 0, (prev.Offset - next.Offset) * 4);
             }
-            for (int i = maxOffset - Offset; i < Vertices.Length; i++) {
+
+            for (int i = maxOffset - Offset; i < Vertices.Length; i++)
+            {
                 var prevIndex = Math.Max(i - prev.Offset, 0);
                 var nextIndex = Math.Max(i - next.Offset, 0);
-                Vertices[i] = MathHelper.Lerp(prev.Vertices[prevIndex],
-                    next.Vertices[nextIndex], Weight);
+                Vertices[i] = MathHelper.Lerp(prev.Vertices[prevIndex], next.Vertices[nextIndex], Weight);
             }
         }
-
     }
 }
