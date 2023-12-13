@@ -115,8 +115,8 @@ namespace DragonBonesMG.Display
             RasterizerState rasterizerState = s.GraphicsDevice.RasterizerState;
             if (reverseCull) s.GraphicsDevice.RasterizerState = new RasterizerState { CullMode = CullMode.CullClockwiseFace };
 
-            var vp = _gfxDev.Viewport;
-            Matrix cameraMatrix = Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1);
+            Viewport viewPort = _gfxDev.Viewport;
+            Matrix cameraMatrix = Matrix.CreateOrthographicOffCenter(0, viewPort.Width, viewPort.Height, 0, 0, 1);
 
             _effect.Projection = transform * cameraMatrix;
             _indexBuffer.SetData(_indices);

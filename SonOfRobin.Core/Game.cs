@@ -206,7 +206,7 @@ namespace SonOfRobin
             KeepScreenOn = true;
 
             new InitialLoader();
-            //new DragonBonesTestScene();
+            // new DragonBonesTestScene();
         }
 
         public void OnResize(Object sender, EventArgs e)
