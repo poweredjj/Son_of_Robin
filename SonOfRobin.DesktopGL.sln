@@ -1,11 +1,12 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30406.217
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonOfRobin.DesktopGL", "SonOfRobin.DesktopGL\SonOfRobin.DesktopGL.csproj", "{74BABA3E-D424-4620-9661-C1F767759A52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.DesktopGL", "SonOfRobin.DesktopGL\SonOfRobin.DesktopGL.csproj", "{74BABA3E-D424-4620-9661-C1F767759A52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonOfRobin.Core", "SonOfRobin.Core\SonOfRobin.Core.csproj", "{64C2A1E6-09A1-4F46-8765-8B780C70122D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.Core", "SonOfRobin.Core\SonOfRobin.Core.csproj", "{64C2A1E6-09A1-4F46-8765-8B780C70122D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragonBonesMG", "DragonBonesMG\DragonBonesMG.csproj", "{CF0B0B49-D063-49F7-B5B6-1F5449FC337A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +22,10 @@ Global
 		{64C2A1E6-09A1-4F46-8765-8B780C70122D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64C2A1E6-09A1-4F46-8765-8B780C70122D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64C2A1E6-09A1-4F46-8765-8B780C70122D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF0B0B49-D063-49F7-B5B6-1F5449FC337A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF0B0B49-D063-49F7-B5B6-1F5449FC337A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF0B0B49-D063-49F7-B5B6-1F5449FC337A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF0B0B49-D063-49F7-B5B6-1F5449FC337A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

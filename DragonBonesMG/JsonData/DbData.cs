@@ -18,5 +18,10 @@ namespace DragonBonesMG.JsonData
             var data = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<DbData>(data);
         }
+        
+        public static DbData FromJsonData(string data)
+        {
+            return JsonConvert.DeserializeObject<DbData>(data);
+        }
     }
 }

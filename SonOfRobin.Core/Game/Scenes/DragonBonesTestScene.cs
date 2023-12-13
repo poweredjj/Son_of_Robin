@@ -3,24 +3,49 @@ using DragonBonesMG.Core;
 using DragonBonesMG.Display;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class DragonBonesTestScene : Scene
     {
+        private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
+
         public readonly struct DragonBonesAnim
         {
             private readonly TextureAtlas textureAtlas;
             private readonly DbArmature dbArmature;
             private readonly string[] animNames;
 
-            public DragonBonesAnim(string atlasPath, string skeletonPath)
+            public DragonBonesAnim(string atlasName, string skeletonName)
             {
-                this.textureAtlas = TextureAtlas.FromJson(atlasPath);
+                string atlasPath = Path.Combine(contentDirPath, atlasName);
+                string skeletonPath = Path.Combine(contentDirPath, skeletonName);
+
+                string atlasJsonData, skeletonJsonData;
+
+                using (var stream = TitleContainer.OpenStream(atlasPath))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        atlasJsonData = reader.ReadToEnd();
+                    }
+                }
+
+                using (var stream = TitleContainer.OpenStream(skeletonPath))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        skeletonJsonData = reader.ReadToEnd();
+                    }
+                }
+
+                this.textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
 
                 this.textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
-                this.dbArmature = DragonBones.FromJson(skeletonPath, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
+                this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
+                //this.dbArmature = DragonBones.FromJson(skeletonPath, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
                 this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
                 this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
             }
@@ -48,11 +73,11 @@ namespace SonOfRobin
         {
             this.dragonBonesAnims = new List<DragonBonesAnim>();
 
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/DemonTexture.json", skeletonPath: "Content/gfx/_DragonBones/Demon.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Sheep_tex.json", skeletonPath: "Content/gfx/_DragonBones/Sheep_ske.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Dragon_tex.json", skeletonPath: "Content/gfx/_DragonBones/Dragon_ske.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/mecha_1004d_show_tex.json", skeletonPath: "Content/gfx/_DragonBones/mecha_1004d_show_ske.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Ubbie_tex.json", skeletonPath: "Content/gfx/_DragonBones/Ubbie_ske.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "DemonTexture.json", skeletonName: "Demon.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Sheep_tex.json", skeletonName: "Sheep_ske.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Dragon_tex.json", skeletonName: "Dragon_ske.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "mecha_1004d_show_tex.json", skeletonName: "mecha_1004d_show_ske.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json"));
         }
 
         public override void Update()

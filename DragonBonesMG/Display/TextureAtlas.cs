@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -51,6 +52,11 @@ namespace DragonBonesMG.Display
         public static TextureAtlas FromJson(string path)
         {
             return new TextureAtlas(TextureAtlasData.FromJson(path));
+        }
+
+        public static TextureAtlas FromJsonData(string jsonData)
+        {
+            return new TextureAtlas(TextureAtlasData.FromJsonData(jsonData));
         }
     }
 }
