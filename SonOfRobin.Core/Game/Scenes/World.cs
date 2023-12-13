@@ -1496,11 +1496,13 @@ namespace SonOfRobin
             Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
             this.DrawLightAndDarkness(lightSprites);
 
-            // drawing highlighted pieces
-            if (Preferences.pickupsHighlighted)
+            // drawing highlighted pieces and stat bars
+            if (Preferences.pickupsHighlighted || StatBar.ThereAreBarsToDraw)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.DrawHighlightedPieces(drawnPieces);
+                if (Preferences.pickupsHighlighted) this.DrawHighlightedPieces(drawnPieces);
+                if (StatBar.ThereAreBarsToDraw) StatBar.DrawAll();
+
                 SonOfRobinGame.SpriteBatch.End();
             }
 

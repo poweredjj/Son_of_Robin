@@ -335,7 +335,7 @@ namespace SonOfRobin
                 debugShowWholeMap = value;
 
                 World world = World.GetTopWorld();
-                if (world != null) world.map.ForceRender();
+                world?.map.ForceRender();
             }
         }
 

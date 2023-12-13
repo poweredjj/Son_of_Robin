@@ -87,10 +87,10 @@ namespace SonOfRobin
         {
             float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
 
-            this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.35f, 0.35f) * scale, color: Color.White);
+            //this.demonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(120f, 220f) * scale, rotation: 0f, scale: new Vector2(-0.35f, 0.35f) * scale, color: Color.White);
             this.sheepArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(300f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
             //this.dragonArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(450f, 150f) * scale, rotation: 0f, scale: new Vector2(0.2f, 0.2f) * scale, color: Color.White);
-            this.mechaArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(520f, 210f) * scale, rotation: 0f, scale: new Vector2(0.4f, 0.4f) * scale, color: Color.White);
+            //this.mechaArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(520f, 210f) * scale, rotation: 0f, scale: new Vector2(0.4f, 0.4f) * scale, color: Color.White);
         }
     }
 }

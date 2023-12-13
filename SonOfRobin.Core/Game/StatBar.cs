@@ -8,8 +8,9 @@ namespace SonOfRobin
 {
     public class StatBar
     {
-        private static readonly List<StatBar> barsToDraw = new List<StatBar> { };
+        private static readonly List<StatBar> barsToDraw = new() { };
         private static int currentBatchCount = 0;
+        public static bool ThereAreBarsToDraw { get { return barsToDraw.Count > 0; } }
 
         private static readonly SpriteFontBase defaultFont = SonOfRobinGame.FontPixelMix.GetFont(8);
         private static SpriteFontBase currentBatchFont = SonOfRobinGame.FontPixelMix.GetFont(8);

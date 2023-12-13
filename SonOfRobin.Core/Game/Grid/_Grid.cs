@@ -1336,8 +1336,6 @@ namespace SonOfRobin
                 piece.sprite.Draw();
             }
 
-            StatBar.DrawAll();
-
             return piecesToDraw;
         }
 

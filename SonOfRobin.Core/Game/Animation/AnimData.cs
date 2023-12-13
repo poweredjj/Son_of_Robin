@@ -2179,7 +2179,7 @@ namespace SonOfRobin
                 { "frameDict", jsonDict },
             };
 
-            FileReaderWriter.Save(path: JsonDataPath, savedObj: savedDict, compress: true);
+            FileReaderWriter.SaveJson(path: JsonDataPath, savedObj: savedDict, compress: true);
             // MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
