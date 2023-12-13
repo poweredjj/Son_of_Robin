@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace DragonBonesMG.Core
 {
-
     public delegate void SoundEventHandler(object sender, DbAnimationEventArgs e);
 
     public delegate void ActionEventHandler(object sender, DbAnimationEventArgs e);
@@ -29,7 +28,6 @@ namespace DragonBonesMG.Core
     /// </summary>
     public class DbArmature : DbDisplay, IAnimatable
     {
-
         /// <summary>The framerate set in DragonBonesPro editor. Used to determine expected playback speed.</summary>
         public int FrameRate { get; private set; }
 
@@ -45,6 +43,7 @@ namespace DragonBonesMG.Core
 
         // cache slots ordered by z-order, resorted on update if SlotsChanged == true
         internal IEnumerable<DbSlot> SortedSlots;
+
         internal bool SlotsChanged;
 
         /// <summary>Collection of all animations for this armature.</summary>
@@ -132,10 +131,9 @@ namespace DragonBonesMG.Core
             DefaultActions = data.DefaultActions[0];
             if (DefaultActions.ContainsKey("gotoAndPlay") && Animations.Contains(DefaultActions["gotoAndPlay"]))
                 GotoAndPlay(DefaultActions["gotoAndPlay"]);
-
         }
 
-        #endregion
+        #endregion Initialization
 
         #region Bones
 
@@ -158,7 +156,7 @@ namespace DragonBonesMG.Core
         }
 
         /// <summary>
-        /// Add references to a bone and all its children bones/slots to this armatures 
+        /// Add references to a bone and all its children bones/slots to this armatures
         /// collections of bones and slots for quick lookups.
         /// </summary>
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
@@ -174,7 +172,7 @@ namespace DragonBonesMG.Core
             }
         }
 
-        #endregion
+        #endregion Bones
 
         #region Slots
 
@@ -208,13 +206,13 @@ namespace DragonBonesMG.Core
             SlotsChanged = false;
         }
 
-        #endregion
+        #endregion Slots
 
         #region Update and Draw
 
         /// <summary>
         /// Update this armature. Elapsed time will be multiplied by <see cref="TimeScale"/>,
-        /// <see cref="CurrentAnimation"/> will be updated and all bones and slots will be 
+        /// <see cref="CurrentAnimation"/> will be updated and all bones and slots will be
         /// updated to reflect the changes in the animation.
         /// <seealso cref="DbAnimation.Update"/>
         /// </summary>
@@ -229,10 +227,11 @@ namespace DragonBonesMG.Core
                 RootBone?.UpdateRecursive(animationState.TransformState);
                 // update slots
                 foreach (var slot in Slots)
+                {
                     slot.Update(animationState.DisplayState, animationState.FFDState);
+                }
             }
-            if (SlotsChanged)
-                SortSlots();
+            if (SlotsChanged) SortSlots();
         }
 
         /// <summary>
@@ -264,10 +263,12 @@ namespace DragonBonesMG.Core
         public override void Draw(SpriteBatch s, Matrix transform, Color colorTransform)
         {
             foreach (var slot in SortedSlots)
+            {
                 slot.Draw(s, transform, colorTransform);
+            }
         }
 
-        #endregion
+        #endregion Update and Draw
 
         #region IAnimatable
 
@@ -351,7 +352,7 @@ namespace DragonBonesMG.Core
             return _currentAnimation == null || _currentAnimation.IsComplete;
         }
 
-        #endregion
+        #endregion IAnimatable
 
         #region Texture Supplier
 
@@ -362,7 +363,7 @@ namespace DragonBonesMG.Core
 
         public GraphicsDevice GraphicsDevice { get; private set; }
 
-        #endregion
+        #endregion Texture Supplier
 
         #region Creator
 
@@ -371,7 +372,7 @@ namespace DragonBonesMG.Core
         /// </summary>
         public DragonBones Creator { get; }
 
-        #endregion
+        #endregion Creator
 
         #region Events
 
@@ -396,6 +397,6 @@ namespace DragonBonesMG.Core
             AnimationEvent?.Invoke(this, e);
         }
 
-        #endregion
+        #endregion Events
     }
 }

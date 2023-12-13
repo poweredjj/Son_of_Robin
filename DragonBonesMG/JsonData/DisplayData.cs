@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace DragonBonesMG.JsonData {
-    internal class DisplayData {
-
+namespace DragonBonesMG.JsonData
+{
+    internal class DisplayData
+    {
         [JsonProperty(PropertyName = "name")]
         public string Name;
 
@@ -15,14 +16,20 @@ namespace DragonBonesMG.JsonData {
 
         // MESH ONLY
         public float Width;
+
         public float Height;
+
         // not sure what this is?
         public int[] UserEdges;
+
         // series of x and y position of vertices on the image
         public float[] Vertices;
+
         public int[] Edges;
+
         // same as vertices, but mapped to [0, 1]
         public float[] Uvs;
+
         // indices!
         public short[] Triangles;
     }

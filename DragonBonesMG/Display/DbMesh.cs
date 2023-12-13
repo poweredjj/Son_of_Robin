@@ -90,7 +90,7 @@ namespace DragonBonesMG.Display
                 verticesAsSpan[i / 2].Position = new Vector3(originalVerticesAsSpan[i], originalVerticesAsSpan[i + 1], 0f);
             }
 
-            for (int i = offset; i < originalVerticesAsSpan.Length; i += 2)
+            for (int i = offset; i < Math.Min(originalVerticesAsSpan.Length, stateVerticesAsSpan.Length); i += 2)
             {
                 verticesAsSpan[i / 2].Position = new Vector3(
                     originalVerticesAsSpan[i] + stateVerticesAsSpan[i - offset],
