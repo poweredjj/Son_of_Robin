@@ -195,7 +195,7 @@ namespace SonOfRobin
 
         public static Mesh[] LoadFromTemplate(string meshesFilePath)
         {
-            var loadedData = FileReaderWriter.Load(path: meshesFilePath);
+            var loadedData = FileReaderWriter.LoadJson(path: meshesFilePath);
             if (loadedData == null) return null;
 
             var loadedDict = (Dictionary<string, Object>)loadedData;
@@ -228,7 +228,7 @@ namespace SonOfRobin
                 { "version", Mesh.currentVersion },
                 { "meshArray", meshBagSerialized.ToArray() },
             };
-            FileReaderWriter.Save(path: meshesFilePath, savedObj: meshData, compress: true);
+            FileReaderWriter.SaveJson(path: meshesFilePath, savedObj: meshData, compress: true);
         }
 
         public static Mesh ConvertShapesToMesh(Vector2 offset, float scaleX, float scaleY, Dictionary<BitmapToShapesConverter.Shape, List<BitmapToShapesConverter.Shape>> groupedShapes, TextureBank.TextureName textureName)

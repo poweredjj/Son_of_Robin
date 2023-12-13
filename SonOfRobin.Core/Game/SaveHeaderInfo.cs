@@ -32,7 +32,7 @@ namespace SonOfRobin
             this.fullPath = Path.Combine(SonOfRobinGame.saveGamesPath, folderName);
 
             string headerPath = Path.Combine(this.fullPath, LoaderSaver.headerName);
-            var headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
+            var headerData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: headerPath);
 
             this.saveIsCorrect = false;
             this.saveIsObsolete = true;

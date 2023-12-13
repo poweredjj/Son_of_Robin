@@ -583,7 +583,7 @@ namespace SonOfRobin
             prefsData["softSunShadows"] = softSunShadows;
             prefsData["drawAllShadows"] = drawAllShadows;
 
-            FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
+            FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
             MessageLog.Add(debugMessage: true, text: "Preferences saved.", textColor: Color.White);
         }
@@ -592,7 +592,7 @@ namespace SonOfRobin
         {
             bool prefsLoaded = false;
 
-            var prefsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: SonOfRobinGame.prefsPath);
+            var prefsData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: SonOfRobinGame.prefsPath);
             if (prefsData != null)
             {
                 try

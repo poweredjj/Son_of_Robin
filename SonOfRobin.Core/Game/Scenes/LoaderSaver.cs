@@ -313,7 +313,7 @@ namespace SonOfRobin
             };
 
                 string headerPath = Path.Combine(this.saveTempPath, headerName);
-                FileReaderWriter.Save(path: headerPath, savedObj: headerData, compress: false);
+                FileReaderWriter.SaveJson(path: headerPath, savedObj: headerData, compress: false);
             }
 
             // saving hints data
@@ -323,7 +323,7 @@ namespace SonOfRobin
 
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
                 var hintsData = this.world.HintEngine.Serialize();
-                FileReaderWriter.Save(path: hintsPath, savedObj: hintsData, compress: true);
+                FileReaderWriter.SaveJson(path: hintsPath, savedObj: hintsData, compress: true);
             }
 
             // saving weather data
@@ -333,7 +333,7 @@ namespace SonOfRobin
 
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
                 var weatherData = this.world.weather.Serialize();
-                FileReaderWriter.Save(path: weatherPath, savedObj: weatherData, compress: true);
+                FileReaderWriter.SaveJson(path: weatherPath, savedObj: weatherData, compress: true);
             }
 
             // saving grid data
@@ -343,7 +343,7 @@ namespace SonOfRobin
 
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
                 var gridData = this.world.Grid.Serialize();
-                FileReaderWriter.Save(path: gridPath, savedObj: gridData, compress: true);
+                FileReaderWriter.SaveJson(path: gridPath, savedObj: gridData, compress: true);
             }
 
             // saving pieces data
@@ -380,7 +380,7 @@ namespace SonOfRobin
                             if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
                         }
 
-                        FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
+                        FileReaderWriter.SaveJson(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
                     });
 
                     this.currentPiecePackageNo += packagesToProcess.Count;
@@ -398,7 +398,7 @@ namespace SonOfRobin
                 var trackingData = this.world.ActiveLevel.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
-                FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
+                FileReaderWriter.SaveJson(path: trackingPath, savedObj: trackingData, compress: true);
             }
 
             // saving world event data
@@ -409,7 +409,7 @@ namespace SonOfRobin
                 var eventData = this.world.IslandLevel.levelEventManager.Serialize();
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
-                FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
+                FileReaderWriter.SaveJson(path: eventPath, savedObj: eventData, compress: true);
             }
 
             if (this.HasBeenRemoved) // in case of cancelled save
@@ -475,7 +475,7 @@ namespace SonOfRobin
                 this.currentStepName = "header";
 
                 string headerPath = Path.Combine(this.savePath, headerName);
-                this.headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
+                this.headerData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: headerPath);
 
                 if (this.headerData == null) throw new ArgumentException($"Error while reading save header for slot {saveSlotName}.");
                 {
@@ -491,7 +491,7 @@ namespace SonOfRobin
                 this.currentStepName = "grid";
 
                 string gridPath = Path.Combine(this.savePath, gridName);
-                this.gridData = (Dictionary<string, Object>)FileReaderWriter.Load(path: gridPath);
+                this.gridData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: gridPath);
 
                 if (this.gridData == null) throw new ArgumentException($"Error while reading grid for slot {saveSlotName}.");
             }
@@ -502,7 +502,7 @@ namespace SonOfRobin
                 this.currentStepName = "hints";
 
                 string hintsPath = Path.Combine(this.savePath, hintsName);
-                this.hintsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: hintsPath);
+                this.hintsData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: hintsPath);
 
                 if (hintsData == null) throw new ArgumentException($"Error while reading hints for slot {saveSlotName}.");
             }
@@ -513,7 +513,7 @@ namespace SonOfRobin
                 this.currentStepName = "weather";
 
                 string weatherPath = Path.Combine(this.savePath, weatherName);
-                this.weatherData = (Dictionary<string, Object>)FileReaderWriter.Load(path: weatherPath);
+                this.weatherData = (Dictionary<string, Object>)FileReaderWriter.LoadJson(path: weatherPath);
 
                 if (weatherData == null) throw new ArgumentException($"Error while reading weather for slot {saveSlotName}.");
             }
@@ -527,7 +527,7 @@ namespace SonOfRobin
 
                 if (!FileReaderWriter.PathExists(trackingPath)) throw new ArgumentException($"Error while reading tracking data for slot {saveSlotName}.");
 
-                this.trackingData = (List<Object>)FileReaderWriter.Load(path: trackingPath);
+                this.trackingData = (List<Object>)FileReaderWriter.LoadJson(path: trackingPath);
             }
 
             // loading planned events
@@ -538,7 +538,7 @@ namespace SonOfRobin
                 string eventPath = Path.Combine(this.savePath, eventsName);
                 if (!FileReaderWriter.PathExists(eventPath)) throw new ArgumentException($"Error while reading events for slot {saveSlotName}.");
 
-                this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
+                this.eventsData = (List<Object>)FileReaderWriter.LoadJson(path: eventPath);
             }
 
             // loading pieces
@@ -565,7 +565,7 @@ namespace SonOfRobin
                         string currentPiecesPath = this.GetCurrentPiecesPath(this.currentPiecePackageNo + threadNo);
                         if (FileReaderWriter.PathExists(currentPiecesPath))
                         {
-                            var packageData = (List<Object>)FileReaderWriter.Load(path: currentPiecesPath);
+                            var packageData = (List<Object>)FileReaderWriter.LoadJson(path: currentPiecesPath);
                             foreach (var item in packageData)
                             {
                                 this.piecesData.Add(item);

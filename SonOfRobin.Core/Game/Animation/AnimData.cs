@@ -2153,7 +2153,7 @@ namespace SonOfRobin
 
             try
             {
-                var loadedJson = FileReaderWriter.Load(path: JsonDataPath);
+                var loadedJson = FileReaderWriter.LoadJson(path: JsonDataPath);
                 if (loadedJson == null) return false;
 
                 loadedJsonDict = (Dictionary<string, Object>)loadedJson;

@@ -6,13 +6,13 @@ namespace SonOfRobin
 {
     public class FileReaderWriter
     {
-        private static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings serializerSettings = new()
         {
             TypeNameHandling = TypeNameHandling.All,
             Formatting = Formatting.Indented,
         };
 
-        public static void Save(object savedObj, string path, bool compress)
+        public static void SaveJson(object savedObj, string path, bool compress)
         {
             string json = JsonConvert.SerializeObject(savedObj, serializerSettings);
 
@@ -49,7 +49,17 @@ namespace SonOfRobin
             }
         }
 
-        public static object Load(string path)
+        public static byte[] LoadBytes(string path)
+        {
+            try
+            {
+                return File.ReadAllBytes(path);
+            }
+            catch (FileNotFoundException) { return null; }
+            catch (DirectoryNotFoundException) { return null; }
+        }
+
+        public static object LoadJson(string path)
         {
             string compressedPath = $"{path}.gzip";
 
@@ -78,10 +88,10 @@ namespace SonOfRobin
 
         private static byte[] Compress(string str)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true))
-                using (StreamWriter writer = new StreamWriter(gzip))
+                using (GZipStream gzip = new(ms, CompressionMode.Compress, true))
+                using (StreamWriter writer = new(gzip))
                 {
                     writer.Write(str);
                 }
@@ -91,10 +101,10 @@ namespace SonOfRobin
 
         private static string Decompress(byte[] compressedBytes)
         {
-            using (MemoryStream ms = new MemoryStream(compressedBytes))
+            using (MemoryStream ms = new(compressedBytes))
             {
-                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
-                using (StreamReader reader = new StreamReader(gzip))
+                using (GZipStream gzip = new(ms, CompressionMode.Decompress))
+                using (StreamReader reader = new(gzip))
                 {
                     try
                     {

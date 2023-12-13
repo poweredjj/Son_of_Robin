@@ -97,7 +97,7 @@ namespace SonOfRobin
         {
             string checkedHeaderPath = Path.Combine(templatePath, headerName);
 
-            var headerData = FileReaderWriter.Load(path: checkedHeaderPath);
+            var headerData = FileReaderWriter.LoadJson(path: checkedHeaderPath);
             if (headerData == null) return null;
 
             GridTemplate gridTemplate = Deserialize(headerData);
@@ -106,7 +106,7 @@ namespace SonOfRobin
 
         private void SaveHeader()
         {
-            FileReaderWriter.Save(path: this.headerPath, savedObj: this.Serialize(), compress: false);
+            FileReaderWriter.SaveJson(path: this.headerPath, savedObj: this.Serialize(), compress: false);
         }
 
         private string CheckCreateFolder()
