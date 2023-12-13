@@ -42,19 +42,17 @@ namespace SonOfRobin
             }
         }
 
-        private readonly DragonBonesAnim[] dragonBonesAnims;
+        private readonly List<DragonBonesAnim> dragonBonesAnims;
 
         public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            List<DragonBonesAnim> dragonBonesAnimsList = new();
+            this.dragonBonesAnims = new List<DragonBonesAnim>();
 
-            //dragonBonesAnimsList.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/DemonTexture.json", skeletonPath: "Content/gfx/_DragonBones/Demon.json"));
-            //dragonBonesAnimsList.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Sheep_tex.json", skeletonPath: "Content/gfx/_DragonBones/Sheep_ske.json"));
-            //dragonBonesAnimsList.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Dragon_tex.json", skeletonPath: "Content/gfx/_DragonBones/Dragon_ske.json"));
-            //dragonBonesAnimsList.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/mecha_1004d_show_tex.json", skeletonPath: "Content/gfx/_DragonBones/mecha_1004d_show_ske.json"));
-            dragonBonesAnimsList.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Ubbie_tex.json", skeletonPath: "Content/gfx/_DragonBones/Ubbie_ske.json"));
-
-            this.dragonBonesAnims = dragonBonesAnimsList.ToArray();
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/DemonTexture.json", skeletonPath: "Content/gfx/_DragonBones/Demon.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Sheep_tex.json", skeletonPath: "Content/gfx/_DragonBones/Sheep_ske.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Dragon_tex.json", skeletonPath: "Content/gfx/_DragonBones/Dragon_ske.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/mecha_1004d_show_tex.json", skeletonPath: "Content/gfx/_DragonBones/mecha_1004d_show_ske.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Ubbie_tex.json", skeletonPath: "Content/gfx/_DragonBones/Ubbie_ske.json"));
         }
 
         public override void Update()
@@ -69,7 +67,7 @@ namespace SonOfRobin
         {
             float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
 
-            for (int i = 0; i < this.dragonBonesAnims.Length; i++)
+            for (int i = 0; i < this.dragonBonesAnims.Count; i++)
             {
                 DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
                 dragonBonesAnim.Draw(position: new Vector2(125 * (i + 1), 150) * scale, scale: new Vector2(0.2f, 0.2f) * scale);

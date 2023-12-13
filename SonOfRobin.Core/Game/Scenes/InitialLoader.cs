@@ -206,7 +206,6 @@ namespace SonOfRobin
                 case Step.CreateScenes:
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
                     SonOfRobinGame.CreateHintAndProgressWindows();
-                    new DragonBonesTestScene();
                     break;
 
                 case Step.MakeDemoWorld:

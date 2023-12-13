@@ -148,7 +148,7 @@ namespace SonOfRobin
 
             SplashScreenTexture = TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx);
             ErrorLog = new ErrorLog();
-            SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
+            SolidColor solidColor = new(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             solidColor.MoveToBottom();
             MessageLog = new MessageLog();
 
@@ -206,6 +206,7 @@ namespace SonOfRobin
             KeepScreenOn = true;
 
             new InitialLoader();
+            //new DragonBonesTestScene();
         }
 
         public void OnResize(Object sender, EventArgs e)

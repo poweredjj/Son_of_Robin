@@ -66,7 +66,7 @@ namespace DragonBonesMG.Display
                 World = Matrix.Identity,
                 View = Matrix.Identity,
                 Texture = _texture,
-                VertexColorEnabled = true,
+                VertexColorEnabled = false,
                 TextureEnabled = true,
             };
         }

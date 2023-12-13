@@ -37,8 +37,7 @@ namespace DragonBonesMG.Display
         /// </summary>
         public IDrawableDb Get(string textureName)
         {
-            if (!_textures.ContainsKey(textureName))
-                return null;
+            if (!_textures.ContainsKey(textureName)) return null;
             return new TexturePart(_texture, _textures[textureName]);
         }
 

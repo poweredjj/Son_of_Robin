@@ -6,7 +6,6 @@ namespace DragonBonesMG.Display
 {
     public class TexturePart : IDrawableDb
     {
-
         private readonly Texture2D _texture;
         private readonly Rectangle _bounds;
 
@@ -33,17 +32,18 @@ namespace DragonBonesMG.Display
 
         public Texture2D RenderToTexture(SpriteBatch s)
         {
-            var graphics = s.GraphicsDevice;
+            GraphicsDevice graphics = s.GraphicsDevice;
             var prevTargets = graphics.GetRenderTargets();
 
             var target = new RenderTarget2D(graphics, _bounds.Width, _bounds.Height);
             graphics.SetRenderTarget(target);
             s.Begin();
 
-            s.Draw(texture: _texture, destinationRectangle: target.Bounds, color: Color.White);
+            s.Draw(texture: _texture, sourceRectangle: _bounds, destinationRectangle: target.Bounds, color: Color.White);
 
             s.End();
             graphics.SetRenderTargets(prevTargets);
+
             return target;
         }
     }
