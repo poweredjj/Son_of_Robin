@@ -36,9 +36,11 @@ namespace DragonBonesMG.Display
             var prevTargets = graphics.GetRenderTargets();
 
             var target = new RenderTarget2D(graphics, _bounds.Width, _bounds.Height);
+
             graphics.SetRenderTarget(target);
             s.Begin();
 
+            graphics.Clear(Color.Transparent);
             s.Draw(texture: _texture, sourceRectangle: _bounds, destinationRectangle: target.Bounds, color: Color.White);
 
             s.End();

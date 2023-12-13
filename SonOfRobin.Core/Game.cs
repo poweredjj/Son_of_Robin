@@ -39,7 +39,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
@@ -205,8 +205,8 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            new InitialLoader();
-            // new DragonBonesTestScene();
+            // new InitialLoader();
+            new DragonBonesTestScene();
         }
 
         public void OnResize(Object sender, EventArgs e)

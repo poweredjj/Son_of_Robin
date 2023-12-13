@@ -323,7 +323,22 @@ namespace SonOfRobin
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugShowWireframe = false;
         public static bool debugDisableParticles = false;
+        private static bool debugShowDragonBonesAnims = false;
 
+        public static bool DebugShowDragonBonesAnims {
+            get { return debugShowDragonBonesAnims; }
+            set
+            {
+                if (value == debugShowDragonBonesAnims) return;
+
+                debugShowDragonBonesAnims = value;
+
+                Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
+
+                if (debugShowDragonBonesAnims && dragonBonesTestScene == null) new DragonBonesTestScene();
+                if (!debugShowDragonBonesAnims && dragonBonesTestScene != null) dragonBonesTestScene.Remove();              
+            }
+        }
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
 
         public static bool DebugShowWholeMap

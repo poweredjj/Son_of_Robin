@@ -48,7 +48,7 @@ namespace SonOfRobin
         {
             this.dragonBonesAnims = new List<DragonBonesAnim>();
 
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/DemonTexture.json", skeletonPath: "Content/gfx/_DragonBones/Demon.json"));
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/DemonTexture.json", skeletonPath: "Content/gfx/_DragonBones/Demon.json"));
             this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Sheep_tex.json", skeletonPath: "Content/gfx/_DragonBones/Sheep_ske.json"));
             //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/Dragon_tex.json", skeletonPath: "Content/gfx/_DragonBones/Dragon_ske.json"));
             //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasPath: "Content/gfx/_DragonBones/mecha_1004d_show_tex.json", skeletonPath: "Content/gfx/_DragonBones/mecha_1004d_show_ske.json"));
@@ -70,7 +70,7 @@ namespace SonOfRobin
             for (int i = 0; i < this.dragonBonesAnims.Count; i++)
             {
                 DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
-                dragonBonesAnim.Draw(position: new Vector2(125 * (i + 1), 150) * scale, scale: new Vector2(0.2f, 0.2f) * scale);
+                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale);
             }
         }
     }
