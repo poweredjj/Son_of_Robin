@@ -2263,6 +2263,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png
 
+#begin gfx/gfx_broken.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/gfx_broken.png
+
 #begin gfx/glasses_blue.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5610,18 +5622,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/line_horizontal_white.png
-
-#begin gfx/loading.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/loading.png
 
 #begin gfx/Loading/loading_1.png
 /importer:TextureImporter

@@ -18,6 +18,9 @@ namespace SonOfRobin
             DeleteObsoleteTemplates,
             CreateMeshDefinitions,
             LoadAnimsJson,
+            ProcessAnims,
+            CheckCellSize,
+            PopulatePieceHints,
             BuildMappings,
             MakeItemsInfo,
             MakeCraftRecipes,
@@ -48,6 +51,9 @@ namespace SonOfRobin
             { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
             { Step.LoadAnimsJson, "loading animation data" },
+            { Step.ProcessAnims, "processing animation data" },
+            { Step.CheckCellSize, "checking cell size" },
+            { Step.PopulatePieceHints, "populating hints data" },
             { Step.BuildMappings, "building input mappings" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
@@ -62,6 +68,7 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
+        private readonly Queue<AnimData.PkgName> animPackagesToLoadQueue;
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -71,7 +78,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(0.8f)) return this.lastFunnyActionName;
+                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(1.3f)) return this.lastFunnyActionName;
 
                 this.lastFunnyActionNameCreated = DateTime.Now;
 
@@ -105,6 +112,7 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
+            this.animPackagesToLoadQueue = new Queue<AnimData.PkgName>(AnimData.allPkgNames);
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -124,7 +132,7 @@ namespace SonOfRobin
 
                 case Step.MobileWait:
                     this.mobileWaitingTimes--;
-                    if (this.mobileWaitingTimes > 0) currentStep--;
+                    if (this.mobileWaitingTimes > 0) this.currentStep--;
                     break;
 
                 case Step.LoadFonts:
@@ -145,7 +153,40 @@ namespace SonOfRobin
 
                 case Step.LoadAnimsJson:
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    AnimData.LoadPackage(AnimData.PkgName.Loading);
+                    break;
+
+                case Step.ProcessAnims:
+                    DateTime loadingStartTime = DateTime.Now;
+                    TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
+
+                    while (true)
+                    {
+                        if (this.animPackagesToLoadQueue.Count > 0) AnimData.LoadPackage(this.animPackagesToLoadQueue.Dequeue());
+
+                        TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
+                        if (loadingDuration > maxLoadingDuration || this.animPackagesToLoadQueue.Count == 0) break;
+                    }
+
+                    if (this.animPackagesToLoadQueue.Count > 0) this.currentStep--;
+                    else AnimData.SaveJsonDict();
+
+                    break;
+
+                case Step.CheckCellSize:
+                    if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
+                    {
+                        Point cellSize = GridTemplate.CalculateCellSize();
+                        bool cellSizeCorrect = cellSize == GridTemplate.ProperCellSize;
+
+                        if (!cellSizeCorrect)
+                        {
+                            new TextWindow(text: $"Proper cell size --> {cellSize.X}x{cellSize.Y} <--\nSaved cell size: {GridTemplate.ProperCellSize.X}x{GridTemplate.ProperCellSize.Y}\nUPDATE NEEDED", animate: false, useTransition: false, bgColor: Color.DarkRed, textColor: Color.White);
+                        }
+                    }
+
+                    break;
+
+                case Step.PopulatePieceHints:
                     PieceHint.PopulateData();
                     break;
 
@@ -247,8 +288,11 @@ namespace SonOfRobin
 
             this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
+            float currentStepNo = (int)this.currentStep + (AnimData.LoadedPkgs.Count / 10);
+            float allSteps = allStepsCount + (AnimData.allPkgNames.Length / 10);
+
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
-            int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
+            int progressBarCurrentLength = (int)(progressBarFullLength * (currentStepNo / allSteps));
 
             int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
             int barPosY = textPosY + (int)(textSize.Y * 1.5);

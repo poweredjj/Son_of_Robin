@@ -352,7 +352,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(selectedPiece.sprite.AnimPackage).texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(selectedPiece.sprite.AnimPackage).Texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -507,8 +507,6 @@ namespace SonOfRobin
                 this.otherInventory.storage.Update();
                 this.otherInventory.UpdateViewParams();
             }
-
-            this.storage.storagePiece.world.LoadAnimPackages();
 
             if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
@@ -1109,7 +1107,7 @@ namespace SonOfRobin
             soundCombine.Play();
             new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.texture, piece2.sprite.CroppedAnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.Texture, piece2.sprite.CroppedAnimFrame.Texture, combinedPiece.sprite.AnimFrame.Texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
         }
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)
@@ -1194,7 +1192,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                 // pieceInfo.readableName is used to show original name (before the change)
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.CroppedAnimFrame.texture, targetPieces[0].sprite.CroppedAnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.CroppedAnimFrame.Texture, targetPieces[0].sprite.CroppedAnimFrame.Texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

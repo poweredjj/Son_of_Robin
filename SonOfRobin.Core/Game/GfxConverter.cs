@@ -286,7 +286,7 @@ namespace SonOfRobin
         {
             try
             {
-                FileStream fileStream = new FileStream(path, FileMode.Open);
+                FileStream fileStream = new(path, FileMode.Open);
                 return fileStream;
             }
             catch (FileNotFoundException)

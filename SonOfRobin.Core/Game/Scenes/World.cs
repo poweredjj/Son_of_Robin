@@ -471,24 +471,6 @@ namespace SonOfRobin
 
             if (this.saveGameData == null && this.PopulatingInProgress)
             {
-                var creationDataArray = this.ActiveLevel.creationDataArrayRegular;
-
-                if (SonOfRobinGame.os == OS.Windows) // will freeze on mobile if using parallel here (for demo world)
-                {
-                    Parallel.ForEach(creationDataArray, SonOfRobinGame.defaultParallelOptions, pieceCreationData =>
-                    {
-                        // much faster, when executed on main thread (prevents from slowdown when populating)
-                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                    });
-                }
-                else
-                {
-                    foreach (PieceCreationData pieceCreationData in creationDataArray)
-                    {
-                        AnimData.LoadPackage(PieceInfo.GetInfo(pieceCreationData.name).animPkgName);
-                    }
-                }
-
                 if (this.demoMode)
                 {
                     CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
@@ -987,22 +969,6 @@ namespace SonOfRobin
             // width and height are set once in constructor
         }
 
-        public void LoadAnimPackages()
-        {
-            bool anyPackageLoaded = false;
-            while (true)
-            {
-                if (this.ActiveLevel.spritesWithAnimPackagesToLoad.Count > 0)
-                {
-                    // parallel should not be used here, because it could crash (concurrent access to cell HashSet)
-                    Sprite sprite = this.ActiveLevel.spritesWithAnimPackagesToLoad.Dequeue();
-                    anyPackageLoaded = sprite.LoadPackageAndAssignFrame() || anyPackageLoaded;
-                }
-                else break;
-            }
-            if (anyPackageLoaded) AnimData.SaveJsonDict();
-        }
-
         public override void Update()
         {
             if (this.ActiveLevel.creationInProgress)
@@ -1010,8 +976,6 @@ namespace SonOfRobin
                 this.CompleteCreation();
                 return;
             }
-
-            this.LoadAnimPackages();
 
             this.ProcessInput();
             this.UpdateViewParams();
@@ -1461,7 +1425,7 @@ namespace SonOfRobin
 
             // getting blocking light sprites
 
-            Sprite[] spritesCastingShadows = Array.Empty<Sprite>();
+            IEnumerable<Sprite> spritesCastingShadows = Array.Empty<Sprite>();
 
             AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
@@ -1470,11 +1434,7 @@ namespace SonOfRobin
                 sunShadowsOpacity > 0f) ||
                 (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible)
-                    .OrderBy(p => p.sprite.AnimFrame.layer)
-                    .ThenBy(p => p.sprite.GfxRect.Bottom)
-                    .Select(p => p.sprite)
-                    .ToArray();
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);
             }
 
             // drawing sun shadows onto darkness mask
@@ -1484,7 +1444,7 @@ namespace SonOfRobin
                 SetRenderTarget(DarknessAndHeatMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                this.Grid.DrawSunShadows(blockingLightSpritesArray: spritesCastingShadows, sunLightData: sunLightData);
+                this.Grid.DrawSunShadows(spritesCastingShadows: spritesCastingShadows, sunLightData: sunLightData);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1602,7 +1562,7 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.halfFramerate ? 2 : 1;
         }
 
-        private Sprite[] UpdateDarknessMask(Sprite[] spritesCastingShadows)
+        private Sprite[] UpdateDarknessMask(IEnumerable<Sprite> spritesCastingShadows)
         {
             // searching for light sources
 

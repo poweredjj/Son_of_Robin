@@ -218,7 +218,7 @@ namespace SonOfRobin
         public static void GetState()
         {
             lastFrameTouchPanelState = touchPanelState;
-            touchPanelState = (SonOfRobinGame.platform == Platform.Desktop || SonOfRobinGame.fakeMobileMode) && SonOfRobinGame.Os != OS.Windows ?
+            touchPanelState = (SonOfRobinGame.platform == Platform.Desktop || SonOfRobinGame.fakeMobileMode) && SonOfRobinGame.os != OS.Windows ?
                 ConvertMouseToTouch() : TouchPanel.GetState();
 
             UpdateLastPressedReleasedPos();

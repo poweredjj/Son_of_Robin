@@ -10,7 +10,7 @@ namespace SonOfRobin.WindowsDX
             using (var game = new SonOfRobinGame())
             {
                 SonOfRobinGame.platform = Platform.Desktop;
-                SonOfRobinGame.Os = OS.Windows;
+                SonOfRobinGame.os = OS.Windows;
                 game.Run();
             }
         }

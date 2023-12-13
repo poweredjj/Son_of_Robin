@@ -62,7 +62,7 @@ namespace SonOfRobin
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)} worlds left {World.DestroyedNotReleasedWorldCount} last draw {LastDrawDuration.Milliseconds} last update {LastUpdateDuration.Milliseconds}");
 
-            debugLines.Add($"loaded snd: {SoundData.LoadedSoundsCount}/{SoundData.AllSoundsCount} tx pers: {TextureBank.LoadedTexturesCountPersistent} tmp: {TextureBank.LoadedTexturesCountTemporary} animPkg {AnimData.LoadedPkgs.Count}/{AnimData.allPkgNames.Length}");
+            debugLines.Add($"loaded snd: {SoundData.LoadedSoundsCount}/{SoundData.AllSoundsCount} tx pers: {TextureBank.LoadedTexturesCountPersistent} tmp: {TextureBank.LoadedTexturesCountTemporary} frames {AnimData.loadedFramesCount}/{AnimData.frameById.Count}");
 
             if (worldActive)
             {

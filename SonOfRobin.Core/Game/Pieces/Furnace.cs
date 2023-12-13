@@ -120,12 +120,7 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.smeltingStartFrame = (int)(Int64)pieceData["furnace_smeltingStartFrame"];
             this.smeltingDoneFrame = (int)(Int64)pieceData["furnace_smeltingDoneFrame"];
-
-            if ((bool)pieceData["furnace_IsOn"])
-            {
-                this.sprite.LoadPackageAndAssignFrame(); // loading anim package, to make sure that visualAid will be placed correctly
-                this.TurnOn(playSounds: false);
-            }
+            if ((bool)pieceData["furnace_IsOn"]) this.TurnOn(playSounds: false);
 
             this.ConfigureStorage();
         }
@@ -174,7 +169,7 @@ namespace SonOfRobin
                 int smeltingDuration = this.smeltingDoneFrame - this.smeltingStartFrame;
                 int smeltingCurrentFrame = this.world.CurrentUpdate - this.smeltingStartFrame;
 
-                new StatBar(label: "", value: smeltingCurrentFrame, valueMax: smeltingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).texture);
+                new StatBar(label: "", value: smeltingCurrentFrame, valueMax: smeltingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
             }
 
             base.DrawStatBar();

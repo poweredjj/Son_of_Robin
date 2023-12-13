@@ -1276,11 +1276,20 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public void DrawSunShadows(Sprite[] blockingLightSpritesArray, AmbientLight.SunLightData sunLightData)
+        public void DrawSunShadows(IEnumerable<Sprite> spritesCastingShadows, AmbientLight.SunLightData sunLightData)
         {
             Rectangle cameraRect = this.world.camera.viewRect;
 
-            foreach (Sprite shadowSprite in blockingLightSpritesArray)
+            Vector2 normalizedSunPos = new(sunLightData.sunPos.X + cameraRect.Center.X, sunLightData.sunPos.Y + cameraRect.Center.Y);
+            float sunAngle = Helpers.GetAngleBetweenTwoPoints(start: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), end: normalizedSunPos);
+            int sunDistance = 10000;
+            Vector2 sunOffset = new(sunDistance * (float)Math.Cos(sunAngle), sunDistance * (float)Math.Sin(sunAngle));
+            normalizedSunPos = new Vector2(cameraRect.Center.X, cameraRect.Center.Y) + sunOffset;
+
+            bool shadowLeftSide = sunLightData.sunPos.X < 0;
+            bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
+
+            foreach (Sprite shadowSprite in spritesCastingShadows.OrderBy(s => s.AnimFrame.layer).ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
             {
                 if (shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
 
@@ -1288,9 +1297,6 @@ namespace SonOfRobin
 
                 if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
                 {
-                    bool shadowLeftSide = sunLightData.sunPos.X < 0;
-                    bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
-
                     if (shadowSprite.position.Y < cameraRect.Top &&
                         (shadowTopSide || gfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))
                         continue;
@@ -1308,9 +1314,7 @@ namespace SonOfRobin
                         continue;
                 }
 
-                Vector2 sunPos = new(gfxRect.Center.X + sunLightData.sunPos.X, gfxRect.Bottom + sunLightData.sunPos.Y);
-
-                Sprite.DrawShadow(color: Color.Black, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
+                Sprite.DrawShadow(color: Color.Black, shadowSprite: shadowSprite, lightPos: normalizedSunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: normalizedSunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
 
                 if (cameraRect.Intersects(gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
             }
