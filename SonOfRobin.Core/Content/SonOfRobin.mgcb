@@ -163,6 +163,24 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/Sheep_tex.png
 
+#begin gfx/_DragonBones/Ubbie_ske.json
+/copy:gfx/_DragonBones/Ubbie_ske.json
+
+#begin gfx/_DragonBones/Ubbie_tex.json
+/copy:gfx/_DragonBones/Ubbie_tex.json
+
+#begin gfx/_DragonBones/Ubbie_tex.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_DragonBones/Ubbie_tex.png
+
 #begin gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
 /importer:TextureImporter
 /processor:TextureProcessor
