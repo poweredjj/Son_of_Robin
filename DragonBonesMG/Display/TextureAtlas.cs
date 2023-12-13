@@ -9,7 +9,6 @@ namespace DragonBonesMG.Display
 {
     public class TextureAtlas : ITextureSupplier
     {
-
         public readonly string ImagePath;
         private readonly Dictionary<string, Rectangle> _textures;
         private Texture2D _texture;
@@ -20,7 +19,9 @@ namespace DragonBonesMG.Display
 
             _textures = new Dictionary<string, Rectangle>();
             foreach (var sub in data.SubTextures)
+            {
                 _textures.Add(sub.Name, new Rectangle(sub.X, sub.Y, sub.Width, sub.Height));
+            }
         }
 
         public void LoadContent(ContentManager content)

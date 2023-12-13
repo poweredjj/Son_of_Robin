@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using DragonBonesMG.Core;
+﻿using DragonBonesMG.Core;
 using DragonBonesMG.Display;
 using DragonBonesMG.JsonData;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-namespace DragonBonesMG {
+namespace DragonBonesMG
+{
     /// <summary>
     /// Use this class to load a DragonBones file. It contains some general data exported by DragonBones
     /// and more importantly the armatures loaded with the file. Use <see cref="Armature"/> to get the
@@ -14,8 +15,8 @@ namespace DragonBonesMG {
     /// <see cref="GetArmature"/>.
     /// <seealso cref="DbArmature"/>
     /// </summary>
-    public class DragonBones {
-
+    public class DragonBones
+    {
         // The big TODO list:
         // - pivot? (not sure if used)
         // - IK
@@ -28,11 +29,11 @@ namespace DragonBonesMG {
         // - nested armature (might work, needs testing)
         // - testing
 
-        // DONE: 
-        // - bone transform 
+        // DONE:
+        // - bone transform
         // - slot transform
         //   + color transform
-        //   + z-order transform 
+        //   + z-order transform
         // - rendering
         // - texture atlas
         // - tweening
@@ -46,7 +47,7 @@ namespace DragonBonesMG {
         public readonly string Version;
 
         /// <summary>
-        /// True if all transform are global as opposed to being relative to their parent. 
+        /// True if all transform are global as opposed to being relative to their parent.
         /// </summary>
         /// <remarks>
         /// This is always false in newer versions of DragonBones and this runtime does not support
@@ -66,13 +67,15 @@ namespace DragonBonesMG {
         /// <remarks>Pretty convenient for a DB instance with just one armature, which is often the case.</remarks>
         public DbArmature Armature => _armatures.FirstOrDefault();
 
-        internal DragonBones(ITextureSupplier texturer, GraphicsDevice graphics, DbData data) {
+        internal DragonBones(ITextureSupplier texturer, GraphicsDevice graphics, DbData data)
+        {
             Name = data.Name;
             Version = data.Version;
             IsGlobal = data.IsGlobal;
             FrameRate = data.FrameRate;
             _armatures = new List<DbArmature>();
-            foreach (var armatureData in data.Armatures) {
+            foreach (var armatureData in data.Armatures)
+            {
                 var armature = new DbArmature(armatureData.Name, texturer, graphics, this);
                 armature.Initialize(armatureData);
                 _armatures.Add(armature);
@@ -85,7 +88,8 @@ namespace DragonBonesMG {
         /// <param name="name">The name of the armature</param>
         /// <returns>A DbArmature with <see cref="DbDisplay.Name"/>name or null if no armature with
         /// the given name is loaded</returns>
-        public DbArmature GetArmature(string name) {
+        public DbArmature GetArmature(string name)
+        {
             return _armatures.FirstOrDefault(a => a.Name == name);
         }
 
@@ -96,7 +100,8 @@ namespace DragonBonesMG {
         /// <param name="texturer">The supplier that has all textures for the DragonBones file at the given path.</param>
         /// <param name="graphics">A GraphicsDevice used to initialize meshes for FFD if necessary.</param>
         /// <returns></returns>
-        public static DragonBones FromJson(string path, ITextureSupplier texturer, GraphicsDevice graphics) {
+        public static DragonBones FromJson(string path, ITextureSupplier texturer, GraphicsDevice graphics)
+        {
             if (!File.Exists(path))
                 throw new FileNotFoundException("Could not resolve the given path", path);
             return new DragonBones(texturer, graphics, DbData.FromJson(path));
