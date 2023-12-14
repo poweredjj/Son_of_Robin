@@ -41,6 +41,7 @@ namespace SonOfRobin
         {
             if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
+
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static RasterizerState RasterizeStateNoCulling { get; private set; }

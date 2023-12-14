@@ -8,65 +8,71 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public class DragonBonesTestScene : Scene
+    public readonly struct DragonBonesAnim
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
-        public readonly struct DragonBonesAnim
+        private readonly TextureAtlas textureAtlas;
+        private readonly DbArmature dbArmature;
+        private readonly string[] animNames;
+        private readonly Queue<string> animsToPlayQueue;
+
+        public DragonBonesAnim(string atlasName, string skeletonName)
         {
-            private readonly TextureAtlas textureAtlas;
-            private readonly DbArmature dbArmature;
-            private readonly string[] animNames;
+            string atlasPath = Path.Combine(contentDirPath, atlasName);
+            string skeletonPath = Path.Combine(contentDirPath, skeletonName);
 
-            public DragonBonesAnim(string atlasName, string skeletonName)
+            string atlasJsonData = ReadFile(Path.Combine(contentDirPath, atlasName));
+            string skeletonJsonData = ReadFile(Path.Combine(contentDirPath, skeletonName));
+
+            this.textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
+
+            this.textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
+            this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
+            this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
+            this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
+
+            this.animsToPlayQueue = new Queue<string>();
+        }
+
+        private static string ReadFile(string path)
+        {
+            using (var stream = TitleContainer.OpenStream(path))
             {
-                string atlasPath = Path.Combine(contentDirPath, atlasName);
-                string skeletonPath = Path.Combine(contentDirPath, skeletonName);
-
-                string atlasJsonData, skeletonJsonData;
-
-                using (var stream = TitleContainer.OpenStream(atlasPath))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        atlasJsonData = reader.ReadToEnd();
-                    }
-                }
-
-                using (var stream = TitleContainer.OpenStream(skeletonPath))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        skeletonJsonData = reader.ReadToEnd();
-                    }
-                }
-
-                this.textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
-
-                this.textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
-                this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
-                //this.dbArmature = DragonBones.FromJson(skeletonPath, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
-                this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
-                this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
-            }
-
-            public void Update()
-            {
-                this.dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
-
-                if (this.dbArmature.IsDoneAnimating())
-                {
-                    string animName = this.animNames[SonOfRobinGame.random.Next(this.animNames.Length)];
-                    this.dbArmature.GotoAndPlay(animation: animName, loop: false);
-                }
-            }
-
-            public void Draw(Vector2 position, Vector2 scale)
-            {
-                this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: 0f, scale: scale, color: Color.White);
+                using var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
             }
         }
 
+        public void Update()
+        {
+            this.dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+
+            if (this.dbArmature.IsDoneAnimating())
+            {
+                if (this.animsToPlayQueue.Count == 0)
+                {
+                    foreach (string animName in this.animNames)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            this.animsToPlayQueue.Enqueue(animName);
+                        }
+                    }
+                }
+
+                this.dbArmature.GotoAndPlay(animation: this.animsToPlayQueue.Dequeue(), loop: false);
+            }
+        }
+
+        public void Draw(Vector2 position, Vector2 scale)
+        {
+            this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: 0f, scale: scale, color: Color.White);
+        }
+    }
+
+    public class DragonBonesTestScene : Scene
+    {
         private readonly List<DragonBonesAnim> dragonBonesAnims;
 
         public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
