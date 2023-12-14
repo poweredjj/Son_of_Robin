@@ -17,18 +17,18 @@ namespace SonOfRobin
         {
             this.dragonBonesAnims = new List<DragonBonesAnim>();
 
-            var atlasNamesForSkeletonNames = new Dictionary<string, string>
+            var atlasAndSkeletonNamesList = new List<List<string>>
             {
-                //{ "Demon.json", "DemonTexture.json" },
-                //{ "Sheep_ske.json", "Sheep_tex.json" },
-                //{ "Dragon_ske.json", "Dragon_tex.json" },
-                //{ "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
-                //{ "Ubbie_ske.json", "Ubbie_tex.json" },
+                //new List<string> { "Demon.json", "DemonTexture.json" },
+                //new List<string> { "Sheep_ske.json", "Sheep_tex.json" },
+                //new List<string> { "Dragon_ske.json", "Dragon_tex.json" },
+                //new List<string> { "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
+                //new List<string> { "Ubbie_ske.json", "Ubbie_tex.json" },
             };
 
-            foreach (var kvp in atlasNamesForSkeletonNames)
+            foreach (List<string> list in atlasAndSkeletonNamesList)
             {
-                this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: kvp.Value, skeletonName: kvp.Key));
+                this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: list[1], skeletonName: list[0]));
             }
 
             this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
@@ -83,11 +83,9 @@ namespace SonOfRobin
 
         private static string ReadFile(string path)
         {
-            using (var stream = TitleContainer.OpenStream(path))
-            {
-                using var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
+            using var stream = TitleContainer.OpenStream(path);
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
 
         public void Update()

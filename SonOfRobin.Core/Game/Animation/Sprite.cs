@@ -823,13 +823,13 @@ namespace SonOfRobin
         {
             if (!this.IsOnBoard) return;
 
-            // DragonBones animation test start
-            if (this.boardPiece.GetType() == typeof(Player))
+            // :::::::::::::::::: DragonBones animation test start ::::::::::::::::::
+            //if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
+            if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
             {
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
                 if (dragonBonesTestScene != null)
                 {
-                    SonOfRobinGame.SpriteBatch.End();
                     DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
                     testPlayerAnim.Update();
 
@@ -842,22 +842,23 @@ namespace SonOfRobin
                         testPlayerAnim.dbArmature.GotoAndPlay(animation: "stand", loop: true);
                     }
 
-                    Vector2 playerPosScreenSpace = this.world.TranslateWorldToScreenPos(worldPos: this.position, useGlobalScale: true);
+                    Vector2 playerPosScreenSpace = this.world.TranslateWorldToScreenPos(worldPos: new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY), useGlobalScale: true);
 
                     Vector2 originalSize = new(0.08f);
-
                     bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
                     if (!isLeftSide) originalSize *= new Vector2(-1f, 1f);
 
                     Vector2 screenSpaceScale = originalSize / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
 
+                    SonOfRobinGame.SpriteBatch.End();
                     testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
+                    //testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
 
                     return;
                 }
             }
-            // DragonBones animation test end
+            // :::::::::::::::::: DragonBones animation test end ::::::::::::::::::
 
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
