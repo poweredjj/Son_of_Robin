@@ -1,4 +1,5 @@
-﻿using FontStashSharp;
+﻿using DragonBonesMG.Core;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -824,35 +825,37 @@ namespace SonOfRobin
             if (!this.IsOnBoard) return;
 
             // :::::::::::::::::: DragonBones animation test start ::::::::::::::::::
-            //if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
-            if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
+            if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
+            // if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
             {
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
                 if (dragonBonesTestScene != null)
                 {
                     DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
                     testPlayerAnim.Update();
+                    DbArmature dbArmature = testPlayerAnim.dbArmature;
 
-                    if (this.AnimName.Contains("walk-") && (testPlayerAnim.dbArmature.CurrentAnimation != "walk" || testPlayerAnim.dbArmature.IsDoneAnimating()))
+                    if (this.AnimName.Contains("walk-") && (dbArmature.CurrentAnimation != "walk" || dbArmature.IsDoneAnimating()))
                     {
                         testPlayerAnim.dbArmature.GotoAndPlay(animation: "walk", loop: true);
+                        testPlayerAnim.dbArmature.TimeScale = 1.0f;
                     }
-                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand" || testPlayerAnim.dbArmature.IsDoneAnimating())
+                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand" || dbArmature.IsDoneAnimating())
                     {
-                        testPlayerAnim.dbArmature.GotoAndPlay(animation: "stand", loop: true);
+                        dbArmature.GotoAndPlay(animation: "stand", loop: true);
+                        dbArmature.TimeScale = 0.3f; // default animation is too fast
                     }
 
-                    Vector2 playerPosScreenSpace = this.world.TranslateWorldToScreenPos(worldPos: new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY), useGlobalScale: true);
+                    Vector2 screenSpacePos = this.world.TranslateWorldToScreenPos(worldPos: new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY), useGlobalScale: true);
 
-                    Vector2 originalSize = new(0.08f);
+                    Vector2 originalScale = new(0.08f);
                     bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
-                    if (!isLeftSide) originalSize *= new Vector2(-1f, 1f);
+                    if (!isLeftSide) originalScale *= new Vector2(-1f, 1f);
 
-                    Vector2 screenSpaceScale = originalSize / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
+                    Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
 
                     SonOfRobinGame.SpriteBatch.End();
-                    testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
-                    //testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
+                    testPlayerAnim.Draw(position: screenSpacePos, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
 
                     return;

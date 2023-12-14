@@ -59,8 +59,8 @@ namespace SonOfRobin
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
-        private readonly TextureAtlas textureAtlas;
         public readonly DbArmature dbArmature;
+        private readonly TextureAtlas textureAtlas;
         private readonly string[] animNames;
         private readonly Queue<string> animsToPlayQueue;
 

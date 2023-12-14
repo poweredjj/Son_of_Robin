@@ -149,7 +149,7 @@ namespace SonOfRobin
             if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
             else
             {
-                MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
+                // MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
                 Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
                 if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
                 if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
