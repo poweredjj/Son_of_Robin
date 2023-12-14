@@ -1368,10 +1368,10 @@ namespace SonOfRobin
 
         public Rectangle GetFocusRect(int inflateX = 0, int inflateY = 0)
         {
-            Rectangle focusRect = new Rectangle(x: (int)(this.sprite.position.X - 1), y: (int)(this.sprite.position.Y - 1), width: 1, height: 1);
+            Rectangle focusRect = new(x: (int)(this.sprite.position.X - 1), y: (int)(this.sprite.position.Y - 1), width: 1, height: 1);
             focusRect.Inflate(24 + inflateX, 24 + inflateY);
 
-            Point focusCenterOffset = new Point(
+            Point focusCenterOffset = new(
                 (int)Math.Round(((focusRect.Width / 2) + (inflateX / 2)) * Math.Cos(this.sprite.OrientationAngle)),
                 (int)Math.Round(((focusRect.Height / 2) + (inflateY / 2)) * Math.Sin(this.sprite.OrientationAngle)));
 

@@ -73,7 +73,6 @@ namespace SonOfRobin
             string skeletonJsonData = ReadFile(Path.Combine(contentDirPath, skeletonName));
 
             this.textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
-
             this.textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
             this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
             this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();

@@ -846,7 +846,10 @@ namespace SonOfRobin
                     Vector2 playerPosScreenSpace = this.world.TranslateWorldToScreenPos(worldPos: this.position, useGlobalScale: true);
 
                     Vector2 originalSize = new(0.08f);
-                    if (this.orientation == Orientation.right) originalSize *= new Vector2(-1f, 1f);
+
+                    bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
+                    if (!isLeftSide) originalSize *= new Vector2(-1f, 1f);
+
                     Vector2 screenSpaceScale = originalSize / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
 
                     testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
