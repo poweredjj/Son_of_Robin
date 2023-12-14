@@ -1381,11 +1381,12 @@ namespace SonOfRobin
                 y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
-        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos)
+        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos, bool useGlobalScale)
         {
             return new Vector2(
                 x: (worldPos.X + this.viewParams.DrawPos.X) / this.viewParams.ScaleX,
-                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY);
+                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY) *
+                (useGlobalScale ? Preferences.GlobalScale : 1f);
         }
 
         public Vector2 KeepVector2InWorldBounds(Vector2 vector2)
@@ -1491,15 +1492,19 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            //// for testing
-            //Scene dragonBonesTestScene = GetTopSceneOfType(typeof(DragonBonesTestScene));
-            //if (dragonBonesTestScene != null && this.Player != null)
-            //{
-            //    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
-            //    testPlayerAnim.Update();
-            //    testPlayerAnim.Draw(position: this.Player.sprite.position, scale: new Vector2(0.15f));
-            //}
-            //// end test
+            // DragonBones animation test start
+            Scene dragonBonesTestScene = GetTopSceneOfType(typeof(DragonBonesTestScene));
+            if (dragonBonesTestScene != null && this.Player != null)
+            {
+                DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
+                testPlayerAnim.Update();
+
+                Vector2 playerPosScreenSpace = this.TranslateWorldToScreenPos(worldPos: this.Player.sprite.position, useGlobalScale: true);
+                Vector2 screenSpaceScale = new Vector2(0.15f) / new Vector2(this.viewParams.ScaleX, this.viewParams.ScaleY) * Preferences.GlobalScale;
+
+                testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale);
+            }
+            // DragonBones animation test end
 
             // drawing darkness
 

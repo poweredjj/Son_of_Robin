@@ -325,7 +325,8 @@ namespace SonOfRobin
         public static bool debugDisableParticles = false;
         private static bool debugShowDragonBonesAnims = false;
 
-        public static bool DebugShowDragonBonesAnims {
+        public static bool DebugShowDragonBonesAnims
+        {
             get { return debugShowDragonBonesAnims; }
             set
             {
@@ -336,7 +337,7 @@ namespace SonOfRobin
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
 
                 if (debugShowDragonBonesAnims && dragonBonesTestScene == null) new DragonBonesTestScene();
-                if (!debugShowDragonBonesAnims && dragonBonesTestScene != null) dragonBonesTestScene.Remove();              
+                if (!debugShowDragonBonesAnims && dragonBonesTestScene != null) dragonBonesTestScene.Remove();
             }
         }
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }

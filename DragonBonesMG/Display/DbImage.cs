@@ -41,6 +41,7 @@ namespace DragonBonesMG.Display
                 effect = SpriteEffects.FlipVertically;
                 transform = Matrix.CreateScale(1, -1, 1) * transform;
             }
+
             s.Begin(transformMatrix: transform);
             _texture.Draw(s, parentColor, effect);
             s.End();

@@ -241,12 +241,12 @@ namespace DragonBonesMG.Core
         /// <param name="position">Position to draw at, Vector2.Zero when not passed.</param>
         /// <param name="rotation">Rotation of the armature in radians</param>
         /// <param name="scale">Scale of the armature along X and Y axis, Vector2.One when not passed</param>
-        public void Draw(SpriteBatch s, Vector2? position = null, float rotation = 0f, Vector2? scale = null,
-            Color? color = null)
+        public void Draw(SpriteBatch s, Vector2? position = null, float rotation = 0f, Vector2? scale = null, Color? color = null)
         {
             var p = position ?? Vector2.Zero;
             var sc = scale ?? Vector2.One;
             var c = color ?? Color.White;
+
             Draw(s,
                 Matrix.CreateScale(sc.X, sc.Y, 1f) *
                 Matrix.CreateRotationZ(rotation) *

@@ -316,12 +316,12 @@ namespace SonOfRobin
 
                         markerPos += offset;
 
-                        Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
+                        Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(worldPos: markerPos, useGlobalScale: false);
                         markerScreenPos.X -= this.viewParams.DrawPos.X;
                         markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
-                        Vector2 markerPosRightBottom = new Vector2(markerPos.X + markerWidth, markerPos.Y + markerHeight);
-                        Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(markerPosRightBottom);
+                        Vector2 markerPosRightBottom = new(markerPos.X + markerWidth, markerPos.Y + markerHeight);
+                        Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(worldPos: markerPosRightBottom, useGlobalScale: false);
                         markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
                         markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;
 

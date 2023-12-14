@@ -17,11 +17,19 @@ namespace SonOfRobin
         {
             this.dragonBonesAnims = new List<DragonBonesAnim>();
 
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "DemonTexture.json", skeletonName: "Demon.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Sheep_tex.json", skeletonName: "Sheep_ske.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Dragon_tex.json", skeletonName: "Dragon_ske.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "mecha_1004d_show_tex.json", skeletonName: "mecha_1004d_show_ske.json"));
-            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json"));
+            var atlasNamesForSkeletonNames = new Dictionary<string, string>
+            {
+                //{ "Demon.json", "DemonTexture.json" },
+                //{ "Sheep_ske.json", "Sheep_tex.json" },
+                //{ "Dragon_ske.json", "Dragon_tex.json" },
+                //{ "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
+                //{ "Ubbie_ske.json", "Ubbie_tex.json" },
+            };
+
+            foreach (var kvp in atlasNamesForSkeletonNames)
+            {
+                this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: kvp.Value, skeletonName: kvp.Key));
+            }
 
             this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
         }
@@ -55,7 +63,7 @@ namespace SonOfRobin
         private readonly string[] animNames;
         private readonly Queue<string> animsToPlayQueue;
 
-        public DragonBonesAnim(string atlasName, string skeletonName)
+        public DragonBonesAnim(string skeletonName, string atlasName)
         {
             string atlasPath = Path.Combine(contentDirPath, atlasName);
             string skeletonPath = Path.Combine(contentDirPath, skeletonName);
