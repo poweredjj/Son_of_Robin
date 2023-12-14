@@ -39,6 +39,7 @@ namespace SonOfRobin
             foreach (DragonBonesAnim dragonBonesAnim in this.dragonBonesAnims)
             {
                 dragonBonesAnim.Update();
+                dragonBonesAnim.AutoRunAnim();
             }
         }
 
@@ -49,17 +50,17 @@ namespace SonOfRobin
             for (int i = 0; i < this.dragonBonesAnims.Count; i++)
             {
                 DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
-                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale);
+                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale, color: Color.White);
             }
         }
     }
 
-    public readonly struct DragonBonesAnim
+    public class DragonBonesAnim
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
         private readonly TextureAtlas textureAtlas;
-        private readonly DbArmature dbArmature;
+        public readonly DbArmature dbArmature;
         private readonly string[] animNames;
         private readonly Queue<string> animsToPlayQueue;
 
@@ -93,7 +94,10 @@ namespace SonOfRobin
         public void Update()
         {
             this.dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+        }
 
+        public void AutoRunAnim()
+        {
             if (this.dbArmature.IsDoneAnimating())
             {
                 if (this.animsToPlayQueue.Count == 0)
@@ -111,9 +115,9 @@ namespace SonOfRobin
             }
         }
 
-        public void Draw(Vector2 position, Vector2 scale)
+        public void Draw(Vector2 position, Vector2 scale, Color color, float rotation = 0f)
         {
-            this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: 0f, scale: scale, color: Color.White);
+            this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: rotation, scale: scale, color: color);
         }
     }
 }

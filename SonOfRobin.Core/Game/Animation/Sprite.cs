@@ -823,6 +823,41 @@ namespace SonOfRobin
         {
             if (!this.IsOnBoard) return;
 
+            // DragonBones animation test start
+            if (this.boardPiece.GetType() == typeof(Player))
+            {
+                Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
+                if (dragonBonesTestScene != null)
+                {
+                    SonOfRobinGame.SpriteBatch.End();
+
+                    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
+                    testPlayerAnim.Update();
+
+                    if (this.AnimName.Contains("walk-") && testPlayerAnim.dbArmature.CurrentAnimation != "walk")
+                    {
+                        testPlayerAnim.dbArmature.GotoAndPlay(animation: "walk", loop: true);
+                    }
+                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand")
+                    {
+                        testPlayerAnim.dbArmature.GotoAndPlay(animation: "stand", loop: true);
+                    }
+
+                    Vector2 playerPosScreenSpace = this.world.TranslateWorldToScreenPos(worldPos: this.position, useGlobalScale: true);
+
+                    Vector2 originalSize = new(0.08f);
+                    if (this.orientation == Orientation.right) originalSize *= new Vector2(-1f, 1f);
+                    Vector2 screenSpaceScale = originalSize / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
+
+                    testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
+
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
+
+                    return;
+                }
+            }
+            // DragonBones animation test end
+
             Rectangle destRect = this.GfxRect;
             if (offsetX != 0 || offsetY != 0)
             {

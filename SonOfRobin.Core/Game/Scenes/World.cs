@@ -1492,20 +1492,6 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            // DragonBones animation test start
-            Scene dragonBonesTestScene = GetTopSceneOfType(typeof(DragonBonesTestScene));
-            if (dragonBonesTestScene != null && this.Player != null)
-            {
-                DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
-                testPlayerAnim.Update();
-
-                Vector2 playerPosScreenSpace = this.TranslateWorldToScreenPos(worldPos: this.Player.sprite.position, useGlobalScale: true);
-                Vector2 screenSpaceScale = new Vector2(0.15f) / new Vector2(this.viewParams.ScaleX, this.viewParams.ScaleY) * Preferences.GlobalScale;
-
-                testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale);
-            }
-            // DragonBones animation test end
-
             // drawing darkness
 
             Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
