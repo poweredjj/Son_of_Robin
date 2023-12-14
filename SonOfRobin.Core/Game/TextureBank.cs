@@ -28,7 +28,7 @@ namespace SonOfRobin
             BackpackMediumOutline = 151,
             Star = 152,
             FogCloud = 153,
-            GfxBroken = 155,
+            GfxCorrupted = 155,
 
             SimpleArrowUp = 14,
             SimpleArrowRight = 15,
@@ -203,7 +203,7 @@ namespace SonOfRobin
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
             { TextureName.FogCloud, "weather_fog_1" },
-            { TextureName.GfxBroken, "gfx_broken" },
+            { TextureName.GfxCorrupted, "gfx_corrupted" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },

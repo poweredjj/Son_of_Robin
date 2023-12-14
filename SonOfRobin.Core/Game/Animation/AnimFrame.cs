@@ -43,11 +43,11 @@ namespace SonOfRobin
             {
                 if (this.texture == null)
                 {
-                    MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
+                    // MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
                     this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
                     if (this.texture == null)
                     {
-                        this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxBroken);
+                        this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
                         AnimData.jsonDict.Remove(this.id); // deleting json entry...
                         AnimData.SaveJsonDict(); // ...and saving it, to be rebuilt on next run
                     }
