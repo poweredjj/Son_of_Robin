@@ -1295,7 +1295,7 @@ namespace SonOfRobin
 
                 Rectangle gfxRect = shadowSprite.GfxRect;
 
-                if (!shadowSprite.IsInCameraRect && !shadowSprite.boardPiece.HasFlatShadow)
+                if (!shadowSprite.GfxRect.Intersects(cameraRect) && !shadowSprite.boardPiece.HasFlatShadow)
                 {
                     if (shadowSprite.position.Y < cameraRect.Top &&
                         (shadowTopSide || gfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))
