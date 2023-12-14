@@ -1314,7 +1314,7 @@ namespace SonOfRobin
                         continue;
                 }
 
-                Sprite.DrawShadow(color: Color.Black, shadowSprite: shadowSprite, lightPos: normalizedSunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: normalizedSunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
+                shadowSprite.DrawShadow(color: Color.Black, lightPos: normalizedSunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: normalizedSunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
 
                 if (cameraRect.Intersects(gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
             }

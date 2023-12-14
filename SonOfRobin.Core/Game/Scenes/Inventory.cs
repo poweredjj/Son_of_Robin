@@ -41,14 +41,13 @@ namespace SonOfRobin
         private const float marginPercent = 0.01f;
 
         private static readonly SpriteFontBase font = SonOfRobinGame.FontFreeSansBold.GetFont(40);
-        private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
-        private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
-        private static readonly Sound soundSwitch = new Sound(SoundData.Name.Select);
-        private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
-        private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
-        public static readonly Sound soundCombine = new Sound(SoundData.Name.AnvilHit);
-        public static readonly Sound soundApplyPotion = new Sound(SoundData.Name.Drink);
-
+        private static readonly Sound soundOpen = new(SoundData.Name.InventoryOpen);
+        private static readonly Sound soundNavigate = new(SoundData.Name.Navigation);
+        private static readonly Sound soundSwitch = new(SoundData.Name.Select);
+        private static readonly Sound soundEnterContextMenu = new(SoundData.Name.Invoke);
+        private static readonly Sound soundPickUp = new(SoundData.Name.PickUpItem, volume: 0.8f);
+        public static readonly Sound soundCombine = new(SoundData.Name.AnvilHit);
+        public static readonly Sound soundApplyPotion = new(SoundData.Name.Drink);
         public static LayoutType Layout { get; private set; } = LayoutType.None;
 
         public readonly Type type;
@@ -117,7 +116,7 @@ namespace SonOfRobin
                 Player player = this.piece.world.Player;
                 if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive || this.piece.world.SpectatorMode) return true;
 
-                var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter) };
+                var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter), typeof(DragonBonesTestScene) };
 
                 var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType())).ToList();
                 if (stackToSearch.Count == 0) return true;

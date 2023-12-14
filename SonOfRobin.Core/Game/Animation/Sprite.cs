@@ -830,15 +830,14 @@ namespace SonOfRobin
                 if (dragonBonesTestScene != null)
                 {
                     SonOfRobinGame.SpriteBatch.End();
-
                     DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
                     testPlayerAnim.Update();
 
-                    if (this.AnimName.Contains("walk-") && testPlayerAnim.dbArmature.CurrentAnimation != "walk")
+                    if (this.AnimName.Contains("walk-") && (testPlayerAnim.dbArmature.CurrentAnimation != "walk" || testPlayerAnim.dbArmature.IsDoneAnimating()))
                     {
                         testPlayerAnim.dbArmature.GotoAndPlay(animation: "walk", loop: true);
                     }
-                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand")
+                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand" || testPlayerAnim.dbArmature.IsDoneAnimating())
                     {
                         testPlayerAnim.dbArmature.GotoAndPlay(animation: "stand", loop: true);
                     }
@@ -853,7 +852,6 @@ namespace SonOfRobin
                     Vector2 screenSpaceScale = originalSize / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
 
                     testPlayerAnim.Draw(position: playerPosScreenSpace, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
-
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
 
                     return;
@@ -942,31 +940,31 @@ namespace SonOfRobin
             stateFont.DrawText(batch: SonOfRobinGame.SpriteBatch, text: stateTxt, position: txtPos, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
         }
 
-        public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
         {
-            float distance = Vector2.Distance(lightPos, shadowSprite.position);
-            AnimFrame frame = shadowSprite.AnimFrame;
+            float distance = Vector2.Distance(lightPos, this.position);
+            AnimFrame frame = this.AnimFrame;
 
-            if (shadowSprite.boardPiece.HasFlatShadow)
+            if (this.boardPiece.HasFlatShadow)
             {
-                float xDiff = shadowSprite.position.X - lightPos.X;
-                float yDiff = shadowSprite.position.Y - lightPos.Y;
+                float xDiff = this.position.X - lightPos.X;
+                float yDiff = this.position.Y - lightPos.Y;
 
-                float xLimit = shadowSprite.GfxRect.Width / 8;
-                float yLimit = shadowSprite.GfxRect.Height / 8;
+                float xLimit = this.GfxRect.Width / 8;
+                float yLimit = this.GfxRect.Height / 8;
 
                 float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
                 float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
 
-                Rectangle simulRect = shadowSprite.GfxRect;
+                Rectangle simulRect = this.GfxRect;
                 simulRect.X += (int)offsetX;
                 simulRect.Y += (int)offsetY;
-                if (!shadowSprite.world.camera.viewRect.Intersects(simulRect)) return;
+                if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
-                Color originalColor = shadowSprite.color;
-                shadowSprite.color = color;
-                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
-                shadowSprite.color = originalColor;
+                Color originalColor = this.color;
+                this.color = color;
+                this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
+                this.color = originalColor;
             }
             else
             {
@@ -978,9 +976,9 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
                     position:
-                    new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
+                    new Vector2(this.position.X + drawOffsetX, this.position.Y + drawOffsetY),
                     sourceRectangle: frame.textureRect,
-                    color: color * shadowSprite.opacity,
+                    color: color * this.opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
                     origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
                     scale: new Vector2(xScale, yScale),

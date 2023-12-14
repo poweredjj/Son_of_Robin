@@ -302,7 +302,7 @@ namespace SonOfRobin
             int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
             int barPosY = textPosY + (int)(textSize.Y * 1.5);
 
-            Rectangle progressBarFullRect = new(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
+            Rectangle progressBarFullRect = new(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)textSize.Y);
             Rectangle progressBarFilledRect = new(x: barPosX, y: barPosY, width: progressBarCurrentLength, height: progressBarFullRect.Height);
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);

@@ -1617,7 +1617,7 @@ namespace SonOfRobin
 
                         float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: lightSprite.GfxRect.Center, end: shadowSprite.position);
 
-                        Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
+                        shadowSprite.DrawShadow(color: Color.White, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
                     }
                     SonOfRobinGame.SpriteBatch.End();
                 }
