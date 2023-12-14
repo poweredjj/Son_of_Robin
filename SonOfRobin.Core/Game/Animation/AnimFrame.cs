@@ -125,6 +125,8 @@ namespace SonOfRobin
         {
             // should not be invoked from other classes directly
 
+            // id and textureID should retain width == 0 and height == 0, to properly name json + png and avoid having to load each atlas
+
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
             this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, scale: 0, depthPercent: 0);
 
@@ -147,9 +149,11 @@ namespace SonOfRobin
             if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
             else
             {
-                this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
                 Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
-                Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
+                if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
+                if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
+                Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
 
                 // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
                 this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);

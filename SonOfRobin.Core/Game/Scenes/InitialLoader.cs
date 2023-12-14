@@ -168,7 +168,11 @@ namespace SonOfRobin
                     }
 
                     if (this.animPackagesToLoadQueue.Count > 0) this.currentStep--;
-                    else AnimData.SaveJsonDict();
+                    else
+                    {
+                        AnimData.SaveJsonDict();
+                        AnimData.DisposeUsedAtlases();
+                    }
 
                     break;
 

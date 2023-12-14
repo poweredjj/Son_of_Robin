@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000033f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000034f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -2003,9 +2003,6 @@ namespace SonOfRobin
 
         public static AnimFrame ConvertImageToFrame(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, short duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
-            Texture2D atlasTexture = TextureBank.GetTexture(atlasName);
-            if (width == 0) width = atlasTexture.Width;
-            if (height == 0) height = atlasTexture.Height;
 
             return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
@@ -2213,7 +2210,7 @@ namespace SonOfRobin
             return croppedFramesForPkgs[pkgName];
         }
 
-        public static void DeleteUsedAtlases()
+        public static void DisposeUsedAtlases()
         {
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
