@@ -8,6 +8,44 @@ using System.Linq;
 
 namespace SonOfRobin
 {
+    public class DragonBonesTestScene : Scene
+    {
+        private readonly List<DragonBonesAnim> dragonBonesAnims;
+        public readonly DragonBonesAnim testPlayerAnim;
+
+        public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        {
+            this.dragonBonesAnims = new List<DragonBonesAnim>();
+
+            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "DemonTexture.json", skeletonName: "Demon.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Sheep_tex.json", skeletonName: "Sheep_ske.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Dragon_tex.json", skeletonName: "Dragon_ske.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "mecha_1004d_show_tex.json", skeletonName: "mecha_1004d_show_ske.json"));
+            //this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json"));
+
+            this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
+        }
+
+        public override void Update()
+        {
+            foreach (DragonBonesAnim dragonBonesAnim in this.dragonBonesAnims)
+            {
+                dragonBonesAnim.Update();
+            }
+        }
+
+        public override void Draw()
+        {
+            float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
+
+            for (int i = 0; i < this.dragonBonesAnims.Count; i++)
+            {
+                DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
+                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale);
+            }
+        }
+    }
+
     public readonly struct DragonBonesAnim
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
@@ -68,41 +106,6 @@ namespace SonOfRobin
         public void Draw(Vector2 position, Vector2 scale)
         {
             this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: 0f, scale: scale, color: Color.White);
-        }
-    }
-
-    public class DragonBonesTestScene : Scene
-    {
-        private readonly List<DragonBonesAnim> dragonBonesAnims;
-
-        public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
-        {
-            this.dragonBonesAnims = new List<DragonBonesAnim>();
-
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "DemonTexture.json", skeletonName: "Demon.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Sheep_tex.json", skeletonName: "Sheep_ske.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Dragon_tex.json", skeletonName: "Dragon_ske.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "mecha_1004d_show_tex.json", skeletonName: "mecha_1004d_show_ske.json"));
-            this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json"));
-        }
-
-        public override void Update()
-        {
-            foreach (DragonBonesAnim dragonBonesAnim in this.dragonBonesAnims)
-            {
-                dragonBonesAnim.Update();
-            }
-        }
-
-        public override void Draw()
-        {
-            float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
-
-            for (int i = 0; i < this.dragonBonesAnims.Count; i++)
-            {
-                DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
-                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale);
-            }
         }
     }
 }

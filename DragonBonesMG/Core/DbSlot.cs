@@ -86,9 +86,7 @@ namespace DragonBonesMG.Core
             if (Displays.Count == 0 || !Visible) return;
 
             var display = Displays[DisplayIndex];
-            display.Display.Draw(s,
-                display.Transform * Parent.CurrentGlobalTransform * transform,
-                ColorEx.Multiply(parentColor, ColorTransform));
+            display.Display.Draw(s, display.Transform * Parent.CurrentGlobalTransform * transform, ColorEx.Multiply(parentColor, ColorTransform));
         }
 
         /// <summary>

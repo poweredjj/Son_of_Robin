@@ -1491,6 +1491,16 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
+            //// for testing
+            //Scene dragonBonesTestScene = GetTopSceneOfType(typeof(DragonBonesTestScene));
+            //if (dragonBonesTestScene != null && this.Player != null)
+            //{
+            //    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
+            //    testPlayerAnim.Update();
+            //    testPlayerAnim.Draw(position: this.Player.sprite.position, scale: new Vector2(0.15f));
+            //}
+            //// end test
+
             // drawing darkness
 
             Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
