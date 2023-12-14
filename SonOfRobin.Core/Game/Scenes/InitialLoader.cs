@@ -78,7 +78,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(1.3f)) return this.lastFunnyActionName;
+                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(2.5f)) return this.lastFunnyActionName;
 
                 this.lastFunnyActionNameCreated = DateTime.Now;
 
@@ -109,7 +109,9 @@ namespace SonOfRobin
             this.lastFunnyActionName = "";
             this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
-            this.font = SonOfRobinGame.FontPressStart2P.GetFont(SonOfRobinGame.VirtualWidth > 1000 ? 16 : 8);
+
+            int fontSize = Math.Min((int)(((SonOfRobinGame.VirtualWidth / 40) / 8) * 8), 8 * 3);
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(fontSize);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
             this.animPackagesToLoadQueue = new Queue<AnimData.PkgName>(AnimData.allPkgNames);
