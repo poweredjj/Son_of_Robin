@@ -12,10 +12,9 @@ public class DragonBonesAnimManager
     private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
     private static readonly Dictionary<string, DbArmature> animTemplatesById = new();
-    private static readonly Dictionary<string, List<DbArmature>> freeAnimInstancesListsById = new();
+    private static readonly Dictionary<string, Queue<DbArmature>> freeAnimInstancesListsById = new();
     private static readonly Dictionary<string, List<DbArmature>> usedAnimInstancesListsById = new();
-    private static readonly Dictionary<int, DbArmature> animForSpriteIdDict = new();
-
+    private static readonly Dictionary<Sprite, DbArmature> animForSpriteIdDict = new();
 
     private static readonly Dictionary<DbArmature, int> lastUsedInFrameDict = new();
 
@@ -25,22 +24,37 @@ public class DragonBonesAnimManager
     {
         if (SonOfRobinGame.CurrentUpdate - lastUpdated > 60 * 10) Update();
 
-        if (sprite != null && animForSpriteIdDict.ContainsKey(sprite.id))
+        string armatureId = $"{skeletonName}-{atlasName}";
+
+        if (sprite != null)
         {
-            lastUsedInFrameDict[animForSpriteIdDict[sprite.id]] = SonOfRobinGame.CurrentDraw;
-            return animForSpriteIdDict[sprite.id];
+            if (animForSpriteIdDict.ContainsKey(sprite))
+            {
+                lastUsedInFrameDict[animForSpriteIdDict[sprite]] = SonOfRobinGame.CurrentDraw;
+                return animForSpriteIdDict[sprite];
+            }
+
+            if (freeAnimInstancesListsById.ContainsKey(armatureId) && freeAnimInstancesListsById[armatureId].Count > 0)
+            {
+                DbArmature dbArmature = freeAnimInstancesListsById[armatureId].Dequeue();
+                usedAnimInstancesListsById[armatureId].Add(dbArmature);
+                return dbArmature;
+            }
         }
 
-        string armatureId = $"{skeletonName}-{atlasName}";
-        if (!animTemplatesById.ContainsKey(armatureId)) animTemplatesById[armatureId] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
+        if (!animTemplatesById.ContainsKey(armatureId))
+        {
+            animTemplatesById[armatureId] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
+            freeAnimInstancesListsById[armatureId] = new();
+            usedAnimInstancesListsById[armatureId] = new();
+        }
 
         DbArmature dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
-        if (!usedAnimInstancesListsById.ContainsKey(armatureId)) usedAnimInstancesListsById[armatureId] = new();
         usedAnimInstancesListsById[armatureId].Add(dbArmatureInstance);
 
         if (sprite != null)
         {
-            animForSpriteIdDict[sprite.id] = dbArmatureInstance;
+            animForSpriteIdDict[sprite] = dbArmatureInstance;
             lastUsedInFrameDict[dbArmatureInstance] = SonOfRobinGame.CurrentDraw;
         }
 
@@ -51,9 +65,28 @@ public class DragonBonesAnimManager
     {
         lastUpdated = SonOfRobinGame.CurrentUpdate;
 
+        var offCameraAnimsBySprites = animForSpriteIdDict.Where(kvp => !kvp.Key.IsInCameraRect);
+
+        foreach (var kvp in offCameraAnimsBySprites)
+        {
+            Sprite sprite = kvp.Key;
+            DbArmature armature = kvp.Value;
+        }
+
+
         foreach (string armatureId in usedAnimInstancesListsById.Keys)
         {
-            var unusedArmatures = usedAnimInstancesListsById[armatureId].Where(a => SonOfRobinGame.CurrentUpdate - lastUsedInFrameDict[a] > 60 * 10);
+            List<DbArmature> usedArmatureList = usedAnimInstancesListsById[armatureId];
+            Queue<DbArmature> freeArmatureList = freeAnimInstancesListsById[armatureId];
+
+            foreach (DbArmature armature in usedArmatureList.ToArray())
+            {
+                if (SonOfRobinGame.CurrentUpdate - lastUsedInFrameDict[armature] > 60 * 10)
+                {
+                    usedArmatureList.Remove(armature);
+                    freeArmatureList.Enqueue(armature);
+                }
+            }
         }
     }
 
