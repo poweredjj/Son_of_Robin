@@ -253,7 +253,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = (touch.Position / Preferences.GlobalScale) - this.viewParams.DrawPos;
+                Vector2 touchPos = touch.Position - this.viewParams.DrawPos;
 
                 if (touch.State == TouchLocationState.Released)
                 {

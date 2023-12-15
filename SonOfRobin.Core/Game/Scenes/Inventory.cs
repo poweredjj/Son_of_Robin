@@ -697,7 +697,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = (touch.Position / Preferences.GlobalScale) - this.viewParams.DrawPos;
+                Vector2 touchPos = touch.Position - this.viewParams.DrawPos;
 
                 foreach (StorageSlot slot in this.storage.AllSlots)
                 {
@@ -919,8 +919,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
-                if (otherInvBgRect.Contains(touchPos))
+                if (otherInvBgRect.Contains(touch.Position))
                 {
                     this.lastTouchedSlot = null;
                     this.MoveOtherInventoryToTop();
@@ -952,8 +951,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in pressTouches)
             {
-                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
-                if (!thisInvBgRect.Contains(touchPos) && !otherInvBgRect.Contains(touchPos))
+                if (!thisInvBgRect.Contains(touch.Position) && !otherInvBgRect.Contains(touch.Position))
                 {
                     SetLayout(newLayout: LayoutType.Toolbar, player: this.storage.world.Player);
                     return true;

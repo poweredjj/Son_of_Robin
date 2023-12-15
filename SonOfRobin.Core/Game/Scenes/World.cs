@@ -1377,16 +1377,15 @@ namespace SonOfRobin
         public Vector2 TranslateScreenToWorldPos(Vector2 screenPos)
         {
             return new Vector2(
-                x: (screenPos.X / Preferences.GlobalScale * this.viewParams.ScaleX) - this.viewParams.DrawPos.X,
-                y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
+                x: (screenPos.X * this.viewParams.ScaleX) - this.viewParams.DrawPos.X,
+                y: (screenPos.Y * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
-        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos, bool useGlobalScale)
+        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos)
         {
             return new Vector2(
                 x: (worldPos.X + this.viewParams.DrawPos.X) / this.viewParams.ScaleX,
-                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY) *
-                (useGlobalScale ? Preferences.GlobalScale : 1f);
+                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY);
         }
 
         public Vector2 KeepVector2InWorldBounds(Vector2 vector2)

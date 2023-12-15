@@ -46,7 +46,7 @@ namespace SonOfRobin
 
                 foreach (TouchLocation touch in pressTouches)
                 {
-                    if (counterRect.Contains(touch.Position / Preferences.GlobalScale)) return true;
+                    if (counterRect.Contains(touch.Position)) return true;
                 }
 
                 return false;
@@ -316,12 +316,12 @@ namespace SonOfRobin
 
                         markerPos += offset;
 
-                        Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(worldPos: markerPos, useGlobalScale: false);
+                        Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
                         markerScreenPos.X -= this.viewParams.DrawPos.X;
                         markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
                         Vector2 markerPosRightBottom = new(markerPos.X + markerWidth, markerPos.Y + markerHeight);
-                        Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(worldPos: markerPosRightBottom, useGlobalScale: false);
+                        Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(markerPosRightBottom);
                         markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
                         markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;
 

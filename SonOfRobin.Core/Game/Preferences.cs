@@ -71,20 +71,6 @@ namespace SonOfRobin
 
         private static bool debugMode = false;
 
-        private static float globalScale = 1f;
-
-        public static float GlobalScale
-        {
-            get { return globalScale; }
-            set
-            {
-                if (globalScale == value) return;
-
-                globalScale = value;
-                Scene.ScheduleAllScenesResize();
-            }
-        }
-
         public static float menuScale = 0.75f;
         public static float worldScale = 1.5f;
         public static float messageLogScale = 1f;
@@ -120,7 +106,7 @@ namespace SonOfRobin
             set
             {
                 stateMachinesDurationFramePercent = value;
-                StateMachinesDurationFrameMS = (int)(1d / (double)60 * 1000d * stateMachinesDurationFramePercent);
+                StateMachinesDurationFrameMS = (int)(1d / (halfFramerate ? (double)30 : (double)60) * 1000d * stateMachinesDurationFramePercent);
             }
         }
 
@@ -340,6 +326,7 @@ namespace SonOfRobin
                 if (!debugShowDragonBonesAnims && dragonBonesTestScene != null) dragonBonesTestScene.Remove();
             }
         }
+
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
 
         public static bool DebugShowWholeMap
@@ -513,14 +500,13 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
-                if (SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth > 1500) globalScale = 2f;
-
-                menuScale = 1.25f;
+                menuScale = 2.0f;
+                worldScale = 2.5f;
                 showControlTips = false;
                 enableTouchJoysticks = true;
                 rumbleEnabled = false;
                 mapMarkerScale = 0.05f;
-                messageLogScale = 0.7f;
+                messageLogScale = 1.5f;
                 messageLogAtRight = true;
             }
             else
@@ -551,7 +537,6 @@ namespace SonOfRobin
             prefsData["seedDigit2"] = seedDigit2;
             prefsData["seedDigit3"] = seedDigit3;
             prefsData["seedDigit4"] = seedDigit4;
-            prefsData["globalScale"] = globalScale;
             prefsData["menuScale"] = menuScale;
             prefsData["messageLogScale"] = messageLogScale;
             prefsData["messageLogAtRight"] = messageLogAtRight;
@@ -623,7 +608,6 @@ namespace SonOfRobin
                     seedDigit2 = ((string)prefsData["seedDigit2"])[0];
                     seedDigit3 = ((string)prefsData["seedDigit3"])[0];
                     seedDigit4 = ((string)prefsData["seedDigit4"])[0];
-                    globalScale = (float)(double)prefsData["globalScale"];
                     menuScale = (float)(double)prefsData["menuScale"];
                     worldScale = (float)(double)prefsData["worldScale"];
                     fullScreenMode = (bool)prefsData["fullScreenMode"];

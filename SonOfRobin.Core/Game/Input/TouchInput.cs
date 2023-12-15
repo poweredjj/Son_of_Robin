@@ -31,7 +31,6 @@ namespace SonOfRobin
     {
         public static TouchLayout currentLayout;
 
-        private static float stickScale = -100; // dummy value
         private static int screenWidth = -100;
         private static int screenHeight = -100;
 
@@ -287,15 +286,13 @@ namespace SonOfRobin
 
         public static bool IsPointActivatingAnyTouchInterface(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true, bool checkVirtButtons = true, bool checkInventory = true, bool checkPlayerPanel = true)
         {
-            Vector2 scaledPoint = point / Preferences.GlobalScale;
-
-            if (Preferences.enableTouchJoysticks && (checkLeftStick || checkRightStick) && IsPointInsideSticks(point: scaledPoint, checkLeftStick: checkLeftStick, checkRightStick: checkRightStick)) return true;
+            if (Preferences.enableTouchJoysticks && (checkLeftStick || checkRightStick) && IsPointInsideSticks(point: point, checkLeftStick: checkLeftStick, checkRightStick: checkRightStick)) return true;
 
             if (checkVirtButtons)
             {
                 foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
                 {
-                    if (virtButtonRect.Contains(scaledPoint)) return true;
+                    if (virtButtonRect.Contains(point)) return true;
                 }
             }
 
@@ -309,7 +306,7 @@ namespace SonOfRobin
 
                     invRect.Inflate(2, 2);
 
-                    if (invRect.Contains(scaledPoint)) return true;
+                    if (invRect.Contains(point)) return true;
                 }
             }
 
@@ -323,7 +320,7 @@ namespace SonOfRobin
 
                     counterRect.Inflate(2, 2);
 
-                    if (counterRect.Contains(scaledPoint)) return true;
+                    if (counterRect.Contains(point)) return true;
                 }
             }
 
@@ -352,9 +349,7 @@ namespace SonOfRobin
 
         private static void Refresh()
         {
-            if (stickScale == Preferences.GlobalScale && screenWidth == SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight) return;
-
-            MessageLog.Add(debugMessage: true, text: $"Changing touch sticks scale from {stickScale} to {Preferences.GlobalScale}.", textColor: Color.White);
+            if (screenWidth == SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight) return;
 
             SetEmulationByMouse();
 
@@ -362,7 +357,6 @@ namespace SonOfRobin
             dualStick.LeftStick.SetAsFixed();
             dualStick.RightStick.SetAsFixed();
 
-            stickScale = Preferences.GlobalScale;
             screenWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
             screenHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
         }

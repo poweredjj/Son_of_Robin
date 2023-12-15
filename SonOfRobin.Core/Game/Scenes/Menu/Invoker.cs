@@ -58,9 +58,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 position = touch.Position / Preferences.GlobalScale;
-
-                if (rect.Contains(position) && touch.State == TouchLocationState.Released && this.menu.CanInterpretTouchReleaseAsButtonPress)
+                if (rect.Contains(touch.Position) && touch.State == TouchLocationState.Released && this.menu.CanInterpretTouchReleaseAsButtonPress)
                 {
                     if (this == this.menu.lastTouchedEntry || !this.invokedByDoubleTouch) this.Invoke();
                     else

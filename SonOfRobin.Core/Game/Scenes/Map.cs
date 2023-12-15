@@ -331,8 +331,8 @@ namespace SonOfRobin
         {
             this.viewParams.Width = (int)(this.world.ActiveLevel.width * this.scaleMultiplier);
             this.viewParams.Height = (int)(this.world.ActiveLevel.height * this.scaleMultiplier);
-            this.viewParams.ScaleX = Preferences.GlobalScale;
-            this.viewParams.ScaleY = Preferences.GlobalScale;
+            this.viewParams.ScaleX = 1f;
+            this.viewParams.ScaleY = 1f;
             this.viewParams.PosX = 0;
             this.viewParams.PosY = 0;
         }
@@ -476,7 +476,7 @@ namespace SonOfRobin
             if (movement == Vector2.Zero)
             {
                 // using touch
-                movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / Preferences.GlobalScale / this.camera.CurrentZoom;
+                movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / this.camera.CurrentZoom;
                 if (movement != Vector2.Zero) moveInstantly = true;
             }
 

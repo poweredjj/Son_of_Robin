@@ -189,7 +189,7 @@ namespace Studies.Joystick.Input
             Texture2D backgroundTx = TextureBank.GetTexture(TextureBank.TextureName.VirtualJoypadBackground);
             Texture2D stickTx = TextureBank.GetTexture(TextureBank.TextureName.VirtualJoypadStick);
 
-            float scale = Preferences.GlobalScale;
+            float scale = 1f;
             float backgroundSize = aliveZoneSize / scale * 2;
             float stickSize = aliveZoneSize * 0.6f / scale;
 

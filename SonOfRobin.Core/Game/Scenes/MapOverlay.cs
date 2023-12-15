@@ -32,8 +32,8 @@ namespace SonOfRobin
                 case Map.MapMode.Mini:
                     float scaleMini = 3f;
 
-                    int widthMini = (int)((float)this.map.FinalMapToDisplay.Width / (float)Preferences.GlobalScale / scaleMini);
-                    int heightMini = (int)((float)this.map.FinalMapToDisplay.Height / (float)Preferences.GlobalScale / scaleMini);
+                    int widthMini = (int)((float)this.map.FinalMapToDisplay.Width / scaleMini);
+                    int heightMini = (int)((float)this.map.FinalMapToDisplay.Height / scaleMini);
                     int margin = (int)(SonOfRobinGame.VirtualWidth * 0.05f);
 
                     int posXMini = (int)((SonOfRobinGame.VirtualWidth - (widthMini + margin)) * scaleMini);

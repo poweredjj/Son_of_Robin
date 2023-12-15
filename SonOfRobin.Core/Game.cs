@@ -111,11 +111,8 @@ namespace SonOfRobin
         public static readonly int initialWindowWidth = ThisIsWorkMachine ? 700 : 1280;
         public static readonly int initialWindowHeight = ThisIsWorkMachine ? 250 : 720;
 
-        public static int VirtualWidth
-        { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferWidth / Preferences.GlobalScale); } }
-
-        public static int VirtualHeight
-        { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
+        public static int VirtualWidth { get { return GfxDevMgr.PreferredBackBufferWidth; } }
+        public static int VirtualHeight { get { return GfxDevMgr.PreferredBackBufferHeight; } }
 
         public static bool LicenceValid
         { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }
@@ -125,8 +122,7 @@ namespace SonOfRobin
 
         public SonOfRobinGame()
         {
-            GfxDevMgr = new GraphicsDeviceManager(this);
-            GfxDevMgr.GraphicsProfile = GraphicsProfile.HiDef;
+            GfxDevMgr = new GraphicsDeviceManager(this) { GraphicsProfile = GraphicsProfile.HiDef };
         }
 
         protected override void Initialize()

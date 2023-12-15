@@ -846,13 +846,13 @@ namespace SonOfRobin
                         dbArmature.TimeScale = 0.3f; // default animation is too fast
                     }
 
-                    Vector2 screenSpacePos = this.world.TranslateWorldToScreenPos(worldPos: new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY), useGlobalScale: true);
+                    Vector2 screenSpacePos = this.world.TranslateWorldToScreenPos(new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY));
 
                     Vector2 originalScale = new(0.08f);
                     bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
                     if (!isLeftSide) originalScale *= new Vector2(-1f, 1f);
 
-                    Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY) * Preferences.GlobalScale;
+                    Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY);
 
                     SonOfRobinGame.SpriteBatch.End();
                     testPlayerAnim.Draw(position: screenSpacePos, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);

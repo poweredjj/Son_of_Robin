@@ -452,7 +452,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in pressTouches)
             {
-                if (!menuRect.Contains(touch.Position / Preferences.GlobalScale)) return true;
+                if (!menuRect.Contains(touch.Position)) return true;
             }
 
             return false;
@@ -483,12 +483,10 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
-
-                if (scrollWholeRect.Contains(touchPos))
+                if (scrollWholeRect.Contains(touch.Position))
                 {
                     this.touchMode = true;
-                    this.currentScrollPosition = (touchPos.Y - (this.ScrollbarWidgetHeight / 2)) / this.ScrollbarMultiplier;
+                    this.currentScrollPosition = (touch.Position.Y - (this.ScrollbarWidgetHeight / 2)) / this.ScrollbarMultiplier;
                     this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
                     return;
                 }
@@ -503,8 +501,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
-                if (bgRect.Contains(touchPos) && !scrollWholeRect.Contains(touchPos))
+                if (bgRect.Contains(touch.Position) && !scrollWholeRect.Contains(touch.Position))
                 {
                     touchedWithinMenuArea = true;
                     break;
@@ -513,7 +510,7 @@ namespace SonOfRobin
 
             if (touchedWithinMenuArea)
             {
-                float swipeScroll = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false).Y / Preferences.GlobalScale;
+                float swipeScroll = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false).Y;
                 if (swipeScroll != 0) this.touchMode = true;
                 this.currentScrollPosition += swipeScroll;
                 this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
