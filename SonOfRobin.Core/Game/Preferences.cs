@@ -309,21 +309,22 @@ namespace SonOfRobin
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugShowWireframe = false;
         public static bool debugDisableParticles = false;
-        private static bool debugShowDragonBonesAnims = false;
+        public static bool debugEnableDragonBonesGameAnims = false;
+        private static bool debugShowDragonBonesTestScene = false;
 
-        public static bool DebugShowDragonBonesAnims
+        public static bool DebugShowDragonBonesTestScene
         {
-            get { return debugShowDragonBonesAnims; }
+            get { return debugShowDragonBonesTestScene; }
             set
             {
-                if (value == debugShowDragonBonesAnims) return;
+                if (value == debugShowDragonBonesTestScene) return;
 
-                debugShowDragonBonesAnims = value;
+                debugShowDragonBonesTestScene = value;
 
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
 
-                if (debugShowDragonBonesAnims && dragonBonesTestScene == null) new DragonBonesTestScene();
-                if (!debugShowDragonBonesAnims && dragonBonesTestScene != null) dragonBonesTestScene.Remove();
+                if (debugShowDragonBonesTestScene && dragonBonesTestScene == null) new DragonBonesTestScene();
+                if (!debugShowDragonBonesTestScene && dragonBonesTestScene != null) dragonBonesTestScene.Remove();
             }
         }
 

@@ -205,7 +205,7 @@ namespace SonOfRobin
             //new DragonBonesTestScene();
             new InitialLoader();
 
-            Preferences.DebugShowDragonBonesAnims = true; // for testing
+            Preferences.debugEnableDragonBonesGameAnims = true; // for testing
         }
 
         public void OnResize(Object sender, EventArgs e)

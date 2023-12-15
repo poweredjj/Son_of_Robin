@@ -826,41 +826,38 @@ namespace SonOfRobin
 
             // :::::::::::::::::: DragonBones animation test start ::::::::::::::::::
             //if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
-            if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
+            if (this.boardPiece.IsAnimalOrPlayer && Preferences.debugEnableDragonBonesGameAnims)
             {
-                Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
-                if (dragonBonesTestScene != null)
+                DbArmature dbArmature = DragonBonesAnimManager.GetDragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json", sprite: this);
+
+                dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+
+                if (this.AnimName.Contains("walk-") && (dbArmature.CurrentAnimation != "walk" || dbArmature.IsDoneAnimating()))
                 {
-                    DbArmature dbArmature = ((DragonBonesTestScene)dragonBonesTestScene).GetDragonBonesArmature(this);
-                    dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
-
-                    if (this.AnimName.Contains("walk-") && (dbArmature.CurrentAnimation != "walk" || dbArmature.IsDoneAnimating()))
-                    {
-                        dbArmature.GotoAndPlay(animation: "walk", loop: true);
-                        dbArmature.TimeScale = 1.0f;
-                    }
-                    else if (this.AnimName.Contains("stand-") && dbArmature.CurrentAnimation != "stand" || dbArmature.IsDoneAnimating())
-                    {
-                        dbArmature.GotoAndPlay(animation: "stand", loop: true);
-                        dbArmature.TimeScale = 0.3f; // default animation is too fast
-                    }
-
-                    Vector2 screenSpacePos = this.world.TranslateWorldToScreenPos(new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY));
-
-                    Vector2 originalScale = new(0.08f);
-                    bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
-                    if (!isLeftSide) originalScale *= new Vector2(-1f, 1f);
-
-                    Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY);
-
-                    SonOfRobinGame.SpriteBatch.End();
-
-                    dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: screenSpacePos, rotation: this.rotation, scale: screenSpaceScale, color: this.color * this.opacity);
-
-                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
-
-                    return;
+                    dbArmature.GotoAndPlay(animation: "walk", loop: true);
+                    dbArmature.TimeScale = 1.0f;
                 }
+                else if (this.AnimName.Contains("stand-") && dbArmature.CurrentAnimation != "stand" || dbArmature.IsDoneAnimating())
+                {
+                    dbArmature.GotoAndPlay(animation: "stand", loop: true);
+                    dbArmature.TimeScale = 0.3f; // default animation is too fast
+                }
+
+                Vector2 screenSpacePos = this.world.TranslateWorldToScreenPos(new Vector2(this.GfxRect.Center.X + offsetX, this.GfxRect.Bottom + offsetY));
+
+                Vector2 originalScale = new(0.08f);
+                bool isLeftSide = Math.Cos(this.OrientationAngle) < 0;
+                if (!isLeftSide) originalScale *= new Vector2(-1f, 1f);
+
+                Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY);
+
+                SonOfRobinGame.SpriteBatch.End();
+
+                dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: screenSpacePos, rotation: this.rotation, scale: screenSpaceScale, color: this.color * this.opacity);
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
+
+                return;
             }
             // :::::::::::::::::: DragonBones animation test end ::::::::::::::::::
 
