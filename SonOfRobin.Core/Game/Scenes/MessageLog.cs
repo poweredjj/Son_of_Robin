@@ -183,7 +183,7 @@ namespace SonOfRobin
         public override void Update()
         {
             this.DeleteOldMessages();
-            this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : SonOfRobinGame.VirtualHeight;
+            this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.ScreenHeight * 0.94f) : SonOfRobinGame.ScreenHeight;
 
             int minBaselineVal = this.screenHeight - this.bottomMargin;
 
@@ -207,16 +207,16 @@ namespace SonOfRobin
             int maxDrawHeight = 0;
 
             bool debugActive = GetTopSceneOfType(typeof(DebugScene)) != null;
-            Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, (int)DebugScene.lastTextSize.Y);
+            Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, (int)DebugScene.lastTextSize.Y);
 
-            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight - maxDrawHeight);
+            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight - maxDrawHeight);
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
                 Message message = messagesToDisplay[messageNo];
                 currentPos.Y -= message.BGRectWithOffset.Height + messageMargin;
 
-                message.basePos = Preferences.messageLogAtRight ? new Vector2(SonOfRobinGame.VirtualWidth - message.bgRect.Width - currentPos.X, currentPos.Y) : currentPos;
+                message.basePos = Preferences.messageLogAtRight ? new Vector2(SonOfRobinGame.ScreenWidth - message.bgRect.Width - currentPos.X, currentPos.Y) : currentPos;
 
                 Rectangle messageRect = message.BGRectWithOffset;
 

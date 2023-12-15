@@ -138,7 +138,7 @@ namespace SonOfRobin
         public static float fieldControlTipsScale = 0.4f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
         public static float mapMarkerScale = 0.025f; // screen height percentage used to draw markers
-        public static float MapMarkerRealSize { get { return SonOfRobinGame.VirtualHeight * mapMarkerScale; } }
+        public static float MapMarkerRealSize { get { return SonOfRobinGame.ScreenHeight * mapMarkerScale; } }
         public static bool showHints = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;

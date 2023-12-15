@@ -190,11 +190,11 @@ namespace SonOfRobin
             if (prevPos1 == Vector2.Zero || prevPos2 == Vector2.Zero || currentPos1 == Vector2.Zero || currentPos2 == Vector2.Zero) return 0;
             if (Vector2.Distance(currentPos1, currentPos2) < 350) return 0; // preventing glitching, when player fingers are too close
 
-            float prevDeltaX = Math.Abs(prevPos1.X - prevPos2.X) / SonOfRobinGame.VirtualWidth;
-            float prevDeltaY = Math.Abs(prevPos1.Y - prevPos2.Y) / SonOfRobinGame.VirtualHeight;
+            float prevDeltaX = Math.Abs(prevPos1.X - prevPos2.X) / SonOfRobinGame.ScreenWidth;
+            float prevDeltaY = Math.Abs(prevPos1.Y - prevPos2.Y) / SonOfRobinGame.ScreenHeight;
 
-            float currentDeltaX = Math.Abs(currentPos1.X - currentPos2.X) / SonOfRobinGame.VirtualWidth;
-            float currentDeltaY = Math.Abs(currentPos1.Y - currentPos2.Y) / SonOfRobinGame.VirtualHeight;
+            float currentDeltaX = Math.Abs(currentPos1.X - currentPos2.X) / SonOfRobinGame.ScreenWidth;
+            float currentDeltaY = Math.Abs(currentPos1.Y - currentPos2.Y) / SonOfRobinGame.ScreenHeight;
 
             float zoomDelta = ((currentDeltaX - prevDeltaX) + (currentDeltaY - prevDeltaY)) / 2f;
 

@@ -21,7 +21,7 @@ namespace SonOfRobin
         private readonly TriSliceBG triSliceBG;
 
         private static int CounterSize
-        { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
+        { get { return (int)(SonOfRobinGame.ScreenWidth * 0.05f); } }
 
         public Rectangle CounterRect
         {
@@ -54,7 +54,7 @@ namespace SonOfRobin
         }
 
         private static int BarWidth
-        { get { return (int)(SonOfRobinGame.VirtualWidth * 0.27f); } }
+        { get { return (int)(SonOfRobinGame.ScreenWidth * 0.27f); } }
 
         private static int BarHeight
         { get { return (int)(BarWidth * 0.03f); } }
@@ -109,7 +109,7 @@ namespace SonOfRobin
         {
             if (this.isHidden != hide)
             {
-                var paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY - (SonOfRobinGame.VirtualHeight / 2) } };
+                var paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY - (SonOfRobinGame.ScreenHeight / 2) } };
                 this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: !hide, duration: 5, refreshBaseVal: false);
             }
 

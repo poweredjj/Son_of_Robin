@@ -25,9 +25,9 @@ namespace SonOfRobin
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
 
-        private static int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
-        private static int MaxWindowHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
-        private static int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
+        private static int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.ScreenWidth * 0.8f); } }
+        private static int MaxWindowHeight { get { return Convert.ToInt32(SonOfRobinGame.ScreenHeight * 0.7f); } }
+        private static int Margin { get { return Convert.ToInt32(SonOfRobinGame.ScreenHeight * 0.03f); } }
 
         private bool IsADuplicate
         {
@@ -143,8 +143,8 @@ namespace SonOfRobin
             this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 10, endRemoveScene: removeScene, paramsToChange:
                  new Dictionary<string, float> {
                     { "Opacity", 0f },
-                    { "PosX", (SonOfRobinGame.VirtualWidth * 0.5f * zoomScale) - ((float)this.viewParams.Width / zoomScale)},
-                    { "PosY", (SonOfRobinGame.VirtualHeight * 0.6f * zoomScale) - ((float)this.viewParams.Height / zoomScale)},
+                    { "PosX", (SonOfRobinGame.ScreenWidth * 0.5f * zoomScale) - ((float)this.viewParams.Width / zoomScale)},
+                    { "PosY", (SonOfRobinGame.ScreenHeight * 0.6f * zoomScale) - ((float)this.viewParams.Height / zoomScale)},
                     { "ScaleX", zoomScale },
                     { "ScaleY", zoomScale }}
                 );
@@ -213,14 +213,14 @@ namespace SonOfRobin
 
             float lineHeightWithoutScaling = this.textWithImages.font.LineHeight;
             int minHorizontalLines = SonOfRobinGame.platform == Platform.Mobile ? 14 : 20;
-            float maxLineHeight = SonOfRobinGame.VirtualHeight / (float)minHorizontalLines;
+            float maxLineHeight = SonOfRobinGame.ScreenHeight / (float)minHorizontalLines;
             float maxVertScale = maxLineHeight / lineHeightWithoutScaling;
 
             float scaleX = (float)maxTextWidth / (float)this.textWithImages.textWidth;
             float scaleY = Math.Min((float)maxTextHeight / (float)this.textWithImages.textHeight, maxVertScale);
 
             this.textScale = Math.Min(scaleX, scaleY);
-            this.textScale = Math.Min(this.textScale, (float)SonOfRobinGame.VirtualWidth / 1200f);
+            this.textScale = Math.Min(this.textScale, (float)SonOfRobinGame.ScreenWidth / 1200f);
 
             int scaledTextWidth = (int)(this.textWithImages.textWidth * this.textScale);
             int scaledTextHeight = (int)(this.textWithImages.textHeight * this.textScale);
@@ -228,8 +228,8 @@ namespace SonOfRobin
             this.viewParams.Width = scaledTextWidth + (Margin * 2);
             this.viewParams.Height = scaledTextHeight + (Margin * 2);
 
-            this.viewParams.PosX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2);
-            this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * 0.8f) - this.viewParams.Height;
+            this.viewParams.PosX = (SonOfRobinGame.ScreenWidth / 2) - (this.viewParams.Width / 2);
+            this.viewParams.PosY = (SonOfRobinGame.ScreenHeight * 0.8f) - this.viewParams.Height;
         }
 
         public override void Draw()
@@ -237,8 +237,8 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int margin = Margin;
-            int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
-            int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.002f, 1);
+            int bgShadowOffset = (int)(SonOfRobinGame.ScreenHeight * 0.02f);
+            int textShadowOffset = (int)Math.Max(SonOfRobinGame.ScreenHeight * 0.002f, 1);
 
             Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.Width, this.viewParams.Height);
             Rectangle bgRect = new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height);

@@ -116,10 +116,10 @@ namespace SonOfRobin
                 this.currentScene.transManager.Update();
             }
 
-            float scale = 1f / ((float)SonOfRobinGame.VirtualHeight * 0.04f / (float)this.viewParams.Height);
+            float scale = 1f / ((float)SonOfRobinGame.ScreenHeight * 0.04f / (float)this.viewParams.Height);
 
             if (bigMode)
-            { if (this.viewParams.Width / scale > SonOfRobinGame.VirtualWidth) scale = 1f / (SonOfRobinGame.VirtualWidth / (float)this.viewParams.Width); }
+            { if (this.viewParams.Width / scale > SonOfRobinGame.ScreenWidth) scale = 1f / (SonOfRobinGame.ScreenWidth / (float)this.viewParams.Width); }
             else
             { if (this.viewParams.Width / scale > sceneViewParams.Width / sceneViewParams.ScaleX) scale = 1f / (sceneViewParams.Width / sceneViewParams.ScaleX / (float)this.viewParams.Width); }
 
@@ -135,7 +135,7 @@ namespace SonOfRobin
             {
                 this.viewParams.PosX = (sceneViewParams.PosX * scale) + ((sceneViewParams.Width / 2f * scale) - (this.viewParams.Width / 2f));
                 this.viewParams.PosY = (sceneViewParams.drawPosY + sceneViewParams.drawHeight) * scale / sceneViewParams.drawScaleY;
-                this.viewParams.PosY = Math.Min(this.viewParams.drawPosY, (SonOfRobinGame.VirtualHeight - (this.viewParams.Height / scale)) * scale);
+                this.viewParams.PosY = Math.Min(this.viewParams.drawPosY, (SonOfRobinGame.ScreenHeight - (this.viewParams.Height / scale)) * scale);
             }
         }
 

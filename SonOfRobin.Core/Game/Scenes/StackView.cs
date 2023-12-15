@@ -100,7 +100,7 @@ namespace SonOfRobin
             Vector2 textBlockSize = TextBlockSize;
             this.viewParams.Width = (int)textBlockSize.X;
             this.viewParams.Height = (int)textBlockSize.Y;
-            this.viewParams.PosX = SonOfRobinGame.VirtualWidth - textBlockSize.X - margin;
+            this.viewParams.PosX = SonOfRobinGame.ScreenWidth - textBlockSize.X - margin;
             this.viewParams.PosY = margin;
         }
 

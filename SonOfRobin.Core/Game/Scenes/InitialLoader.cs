@@ -110,7 +110,7 @@ namespace SonOfRobin
             this.usedFunnyWordsList = new List<string>();
             this.currentStep = 0;
 
-            int fontSize = Math.Min((int)(((SonOfRobinGame.VirtualWidth / 40) / 8) * 8), 8 * 3);
+            int fontSize = Math.Min((int)(((SonOfRobinGame.ScreenWidth / 40) / 8) * 8), 8 * 3);
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(fontSize);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
@@ -278,8 +278,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(Color.DarkBlue);
 
-            Rectangle splashRect = new(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
-            splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
+            Rectangle splashRect = new(x: 0, y: -SonOfRobinGame.ScreenHeight / 8, width: SonOfRobinGame.ScreenWidth, height: SonOfRobinGame.ScreenHeight);
+            splashRect.Inflate(-(int)(SonOfRobinGame.ScreenWidth * 0.42), -(int)(SonOfRobinGame.ScreenHeight * 0.42));
 
             Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
 
@@ -288,18 +288,18 @@ namespace SonOfRobin
 
             Vector2 textSize = Helpers.MeasureStringCorrectly(font: this.font, stringToMeasure: text);
 
-            int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
-            int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);
+            int textPosX = (int)((SonOfRobinGame.ScreenWidth / 2) - (textSize.X / 2));
+            int textPosY = (int)(SonOfRobinGame.ScreenHeight * 0.75);
 
             this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
             float currentStepNo = (int)this.currentStep + (AnimData.LoadedPkgs.Count / 10);
             float allSteps = allStepsCount + (AnimData.allPkgNames.Length / 10);
 
-            int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
+            int progressBarFullLength = (int)(SonOfRobinGame.ScreenWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * (currentStepNo / allSteps));
 
-            int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
+            int barPosX = (SonOfRobinGame.ScreenWidth / 2) - (progressBarFullLength / 2);
             int barPosY = textPosY + (int)(textSize.Y * 1.5);
 
             Rectangle progressBarFullRect = new(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)textSize.Y);

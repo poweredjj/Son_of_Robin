@@ -781,8 +781,8 @@ namespace SonOfRobin
                 string levelText = $"{level.levelType} level {level.depth}".ToLower();
 
                 Rectangle levelTextRect = new Rectangle(
-                    x: (int)(SonOfRobinGame.VirtualWidth * 0.01f), y: (int)(SonOfRobinGame.VirtualHeight * 0.01f),
-                    width: (int)(SonOfRobinGame.VirtualWidth * 0.3f), height: (int)(SonOfRobinGame.VirtualHeight * 0.025f));
+                    x: (int)(SonOfRobinGame.ScreenWidth * 0.01f), y: (int)(SonOfRobinGame.ScreenHeight * 0.01f),
+                    width: (int)(SonOfRobinGame.ScreenWidth * 0.3f), height: (int)(SonOfRobinGame.ScreenHeight * 0.025f));
 
                 Helpers.DrawTextInsideRect(font: locationFont, text: levelText, rectangle: levelTextRect, color: Color.Black * this.viewParams.drawOpacity, effect: FontSystemEffect.Blurry, effectAmount: 2, drawTestRect: false, drawTimes: 3, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
 

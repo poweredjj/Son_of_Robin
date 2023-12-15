@@ -44,8 +44,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            int screenWidth = SonOfRobinGame.VirtualWidth;
-            int screenHeight = SonOfRobinGame.VirtualHeight;
+            int screenWidth = SonOfRobinGame.ScreenWidth;
+            int screenHeight = SonOfRobinGame.ScreenHeight;
 
             int curtainHeight = (int)(screenHeight * 0.12f * this.showPercentage);
 

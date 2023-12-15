@@ -145,7 +145,7 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
-            int width = (int)(SonOfRobinGame.VirtualWidth * 0.03f);
+            int width = (int)(SonOfRobinGame.ScreenWidth * 0.03f);
             width = Math.Max(width, 40);
             int height = (int)(width * 0.3);
 

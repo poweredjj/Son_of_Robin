@@ -49,17 +49,17 @@ namespace SonOfRobin
         private bool showCursor;
 
         private int Margin
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent); } }
+        { get { return Convert.ToInt32(SonOfRobinGame.ScreenHeight * marginPercent); } }
 
         private Vector2 MenuPos
         {
             get
             {
-                Vector2 menuPos = new(this.percentPosX * SonOfRobinGame.VirtualWidth, this.percentPosY * SonOfRobinGame.VirtualHeight);
+                Vector2 menuPos = new(this.percentPosX * SonOfRobinGame.ScreenWidth, this.percentPosY * SonOfRobinGame.ScreenHeight);
                 Rectangle bgRect = this.BgRect;
 
-                if (menuPos.X + bgRect.Width > SonOfRobinGame.VirtualWidth) menuPos.X = SonOfRobinGame.VirtualWidth - bgRect.Width;
-                if (menuPos.Y + bgRect.Height > SonOfRobinGame.VirtualHeight) menuPos.Y = SonOfRobinGame.VirtualHeight - bgRect.Height;
+                if (menuPos.X + bgRect.Width > SonOfRobinGame.ScreenWidth) menuPos.X = SonOfRobinGame.ScreenWidth - bgRect.Width;
+                if (menuPos.Y + bgRect.Height > SonOfRobinGame.ScreenHeight) menuPos.Y = SonOfRobinGame.ScreenHeight - bgRect.Height;
 
                 return menuPos;
             }
@@ -83,8 +83,8 @@ namespace SonOfRobin
         {
             get
             {
-                float maxTextWidth = SonOfRobinGame.VirtualWidth * entryWidthPercent;
-                float maxTextHeight = SonOfRobinGame.VirtualHeight * entryHeightPercent;
+                float maxTextWidth = SonOfRobinGame.ScreenWidth * entryWidthPercent;
+                float maxTextHeight = SonOfRobinGame.ScreenHeight * entryHeightPercent;
                 Vector2 labelSize;
                 float textScale;
                 float minScale = 9999f;
@@ -155,7 +155,7 @@ namespace SonOfRobin
             this.UpdateViewSizes();
 
             this.transManager.AddMultipleTransitions(outTrans: false, duration: 8, paramsToChange:
-                new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
+                new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.ScreenHeight }, { "Opacity", 0f } });
         }
 
         private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false)
@@ -189,7 +189,7 @@ namespace SonOfRobin
             if (!this.transManager.IsEnding)
             {
                 this.transManager.AddMultipleTransitions(outTrans: true, duration: 8, endRemoveScene: true, paramsToChange:
-                    new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
+                    new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.ScreenHeight }, { "Opacity", 0f } });
                 return;
             }
 

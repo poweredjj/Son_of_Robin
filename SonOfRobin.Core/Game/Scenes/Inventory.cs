@@ -152,7 +152,7 @@ namespace SonOfRobin
         {
             get
             {
-                int margin = (int)Math.Min(SonOfRobinGame.VirtualWidth * marginPercent, SonOfRobinGame.VirtualHeight * marginPercent);
+                int margin = (int)Math.Min(SonOfRobinGame.ScreenWidth * marginPercent, SonOfRobinGame.ScreenHeight * marginPercent);
                 return Math.Max(margin, 3);
             }
         }
@@ -161,7 +161,7 @@ namespace SonOfRobin
         {
             get
             {
-                return this.type == Type.SingleCenter || this.type == Type.DualTop ? SonOfRobinGame.VirtualWidth * 0.8f : SonOfRobinGame.VirtualWidth * 0.37f;
+                return this.type == Type.SingleCenter || this.type == Type.DualTop ? SonOfRobinGame.ScreenWidth * 0.8f : SonOfRobinGame.ScreenWidth * 0.37f;
             }
         }
 
@@ -169,10 +169,10 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.type == Type.SingleBottom || this.type == Type.DualBottom) return SonOfRobinGame.VirtualHeight * 0.15f;
-                if (this.type == Type.DualTop) return SonOfRobinGame.VirtualHeight * 0.5f;
+                if (this.type == Type.SingleBottom || this.type == Type.DualBottom) return SonOfRobinGame.ScreenHeight * 0.15f;
+                if (this.type == Type.DualTop) return SonOfRobinGame.ScreenHeight * 0.5f;
 
-                return SonOfRobinGame.VirtualHeight * 0.8f;
+                return SonOfRobinGame.ScreenHeight * 0.8f;
             }
         }
 
@@ -296,19 +296,19 @@ namespace SonOfRobin
             switch (this.transDirection)
             {
                 case TransDirection.Up:
-                    paramsToChange["PosY"] = this.viewParams.PosY - SonOfRobinGame.VirtualHeight;
+                    paramsToChange["PosY"] = this.viewParams.PosY - SonOfRobinGame.ScreenHeight;
                     break;
 
                 case TransDirection.Down:
-                    paramsToChange["PosY"] = SonOfRobinGame.VirtualHeight;
+                    paramsToChange["PosY"] = SonOfRobinGame.ScreenHeight;
                     break;
 
                 case TransDirection.Left:
-                    paramsToChange["PosX"] = this.viewParams.PosX - SonOfRobinGame.VirtualWidth;
+                    paramsToChange["PosX"] = this.viewParams.PosX - SonOfRobinGame.ScreenWidth;
                     break;
 
                 case TransDirection.Right:
-                    paramsToChange["PosX"] = SonOfRobinGame.VirtualWidth;
+                    paramsToChange["PosX"] = SonOfRobinGame.ScreenWidth;
                     break;
 
                 default:
@@ -483,8 +483,8 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.ScreenWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.ScreenHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
@@ -537,7 +537,7 @@ namespace SonOfRobin
             this.viewParams.CenterView();
             this.viewParams.Opacity = this.inputActive && this.type != Type.SingleBottom ? 1f : 0.75f;
 
-            int centerX = SonOfRobinGame.VirtualWidth / 2;
+            int centerX = SonOfRobinGame.ScreenWidth / 2;
             float posY;
 
             switch (this.type)
@@ -546,25 +546,25 @@ namespace SonOfRobin
                     break;
 
                 case Type.DualLeft:
-                    this.viewParams.PosX = centerX - (SonOfRobinGame.VirtualWidth / 25) - this.viewParams.PosX;
+                    this.viewParams.PosX = centerX - (SonOfRobinGame.ScreenWidth / 25) - this.viewParams.PosX;
                     break;
 
                 case Type.DualRight:
-                    this.viewParams.PosX = centerX + (SonOfRobinGame.VirtualWidth / 25);
+                    this.viewParams.PosX = centerX + (SonOfRobinGame.ScreenWidth / 25);
                     break;
 
                 case Type.DualTop:
-                    this.viewParams.PosY = SonOfRobinGame.VirtualHeight * 0.1f;
+                    this.viewParams.PosY = SonOfRobinGame.ScreenHeight * 0.1f;
                     break;
 
                 case Type.SingleBottom:
                     posY = Preferences.ShowControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
-                    this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
+                    this.viewParams.PosY = (SonOfRobinGame.ScreenHeight * posY) - this.viewParams.Height;
                     break;
 
                 case Type.DualBottom:
                     posY = Preferences.ShowControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
-                    this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
+                    this.viewParams.PosY = (SonOfRobinGame.ScreenHeight * posY) - this.viewParams.Height;
                     break;
 
                 default:
@@ -800,7 +800,7 @@ namespace SonOfRobin
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
             slotPos.X += this.Margin + this.TileSize;
-            Vector2 percentPos = new(slotPos.X / SonOfRobinGame.VirtualWidth, slotPos.Y / SonOfRobinGame.VirtualHeight);
+            Vector2 percentPos = new(slotPos.X / SonOfRobinGame.ScreenWidth, slotPos.Y / SonOfRobinGame.ScreenHeight);
 
             bool addEquip = this.type != Type.SingleCenter && piece.GetType() == typeof(Equipment) && !slot.locked && this.otherInventory.storage.storageType == PieceStorage.StorageType.Equip;
             bool addMove = !addEquip && this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
@@ -937,7 +937,7 @@ namespace SonOfRobin
             var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
             if (pressTouches.Count() == 0) return false;
 
-            int inflateSize = (int)(SonOfRobinGame.VirtualHeight * 0.02);
+            int inflateSize = (int)(SonOfRobinGame.ScreenHeight * 0.02);
 
             Rectangle thisInvBgRect = this.BgRect;
             thisInvBgRect.X += (int)this.viewParams.drawPosX;

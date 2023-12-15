@@ -133,9 +133,9 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(bgColor);
 
-            int progressRectHeight = (int)(SonOfRobinGame.VirtualHeight * 0.17f);
-            Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight - progressRectHeight);
-            Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.VirtualWidth, height: progressRectHeight);
+            int progressRectHeight = (int)(SonOfRobinGame.ScreenHeight * 0.17f);
+            Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.ScreenWidth, height: SonOfRobinGame.ScreenHeight - progressRectHeight);
+            Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.ScreenWidth, height: progressRectHeight);
             progressRect.Offset(0, -progressRectHeight * 0.35f); // should be slightly above the "correct" position
 
             int wheelRectHeight = (int)(progressRectHeight * 0.6f);

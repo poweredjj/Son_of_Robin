@@ -54,10 +54,10 @@ namespace SonOfRobin
         public int drawHeight;
 
         public int CenterPosX
-        { get { return (int)(((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width) / 2); } }
+        { get { return (int)(((SonOfRobinGame.ScreenWidth * this.scaleX) - this.width) / 2); } }
 
         public int CenterPosY
-        { get { return (int)(((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) / 2); } }
+        { get { return (int)(((SonOfRobinGame.ScreenHeight * this.scaleY) - this.height) / 2); } }
 
         public Vector2 Pos
         {
@@ -77,7 +77,7 @@ namespace SonOfRobin
             get
             {
                 float sceneCenter = this.PosX + (this.width / 2f);
-                float screenCenter = SonOfRobinGame.VirtualWidth * this.scaleX / 2f;
+                float screenCenter = SonOfRobinGame.ScreenWidth * this.scaleX / 2f;
                 return sceneCenter < screenCenter;
             }
         }
@@ -87,7 +87,7 @@ namespace SonOfRobin
             get
             {
                 float sceneCenter = this.PosY + (this.height / 2f);
-                float screenCenter = SonOfRobinGame.VirtualHeight * this.scaleY / 2f;
+                float screenCenter = SonOfRobinGame.ScreenHeight * this.scaleY / 2f;
                 return sceneCenter < screenCenter;
             }
         }
@@ -140,7 +140,7 @@ namespace SonOfRobin
 
         public void PutViewAtTheRight(int margin = 0)
         {
-            this.PosX = (int)((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width) - margin;
+            this.PosX = (int)((SonOfRobinGame.ScreenWidth * this.scaleX) - this.width) - margin;
         }
 
         public void PutViewAtTheTop(int margin = 0)
@@ -150,7 +150,7 @@ namespace SonOfRobin
 
         public void PutViewAtTheBottom(int margin = 0)
         {
-            this.PosY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) - margin;
+            this.PosY = (int)((SonOfRobinGame.ScreenHeight * this.scaleY) - this.height) - margin;
         }
     }
 }

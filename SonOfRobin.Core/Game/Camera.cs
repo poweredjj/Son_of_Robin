@@ -112,7 +112,7 @@ namespace SonOfRobin
             get
             {
                 float worldScale = this.useWorldScale ? Preferences.worldScale : 1f;
-                return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom / worldScale);
+                return (int)(SonOfRobinGame.ScreenWidth / this.CurrentZoom / worldScale);
             }
         }
 
@@ -121,7 +121,7 @@ namespace SonOfRobin
             get
             {
                 float worldScale = this.useWorldScale ? Preferences.worldScale : 1f;
-                return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom / worldScale);
+                return (int)(SonOfRobinGame.ScreenHeight / this.CurrentZoom / worldScale);
             }
         }
 

@@ -395,7 +395,7 @@ namespace SonOfRobin
 
                             taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInputDefaultDuration: false).ConvertToTask());
 
-                            Vector2 seaOffset = new(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
+                            Vector2 seaOffset = new(SonOfRobinGame.ScreenWidth * 0.65f, SonOfRobinGame.ScreenHeight * 0.65f);
 
                             int edgeDistLeft = (int)player.sprite.position.X;
                             int edgeDistRight = (int)(this.world.ActiveLevel.width - player.sprite.position.X);
@@ -633,7 +633,7 @@ namespace SonOfRobin
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clockAdvanceDlgt1, storeForLaterUse: true));
 
-                        Scheduler.ExecutionDelegate trackCoordsDlgt1 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 6, 0), moveInstantly: true); };
+                        Scheduler.ExecutionDelegate trackCoordsDlgt1 = () => { if (!world.HasBeenRemoved) this.world.camera.TrackCoords(position: player.sprite.position + new Vector2(SonOfRobinGame.ScreenWidth * 6, 0), moveInstantly: true); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 1, executeHelper: trackCoordsDlgt1, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate camZoomDlgt1 = () => { if (!this.world.HasBeenRemoved) this.world.camera.SetZoom(zoom: 0.15f, setInstantly: true); };
@@ -774,7 +774,7 @@ namespace SonOfRobin
 
                             Level islandLevel = this.world.IslandLevel;
 
-                            float fontSizeMultiplier = (float)SonOfRobinGame.VirtualWidth * 0.0008f;
+                            float fontSizeMultiplier = (float)SonOfRobinGame.ScreenWidth * 0.0008f;
 
                             SpriteFontBase fontTitle = SonOfRobinGame.FontTommy.GetFont(RollingText.TitleFontSize);
                             SpriteFontBase fontText = SonOfRobinGame.FontTommy.GetFont(RollingText.RegularFontSize);
@@ -892,7 +892,7 @@ namespace SonOfRobin
                         {
                             if (this.world.HasBeenRemoved) return;
 
-                            VisualEffect rescueShip = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position + new Vector2(SonOfRobinGame.VirtualWidth * 5, this.world.camera.viewRect.Height * 1.6f), templateName: PieceTemplate.Name.ShipRescue, closestFreeSpot: true);
+                            VisualEffect rescueShip = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position + new Vector2(SonOfRobinGame.ScreenWidth * 5, this.world.camera.viewRect.Height * 1.6f), templateName: PieceTemplate.Name.ShipRescue, closestFreeSpot: true);
 
                             this.world.camera.TrackCoords(new Vector2(rescueShip.sprite.GfxRect.Center.X, rescueShip.sprite.GfxRect.Center.Y));
                             this.world.camera.SetZoom(zoom: 0.35f, zoomSpeedMultiplier: 0.1f);

@@ -65,7 +65,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
+                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
                 return screenRect.Contains(this.Rect);
             }
         }
@@ -74,7 +74,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
+                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
                 return !screenRect.Contains(this.Rect) && screenRect.Intersects(this.Rect);
             }
         }
@@ -83,7 +83,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
+                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
                 return screenRect.Intersects(this.Rect);
             }
         }
@@ -218,8 +218,8 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.ScreenWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.ScreenHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 

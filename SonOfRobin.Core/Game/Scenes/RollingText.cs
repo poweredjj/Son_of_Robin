@@ -17,7 +17,7 @@ namespace SonOfRobin
         private readonly float offsetPercentX;
 
         private int currentOffsetY;
-        private static float FontSizeMultiplier { get { return (float)SonOfRobinGame.VirtualWidth * 0.0008f; } }
+        private static float FontSizeMultiplier { get { return (float)SonOfRobinGame.ScreenWidth * 0.0008f; } }
 
         public static int TitleFontSize
         {
@@ -56,7 +56,7 @@ namespace SonOfRobin
             this.canBeSkipped = canBeSkipped;
 
             this.offsetByText = new Dictionary<TextWithImages, int>();
-            int currentOffsetY = SonOfRobinGame.VirtualHeight;
+            int currentOffsetY = SonOfRobinGame.ScreenHeight;
             foreach (TextWithImages textWithImages in textList)
             {
                 this.offsetByText[textWithImages] = currentOffsetY;
@@ -114,10 +114,10 @@ namespace SonOfRobin
 
             foreach (TextWithImages textWithImages in this.remainingTextList)
             {
-                int offsetX = (int)(SonOfRobinGame.VirtualWidth * this.offsetPercentX);
+                int offsetX = (int)(SonOfRobinGame.ScreenWidth * this.offsetPercentX);
 
                 Vector2 textPos = new(
-                    x: (SonOfRobinGame.VirtualWidth / 2) - (textWithImages.textWidth / 2) + offsetX,
+                    x: (SonOfRobinGame.ScreenWidth / 2) - (textWithImages.textWidth / 2) + offsetX,
                     y: this.offsetByText[textWithImages] - this.currentOffsetY);
 
                 textWithImages.Draw(position: textPos, color: Color.White, drawShadow: true, shadowColor: Color.Black * 0.85f, textScale: 1f);

@@ -34,10 +34,10 @@ namespace SonOfRobin
 
                     int widthMini = (int)((float)this.map.FinalMapToDisplay.Width / scaleMini);
                     int heightMini = (int)((float)this.map.FinalMapToDisplay.Height / scaleMini);
-                    int margin = (int)(SonOfRobinGame.VirtualWidth * 0.05f);
+                    int margin = (int)(SonOfRobinGame.ScreenWidth * 0.05f);
 
-                    int posXMini = (int)((SonOfRobinGame.VirtualWidth - (widthMini + margin)) * scaleMini);
-                    int posYMini = (int)((SonOfRobinGame.VirtualHeight - (heightMini + margin)) * scaleMini);
+                    int posXMini = (int)((SonOfRobinGame.ScreenWidth - (widthMini + margin)) * scaleMini);
+                    int posYMini = (int)((SonOfRobinGame.ScreenHeight - (heightMini + margin)) * scaleMini);
 
                     this.viewParams.PosX = posXMini;
                     this.viewParams.PosY = posYMini + (heightMini * scaleMini);
@@ -85,7 +85,7 @@ namespace SonOfRobin
             float opacity = 1f - this.map.world.cineCurtains.showPercentage;
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight), Color.White * opacity * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight), Color.White * opacity * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
         }
     }

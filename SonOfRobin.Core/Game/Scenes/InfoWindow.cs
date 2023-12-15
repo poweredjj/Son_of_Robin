@@ -93,7 +93,7 @@ namespace SonOfRobin
         {
             get
             {
-                int margin = Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent);
+                int margin = Convert.ToInt32(SonOfRobinGame.ScreenHeight * marginPercent);
                 if (SonOfRobinGame.platform == Platform.Mobile) margin = (int)(margin * 1.2f);
                 return margin;
             }
@@ -109,9 +109,9 @@ namespace SonOfRobin
         {
             get
             {
-                float maxWindowWidth = SonOfRobinGame.VirtualWidth * maxWindowWidthPercent;
-                float maxWindowHeight = SonOfRobinGame.VirtualHeight * maxWindowHeightPercent;
-                float maxLineHeight = SonOfRobinGame.VirtualHeight * (this.maxLineHeightPercentOverride == 0f ? maxLineHeightPercent : this.maxLineHeightPercentOverride);
+                float maxWindowWidth = SonOfRobinGame.ScreenWidth * maxWindowWidthPercent;
+                float maxWindowHeight = SonOfRobinGame.ScreenHeight * maxWindowHeightPercent;
+                float maxLineHeight = SonOfRobinGame.ScreenHeight * (this.maxLineHeightPercentOverride == 0f ? maxLineHeightPercent : this.maxLineHeightPercentOverride);
                 if (SonOfRobinGame.platform == Platform.Desktop) maxLineHeight *= 0.6f;
 
                 int margin = this.Margin;

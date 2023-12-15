@@ -1173,7 +1173,7 @@ namespace SonOfRobin
                 this.ShootingAngle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
             }
 
-            int aidDistance = (int)(SonOfRobinGame.VirtualWidth * 0.08f);
+            int aidDistance = (int)(SonOfRobinGame.ScreenWidth * 0.08f);
 
             Vector2 aidOffset = new Vector2(aidDistance * (float)Math.Cos(this.ShootingAngle), aidDistance * (float)Math.Sin(this.ShootingAngle));
             Vector2 aidPos = this.sprite.position + aidOffset;

@@ -268,7 +268,7 @@ namespace SonOfRobin
 
         public void Draw(Vector2 position, Color color, bool drawShadow = false, float textScale = 1f, float imageOpacity = 1f, float inflatePercent = 0f, Vector2 shadowOffset = default, Color shadowColor = default)
         {
-            if (shadowOffset == default) shadowOffset = new Vector2(Math.Max(SonOfRobinGame.VirtualHeight * 0.002f, 1));
+            if (shadowOffset == default) shadowOffset = new Vector2(Math.Max(SonOfRobinGame.ScreenHeight * 0.002f, 1));
 
             string currentText = this.AnimatedText;
 

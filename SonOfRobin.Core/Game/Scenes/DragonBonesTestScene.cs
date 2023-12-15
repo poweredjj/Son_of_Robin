@@ -45,7 +45,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            float scale = (float)SonOfRobinGame.VirtualHeight / 250f;
+            float scale = (float)SonOfRobinGame.ScreenHeight / 250f;
 
             for (int i = 0; i < this.dragonBonesAnims.Count; i++)
             {

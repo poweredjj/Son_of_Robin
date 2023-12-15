@@ -24,7 +24,7 @@ namespace SonOfRobin
             if (this.clearScreen) SonOfRobinGame.GfxDev.Clear(this.color * this.viewParams.drawOpacity);
             else
             {
-                Rectangle rect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
+                Rectangle rect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.color * this.viewParams.drawOpacity);
             }
 

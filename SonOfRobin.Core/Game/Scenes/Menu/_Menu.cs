@@ -88,9 +88,9 @@ namespace SonOfRobin
             {
                 return this.layout switch
                 {
-                    Layout.Middle => (int)(SonOfRobinGame.VirtualWidth * 0.7f),
-                    Layout.Left => (int)(SonOfRobinGame.VirtualWidth * 0.65f),
-                    Layout.Right => (int)(SonOfRobinGame.VirtualWidth * 0.65f),
+                    Layout.Middle => (int)(SonOfRobinGame.ScreenWidth * 0.7f),
+                    Layout.Left => (int)(SonOfRobinGame.ScreenWidth * 0.65f),
+                    Layout.Right => (int)(SonOfRobinGame.ScreenWidth * 0.65f),
                     _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
                 };
             }
@@ -100,7 +100,7 @@ namespace SonOfRobin
         {
             get
             {
-                return TouchInput.IsPressedReleasedWithinDistanceAndDuration(maxDistance: (int)(SonOfRobinGame.VirtualHeight * 0.03), maxDuration: TimeSpan.FromMilliseconds(400), ignorePressesBefore: this.createdAt);
+                return TouchInput.IsPressedReleasedWithinDistanceAndDuration(maxDistance: (int)(SonOfRobinGame.ScreenHeight * 0.03), maxDuration: TimeSpan.FromMilliseconds(400), ignorePressesBefore: this.createdAt);
             }
         }
 
@@ -129,13 +129,13 @@ namespace SonOfRobin
         { get { return (int)(EntryBgWidth * 0.8f); } }
 
         public int EntryHeight
-        { get { return Math.Max((int)(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale), 30); } }
+        { get { return Math.Max((int)(SonOfRobinGame.ScreenHeight * 0.08f * Preferences.menuScale), 30); } }
 
         public int EntryMargin
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.025f * Preferences.menuScale); } }
+        { get { return Convert.ToInt32(SonOfRobinGame.ScreenHeight * 0.025f * Preferences.menuScale); } }
 
         private Rectangle BgRect
-        { get { return new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.VirtualHeight); } }
+        { get { return new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.ScreenHeight); } }
 
         public Entry ActiveEntry
         { get { return this.entryList[activeIndex]; } }
@@ -154,7 +154,7 @@ namespace SonOfRobin
             get
             {
                 int lastItemPos = (int)entryList[entryList.Count - 1].Position.Y;
-                return Math.Max(lastItemPos + this.EntryHeight + this.EntryMargin - SonOfRobinGame.VirtualHeight, 1);
+                return Math.Max(lastItemPos + this.EntryHeight + this.EntryMargin - SonOfRobinGame.ScreenHeight, 1);
             }
         }
 
@@ -162,7 +162,7 @@ namespace SonOfRobin
         {
             get
             {
-                int targetScrollPos = (int)this.ActiveEntry.Position.Y + (this.EntryHeight / 2) - (SonOfRobinGame.VirtualHeight / 2); // active item should be centered - if possible
+                int targetScrollPos = (int)this.ActiveEntry.Position.Y + (this.EntryHeight / 2) - (SonOfRobinGame.ScreenHeight / 2); // active item should be centered - if possible
                 return KeepScrollInBounds(targetScrollPos);
             }
         }
@@ -466,7 +466,7 @@ namespace SonOfRobin
             scrollWholeRect.X += (int)this.viewParams.PosX;
             scrollWholeRect.Y += (int)this.viewParams.PosY;
 
-            int mouseScrollValue = (int)(SonOfRobinGame.VirtualHeight * 0.2f);
+            int mouseScrollValue = (int)(SonOfRobinGame.ScreenHeight * 0.2f);
 
             int mouseScroll = 0;
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalScrollUp)) mouseScroll = -mouseScrollValue;
@@ -608,13 +608,13 @@ namespace SonOfRobin
         public void SetViewPosAndSize()
         {
             this.viewParams.Width = this.EntryBgWidth;
-            this.viewParams.Height = SonOfRobinGame.VirtualHeight;
+            this.viewParams.Height = SonOfRobinGame.ScreenHeight;
 
             this.viewParams.PosX = this.layout switch
             {
-                Layout.Middle => (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2),
+                Layout.Middle => (SonOfRobinGame.ScreenWidth / 2) - (this.viewParams.Width / 2),
                 Layout.Left => 0,
-                Layout.Right => (float)(SonOfRobinGame.VirtualWidth - this.viewParams.Width),
+                Layout.Right => (float)(SonOfRobinGame.ScreenWidth - this.viewParams.Width),
                 _ => throw new ArgumentException($"Unsupported menu layout - {this.layout}."),
             };
 
