@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class DragonBonesTestScene : Scene
     {
         private readonly List<DragonBonesAnim> dragonBonesAnims;
-        public readonly DragonBonesAnim testPlayerAnim;
+        public readonly Dictionary<Sprite, DragonBonesAnim> animsForSpritesDict;
 
         public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -19,7 +19,7 @@ namespace SonOfRobin
 
             var atlasAndSkeletonNamesList = new List<List<string>>
             {
-                new List<string> { "Demon.json", "DemonTexture.json" },
+                //new List<string> { "Demon.json", "DemonTexture.json" },
                 //new List<string> { "Sheep_ske.json", "Sheep_tex.json" },
                 //new List<string> { "Dragon_ske.json", "Dragon_tex.json" },
                 //new List<string> { "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
@@ -28,15 +28,27 @@ namespace SonOfRobin
 
             foreach (List<string> list in atlasAndSkeletonNamesList)
             {
-                this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: list[1], skeletonName: list[0]));
+                this.dragonBonesAnims.Add(DragonBonesAnim.GetDragonBonesAnim(skeletonName: list[0], atlasName: list[1]));
             }
 
-            for (int i = 0; i < 4; i++)
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
+            //}
+
+            this.animsForSpritesDict = new Dictionary<Sprite, DragonBonesAnim>();
+
+            //this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
+        }
+
+        public DragonBonesAnim GetDragonBonesAnim(Sprite sprite)
+        {
+            if (!animsForSpritesDict.ContainsKey(sprite))
             {
-                this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
+                animsForSpritesDict[sprite] = DragonBonesAnim.GetDragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
             }
 
-            this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
+            return animsForSpritesDict[sprite];
         }
 
         public override void Update()
@@ -64,12 +76,28 @@ namespace SonOfRobin
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
+        private static readonly Dictionary<string, DragonBonesAnim> animsById = new Dictionary<string, DragonBonesAnim>();
+
+        private readonly string id;
         public readonly DbArmature dbArmature;
         private readonly string[] animNames;
         private readonly Queue<string> animsToPlayQueue;
 
-        public DragonBonesAnim(string skeletonName, string atlasName)
+        private static string GetId(string skeletonName, string atlasName)
+        { return $"{skeletonName}-{atlasName}"; }
+
+        public static DragonBonesAnim GetDragonBonesAnim(string skeletonName, string atlasName)
         {
+            string id = GetId(skeletonName: skeletonName, atlasName: atlasName);
+            if (!animsById.ContainsKey(id)) animsById[id] = new DragonBonesAnim(skeletonName: skeletonName, atlasName: atlasName);
+
+            return new DragonBonesAnim(DbArmature.MakeTemplateCopy(animsById[id].dbArmature));
+        }
+
+        private DragonBonesAnim(string skeletonName, string atlasName)
+        {
+            this.id = GetId(skeletonName: skeletonName, atlasName: atlasName);
+
             string atlasPath = Path.Combine(contentDirPath, atlasName);
             string skeletonPath = Path.Combine(contentDirPath, skeletonName);
 
@@ -86,7 +114,7 @@ namespace SonOfRobin
             this.animsToPlayQueue = new Queue<string>();
         }
 
-        public DragonBonesAnim(DbArmature dbArmature)
+        private DragonBonesAnim(DbArmature dbArmature)
         {
             this.dbArmature = dbArmature;
             this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();

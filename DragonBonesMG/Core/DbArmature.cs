@@ -96,9 +96,7 @@ namespace DragonBonesMG.Core
         public static DbArmature MakeTemplateCopy(DbArmature dbTemplate)
         {
             DbArmature templateCopy = new(name: dbTemplate.Name, texturer: dbTemplate.Texturer, graphics: dbTemplate.GraphicsDevice, creator: dbTemplate.Creator);
-
             templateCopy.armatureData = dbTemplate.armatureData;
-
             templateCopy.Initialize(data: dbTemplate.armatureData, dbTemplate: dbTemplate);
 
             return templateCopy;

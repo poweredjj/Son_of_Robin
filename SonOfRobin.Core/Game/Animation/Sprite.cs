@@ -825,13 +825,13 @@ namespace SonOfRobin
             if (!this.IsOnBoard) return;
 
             // :::::::::::::::::: DragonBones animation test start ::::::::::::::::::
-            if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
-            // if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
+            //if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
+            if (this.boardPiece.IsAnimalOrPlayer && Preferences.DebugShowDragonBonesAnims)
             {
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
                 if (dragonBonesTestScene != null)
                 {
-                    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).testPlayerAnim;
+                    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).GetDragonBonesAnim(this);
                     testPlayerAnim.Update();
                     DbArmature dbArmature = testPlayerAnim.dbArmature;
 
