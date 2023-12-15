@@ -75,6 +75,7 @@ namespace SonOfRobin
             ColorSourceBlend = Blend.One,
             ColorDestinationBlend = Blend.One,
         };
+        private bool RenderThisFrame { get { return !this.ActiveLevel.creationInProgress && !SonOfRobinGame.IgnoreThisDraw && UpdateStack.Contains(this); } }
 
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;
@@ -124,7 +125,6 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-
         public Grid Grid
         { get { return this.ActiveLevel.grid; } }
 
@@ -1418,9 +1418,10 @@ namespace SonOfRobin
             return sunLightData.sunShadowsOpacity * sunVisibility;
         }
 
+
         public override void RenderToTarget()
         {
-            if (this.ActiveLevel.creationInProgress || SonOfRobinGame.IgnoreThisDraw) return;
+            if (!this.RenderThisFrame) return;
 
             Matrix worldMatrix = this.TransformMatrix;
 
@@ -1541,7 +1542,7 @@ namespace SonOfRobin
 
             // drawing FinalRenderTarget
 
-            if (Preferences.halfFramerate) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering
+            if (!this.RenderThisFrame) SonOfRobinGame.GfxDev.Clear(Color.Black); // needed to eliminate flickering
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
             if (this.globalEffect != null)

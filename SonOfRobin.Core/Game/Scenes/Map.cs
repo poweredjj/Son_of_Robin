@@ -48,8 +48,9 @@ namespace SonOfRobin
         { get { return this.camera.CurrentZoom >= showDetailedMapZoom; } }
 
         private const float showDetailedMapZoom = 0.08f;
-        public static readonly Color waterColor = new Color(8, 108, 160, 255);
-        private static readonly Color stepDotColor = new Color(56, 36, 0);
+        public static readonly Color waterColor = new(8, 108, 160, 255);
+        private static readonly Color stepDotColor = new(56, 36, 0);
+        private bool RenderThisFrame { get { return this.Mode != MapMode.Off && !SonOfRobinGame.IgnoreThisDraw && UpdateStack.Contains(this); } }
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -509,7 +510,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.Mode == MapMode.Off || SonOfRobinGame.IgnoreThisDraw) return;
+            if (!this.RenderThisFrame) return;
 
             this.UpdateBackground();
 
