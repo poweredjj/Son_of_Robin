@@ -8,4 +8,4 @@ If you want to collaborate, or use any part of game code - feel free to contact 
 
 UWP version is not functional. iOS version is untested.
 
-The game does not have an ending, but can be played already. Have fun!
+Even though it is an early alpha version, the game can be finished.
