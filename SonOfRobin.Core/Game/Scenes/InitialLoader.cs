@@ -78,7 +78,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(2.5f)) return this.lastFunnyActionName;
+                if (DateTime.Now - this.lastFunnyActionNameCreated < TimeSpan.FromSeconds(3.0f)) return this.lastFunnyActionName;
 
                 this.lastFunnyActionNameCreated = DateTime.Now;
 
