@@ -31,7 +31,7 @@ namespace SonOfRobin
                 this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: list[1], skeletonName: list[0]));
             }
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
             }

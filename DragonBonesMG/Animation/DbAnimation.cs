@@ -49,17 +49,22 @@ namespace DragonBonesMG.Animation
             Loop = PlayTimes != 0;
 
             // setup timelines
-            _transformTimeline = new TransformTimeline(data.BoneTimelines);
-            _displayTimeline = new DisplayTimeline(data.SlotTimelines);
-            _ffdTimeline = new FFDTimeline(data.MeshTimelines);
-            EventFrames = new EventFrame[data.EventFrames.Length];
-            var startFrame = 0;
-            for (var i = 0; i < data.EventFrames.Length; i++)
+            _transformTimeline = templateAnim == null ? new TransformTimeline(data.BoneTimelines) : templateAnim._transformTimeline;
+            _displayTimeline = templateAnim == null ? new DisplayTimeline(data.SlotTimelines) : templateAnim._displayTimeline;
+            _ffdTimeline = templateAnim == null ? new FFDTimeline(data.MeshTimelines) : templateAnim._ffdTimeline;
+
+            if (templateAnim == null)
             {
-                var frame = data.EventFrames[i];
-                EventFrames[i] = new EventFrame(startFrame, frame);
-                startFrame += frame.Duration;
+                EventFrames = new EventFrame[data.EventFrames.Length];
+                var startFrame = 0;
+                for (var i = 0; i < data.EventFrames.Length; i++)
+                {
+                    var frame = data.EventFrames[i];
+                    EventFrames[i] = new EventFrame(startFrame, frame);
+                    startFrame += frame.Duration;
+                }
             }
+            else EventFrames = templateAnim.EventFrames;
         }
 
         #endregion Constructor
