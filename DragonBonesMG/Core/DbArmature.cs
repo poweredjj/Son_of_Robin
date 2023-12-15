@@ -148,14 +148,23 @@ namespace DragonBonesMG.Core
                     {
                         DbSlot slot = bone.Slots[i];
                         slot.Displays = templateBone.Slots[i].Displays;
-
                     }
                 }
             }
 
-            foreach (var animation in data.Animations)
+            if (dbTemplate == null)
             {
-                Animations.Add(new DbAnimation(this, animation));
+                for (int i = 0; i < data.Animations.Length; i++)
+                {
+                    Animations.Add(new DbAnimation(armature: this, data: data.Animations[i], templateAnim: dbTemplate == null ? null : dbTemplate.Animations[i]));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < data.Animations.Length; i++)
+                {
+                    Animations.Add(new(armature: this, data: data.Animations[i], templateAnim: dbTemplate.Animations[i]));
+                }
             }
 
             foreach (var ik in data.InverseKinematics)

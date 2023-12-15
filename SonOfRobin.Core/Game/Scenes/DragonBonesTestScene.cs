@@ -31,7 +31,7 @@ namespace SonOfRobin
                 this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: list[1], skeletonName: list[0]));
             }
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 3; i++)
             {
                 this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
             }
@@ -115,11 +115,12 @@ namespace SonOfRobin
                 {
                     foreach (string animName in this.animNames)
                     {
-                        for (int i = 0; i < SonOfRobinGame.random.Next(3, 5); i++)
+                        for (int i = 0; i < SonOfRobinGame.random.Next(2, 5); i++)
                         {
                             this.animsToPlayQueue.Enqueue(animName);
                         }
                     }
+                    this.dbArmature.TimeScale = SonOfRobinGame.random.NextDouble() * 1.5;
                 }
 
                 this.dbArmature.GotoAndPlay(animation: this.animsToPlayQueue.Dequeue(), loop: false);

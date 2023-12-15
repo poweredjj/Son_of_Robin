@@ -40,7 +40,7 @@ namespace DragonBonesMG.Animation
 
         #region Constructor
 
-        internal DbAnimation(DbArmature armature, AnimationData data)
+        internal DbAnimation(DbArmature armature, AnimationData data, DbAnimation templateAnim = null)
         {
             _armature = armature;
             Name = data.Name;
