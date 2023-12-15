@@ -69,7 +69,9 @@ public class DragonBonesAnimManager
     {
         lastUpdated = SonOfRobinGame.CurrentUpdate;
 
-        var offCameraAnimsBySprites = animForSpriteDict.Where(kvp => !kvp.Key.IsInCameraRect || !kvp.Key.boardPiece.exists);
+        World world = World.GetTopWorld();
+
+        var offCameraAnimsBySprites = animForSpriteDict.Where(kvp => !kvp.Key.IsInCameraRect || !kvp.Key.boardPiece.exists || kvp.Key.world != world);
 
         foreach (var kvp1 in offCameraAnimsBySprites)
         {
