@@ -12,9 +12,13 @@ public class DragonBonesAnimManager
     private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
     private static readonly Dictionary<string, DbArmature> animTemplatesById = new();
-    private static readonly Dictionary<string, Queue<DbArmature>> freeAnimInstancesListsById = new();
-    private static readonly Dictionary<string, List<DbArmature>> usedAnimInstancesListsById = new();
-    private static readonly Dictionary<Sprite, DbArmature> animForSpriteIdDict = new();
+    private static readonly Dictionary<string, Queue<DbArmature>> freeAnimInstancesQueuesById = new();
+    private static readonly Dictionary<string, HashSet<DbArmature>> usedAnimInstancesSetsById = new();
+    private static readonly Dictionary<Sprite, DbArmature> animForSpriteDict = new();
+    public static int AnimTemplatesCount { get { return animTemplatesById.Count; } }
+    public static int AnimForSpriteDictCount { get { return animForSpriteDict.Count; } }
+    public static int FreeAnimInstancesCount { get { return freeAnimInstancesQueuesById.Values.Sum(e => e.Count); } }
+    public static int UsedAnimInstancesCount { get { return usedAnimInstancesSetsById.Values.Sum(e => e.Count); } }
 
     private static readonly Dictionary<DbArmature, int> lastUsedInFrameDict = new();
 
@@ -28,16 +32,16 @@ public class DragonBonesAnimManager
 
         if (sprite != null)
         {
-            if (animForSpriteIdDict.ContainsKey(sprite))
+            if (animForSpriteDict.ContainsKey(sprite))
             {
-                lastUsedInFrameDict[animForSpriteIdDict[sprite]] = SonOfRobinGame.CurrentDraw;
-                return animForSpriteIdDict[sprite];
+                lastUsedInFrameDict[animForSpriteDict[sprite]] = SonOfRobinGame.CurrentDraw;
+                return animForSpriteDict[sprite];
             }
 
-            if (freeAnimInstancesListsById.ContainsKey(armatureId) && freeAnimInstancesListsById[armatureId].Count > 0)
+            if (freeAnimInstancesQueuesById.ContainsKey(armatureId) && freeAnimInstancesQueuesById[armatureId].Count > 0)
             {
-                DbArmature dbArmature = freeAnimInstancesListsById[armatureId].Dequeue();
-                usedAnimInstancesListsById[armatureId].Add(dbArmature);
+                DbArmature dbArmature = freeAnimInstancesQueuesById[armatureId].Dequeue();
+                usedAnimInstancesSetsById[armatureId].Add(dbArmature);
                 return dbArmature;
             }
         }
@@ -45,16 +49,16 @@ public class DragonBonesAnimManager
         if (!animTemplatesById.ContainsKey(armatureId))
         {
             animTemplatesById[armatureId] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
-            freeAnimInstancesListsById[armatureId] = new();
-            usedAnimInstancesListsById[armatureId] = new();
+            freeAnimInstancesQueuesById[armatureId] = new();
+            usedAnimInstancesSetsById[armatureId] = new();
         }
 
         DbArmature dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
-        usedAnimInstancesListsById[armatureId].Add(dbArmatureInstance);
+        usedAnimInstancesSetsById[armatureId].Add(dbArmatureInstance);
 
         if (sprite != null)
         {
-            animForSpriteIdDict[sprite] = dbArmatureInstance;
+            animForSpriteDict[sprite] = dbArmatureInstance;
             lastUsedInFrameDict[dbArmatureInstance] = SonOfRobinGame.CurrentDraw;
         }
 
@@ -65,26 +69,25 @@ public class DragonBonesAnimManager
     {
         lastUpdated = SonOfRobinGame.CurrentUpdate;
 
-        var offCameraAnimsBySprites = animForSpriteIdDict.Where(kvp => !kvp.Key.IsInCameraRect);
+        var offCameraAnimsBySprites = animForSpriteDict.Where(kvp => !kvp.Key.IsInCameraRect || !kvp.Key.boardPiece.exists);
 
-        foreach (var kvp in offCameraAnimsBySprites)
+        foreach (var kvp1 in offCameraAnimsBySprites)
         {
-            Sprite sprite = kvp.Key;
-            DbArmature armature = kvp.Value;
-        }
+            Sprite sprite = kvp1.Key;
+            DbArmature armature = kvp1.Value;
 
+            animForSpriteDict.Remove(sprite);
 
-        foreach (string armatureId in usedAnimInstancesListsById.Keys)
-        {
-            List<DbArmature> usedArmatureList = usedAnimInstancesListsById[armatureId];
-            Queue<DbArmature> freeArmatureList = freeAnimInstancesListsById[armatureId];
-
-            foreach (DbArmature armature in usedArmatureList.ToArray())
+            foreach (var kvp2 in usedAnimInstancesSetsById)
             {
-                if (SonOfRobinGame.CurrentUpdate - lastUsedInFrameDict[armature] > 60 * 10)
+                string armatureId = kvp2.Key;
+                HashSet<DbArmature> usedArmatureSet = kvp2.Value;
+
+                if (usedArmatureSet.Contains(armature))
                 {
-                    usedArmatureList.Remove(armature);
-                    freeArmatureList.Enqueue(armature);
+                    usedArmatureSet.Remove(armature);
+                    freeAnimInstancesQueuesById[armatureId].Enqueue(armature);
+                    break;
                 }
             }
         }
