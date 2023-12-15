@@ -19,7 +19,7 @@ namespace SonOfRobin
 
             var atlasAndSkeletonNamesList = new List<List<string>>
             {
-                //new List<string> { "Demon.json", "DemonTexture.json" },
+                new List<string> { "Demon.json", "DemonTexture.json" },
                 //new List<string> { "Sheep_ske.json", "Sheep_tex.json" },
                 //new List<string> { "Dragon_ske.json", "Dragon_tex.json" },
                 //new List<string> { "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
@@ -29,6 +29,11 @@ namespace SonOfRobin
             foreach (List<string> list in atlasAndSkeletonNamesList)
             {
                 this.dragonBonesAnims.Add(new DragonBonesAnim(atlasName: list[1], skeletonName: list[0]));
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
             }
 
             this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
@@ -60,7 +65,6 @@ namespace SonOfRobin
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
         public readonly DbArmature dbArmature;
-        private readonly TextureAtlas textureAtlas;
         private readonly string[] animNames;
         private readonly Queue<string> animsToPlayQueue;
 
@@ -72,9 +76,19 @@ namespace SonOfRobin
             string atlasJsonData = ReadFile(Path.Combine(contentDirPath, atlasName));
             string skeletonJsonData = ReadFile(Path.Combine(contentDirPath, skeletonName));
 
-            this.textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
-            this.textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
-            this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, this.textureAtlas, SonOfRobinGame.GfxDev).Armature;
+            TextureAtlas textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
+            textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
+
+            this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, textureAtlas, SonOfRobinGame.GfxDev).Armature;
+            this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
+            this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
+
+            this.animsToPlayQueue = new Queue<string>();
+        }
+
+        public DragonBonesAnim(DbArmature dbArmature)
+        {
+            this.dbArmature = dbArmature;
             this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
             this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
 
@@ -101,7 +115,7 @@ namespace SonOfRobin
                 {
                     foreach (string animName in this.animNames)
                     {
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < SonOfRobinGame.random.Next(3, 5); i++)
                         {
                             this.animsToPlayQueue.Enqueue(animName);
                         }

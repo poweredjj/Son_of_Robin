@@ -106,7 +106,7 @@ namespace DragonBonesMG
                 throw new FileNotFoundException("Could not resolve the given path", path);
             return new DragonBones(texturer, graphics, DbData.FromJson(path));
         }
-        
+
         public static DragonBones FromJsonData(string jsonData, ITextureSupplier texturer, GraphicsDevice graphics)
         {
             return new DragonBones(texturer, graphics, DbData.FromJsonData(jsonData));

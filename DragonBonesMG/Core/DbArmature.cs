@@ -28,6 +28,8 @@ namespace DragonBonesMG.Core
     /// </summary>
     public class DbArmature : DbDisplay, IAnimatable
     {
+        private ArmatureData armatureData;
+
         /// <summary>The framerate set in DragonBonesPro editor. Used to determine expected playback speed.</summary>
         public int FrameRate { get; private set; }
 
@@ -78,7 +80,7 @@ namespace DragonBonesMG.Core
 
         #region Initialization
 
-        internal DbArmature(string name, ITextureSupplier texturer, GraphicsDevice graphics, DragonBones creator)
+        public DbArmature(string name, ITextureSupplier texturer, GraphicsDevice graphics, DragonBones creator)
             : base(name)
         {
             Creator = creator;
@@ -91,8 +93,21 @@ namespace DragonBonesMG.Core
             IkConstraints = new List<DbIkConstraint>();
         }
 
-        internal void Initialize(ArmatureData data)
+        public static DbArmature MakeTemplateCopy(DbArmature dbTemplate)
         {
+            DbArmature templateCopy = new(name: dbTemplate.Name, texturer: dbTemplate.Texturer, graphics: dbTemplate.GraphicsDevice, creator: dbTemplate.Creator);
+
+            templateCopy.armatureData = dbTemplate.armatureData;
+
+            templateCopy.Initialize(data: dbTemplate.armatureData, dbTemplate: dbTemplate);
+
+            return templateCopy;
+        }
+
+        internal void Initialize(ArmatureData data, DbArmature dbTemplate = null)
+        {
+            armatureData = data;
+
             FrameRate = data.FrameRate;
 
             if (data.Bones.Any())
@@ -100,37 +115,62 @@ namespace DragonBonesMG.Core
                 Bones.Add(new DbBone(this, data.Bones[0]));
                 for (var i = 1; i < data.Bones.Length; i++)
                 {
-                    var bone = data.Bones[i];
-                    var parentBone = Bones[bone.Parent];
+                    BoneData bone = data.Bones[i];
+                    DbBone parentBone = Bones[bone.Parent];
                     parentBone.AddBone(new DbBone(this, bone));
                 }
             }
 
-            foreach (var slot in data.Slots)
+            foreach (SlotData slot in data.Slots)
             {
-                var parentBone = Bones[slot.Parent];
+                DbBone parentBone = Bones[slot.Parent];
                 parentBone.AddSlot(new DbSlot(this, slot));
             }
 
-            foreach (var fill in data.Skins[0].SlotFills)
+            if (dbTemplate == null)
             {
-                var slot = Slots[fill.SlotName];
-                foreach (var display in fill.Displays)
-                    slot.AddDisplay(display);
+                foreach (SlotFillData fill in data.Skins[0].SlotFills)
+                {
+                    DbSlot slot = Slots[fill.SlotName];
+                    foreach (DisplayData display in fill.Displays)
+                    {
+                        slot.AddDisplay(display);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var bone in this.Bones)
+                {
+                    DbBone templateBone = dbTemplate.Bones[bone.Name];
+
+                    for (int i = 0; i < bone.Slots.Count; i++)
+                    {
+                        DbSlot slot = bone.Slots[i];
+                        slot.Displays = templateBone.Slots[i].Displays;
+
+                    }
+                }
             }
 
             foreach (var animation in data.Animations)
+            {
                 Animations.Add(new DbAnimation(this, animation));
+            }
 
             foreach (var ik in data.InverseKinematics)
+            {
                 IkConstraints.Add(new DbIkConstraint(ik)); // TODO
+            }
 
             SortSlots();
             ResetBones();
             // load DefaultActions into Dictionary
             DefaultActions = data.DefaultActions[0];
             if (DefaultActions.ContainsKey("gotoAndPlay") && Animations.Contains(DefaultActions["gotoAndPlay"]))
+            {
                 GotoAndPlay(DefaultActions["gotoAndPlay"]);
+            }
         }
 
         #endregion Initialization

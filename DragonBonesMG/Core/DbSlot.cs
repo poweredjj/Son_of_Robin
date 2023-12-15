@@ -58,7 +58,7 @@ namespace DragonBonesMG.Core
         // reformatted so transform is not INSIDE a display, in case you want the same display
         // nested in different other animations. Why the hell do you want that?
         // TODO is this ever userful? Would be neater without the extra indirection
-        public readonly List<DisplayTransform> Displays;
+        public List<DisplayTransform> Displays;
 
         private int _displayIndex;
 

@@ -202,8 +202,8 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            //new DragonBonesTestScene();
-            new InitialLoader();
+            new DragonBonesTestScene();
+            //new InitialLoader();
 
             //Preferences.DebugShowDragonBonesAnims = true; // for testing
         }
