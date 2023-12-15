@@ -423,6 +423,8 @@ namespace SonOfRobin
                                 }
                             }
 
+                            Menu.RebuildAllMenus();
+
                             new TextWindow(text: message, textColor: Color.White, bgColor: importCorrect ? Color.DarkGreen : Color.DarkRed, useTransition: false, animate: false);
                             Sound.QuickPlay(name: importCorrect ? SoundData.Name.Ding2 : SoundData.Name.Error, volume: 1f);
 
