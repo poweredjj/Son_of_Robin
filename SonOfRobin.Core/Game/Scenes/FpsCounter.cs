@@ -73,7 +73,7 @@ namespace SonOfRobin
         private Rectangle bgRect;
         private Rectangle textRect;
         private Rectangle graphRect;
-        private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 28 : 6;
+        private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? (SonOfRobinGame.ScreenWidth < 1500 ? 14 : 28) : 6;
         private const int innerMargin = 3;
 
         private static readonly Dictionary<int, Color> colorDict = new()

@@ -153,11 +153,7 @@ namespace SonOfRobin
         {
             get
             {
-                Matrix scaleMatrix = Matrix.CreateScale(
-                                           (float)SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth / SonOfRobinGame.ScreenWidth / this.viewParams.drawScaleX,
-                                           (float)SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight / SonOfRobinGame.ScreenHeight / this.viewParams.drawScaleY,
-                                           1f);
-
+                Matrix scaleMatrix = Matrix.CreateScale((float)1f / this.viewParams.drawScaleX, (float)1f / this.viewParams.drawScaleY, 1f);
                 Matrix rotationMatrix = Matrix.CreateRotationZ(this.viewParams.drawRot);
                 Matrix translationMatrix = Matrix.CreateTranslation(new Vector3(this.viewParams.drawPosX, this.viewParams.drawPosY, 0));
 

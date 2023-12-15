@@ -501,13 +501,15 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
-                menuScale = 1.25f;
-                worldScale = 2.5f;
+                bool lowRes = SonOfRobinGame.ScreenWidth < 1500;
+
+                menuScale = lowRes ? 1.0f : 1.25f;
+                worldScale = lowRes ? 1.5f : 3f;
                 showControlTips = false;
                 enableTouchJoysticks = true;
                 rumbleEnabled = false;
-                mapMarkerScale = 1.5f;
-                messageLogScale = 1.5f;
+                mapMarkerScale = lowRes ? 1.0f : 1.5f;
+                messageLogScale = lowRes ? 1.0f : 1.5f;
                 messageLogAtRight = true;
             }
             else

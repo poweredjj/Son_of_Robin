@@ -140,8 +140,8 @@ namespace SonOfRobin
 
         public void UpdateResolution()
         {
-            int newWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
-            int newHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
+            int newWidth = SonOfRobinGame.ScreenWidth;
+            int newHeight = SonOfRobinGame.ScreenHeight;
 
             float multiplierX = (float)newWidth / (float)this.world.ActiveLevel.width;
             float multiplierY = (float)newHeight / (float)this.world.ActiveLevel.height;

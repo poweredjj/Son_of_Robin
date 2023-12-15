@@ -349,7 +349,7 @@ namespace SonOfRobin
 
         private static void Refresh()
         {
-            if (screenWidth == SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight) return;
+            if (screenWidth == SonOfRobinGame.ScreenWidth && screenHeight == SonOfRobinGame.ScreenHeight) return;
 
             SetEmulationByMouse();
 
@@ -357,8 +357,8 @@ namespace SonOfRobin
             dualStick.LeftStick.SetAsFixed();
             dualStick.RightStick.SetAsFixed();
 
-            screenWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
-            screenHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
+            screenWidth = SonOfRobinGame.ScreenWidth;
+            screenHeight = SonOfRobinGame.ScreenHeight;
         }
 
         public static void SetEmulationByMouse()
