@@ -5,32 +5,56 @@ using Microsoft.Xna.Framework;
 using SonOfRobin;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class DragonBonesAnimManager
 {
-    private static readonly Dictionary<string, DbArmature> animTemplatesById = new();
-    private static readonly Dictionary<string, List<DbArmature>> animInstancesById = new();
-
-    public static readonly Dictionary<int, DbArmature> animForSpriteIdDict = new();
-
     private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
-    private static readonly List<DbArmature> recentAnims;
+    private static readonly Dictionary<string, DbArmature> animTemplatesById = new();
+    private static readonly Dictionary<string, List<DbArmature>> freeAnimInstancesListsById = new();
+    private static readonly Dictionary<string, List<DbArmature>> usedAnimInstancesListsById = new();
+    private static readonly Dictionary<int, DbArmature> animForSpriteIdDict = new();
+
+
+    private static readonly Dictionary<DbArmature, int> lastUsedInFrameDict = new();
+
+    private static int lastUpdated = 0;
 
     public static DbArmature GetDragonBonesAnim(string skeletonName, string atlasName, Sprite sprite = null)
     {
-        if (sprite != null && animForSpriteIdDict.ContainsKey(sprite.id)) return animForSpriteIdDict[sprite.id];
+        if (SonOfRobinGame.CurrentUpdate - lastUpdated > 60 * 10) Update();
 
-        string id = $"{skeletonName}-{atlasName}";
-        if (!animTemplatesById.ContainsKey(id)) animTemplatesById[id] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
+        if (sprite != null && animForSpriteIdDict.ContainsKey(sprite.id))
+        {
+            lastUsedInFrameDict[animForSpriteIdDict[sprite.id]] = SonOfRobinGame.CurrentDraw;
+            return animForSpriteIdDict[sprite.id];
+        }
 
-        DbArmature dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[id]);
-        if (!animInstancesById.ContainsKey(id)) animInstancesById[id] = new();
-        animInstancesById[id].Add(dbArmatureInstance);
+        string armatureId = $"{skeletonName}-{atlasName}";
+        if (!animTemplatesById.ContainsKey(armatureId)) animTemplatesById[armatureId] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
 
-        if (sprite != null) animForSpriteIdDict[sprite.id] = dbArmatureInstance;
+        DbArmature dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
+        if (!usedAnimInstancesListsById.ContainsKey(armatureId)) usedAnimInstancesListsById[armatureId] = new();
+        usedAnimInstancesListsById[armatureId].Add(dbArmatureInstance);
+
+        if (sprite != null)
+        {
+            animForSpriteIdDict[sprite.id] = dbArmatureInstance;
+            lastUsedInFrameDict[dbArmatureInstance] = SonOfRobinGame.CurrentDraw;
+        }
 
         return dbArmatureInstance;
+    }
+
+    private static void Update()
+    {
+        lastUpdated = SonOfRobinGame.CurrentUpdate;
+
+        foreach (string armatureId in usedAnimInstancesListsById.Keys)
+        {
+            var unusedArmatures = usedAnimInstancesListsById[armatureId].Where(a => SonOfRobinGame.CurrentUpdate - lastUsedInFrameDict[a] > 60 * 10);
+        }
     }
 
     public static DbArmature CreateNewDragonBonesArmature(string skeletonName, string atlasName)
