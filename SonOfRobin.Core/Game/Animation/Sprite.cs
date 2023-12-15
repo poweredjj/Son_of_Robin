@@ -831,16 +831,15 @@ namespace SonOfRobin
                 Scene dragonBonesTestScene = Scene.GetTopSceneOfType(typeof(DragonBonesTestScene));
                 if (dragonBonesTestScene != null)
                 {
-                    DragonBonesAnim testPlayerAnim = ((DragonBonesTestScene)dragonBonesTestScene).GetDragonBonesAnim(this);
-                    testPlayerAnim.Update();
-                    DbArmature dbArmature = testPlayerAnim.dbArmature;
+                    DbArmature dbArmature = ((DragonBonesTestScene)dragonBonesTestScene).GetDragonBonesArmature(this);
+                    dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
 
                     if (this.AnimName.Contains("walk-") && (dbArmature.CurrentAnimation != "walk" || dbArmature.IsDoneAnimating()))
                     {
-                        testPlayerAnim.dbArmature.GotoAndPlay(animation: "walk", loop: true);
-                        testPlayerAnim.dbArmature.TimeScale = 1.0f;
+                        dbArmature.GotoAndPlay(animation: "walk", loop: true);
+                        dbArmature.TimeScale = 1.0f;
                     }
-                    else if (this.AnimName.Contains("stand-") && testPlayerAnim.dbArmature.CurrentAnimation != "stand" || dbArmature.IsDoneAnimating())
+                    else if (this.AnimName.Contains("stand-") && dbArmature.CurrentAnimation != "stand" || dbArmature.IsDoneAnimating())
                     {
                         dbArmature.GotoAndPlay(animation: "stand", loop: true);
                         dbArmature.TimeScale = 0.3f; // default animation is too fast
@@ -855,7 +854,9 @@ namespace SonOfRobin
                     Vector2 screenSpaceScale = originalScale / new Vector2(this.world.viewParams.ScaleX, this.world.viewParams.ScaleY);
 
                     SonOfRobinGame.SpriteBatch.End();
-                    testPlayerAnim.Draw(position: screenSpacePos, scale: screenSpaceScale, rotation: this.rotation, color: this.color * this.opacity);
+
+                    dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: screenSpacePos, rotation: this.rotation, scale: screenSpaceScale, color: this.color * this.opacity);
+
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
 
                     return;

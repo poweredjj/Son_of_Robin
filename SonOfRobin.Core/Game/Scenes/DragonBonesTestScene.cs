@@ -4,22 +4,21 @@ using DragonBonesMG.Display;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
     public class DragonBonesTestScene : Scene
     {
-        private readonly List<DragonBonesAnim> dragonBonesAnims;
-        public readonly Dictionary<Sprite, DragonBonesAnim> animsForSpritesDict;
+        private readonly List<DbArmature> dragonBonesArmatures;
+        public readonly Dictionary<Sprite, DbArmature> animsForSpritesDict;
 
         public DragonBonesTestScene(int priority = 0) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.dragonBonesAnims = new List<DragonBonesAnim>();
+            this.dragonBonesArmatures = new List<DbArmature>();
 
             var atlasAndSkeletonNamesList = new List<List<string>>
             {
-                //new List<string> { "Demon.json", "DemonTexture.json" },
+                new List<string> { "Demon.json", "DemonTexture.json" },
                 //new List<string> { "Sheep_ske.json", "Sheep_tex.json" },
                 //new List<string> { "Dragon_ske.json", "Dragon_tex.json" },
                 //new List<string> { "mecha_1004d_show_ske.json", "mecha_1004d_show_tex.json" },
@@ -28,24 +27,19 @@ namespace SonOfRobin
 
             foreach (List<string> list in atlasAndSkeletonNamesList)
             {
-                this.dragonBonesAnims.Add(DragonBonesAnim.GetDragonBonesAnim(skeletonName: list[0], atlasName: list[1]));
+                this.dragonBonesArmatures.Add(DragonBonesAnimManager.GetDragonBonesAnim(skeletonName: list[0], atlasName: list[1]));
             }
 
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    this.dragonBonesAnims.Add(new DragonBonesAnim(DbArmature.MakeTemplateCopy(this.dragonBonesAnims[0].dbArmature)));
-            //}
-
-            this.animsForSpritesDict = new Dictionary<Sprite, DragonBonesAnim>();
+            this.animsForSpritesDict = new Dictionary<Sprite, DbArmature>();
 
             //this.testPlayerAnim = new DragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
         }
 
-        public DragonBonesAnim GetDragonBonesAnim(Sprite sprite)
+        public DbArmature GetDragonBonesArmature(Sprite sprite)
         {
             if (!animsForSpritesDict.ContainsKey(sprite))
             {
-                animsForSpritesDict[sprite] = DragonBonesAnim.GetDragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
+                animsForSpritesDict[sprite] = DragonBonesAnimManager.GetDragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json");
             }
 
             return animsForSpritesDict[sprite];
@@ -53,10 +47,9 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            foreach (DragonBonesAnim dragonBonesAnim in this.dragonBonesAnims)
+            foreach (DbArmature dragonBonesAnim in this.dragonBonesArmatures)
             {
-                dragonBonesAnim.Update();
-                dragonBonesAnim.AutoRunAnim();
+                dragonBonesAnim.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
             }
         }
 
@@ -64,63 +57,39 @@ namespace SonOfRobin
         {
             float scale = (float)SonOfRobinGame.ScreenHeight / 250f;
 
-            for (int i = 0; i < this.dragonBonesAnims.Count; i++)
+            for (int i = 0; i < this.dragonBonesArmatures.Count; i++)
             {
-                DragonBonesAnim dragonBonesAnim = this.dragonBonesAnims[i];
-                dragonBonesAnim.Draw(position: new Vector2(100 * (i + 1), 130) * scale, scale: new Vector2(0.17f, 0.17f) * scale, color: Color.White);
+                DbArmature dbArmature = this.dragonBonesArmatures[i];
+
+                dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: new Vector2(100 * (i + 1), 130) * scale, rotation: 0f, scale: new Vector2(0.17f, 0.17f) * scale, color: Color.White);
             }
         }
     }
 
-    public class DragonBonesAnim
+    public class DragonBonesAnimManager
     {
         private static readonly string contentDirPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones");
 
-        private static readonly Dictionary<string, DragonBonesAnim> animsById = new Dictionary<string, DragonBonesAnim>();
+        private static readonly List<DbArmature> recentAnims;
+        private static readonly Dictionary<string, DbArmature> animTemplatesById = new();
 
-        private readonly string id;
-        public readonly DbArmature dbArmature;
-        private readonly string[] animNames;
-        private readonly Queue<string> animsToPlayQueue;
-
-        private static string GetId(string skeletonName, string atlasName)
-        { return $"{skeletonName}-{atlasName}"; }
-
-        public static DragonBonesAnim GetDragonBonesAnim(string skeletonName, string atlasName)
+        public static DbArmature GetDragonBonesAnim(string skeletonName, string atlasName)
         {
-            string id = GetId(skeletonName: skeletonName, atlasName: atlasName);
-            if (!animsById.ContainsKey(id)) animsById[id] = new DragonBonesAnim(skeletonName: skeletonName, atlasName: atlasName);
+            string id = $"{skeletonName}-{atlasName}";
+            if (!animTemplatesById.ContainsKey(id)) animTemplatesById[id] = CreateNewDragonBonesArmature(skeletonName: skeletonName, atlasName: atlasName);
 
-            return new DragonBonesAnim(DbArmature.MakeTemplateCopy(animsById[id].dbArmature));
+            return animTemplatesById[id];
         }
 
-        private DragonBonesAnim(string skeletonName, string atlasName)
+        public static DbArmature CreateNewDragonBonesArmature(string skeletonName, string atlasName)
         {
-            this.id = GetId(skeletonName: skeletonName, atlasName: atlasName);
-
-            string atlasPath = Path.Combine(contentDirPath, atlasName);
-            string skeletonPath = Path.Combine(contentDirPath, skeletonName);
-
             string atlasJsonData = ReadFile(Path.Combine(contentDirPath, atlasName));
             string skeletonJsonData = ReadFile(Path.Combine(contentDirPath, skeletonName));
 
             TextureAtlas textureAtlas = TextureAtlas.FromJsonData(atlasJsonData);
             textureAtlas.LoadContent(SonOfRobinGame.ContentMgr);
 
-            this.dbArmature = DragonBones.FromJsonData(skeletonJsonData, textureAtlas, SonOfRobinGame.GfxDev).Armature;
-            this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
-            this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
-
-            this.animsToPlayQueue = new Queue<string>();
-        }
-
-        private DragonBonesAnim(DbArmature dbArmature)
-        {
-            this.dbArmature = dbArmature;
-            this.animNames = this.dbArmature.Animations.Select(a => a.Name).ToArray();
-            this.dbArmature.GotoAndPlay(animation: this.animNames[0], loop: false);
-
-            this.animsToPlayQueue = new Queue<string>();
+            return DragonBones.FromJsonData(skeletonJsonData, textureAtlas, SonOfRobinGame.GfxDev).Armature;
         }
 
         private static string ReadFile(string path)
@@ -128,36 +97,6 @@ namespace SonOfRobin
             using var stream = TitleContainer.OpenStream(path);
             using var reader = new StreamReader(stream);
             return reader.ReadToEnd();
-        }
-
-        public void Update()
-        {
-            this.dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
-        }
-
-        public void AutoRunAnim()
-        {
-            if (this.dbArmature.IsDoneAnimating())
-            {
-                if (this.animsToPlayQueue.Count == 0)
-                {
-                    foreach (string animName in this.animNames)
-                    {
-                        for (int i = 0; i < SonOfRobinGame.random.Next(2, 5); i++)
-                        {
-                            this.animsToPlayQueue.Enqueue(animName);
-                        }
-                    }
-                    this.dbArmature.TimeScale = SonOfRobinGame.random.NextDouble() * 1.5;
-                }
-
-                this.dbArmature.GotoAndPlay(animation: this.animsToPlayQueue.Dequeue(), loop: false);
-            }
-        }
-
-        public void Draw(Vector2 position, Vector2 scale, Color color, float rotation = 0f)
-        {
-            this.dbArmature.Draw(s: SonOfRobinGame.SpriteBatch, position: position, rotation: rotation, scale: scale, color: color);
         }
     }
 }
