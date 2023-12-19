@@ -45,21 +45,22 @@ namespace SonOfRobin
             if (SonOfRobinGame.CurrentUpdate - lastUpdated > 60 * 3) Update();
 
             string armatureId = GetArmatureID(skeletonName: skeletonName, atlasName: atlasName);
+            DbArmature dbArmatureInstance;
 
             if (freeAnimInstancesQueuesById.ContainsKey(armatureId) && freeAnimInstancesQueuesById[armatureId].Count > 0)
             {
-                DbArmature dbArmature = freeAnimInstancesQueuesById[armatureId].Dequeue();
-                usedAnimInstancesSetsById[armatureId].Add(dbArmature);
-                animForSpriteDict[sprite] = dbArmature;
-                return dbArmature;
+                dbArmatureInstance = freeAnimInstancesQueuesById[armatureId].Dequeue();
+            }
+            else
+            {
+                CreateAnimTemplateIfMissing(armatureId: armatureId, skeletonName: skeletonName, atlasName: atlasName);
+                dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
+                // TODO replace with playing a fixed animation other than walk and stand
+                dbArmatureInstance.GotoAndPlay(animation: dbArmatureInstance.Animations.Select(a => a.Name).Last(), loop: false);
             }
 
-            CreateAnimTemplateIfMissing(armatureId: armatureId, skeletonName: skeletonName, atlasName: atlasName);
-
-            DbArmature dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
             usedAnimInstancesSetsById[armatureId].Add(dbArmatureInstance);
             animForSpriteDict[sprite] = dbArmatureInstance;
-
             return dbArmatureInstance;
         }
 
