@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -269,6 +270,8 @@ namespace SonOfRobin
             BearGray = 193,
             BearRed = 194,
             BearBeige = 195,
+
+            DragonBonesTest1 = 301,
 
             TentModern = 196,
             TentModernPacked = 197,
@@ -1972,6 +1975,11 @@ namespace SonOfRobin
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
                     break;
 
+                case PkgName.DragonBonesTest1:
+                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json");
+
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
             }
@@ -2137,6 +2145,22 @@ namespace SonOfRobin
             }
 
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
+        }
+
+        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName)
+        {
+            var jsonData = FileReaderWriter.LoadJson(path: Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName));
+            var animDict = (JObject)jsonData;
+
+            string atlasName = ((string)animDict["imagePath"]).Replace(".png", "");
+            string atlasImagePath = $"_DragonBones/{atlasName}";
+
+            Texture2D atlasTexture = TextureBank.GetTexture(atlasImagePath); // for testing
+
+
+            var animDataList = animDict["SubTexture"];
+
+            var a = 1;
         }
 
         private static string JsonDataPath

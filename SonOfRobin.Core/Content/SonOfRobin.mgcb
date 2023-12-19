@@ -91,13 +91,10 @@
 #begin fonts/VCR_OSD_MONO_1.001.ttf
 /copy:fonts/VCR_OSD_MONO_1.001.ttf
 
-#begin gfx/_DragonBones/Demon.json
-/copy:gfx/_DragonBones/Demon.json
+#begin gfx/_DragonBones/ubbie_tex.json
+/copy:gfx/_DragonBones/ubbie_tex.json
 
-#begin gfx/_DragonBones/DemonTexture.json
-/copy:gfx/_DragonBones/DemonTexture.json
-
-#begin gfx/_DragonBones/DemonTexture.png
+#begin gfx/_DragonBones/ubbie_tex.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,79 +104,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/DemonTexture.png
-
-#begin gfx/_DragonBones/Dragon_ske.json
-/copy:gfx/_DragonBones/Dragon_ske.json
-
-#begin gfx/_DragonBones/Dragon_tex.json
-/copy:gfx/_DragonBones/Dragon_tex.json
-
-#begin gfx/_DragonBones/Dragon_tex.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/Dragon_tex.png
-
-#begin gfx/_DragonBones/mecha_1004d_show_ske.json
-/copy:gfx/_DragonBones/mecha_1004d_show_ske.json
-
-#begin gfx/_DragonBones/mecha_1004d_show_tex.json
-/copy:gfx/_DragonBones/mecha_1004d_show_tex.json
-
-#begin gfx/_DragonBones/mecha_1004d_show_tex.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/mecha_1004d_show_tex.png
-
-#begin gfx/_DragonBones/Sheep_ske.json
-/copy:gfx/_DragonBones/Sheep_ske.json
-
-#begin gfx/_DragonBones/Sheep_tex.json
-/copy:gfx/_DragonBones/Sheep_tex.json
-
-#begin gfx/_DragonBones/Sheep_tex.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/Sheep_tex.png
-
-#begin gfx/_DragonBones/Ubbie_ske.json
-/copy:gfx/_DragonBones/Ubbie_ske.json
-
-#begin gfx/_DragonBones/Ubbie_tex.json
-/copy:gfx/_DragonBones/Ubbie_tex.json
-
-#begin gfx/_DragonBones/Ubbie_tex.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/Ubbie_tex.png
+/build:gfx/_DragonBones/ubbie_tex.png
 
 #begin gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
 /importer:TextureImporter
