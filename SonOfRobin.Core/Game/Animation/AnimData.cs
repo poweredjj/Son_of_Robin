@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000034f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000035f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -1976,7 +1976,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.DragonBonesTest1:
-                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 1);
+                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 1, baseAnimsFaceRight: false);
 
                     break;
 
@@ -2146,7 +2146,7 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize)
+        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, bool baseAnimsFaceRight)
         {
             var jsonData = FileReaderWriter.LoadJson(path: Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName));
             var jsonDict = (JObject)jsonData;
@@ -2163,17 +2163,22 @@ namespace SonOfRobin
                 int underscoreIndex = name.LastIndexOf('_');
                 int frameNoIndex = underscoreIndex + 1;
 
-                string animName = name.Substring(0, underscoreIndex);
+                string baseAnimName = name.Substring(0, underscoreIndex);
                 int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
-
-                if (!animDict.ContainsKey(animName)) animDict[animName] = new Dictionary<int, AnimFrame>();
 
                 int atlasX = (int)animData["x"];
                 int atlasY = (int)animData["y"];
                 int width = (int)animData["width"];
                 int height = (int)animData["height"];
 
-                animDict[animName][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: 0, crop: false, padding: 0);
+                foreach (string direction in new string[] { "right", "left" })
+                {
+                    string animNameWithDirection = $"{baseAnimName}_{direction}";
+
+                    if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
+
+                    animDict[animNameWithDirection][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: direction == "left" ? !baseAnimsFaceRight : baseAnimsFaceRight);
+                }
             }
 
             foreach (var kvp1 in animDict)
@@ -2190,8 +2195,6 @@ namespace SonOfRobin
 
                 AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
             }
-
-            // TODO add -right (as is) and -left (mirrored)
         }
 
         private static string JsonDataPath

@@ -165,7 +165,7 @@ namespace SonOfRobin
             return croppedTexture;
         }
 
-        public static Texture2D CropTextureAndAddPadding(Texture2D baseTexture, Rectangle cropRect, int padding)
+        public static Texture2D CropTextureAndAddPadding(Texture2D baseTexture, Rectangle cropRect, int padding, bool mirrorX = false)
         {
             Color[] colorData = new Color[cropRect.Width * cropRect.Height];
             baseTexture.GetData(0, cropRect, colorData, 0, cropRect.Width * cropRect.Height);
@@ -181,9 +181,19 @@ namespace SonOfRobin
                 int yMultipliedOutput = y * paddedWidth;
                 int yMultipliedInput = y * cropRect.Width;
 
-                for (int x = 0; x < cropRect.Width; x++)
+                if (mirrorX)
                 {
-                    paddedArray1D[yMultipliedOutput + x] = colorData[yMultipliedInput + x];
+                    for (int x = 0; x < cropRect.Width; x++)
+                    {
+                        paddedArray1D[yMultipliedOutput + x] = colorData[yMultipliedInput + (cropRect.Width - x - 1)];
+                    }
+                }
+                else
+                {
+                    for (int x = 0; x < cropRect.Width; x++)
+                    {
+                        paddedArray1D[yMultipliedOutput + x] = colorData[yMultipliedInput + x];
+                    }
                 }
             }
 
