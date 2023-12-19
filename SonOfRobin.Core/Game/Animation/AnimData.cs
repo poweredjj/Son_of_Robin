@@ -1976,7 +1976,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.DragonBonesTest1:
-                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json");
+                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 1);
 
                     break;
 
@@ -2146,7 +2146,7 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName)
+        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize)
         {
             var jsonData = FileReaderWriter.LoadJson(path: Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName));
             var jsonDict = (JObject)jsonData;
@@ -2170,14 +2170,28 @@ namespace SonOfRobin
 
                 int atlasX = (int)animData["x"];
                 int atlasY = (int)animData["y"];
+                int width = (int)animData["width"];
+                int height = (int)animData["height"];
 
-                int croppedWidth = (int)animData["width"];
-                int croppedHeight = (int)animData["height"];
-                int frameWidth = (int)animData["frameWidth"];
-                int frameHeight = (int)animData["frameHeight"];
-
-                animDict[animName][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: croppedWidth, height: croppedHeight, layer: 1, duration: 0, crop: false, scale: 1f);
+                animDict[animName][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: 0, crop: false, padding: 0);
             }
+
+            foreach (var kvp1 in animDict)
+            {
+                string animName = (string)kvp1.Key;
+                var frameDict = kvp1.Value;
+                int framesCount = frameDict.Keys.Max() + 1;
+
+                AnimFrame[] frameArray = new AnimFrame[framesCount];
+                foreach (var kvp2 in frameDict)
+                {
+                    frameArray[kvp2.Key] = kvp2.Value;
+                }
+
+                AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
+            }
+
+            // TODO add -right (as is) and -left (mirrored)
         }
 
         private static string JsonDataPath
