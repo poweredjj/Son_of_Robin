@@ -55,7 +55,7 @@ namespace SonOfRobin
             {
                 CreateAnimTemplateIfMissing(armatureId: armatureId, skeletonName: skeletonName, atlasName: atlasName);
                 dbArmatureInstance = DbArmature.MakeTemplateCopy(animTemplatesById[armatureId]);
-                // TODO replace with playing a fixed animation other than walk and stand
+                // TODO replace with playing a fixed animation name (other than walk and stand)
                 dbArmatureInstance.GotoAndPlay(animation: dbArmatureInstance.Animations.Select(a => a.Name).Last(), loop: false);
             }
 

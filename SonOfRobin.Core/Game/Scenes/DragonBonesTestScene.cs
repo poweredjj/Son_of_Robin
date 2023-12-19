@@ -1,6 +1,7 @@
 ﻿using DragonBonesMG.Core;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -23,7 +24,10 @@ namespace SonOfRobin
 
             foreach (List<string> list in atlasAndSkeletonNamesList)
             {
-                this.dragonBonesArmatures.Add(DragonBonesAnimManager.GetDragonBonesAnimUnmanaged(skeletonName: list[0], atlasName: list[1]));
+                DbArmature dbArmatureInstance = DragonBonesAnimManager.GetDragonBonesAnimUnmanaged(skeletonName: list[0], atlasName: list[1]);
+                dbArmatureInstance.GotoAndPlay(dbArmatureInstance.Animations.Select(a => a.Name).First(), loop: false);
+
+                this.dragonBonesArmatures.Add(dbArmatureInstance);
             }
         }
 
@@ -32,6 +36,14 @@ namespace SonOfRobin
             foreach (DbArmature dragonBonesAnim in this.dragonBonesArmatures)
             {
                 dragonBonesAnim.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
+
+                if (dragonBonesAnim.IsDoneAnimating())
+                {
+                    string[] animNames = dragonBonesAnim.Animations.Select(a => a.Name).ToArray();
+                    string nextAnimName = animNames[SonOfRobinGame.random.Next(animNames.Length)];
+
+                    dragonBonesAnim.GotoAndPlay(animation: nextAnimName, loop: false);
+                }
             }
         }
 
