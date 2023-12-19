@@ -2011,7 +2011,6 @@ namespace SonOfRobin
 
         public static AnimFrame ConvertImageToFrame(string atlasName, int layer, int x = 0, int y = 0, int width = 0, int height = 0, short duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
-
             return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
@@ -2150,17 +2149,35 @@ namespace SonOfRobin
         public static void AddDragonBonesPackage(PkgName pkgName, string jsonName)
         {
             var jsonData = FileReaderWriter.LoadJson(path: Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName));
-            var animDict = (JObject)jsonData;
+            var jsonDict = (JObject)jsonData;
 
-            string atlasName = ((string)animDict["imagePath"]).Replace(".png", "");
-            string atlasImagePath = $"_DragonBones/{atlasName}";
+            string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
 
-            Texture2D atlasTexture = TextureBank.GetTexture(atlasImagePath); // for testing
+            var animDataList = jsonDict["SubTexture"];
 
+            var animDict = new Dictionary<string, Dictionary<int, AnimFrame>>();
 
-            var animDataList = animDict["SubTexture"];
+            foreach (var animData in animDataList)
+            {
+                string name = (string)animData["name"];
+                int underscoreIndex = name.LastIndexOf('_');
+                int frameNoIndex = underscoreIndex + 1;
 
-            var a = 1;
+                string animName = name.Substring(0, underscoreIndex);
+                int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
+
+                if (!animDict.ContainsKey(animName)) animDict[animName] = new Dictionary<int, AnimFrame>();
+
+                int atlasX = (int)animData["x"];
+                int atlasY = (int)animData["y"];
+
+                int croppedWidth = (int)animData["width"];
+                int croppedHeight = (int)animData["height"];
+                int frameWidth = (int)animData["frameWidth"];
+                int frameHeight = (int)animData["frameHeight"];
+
+                animDict[animName][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: croppedWidth, height: croppedHeight, layer: 1, duration: 0, crop: false, scale: 1f);
+            }
         }
 
         private static string JsonDataPath
