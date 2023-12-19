@@ -23,7 +23,7 @@ namespace SonOfRobin
 
             foreach (List<string> list in atlasAndSkeletonNamesList)
             {
-                this.dragonBonesArmatures.Add(DragonBonesAnimManager.GetDragonBonesAnim(skeletonName: list[0], atlasName: list[1]));
+                this.dragonBonesArmatures.Add(DragonBonesAnimManager.GetDragonBonesAnimUnmanaged(skeletonName: list[0], atlasName: list[1]));
             }
         }
 

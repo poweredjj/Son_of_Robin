@@ -828,7 +828,7 @@ namespace SonOfRobin
             //if (this.boardPiece.GetType() == typeof(Player) && Preferences.DebugShowDragonBonesAnims)
             if (this.boardPiece.IsAnimalOrPlayer && Preferences.debugEnableDragonBonesGameAnims)
             {
-                DbArmature dbArmature = DragonBonesAnimManager.GetDragonBonesAnim(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json", sprite: this);
+                DbArmature dbArmature = DragonBonesAnimManager.GetDragonBonesAnimForSprite(atlasName: "Ubbie_tex.json", skeletonName: "Ubbie_ske.json", sprite: this);
 
                 dbArmature.Update(SonOfRobinGame.CurrentGameTime.ElapsedGameTime);
 

@@ -309,7 +309,7 @@ namespace SonOfRobin
         public static bool debugShowNamedLocationAreas = false;
         public static bool debugShowWireframe = false;
         public static bool debugDisableParticles = false;
-        public static bool debugEnableDragonBonesGameAnims = false;
+        public static bool debugEnableDragonBonesGameAnims = true;
         private static bool debugShowDragonBonesTestScene = false;
 
         public static bool DebugShowDragonBonesTestScene
