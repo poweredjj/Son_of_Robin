@@ -1225,10 +1225,6 @@ namespace SonOfRobin
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe");
                         new Selector(menu: menu, name: "show outside camera", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowOutsideCamera");
 
-                        new Selector(menu: menu, name: "DragonBones test scene", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowDragonBonesTestScene");
-
-                        new Selector(menu: menu, name: "use DragonBones test anims", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableDragonBonesGameAnims");
-
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 

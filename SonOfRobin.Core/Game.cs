@@ -202,10 +202,7 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            //new DragonBonesTestScene();
             new InitialLoader();
-
-            //Preferences.debugEnableDragonBonesGameAnims = true; // for testing
         }
 
         public void OnResize(Object sender, EventArgs e)

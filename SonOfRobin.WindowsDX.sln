@@ -5,11 +5,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.WindowsDX", "SonOfRobin.WindowsDX\SonOfRobin.WindowsDX.csproj", "{FD936D05-85A3-4CF0-9D30-160BEE7F849F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.Core", "SonOfRobin.Core\SonOfRobin.Core.csproj", "{33F2B484-5C3E-4724-B7B9-79FB4009E952}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602} = {CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragonBonesMG", "DragonBonesMG\DragonBonesMG.csproj", "{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +20,6 @@ Global
 		{33F2B484-5C3E-4724-B7B9-79FB4009E952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33F2B484-5C3E-4724-B7B9-79FB4009E952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33F2B484-5C3E-4724-B7B9-79FB4009E952}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCE03DBD-DC2E-4540-B8F1-30CB4EB94602}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

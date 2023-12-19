@@ -116,7 +116,7 @@ namespace SonOfRobin
                 Player player = this.piece.world.Player;
                 if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive || this.piece.world.SpectatorMode) return true;
 
-                var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter), typeof(DragonBonesTestScene) };
+                var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter) };
 
                 var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType())).ToList();
                 if (stackToSearch.Count == 0) return true;
