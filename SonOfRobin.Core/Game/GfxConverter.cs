@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats.Png;
@@ -165,7 +166,7 @@ namespace SonOfRobin
             return croppedTexture;
         }
 
-        public static Texture2D CropTextureAndAddPadding(Texture2D baseTexture, Rectangle cropRect, int padding, bool mirrorX = false)
+        public static Texture2D CropTextureAndAddPaddingCpu(Texture2D baseTexture, Rectangle cropRect, int padding, bool mirrorX = false)
         {
             Color[] colorData = new Color[cropRect.Width * cropRect.Height];
             baseTexture.GetData(0, cropRect, colorData, 0, cropRect.Width * cropRect.Height);
@@ -201,6 +202,26 @@ namespace SonOfRobin
             texture.SetData(paddedArray1D);
 
             return texture;
+        }
+
+        public static Texture2D CropTextureAndAddPaddingGpu(Texture2D baseTexture, Rectangle cropRect, int padding, bool mirrorX = false)
+        {
+            int paddedWidth = cropRect.Width + (padding * 2);
+            int paddedHeight = cropRect.Height + (padding * 2);
+
+            RenderTarget2D croppedTexture = new(SonOfRobinGame.GfxDev, paddedWidth, paddedHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+            Scene.SetRenderTarget(croppedTexture);
+            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+
+            Rectangle destRect = new(x: padding, y: padding, width: cropRect.Width, height: cropRect.Height);
+
+            SonOfRobinGame.SpriteBatch.Draw(texture: baseTexture, sourceRectangle: cropRect, origin: Vector2.Zero, destinationRectangle: destRect, color: Color.White, rotation: 0f, effects: mirrorX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth: 0);
+
+            SonOfRobinGame.SpriteBatch.End();
+            Scene.SetRenderTarget(null);
+
+            return croppedTexture;
         }
 
         public static Color[,] ConvertTextureToGrid(Texture2D texture, int x, int y, int width, int height)
@@ -274,7 +295,7 @@ namespace SonOfRobin
                 // Resize the image
                 image.Mutate(x => x.Resize(new ResizeOptions
                 {
-                    Size = new Size(newWidth, newHeight),
+                    Size = new SixLabors.ImageSharp.Size(newWidth, newHeight),
                     Mode = ResizeMode.Max
                 }));
 

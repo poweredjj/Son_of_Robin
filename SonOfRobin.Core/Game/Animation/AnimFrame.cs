@@ -159,7 +159,7 @@ namespace SonOfRobin
                 Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
 
                 // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-                this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
+                this.texture = GfxConverter.CropTextureAndAddPaddingGpu(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
                 GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
                 AnimData.foundFramePngs.Add(this.PngName);
 
