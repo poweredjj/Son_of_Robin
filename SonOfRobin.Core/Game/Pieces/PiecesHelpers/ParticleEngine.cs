@@ -56,6 +56,7 @@ namespace SonOfRobin
             WindLeaf = 31,
             WindPetal = 32,
 
+            WaterDistortWalk = 41,
             HeatSmall = 33,
             HeatMedium = 34,
             HeatBig = 35,
@@ -74,6 +75,7 @@ namespace SonOfRobin
                 { Preset.Smelting, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterDistortWalk, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterSplashCine, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterWave, TextureBank.TextureName.ParticleCircleSoft },
@@ -660,12 +662,49 @@ namespace SonOfRobin
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.42f,
+                                            StartValue = 0.38f,
                                             EndValue = 0f
                                         },
                                     }
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterDistortWalk:
+                    {
+                        drawAsDistortion = true;
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 3000, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = new Range<float>(0.1f, 0.4f),
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(8f, 16f),
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.7f),
+                                            EndValue = new Vector2(1.8f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.18f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
                             }
                         };
                         break;
@@ -1828,6 +1867,7 @@ namespace SonOfRobin
                 Preset.Cooking => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top),
                 Preset.Brewing => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.WaterWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.WaterDistortWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterSplashCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.MudWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),

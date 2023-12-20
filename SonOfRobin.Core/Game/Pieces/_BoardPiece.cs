@@ -1088,6 +1088,7 @@ namespace SonOfRobin
                         int particlesToEmit = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 0, newMax: 9, oldVal: Terrain.waterLevelMax - this.sprite.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
 
                         ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: particlesToEmit, duration: 1);
+                        ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterDistortWalk, particlesToEmit: particlesToEmit / 2, duration: 1);
                     }
 
                     if (!isInWater && this.GetType() == typeof(Player) && !this.sprite.IgnoresCollisions && this.sprite.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp))
