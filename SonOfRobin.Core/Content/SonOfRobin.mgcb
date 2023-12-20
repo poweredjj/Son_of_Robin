@@ -1198,6 +1198,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_granite.png
 
+#begin gfx/_processed_grass_desert_s0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_grass_desert_s0.png
+
+#begin gfx/_processed_grass_desert_s1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_grass_desert_s1.png
+
 #begin gfx/_processed_grass_regular_x3.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1486,6 +1510,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_iron_bar.png
 
+#begin gfx/_processed_iron_deposit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_iron_deposit.png
+
 #begin gfx/_processed_iron_ore.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1594,6 +1630,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_lantern_on.png
 
+#begin gfx/_processed_leather.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_leather.png
+
 #begin gfx/_processed_map_item.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1617,6 +1665,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_map_marker.png
+
+#begin gfx/_processed_meal_standard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_meal_standard.png
 
 #begin gfx/_processed_meat_dried.png
 /importer:TextureImporter
@@ -2326,6 +2386,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_music_note.png
 
+#begin gfx/_processed_nail.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_nail.png
+
 #begin gfx/_processed_palmtree_s1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2446,6 +2518,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_potion_black.png
 
+#begin gfx/_processed_potion_blue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_blue.png
+
 #begin gfx/_processed_potion_brown.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2457,6 +2541,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_potion_brown.png
+
+#begin gfx/_processed_potion_cyan.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_cyan.png
 
 #begin gfx/_processed_potion_dark_green.png
 /importer:TextureImporter
@@ -2494,6 +2590,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_potion_dark_yellow.png
 
+#begin gfx/_processed_potion_green.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_green.png
+
+#begin gfx/_processed_potion_red.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_red.png
+
 #begin gfx/_processed_potion_transparent.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2505,6 +2625,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_potion_transparent.png
+
+#begin gfx/_processed_potion_violet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_violet.png
+
+#begin gfx/_processed_potion_yellow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_potion_yellow.png
 
 #begin gfx/_processed_rope.png
 /importer:TextureImporter
@@ -3117,6 +3261,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_wood_hard.png
+
+#begin gfx/_processed_wood_plank.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_wood_plank.png
 
 #begin gfx/_processed_wood_regular.png
 /importer:TextureImporter
@@ -4258,18 +4414,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/chests.png
 
-#begin gfx/craft_items.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/craft_items.png
-
 #begin gfx/cursor.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4281,18 +4425,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/cursor.png
-
-#begin gfx/d9ffec650d3104f5c4564c9055787530.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/d9ffec650d3104f5c4564c9055787530.png
 
 #begin gfx/explosion.png
 /importer:TextureImporter
@@ -4306,42 +4438,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/explosion.png
 
-#begin gfx/fancy_food.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/fancy_food.png
-
-#begin gfx/fancy_food2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/fancy_food2.png
-
-#begin gfx/farm1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/farm1.png
-
 #begin gfx/flames.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4353,18 +4449,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/flames.jpg
-
-#begin gfx/flowers.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/flowers.png
 
 #begin gfx/furnace/furnace_construction_0.png
 /importer:TextureImporter
@@ -4425,18 +4509,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/furnace/furnace_on.png
-
-#begin gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png
 
 #begin gfx/gfx_corrupted.png
 /importer:TextureImporter
@@ -8181,18 +8253,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/particles/water_drop.png
-
-#begin gfx/qYFvsmq.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/qYFvsmq.png
 
 #begin gfx/repeating_textures/beach_bright.png
 /importer:TextureImporter
