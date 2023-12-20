@@ -433,38 +433,38 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.FlowersWhite:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 32, y: 352, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
+                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 0));
                     break;
 
                 case PkgName.FlowersYellow1:
                     {
                         int layer = 0;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 0, y: 352, width: 32, height: 32));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_1_s1", layer: layer));
                         break;
                     }
 
                 case PkgName.FlowersYellow2:
                     {
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_2_s0", layer: 0, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_2_s1", layer: 1, scale: 0.5f));
                         break;
                     }
 
                 case PkgName.FlowersRed:
                     {
                         int layer = 0;
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 0, y: 320, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 64, y: 352, width: 32, height: 32));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_red", layer: layer));
                         break;
                     }
 
                 case PkgName.Rushes:
                     {
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: 1, x: 96, y: 192, width: 32, height: 32));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_rushes", layer: 1));
                         break;
                     }
 
@@ -478,8 +478,8 @@ namespace SonOfRobin
                     }
 
                 case PkgName.GrassRegular:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
-                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 1, x: 32, y: 320, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
+                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 1));
                     AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_regular_x3", layer: 1));
 
                     break;
@@ -532,8 +532,8 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "qYFvsmq", layer: layer, x: 352, y: 320, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "qYFvsmq", layer: layer, x: 288, y: 320, width: 32, height: 64));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cactus_s0", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cactus_s1", layer: layer));
                         break;
                     }
 
@@ -542,9 +542,9 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_small", layer: layer, scale: 0.7f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 123, y: 326, width: 69, height: 80, crop: false));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 8, y: 145, width: 66, height: 102, crop: false));
-                        AddFrameArray(pkgName: pkgName, animSize: 3, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 108, y: 145, width: 72, height: 102, crop: false));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s2", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 3, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s3", layer: layer));
                         break;
                     }
 
@@ -553,8 +553,8 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_tall", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: layer, x: 199, y: 382, width: 47, height: 66));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: layer, x: 0, y: 0, width: 63, height: 97));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_big_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_big_s2", layer: layer));
                         break;
                     }
 
@@ -563,8 +563,8 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 192, y: 352, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 160, y: 320, width: 32, height: 64));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s2", layer: layer));
                         break;
                     }
 
@@ -573,8 +573,8 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tileb", layer: layer, x: 128, y: 192, width: 32, height: 32));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tileb", layer: layer, x: 160, y: 192, width: 32, height: 64));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_s2", layer: layer));
                         break;
                     }
 
@@ -583,15 +583,15 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.WaterLily1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily1", layer: 0));
                     break;
 
                 case PkgName.WaterLily2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily2", layer: 0));
                     break;
 
                 case PkgName.WaterLily3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: 0, x: 448, y: 0, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily3", layer: 0));
                     break;
 
                 case PkgName.MineralsBig1:
@@ -1013,7 +1013,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Stick:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "sticks", layer: 0, x: 26, y: 73, width: 25, height: 21));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stick", layer: 0));
                     break;
 
                 case PkgName.Stone:
@@ -1069,7 +1069,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Clam:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 128, y: 256, width: 64, height: 64, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clam", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.MeatRawRegular:
@@ -1121,19 +1121,19 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.PickaxeWood:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 0, y: 384, width: 48, height: 48, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_wood", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.PickaxeStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 48, y: 384, width: 48, height: 48, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_stone", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.PickaxeIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 192, y: 384, width: 48, height: 48, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_iron", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.PickaxeCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 384, y: 384, width: 48, height: 48, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_crystal", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.ScytheStone:
@@ -1248,15 +1248,15 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Coal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 288, y: 144, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.IronOre:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 48, y: 144, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_ore", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.IronBar:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 48, y: 96, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_bar", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.IronRod:
@@ -1268,7 +1268,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.GlassSand:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tools_gravel", layer: 0, x: 192, y: 144, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glass_sand", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.Crystal:
@@ -1713,19 +1713,19 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.BloodSplatter1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 416, y: 320, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_1", layer: 0));
                     break;
 
                 case PkgName.BloodSplatter2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 448, y: 320, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_2", layer: 0));
                     break;
 
                 case PkgName.BloodSplatter3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_3", layer: 0));
                     break;
 
                 case PkgName.HumanSkeleton:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_rtp-addons", layer: 0, x: 320, y: 160, width: 32, height: 32));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_human_skeleton-addons", layer: 0));
                     break;
 
                 case PkgName.Hole:
