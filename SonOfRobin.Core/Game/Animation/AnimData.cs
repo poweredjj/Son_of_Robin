@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -2148,7 +2150,8 @@ namespace SonOfRobin
 
         public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, bool baseAnimsFaceRight)
         {
-            var jsonData = FileReaderWriter.LoadJson(path: Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName));
+            string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
+            var jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
             var jsonDict = (JObject)jsonData;
 
             string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
@@ -2196,6 +2199,7 @@ namespace SonOfRobin
                 AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
             }
         }
+
 
         private static string JsonDataPath
         { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
@@ -2273,19 +2277,19 @@ namespace SonOfRobin
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
 
-            var usedAtlasNames = new HashSet<string>();
+            var atlasesToDispose = new HashSet<string>();
             foreach (AnimFrame[] frameArray in frameArrayById.Values)
             {
                 foreach (AnimFrame animFrame in frameArray)
                 {
                     if (animFrame.atlasName != null &&
-                        (animFrame.atlasName.StartsWith("_processed_") || !usedAtlasNames.Contains(animFrame.atlasName)))
+                        (!animFrame.atlasName.StartsWith("_processed_") && !atlasesToDispose.Contains(animFrame.atlasName)))
                     {
-                        usedAtlasNames.Add(animFrame.atlasName);
+                        atlasesToDispose.Add(animFrame.atlasName);
                     }
                 }
             }
-            foreach (string atlasName in usedAtlasNames)
+            foreach (string atlasName in atlasesToDispose)
             {
                 TextureBank.DisposeTexture(atlasName);
             }
