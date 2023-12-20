@@ -563,8 +563,8 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s1", layer: layer));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s2", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_1_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_1_s2", layer: layer));
                         break;
                     }
 
@@ -573,8 +573,8 @@ namespace SonOfRobin
                         int layer = 1;
 
                         AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_s1", layer: layer));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_s2", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s1", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s2", layer: layer));
                         break;
                     }
 
@@ -1725,7 +1725,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.HumanSkeleton:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_human_skeleton-addons", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_human_skeleton", layer: 0));
                     break;
 
                 case PkgName.Hole:
