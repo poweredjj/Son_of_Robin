@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000035f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000036f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -480,21 +480,21 @@ namespace SonOfRobin
                 case PkgName.GrassRegular:
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
                     AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: 1, x: 32, y: 320, width: 32, height: 32));
-                    AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "grass_regular_x3", layer: 1));
+                    AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_regular_x3", layer: 1));
 
                     break;
 
                 case PkgName.PlantPoison:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "plant_poison", layer: 0, scale: 0.4f));
-                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "plant_poison", layer: 1, scale: 0.6f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 0, scale: 0.4f));
+                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 1, scale: 0.6f));
                     break;
 
                 case PkgName.CoffeeShrub:
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "coffee_shrub", layer: layer, scale: 0.06f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_shrub", layer: layer, scale: 0.06f));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_shrub", layer: layer, scale: 0.06f));
                         break;
                     }
 
@@ -502,8 +502,8 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "carrot_plant_empty", layer: layer, scale: 0.1f));
-                        AddFrameArray(pkgName: pkgName, animName: "has_fruits", frameArray: ConvertImageToFrameArray(atlasName: "carrot_plant_has_carrot", layer: layer, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot_plant_empty", layer: layer, scale: 0.1f));
+                        AddFrameArray(pkgName: pkgName, animName: "has_fruits", frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot_plant_has_carrot", layer: layer, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
                         break;
                     }
 
@@ -511,9 +511,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tomato_plant_small", layer: layer, scale: 0.1f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tomato_plant_medium", layer: layer, scale: 0.08f));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tomato_plant_big", layer: layer, scale: 0.08f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_small", layer: layer, scale: 0.1f));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_medium", layer: layer, scale: 0.08f));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_big", layer: layer, scale: 0.08f));
 
                         break;
                     }
@@ -522,9 +522,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animSize: 0, frameArray: ConvertImageToFrameArray(atlasName: "mushroom_plant", layer: layer, scale: 0.6f));
-                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "mushroom_plant", layer: layer, scale: 0.8f));
-                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "mushroom_plant", layer: layer, scale: 1.0f));
+                        AddFrameArray(pkgName: pkgName, animSize: 0, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 0.6f));
+                        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 0.8f));
+                        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 1.0f));
                         break;
                     }
 
@@ -541,7 +541,7 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "palmtree_small", layer: layer, scale: 0.7f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_small", layer: layer, scale: 0.7f));
                         AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 123, y: 326, width: 69, height: 80, crop: false));
                         AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 8, y: 145, width: 66, height: 102, crop: false));
                         AddFrameArray(pkgName: pkgName, animSize: 3, frameArray: ConvertImageToFrameArray(atlasName: "NicePng_pine-tree-clipart-png_1446450", layer: layer, x: 108, y: 145, width: 72, height: 102, crop: false));
@@ -552,7 +552,7 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "sapling_tall", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_tall", layer: layer, scale: 0.5f));
                         AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: layer, x: 199, y: 382, width: 47, height: 66));
                         AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tile_19ba32a6", layer: layer, x: 0, y: 0, width: 63, height: 97));
                         break;
@@ -562,7 +562,7 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
                         AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 192, y: 352, width: 32, height: 32));
                         AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tile_custom01", layer: layer, x: 160, y: 320, width: 32, height: 64));
                         break;
@@ -572,14 +572,14 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "sapling_short", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
                         AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "tileb", layer: layer, x: 128, y: 192, width: 32, height: 32));
                         AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "tileb", layer: layer, x: 160, y: 192, width: 32, height: 64));
                         break;
                     }
 
                 case PkgName.TreeStump:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tree_stump", layer: 1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_stump", layer: 1, scale: 1f));
                     break;
 
                 case PkgName.WaterLily1:
@@ -595,152 +595,152 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.MineralsBig1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_3", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_3", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_4", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_4", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig5:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_5", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_5", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig6:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_6", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_6", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig7:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_7", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_7", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig8:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_8", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_8", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig9:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_9", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_9", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig10:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_10", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_10", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig11:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_11", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_11", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig12:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_12", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_12", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig13:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_13", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_13", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsBig14:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_big_14", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_14", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsSmall1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_small_1", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_1", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsSmall2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsSmall3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_small_3", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_3", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsSmall4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsMossyBig1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig5:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig6:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig7:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.4f));
 
                     break;
 
                 case PkgName.MineralsMossyBig8:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig9:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig10:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig11:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossyBig12:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.4f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                     break;
 
                 case PkgName.MineralsMossySmall1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.MineralsMossySmall2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.MineralsMossySmall3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.MineralsMossySmall4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.MineralsCave:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
                     break;
 
                 case PkgName.JarWhole:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_jar_sealed", layer: 1, scale: 0.6f));
                     break;
 
                 case PkgName.JarBroken:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "jar_broken", layer: 1, scale: 0.6f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_jar_broken", layer: 1, scale: 0.6f));
                     break;
 
                 case PkgName.ChestWooden:
@@ -768,11 +768,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.WoodLogRegular:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "wood_regular", layer: 1, scale: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wood_regular", layer: 1, scale: 0.75f));
                     break;
 
                 case PkgName.WoodLogHard:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "wood_hard", layer: 1, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wood_hard", layer: 1, scale: 0.5f));
                     break;
 
                 case PkgName.WoodPlank:
@@ -784,11 +784,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Rope:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "rope", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_rope", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.HideCloth:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "hidecloth", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hidecloth", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.Crate:
@@ -811,9 +811,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_essential", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_essential", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_essential", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -821,9 +821,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_basic", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_basic", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_basic", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -831,9 +831,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_advanced", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_advanced", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_advanced", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -841,9 +841,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_master", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_master", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_master", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -851,8 +851,8 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_meat_harvesting_off", layer: layer, scale: 0.5f));
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_meat_harvesting_on", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_meat_harvesting_off", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_meat_harvesting_on", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -860,9 +860,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_basic", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_leather_basic", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_basic", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -870,9 +870,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_advanced", layer: layer, scale: 0.5f));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "workshop_leather_advanced", layer: layer, scale: 0.5f));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_advanced", layer: layer, scale: 0.5f));
                         break;
                     }
 
@@ -880,11 +880,11 @@ namespace SonOfRobin
                     {
                         float depthPercent = 0.6f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
 
                         for (int i = 1; i <= 4; i++)
                         {
-                            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
+                            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"_processed_meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
                         }
                         break;
                     }
@@ -893,11 +893,11 @@ namespace SonOfRobin
                     {
                         float depthPercent = 0.6f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
 
                         for (int i = 1; i <= 6; i++)
                         {
-                            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
+                            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"_processed_meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
                         }
                         break;
                     }
@@ -907,9 +907,9 @@ namespace SonOfRobin
                         int layer = 1;
                         float scale = 0.5f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "alchemy_lab_standard", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_standard", layer: layer, scale: scale));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "alchemy_lab_standard", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_standard", layer: layer, scale: scale));
                         break;
                     }
 
@@ -918,9 +918,9 @@ namespace SonOfRobin
                         int layer = 1;
                         float scale = 0.5f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "alchemy_lab_advanced", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_advanced", layer: layer, scale: scale));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "alchemy_lab_advanced", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_advanced", layer: layer, scale: scale));
                         break;
                     }
 
@@ -950,9 +950,9 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "anvil", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_anvil", layer: layer));
                         // the same as "off"
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "anvil", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_anvil", layer: layer));
                         break;
                     }
 
@@ -960,12 +960,12 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "hot_plate_off", layer: layer));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_hot_plate_off", layer: layer));
                         var frameArray = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "hot_plate_on_1", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "hot_plate_on_2", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "hot_plate_on_3", layer: layer, duration: 6)
+                            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_3", layer: layer, duration: 6)
                         };
                         AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
                         break;
@@ -989,27 +989,27 @@ namespace SonOfRobin
                     }
 
                 case PkgName.Totem:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
                     break;
 
                 case PkgName.RuinsWallHorizontal1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ruins_wall_horizontal_1", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_1", layer: 1));
                     break;
 
                 case PkgName.RuinsWallHorizontal2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ruins_wall_horizontal_2", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_2", layer: 1));
                     break;
 
                 case PkgName.RuinsWallWallVertical:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
                     break;
 
                 case PkgName.RuinsColumn:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ruins_column", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_column", layer: 1));
                     break;
 
                 case PkgName.RuinsRubble:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ruins_rubble", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_rubble", layer: 1));
                     break;
 
                 case PkgName.Stick:
@@ -1017,55 +1017,55 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Stone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "stone", layer: 1, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stone", layer: 1, scale: 0.5f));
                     break;
 
                 case PkgName.Granite:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "granite", layer: 1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_granite", layer: 1, scale: 1f));
                     break;
 
                 case PkgName.Clay:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "clay", layer: 0, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clay", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.Apple:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "apple", layer: 0, scale: 0.075f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_apple", layer: 0, scale: 0.075f));
                     break;
 
                 case PkgName.Banana:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "banana", layer: 0, scale: 0.08f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_banana", layer: 0, scale: 0.08f));
                     break;
 
                 case PkgName.Cherry:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "cherry", layer: 0, scale: 0.12f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cherry", layer: 0, scale: 0.12f));
                     break;
 
                 case PkgName.Tomato:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tomato", layer: 0, scale: 0.07f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato", layer: 0, scale: 0.07f));
                     break;
 
                 case PkgName.Carrot:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "carrot", layer: 0, scale: 0.08f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot", layer: 0, scale: 0.08f));
                     break;
 
                 case PkgName.Acorn:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "acorn", layer: 0, scale: 0.13f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_acorn", layer: 0, scale: 0.13f));
                     break;
 
                 case PkgName.Mushroom:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "mushroom", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.SeedBag:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "seed_bag", layer: 0, scale: 0.08f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_seed_bag", layer: 0, scale: 0.08f));
                     break;
 
                 case PkgName.CoffeeRaw:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "coffee_raw", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_raw", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.CoffeeRoasted:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "coffee_roasted", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_roasted", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.Clam:
@@ -1073,19 +1073,19 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.MeatRawRegular:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_regular", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.MeatRawPrime:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_prime", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.MeatDried:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "meat_dried", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_dried", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.Fat:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fat", layer: 0, scale: 0.08f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fat", layer: 0, scale: 0.08f));
                     break;
 
                 case PkgName.Burger:
@@ -1101,11 +1101,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.KnifeSimple:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "knife_simple", layer: 1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_knife_simple", layer: 1, scale: 1f));
                     break;
 
                 case PkgName.AxeWood:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "axe_wooden", layer: 0, x: 0, y: 0, width: 30, height: 32, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_wooden", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.AxeStone:
@@ -1117,7 +1117,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.AxeCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "axe_crystal", layer: 1, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_crystal", layer: 1, scale: 0.5f));
                     break;
 
                 case PkgName.PickaxeWood:
@@ -1137,74 +1137,74 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.ScytheStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "scythe_stone", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_stone", layer: 0));
                     break;
 
                 case PkgName.ScytheIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "scythe_iron", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_iron", layer: 0));
                     break;
 
                 case PkgName.ScytheCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "scythe_crystal", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_crystal", layer: 0));
                     break;
 
                 case PkgName.SpearWood:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "spear_wood", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_wood", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.SpearStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "spear_stone", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_stone", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.SpearIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "spear_iron", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_iron", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.SpearCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "spear_crystal", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_crystal", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.ShovelStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "shovel_stone", layer: 0, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_stone", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.ShovelIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "shovel_iron", layer: 0, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_iron", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.ShovelCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "shovel_crystal", layer: 0, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_crystal", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.BowBasic:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bow_basic", layer: 0, scale: 0.25f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_basic", layer: 0, scale: 0.25f));
                     break;
 
                 case PkgName.BowAdvanced:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_advanced", layer: 0, scale: 0.25f));
                     break;
 
                 case PkgName.ArrowWood:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "arrow_wood", layer: 0, scale: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_wood", layer: 0, scale: 0.75f));
                     break;
 
                 case PkgName.ArrowStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "arrow_stone", layer: 0, scale: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_stone", layer: 0, scale: 0.75f));
                     break;
 
                 case PkgName.ArrowIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "arrow_iron", layer: 0, scale: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_iron", layer: 0, scale: 0.75f));
                     break;
 
                 case PkgName.ArrowCrystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_crystal", layer: 0, scale: 0.75f));
                     break;
 
                 case PkgName.ArrowExploding:
                     {
                         int layer = 0;
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "arrow_burning_off", layer: layer, scale: 0.75f));
-                        AddFrameArray(pkgName: pkgName, animName: "burning", frameArray: ConvertImageToFrameArray(atlasName: "arrow_burning_on", layer: layer, scale: 0.75f));
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_burning_off", layer: layer, scale: 0.75f));
+                        AddFrameArray(pkgName: pkgName, animName: "burning", frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_burning_on", layer: layer, scale: 0.75f));
                         break;
                     }
 
@@ -1217,15 +1217,15 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.CrystalDepositSmall:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "crystal_deposit_small", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_small", layer: 1));
                     break;
 
                 case PkgName.CrystalDepositBig:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "crystal_deposit_big", layer: 1));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_big", layer: 1));
                     break;
 
                 case PkgName.DigSite:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "dig_site", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site", layer: 0));
                     break;
 
                 case PkgName.DigSiteGlass:
@@ -1233,18 +1233,18 @@ namespace SonOfRobin
                         int layer = 0;
                         AddFrameArray(pkgName: pkgName, animName: "default", frameArray: new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "dig_site_glass", layer: layer, duration: 450),
-                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
-                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
-                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_3", layer: layer, duration: 1),
-                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_2", layer: layer, duration: 1),
-                            ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass", layer: layer, duration: 450),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_1", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_3", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_2", layer: layer, duration: 1),
+                            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_1", layer: layer, duration: 1),
                         });
                         break;
                     }
 
                 case PkgName.DigSiteRuins:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "dig_site_ruins", layer: 0, scale: 0.35f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site_ruins", layer: 0, scale: 0.35f));
                     break;
 
                 case PkgName.Coal:
@@ -1260,11 +1260,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.IronRod:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "iron_rod", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_rod", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.IronPlate:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "iron_plate", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_plate", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.GlassSand:
@@ -1272,7 +1272,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Crystal:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "crystal", layer: 1, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal", layer: 1, scale: 0.5f));
                     break;
 
                 case PkgName.PlayerBoy:
@@ -1424,11 +1424,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.TentModern:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
                     break;
 
                 case PkgName.TentModernPacked:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tent_modern_packed", layer: 1, scale: 0.12f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern_packed", layer: 1, scale: 0.12f));
                     break;
 
                 case PkgName.TentSmall:
@@ -1445,79 +1445,79 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.BackpackSmall:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "backpack_small", layer: 1, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_small", layer: 1, scale: 0.1f));
                     break;
 
                 case PkgName.BackpackMedium:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_medium", layer: 1, scale: 0.5f));
                     break;
 
                 case PkgName.BackpackBig:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "backpack_big", layer: 1, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_big", layer: 1, scale: 0.1f));
                     break;
 
                 case PkgName.BackpackLuxurious:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "backpack_luxurious", layer: 1, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_luxurious", layer: 1, scale: 0.1f));
                     break;
 
                 case PkgName.BeltSmall:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "belt_small", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_small", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.BeltMedium:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "belt_medium", layer: 0, scale: 0.12f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_medium", layer: 0, scale: 0.12f));
                     break;
 
                 case PkgName.BeltBig:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "belt_big", layer: 0, scale: 0.06f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_big", layer: 0, scale: 0.06f));
                     break;
 
                 case PkgName.BeltLuxurious:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "belt_luxurious", layer: 0, scale: 0.06f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_luxurious", layer: 0, scale: 0.06f));
                     break;
 
                 case PkgName.Map:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "map_item", layer: 0, scale: 0.06f, crop: false));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_item", layer: 0, scale: 0.06f, crop: false));
                     break;
 
                 case PkgName.HatSimple:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "hat_simple", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hat_simple", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.BootsProtective:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boots_protective", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_protective", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.BootsMountain:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boots_mountain", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_mountain", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.BootsSpeed:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boots_speed", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_speed", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.BootsAllTerrain:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boots_all_terrain", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_all_terrain", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.GlovesStrength:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "gloves_strength", layer: 0, scale: 0.7f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_gloves_strength", layer: 0, scale: 0.7f));
                     break;
 
                 case PkgName.GlassesBlue:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "glasses_blue", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glasses_blue", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.Dungarees:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "dungarees", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dungarees", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.LanternFrame:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "lantern_frame", layer: 0, scale: 0.075f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_frame", layer: 0, scale: 0.075f));
                     break;
 
                 case PkgName.Candle:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "candle", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_candle", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.Lantern:
@@ -1525,9 +1525,9 @@ namespace SonOfRobin
                         float scale = 0.075f;
                         int layer = 0;
 
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "lantern_on", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "lantern_off", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "lantern_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_on", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_off", layer: layer, scale: scale));
 
                         break;
                     }
@@ -1537,9 +1537,9 @@ namespace SonOfRobin
                         float scale = 0.07f;
                         int layer = 0;
 
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "small_torch_on", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "small_torch_off", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "small_torch_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_on", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_off", layer: layer, scale: scale));
 
                         break;
                     }
@@ -1549,9 +1549,9 @@ namespace SonOfRobin
                         float scale = 0.1f;
                         int layer = 0;
 
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "big_torch_on", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "big_torch_off", layer: layer, scale: scale));
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "big_torch_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_on", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_off", layer: layer, scale: scale));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_off", layer: layer, scale: scale));
 
                         break;
                     }
@@ -1580,12 +1580,12 @@ namespace SonOfRobin
 
                         var frameArray = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_1", layer: layer, duration: 6, crop: false),
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_2", layer: layer, duration: 6, crop: false),
-                            ConvertImageToFrame(atlasName: "campfire_medium_on_3", layer: layer, duration: 6, crop: false)
+                            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_1", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_2", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_3", layer: layer, duration: 6, crop: false)
                         };
                         AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
-                        AddFrameArray(pkgName: pkgName, ConvertImageToFrameArray(atlasName: "campfire_medium_off", layer: layer, crop: false));
+                        AddFrameArray(pkgName: pkgName, ConvertImageToFrameArray(atlasName: "_processed_campfire_medium_off", layer: layer, crop: false));
                         AddFrameArray(pkgName: pkgName, animName: "off", frameArray: frameArray);
 
                         break;
@@ -1613,51 +1613,51 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.ShipRescue:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.HerbsBlack:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_black", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_black", layer: 0));
                     break;
 
                 case PkgName.HerbsCyan:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_cyan", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_cyan", layer: 0));
                     break;
 
                 case PkgName.HerbsBlue:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_blue", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_blue", layer: 0));
                     break;
 
                 case PkgName.HerbsGreen:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_green", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_green", layer: 0));
                     break;
 
                 case PkgName.HerbsYellow:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_yellow", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_yellow", layer: 0));
                     break;
 
                 case PkgName.HerbsRed:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_red", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_red", layer: 0));
                     break;
 
                 case PkgName.HerbsViolet:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_violet", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_violet", layer: 0));
                     break;
 
                 case PkgName.HerbsBrown:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_brown", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_brown", layer: 0));
                     break;
 
                 case PkgName.HerbsDarkViolet:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_dark_violet", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_violet", layer: 0));
                     break;
 
                 case PkgName.HerbsDarkGreen:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "herbs_dark_green", layer: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_green", layer: 0));
                     break;
 
                 case PkgName.EmptyBottle:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bottle_empty", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_empty", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionRed:
@@ -1685,31 +1685,31 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.PotionBlack:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_black", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_black", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionDarkViolet:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_violet", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionDarkYellow:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_dark_yellow", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_yellow", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionDarkGreen:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_green", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionLightYellow:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_oil", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionTransparent:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_transparent", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.PotionBrown:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "potion_brown", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_brown", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.BloodSplatter1:
@@ -1729,7 +1729,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Hole:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "hole", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hole", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.Explosion:
@@ -1753,19 +1753,19 @@ namespace SonOfRobin
                     }
 
                 case PkgName.SkullAndBones:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "skull_and_bones", layer: 2, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_skull_and_bones", layer: 2, scale: 1f));
                     break;
 
                 case PkgName.MusicNoteSmall:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "music_note", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2));
                     break;
 
                 case PkgName.MusicNoteBig:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "music_note", layer: 2, scale: 2.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2, scale: 2.5f));
                     break;
 
                 case PkgName.Miss:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "miss", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_miss", layer: 2));
                     break;
 
                 case PkgName.Attack:
@@ -1784,7 +1784,7 @@ namespace SonOfRobin
                     }
 
                 case PkgName.MapMarker:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.Backlight:
@@ -1806,7 +1806,7 @@ namespace SonOfRobin
                     }
 
                 case PkgName.Crosshair:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "crosshair", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crosshair", layer: 2));
                     break;
 
                 case PkgName.Flame:
@@ -1844,7 +1844,7 @@ namespace SonOfRobin
                     }
 
                 case PkgName.Upgrade:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WaterDrop:
@@ -1852,112 +1852,112 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Zzz:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "zzz", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_zzz", layer: 2));
                     break;
 
                 case PkgName.Heart:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "heart_16x16", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_heart_16x16", layer: 2));
                     break;
 
                 case PkgName.Hammer:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "hammer", layer: 0, scale: 0.1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hammer", layer: 0, scale: 0.1f));
                     break;
 
                 case PkgName.Fog1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.Fog2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
 
                     break;
 
                 case PkgName.Fog3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.Fog4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.BubbleExclamationRed:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bubble_exclamation_red", layer: 2, scale: 0.2f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_red", layer: 2, scale: 0.2f));
                     break;
 
                 case PkgName.BubbleExclamationBlue:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bubble_exclamation_blue", layer: 2, scale: 0.2f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_blue", layer: 2, scale: 0.2f));
                     break;
 
                 case PkgName.BubbleCraftGreen:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "bubble_craft_green", layer: 2, scale: 0.2f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_craft_green", layer: 2, scale: 0.2f));
                     break;
 
                 case PkgName.SeaWave:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog2:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog3:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog4:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog5:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog6:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog7:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog8:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.WeatherFog9:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                     break;
 
                 case PkgName.FertileGroundSmall:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fertile_ground_small", layer: -1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_small", layer: -1, scale: 1f));
                     break;
 
                 case PkgName.FertileGroundMedium:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fertile_ground_medium", layer: -1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_medium", layer: -1, scale: 1f));
                     break;
 
                 case PkgName.FertileGroundLarge:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fertile_ground_big", layer: -1, scale: 1.3f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_big", layer: -1, scale: 1.3f));
                     break;
 
                 case PkgName.FenceHorizontalShort:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fence_horizontal_short", layer: 1, depthPercent: 0.2f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_short", layer: 1, depthPercent: 0.2f));
                     break;
 
                 case PkgName.FenceVerticalShort:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fence_vertical_short", layer: 1, depthPercent: 0.9f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_short", layer: 1, depthPercent: 0.9f));
                     break;
 
                 case PkgName.FenceHorizontalLong:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fence_horizontal_long", layer: 1, depthPercent: 0.2f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_long", layer: 1, depthPercent: 0.2f));
                     break;
 
                 case PkgName.FenceVerticalLong:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "fence_vertical_long", layer: 1, depthPercent: 0.95f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_long", layer: 1, depthPercent: 0.95f));
                     break;
 
                 case PkgName.CaveEntrance:
@@ -1965,14 +1965,14 @@ namespace SonOfRobin
                         float scale = 2f;
                         float depthPercent = 0.95f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
-                        AddFrameArray(pkgName: pkgName, animName: "blocked", frameArray: ConvertImageToFrameArray(atlasName: "cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
+                        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
+                        AddFrameArray(pkgName: pkgName, animName: "blocked", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
 
                         break;
                     }
 
                 case PkgName.CaveExit:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
                     break;
 
                 case PkgName.DragonBonesTest1:
@@ -2270,8 +2270,6 @@ namespace SonOfRobin
 
         public static void DisposeUsedAtlases()
         {
-            return;
-
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
 
