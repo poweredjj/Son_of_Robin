@@ -106,6 +106,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/ubbie_tex.png
 
+#begin gfx/_processed_burger.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_burger.png
+
 #begin gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -969,18 +981,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_width.png
-
-#begin gfx/burger.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/burger.png
 
 #begin gfx/campfire_medium_off.png
 /importer:TextureImporter

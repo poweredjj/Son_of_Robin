@@ -1089,7 +1089,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Burger:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "burger", layer: 0, scale: 0.07f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_burger", layer: 0, scale: 0.07f));
                     break;
 
                 case PkgName.MealStandard:
@@ -2270,6 +2270,8 @@ namespace SonOfRobin
 
         public static void DisposeUsedAtlases()
         {
+            return;
+
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
 

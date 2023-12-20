@@ -34,9 +34,8 @@ namespace SonOfRobin
         public readonly int srcWidth;
         public readonly int srcHeight;
         public readonly bool mirrorX;
-
         private string PngName { get { return $"{this.textureID}.png"; } }
-        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName); } }
+        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName) || this.atlasName.StartsWith("_processed"); } }
 
         public Texture2D Texture
         {
@@ -45,7 +44,7 @@ namespace SonOfRobin
                 if (this.texture == null)
                 {
                     // MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
-                    this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                    this.texture = this.pngPath.Contains("processed_") ? TextureBank.GetTexture(this.atlasName) : GfxConverter.LoadTextureFromPNG(this.pngPath);
                     if (this.texture == null)
                     {
                         this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
@@ -152,17 +151,26 @@ namespace SonOfRobin
             if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
             else
             {
-                // MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
-                Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
-                if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
-                if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
-                Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
+                MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
 
-                // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-                this.texture = GfxConverter.CropTextureAndAddPaddingGpu(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
-                GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
+                if (this.atlasName.StartsWith("_processed") && this.srcWidth == 0 && this.srcHeight == 0)
+                {
+                    // for textures that are processed (copied from graphics_cache folder back to content/gfx)
+                    this.texture = TextureBank.GetTexture(this.atlasName);
+                }
+                else
+                {
+                    Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
+                    if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
+                    if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
+                    Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
+
+                    // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
+                    this.texture = GfxConverter.CropTextureAndAddPaddingGpu(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
+                    GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
+                }
+
                 AnimData.foundFramePngs.Add(this.PngName);
-
                 AnimData.textureDict[this.textureID] = this.texture;
             }
 
