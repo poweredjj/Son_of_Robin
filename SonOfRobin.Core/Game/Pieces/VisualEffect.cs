@@ -119,7 +119,11 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    if (this.sprite.opacity > 0) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWave, particlesToEmit: (int)(this.sprite.opacity * 1f), duration: 15);
+                    if (this.sprite.opacity > 0)
+                    {
+                        ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDraw, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 5));
+                        if (this.sprite.opacity > 0.3f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDistort, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 3));
+                    }
                 }
             }
 
