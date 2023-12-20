@@ -173,7 +173,7 @@ namespace SonOfRobin
                     else
                     {
                         AnimData.SaveJsonDict();
-                        AnimData.DisposeUsedAtlases();
+                        AnimData.DisposeUsedAtlasses();
                     }
 
                     break;

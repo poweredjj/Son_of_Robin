@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.000036f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000037f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -1433,15 +1433,15 @@ namespace SonOfRobin
 
                 case PkgName.TentSmall:
                     // TODO replace with A - frame tent asset(when found)
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 0.5f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 0.5f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.TentMedium:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tent_medium", layer: 1, x: 0, y: 0, width: 117, height: 101, scale: 1f, depthPercent: 0.45f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 1f, depthPercent: 0.45f));
                     break;
 
                 case PkgName.TentBig:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "tent_big", layer: 1, x: 15, y: 0, width: 191, height: 162, scale: 1f, depthPercent: 0.6f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_big", layer: 1, scale: 1f, depthPercent: 0.6f));
                     break;
 
                 case PkgName.BackpackSmall:
@@ -2268,7 +2268,7 @@ namespace SonOfRobin
             return croppedFramesForPkgs[pkgName];
         }
 
-        public static void DisposeUsedAtlases()
+        public static void DisposeUsedAtlasses()
         {
             // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
@@ -2278,7 +2278,11 @@ namespace SonOfRobin
             {
                 foreach (AnimFrame animFrame in frameArray)
                 {
-                    if (animFrame.atlasName != null && !usedAtlasNames.Contains(animFrame.atlasName)) usedAtlasNames.Add(animFrame.atlasName);
+                    if (animFrame.atlasName != null &&
+                        (animFrame.atlasName.StartsWith("_processed_") || !usedAtlasNames.Contains(animFrame.atlasName)))
+                    {
+                        usedAtlasNames.Add(animFrame.atlasName);
+                    }
                 }
             }
             foreach (string atlasName in usedAtlasNames)
