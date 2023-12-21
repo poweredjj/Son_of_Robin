@@ -212,6 +212,7 @@ namespace SonOfRobin
             RenderTarget2D croppedTexture = new(SonOfRobinGame.GfxDev, paddedWidth, paddedHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             Scene.SetRenderTarget(croppedTexture);
+            SonOfRobinGame.GfxDev.Clear(Color.Transparent); // prevents from colored texture background on some devices (old Android, etc.)
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
 
             Rectangle destRect = new(x: padding, y: padding, width: cropRect.Width, height: cropRect.Height);
