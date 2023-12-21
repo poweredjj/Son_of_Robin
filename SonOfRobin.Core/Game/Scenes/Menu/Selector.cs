@@ -150,7 +150,7 @@ namespace SonOfRobin
             {
                 base.Draw(active: active, textOverride: textOverride);
             }
-            else if (activeNameType == typeof(Texture2D))
+            else if (activeNameType == typeof(Texture2D) || (activeNameType == typeof(RenderTarget2D)))
             {
                 base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: new List<Texture2D> { (Texture2D)this.ActiveName });
             }
