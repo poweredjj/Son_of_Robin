@@ -3697,7 +3697,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/biceps.png
 
-#begin gfx/boat/boat_complete.png
+#begin gfx/boat/_processed_boat_complete.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3707,9 +3707,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_complete.png
+/build:gfx/boat/_processed_boat_complete.png
 
-#begin gfx/boat/boat_construction_0.png
+#begin gfx/boat/_processed_boat_construction_0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3719,9 +3719,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_0.png
+/build:gfx/boat/_processed_boat_construction_0.png
 
-#begin gfx/boat/boat_construction_1.png
+#begin gfx/boat/_processed_boat_construction_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3731,9 +3731,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_1.png
+/build:gfx/boat/_processed_boat_construction_1.png
 
-#begin gfx/boat/boat_construction_2.png
+#begin gfx/boat/_processed_boat_construction_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3743,9 +3743,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_2.png
+/build:gfx/boat/_processed_boat_construction_2.png
 
-#begin gfx/boat/boat_construction_3.png
+#begin gfx/boat/_processed_boat_construction_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3755,9 +3755,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_3.png
+/build:gfx/boat/_processed_boat_construction_3.png
 
-#begin gfx/boat/boat_construction_4.png
+#begin gfx/boat/_processed_boat_construction_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3767,9 +3767,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_4.png
+/build:gfx/boat/_processed_boat_construction_4.png
 
-#begin gfx/boat/boat_construction_5.png
+#begin gfx/boat/_processed_boat_construction_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3779,7 +3779,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/boat/boat_construction_5.png
+/build:gfx/boat/_processed_boat_construction_5.png
 
 #begin gfx/buffs/buff_cannot_sprint.png
 /importer:TextureImporter

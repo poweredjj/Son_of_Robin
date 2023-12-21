@@ -9,6 +9,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
+        // _content_template.json should be updated after making any changes to assets
         public const float currentVersion = 1.000037f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
@@ -1599,18 +1600,18 @@ namespace SonOfRobin
 
                         for (int animSize = 0; animSize <= 5; animSize++)
                         {
-                            AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: $"boat/boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
+                            AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: $"boat/_processed_boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
                         }
 
                         break;
                     }
 
                 case PkgName.BoatCompleteStanding:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                     break;
 
                 case PkgName.BoatCompleteCruising:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                     break;
 
                 case PkgName.ShipRescue:
@@ -2303,7 +2304,7 @@ namespace SonOfRobin
                 foreach (AnimFrame animFrame in frameArray)
                 {
                     if (animFrame.atlasName != null &&
-                        !animFrame.atlasName.StartsWith("_processed_") &&
+                        !animFrame.atlasName.Contains("_processed_") &&
                         !atlasesToDispose.Contains(animFrame.atlasName))
                     {
                         atlasesToDispose.Add(animFrame.atlasName);

@@ -35,7 +35,7 @@ namespace SonOfRobin
         public readonly int srcHeight;
         public readonly bool mirrorX;
         private string PngName { get { return $"{this.textureID}.png"; } }
-        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName) || this.atlasName.StartsWith("_processed_"); } }
+        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName) || this.atlasName.Contains("_processed_"); } }
 
         public Texture2D Texture
         {
