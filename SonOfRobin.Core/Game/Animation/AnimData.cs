@@ -272,7 +272,8 @@ namespace SonOfRobin
             BearRed = 194,
             BearBeige = 195,
 
-            DragonBonesTest1 = 301,
+            DragonBonesTestBear = 301,
+            DragonBonesTestPeasant = 302,
 
             TentModern = 196,
             TentModernPacked = 197,
@@ -1965,17 +1966,36 @@ namespace SonOfRobin
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
                     break;
 
-                case PkgName.DragonBonesTest1:
-
-                    var durationDict = new Dictionary<string, short>
+                case PkgName.DragonBonesTestBear:
                     {
-                        { "stand", 3 },
-                        { "walk", 1 },
-                    };
+                        var durationDict = new Dictionary<string, short>
+                        {
+                            { "stand", 3 },
+                            { "walk", 1 },
+                        };
 
-                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 0, scale: 0.8f, baseAnimsFaceRight: false, durationDict: durationDict);
+                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 0, scale: 0.8f, baseAnimsFaceRight: false, durationDict: durationDict);
 
-                    break;
+                        break;
+                    }
+
+                case PkgName.DragonBonesTestPeasant:
+                    {
+                        var durationDict = new Dictionary<string, short>
+                        {
+                            { "attack", 2 },
+                            { "damage", 2 },
+                            { "die", 2 },
+                            { "stand", 2 },
+                            { "run", 1 },
+                            { "walk", 1 },
+                        };
+
+                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "peasant_tex.json", animSize: 0, scale: 1f, baseAnimsFaceRight: true, durationDict: durationDict);
+
+                        break;
+                    }
+
 
                 default:
                     throw new ArgumentException($"Unsupported pkgName - {pkgName}.");

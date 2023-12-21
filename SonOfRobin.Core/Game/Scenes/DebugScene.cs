@@ -684,20 +684,32 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.X))
             {
-                if (world == null) return;
+                if (world == null || world.demoMode) return;
 
                 AnimData.PkgName currentPackageName = world.Player.sprite.AnimPackage;
+                Player player = world.Player;
 
                 while (true)
                 {
-                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack };
-                    var packageName = packageNames[BoardPiece.Random.Next(packageNames.Count)];
-                    if (packageName != currentPackageName)
+                    var packageNames = new AnimData.PkgName[] { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack, AnimData.PkgName.DragonBonesTestBear, AnimData.PkgName.DragonBonesTestPeasant };
+
+                    AnimData.PkgName targetPackage = packageNames[0];
+
+                    for (int i = 0; i < packageNames.Length; i++)
                     {
-                        world.Player.sprite.AssignNewPackage(newAnimPackage: packageName, setEvenIfMissing: false);
-                        world.Player.sprite.AssignNewSize(1);
-                        break;
+                        AnimData.PkgName pkgName = packageNames[i];
+
+                        if (currentPackageName == pkgName)
+                        {
+                            targetPackage = i == packageNames.Length - 1 ? packageNames[0] : packageNames[i + 1];
+                            break;
+                        }
                     }
+
+                    MessageLog.Add(debugMessage: true, text: $"Assigning new package: {targetPackage}");
+
+                    player.sprite.AssignNewPackage(newAnimPackage: targetPackage, setEvenIfMissing: true);
+                    break;
                 }
             }
 
