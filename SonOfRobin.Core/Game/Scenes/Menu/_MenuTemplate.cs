@@ -1385,8 +1385,6 @@ namespace SonOfRobin
                                 }
                             }
 
-                            MessageLog.Add(debugMessage: true, text: $"pkgName {pkgName} frames {textureByName.Count}");
-
                             if (textureByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
                             else if (textureByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: textureByName, targetObj: preferences, propertyName: "neededForMenus");
                             else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(pkgName).Texture }, taskName: Scheduler.TaskName.Empty, playSound: false);

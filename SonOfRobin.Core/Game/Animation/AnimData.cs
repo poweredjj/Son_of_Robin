@@ -406,31 +406,31 @@ namespace SonOfRobin
             switch (pkgName)
             {
                 case PkgName.Empty:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "transparent_pixel", layer: 2, crop: false, padding: 0));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_transparent_pixel", layer: 2, crop: false, padding: 0));
                     break;
 
                 case PkgName.NoAnim:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "no_anim", layer: 2));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_no_anim", layer: 2));
                     break;
 
                 case PkgName.WhiteSpotLayerMinus1:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "white_spot", layer: -1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_white_spot", layer: -1, scale: 1f));
                     break;
 
                 case PkgName.WhiteSpotLayerZero:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "white_spot", layer: 0, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_white_spot", layer: 0, scale: 1f));
                     break;
 
                 case PkgName.WhiteSpotLayerOne:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "white_spot", layer: 1, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_white_spot", layer: 1, scale: 1f));
                     break;
 
                 case PkgName.WhiteSpotLayerTwo:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "white_spot", layer: 2, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_white_spot", layer: 2, scale: 1f));
                     break;
 
                 case PkgName.WhiteSpotLayerThree:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "white_spot", layer: 3, scale: 1f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_white_spot", layer: 3, scale: 1f));
                     break;
 
                 case PkgName.FlowersWhite:
@@ -793,20 +793,8 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.Crate:
-                    {
-                        int layer = 1;
-
-                        AddFrameArray(pkgName: pkgName,
-                        frameArray: ConvertImageToFrameArray(atlasName: "chests", layer: layer, x: 128, y: 0, width: 32, height: 48));
-                        var frameArray = new AnimFrame[]
-                        {
-                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 96, width: 32, height: 48, duration: 6),
-                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 48, width: 32, height: 48, duration: 6),
-                            ConvertImageToFrame(atlasName: "chests", layer: layer, x: 0, y: 0, width: 32, height: 48, duration: 0)
-                        };
-                        AddFrameArray(pkgName: pkgName, animName: "closing", frameArray: frameArray);
-                        break;
-                    }
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crate", layer: 1));
+                    break;
 
                 case PkgName.WorkshopEssential:
                     {
@@ -931,7 +919,7 @@ namespace SonOfRobin
 
                         for (int animSize = 0; animSize <= 2; animSize++)
                         {
-                            AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: $"furnace/furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
+                            AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: $"furnace/_processed_furnace_construction_{animSize}", layer: 1, scale: scale, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
                         }
 
                         break;
@@ -942,8 +930,8 @@ namespace SonOfRobin
                         int layer = 1;
                         float scale = 0.2f;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "furnace/furnace_off", layer: layer, scale: scale, crop: false));
-                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "furnace/furnace_on", layer: layer, scale: scale, crop: false));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "furnace/_processed_furnace_off", layer: layer, scale: scale, crop: false));
+                        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "furnace/_processed_furnace_on", layer: layer, scale: scale, crop: false));
                         break;
                     }
 
@@ -1776,9 +1764,9 @@ namespace SonOfRobin
 
                         var frameArray = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 0, y: 20, width: 23, height: 23),
-                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 22, y: 13, width: 29, height: 33),
-                            ConvertImageToFrame(atlasName: "attack", layer: layer, duration: 6, x: 50, y: 0, width: 36, height: 65)
+                            ConvertImageToFrame(atlasName: "_processed_attack_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_attack_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_attack_3", layer: layer, duration: 6)
                         };
                         AddFrameArray(pkgName: pkgName, frameArray: frameArray);
 
@@ -1850,7 +1838,7 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.WaterDrop:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "water_drop", layer: 0, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_water_drop", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.Zzz:
@@ -2019,12 +2007,12 @@ namespace SonOfRobin
         private static void AddChestPackage(PkgName pkgName)
         {
             var chestDict = new Dictionary<PkgName, string> {
-                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
-                { PkgName.ChestStone, "chest_stone/chest_stone_" },
-                { PkgName.ChestIron, "chest_iron/chest_iron_" },
-                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
-                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
-                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
+                { PkgName.ChestWooden, "chest_wooden/_processed_chest_wooden_" },
+                { PkgName.ChestStone, "chest_stone/_processed_chest_stone_" },
+                { PkgName.ChestIron, "chest_iron/_processed_chest_iron_" },
+                { PkgName.ChestCrystal, "chest_crystal/_processed_chest_crystal_" },
+                { PkgName.ChestTreasureBlue, "chest_blue/_processed_chest_blue_" },
+                { PkgName.ChestTreasureRed, "chest_red/_processed_chest_red_" },
             };
 
             string chestPath = chestDict[pkgName];

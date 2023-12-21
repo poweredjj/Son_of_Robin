@@ -241,6 +241,42 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_arrow_wood.png
 
+#begin gfx/_processed_attack_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_attack_1.png
+
+#begin gfx/_processed_attack_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_attack_2.png
+
+#begin gfx/_processed_attack_3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_attack_3.png
+
 #begin gfx/_processed_axe_crystal.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1008,6 +1044,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_cooking_pot_on_3.png
+
+#begin gfx/_processed_crate.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_crate.png
 
 #begin gfx/_processed_crosshair.png
 /importer:TextureImporter
@@ -2641,6 +2689,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_nail.png
 
+#begin gfx/_processed_no_anim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_no_anim.png
+
+#begin gfx/_processed_no_anim.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_no_anim.png
+
 #begin gfx/_processed_palmtree_s1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3313,6 +3385,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_totem.png
 
+#begin gfx/_processed_transparent_pixel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_transparent_pixel.png
+
 #begin gfx/_processed_tree_big_s1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3409,6 +3493,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_upgrade.png
 
+#begin gfx/_processed_water_drop.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_water_drop.png
+
 #begin gfx/_processed_waterlily1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3492,6 +3588,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_weather_fog_3.png
+
+#begin gfx/_processed_white_spot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_processed_white_spot.png
 
 #begin gfx/_processed_wood_hard.png
 /importer:TextureImporter
@@ -3648,18 +3756,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/animal.png
-
-#begin gfx/attack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/attack.png
 
 #begin gfx/backpack_medium_outline.png
 /importer:TextureImporter
@@ -4129,7 +4225,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/characters/recolor_pt2.png
 
-#begin gfx/chest_blue/chest_blue_1.png
+#begin gfx/chest_blue/_processed_chest_blue_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4139,9 +4235,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_1.png
+/build:gfx/chest_blue/_processed_chest_blue_1.png
 
-#begin gfx/chest_blue/chest_blue_2.png
+#begin gfx/chest_blue/_processed_chest_blue_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4151,9 +4247,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_2.png
+/build:gfx/chest_blue/_processed_chest_blue_2.png
 
-#begin gfx/chest_blue/chest_blue_3.png
+#begin gfx/chest_blue/_processed_chest_blue_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4163,9 +4259,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_3.png
+/build:gfx/chest_blue/_processed_chest_blue_3.png
 
-#begin gfx/chest_blue/chest_blue_4.png
+#begin gfx/chest_blue/_processed_chest_blue_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4175,9 +4271,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_4.png
+/build:gfx/chest_blue/_processed_chest_blue_4.png
 
-#begin gfx/chest_blue/chest_blue_5.png
+#begin gfx/chest_blue/_processed_chest_blue_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4187,9 +4283,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_5.png
+/build:gfx/chest_blue/_processed_chest_blue_5.png
 
-#begin gfx/chest_blue/chest_blue_6.png
+#begin gfx/chest_blue/_processed_chest_blue_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4199,9 +4295,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_blue/chest_blue_6.png
+/build:gfx/chest_blue/_processed_chest_blue_6.png
 
-#begin gfx/chest_crystal/chest_crystal_1.png
+#begin gfx/chest_crystal/_processed_chest_crystal_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4211,9 +4307,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_1.png
+/build:gfx/chest_crystal/_processed_chest_crystal_1.png
 
-#begin gfx/chest_crystal/chest_crystal_2.png
+#begin gfx/chest_crystal/_processed_chest_crystal_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4223,9 +4319,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_2.png
+/build:gfx/chest_crystal/_processed_chest_crystal_2.png
 
-#begin gfx/chest_crystal/chest_crystal_3.png
+#begin gfx/chest_crystal/_processed_chest_crystal_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4235,9 +4331,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_3.png
+/build:gfx/chest_crystal/_processed_chest_crystal_3.png
 
-#begin gfx/chest_crystal/chest_crystal_4.png
+#begin gfx/chest_crystal/_processed_chest_crystal_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4247,9 +4343,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_4.png
+/build:gfx/chest_crystal/_processed_chest_crystal_4.png
 
-#begin gfx/chest_crystal/chest_crystal_5.png
+#begin gfx/chest_crystal/_processed_chest_crystal_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4259,9 +4355,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_5.png
+/build:gfx/chest_crystal/_processed_chest_crystal_5.png
 
-#begin gfx/chest_crystal/chest_crystal_6.png
+#begin gfx/chest_crystal/_processed_chest_crystal_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4271,9 +4367,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_crystal/chest_crystal_6.png
+/build:gfx/chest_crystal/_processed_chest_crystal_6.png
 
-#begin gfx/chest_iron/chest_iron_1.png
+#begin gfx/chest_iron/_processed_chest_iron_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4283,9 +4379,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_1.png
+/build:gfx/chest_iron/_processed_chest_iron_1.png
 
-#begin gfx/chest_iron/chest_iron_2.png
+#begin gfx/chest_iron/_processed_chest_iron_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4295,9 +4391,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_2.png
+/build:gfx/chest_iron/_processed_chest_iron_2.png
 
-#begin gfx/chest_iron/chest_iron_3.png
+#begin gfx/chest_iron/_processed_chest_iron_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4307,9 +4403,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_3.png
+/build:gfx/chest_iron/_processed_chest_iron_3.png
 
-#begin gfx/chest_iron/chest_iron_4.png
+#begin gfx/chest_iron/_processed_chest_iron_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4319,9 +4415,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_4.png
+/build:gfx/chest_iron/_processed_chest_iron_4.png
 
-#begin gfx/chest_iron/chest_iron_5.png
+#begin gfx/chest_iron/_processed_chest_iron_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4331,9 +4427,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_5.png
+/build:gfx/chest_iron/_processed_chest_iron_5.png
 
-#begin gfx/chest_iron/chest_iron_6.png
+#begin gfx/chest_iron/_processed_chest_iron_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4343,9 +4439,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_iron/chest_iron_6.png
+/build:gfx/chest_iron/_processed_chest_iron_6.png
 
-#begin gfx/chest_red/chest_red_1.png
+#begin gfx/chest_red/_processed_chest_red_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4355,9 +4451,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_1.png
+/build:gfx/chest_red/_processed_chest_red_1.png
 
-#begin gfx/chest_red/chest_red_2.png
+#begin gfx/chest_red/_processed_chest_red_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4367,9 +4463,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_2.png
+/build:gfx/chest_red/_processed_chest_red_2.png
 
-#begin gfx/chest_red/chest_red_3.png
+#begin gfx/chest_red/_processed_chest_red_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4379,9 +4475,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_3.png
+/build:gfx/chest_red/_processed_chest_red_3.png
 
-#begin gfx/chest_red/chest_red_4.png
+#begin gfx/chest_red/_processed_chest_red_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4391,9 +4487,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_4.png
+/build:gfx/chest_red/_processed_chest_red_4.png
 
-#begin gfx/chest_red/chest_red_5.png
+#begin gfx/chest_red/_processed_chest_red_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4403,9 +4499,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_5.png
+/build:gfx/chest_red/_processed_chest_red_5.png
 
-#begin gfx/chest_red/chest_red_6.png
+#begin gfx/chest_red/_processed_chest_red_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4415,9 +4511,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_red/chest_red_6.png
+/build:gfx/chest_red/_processed_chest_red_6.png
 
-#begin gfx/chest_stone/chest_stone_1.png
+#begin gfx/chest_stone/_processed_chest_stone_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4427,9 +4523,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_1.png
+/build:gfx/chest_stone/_processed_chest_stone_1.png
 
-#begin gfx/chest_stone/chest_stone_2.png
+#begin gfx/chest_stone/_processed_chest_stone_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4439,9 +4535,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_2.png
+/build:gfx/chest_stone/_processed_chest_stone_2.png
 
-#begin gfx/chest_stone/chest_stone_3.png
+#begin gfx/chest_stone/_processed_chest_stone_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4451,9 +4547,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_3.png
+/build:gfx/chest_stone/_processed_chest_stone_3.png
 
-#begin gfx/chest_stone/chest_stone_4.png
+#begin gfx/chest_stone/_processed_chest_stone_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4463,9 +4559,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_4.png
+/build:gfx/chest_stone/_processed_chest_stone_4.png
 
-#begin gfx/chest_stone/chest_stone_5.png
+#begin gfx/chest_stone/_processed_chest_stone_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4475,9 +4571,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_5.png
+/build:gfx/chest_stone/_processed_chest_stone_5.png
 
-#begin gfx/chest_stone/chest_stone_6.png
+#begin gfx/chest_stone/_processed_chest_stone_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4487,9 +4583,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_stone/chest_stone_6.png
+/build:gfx/chest_stone/_processed_chest_stone_6.png
 
-#begin gfx/chest_wooden/chest_wooden_1.png
+#begin gfx/chest_wooden/_processed_chest_wooden_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4499,9 +4595,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_1.png
+/build:gfx/chest_wooden/_processed_chest_wooden_1.png
 
-#begin gfx/chest_wooden/chest_wooden_2.png
+#begin gfx/chest_wooden/_processed_chest_wooden_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4511,9 +4607,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_2.png
+/build:gfx/chest_wooden/_processed_chest_wooden_2.png
 
-#begin gfx/chest_wooden/chest_wooden_3.png
+#begin gfx/chest_wooden/_processed_chest_wooden_3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4523,9 +4619,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_3.png
+/build:gfx/chest_wooden/_processed_chest_wooden_3.png
 
-#begin gfx/chest_wooden/chest_wooden_4.png
+#begin gfx/chest_wooden/_processed_chest_wooden_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4535,9 +4631,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_4.png
+/build:gfx/chest_wooden/_processed_chest_wooden_4.png
 
-#begin gfx/chest_wooden/chest_wooden_5.png
+#begin gfx/chest_wooden/_processed_chest_wooden_5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4547,9 +4643,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_5.png
+/build:gfx/chest_wooden/_processed_chest_wooden_5.png
 
-#begin gfx/chest_wooden/chest_wooden_6.png
+#begin gfx/chest_wooden/_processed_chest_wooden_6.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4559,19 +4655,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/chest_wooden/chest_wooden_6.png
-
-#begin gfx/chests.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/chests.png
+/build:gfx/chest_wooden/_processed_chest_wooden_6.png
 
 #begin gfx/cursor.png
 /importer:TextureImporter
@@ -4597,7 +4681,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/explosion.png
 
-#begin gfx/furnace/furnace_construction_0.png
+#begin gfx/furnace/_processed_furnace_construction_0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4607,9 +4691,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/furnace/furnace_construction_0.png
+/build:gfx/furnace/_processed_furnace_construction_0.png
 
-#begin gfx/furnace/furnace_construction_1.png
+#begin gfx/furnace/_processed_furnace_construction_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4619,9 +4703,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/furnace/furnace_construction_1.png
+/build:gfx/furnace/_processed_furnace_construction_1.png
 
-#begin gfx/furnace/furnace_construction_2.png
+#begin gfx/furnace/_processed_furnace_construction_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4631,9 +4715,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/furnace/furnace_construction_2.png
+/build:gfx/furnace/_processed_furnace_construction_2.png
 
-#begin gfx/furnace/furnace_off.png
+#begin gfx/furnace/_processed_furnace_off.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4643,9 +4727,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/furnace/furnace_off.png
+/build:gfx/furnace/_processed_furnace_off.png
 
-#begin gfx/furnace/furnace_on.png
+#begin gfx/furnace/_processed_furnace_on.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4655,7 +4739,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/furnace/furnace_on.png
+/build:gfx/furnace/_processed_furnace_on.png
 
 #begin gfx/gfx_corrupted.png
 /importer:TextureImporter
@@ -8185,18 +8269,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/new.png
 
-#begin gfx/no_anim.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/no_anim.png
-
 #begin gfx/particles/bubble_16x16.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9109,18 +9181,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/star.png
 
-#begin gfx/transparent_pixel.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/transparent_pixel.png
-
 #begin gfx/tri_slice_bg/buff_bg_left.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9384,30 +9444,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/virtual_joypad_stick.png
-
-#begin gfx/water_drop.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/water_drop.png
-
-#begin gfx/white_spot.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/white_spot.png
 
 #begin sound/114201__edgardedition__glassthud9.ogg
 /importer:OggImporter
