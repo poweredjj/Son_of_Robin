@@ -91,6 +91,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SwampGeyser, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
 
                 new PieceCreationData(name: PieceTemplate.Name.SeaWave, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.WaterEdgeDistort, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
 
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true, tempDecorMultiplier: 2, levelType: Level.LevelType.Island),

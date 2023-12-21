@@ -2948,6 +2948,13 @@ namespace SonOfRobin
                         this.shadowNotDrawn = true;
                         break;
 
+                    case PieceTemplate.Name.WaterEdgeDistort:
+                        this.category = BoardPiece.Category.Indestructible;
+                        this.serialize = false;
+                        this.placeMaxDistance = 500;
+                        this.shadowNotDrawn = true;
+                        break;
+
                     case PieceTemplate.Name.SwampGas:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;

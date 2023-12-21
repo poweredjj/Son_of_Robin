@@ -65,6 +65,7 @@ namespace SonOfRobin
             HeatSmelting = 40,
             DistortCruiseCine = 37,
             DistortStormCine = 38,
+            DistortWaterEdge = 43,
         }
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new()
@@ -112,6 +113,7 @@ namespace SonOfRobin
                 { Preset.HeatSmelting, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.DistortCruiseCine, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.DistortStormCine, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.DistortWaterEdge, TextureBank.TextureName.ParticleWaterEdgeDistortion },
             };
 
         public class PresetData
@@ -851,6 +853,47 @@ namespace SonOfRobin
                                         new OpacityInterpolator
                                         {
                                             StartValue = 0.33f,
+                                            EndValue = 0.0f
+                                        },
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.DistortWaterEdge:
+                    {
+                        defaultParticlesToEmit = 1;
+                        drawAsDistortion = true;
+
+                        float endScale = 5f + (SonOfRobinGame.random.NextSingle() * 8f);
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 1,
+                            TimeSpan.FromSeconds((SonOfRobinGame.random.NextSingle() * 4.0f) + 1.5f),
+                            Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = new Range<HslColor>(HslColor.FromRgb(new Color(60, 60, 60)), HslColor.FromRgb(new Color(255, 255, 255))),
+                                Speed = new Range<float>(1f, 7f),
+                                Rotation = new Range<float>(-2f, 2f),
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.0f),
+                                            EndValue = new Vector2(endScale)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.45f,
                                             EndValue = 0.0f
                                         },
                                     }
@@ -1929,6 +1972,7 @@ namespace SonOfRobin
                 Preset.HeatBig => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.HeatFlame => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.HeatSmelting => this.sprite.position,
+                Preset.DistortWaterEdge => this.sprite.position,
                 Preset.DistortCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.DistortStormCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 _ => this.sprite.position,

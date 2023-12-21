@@ -2701,18 +2701,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_processed_no_anim.png
 
-#begin gfx/_processed_no_anim.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_processed_no_anim.png
-
 #begin gfx/_processed_palmtree_s1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8472,6 +8460,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/particles/water_drop.png
+
+#begin gfx/particles/water_edge_distortion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/particles/water_edge_distortion.png
 
 #begin gfx/repeating_textures/beach_bright.png
 /importer:TextureImporter
