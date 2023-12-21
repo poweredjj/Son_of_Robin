@@ -641,7 +641,7 @@ namespace SonOfRobin
                     {
                         defaultParticlesToEmit = 3;
 
-                        particleEmitter = new ParticleEmitter(textureRegion, 500, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
+                        particleEmitter = new ParticleEmitter(textureRegion, 1000, TimeSpan.FromSeconds(1.35f), Profile.Circle(radius: 15, radiate: Profile.CircleRadiation.Out))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -686,7 +686,7 @@ namespace SonOfRobin
                             {
                                 Scale = new Range<float>(0.1f, 0.4f),
                                 Color = HslColor.FromRgb(Color.White),
-                                Speed = new Range<float>(8f, 16f),
+                                Speed = new Range<float>(30f, 70f),
                             },
 
                             Modifiers =
@@ -698,11 +698,11 @@ namespace SonOfRobin
                                         new ScaleInterpolator
                                         {
                                             StartValue = new Vector2(0.7f),
-                                            EndValue = new Vector2(1.8f)
+                                            EndValue = new Vector2(4.0f)
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.18f,
+                                            StartValue = 0.25f,
                                             EndValue = 0f
                                         },
                                     }

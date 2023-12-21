@@ -147,11 +147,11 @@ namespace SonOfRobin
                         float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.ActiveLevel.width / 2, this.world.ActiveLevel.height / 2));
                         int pushDistance = this.world.random.Next(400, 800);
 
-                        Vector2 pushMovement = new Vector2((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));
+                        Vector2 pushMovement = new((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));
 
                         collidingPiece.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: pushMovement, maxVal: 400f));
 
-                        ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 7);
+                        ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 40, duration: 10);
                         ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterDistortWalk, particlesToEmit: 23, duration: 7);
 
                         // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
