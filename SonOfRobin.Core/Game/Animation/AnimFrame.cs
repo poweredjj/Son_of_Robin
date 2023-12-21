@@ -49,7 +49,7 @@ namespace SonOfRobin
                     {
                         this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
                         AnimData.jsonDict.Remove(this.id); // deleting json entry...
-                        AnimData.SaveJsonDict(); // ...and saving it, to be rebuilt on next run
+                        AnimData.SaveJsonDict(asContentTemplate: false); // ...and saving it, to be rebuilt on next run
                     }
                     else AnimData.loadedFramesCount++;
                 }

@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -2151,8 +2149,8 @@ namespace SonOfRobin
         public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, bool baseAnimsFaceRight)
         {
             string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
-            var jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
-            var jsonDict = (JObject)jsonData;
+            object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
+            JObject jsonDict = (JObject)jsonData;
 
             string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
 
@@ -2200,9 +2198,11 @@ namespace SonOfRobin
             }
         }
 
-
         private static string JsonDataPath
         { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
+
+        private static string JsonContentTemplatePath
+        { get { return Path.Combine(SonOfRobinGame.gameDataPath, "_content_template.json"); } }
 
         public static bool LoadJsonDict()
         {
@@ -2212,7 +2212,7 @@ namespace SonOfRobin
 
             try
             {
-                var loadedJson = FileReaderWriter.LoadJson(path: JsonDataPath);
+                object loadedJson = FileReaderWriter.LoadJson(path: JsonDataPath);
                 if (loadedJson == null) return false;
 
                 loadedJsonDict = (Dictionary<string, Object>)loadedJson;
@@ -2230,15 +2230,24 @@ namespace SonOfRobin
             return true;
         }
 
-        public static void SaveJsonDict()
+        public static void SaveJsonDict(bool asContentTemplate)
         {
+            var jsonDictToSave = jsonDict.ToDictionary(entry => entry.Key, entry => entry.Value);
+
+            if (asContentTemplate)
+            {
+                jsonDictToSave = jsonDictToSave
+                    .Where(kvp => ((string)((Dictionary<string, Object>)kvp.Value)["atlasName"]).Contains("_processed_"))
+                    .ToDictionary(entry => entry.Key, entry => entry.Value);
+            }
+
             var savedDict = new Dictionary<string, object>
             {
                 { "version", currentVersion },
-                { "frameDict", jsonDict },
+                { "frameDict", jsonDictToSave },
             };
 
-            FileReaderWriter.SaveJson(path: JsonDataPath, savedObj: savedDict, compress: true);
+            FileReaderWriter.SaveJson(path: asContentTemplate ? JsonContentTemplatePath : JsonDataPath, savedObj: savedDict, compress: !asContentTemplate);
             // MessageLog.Add(debugMessage: true, text: "Animation json saved.");
         }
 
@@ -2265,6 +2274,16 @@ namespace SonOfRobin
             }
 
             MessageLog.Add(debugMessage: true, text: "Anim cache purged.");
+
+            LoadJsonContentTemplateDict(); // json template should be used as a base (to speed up loading)
+        }
+
+        private static void LoadJsonContentTemplateDict()
+        {
+            string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_content_template.json");
+            object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
+            var loadedJsonDict = (Dictionary<string, object>)jsonData;
+            jsonDict = (Dictionary<string, Object>)loadedJsonDict["frameDict"];
         }
 
         public static AnimFrame GetCroppedFrameForPackage(PkgName pkgName)
@@ -2283,7 +2302,8 @@ namespace SonOfRobin
                 foreach (AnimFrame animFrame in frameArray)
                 {
                     if (animFrame.atlasName != null &&
-                        (!animFrame.atlasName.StartsWith("_processed_") && !atlasesToDispose.Contains(animFrame.atlasName)))
+                        !animFrame.atlasName.StartsWith("_processed_") &&
+                        !atlasesToDispose.Contains(animFrame.atlasName))
                     {
                         atlasesToDispose.Add(animFrame.atlasName);
                     }

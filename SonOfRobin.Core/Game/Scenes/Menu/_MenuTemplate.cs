@@ -1221,6 +1221,9 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
                         }
 
+                        Scheduler.ExecutionDelegate saveJsonContentTemplateDlgt = () => { AnimData.SaveJsonDict(asContentTemplate: true); };
+                        new Invoker(menu: menu, name: "save json content template", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: saveJsonContentTemplateDlgt);
+
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds");
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe");
                         new Selector(menu: menu, name: "show outside camera", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowOutsideCamera");

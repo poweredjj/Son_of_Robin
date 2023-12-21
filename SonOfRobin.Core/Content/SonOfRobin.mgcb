@@ -91,6 +91,9 @@
 #begin fonts/VCR_OSD_MONO_1.001.ttf
 /copy:fonts/VCR_OSD_MONO_1.001.ttf
 
+#begin gfx/_content_template.json
+/copy:gfx/_content_template.json
+
 #begin gfx/_DragonBones/ubbie_tex.json
 /copy:gfx/_DragonBones/ubbie_tex.json
 
