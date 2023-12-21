@@ -975,13 +975,13 @@ namespace SonOfRobin
                     {
                         int layer = 1;
 
-                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "Candacis_flames1", layer: layer, x: 192, y: 144, width: 32, height: 32));
+                        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cooking_pot_off", layer: layer));
 
                         var frameArrayOn = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 0, y: 144, width: 32, height: 32, duration: 6),
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 32, y: 144, width: 32, height: 32, duration: 6),
-                            ConvertImageToFrame(atlasName: "Candacis_flames1", layer: layer, x: 64, y: 144, width: 32, height: 32, duration: 6)
+                            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_3", layer: layer, duration: 6)
                         };
                         AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArrayOn);
 
@@ -1109,11 +1109,11 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.AxeStone:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "big_icons_candacis", layer: 0, x: 0, y: 0, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_stone", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.AxeIron:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "big_icons_candacis", layer: 0, x: 48, y: 0, width: 48, height: 48, scale: 0.5f));
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_iron", layer: 0, scale: 0.5f));
                     break;
 
                 case PkgName.AxeCrystal:
@@ -1562,12 +1562,13 @@ namespace SonOfRobin
 
                         var frameArray = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false),
-                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false),
-                            ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false)
+                            ConvertImageToFrame(atlasName: "_processed_campfire_on_1", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "_processed_campfire_on_2", layer: layer, duration: 6, crop: false),
+                            ConvertImageToFrame(atlasName: "_processed_campfire_on_3", layer: layer, duration: 6, crop: false)
                         };
                         AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
-                        frameArray = ConvertImageToFrameArray(atlasName: "flames", layer: layer, x: 288, y: 96, width: 48, height: 48, crop: false);
+
+                        frameArray = ConvertImageToFrameArray(atlasName: "_processed_campfire_off", layer: layer, crop: false);
                         AddFrameArray(pkgName: pkgName, frameArray);
                         AddFrameArray(pkgName: pkgName, animName: "off", frameArray: frameArray);
 
@@ -1793,13 +1794,13 @@ namespace SonOfRobin
 
                         var frameArray = new AnimFrame[]
                         {
-                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_4", layer: layer, duration: 20),
-                            ConvertImageToFrame(atlasName: "backlight_3", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_2", layer: layer, duration: 6),
-                            ConvertImageToFrame(atlasName: "backlight_1", layer: layer, duration: 6)
+                            ConvertImageToFrame(atlasName: "_processed_backlight_1", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_4", layer: layer, duration: 20),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_3", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_2", layer: layer, duration: 6),
+                            ConvertImageToFrame(atlasName: "_processed_backlight_1", layer: layer, duration: 6)
                         };
                         AddFrameArray(pkgName: pkgName, frameArray: frameArray);
                         break;
@@ -1818,9 +1819,9 @@ namespace SonOfRobin
                         {
                             var frameArray = new AnimFrame[]
                             {
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 
@@ -1831,9 +1832,9 @@ namespace SonOfRobin
                         {
                             var frameArray = new AnimFrame[]
                             {
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 432, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 480, y: 0, width: 48, height: 48, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "flames", layer: layer, duration: 6, x: 528, y: 0, width: 48, height: 48, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 
