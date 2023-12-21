@@ -1973,7 +1973,7 @@ namespace SonOfRobin
                         { "walk", 1 },
                     };
 
-                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 0, baseAnimsFaceRight: false, durationDict: durationDict);
+                    AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 0, scale: 0.8f, baseAnimsFaceRight: false, durationDict: durationDict);
 
                     break;
 
@@ -2143,7 +2143,7 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, bool baseAnimsFaceRight, Dictionary<string, short> durationDict)
+        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict)
         {
             string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
             object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
@@ -2176,7 +2176,7 @@ namespace SonOfRobin
 
                     if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
 
-                    animDict[animNameWithDirection][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: 1f);
+                    animDict[animNameWithDirection][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale);
                 }
             }
 
