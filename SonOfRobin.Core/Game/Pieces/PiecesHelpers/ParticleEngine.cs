@@ -30,7 +30,7 @@ namespace SonOfRobin
             WaterCruiseCine = 9,
             WaterSplashCine = 10,
             MudWalk = 11,
-            WaterWave = 12,
+            WaterWaveDraw = 12,
             LavaFlame = 13,
 
             SwampGas = 14,
@@ -56,6 +56,8 @@ namespace SonOfRobin
             WindLeaf = 31,
             WindPetal = 32,
 
+            WaterDistortWalk = 41,
+            WaterWaveDistort = 42,
             HeatSmall = 33,
             HeatMedium = 34,
             HeatBig = 35,
@@ -74,9 +76,11 @@ namespace SonOfRobin
                 { Preset.Smelting, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.Brewing, TextureBank.TextureName.ParticleBubble },
                 { Preset.WaterWalk, TextureBank.TextureName.ParticleCircleSharp },
+                { Preset.WaterDistortWalk, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.WaterCruiseCine, TextureBank.TextureName.ParticleCircleSharp },
                 { Preset.WaterSplashCine, TextureBank.TextureName.ParticleCircleSharp },
-                { Preset.WaterWave, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.WaterWaveDraw, TextureBank.TextureName.ParticleCircleSoft },
+                { Preset.WaterWaveDistort, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.CookingFinish, TextureBank.TextureName.ParticleCircleSoft },
                 { Preset.BrewingFinish, TextureBank.TextureName.ParticleBubble },
                 { Preset.Excavated, TextureBank.TextureName.ParticleCircleSharp },
@@ -660,12 +664,49 @@ namespace SonOfRobin
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.42f,
+                                            StartValue = 0.38f,
                                             EndValue = 0f
                                         },
                                     }
                                 },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 15f},
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterDistortWalk:
+                    {
+                        drawAsDistortion = true;
+                        defaultParticlesToEmit = 1;
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 3000, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Scale = new Range<float>(0.1f, 0.4f),
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(8f, 16f),
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.7f),
+                                            EndValue = new Vector2(1.8f)
+                                        },
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.18f,
+                                            EndValue = 0f
+                                        },
+                                    }
+                                },
                             }
                         };
                         break;
@@ -819,7 +860,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Preset.WaterWave:
+                case Preset.WaterWaveDraw:
                     {
                         defaultParticlesToEmit = 3;
 
@@ -850,6 +891,47 @@ namespace SonOfRobin
                                         {
                                             StartValue = new Vector2(1.0f),
                                             EndValue = new Vector2(3.1f)
+                                        },
+                                    }
+                                },
+                                new DragModifier { Density = 0.7f, DragCoefficient = 1f },
+                            }
+                        };
+                        break;
+                    }
+
+                case Preset.WaterWaveDistort:
+                    {
+                        drawAsDistortion = true;
+                        defaultParticlesToEmit = 3;
+
+                        float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
+                        float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
+
+                        particleEmitter = new ParticleEmitter(textureRegion, 700, TimeSpan.FromSeconds(1.4f), Profile.Line(axis: new Vector2(axisX, axisY), length: this.sprite.GfxRect.Height * 0.85f))
+                        {
+                            Parameters = new ParticleReleaseParameters
+                            {
+                                Color = HslColor.FromRgb(Color.White),
+                                Speed = new Range<float>(20f, 60f),
+                                Quantity = 0,
+                            },
+
+                            Modifiers =
+                            {
+                                new AgeModifier
+                                {
+                                    Interpolators =
+                                    {
+                                        new OpacityInterpolator
+                                        {
+                                            StartValue = 0.35f,
+                                            EndValue = 0f
+                                        },
+                                        new ScaleInterpolator
+                                        {
+                                            StartValue = new Vector2(0.2f),
+                                            EndValue = new Vector2(4.2f)
                                         },
                                     }
                                 },
@@ -1828,6 +1910,7 @@ namespace SonOfRobin
                 Preset.Cooking => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Top),
                 Preset.Brewing => new Vector2(this.sprite.ColRect.Center.X, this.sprite.GfxRect.Center.Y),
                 Preset.WaterWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
+                Preset.WaterDistortWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterCruiseCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.WaterSplashCine => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),
                 Preset.MudWalk => new Vector2(this.sprite.ColRect.Center.X, this.sprite.ColRect.Bottom),

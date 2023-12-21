@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.Android", "SonOf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonOfRobin.Core", "SonOfRobin.Core\SonOfRobin.Core.csproj", "{42E9B399-E2BC-4477-B9DC-4A439C97F2F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragonBonesMG", "DragonBonesMG\DragonBonesMG.csproj", "{99FA2F67-E842-47B4-9C76-2E88C8868C74}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,10 +26,6 @@ Global
 		{42E9B399-E2BC-4477-B9DC-4A439C97F2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42E9B399-E2BC-4477-B9DC-4A439C97F2F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42E9B399-E2BC-4477-B9DC-4A439C97F2F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99FA2F67-E842-47B4-9C76-2E88C8868C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99FA2F67-E842-47B4-9C76-2E88C8868C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99FA2F67-E842-47B4-9C76-2E88C8868C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99FA2F67-E842-47B4-9C76-2E88C8868C74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

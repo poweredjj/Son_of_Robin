@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
 
@@ -59,7 +60,14 @@ namespace SonOfRobin
             catch (DirectoryNotFoundException) { return null; }
         }
 
-        public static object LoadJson(string path)
+        public static string LoadFile(string path)
+        {
+            using var stream = TitleContainer.OpenStream(path);
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+
+        public static object LoadJson(string path, bool useStreamReader = false)
         {
             string compressedPath = $"{path}.gzip";
 
@@ -74,7 +82,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    string json = File.ReadAllText(path);
+                    string json = useStreamReader ? LoadFile(path) : File.ReadAllText(path);
                     return JsonConvert.DeserializeObject(json, serializerSettings);
                 }
             }

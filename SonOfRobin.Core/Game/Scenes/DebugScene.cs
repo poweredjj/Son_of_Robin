@@ -53,7 +53,6 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                debugLines.Add($"DB anim  templates {DragonBonesAnimManager.AnimTemplatesCount} sprites {DragonBonesAnimManager.AnimForSpriteDictCount} used {DragonBonesAnimManager.UsedAnimInstancesCount} free {DragonBonesAnimManager.FreeAnimInstancesCount}");
                 debugLines.Add($"proc. non-plants: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
                 debugLines.Add($"tracking count {world.ActiveLevel.trackingManager.TrackingCount} swayCount {world.swayManager.SwayEventsCount}");
                 if (world.ActiveLevel.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");

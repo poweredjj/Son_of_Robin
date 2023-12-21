@@ -119,7 +119,11 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    if (this.sprite.opacity > 0) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWave, particlesToEmit: (int)(this.sprite.opacity * 1f), duration: 15);
+                    if (this.sprite.opacity > 0)
+                    {
+                        ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDraw, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 5));
+                        if (this.sprite.opacity > 0.3f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDistort, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 3));
+                    }
                 }
             }
 
@@ -148,6 +152,7 @@ namespace SonOfRobin
                         collidingPiece.AddPassiveMovement(movement: Helpers.VectorKeepBelowSetValue(vector: pushMovement, maxVal: 400f));
 
                         ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterWalk, particlesToEmit: 15, duration: 7);
+                        ParticleEngine.TurnOn(sprite: collidingSprite, preset: ParticleEngine.Preset.WaterDistortWalk, particlesToEmit: 23, duration: 7);
 
                         // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
                     }

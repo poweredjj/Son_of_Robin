@@ -202,7 +202,7 @@ namespace SonOfRobin
             { TextureName.MonoGame, "monogame" },
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
-            { TextureName.FogCloud, "weather_fog_1" },
+            { TextureName.FogCloud, "_processed_weather_fog_1" },
             { TextureName.GfxCorrupted, "gfx_corrupted" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },

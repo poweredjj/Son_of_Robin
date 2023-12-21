@@ -712,7 +712,7 @@ namespace SonOfRobin
                             textLines.Add("Island info\n");
 
                             textLines.Add($"| Size: {islandLevel.width}x{islandLevel.height}");
-                            imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Map).Texture);
+                            imageList.Add(TextureBank.GetTexture(TextureBank.TextureName.Map));
 
                             textLines.Add($"| All Objects: {world.PieceCount}");
                             imageList.Add(AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Stone).Texture);
@@ -1221,13 +1221,12 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
                         }
 
+                        Scheduler.ExecutionDelegate saveJsonContentTemplateDlgt = () => { AnimData.SaveJsonDict(asContentTemplate: true); };
+                        new Invoker(menu: menu, name: "save json content template", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: saveJsonContentTemplateDlgt);
+
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds");
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe");
                         new Selector(menu: menu, name: "show outside camera", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowOutsideCamera");
-
-                        new Selector(menu: menu, name: "DragonBones test scene", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowDragonBonesTestScene");
-
-                        new Selector(menu: menu, name: "use DragonBones test anims", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableDragonBonesGameAnims");
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);

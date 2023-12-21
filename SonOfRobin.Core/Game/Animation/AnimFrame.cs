@@ -33,9 +33,9 @@ namespace SonOfRobin
         public readonly int srcAtlasY;
         public readonly int srcWidth;
         public readonly int srcHeight;
-
+        public readonly bool mirrorX;
         private string PngName { get { return $"{this.textureID}.png"; } }
-        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName); } }
+        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName) || this.atlasName.StartsWith("_processed_"); } }
 
         public Texture2D Texture
         {
@@ -44,12 +44,12 @@ namespace SonOfRobin
                 if (this.texture == null)
                 {
                     // MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
-                    this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+                    this.texture = this.pngPath.Contains("_processed_") ? TextureBank.GetTexture(this.atlasName) : GfxConverter.LoadTextureFromPNG(this.pngPath);
                     if (this.texture == null)
                     {
                         this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
                         AnimData.jsonDict.Remove(this.id); // deleting json entry...
-                        AnimData.SaveJsonDict(); // ...and saving it, to be rebuilt on next run
+                        AnimData.SaveJsonDict(asContentTemplate: false); // ...and saving it, to be rebuilt on next run
                     }
                     else AnimData.loadedFramesCount++;
                 }
@@ -57,11 +57,11 @@ namespace SonOfRobin
             }
         }
 
-        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             // some frames are duplicated and can be reused (this can be verified by checking ID)
 
-            string id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
+            string id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent);
 
             if (AnimData.frameById.ContainsKey(id)) return AnimData.frameById[id];
 
@@ -77,12 +77,12 @@ namespace SonOfRobin
                 if (deserializedFrame.PngPathExists) return deserializedFrame;
             }
 
-            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
+            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
-        private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, float scale, float depthPercent)
+        private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, bool mirrorX, float scale, float depthPercent)
         {
-            return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
+            return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{mirrorX}_{scale}_{depthPercent}";
         }
 
         private AnimFrame(Dictionary<string, Object> jsonData)
@@ -110,6 +110,7 @@ namespace SonOfRobin
             this.srcAtlasY = (int)(Int64)jsonData["srcAtlasY"];
             this.srcWidth = (int)(Int64)jsonData["srcWidth"];
             this.srcHeight = (int)(Int64)jsonData["srcHeight"];
+            this.mirrorX = (bool)jsonData["mirrorX"];
 
             AnimData.frameById[this.id] = this;
         }
@@ -118,17 +119,17 @@ namespace SonOfRobin
         {
             if (this.cropped || (this.srcWidth == 1 && this.srcHeight == 1)) return this;
 
-            return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
+            return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, mirrorX: mirrorX, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
         }
 
-        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
+        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
         {
             // should not be invoked from other classes directly
 
             // id and textureID should retain width == 0 and height == 0, to properly name json + png and avoid having to load each atlas
 
-            this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
-            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, scale: 0, depthPercent: 0);
+            this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent);
+            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, mirrorX: mirrorX, scale: 0, depthPercent: 0);
 
             AnimData.frameById[this.id] = this;
             this.pngPath = Path.Combine(SonOfRobinGame.animCachePath, this.PngName);
@@ -142,6 +143,7 @@ namespace SonOfRobin
             this.depthPercent = depthPercent;
             this.atlasName = atlasName;
             this.scale = scale;
+            this.mirrorX = mirrorX;
             this.layer = layer;
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
@@ -150,16 +152,25 @@ namespace SonOfRobin
             else
             {
                 // MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
-                Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
-                if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
-                if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
-                Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
 
-                // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-                this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
-                GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
+                if (this.atlasName.StartsWith("_processed_") && this.srcWidth == 0 && this.srcHeight == 0)
+                {
+                    // for processed textures (copied from graphics_cache folder back to content/gfx)
+                    this.texture = TextureBank.GetTexture(this.atlasName);
+                }
+                else
+                {
+                    Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
+                    if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
+                    if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
+                    Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
+
+                    // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
+                    this.texture = GfxConverter.CropTextureAndAddPaddingGpu(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
+                    GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
+                }
+
                 AnimData.foundFramePngs.Add(this.PngName);
-
                 AnimData.textureDict[this.textureID] = this.texture;
             }
 
@@ -210,6 +221,7 @@ namespace SonOfRobin
                 { "scale", this.scale },
                 { "ignoreWhenCalculatingMaxSize", this.ignoreWhenCalculatingMaxSize },
                 { "cropped", this.cropped },
+                { "mirrorX", this.mirrorX },
                 { "srcAtlasX", this.srcAtlasX },
                 { "srcAtlasY", this.srcAtlasY },
                 { "srcWidth", this.srcWidth },
