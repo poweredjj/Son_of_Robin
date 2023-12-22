@@ -1316,6 +1316,10 @@ namespace SonOfRobin
                 this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
                 this.sprite.Visible = false;
             }
+            else
+            {
+                if (this.sprite.CheckIfAnimNameExists($"dead-{this.sprite.orientation}")) this.sprite.AssignNewName($"dead-{this.sprite.orientation}");
+            }
             this.world.touchLayout = TouchLayout.WorldSleep;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
             this.sprite.CharacterStand();
@@ -1352,8 +1356,9 @@ namespace SonOfRobin
 
             this.activeState = State.PlayerControlledWalking;
             this.world.touchLayout = TouchLayout.WorldMain;
-            this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
+            this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;      
             this.sprite.Visible = true;
+            this.sprite.CharacterStand();
             this.activeSoundPack.Stop(PieceSoundPackTemplate.Action.PlayerSnore);
             this.sleepMode = SleepMode.Awake;
 
