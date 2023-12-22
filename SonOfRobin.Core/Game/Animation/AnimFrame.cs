@@ -22,6 +22,7 @@ namespace SonOfRobin
         private readonly string pngPath;
         public readonly Vector2 textureSize;
         public readonly Rectangle textureRect;
+        public readonly Rectangle colBounds;
         public readonly Vector2 rotationOrigin;
         public readonly int layer;
         public readonly short duration;
@@ -57,7 +58,7 @@ namespace SonOfRobin
             }
         }
 
-        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false, Rectangle colBoundsOverride = default)
         {
             // some frames are duplicated and can be reused (this can be verified by checking ID)
 
@@ -77,7 +78,7 @@ namespace SonOfRobin
                 if (deserializedFrame.PngPathExists) return deserializedFrame;
             }
 
-            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
+            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize, colBoundsOverride: colBoundsOverride);
         }
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, bool mirrorX, float scale, float depthPercent)
@@ -99,6 +100,7 @@ namespace SonOfRobin
             this.gfxOffset = new Vector2((float)(double)jsonData["gfxOffsetX"], (float)(double)jsonData["gfxOffsetY"]);
             this.textureSize = new Vector2((float)(double)jsonData["textureSizeX"], (float)(double)jsonData["textureSizeY"]);
             this.textureRect = (Rectangle)jsonData["textureRect"];
+            this.colBounds = (Rectangle)jsonData["colBounds"];
             this.rotationOrigin = new Vector2((float)(double)jsonData["rotationOriginX"], (float)(double)jsonData["rotationOriginY"]);
             this.pngPath = (string)jsonData["pngPath"];
             this.layer = (int)(Int64)jsonData["layer"];
@@ -122,7 +124,7 @@ namespace SonOfRobin
             return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, mirrorX: mirrorX, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
         }
 
-        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
+        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize, Rectangle colBoundsOverride = default)
         {
             // should not be invoked from other classes directly
 
@@ -176,18 +178,18 @@ namespace SonOfRobin
 
             this.textureSize = new Vector2(this.Texture.Width, this.Texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.Texture.Width, height: this.Texture.Height);
-            this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
+            this.rotationOrigin = this.textureSize * 0.5f; // rotationOrigin must not take scale into account, to work properly
 
-            Rectangle colBounds = this.FindCollisionBounds();
+            this.colBounds = colBoundsOverride == default ? this.FindCollisionBounds() : colBoundsOverride;
 
-            this.colWidth = (int)(colBounds.Width * scale);
-            this.colHeight = (int)(colBounds.Height * scale);
+            this.colWidth = (int)(this.colBounds.Width * scale);
+            this.colHeight = (int)(this.colBounds.Height * scale);
 
             this.gfxWidth = (int)(this.texture.Width * scale);
             this.gfxHeight = (int)(this.texture.Height * scale);
 
-            this.colOffset = new Vector2(-(int)(colBounds.Width * 0.5f), -(int)(colBounds.Height * 0.5f)); // has to go first...
-            this.gfxOffset = new Vector2(this.colOffset.X - colBounds.X, this.colOffset.Y - colBounds.Y); // because it is used here
+            this.colOffset = new Vector2(-(int)(this.colBounds.Width * 0.5f), -(int)(this.colBounds.Height * 0.5f)); // has to go first...
+            this.gfxOffset = new Vector2(this.colOffset.X - this.colBounds.X, this.colOffset.Y - this.colBounds.Y); // because it is used here
 
             this.colOffset *= scale;
             this.gfxOffset *= scale;
@@ -213,6 +215,7 @@ namespace SonOfRobin
                 { "textureSizeX", this.textureSize.X },
                 { "textureSizeY", this.textureSize.Y },
                 { "textureRect", this.textureRect },
+                { "colBounds", this.colBounds },
                 { "rotationOriginX", this.rotationOrigin.X },
                 { "rotationOriginY", this.rotationOrigin.Y },
                 { "pngPath", this.pngPath },

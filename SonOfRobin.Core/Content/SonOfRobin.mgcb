@@ -94,10 +94,10 @@
 #begin gfx/_content_template.json
 /copy:gfx/_content_template.json
 
-#begin gfx/_DragonBones/peasant_tex.json
-/copy:gfx/_DragonBones/peasant_tex.json
+#begin gfx/_DragonBones/female_mage_tex.json
+/copy:gfx/_DragonBones/female_mage_tex.json
 
-#begin gfx/_DragonBones/peasant_tex.png
+#begin gfx/_DragonBones/female_mage_tex.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,22 +107,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/peasant_tex.png
-
-#begin gfx/_DragonBones/ubbie_tex.json
-/copy:gfx/_DragonBones/ubbie_tex.json
-
-#begin gfx/_DragonBones/ubbie_tex.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/ubbie_tex.png
+/build:gfx/_DragonBones/female_mage_tex.png
 
 #begin gfx/_processed_acorn.png
 /importer:TextureImporter

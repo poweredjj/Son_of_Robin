@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // _content_template.json should be updated after making any changes to assets
-        public const float currentVersion = 1.000038f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000039f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -272,8 +273,7 @@ namespace SonOfRobin
             BearRed = 194,
             BearBeige = 195,
 
-            DragonBonesTestBear = 301,
-            DragonBonesTestPeasant = 302,
+            DragonBonesTestFemaleMage = 301,
 
             TentModern = 196,
             TentModernPacked = 197,
@@ -1966,36 +1966,18 @@ namespace SonOfRobin
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
                     break;
 
-                case PkgName.DragonBonesTestBear:
+                case PkgName.DragonBonesTestFemaleMage:
                     {
                         var durationDict = new Dictionary<string, short>
                         {
                             { "stand", 3 },
-                            { "walk", 1 },
+                            { "walk", 2 },
                         };
 
-                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "ubbie_tex.json", animSize: 0, scale: 0.8f, baseAnimsFaceRight: false, durationDict: durationDict);
+                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "female_mage_tex.json", animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict);
 
                         break;
                     }
-
-                case PkgName.DragonBonesTestPeasant:
-                    {
-                        var durationDict = new Dictionary<string, short>
-                        {
-                            { "attack", 2 },
-                            { "damage", 2 },
-                            { "die", 2 },
-                            { "stand", 2 },
-                            { "run", 1 },
-                            { "walk", 1 },
-                        };
-
-                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "peasant_tex.json", animSize: 0, scale: 1f, baseAnimsFaceRight: true, durationDict: durationDict);
-
-                        break;
-                    }
-
 
                 default:
                     throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
@@ -2175,9 +2157,11 @@ namespace SonOfRobin
 
             var animDict = new Dictionary<string, Dictionary<int, AnimFrame>>();
 
+            var colBoundsForAnimDict = new Dictionary<string, Rectangle>();
+
             foreach (var animData in animDataList)
             {
-                string name = (string)animData["name"];
+                string name = ((string)animData["name"]).ToLower();
                 int underscoreIndex = name.LastIndexOf('_');
                 int frameNoIndex = underscoreIndex + 1;
 
@@ -2193,10 +2177,15 @@ namespace SonOfRobin
                 foreach (string direction in new string[] { "right", "left" })
                 {
                     string animNameWithDirection = $"{baseAnimName}-{direction}";
+                    // to avoid jitter, each animation should have one shared colBounds
+                    Rectangle sharedColBounds = colBoundsForAnimDict.ContainsKey(animNameWithDirection) ? colBoundsForAnimDict[animNameWithDirection] : default;
 
                     if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
 
-                    animDict[animNameWithDirection][frameNo] = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale);
+                    AnimFrame animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale, colBoundsOverride: sharedColBounds);
+
+                    animDict[animNameWithDirection][frameNo] = animFrame;
+                    colBoundsForAnimDict[animNameWithDirection] = animFrame.colBounds;
                 }
             }
 
