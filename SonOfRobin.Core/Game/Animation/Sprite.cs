@@ -417,7 +417,7 @@ namespace SonOfRobin
             }
 
             if (this.AnimName.Contains("walk-")) this.CharacterWalk();
-            if (this.AnimName.Contains("stand-")) this.CharacterStand();
+            if (this.AnimName.Contains("stand-") || this.AnimName.Contains("weak-")) this.CharacterStand();
         }
 
         public Sprite FindClosestSprite(List<Sprite> spriteList)
@@ -760,7 +760,7 @@ namespace SonOfRobin
             {
                 string newAnimName = $"stand-{this.orientation}";
 
-                if (this.boardPiece.GetType() == typeof(Player) && ((Player)this.boardPiece).HasLowHP)
+                if (this.boardPiece.GetType() == typeof(Player) && (((Player)this.boardPiece).HasLowHP || ((Player)this.boardPiece).IsVeryTired))
                 {
                     string weakAnimName = $"weak-{this.orientation}";
                     if (this.CheckIfAnimNameExists(weakAnimName)) newAnimName = weakAnimName;
