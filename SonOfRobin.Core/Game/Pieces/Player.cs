@@ -474,7 +474,7 @@ namespace SonOfRobin
         public bool IsVeryTired
         { get { return this.FatiguePercent > 0.75f; } }
 
-        private bool HasLowHP
+        public bool HasLowHP
         { get { return this.HitPointsPercent < 0.15f; } }
 
         public bool CanWakeNow

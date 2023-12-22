@@ -1971,6 +1971,7 @@ namespace SonOfRobin
                         var durationDict = new Dictionary<string, short>
                         {
                             { "stand", 3 },
+                            { "weak", 3 },
                             { "walk", 2 },
                             { "dead", 2 },
                             { "attack", 1 },

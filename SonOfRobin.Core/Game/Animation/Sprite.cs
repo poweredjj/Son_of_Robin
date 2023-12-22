@@ -756,7 +756,18 @@ namespace SonOfRobin
 
         public void CharacterStand(bool setEvenIfMissing = true, bool checkForCollision = true)
         {
-            if (this.AnimName.Contains("walk") || this.AnimFinished) this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision);
+            if (this.AnimName.Contains("walk") || this.AnimFinished)
+            {
+                string newAnimName = $"stand-{this.orientation}";
+
+                if (this.boardPiece.GetType() == typeof(Player) && ((Player)this.boardPiece).HasLowHP)
+                {
+                    string weakAnimName = $"weak-{this.orientation}";
+                    if (this.CheckIfAnimNameExists(weakAnimName)) newAnimName = weakAnimName;
+                }
+
+                this.AssignNewName(newAnimName: newAnimName, setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision);
+            }
         }
 
         public void CharacterWalk(bool setEvenIfMissing = true)
