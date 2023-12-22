@@ -867,10 +867,13 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 1;
                         drawAsDistortion = true;
 
-                        float endScale = 2f + (SonOfRobinGame.random.NextSingle() * 5f);
+                        Vector2 endScale = new(
+                            2f + (SonOfRobinGame.random.NextSingle() * 2f),
+                            2f + (SonOfRobinGame.random.NextSingle() * 2f)
+                            );
 
                         particleEmitter = new ParticleEmitter(textureRegion, 1,
-                            TimeSpan.FromSeconds((SonOfRobinGame.random.NextSingle() * 4.5f) + 1.8f),
+                            TimeSpan.FromSeconds((SonOfRobinGame.random.NextSingle() * 5.5f) + 1.6f),
                             Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
                         {
                             Parameters = new ParticleReleaseParameters
@@ -888,12 +891,12 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.0f),
-                                            EndValue = new Vector2(endScale)
+                                            StartValue = Vector2.Zero,
+                                            EndValue = endScale
                                         },
                                         new OpacityInterpolator
                                         {
-                                            StartValue = 0.5f,
+                                            StartValue = 0.33f,
                                             EndValue = 0.0f
                                         },
                                     }

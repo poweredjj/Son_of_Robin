@@ -2612,7 +2612,7 @@ namespace SonOfRobin
                 case Name.WaterEdgeDistort:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 6), max: (byte)(Terrain.waterLevelMax - 3)) },
+                            { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 40), max: (byte)(Terrain.waterLevelMax - 7)) },
                         });
 
                         VisualEffect waterEdgeDistort = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "water edge distortion", description: "Distorts water edge.", activeState: BoardPiece.State.Empty, visible: true);
