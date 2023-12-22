@@ -437,7 +437,9 @@ namespace SonOfRobin
             if (pieceType != typeof(Fruit)) // fruits can't really "die"
             {
                 this.CharacterStand(setEvenIfMissing: false);
+
                 if (CheckIfAnimNameExists("dead")) this.AssignNewName("dead");
+                else if (CheckIfAnimNameExists($"dead-{this.orientation}")) this.AssignNewName($"dead-{this.orientation}");
                 else this.color = Color.LightCoral;
             }
 

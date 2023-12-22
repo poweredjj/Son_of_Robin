@@ -216,7 +216,7 @@ namespace SonOfRobin
                 this.floatsOnWater = false;
                 this.isAffectedByWind = false;
                 this.allowedDensity = null;
-                this.staysAfterDeath = this.type == typeof(Animal) ? 30 * 60 : 0;
+                this.staysAfterDeath = this.type == typeof(Animal) || this.type == typeof(Player) ? 30 * 60 : 0;
                 this.Yield = null;
                 this.appearDebris = null; // yield that is used to make debris when placing this piece
                 this.windParticlesDict = new Dictionary<ParticleEngine.Preset, Color>();

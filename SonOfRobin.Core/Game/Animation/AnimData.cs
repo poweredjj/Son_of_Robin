@@ -1972,9 +1972,12 @@ namespace SonOfRobin
                         {
                             { "stand", 3 },
                             { "walk", 2 },
+                            { "dead", 2 },
                         };
 
-                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "female_mage_tex.json", animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict);
+                        string[] nonLoopedAnims = new string[] { "dead" };
+
+                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "female_mage_tex.json", animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims);
 
                         break;
                     }
@@ -2145,19 +2148,17 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict)
+        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims)
         {
             string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
             object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
             JObject jsonDict = (JObject)jsonData;
 
             string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
-
             var animDataList = jsonDict["SubTexture"];
 
             var animDict = new Dictionary<string, Dictionary<int, AnimFrame>>();
-
-            var colBoundsForAnimDict = new Dictionary<string, Rectangle>();
+            var colBoundsForAnims = new Dictionary<string, Rectangle>();
 
             foreach (var animData in animDataList)
             {
@@ -2178,14 +2179,14 @@ namespace SonOfRobin
                 {
                     string animNameWithDirection = $"{baseAnimName}-{direction}";
                     // to avoid jitter, each animation should have one shared colBounds
-                    Rectangle sharedColBounds = colBoundsForAnimDict.ContainsKey(animNameWithDirection) ? colBoundsForAnimDict[animNameWithDirection] : default;
+                    Rectangle sharedColBounds = colBoundsForAnims.ContainsKey(animNameWithDirection) ? colBoundsForAnims[animNameWithDirection] : default;
 
                     if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
 
                     AnimFrame animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale, colBoundsOverride: sharedColBounds);
 
                     animDict[animNameWithDirection][frameNo] = animFrame;
-                    colBoundsForAnimDict[animNameWithDirection] = animFrame.colBounds;
+                    colBoundsForAnims[animNameWithDirection] = animFrame.colBounds;
                 }
             }
 
@@ -2195,10 +2196,20 @@ namespace SonOfRobin
                 var frameDict = kvp1.Value;
                 int framesCount = frameDict.Keys.Max() + 1;
 
+                bool nonLoopedAnim = nonLoopedAnims.Where(n => animName.Contains(n)).Any();
+
                 AnimFrame[] frameArray = new AnimFrame[framesCount];
                 foreach (var kvp2 in frameDict)
                 {
-                    frameArray[kvp2.Key] = kvp2.Value;
+                    int frameNo = kvp2.Key;
+                    AnimFrame animFrame = kvp2.Value;
+
+                    if (nonLoopedAnim && frameNo == framesCount - 1)
+                    {
+                        animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: animFrame.srcAtlasX, atlasY: animFrame.srcAtlasY, width: animFrame.srcWidth, height: animFrame.srcHeight, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: animFrame.mirrorX, scale: scale, colBoundsOverride: animFrame.colBounds);
+                    }
+
+                    frameArray[frameNo] = animFrame;
                 }
 
                 AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
