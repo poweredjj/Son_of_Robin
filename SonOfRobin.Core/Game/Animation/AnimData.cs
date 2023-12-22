@@ -1975,11 +1975,22 @@ namespace SonOfRobin
                             { "walk", 2 },
                             { "dead", 2 },
                             { "attack", 1 },
+                            { "damage", 1 },
                         };
 
-                        string[] nonLoopedAnims = new string[] { "dead", "attack" };
+                        string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
 
-                        AddDragonBonesPackage(pkgName: pkgName, jsonName: "female_mage_tex.json", animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims);
+                        foreach (string jsonName in new string[] {
+                            "female_mage_tex_attack.json",
+                            "female_mage_tex_damage.json",
+                            "female_mage_tex_dead.json",
+                            "female_mage_tex_stand.json",
+                            "female_mage_tex_walk.json",
+                            "female_mage_tex_weak.json",
+                        })
+                        {
+                            AddDragonBonesAnims(pkgName: pkgName, jsonName: jsonName, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims);
+                        }
 
                         break;
                     }
@@ -2150,8 +2161,10 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesPackage(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims)
+        public static void AddDragonBonesAnims(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims)
         {
+            // Will add all animations stored in tex json file.
+
             string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
             object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
             JObject jsonDict = (JObject)jsonData;
