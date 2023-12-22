@@ -511,12 +511,14 @@ namespace SonOfRobin
 
             this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Die);
 
-            if (this.IsAnimalOrPlayer)
+            if (this.GetType() == typeof(Animal))
             {
                 this.sprite.CharacterStand(checkForCollision: false);
-                this.rotatesWhenDropped = true; // so it can be tossed around with rotation
                 this.sprite.rotation = (float)(Random.NextSingle() * Math.PI);
             }
+
+            if (this.IsAnimalOrPlayer) this.rotatesWhenDropped = true; // so it can be tossed around with rotation
+
             if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;
             // fruits should be destroyed, not dropped
@@ -868,7 +870,12 @@ namespace SonOfRobin
                     this.pieceInfo.Yield?.DropDebris(piece: this, debrisTypeListOverride: debrisTypeList);
                 }
 
-                this.Destroy();
+                if (this.GetType() == typeof(Player))
+                {
+                    this.HeatLevel = 0;
+                    this.Kill();
+                }
+                else this.Destroy();
                 return;
             }
 
