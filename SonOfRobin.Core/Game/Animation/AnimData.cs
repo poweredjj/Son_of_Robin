@@ -1975,7 +1975,7 @@ namespace SonOfRobin
                             { "walk", 2 },
                             { "dead", 2 },
                             { "attack", 1 },
-                            { "damage", 1 },
+                            { "damage", 2 },
                         };
 
                         string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };

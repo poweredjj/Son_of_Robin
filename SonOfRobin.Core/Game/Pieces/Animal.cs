@@ -571,12 +571,15 @@ namespace SonOfRobin
 
                 this.target.pieceInfo.Yield?.DropDebris(piece: this.target);
 
+                string animName = $"damage-{this.target.sprite.orientation}";
+                if (this.target.sprite.CheckIfAnimNameExists(animName)) this.target.sprite.AssignNewName(animName);
+
                 this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
                 target.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsHit);
-                if (target.HitPointsPercent < 0.4f || world.random.Next(2) == 0) target.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
+                if (target.HitPointsPercent < 0.4f || this.world.random.Next(2) == 0) target.activeSoundPack.Play(PieceSoundPackTemplate.Action.Cry);
 
-                int attackStrength = Convert.ToInt32(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
+                int attackStrength = (int)(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
                 this.target.HitPoints = Math.Max(0, this.target.HitPoints - attackStrength);
                 if (this.target.HitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
 
