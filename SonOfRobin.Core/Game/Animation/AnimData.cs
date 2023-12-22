@@ -235,7 +235,6 @@ namespace SonOfRobin
 
             PlayerBoy = 161,
             PlayerGirl = 162,
-            PlayerTestDemoness = 163,
 
             FoxBlack = 164,
             FoxBrown = 165,
@@ -1271,10 +1270,6 @@ namespace SonOfRobin
 
                 case PkgName.PlayerGirl:
                     AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-                    break;
-
-                case PkgName.PlayerTestDemoness:
-                    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
                     break;
 
                 case PkgName.FoxGinger:

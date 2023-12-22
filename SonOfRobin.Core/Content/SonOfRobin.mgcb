@@ -4216,18 +4216,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/characters/crabs_small.png
 
-#begin gfx/characters/demoness.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/characters/demoness.png
-
 #begin gfx/characters/fox.png
 /importer:TextureImporter
 /processor:TextureProcessor
