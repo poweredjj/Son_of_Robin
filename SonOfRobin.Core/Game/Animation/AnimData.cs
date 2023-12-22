@@ -1973,9 +1973,10 @@ namespace SonOfRobin
                             { "stand", 3 },
                             { "walk", 2 },
                             { "dead", 2 },
+                            { "attack", 1 },
                         };
 
-                        string[] nonLoopedAnims = new string[] { "dead" };
+                        string[] nonLoopedAnims = new string[] { "dead", "attack" };
 
                         AddDragonBonesPackage(pkgName: pkgName, jsonName: "female_mage_tex.json", animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims);
 

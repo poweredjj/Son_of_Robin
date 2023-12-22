@@ -13,8 +13,8 @@ namespace SonOfRobin
         public enum Orientation : byte
         {
             // must be lowercase, to match animName
-            left,
 
+            left,
             right,
             up,
             down,
@@ -740,6 +740,8 @@ namespace SonOfRobin
             this.currentFrameTimeLeft = this.AnimFrame.duration;
         }
 
+        public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
+
         public void UpdateAnimation(bool checkForCollision)
         {
             if (this.AnimFrame.duration == 0) return; // duration == 0 will stop the animation
@@ -753,7 +755,9 @@ namespace SonOfRobin
         }
 
         public void CharacterStand(bool setEvenIfMissing = true, bool checkForCollision = true)
-        { this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision); }
+        {
+            if (this.AnimName.Contains("walk") || this.AnimFinished) this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision);
+        }
 
         public void CharacterWalk(bool setEvenIfMissing = true)
         { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }

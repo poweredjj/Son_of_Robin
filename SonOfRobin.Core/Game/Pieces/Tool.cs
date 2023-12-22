@@ -183,6 +183,8 @@ namespace SonOfRobin
 
             if (anyTargetHit)
             {
+                player.sprite.AssignNewName(newAnimName: $"attack-{player.sprite.orientation}", setEvenIfMissing: true);
+
                 player.Fatigue += 3;
                 this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
