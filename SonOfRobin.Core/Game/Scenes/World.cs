@@ -565,7 +565,12 @@ namespace SonOfRobin
             }
 
             this.RefreshRenderTargets();
-            if (!this.demoMode) this.map.ForceRender();
+            if (!this.demoMode)
+            {
+                this.map.UpdateResolution();
+                this.map.forceRenderNextFrame = true;
+            }
+
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
             if (!this.demoMode)

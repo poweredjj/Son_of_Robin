@@ -320,7 +320,7 @@ namespace SonOfRobin
                 debugShowWholeMap = value;
 
                 World world = World.GetTopWorld();
-                world?.map.ForceRender();
+                world?.map.UpdateResolution();
             }
         }
 
@@ -361,7 +361,7 @@ namespace SonOfRobin
                 if (world != null)
                 {
                     if (debugMode || !world.Player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap)) world.MapEnabled = debugGodMode;
-                    world.map.ForceRender();
+                    world.map.UpdateResolution();
                 }
             }
         }

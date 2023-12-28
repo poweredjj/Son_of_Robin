@@ -53,7 +53,7 @@ namespace SonOfRobin
         private static readonly Color stepDotColor = new(56, 36, 0);
 
         private bool RenderThisFrame
-        { get { return this.Mode != MapMode.Off && !SonOfRobinGame.IgnoreThisDraw && (UpdateStack.Contains(this) || this.forceRenderNextFrame); } }
+        { get { return this.forceRenderNextFrame || (this.Mode != MapMode.Off && !SonOfRobinGame.IgnoreThisDraw && UpdateStack.Contains(this)); } }
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -89,12 +89,6 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.Mode = MapMode.Off;
-        }
-
-        public void ForceRender()
-        {
-            this.backgroundNeedsUpdating = true;
-            this.UpdateResolution();
         }
 
         public Dictionary<string, Object> Serialize()
@@ -190,8 +184,8 @@ namespace SonOfRobin
 
             float sourceMultiplier = 1f / (float)this.world.ActiveLevel.width * (float)this.world.Grid.WholeIslandPreviewTexture.Width;
 
-            Rectangle srcRect = new Rectangle(0, 0, (int)(cellWidth * sourceMultiplier), (int)(cellHeight * sourceMultiplier));
-            Rectangle destRect = new Rectangle(0, 0, destCellWidth, destCellHeight);
+            Rectangle srcRect = new(0, 0, (int)(cellWidth * sourceMultiplier), (int)(cellHeight * sourceMultiplier));
+            Rectangle destRect = new(0, 0, destCellWidth, destCellHeight);
 
             foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.Grid.allCells : this.world.Grid.CellsVisitedByPlayer)
             {
@@ -235,7 +229,6 @@ namespace SonOfRobin
                         this.camera.TrackPiece(trackedPiece: this.world.Player, moveInstantly: true);
                         this.camera.SetZoom(zoom: InitialZoom, setInstantly: true);
                         this.camera.ResetMovementSpeed();
-                        this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
                         this.drawActive = true;

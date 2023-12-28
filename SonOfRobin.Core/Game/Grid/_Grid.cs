@@ -1189,9 +1189,11 @@ namespace SonOfRobin
         {
             if (this.WholeIslandPreviewTexture != null) return;
 
-            Point wholeIslandPreviewSize = new Point(Math.Min(this.width / this.resDivider, 2000), Math.Min(this.height / this.resDivider, 2000));
+            MessageLog.Add(debugMessage: true, text: "Generating whole island preview.");
 
-            RenderTarget2D previewRenderTarget = new RenderTarget2D(
+            Point wholeIslandPreviewSize = new(Math.Min(this.width / this.resDivider, 2000), Math.Min(this.height / this.resDivider, 2000));
+
+            RenderTarget2D previewRenderTarget = new(
                 graphicsDevice: SonOfRobinGame.GfxDev,
                 width: wholeIslandPreviewSize.X,
                 height: wholeIslandPreviewSize.Y,
