@@ -14,8 +14,9 @@ namespace SonOfRobin
         private readonly float distortionOverTimePower;
         private readonly float distortionOverTimeDuration;
         private readonly Vector2 baseTextureSize;
+        private readonly World world;
 
-        public DistortInstance(ScrollingSurface scrollingSurface, Texture2D distortTexture, float globalDistortionPower, float distortionFromOffsetPower, float distortionSizeMultiplier = 1f, float distortionOverTimePower = 0f, int distortionOverTimeDuration = 60, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectDistort, framesLeft: framesLeft, priority: priority)
+        public DistortInstance(ScrollingSurface scrollingSurface, World world, Texture2D distortTexture, float globalDistortionPower, float distortionFromOffsetPower, float distortionSizeMultiplier = 1f, float distortionOverTimePower = 0f, int distortionOverTimeDuration = 60, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectDistort, framesLeft: framesLeft, priority: priority)
         {
             this.globalDistortionPower = globalDistortionPower;
             this.distortionFromOffsetPower = distortionFromOffsetPower;
@@ -23,6 +24,7 @@ namespace SonOfRobin
             this.distortionOverTimePower = distortionOverTimePower;
             this.distortionOverTimeDuration = distortionOverTimeDuration;
             this.scrollingSurface = scrollingSurface;
+            this.world = world;
             this.baseTexture = this.scrollingSurface.texture;
             this.distortTexture = distortTexture;
             this.baseTextureSize = new Vector2(this.baseTexture.Width, this.baseTexture.Height);
@@ -38,8 +40,8 @@ namespace SonOfRobin
             this.effect.Parameters["globalDistortionPower"].SetValue(this.globalDistortionPower);
             this.effect.Parameters["distortionFromOffsetPower"].SetValue(this.distortionFromOffsetPower);
             this.effect.Parameters["distortionSizeMultiplier"].SetValue(this.distortionSizeMultiplier);
-           
-            this.effect.Parameters["currentUpdate"].SetValue(SonOfRobinGame.CurrentUpdate);
+
+            this.effect.Parameters["currentUpdate"].SetValue(this.world.CurrentUpdate);
             this.effect.Parameters["distortionOverTimePower"].SetValue(this.distortionOverTimePower);
             this.effect.Parameters["distortionOverTimeDuration"].SetValue(this.distortionOverTimeDuration);
 

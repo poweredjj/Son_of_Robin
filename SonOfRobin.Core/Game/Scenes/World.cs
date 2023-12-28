@@ -75,7 +75,16 @@ namespace SonOfRobin
             ColorSourceBlend = Blend.One,
             ColorDestinationBlend = Blend.One,
         };
-        private bool RenderThisFrame { get { return !this.ActiveLevel.creationInProgress && !SonOfRobinGame.IgnoreThisDraw && UpdateStack.Contains(this); } }
+        private bool RenderThisFrame
+        {
+            get
+            {
+                return
+                    !this.ActiveLevel.creationInProgress &&
+                    !SonOfRobinGame.IgnoreThisDraw &&
+                    (UpdateStack.Contains(this) || SonOfRobinGame.CurrentDraw % 120 == 0); // a "lazy" frame should be rendered anyway, to account for window size and graphics option changes
+            }
+        }
 
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;

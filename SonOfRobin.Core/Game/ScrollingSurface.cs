@@ -33,16 +33,16 @@ namespace SonOfRobin
             Texture2D textureDistort = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
 
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
-            this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, distortTexture: textureDistort, globalDistortionPower: 0.12f, distortionFromOffsetPower: 0f, distortionOverTimePower: 1f, distortionOverTimeDuration: 60);
+            this.oceanFloor.effInstance = new DistortInstance(scrollingSurface: this.oceanFloor, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.12f, distortionFromOffsetPower: 0f, distortionOverTimePower: 1f, distortionOverTimeDuration: 60);
 
             this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
-            this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, distortTexture: textureDistort, globalDistortionPower: 1f, distortionFromOffsetPower: 1f, distortionSizeMultiplier: 2.6f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120);
+            this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, world: this.world, distortTexture: textureDistort, globalDistortionPower: 1f, distortionFromOffsetPower: 1f, distortionSizeMultiplier: 2.6f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
-            this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
+            this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
 
             this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, linearScrollPerFrame: new Vector2(-1, 1), world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
-            this.hotAir.effInstance = new DistortInstance(scrollingSurface: this.hotAir, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f);
+            this.hotAir.effInstance = new DistortInstance(scrollingSurface: this.hotAir, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f);
         }
 
         public void Update(bool updateFog, bool updateHotAir)
@@ -112,7 +112,7 @@ namespace SonOfRobin
             this.opacityTweenVal = opacityTweenVal;
             this.maxScrollingOffset = new Vector2(maxScrollingOffsetX, maxScrollingOffsetY);
 
-            this.offset = new Vector2(0, 0);
+            this.offset = Vector2.Zero;
             this.opacity = opacityBaseVal;
 
             this.tweener = new Tweener();
