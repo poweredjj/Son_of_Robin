@@ -76,15 +76,7 @@ namespace SonOfRobin
             ColorDestinationBlend = Blend.One,
         };
         private bool RenderThisFrame
-        {
-            get
-            {
-                return
-                    !this.ActiveLevel.creationInProgress &&
-                    !SonOfRobinGame.IgnoreThisDraw &&
-                    (UpdateStack.Contains(this) || SonOfRobinGame.CurrentDraw % 120 == 0); // a "lazy" frame should be rendered anyway, to account for window size and graphics option changes
-            }
-        }
+        { get { return !this.ActiveLevel.creationInProgress && !SonOfRobinGame.IgnoreThisDraw && (UpdateStack.Contains(this) || this.forceRenderNextFrame); } }
 
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;
@@ -137,6 +129,7 @@ namespace SonOfRobin
         public Grid Grid
         { get { return this.ActiveLevel.grid; } }
 
+        public bool forceRenderNextFrame;
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
@@ -186,6 +179,7 @@ namespace SonOfRobin
 
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
 
+            this.forceRenderNextFrame = false;
             this.CurrentFrame = 0;
             this.CurrentUpdate = 0;
             this.createdTime = DateTime.Now;
@@ -1430,6 +1424,7 @@ namespace SonOfRobin
         public override void RenderToTarget()
         {
             if (!this.RenderThisFrame) return;
+            this.forceRenderNextFrame = false;
 
             Matrix worldMatrix = this.TransformMatrix;
 
@@ -1737,6 +1732,7 @@ namespace SonOfRobin
         {
             this.UpdateViewParams();
             this.RefreshRenderTargets();
+            this.forceRenderNextFrame = true;
         }
 
         public void RefreshRenderTargets()

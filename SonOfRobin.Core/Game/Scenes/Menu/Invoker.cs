@@ -39,9 +39,11 @@ namespace SonOfRobin
             new Scheduler.Task(taskName: this.taskName, executeHelper: this.executeHelper, delay: this.taskDelay, turnOffInputUntilExecution: true);
             if (this.rebuildsMenu)
             {
-                Scheduler.ExecutionDelegate rebuildMenuDelegate = () => { if (!this.menu.HasBeenRemoved) this.menu.Rebuild(instantScroll: false); };
+                Scheduler.ExecutionDelegate rebuildMenuDelegate = () => { if (!this.menu.HasBeenRemoved) this.menu.Rebuild(instantScroll: this.rebuildsMenuInstantScroll); };
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: rebuildMenuDelegate, delay: this.taskDelay, turnOffInputUntilExecution: true);
             }
+            if (this.rebuildsAllMenus) Menu.RebuildAllMenus();
+            if (this.resizesAllScenes) Scene.ScheduleAllScenesResize();
         }
 
         public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)

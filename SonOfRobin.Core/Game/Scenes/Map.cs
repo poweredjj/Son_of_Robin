@@ -31,6 +31,7 @@ namespace SonOfRobin
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
+        public bool forceRenderNextFrame;
 
         public bool FullScreen
         { get { return this.Mode == MapMode.Full; } }
@@ -52,13 +53,7 @@ namespace SonOfRobin
         private static readonly Color stepDotColor = new(56, 36, 0);
 
         private bool RenderThisFrame
-        {
-            get
-            {
-                return this.Mode != MapMode.Off && !SonOfRobinGame.IgnoreThisDraw &&
-                    (UpdateStack.Contains(this) || SonOfRobinGame.CurrentDraw % 120 == 0); // a "lazy" frame should be rendered anyway, to account for window size changes
-            }
-        }
+        { get { return this.Mode != MapMode.Off && !SonOfRobinGame.IgnoreThisDraw && (UpdateStack.Contains(this) || this.forceRenderNextFrame); } }
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -73,6 +68,7 @@ namespace SonOfRobin
             this.bgTaskMeshesToShow = new List<Mesh>();
             this.bgTaskSpritesToShow = new List<Sprite>();
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
+            this.forceRenderNextFrame = false;
         }
 
         public override void Remove()
@@ -87,6 +83,7 @@ namespace SonOfRobin
         {
             this.UpdateResolution();
             this.mapOverlay.AddTransition();
+            this.forceRenderNextFrame = true;
         }
 
         public void TurnOff()
@@ -97,7 +94,6 @@ namespace SonOfRobin
         public void ForceRender()
         {
             this.backgroundNeedsUpdating = true;
-
             this.UpdateResolution();
         }
 
@@ -133,7 +129,7 @@ namespace SonOfRobin
                 Vector2 markerPos = kvp.Key;
                 var colorArray = (byte[])kvp.Value;
 
-                Color markerColor = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
+                Color markerColor = new(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
 
                 if (this.world.ActiveLevel.mapMarkerByColor.ContainsKey(markerColor))
                 {
@@ -519,6 +515,7 @@ namespace SonOfRobin
         public override void RenderToTarget()
         {
             if (!this.RenderThisFrame) return;
+            this.forceRenderNextFrame = false;
 
             this.UpdateBackground();
 

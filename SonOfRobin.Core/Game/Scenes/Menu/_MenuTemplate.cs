@@ -177,12 +177,12 @@ namespace SonOfRobin
 
                         if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
                         {
-                            worldScaleList.InsertRange(0, new List<Object> { 0.075f, 0.1f, 0.125f, 0.25f, 0.3f, 0.4f, 0.5f });
+                            worldScaleList.InsertRange(0, new List<Object> { 0.01f, 0.04f, 0.075f, 0.1f, 0.125f, 0.25f, 0.3f, 0.4f, 0.5f });
                             worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
                         }
                         worldScaleList = worldScaleList.Distinct().ToList();
 
-                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "worldScale");
+                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "worldScale", resizesAllScenes: true);
 
                         var globalScaleList = new List<Object> { 1f, 1.5f, 2f };
 
@@ -269,15 +269,15 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);
 
-                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softSunShadows");
+                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softSunShadows", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "draw shadows", valueDict: new Dictionary<object, object> { { true, "all" }, { false, "some" } }, targetObj: preferences, propertyName: "drawAllShadows");
+                        new Selector(menu: menu, name: "draw shadows", valueDict: new Dictionary<object, object> { { true, "all" }, { false, "some" } }, targetObj: preferences, propertyName: "drawAllShadows", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell");
+                        new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "high quality water", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) });
+                        new Selector(menu: menu, name: "high quality water", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) }, resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "plants sway", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "plantsSway");
 

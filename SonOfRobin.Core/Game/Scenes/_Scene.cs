@@ -204,12 +204,12 @@ namespace SonOfRobin
         public static void ScheduleAllScenesResize()
         {
             adaptScenesToNewSize = true;
-
             // has to be scheduled, to avoid resizing during Draw()
         }
 
         private static void ResizeAllScenes()
         {
+            MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} resizing all scenes.");
             adaptScenesToNewSize = false;
 
             foreach (Scene currentScene in sceneStack)

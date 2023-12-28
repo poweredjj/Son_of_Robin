@@ -22,11 +22,12 @@ namespace SonOfRobin
         protected readonly bool rebuildsMenu;
         protected readonly bool rebuildsMenuInstantScroll;
         protected readonly bool rebuildsAllMenus;
+        protected readonly bool resizesAllScenes;
         public Scheduler.ExecutionDelegate infoTextListDlgt; // for on-demand data retrieval
         public List<InfoWindow.TextEntry> infoTextList;
         private readonly float infoWindowMaxLineHeightPercentOverride;
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, float infoWindowMaxLineHeightPercentOverride = 0f, List<Texture2D> imageList = null)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, bool resizesAllScenes = false, List<InfoWindow.TextEntry> infoTextList = null, float infoWindowMaxLineHeightPercentOverride = 0f, List<Texture2D> imageList = null)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.menu = menu;
@@ -37,6 +38,7 @@ namespace SonOfRobin
             this.rebuildsMenu = rebuildsMenu;
             this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
             this.rebuildsAllMenus = rebuildsAllMenus;
+            this.resizesAllScenes = resizesAllScenes;
             this.textColor = Color.White;
             this.shadowColor = Color.Black * 0.8f;
             this.bgColor = Color.White;
