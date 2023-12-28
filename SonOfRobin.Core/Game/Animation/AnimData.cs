@@ -1879,7 +1879,14 @@ namespace SonOfRobin
                     break;
 
                 case PkgName.SeaWave:
-                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wave", layer: 0, scale: 0.5f, ignoreWhenCalculatingMaxSize: true));
+                    foreach (var kvp in new Dictionary<int, float> { { 0, 0.2f }, { 1, 0.3f }, { 2, 0.4f }, { 3, 0.5f }, { 4, 0.6f }, { 5, 0.7f }, { 6, 0.8f } })
+                    {
+                        int animSize = kvp.Key;
+                        float scale = kvp.Value;
+
+                        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wave", layer: 0, scale: scale, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
+                    }
+
                     break;
 
                 case PkgName.WeatherFog1:

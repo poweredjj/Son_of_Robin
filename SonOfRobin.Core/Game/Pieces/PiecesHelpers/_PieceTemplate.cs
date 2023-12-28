@@ -2694,15 +2694,13 @@ namespace SonOfRobin
 
                 case Name.SeaWave:
                     {
-                        var packageNames = new AnimData.PkgName[] { AnimData.PkgName.SeaWave };
-                        var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Length)];
-
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeaWave, allowedTerrain: allowedTerrain, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, visible: true);
 
                         visualEffect.sprite.opacity = 0f;
+                        if (world != null) visualEffect.sprite.AssignNewSize((byte)world.random.Next(0, 7));
 
                         return visualEffect;
                     }
