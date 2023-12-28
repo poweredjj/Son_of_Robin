@@ -405,8 +405,12 @@ namespace SonOfRobin
 
             Orientation newOrientation;
 
+            bool hasUpDownAnim = !AnimData.packagesLeftRightOnly.Contains(this.AnimPackage);
+            if (!hasUpDownAnim) movement.Y = 0;
+
             if (Math.Abs(movement.X) > Math.Abs(movement.Y)) newOrientation = (movement.X < 0) ? Orientation.left : Orientation.right;
             else newOrientation = (movement.Y < 0) ? Orientation.up : Orientation.down;
+            if (!hasUpDownAnim && movement.X == 0) newOrientation = this.orientation; // to avoid having an anim missing
 
             if (this.orientation != newOrientation)
             {

@@ -22,6 +22,10 @@ namespace SonOfRobin
         public static readonly Dictionary<string, AnimFrame[]> frameArrayById = new();
         private static readonly Dictionary<PkgName, AnimFrame> croppedFramesForPkgs = new(); // default frames for packages (cropped)
         public static readonly Dictionary<PkgName, int> animSizesForPkgs = new(); // information about saved package sizes
+
+        // for anims without up and down variants
+        public static readonly HashSet<PkgName> packagesLeftRightOnly = new() { PkgName.DragonBonesTestFemaleMage };
+
         public static int loadedFramesCount = 0;
 
         public static readonly Dictionary<string, Texture2D> textureDict = new();
