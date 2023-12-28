@@ -7,7 +7,7 @@ namespace SonOfRobin
     public class MapOverlay : Scene
     {
         // Simple renderer of final map surface.
-        // Allows for transitions separate from base map.
+        // Allows for transitions independent from base map.
 
         private readonly Map map;
 
@@ -16,16 +16,19 @@ namespace SonOfRobin
             this.map = map;
         }
 
-        public void AddTransition()
+        public void AddTransition(bool setInstantly)
         {
+            int duration = 10;
+
             switch (this.map.Mode)
             {
                 case Map.MapMode.Off:
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
-                        paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 0f },
-                        });
+                    if (setInstantly) this.viewParams.Opacity = 0f;
+                    else
+                    {
+                        this.transManager.AddMultipleTransitions(outTrans: true, duration: duration, endCopyToBase: true, paramsToChange: new Dictionary<string, float> { { "Opacity", 0f } });
+                    }
 
                     break;
 
@@ -40,27 +43,37 @@ namespace SonOfRobin
                     int posYMini = (int)((SonOfRobinGame.ScreenHeight - (heightMini + margin)) * scaleMini);
 
                     this.viewParams.PosX = posXMini;
-                    this.viewParams.PosY = posYMini + (heightMini * scaleMini);
+                    this.viewParams.PosY = posYMini;
+                    if (!setInstantly) this.viewParams.PosY += heightMini * scaleMini;
+
                     this.viewParams.Opacity = 0.7f;
                     this.viewParams.ScaleX = scaleMini;
                     this.viewParams.ScaleY = scaleMini;
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
-                        paramsToChange: new Dictionary<string, float> {
-                        { "PosY", posYMini },
-                        });
+                    if (!setInstantly) this.transManager.AddMultipleTransitions(outTrans: true, duration: duration, endCopyToBase: true, paramsToChange: new Dictionary<string, float> { { "PosY", posYMini } });
 
                     break;
 
                 case Map.MapMode.Full:
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
-                        paramsToChange: new Dictionary<string, float> {
+                    if (setInstantly)
+                    {
+                        this.viewParams.Opacity = 1f;
+                        this.viewParams.PosX = 0;
+                        this.viewParams.PosY = 0;
+                        this.viewParams.ScaleX = 1f;
+                        this.viewParams.ScaleY = 1f;
+                    }
+                    else
+                    {
+                        this.transManager.AddMultipleTransitions(outTrans: true, duration: duration, endCopyToBase: true,
+                            paramsToChange: new Dictionary<string, float> {
                         { "Opacity", 1f },
                         { "PosX", 0 },
                         { "PosY", 0 },
                         { "ScaleX", 1f },
                         { "ScaleY", 1f },
                         });
+                    }
 
                     break;
 

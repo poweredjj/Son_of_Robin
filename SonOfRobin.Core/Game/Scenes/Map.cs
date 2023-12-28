@@ -82,7 +82,7 @@ namespace SonOfRobin
         protected override void AdaptToNewSize()
         {
             this.UpdateResolution();
-            this.mapOverlay.AddTransition();
+            this.mapOverlay.AddTransition(setInstantly: true);
             this.forceRenderNextFrame = true;
         }
 
@@ -253,7 +253,7 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported mode - {this.Mode}.");
                 }
 
-                this.mapOverlay.AddTransition();
+                this.mapOverlay.AddTransition(setInstantly: false);
             }
         }
 
