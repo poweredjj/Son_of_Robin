@@ -15,9 +15,9 @@ namespace SonOfRobin
         public readonly int taskDelay;
         private bool invokedByDoubleTouch;
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f, bool invokedByDoubleTouch = false) :
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, bool resizesAllScenes = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f, bool invokedByDoubleTouch = false) :
 
-            base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, imageList: imageList, infoWindowMaxLineHeightPercentOverride: infoWindowMaxLineHeightPercentOverride)
+            base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsAllMenus: rebuildsAllMenus, resizesAllScenes: resizesAllScenes, infoTextList: infoTextList, imageList: imageList, infoWindowMaxLineHeightPercentOverride: infoWindowMaxLineHeightPercentOverride)
         {
             this.taskName = taskName;
             this.taskDelay = taskDelay;
