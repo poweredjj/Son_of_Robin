@@ -194,6 +194,9 @@ namespace SonOfRobin
             this.colOffset *= scale;
             this.gfxOffset *= scale;
 
+            //this.colBounds = new Rectangle(-2, -2, 4, 4); // for testing
+            //this.colOffset = new Vector2(-1, -1); // for testing
+
             AnimData.jsonDict[this.id] = this.Serialize();
         }
 

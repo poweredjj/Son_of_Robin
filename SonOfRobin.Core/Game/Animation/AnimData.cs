@@ -12,7 +12,7 @@ namespace SonOfRobin
     {
         // new anim system parameters below
 
-        public readonly Dictionary<PkgName, AnimPkg> pkgByName = new();
+        public static readonly Dictionary<PkgName, AnimPkg> pkgByName = new();
 
         // old anim system parameters below
 
