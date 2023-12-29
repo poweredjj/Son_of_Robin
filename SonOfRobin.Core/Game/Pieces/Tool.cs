@@ -109,8 +109,10 @@ namespace SonOfRobin
                 return;
             }
 
-            foreach (BoardPiece currentTarget in targetsThatCanBeHit)
+            for (int targetNo = 0; targetNo < targetsThatCanBeHit.Count; targetNo++)
             {
+                BoardPiece currentTarget = targetsThatCanBeHit[targetNo];
+
                 float currentMultiplier = this.pieceInfo.toolMultiplierByCategory.ContainsKey(currentTarget.pieceInfo.category) ? this.pieceInfo.toolMultiplierByCategory[currentTarget.pieceInfo.category] : 0;
                 if (isVeryTired) currentMultiplier /= 2;
                 if (currentMultiplier == 0) continue;
@@ -177,19 +179,12 @@ namespace SonOfRobin
                 this.world.HintEngine.Disable(Tutorials.Type.Hit);
 
                 int currentHitPower = (int)Math.Max(this.world.Player.strength * currentMultiplier, 1);
-                HitTarget(player: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
+                HitTarget(player: player, target: currentTarget, hitPower: currentHitPower, setPlayerOrientation: targetNo == 0, targetPushMultiplier: 1f, buffList: this.buffList);
                 anyTargetHit = true;
             } // target iteration end
 
             if (anyTargetHit)
             {
-                player.sprite.SetOrientationByMovement(targetsThatCanBeHit[0].sprite.position - player.sprite.position);
-                if (player.sprite.CheckIfAnimNameExists($"attack-{player.sprite.orientation}"))
-                {
-                    player.sprite.AssignNewName(newAnimName: $"attack-{player.sprite.orientation}", setEvenIfMissing: false);
-                    player.sprite.RewindAnim();
-                }
-
                 player.Fatigue += 3;
                 this.hitCooldown = this.world.CurrentUpdate + this.pieceInfo.toolHitCooldown;
                 if (!this.pieceInfo.toolIndestructible)
@@ -204,12 +199,22 @@ namespace SonOfRobin
             }
         }
 
-        public static void HitTarget(Player player, BoardPiece target, int hitPower, float targetPushMultiplier, List<Buff> buffList = null)
+        public static void HitTarget(Player player, BoardPiece target, int hitPower, float targetPushMultiplier, bool setPlayerOrientation = false, List<Buff> buffList = null)
         {
             World world = player.world;
 
             BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
             new Tracking(level: player.level, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
+
+            if (setPlayerOrientation)
+            {
+                player.sprite.SetOrientationByMovement(target.sprite.position - player.sprite.position);
+                if (player.sprite.CheckIfAnimNameExists($"attack-{player.sprite.orientation}"))
+                {
+                    player.sprite.AssignNewName(newAnimName: $"attack-{player.sprite.orientation}", setEvenIfMissing: false);
+                    player.sprite.RewindAnim();
+                }
+            }
 
             if (target.GetType() == typeof(Plant))
             {
