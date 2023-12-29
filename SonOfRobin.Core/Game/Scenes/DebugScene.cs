@@ -450,11 +450,10 @@ namespace SonOfRobin
                 Player player = world.Player;
 
                 var animNames = new List<string> { "weak", "attack", "dead", "damage" };
-
                 string animName = animNames[BoardPiece.Random.Next(animNames.Count)];
-
                 player.sprite.AssignNewName(newAnimName: $"{animName}-{player.sprite.orientation}", setEvenIfMissing: false);
                 // player.sprite.AssignNewName(newAnimName: $"damage-{player.sprite.orientation}", setEvenIfMissing: false);
+
                 player.sprite.RewindAnim();
             }
 
