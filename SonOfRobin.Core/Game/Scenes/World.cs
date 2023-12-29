@@ -75,6 +75,7 @@ namespace SonOfRobin
             ColorSourceBlend = Blend.One,
             ColorDestinationBlend = Blend.One,
         };
+
         private bool RenderThisFrame
         { get { return !this.ActiveLevel.creationInProgress && !SonOfRobinGame.IgnoreThisDraw && (UpdateStack.Contains(this) || this.forceRenderNextFrame); } }
 
@@ -126,6 +127,7 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
+
         public Grid Grid
         { get { return this.ActiveLevel.grid; } }
 
@@ -1425,7 +1427,6 @@ namespace SonOfRobin
             return sunLightData.sunShadowsOpacity * sunVisibility;
         }
 
-
         public override void RenderToTarget()
         {
             if (!this.RenderThisFrame) return;
@@ -1506,13 +1507,11 @@ namespace SonOfRobin
             Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
             this.DrawLightAndDarkness(lightSprites);
 
-            // drawing highlighted pieces and stat bars
-            if (Preferences.pickupsHighlighted || StatBar.ThereAreBarsToDraw)
+            // drawing highlighted pieces
+            if (Preferences.pickupsHighlighted)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
-                if (Preferences.pickupsHighlighted) this.DrawHighlightedPieces(drawnPieces);
-                if (StatBar.ThereAreBarsToDraw) StatBar.DrawAll();
-
+                this.DrawHighlightedPieces(drawnPieces);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -1527,9 +1526,7 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
-
             this.ActiveLevel.recentParticlesManager.DrawDistortion(); // SpriteSortMode.Immediate is needed to draw particles properly
-
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing all effects
@@ -1542,6 +1539,15 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
 
             // additional "permanent" effects can be added here (like curves, etc.), but everything should finally be rendered on FinalRenderTarget
+
+            // drawing stat bars
+
+            if (StatBar.ThereAreBarsToDraw)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
+                StatBar.DrawAll();
+                SonOfRobinGame.SpriteBatch.End();
+            }
         }
 
         public override void Draw()
