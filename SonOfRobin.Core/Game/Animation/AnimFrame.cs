@@ -58,7 +58,7 @@ namespace SonOfRobin
             }
         }
 
-        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false, Rectangle colBoundsOverride = default)
+        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false, Rectangle colBoundsOverride = default, Vector2 additionalGfxOffset = default)
         {
             // some frames are duplicated and can be reused (this can be verified by checking ID)
 
@@ -78,7 +78,7 @@ namespace SonOfRobin
                 if (deserializedFrame.PngPathExists) return deserializedFrame;
             }
 
-            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize, colBoundsOverride: colBoundsOverride);
+            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize, colBoundsOverride: colBoundsOverride, additionalGfxOffset: additionalGfxOffset);
         }
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, bool mirrorX, float scale, float depthPercent)
@@ -124,7 +124,7 @@ namespace SonOfRobin
             return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, mirrorX: mirrorX, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
         }
 
-        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize, Rectangle colBoundsOverride = default)
+        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize, Rectangle colBoundsOverride = default, Vector2 additionalGfxOffset = default)
         {
             // should not be invoked from other classes directly
 
@@ -189,7 +189,7 @@ namespace SonOfRobin
             this.gfxHeight = (int)(this.texture.Height * scale);
 
             this.colOffset = new Vector2(-(int)(this.colBounds.Width * 0.5f), -(int)(this.colBounds.Height * 0.5f)); // has to go first...
-            this.gfxOffset = new Vector2(this.colOffset.X - this.colBounds.X, this.colOffset.Y - this.colBounds.Y); // because it is used here
+            this.gfxOffset = new Vector2(this.colOffset.X - this.colBounds.X, this.colOffset.Y - this.colBounds.Y) + additionalGfxOffset; // because it is used here
 
             this.colOffset *= scale;
             this.gfxOffset *= scale;

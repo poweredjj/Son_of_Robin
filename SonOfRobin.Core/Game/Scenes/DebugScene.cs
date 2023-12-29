@@ -428,19 +428,34 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    Player player = world.Player;
+
+            //    VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+
+            //    orbiter.universalFloat = 1f;
+            //    orbiter.visualAid = player;
+
+            //    world.camera.TrackPiece(orbiter);
+            //    world.camera.SetMovementSpeed(4f);
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 if (world == null) return;
 
                 Player player = world.Player;
 
-                VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
+                var animNames = new List<string> { "weak", "attack", "dead", "damage" };
 
-                orbiter.universalFloat = 1f;
-                orbiter.visualAid = player;
+                string animName = animNames[BoardPiece.Random.Next(animNames.Count)];
 
-                world.camera.TrackPiece(orbiter);
-                world.camera.SetMovementSpeed(4f);
+                player.sprite.AssignNewName(newAnimName: $"{animName}-{player.sprite.orientation}", setEvenIfMissing: false);
+                // player.sprite.AssignNewName(newAnimName: $"damage-{player.sprite.orientation}", setEvenIfMissing: false);
+                player.sprite.RewindAnim();
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

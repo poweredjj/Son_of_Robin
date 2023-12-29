@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // _content_template.json should be updated after making any changes to assets
-        public const float currentVersion = 1.000039f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000040f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -1974,29 +1974,42 @@ namespace SonOfRobin
 
                 case PkgName.DragonBonesTestFemaleMage:
                     {
-                        var durationDict = new Dictionary<string, short>
-                        {
-                            { "stand", 3 },
-                            { "weak", 3 },
-                            { "walk", 2 },
-                            { "dead", 2 },
-                            { "attack", 1 },
-                            { "damage", 2 },
-                        };
-
-                        string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
-
-                        foreach (string jsonName in new string[] {
+                        string[] jsonNameArray = new string[] {
                             "female_mage_tex_attack.json",
                             "female_mage_tex_damage.json",
                             "female_mage_tex_dead.json",
                             "female_mage_tex_stand.json",
                             "female_mage_tex_walk.json",
                             "female_mage_tex_weak.json",
-                        })
+                        };
+
+                        var durationDict = new Dictionary<string, short>
                         {
-                            AddDragonBonesAnims(pkgName: pkgName, jsonName: jsonName, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims);
-                        }
+                            { "stand", 3 },
+                            { "weak", 3 },
+                            { "walk", 2 },
+                            { "attack", 1 },
+                            { "dead", 2 },
+                            { "damage", 2 },
+                        };
+
+                        string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
+
+                        var offsetDict = new Dictionary<string, Vector2>
+                        {
+                            { "walk-left", new Vector2(-18, -8) },
+                            { "walk-right", new Vector2(-6, -8) },
+                            { "attack-left", new Vector2(-60, -8) },
+                            { "attack-right", new Vector2(0, -8) },
+                            { "weak-left", new Vector2(-12, -13f) },
+                            { "weak-right", new Vector2(-2, -13f) },
+                            { "dead-left", new Vector2(-16, -26f) },
+                            { "dead-right", new Vector2(-78, -26f) },
+                            { "damage-left", new Vector2(-3, -17.5f) },
+                            { "damage-right", new Vector2(-23, -17.5f) },
+                        };
+
+                        AddDragonBonesAnims(pkgName: pkgName, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict);
 
                         break;
                     }
@@ -2167,73 +2180,73 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: new AnimFrame[] { croppedFramesForPkgs[pkgName] }); // adding default frame
         }
 
-        public static void AddDragonBonesAnims(PkgName pkgName, string jsonName, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims)
+        public static void AddDragonBonesAnims(PkgName pkgName, string[] jsonNameArray, byte animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims, Dictionary<string, Vector2> offsetDict)
         {
-            // Will add all animations stored in tex json file.
+            // all animations should share one colBounds rect (to avoid jitter and anims not playing)
+            Rectangle sharedColBounds = default;
 
-            string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
-            object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
-            JObject jsonDict = (JObject)jsonData;
-
-            string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
-            var animDataList = jsonDict["SubTexture"];
-
-            var animDict = new Dictionary<string, Dictionary<int, AnimFrame>>();
-            var colBoundsForAnims = new Dictionary<string, Rectangle>();
-
-            foreach (var animData in animDataList)
+            foreach (string jsonName in jsonNameArray)
             {
-                string name = ((string)animData["name"]).ToLower();
-                int underscoreIndex = name.LastIndexOf('_');
-                int frameNoIndex = underscoreIndex + 1;
+                string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
+                object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
+                JObject jsonDict = (JObject)jsonData;
 
-                string baseAnimName = name.Substring(0, underscoreIndex);
-                short duration = durationDict.ContainsKey(baseAnimName) ? durationDict[baseAnimName] : (short)1;
-                int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
+                string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
+                var animDataList = jsonDict["SubTexture"];
 
-                int atlasX = (int)animData["x"];
-                int atlasY = (int)animData["y"];
-                int width = (int)animData["width"];
-                int height = (int)animData["height"];
+                var animDict = new Dictionary<string, Dictionary<int, AnimFrame>>();
 
-                foreach (string direction in new string[] { "right", "left" })
+                foreach (var animData in animDataList)
                 {
-                    string animNameWithDirection = $"{baseAnimName}-{direction}";
-                    // to avoid jitter, each animation should have one shared colBounds
-                    Rectangle sharedColBounds = colBoundsForAnims.ContainsKey(animNameWithDirection) ? colBoundsForAnims[animNameWithDirection] : default;
+                    string name = ((string)animData["name"]).ToLower();
+                    int underscoreIndex = name.LastIndexOf('_');
+                    int frameNoIndex = underscoreIndex + 1;
 
-                    if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
+                    string baseAnimName = name.Substring(0, underscoreIndex);
+                    short duration = durationDict.ContainsKey(baseAnimName) ? durationDict[baseAnimName] : (short)1;
+                    int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
 
-                    AnimFrame animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale, colBoundsOverride: sharedColBounds);
+                    int atlasX = (int)animData["x"];
+                    int atlasY = (int)animData["y"];
+                    int width = (int)animData["width"];
+                    int height = (int)animData["height"];
 
-                    animDict[animNameWithDirection][frameNo] = animFrame;
-                    colBoundsForAnims[animNameWithDirection] = animFrame.colBounds;
-                }
-            }
-
-            foreach (var kvp1 in animDict)
-            {
-                string animName = (string)kvp1.Key;
-                var frameDict = kvp1.Value;
-                int framesCount = frameDict.Keys.Max() + 1;
-
-                bool nonLoopedAnim = nonLoopedAnims.Where(n => animName.Contains(n)).Any();
-
-                AnimFrame[] frameArray = new AnimFrame[framesCount];
-                foreach (var kvp2 in frameDict)
-                {
-                    int frameNo = kvp2.Key;
-                    AnimFrame animFrame = kvp2.Value;
-
-                    if (nonLoopedAnim && frameNo == framesCount - 1)
+                    foreach (string direction in new string[] { "right", "left" })
                     {
-                        animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: animFrame.srcAtlasX, atlasY: animFrame.srcAtlasY, width: animFrame.srcWidth, height: animFrame.srcHeight, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: animFrame.mirrorX, scale: scale, colBoundsOverride: animFrame.colBounds);
+                        string animNameWithDirection = $"{baseAnimName}-{direction}";
+                        if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = new Dictionary<int, AnimFrame>();
+
+                        AnimFrame animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 1, duration: duration, crop: false, padding: 0, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight, scale: scale, colBoundsOverride: sharedColBounds, additionalGfxOffset: offsetDict.ContainsKey(animNameWithDirection) ? offsetDict[animNameWithDirection] : Vector2.Zero);
+
+                        if (sharedColBounds == default) sharedColBounds = animFrame.colBounds;
+                        animDict[animNameWithDirection][frameNo] = animFrame;
+                    }
+                }
+
+                foreach (var kvp1 in animDict)
+                {
+                    string animName = (string)kvp1.Key;
+                    var frameDict = kvp1.Value;
+                    int framesCount = frameDict.Keys.Max() + 1;
+
+                    bool nonLoopedAnim = nonLoopedAnims.Where(n => animName.Contains(n)).Any();
+
+                    AnimFrame[] frameArray = new AnimFrame[framesCount];
+                    foreach (var kvp2 in frameDict)
+                    {
+                        int frameNo = kvp2.Key;
+                        AnimFrame animFrame = kvp2.Value;
+
+                        if (nonLoopedAnim && frameNo == framesCount - 1)
+                        {
+                            animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: animFrame.srcAtlasX, atlasY: animFrame.srcAtlasY, width: animFrame.srcWidth, height: animFrame.srcHeight, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: animFrame.mirrorX, scale: scale, colBoundsOverride: animFrame.colBounds);
+                        }
+
+                        frameArray[frameNo] = animFrame;
                     }
 
-                    frameArray[frameNo] = animFrame;
+                    AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
                 }
-
-                AddFrameArray(pkgName: pkgName, animSize: animSize, animName: animName, frameArray: frameArray);
             }
         }
 
