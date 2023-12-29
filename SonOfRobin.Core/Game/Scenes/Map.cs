@@ -42,6 +42,8 @@ namespace SonOfRobin
         private RenderTarget2D lowResGround;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
+        public static Point FinalMapToDisplaySize { get { return new Point(SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight); } }
+
         private static float InitialZoom
         { get { return Preferences.worldScale / 2; } }
 
@@ -138,8 +140,8 @@ namespace SonOfRobin
 
         public void UpdateResolution()
         {
-            int newWidth = SonOfRobinGame.ScreenWidth;
-            int newHeight = SonOfRobinGame.ScreenHeight;
+            int newWidth = FinalMapToDisplaySize.X;
+            int newHeight = FinalMapToDisplaySize.Y;
 
             float multiplierX = (float)newWidth / (float)this.world.ActiveLevel.width;
             float multiplierY = (float)newHeight / (float)this.world.ActiveLevel.height;
