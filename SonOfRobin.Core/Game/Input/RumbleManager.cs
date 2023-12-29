@@ -36,7 +36,7 @@ namespace SonOfRobin
             fadeInSeconds = Math.Clamp(value: fadeInSeconds, min: 0, max: 5);
             fadeOutSeconds = Math.Clamp(value: fadeOutSeconds, min: 0, max: 5);
 
-            if (SonOfRobinGame.platform == Platform.Mobile)
+            if (SonOfRobinGame.platform == Platform.Mobile && !SonOfRobinGame.fakeMobileMode)
             {
                 if (this.targetForce < 0.3f || RumbleManager.EventsCount > 0) return; // to avoid making strong vibration for small values (mobile has no value setting)
                 Vibration.Vibrate(TimeSpan.FromSeconds(durationSeconds + fadeInSeconds + fadeOutSeconds)); // vibration on mobile is generally very crude
