@@ -195,9 +195,13 @@ namespace SonOfRobin
             this.gfxOffset *= scale;
 
             // TODO use code below to replace temporary colWidth, colHeight, colOffset with new ones (shared among all AnimPkg frames)
-            //this.colWidth = 40; // for testing
-            //this.colHeight = 20; // for testing
-            //this.colOffset = new Vector2(-this.colWidth / 2, -this.colHeight / 2); // for testing
+            //Rectangle newSharedColRect = new(0, 0, 40, 20); // for testing
+            //newSharedColRect.X = -newSharedColRect.Width / 2; // for testing
+            //newSharedColRect.Y = -newSharedColRect.Height / 2; // for testing
+
+            //this.colWidth = newSharedColRect.Width; // for testing
+            //this.colHeight = newSharedColRect.Height; // for testing
+            //this.colOffset = new Vector2(newSharedColRect.X, newSharedColRect.Y); // for testing
             // TODO use the code above
 
             AnimData.jsonDict[this.id] = this.Serialize();
