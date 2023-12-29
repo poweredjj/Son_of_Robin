@@ -10,8 +10,14 @@ namespace SonOfRobin
 {
     public class AnimData
     {
+        // new anim system parameters below
+
+        public readonly Dictionary<PkgName, AnimPkg> pkgByName = new();
+
+        // old anim system parameters below
+
         // _content_template.json should be updated after making any changes to assets
-        public const float currentVersion = 1.000040f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000041f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();

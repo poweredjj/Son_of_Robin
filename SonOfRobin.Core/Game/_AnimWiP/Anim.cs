@@ -6,6 +6,7 @@ namespace SonOfRobin
     {
         public readonly string name;
         public readonly int size;
+        public readonly AnimPkg animPkg;
         public readonly bool looped;
         public readonly bool pingPong;
         public readonly int duration;
@@ -13,8 +14,9 @@ namespace SonOfRobin
         public readonly string switchName;
         public readonly AnimFrame[] frameArray;
 
-        public Anim(string name, int size, AnimFrame[] frameArray, bool looped, bool pingPong, string switchName = "")
+        public Anim(AnimPkg animPkg, string name, int size, AnimFrame[] frameArray, bool looped, bool pingPong, string switchName = "")
         {
+            this.animPkg = animPkg;
             this.name = name;
             this.size = size;
             this.looped = looped;
