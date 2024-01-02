@@ -64,7 +64,7 @@ namespace SonOfRobin
 
             string id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent);
 
-            if (AnimData.frameById.ContainsKey(id)) return AnimData.frameById[id];
+            if (AnimData.frameById.TryGetValue(id, out AnimFrame value)) return value;
 
             Dictionary<string, Object> jsonData = null;
             try

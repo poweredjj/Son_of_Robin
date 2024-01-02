@@ -290,8 +290,8 @@ namespace SonOfRobin
         {
             int middleMargin = (int)(cellRect.Width * 0.05f);
 
-            Rectangle leftRect = new Rectangle(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
-            Rectangle rightRect = new Rectangle(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
+            Rectangle leftRect = new(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
+            Rectangle rightRect = new(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
 
             frame.DrawAndKeepInRectBounds(destBoundsRect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
             this.DrawText(text: text, containingRect: rightRect, txtCol: txtCol);
@@ -306,7 +306,7 @@ namespace SonOfRobin
 
             float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);
 
-            Vector2 textPos = new Vector2(
+            Vector2 textPos = new(
                 containingRect.Center.X - (textSize.X / 2 * textScale),
                 containingRect.Center.Y - (textSize.Y / 2 * textScale));
 
