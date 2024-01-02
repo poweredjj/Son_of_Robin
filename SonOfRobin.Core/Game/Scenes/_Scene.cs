@@ -287,7 +287,10 @@ namespace SonOfRobin
                         {
                             scene.inputActive = true;
                             TouchInput.SwitchToLayout(scene.touchLayout);
-                            SonOfRobinGame.ControlTips.AssignScene(scene: scene);
+                            try
+                            { SonOfRobinGame.ControlTips.AssignScene(scene: scene); }
+                            catch (NullReferenceException)
+                            { }
 
                             normalInputSet = true;
                         }

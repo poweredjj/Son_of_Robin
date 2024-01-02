@@ -19,7 +19,7 @@ namespace SonOfRobin
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
 
-        public AnimFrameNew(string atlasName, int layer, int duration, Vector2 gfxOffset = default, Rectangle cropRect = default)
+        public AnimFrameNew(string atlasName, int layer, int duration = 0, Vector2 gfxOffset = default, Rectangle cropRect = default)
         {
             this.atlasName = atlasName;
             this.CropRect = cropRect;
@@ -38,7 +38,7 @@ namespace SonOfRobin
             {
                 if (this.texture == null)
                 {
-                    // MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
+                    MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {this.atlasName}...");
                     this.texture = TextureBank.GetTexture(this.atlasName);
                     if (this.texture == null)
                     {
@@ -80,13 +80,13 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity);
         }
 
-        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride)
+        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride = default)
         {
             // invoke from Sprite class
 
             Vector2 rotationOriginToUse = this.RotationOrigin;
 
-            if (rotationOriginOverride != Vector2.Zero)
+            if (rotationOriginOverride != default)
             {
                 rotationOriginToUse = rotationOriginOverride;
                 position += (rotationOriginToUse - this.RotationOrigin) * this.scale;

@@ -9,7 +9,6 @@ namespace SonOfRobin
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
-        public AnimFrame CroppedFrame { get; private set; }
         private int croppedFrameSize;
 
         public AnimPkg(AnimData.PkgName pkgName, Rectangle colRect, bool horizontalOrientationsOnly = false)
@@ -21,16 +20,10 @@ namespace SonOfRobin
             this.croppedFrameSize = 0;
         }
 
-        public void AddAnim(Anim anim, bool updateCroppedFrame = true)
+        public void AddAnim(Anim anim)
         {
             if (!this.animDict.ContainsKey(anim.size)) this.animDict[anim.size] = new Dictionary<string, Anim>();
             this.animDict[anim.size][anim.name] = anim;
-
-            if (updateCroppedFrame && anim.size < this.croppedFrameSize)
-            {
-                this.CroppedFrame = anim.frameArray[0].GetCroppedFrameCopy(); // TODO remove GetCroppedFrameCopy() after implementing usage of cropped frames only
-                this.croppedFrameSize = anim.size;
-            }
         }
 
         public Anim GetAnim(int size, string name)
