@@ -1248,7 +1248,7 @@ namespace SonOfRobin
                 Point slotPos = this.storage.GetSlotPos(slot);
 
                 bool isActive = this.inputActive && slotPos.X == this.CursorX && slotPos.Y == this.CursorY;
-                Rectangle tileRect = new Rectangle((int)slotPosWithMargin.X, (int)slotPosWithMargin.Y, tileSize, tileSize);
+                Rectangle tileRect = new((int)slotPosWithMargin.X, (int)slotPosWithMargin.Y, tileSize, tileSize);
 
                 Color outlineColor = isActive ? Color.LawnGreen : Color.White;
                 Color fillColor = isActive ? Color.LightSeaGreen : Color.White;
@@ -1256,7 +1256,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, tileRect, fillColor * 0.35f * opacity);
                 SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: tileRect, color: outlineColor * opacity * 0.8f, thickness: 2f);
 
-                this.DrawSlotLabel(slot: slot, tileRect: tileRect, opacity: opacity);
+                DrawSlotLabel(slot: slot, tileRect: tileRect, opacity: opacity);
 
                 Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPosWithMargin.X + spriteOffset, (int)slotPosWithMargin.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: opacity, drawNewIcon: this.type != Type.SingleBottom);
@@ -1272,7 +1272,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        private void DrawSlotLabel(StorageSlot slot, Rectangle tileRect, float opacity)
+        private static void DrawSlotLabel(StorageSlot slot, Rectangle tileRect, float opacity)
         {
             if (slot.label == "" || !slot.IsEmpty) return;
 
@@ -1293,12 +1293,12 @@ namespace SonOfRobin
             float maxTextWidth = bgRect.Width * 0.3f;
             float maxTextHeight = bgRect.Height * 0.1f;
             float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
-            Vector2 textScaleVector2 = new Vector2(textScale);
+            Vector2 textScaleVector2 = new(textScale);
 
             float textWidth = labelSize.X * textScale;
             float textHeight = labelSize.Y * textScale;
 
-            Vector2 labelPos = new Vector2((bgRect.Width - textWidth) / 2, bgRect.Top - textHeight);
+            Vector2 labelPos = new((bgRect.Width - textWidth) / 2, bgRect.Top - textHeight);
             float shadowOffset = textHeight * 0.06f;
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 

@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class AnimData
     {
         // _content_template.json should be updated after making any changes to assets
-        public const float currentVersion = 1.000040f; // version number should be incremented when any existing asset is updated
+        public const float currentVersion = 1.000041f; // version number should be incremented when any existing asset is updated
 
         public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
         public static HashSet<PkgName> LoadedPkgs { get; private set; } = new HashSet<PkgName>();
@@ -1809,8 +1809,8 @@ namespace SonOfRobin
                             var frameArray = new AnimFrame[]
                             {
                                 ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_2", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_3", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 
@@ -1821,9 +1821,9 @@ namespace SonOfRobin
                         {
                             var frameArray = new AnimFrame[]
                             {
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_1", layer: layer, duration: 6, crop: true, scale: scale),
                                 ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_3", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 
