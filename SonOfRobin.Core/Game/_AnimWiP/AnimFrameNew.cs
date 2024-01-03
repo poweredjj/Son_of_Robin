@@ -74,8 +74,7 @@ namespace SonOfRobin
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }
 
-            Rectangle srcRect = new(x: this.CropRect.X, y: this.CropRect.Height, width: this.CropRect.Width, correctedSourceHeight);
-
+            Rectangle srcRect = new(x: this.CropRect.X, y: this.CropRect.Y, width: this.CropRect.Width, correctedSourceHeight);
             SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity);
         }
 

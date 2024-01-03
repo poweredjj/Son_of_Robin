@@ -16,10 +16,15 @@ namespace SonOfRobin
         private Rectangle gfxRect;
         private Rectangle colRect;
 
+        private bool showColRect;
+        private bool showGfxRect;
+
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(150, 150);
+            this.showColRect = true;
+            this.showGfxRect = true;
 
             this.animPkg = new AnimPkg(pkgName: AnimData.PkgName.FoxWhite, colWidth: 80, colHeight: 40);
 
@@ -42,8 +47,10 @@ namespace SonOfRobin
             if (Keyboard.IsPressed(Keys.Right)) movePos.X++;
             if (Keyboard.IsPressed(Keys.Up)) movePos.Y--;
             if (Keyboard.IsPressed(Keys.Down)) movePos.Y++;
+            if (Keyboard.HasBeenPressed(Keys.Z)) this.showColRect = !this.showColRect;
+            if (Keyboard.HasBeenPressed(Keys.X)) this.showGfxRect = !this.showGfxRect;
 
-            this.pos += movePos * 0.85f;
+            this.pos += movePos;
 
             this.UpdateRects();
 
@@ -55,14 +62,14 @@ namespace SonOfRobin
             // TODO move to Sprite class
 
             this.colRect = new(
-                x: (int)(pos.X + this.animPkg.colRect.X),
-                y: (int)(pos.Y + this.animPkg.colRect.Y),
+                x: (int)(this.pos.X + this.animPkg.colRect.X),
+                y: (int)(this.pos.Y + this.animPkg.colRect.Y),
                 width: this.animPkg.colRect.Width,
                 height: this.animPkg.colRect.Height);
 
             this.gfxRect = new(
-                x: (int)(pos.X + this.animFrame.GfxOffset.X),
-                y: (int)(pos.Y + this.animFrame.GfxOffset.Y),
+                x: (int)(this.pos.X + this.animFrame.GfxOffset.X),
+                y: (int)(this.pos.Y + this.animFrame.GfxOffset.Y),
                 width: this.animFrame.CropRect.Width,
                 height: this.animFrame.CropRect.Height);
         }
@@ -71,13 +78,14 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            this.animFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: 0f, opacity: 1f);
+            this.animFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: 0.0f, opacity: 0.5f);
+            this.animFrame.Draw(destRect: this.gfxRect, color: Color.White, opacity: 0.5f);
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.gfxRect, color: Color.White * 0.35f);
-            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
+            if (this.showGfxRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.gfxRect, color: Color.White * 0.35f);
+            if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
 
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
             font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,
