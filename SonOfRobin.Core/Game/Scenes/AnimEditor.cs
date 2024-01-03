@@ -30,6 +30,7 @@ namespace SonOfRobin
 
         private bool showColRect;
         private bool showGfxRect;
+        private bool showEffect;
 
         private readonly Effect effect;
 
@@ -40,6 +41,7 @@ namespace SonOfRobin
             this.rot = 0f;
             this.showColRect = true;
             this.showGfxRect = true;
+            this.showEffect = true;
 
             var animPkgList = new List<AnimPkg> { };
 
@@ -48,8 +50,9 @@ namespace SonOfRobin
                 new(animPkg: this.currentAnimPkg, size: 1,
                 frameArray:
                 [
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 30, mirrorX: true),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 30, mirrorX: false),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.FlipHorizontally),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.FlipVertically),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.None),
                 ]
                 ));
 
@@ -90,6 +93,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.Z)) this.showColRect = !this.showColRect;
             if (Keyboard.HasBeenPressed(Keys.X)) this.showGfxRect = !this.showGfxRect;
+            if (Keyboard.HasBeenPressed(Keys.C)) this.showEffect = !this.showEffect;
 
             if (Keyboard.IsPressed(Keys.A)) this.rot -= 0.03f;
             if (Keyboard.IsPressed(Keys.S)) this.rot += 0.03f;
@@ -150,25 +154,31 @@ namespace SonOfRobin
                 width: this.currentAnimPkg.colRect.Width,
                 height: this.currentAnimPkg.colRect.Height);
 
+            Vector2 gfxOffset = this.currentAnimFrame.GfxOffset;
+            Rectangle cropRect = this.currentAnimFrame.CropRect;
+
             this.gfxRect = new(
-                x: (int)(this.pos.X + this.currentAnimFrame.GfxOffset.X),
-                y: (int)(this.pos.Y + this.currentAnimFrame.GfxOffset.Y),
-                width: this.currentAnimFrame.CropRect.Width,
-                height: this.currentAnimFrame.CropRect.Height);
+                x: (int)(this.pos.X + gfxOffset.X),
+                y: (int)(this.pos.Y + gfxOffset.Y),
+                width: cropRect.Width,
+                height: cropRect.Height);
         }
 
         public override void Draw()
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
-            this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+            if (this.showEffect)
+            {
+                this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
 
-            this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
-            this.effect.Parameters["outlineThickness"].SetValue(1);
-            this.effect.Parameters["drawFill"].SetValue(true);
-            this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
+                this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
+                this.effect.Parameters["outlineThickness"].SetValue(1);
+                this.effect.Parameters["drawFill"].SetValue(true);
+                this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
 
-            this.effect.CurrentTechnique.Passes[0].Apply();
+                this.effect.CurrentTechnique.Passes[0].Apply();
+            }
 
             this.currentAnimFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1f);
             this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, opacity: 0.5f);
@@ -182,7 +192,6 @@ namespace SonOfRobin
             string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} texture: {this.currentAnimFrame.Texture.Name}";
 
             SonOfRobinGame.SpriteBatch.End();
-
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 

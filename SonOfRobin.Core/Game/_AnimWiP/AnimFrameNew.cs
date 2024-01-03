@@ -7,30 +7,56 @@ namespace SonOfRobin
     public class AnimFrameNew
     {
         public readonly string atlasName;
-        public Rectangle CropRect { get; private set; }
-        public Vector2 GfxOffset { get; private set; }
+        public Rectangle CropRect
+        {
+            get
+            {
+                if (!this.isCropped && !this.initialized) this.FinishInitialization();
+                return this.cropRect;
+            }
+        }
+        private Rectangle cropRect;
+        public Vector2 GfxOffset
+        {
+            get
+            {
+                if (!this.initialized) this.FinishInitialization();
+                return this.gfxOffset;
+            }
+        }
+        private Vector2 gfxOffset;
         public readonly bool isCropped;
         private Texture2D texture;
-        public Vector2 RotationOrigin { get; private set; }
 
-        public readonly bool mirrorX; // TODO find a way to draw it properly without using RenderTarget
+        private Vector2 rotationOrigin;
+        public Vector2 RotationOrigin
+        {
+            get
+            {
+                if (!this.initialized) this.FinishInitialization();
+                return this.rotationOrigin;
+            }
+        }
+
+        public readonly SpriteEffects spriteEffects;
+        public readonly bool mirrorY;
         public readonly int layer;
         public readonly int duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
         private bool initialized = false;
 
-        public AnimFrameNew(string atlasName, int layer, float scale = 1f, int duration = 0, Vector2 gfxOffset = default, Rectangle cropRect = default, bool mirrorX = false)
+        public AnimFrameNew(string atlasName, int layer, float scale = 1f, int duration = 0, Vector2 gfxOffset = default, Rectangle cropRect = default, SpriteEffects spriteEffects = SpriteEffects.None)
         {
             this.atlasName = atlasName;
-            this.CropRect = cropRect;
+            this.cropRect = cropRect;
             this.isCropped = cropRect != default;
-            this.GfxOffset = gfxOffset;
+            this.gfxOffset = gfxOffset;
             this.scale = scale;
-            this.mirrorX = mirrorX;
+            this.spriteEffects = spriteEffects;
             this.layer = layer;
             this.duration = duration;
-            this.GfxOffset = gfxOffset;
+            this.gfxOffset = gfxOffset;
             this.initialized = false; // some parameters can only be set after loading texture
         }
 
@@ -38,22 +64,26 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.texture == null)
-                {
-                    MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {this.atlasName}...");
-                    this.texture = TextureBank.GetTexture(this.atlasName);
-                    if (this.texture == null) this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
-                    else AnimData.loadedFramesCount++;
-                }
+                if (this.texture == null) this.LoadAtlasTexture();
                 return this.texture;
             }
         }
 
+        private void LoadAtlasTexture()
+        {
+            MessageLog.Add(debugMessage: true, text: $"Loading atlas texture: {this.atlasName}...");
+            this.texture = TextureBank.GetTexture(this.atlasName);
+            if (this.texture == null) this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
+            else AnimData.loadedFramesCount++;
+        }
+
         private void FinishInitialization()
         {
-            if (!this.isCropped) this.CropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
-            this.RotationOrigin = new Vector2((float)this.CropRect.Width / 2f, (float)this.CropRect.Height / 2f);
-            if (this.GfxOffset == default) this.GfxOffset = new Vector2(-(float)this.CropRect.Width / 2f, -(float)this.CropRect.Height / 2f);
+            if (this.texture == null) this.LoadAtlasTexture();
+
+            if (!this.isCropped) this.cropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
+            this.rotationOrigin = new Vector2((float)this.cropRect.Width / 2f, (float)this.cropRect.Height / 2f);
+            if (this.gfxOffset == default) this.gfxOffset = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f);
             this.initialized = true;
         }
 
@@ -64,19 +94,19 @@ namespace SonOfRobin
             Texture2D textureToDraw = this.Texture;
             if (!this.initialized) this.FinishInitialization(); // has to be checked and invoked here, because one texture can be shared across multiple AnimFrames
 
-            int correctedSourceHeight = this.CropRect.Height;
+            int correctedSourceHeight = this.cropRect.Height;
             if (submergeCorrection > 0)
             {
                 // first pass - whole sprite visible through water
-                SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, destinationRectangle: destRect, sourceRectangle: this.CropRect, color: Color.Blue * opacity * 0.2f);
+                SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, destinationRectangle: destRect, sourceRectangle: this.cropRect, color: Color.Blue * opacity * 0.2f);
 
-                correctedSourceHeight = Math.Max(this.CropRect.Height / 2, this.CropRect.Height - submergeCorrection);
+                correctedSourceHeight = Math.Max(this.cropRect.Height / 2, this.cropRect.Height - submergeCorrection);
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }
 
-            Rectangle srcRect = new(x: this.CropRect.X, y: this.CropRect.Y, width: this.CropRect.Width, correctedSourceHeight);
+            Rectangle srcRect = new(x: this.cropRect.X, y: this.cropRect.Y, width: this.cropRect.Width, correctedSourceHeight);
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, origin: Vector2.Zero, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity, rotation: 0f, effects: this.mirrorX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(texture: textureToDraw, origin: Vector2.Zero, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity, rotation: 0f, effects: this.spriteEffects, layerDepth: 0);
         }
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride = default)
@@ -84,16 +114,17 @@ namespace SonOfRobin
             // invoke from Sprite class
 
             Texture2D texture = this.Texture; // invoked to update other params
+            if (!this.initialized) this.FinishInitialization(); // has to be checked and invoked here, because one texture can be shared across multiple AnimFrames
 
-            Vector2 rotationOriginToUse = this.RotationOrigin;
+            Vector2 rotationOriginToUse = this.rotationOrigin;
 
             if (rotationOriginOverride != default)
             {
                 rotationOriginToUse = rotationOriginOverride;
-                position += (rotationOriginToUse - this.RotationOrigin) * this.scale;
+                position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: texture, position: position, sourceRectangle: this.CropRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.mirrorX ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(texture: texture, position: position, sourceRectangle: this.cropRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
         }
     }
 }
