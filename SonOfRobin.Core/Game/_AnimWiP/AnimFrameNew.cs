@@ -55,7 +55,7 @@ namespace SonOfRobin
             if (!this.isCropped) this.CropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
             // rotationOrigin must not take scale into account, to work properly
             this.RotationOrigin = new Vector2(this.CropRect.X + ((float)this.Texture.Width / 2f), this.CropRect.Y + ((float)this.Texture.Height / 2f));
-            if (this.GfxOffset == default) this.GfxOffset = new Vector2(-(float)this.texture.Width / 2f, -(float)this.texture.Height / 2f);
+            if (this.GfxOffset == default) this.GfxOffset = new Vector2(-(float)this.CropRect.Width / 2f, -(float)this.CropRect.Height / 2f);
         }
 
         public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0)
@@ -86,8 +86,6 @@ namespace SonOfRobin
             Texture2D texture = this.Texture; // invoked to update other params
 
             Vector2 rotationOriginToUse = this.RotationOrigin;
-
-            position += this.GfxOffset;
 
             if (rotationOriginOverride != default)
             {

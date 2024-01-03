@@ -14,12 +14,12 @@ namespace SonOfRobin
         public readonly string switchName;
         public readonly AnimFrameNew[] frameArray;
 
-        public Anim(AnimPkg animPkg, int size, AnimFrameNew[] frameArray, string name = "default", bool looped = true, bool pingPong = false, string switchName = "")
+        public Anim(AnimPkg animPkg, int size, AnimFrameNew[] frameArray, string name = "default", bool pingPong = false, string switchName = "")
         {
             this.animPkg = animPkg;
             this.name = name;
             this.size = size;
-            this.looped = looped;
+            this.looped = !frameArray.Any(obj => obj.duration == 0);
             this.pingPong = pingPong;
 
             if (looped)
