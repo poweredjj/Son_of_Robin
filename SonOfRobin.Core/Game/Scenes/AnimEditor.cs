@@ -14,7 +14,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 2);
-            this.currentAnimPkg = new AnimPkg(pkgName: AnimData.PkgName.FoxWhite, colRect: new Rectangle(x: 0, y: 0, width: 80, height: 80));
+            this.currentAnimPkg = new AnimPkg(pkgName: AnimData.PkgName.FoxWhite, colWidth: 80, colHeight: 40);
             this.pos = new Vector2(150, 150);
 
             AnimFrameNew[] frameArray = [new(atlasName: "characters/fox", layer: 1)];
@@ -32,7 +32,7 @@ namespace SonOfRobin
             if (Keyboard.IsPressed(Keys.Up)) movePos.Y--;
             if (Keyboard.IsPressed(Keys.Down)) movePos.Y++;
 
-            this.pos += movePos / 2;
+            this.pos += movePos * 0.85f;
 
             // TODO add input (changing packages, animations and setting frame offset)
         }
@@ -45,6 +45,17 @@ namespace SonOfRobin
 
             AnimFrameNew animFrame = anim.frameArray[0];
             animFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: 0f, opacity: 1f);
+
+            Rectangle colRect = this.currentAnimPkg.colRect;
+            colRect.X += (int)this.pos.X;
+            colRect.Y += (int)this.pos.Y;
+
+            // SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.GfxRect, this.GfxRect, Color.White * 0.35f);
+
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(colRect.X, colRect.Y, colRect.Width, colRect.Height), SonOfRobinGame.WhiteRectangle.Bounds, Color.Red * 0.55f);
+
+            //SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), color: Color.Blue, thickness: 2f);
+            // SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.White);
 
             font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,

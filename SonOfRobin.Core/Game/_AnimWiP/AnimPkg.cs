@@ -9,20 +9,18 @@ namespace SonOfRobin
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
-        private int croppedFrameSize;
 
-        public AnimPkg(AnimData.PkgName pkgName, Rectangle colRect, bool horizontalOrientationsOnly = false)
+        public AnimPkg(AnimData.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
         {
             this.pkgName = pkgName;
-            this.colRect = colRect;
-            this.animDict = new Dictionary<int, Dictionary<string, Anim>>();
+            this.colRect = new Rectangle(x: -colWidth / 2, y: -colHeight / 2, width: colWidth, height: colHeight); // colRect should always be centered
+            this.animDict = [];
             this.horizontalOrientationsOnly = horizontalOrientationsOnly;
-            this.croppedFrameSize = 0;
         }
 
         public void AddAnim(Anim anim)
         {
-            if (!this.animDict.ContainsKey(anim.size)) this.animDict[anim.size] = new Dictionary<string, Anim>();
+            if (!this.animDict.ContainsKey(anim.size)) this.animDict[anim.size] = [];
             this.animDict[anim.size][anim.name] = anim;
         }
 
