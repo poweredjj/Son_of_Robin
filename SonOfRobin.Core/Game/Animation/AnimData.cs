@@ -1815,8 +1815,8 @@ namespace SonOfRobin
                             var frameArray = new AnimFrame[]
                             {
                                 ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_2", layer: layer, duration: 6, crop: true, scale: scale),
+                                ConvertImageToFrame(atlasName: "_processed_flame_small_3", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 
@@ -1827,9 +1827,9 @@ namespace SonOfRobin
                         {
                             var frameArray = new AnimFrame[]
                             {
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_1", layer: layer, duration: 6, crop: true, scale: scale),
                                 ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
-                                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale)
+                                ConvertImageToFrame(atlasName: "_processed_flame_big_3", layer: layer, duration: 6, crop: true, scale: scale)
                             };
                             AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
 

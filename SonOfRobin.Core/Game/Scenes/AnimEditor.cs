@@ -16,9 +16,13 @@ namespace SonOfRobin
         private int currentAnimPkgIndex;
 
         private AnimPkg currentAnimPkg;
+        private Anim currentAnim;
         private AnimFrameNew currentAnimFrame;
         private Vector2 pos;
         private float rot;
+
+        private int currentFrameIndex;
+        private int currentFrameTimeLeft;
 
         private Rectangle gfxRect;
         private Rectangle colRect;
@@ -36,13 +40,21 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 16, colHeight: 15));
+            animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
                 new(animPkg: this.currentAnimPkg, size: 1,
                 frameArray: [new(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48))]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray: [new(atlasName: "_processed_plant_poison", layer: 1)]));
+
+            animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [
+                    new(atlasName: "_processed_flame_small_1", layer: 1, duration: 6),
+                    new(atlasName: "_processed_flame_small_2", layer: 1, duration: 6),
+                    new(atlasName: "_processed_flame_small_3", layer: 1, duration: 6),
+                ]));
 
             this.animPkgArray = animPkgList.ToArray();
             this.currentAnimPkgIndex = 0;
@@ -54,7 +66,9 @@ namespace SonOfRobin
         private void AssignCurrentAnim()
         {
             this.currentAnimPkg = this.animPkgArray[this.currentAnimPkgIndex];
-            this.currentAnimFrame = this.currentAnimPkg.GetAnim(size: 1, name: "default").frameArray[0];
+            this.currentAnim = this.currentAnimPkg.GetAnim(size: 1, name: "default");
+            this.RewindAnim();
+            this.currentAnimFrame = this.currentAnim.frameArray[0];
         }
 
         public override void Update()
@@ -89,7 +103,31 @@ namespace SonOfRobin
                 this.AssignCurrentAnim();
             }
 
+            this.UpdateAnimation();
             this.UpdateRects();
+        }
+
+        public bool AnimFinished { get { return this.currentAnimFrame.duration == 0; } }
+
+        public void RewindAnim()
+        {
+            this.currentFrameIndex = 0;
+            this.currentAnimFrame = this.currentAnim.frameArray[this.currentFrameIndex];
+            this.currentFrameTimeLeft = this.currentAnimFrame.duration;
+        }
+
+        public void UpdateAnimation()
+        {
+            if (this.currentAnimFrame.duration == 0) return; // duration == 0 will stop the animation
+
+            this.currentFrameTimeLeft--;
+            if (this.currentFrameTimeLeft <= 0)
+            {
+                this.currentFrameIndex++;
+                if (this.currentFrameIndex >= this.currentAnim.frameArray.Length) this.RewindAnim();
+                this.currentAnimFrame = this.currentAnim.frameArray[this.currentFrameIndex];
+                this.currentFrameTimeLeft = this.currentAnimFrame.duration;
+            }
         }
 
         private void UpdateRects()

@@ -22,17 +22,17 @@ namespace SonOfRobin
             this.looped = !frameArray.Any(obj => obj.duration == 0);
             this.pingPong = pingPong;
 
-            if (looped)
+            if (pingPong)
             {
-                AnimFrameNew[] frameArrayLooped = new AnimFrameNew[frameArray.Length * 2];
+                AnimFrameNew[] frameArrayPingPong = new AnimFrameNew[frameArray.Length * 2];
 
                 for (int i = 0; i < frameArray.Length; i++)
                 {
-                    frameArrayLooped[i] = frameArray[i];
-                    frameArrayLooped[frameArray.Length + (frameArray.Length - i - 1)] = frameArray[i];
+                    frameArrayPingPong[i] = frameArray[i];
+                    frameArrayPingPong[frameArray.Length + (frameArray.Length - i - 1)] = frameArray[i];
                 }
 
-                frameArray = frameArrayLooped;
+                frameArray = frameArrayPingPong;
             }
 
             this.frameArray = frameArray;
