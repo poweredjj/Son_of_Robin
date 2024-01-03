@@ -53,7 +53,6 @@ namespace SonOfRobin
         private void FinishCreation()
         {
             if (!this.isCropped) this.CropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
-            // rotationOrigin must not take scale into account, to work properly
             this.RotationOrigin = new Vector2((float)this.CropRect.Width / 2f, (float)this.CropRect.Height / 2f);
             if (this.GfxOffset == default) this.GfxOffset = new Vector2(-(float)this.CropRect.Width / 2f, -(float)this.CropRect.Height / 2f);
         }
