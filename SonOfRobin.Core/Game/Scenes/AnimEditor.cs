@@ -1,5 +1,6 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
@@ -30,6 +31,8 @@ namespace SonOfRobin
         private bool showColRect;
         private bool showGfxRect;
 
+        private readonly Effect effect;
+
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
@@ -43,7 +46,12 @@ namespace SonOfRobin
             animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
                 new(animPkg: this.currentAnimPkg, size: 1,
-                frameArray: [new(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48))]));
+                frameArray:
+                [
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 30, mirrorX: true),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 30, mirrorX: false),
+                ]
+                ));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray: [new(atlasName: "_processed_plant_poison", layer: 1)]));
@@ -51,9 +59,9 @@ namespace SonOfRobin
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
                 [
-                    new(atlasName: "_processed_flame_small_1", layer: 1, duration: 6),
-                    new(atlasName: "_processed_flame_small_2", layer: 1, duration: 6),
-                    new(atlasName: "_processed_flame_small_3", layer: 1, duration: 6),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6),
                 ]));
 
             this.animPkgArray = animPkgList.ToArray();
@@ -61,6 +69,8 @@ namespace SonOfRobin
 
             this.AssignCurrentAnim();
             this.UpdateRects();
+
+            this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
         }
 
         private void AssignCurrentAnim()
@@ -149,7 +159,16 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+
+            this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+
+            this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
+            this.effect.Parameters["outlineThickness"].SetValue(1);
+            this.effect.Parameters["drawFill"].SetValue(true);
+            this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
+
+            this.effect.CurrentTechnique.Passes[0].Apply();
 
             this.currentAnimFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1f);
             this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, opacity: 0.5f);
@@ -161,6 +180,11 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
             string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} texture: {this.currentAnimFrame.Texture.Name}";
+
+            SonOfRobinGame.SpriteBatch.End();
+
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,
