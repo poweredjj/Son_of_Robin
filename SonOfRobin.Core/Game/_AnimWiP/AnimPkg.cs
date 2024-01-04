@@ -28,5 +28,14 @@ namespace SonOfRobin
         {
             return this.animDict[size][name];
         }
+
+        public Rectangle GetColRectForPos(Vector2 position)
+        {
+            return new(
+                x: (int)position.X + this.colRect.X,
+                y: (int)position.Y + this.colRect.Y,
+                width: this.colRect.Width,
+                height: this.colRect.Height);
+        }
     }
 }

@@ -169,19 +169,8 @@ namespace SonOfRobin
         {
             // TODO move to Sprite class
 
-            this.colRect = new(
-                x: (int)(this.pos.X + this.currentAnimPkg.colRect.X),
-                y: (int)(this.pos.Y + this.currentAnimPkg.colRect.Y),
-                width: this.currentAnimPkg.colRect.Width,
-                height: this.currentAnimPkg.colRect.Height);
-
-            Vector2 gfxOffset = this.currentAnimFrame.GfxOffset;
-
-            this.gfxRect = new(
-                x: (int)(this.pos.X + gfxOffset.X),
-                y: (int)(this.pos.Y + gfxOffset.Y),
-                width: this.currentAnimFrame.GfxWidth,
-                height: this.currentAnimFrame.GfxHeight);
+            this.colRect = this.currentAnimPkg.GetColRectForPos(this.pos);
+            this.gfxRect = this.currentAnimFrame.GetGfxRectForPos(this.pos);
         }
 
         public override void Draw()

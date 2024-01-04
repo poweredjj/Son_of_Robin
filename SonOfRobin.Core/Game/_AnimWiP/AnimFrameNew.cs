@@ -101,6 +101,17 @@ namespace SonOfRobin
             }
         }
 
+        public Rectangle GetGfxRectForPos(Vector2 position)
+        {
+            if (!this.initialized) this.FinishInitialization();
+
+            return new(
+                x: (int)(position.X + this.gfxOffset.X),
+                y: (int)(position.Y + this.gfxOffset.Y),
+                width: this.gfxWidth,
+                height: this.gfxHeight);
+        }
+
         private void LoadAtlasTexture()
         {
             MessageLog.Add(debugMessage: true, text: $"Loading atlas texture: {this.atlasName}...");
