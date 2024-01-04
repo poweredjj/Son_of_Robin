@@ -37,7 +37,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(150, 150);
+            this.pos = new Vector2(50, 50);
             this.rot = 0f;
             this.showColRect = true;
             this.showGfxRect = true;
@@ -45,19 +45,21 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
+            animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 4.0f)]));
+
             animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
                 new(animPkg: this.currentAnimPkg, size: 1,
                 frameArray:
                 [
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.FlipHorizontally),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.FlipVertically),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, spriteEffects: SpriteEffects.None),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: true, mirrorY: true),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: true, mirrorY: false),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: false, mirrorY: true),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: false, mirrorY: false),
                 ]
                 ));
-
-            animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray: [new(atlasName: "_processed_plant_poison", layer: 1)]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
@@ -95,8 +97,27 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.X)) this.showGfxRect = !this.showGfxRect;
             if (Keyboard.HasBeenPressed(Keys.C)) this.showEffect = !this.showEffect;
 
-            if (Keyboard.IsPressed(Keys.A)) this.rot -= 0.03f;
-            if (Keyboard.IsPressed(Keys.S)) this.rot += 0.03f;
+            float rotVal = 0.03f;
+            if (Keyboard.IsPressed(Keys.A)) this.rot -= rotVal;
+            if (Keyboard.IsPressed(Keys.S)) this.rot += rotVal;
+            if (Keyboard.IsPressed(Keys.D)) this.rot = 0f;
+
+            float scaleVal = 0.005f;
+            if (Keyboard.IsPressed(Keys.E))
+            {
+                this.viewParams.ScaleX -= scaleVal;
+                this.viewParams.ScaleY -= scaleVal;
+            }
+            if (Keyboard.IsPressed(Keys.R))
+            {
+                this.viewParams.ScaleX += scaleVal;
+                this.viewParams.ScaleY += scaleVal;
+            }
+            if (Keyboard.IsPressed(Keys.T))
+            {
+                this.viewParams.ScaleX = 1f;
+                this.viewParams.ScaleY = 1f;
+            }
 
             bool animIndexChanged = false;
             if (Keyboard.HasBeenPressed(Keys.Q))
@@ -155,13 +176,12 @@ namespace SonOfRobin
                 height: this.currentAnimPkg.colRect.Height);
 
             Vector2 gfxOffset = this.currentAnimFrame.GfxOffset;
-            Rectangle cropRect = this.currentAnimFrame.CropRect;
 
             this.gfxRect = new(
                 x: (int)(this.pos.X + gfxOffset.X),
                 y: (int)(this.pos.Y + gfxOffset.Y),
-                width: cropRect.Width,
-                height: cropRect.Height);
+                width: this.currentAnimFrame.GfxWidth,
+                height: this.currentAnimFrame.GfxHeight);
         }
 
         public override void Draw()
@@ -171,7 +191,6 @@ namespace SonOfRobin
             if (this.showEffect)
             {
                 this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
-
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineThickness"].SetValue(1);
                 this.effect.Parameters["drawFill"].SetValue(true);

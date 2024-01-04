@@ -7,36 +7,16 @@ namespace SonOfRobin
     public class AnimFrameNew
     {
         public readonly string atlasName;
-        public Rectangle CropRect
-        {
-            get
-            {
-                if (!this.isCropped && !this.initialized) this.FinishInitialization();
-                return this.cropRect;
-            }
-        }
+
         private Rectangle cropRect;
-        public Vector2 GfxOffset
-        {
-            get
-            {
-                if (!this.initialized) this.FinishInitialization();
-                return this.gfxOffset;
-            }
-        }
+
         private Vector2 gfxOffset;
+        private int gfxWidth; // final draw size
+        private int gfxHeight; // final draw size
         public readonly bool isCropped;
         private Texture2D texture;
 
         private Vector2 rotationOrigin;
-        public Vector2 RotationOrigin
-        {
-            get
-            {
-                if (!this.initialized) this.FinishInitialization();
-                return this.rotationOrigin;
-            }
-        }
 
         public readonly SpriteEffects spriteEffects;
         public readonly bool mirrorY;
@@ -46,17 +26,24 @@ namespace SonOfRobin
         public readonly bool ignoreWhenCalculatingMaxSize;
         private bool initialized = false;
 
-        public AnimFrameNew(string atlasName, int layer, float scale = 1f, int duration = 0, Vector2 gfxOffset = default, Rectangle cropRect = default, SpriteEffects spriteEffects = SpriteEffects.None)
+        public AnimFrameNew(string atlasName, int layer, float scale = 1f, int duration = 0, Vector2 gfxOffset = default, Rectangle cropRect = default, bool mirrorX = false, bool mirrorY = false)
         {
             this.atlasName = atlasName;
+            this.scale = scale;
             this.cropRect = cropRect;
             this.isCropped = cropRect != default;
+            this.gfxWidth = (int)(this.cropRect.Width * this.scale);
+            this.gfxHeight = (int)(this.cropRect.Height * this.scale);
             this.gfxOffset = gfxOffset;
-            this.scale = scale;
-            this.spriteEffects = spriteEffects;
+
+            if (mirrorX && mirrorY) this.spriteEffects = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            else if (mirrorX) this.spriteEffects = SpriteEffects.FlipHorizontally;
+            else if (mirrorY) this.spriteEffects = SpriteEffects.FlipVertically;
+            else this.spriteEffects = SpriteEffects.None;
+
             this.layer = layer;
             this.duration = duration;
-            this.gfxOffset = gfxOffset;
+            this.gfxOffset = gfxOffset * this.scale;
             this.initialized = false; // some parameters can only be set after loading texture
         }
 
@@ -66,6 +53,51 @@ namespace SonOfRobin
             {
                 if (this.texture == null) this.LoadAtlasTexture();
                 return this.texture;
+            }
+        }
+
+        public Rectangle CropRect
+        {
+            get
+            {
+                if (!this.isCropped && !this.initialized) this.FinishInitialization();
+                return this.cropRect;
+            }
+        }
+
+        public int GfxWidth
+        {
+            get
+            {
+                if (!this.isCropped && !this.initialized) this.FinishInitialization();
+                return this.gfxWidth;
+            }
+        }
+
+        public int GfxHeight
+        {
+            get
+            {
+                if (!this.isCropped && !this.initialized) this.FinishInitialization();
+                return this.gfxHeight;
+            }
+        }
+
+        public Vector2 GfxOffset
+        {
+            get
+            {
+                if (!this.initialized) this.FinishInitialization();
+                return this.gfxOffset;
+            }
+        }
+
+        public Vector2 RotationOrigin
+        {
+            get
+            {
+                if (!this.initialized) this.FinishInitialization();
+                return this.rotationOrigin;
             }
         }
 
@@ -81,9 +113,14 @@ namespace SonOfRobin
         {
             if (this.texture == null) this.LoadAtlasTexture();
 
-            if (!this.isCropped) this.cropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
+            if (!this.isCropped)
+            {
+                this.cropRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
+                this.gfxWidth = (int)(this.cropRect.Width * this.scale);
+                this.gfxHeight = (int)(this.cropRect.Height * this.scale);
+            }
             this.rotationOrigin = new Vector2((float)this.cropRect.Width / 2f, (float)this.cropRect.Height / 2f);
-            if (this.gfxOffset == default) this.gfxOffset = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f);
+            if (this.gfxOffset == default) this.gfxOffset = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale;
             this.initialized = true;
         }
 
