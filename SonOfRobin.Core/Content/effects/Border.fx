@@ -13,6 +13,11 @@ float4 outlineColor;
 bool drawFill;
 float outlineThickness;
 float4 drawColor;
+float cropXMin;
+float cropXMax;
+float cropYMin;
+float cropYMax;
+
 
 sampler2D InputSampler = sampler_state
 {
@@ -35,12 +40,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
  
-    bool isOutlinePixel = false;
+    bool isOutlinePixel = false;  
+    //bool isOutsideCrop = input.UV.x < cropXMin || input.UV.x > cropXMax || input.UV.y < cropYMin || input.UV.y > cropYMax;
 	
     if (currentPixelRaw.a > threshold && input.UV.x > uvPix.x && input.UV.y > uvPix.y)
     {
         // thick inside fill
-        // checking non-transparent pixels for their non-transparent neighbours (and NOT first row / column)
+        // checking non-transparent pixels for their non-transparent neighbours (and NOT first row / column)        
         
         if (outlineThickness > 1)
         {
@@ -59,7 +65,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         }
     }
     else
-    {	
+    {
         // thin outline fill
         // checking transparent pixels for their non-transparent neighbours (and ALWAYS first row / column, regardless of transparency)  
       
@@ -74,6 +80,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         }
     }
 
+    // return isOutlinePixel && !isOutsideCrop ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
     return isOutlinePixel ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
 }
 

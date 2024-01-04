@@ -37,7 +37,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(50, 50);
+            this.pos = new Vector2(130, 130);
             this.rot = 0f;
             this.showColRect = true;
             this.showGfxRect = true;
@@ -45,21 +45,21 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 4.0f)]));
-
             animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
                 new(animPkg: this.currentAnimPkg, size: 1,
                 frameArray:
                 [
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: true, mirrorY: true),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: true, mirrorY: false),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: false, mirrorY: true),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 40, mirrorX: false, mirrorY: false),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
+                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
                 ]
                 ));
+
+            animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f)]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
@@ -184,6 +184,13 @@ namespace SonOfRobin
                 this.effect.Parameters["outlineThickness"].SetValue(1);
                 this.effect.Parameters["drawFill"].SetValue(true);
                 this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
+
+                Rectangle cropRect = this.currentAnimFrame.CropRect;
+
+                this.effect.Parameters["cropXMin"].SetValue((float)cropRect.Left / (float)this.currentAnimFrame.Texture.Width);
+                this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)this.currentAnimFrame.Texture.Width);
+                this.effect.Parameters["cropYMin"].SetValue((float)cropRect.Top / (float)this.currentAnimFrame.Texture.Height);
+                this.effect.Parameters["cropYMax"].SetValue((float)cropRect.Bottom / (float)this.currentAnimFrame.Texture.Height);
 
                 this.effect.CurrentTechnique.Passes[0].Apply();
             }
