@@ -59,14 +59,14 @@ namespace SonOfRobin
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f)]));
+                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f, cropRect: new Rectangle(0,0,32,33))]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
                 [
-                    new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6),
-                    new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6),
-                    new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 40, 46)),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 41, 43)),
+                    new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 45, 44)),
                 ]));
 
             this.animPkgArray = animPkgList.ToArray();
@@ -185,7 +185,7 @@ namespace SonOfRobin
                 this.effect.Parameters["drawFill"].SetValue(true);
                 this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
 
-                Rectangle cropRect = this.currentAnimFrame.CropRect;
+                Rectangle cropRect = this.currentAnimFrame.cropRect;
 
                 this.effect.Parameters["cropXMin"].SetValue((float)cropRect.Left / (float)this.currentAnimFrame.Texture.Width);
                 this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)this.currentAnimFrame.Texture.Width);
