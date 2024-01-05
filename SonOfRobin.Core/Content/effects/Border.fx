@@ -3,8 +3,8 @@
 #define VS_SHADERMODEL vs_3_0
 #define PS_SHADERMODEL ps_3_0
 #else
-#define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_4_0_level_9_1
+#define VS_SHADERMODEL vs_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
+#define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
 Texture2D SpriteTexture;
@@ -13,10 +13,10 @@ float4 outlineColor;
 bool drawFill;
 float outlineThickness;
 float4 drawColor;
-float cropXMin;
-float cropXMax;
-float cropYMin;
-float cropYMax;
+int cropXMin;
+int cropXMax;
+int cropYMin;
+int cropYMax;
 
 
 sampler2D InputSampler = sampler_state
@@ -39,33 +39,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 currentPixel = currentPixelRaw * input.Color;
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
+     
+    bool leftEdge = uvPix.x < cropXMin;
+    bool rightEdge = uvPix.x > cropXMax;
+    bool topEdge = uvPix.y < cropYMin;
+    bool bottomEdge = uvPix.y > cropYMax;
                	
-    float2 thicknessPix = outlineThickness * uvPix; // Calculate thickness in pixel coordinates
-    
-    float2 thickCRight = float2(thicknessPix.x + input.UV.x, input.UV.y);
-    float2 thickCDown = float2(input.UV.x, thicknessPix.y + input.UV.y);
-    float2 thickCLeft = float2(-thicknessPix.x + input.UV.x, input.UV.y);
-    float2 thickCUp = float2(input.UV.x, -thicknessPix.y + input.UV.y);
-    
-    
-    // bool testBool = thickCRight.x < cropXMin || thickCRight.x > cropXMax || thickCRight.y < cropYMin || thickCRight.y > cropYMax;
-
-    
-    bool thickPixelRightOn = tex2D(InputSampler, thickCRight).a >= threshold;
-    bool thickPixelDownOn = tex2D(InputSampler, thickCDown).a >= threshold;
-    bool thickPixelLeftOn = tex2D(InputSampler, thickCLeft).a >= threshold;
-    bool thickPixelUpOn = tex2D(InputSampler, thickCUp).a >= threshold;
-    
-    float2 normalCRight = float2(uvPix.x + input.UV.x, input.UV.y);
-    float2 normalCDown = float2(input.UV.x, uvPix.y + input.UV.y);
-    float2 normalCLeft = float2((-1 * uvPix.x) + input.UV.x, input.UV.y);
-    float2 normalCUp = float2(input.UV.x, (-1 * uvPix.y) + input.UV.y);
-   
-    bool normalPixelRightOn = tex2D(InputSampler, normalCRight).a >= threshold;
-    bool normalPixelDownOn = tex2D(InputSampler, normalCDown).a >= threshold;
-    bool normalPixelLeftOn = tex2D(InputSampler, normalCLeft).a >= threshold;
-    bool normalPixelUpOn = tex2D(InputSampler, normalCUp).a >= threshold;
- 
     bool isOutlinePixel = false;  
 	
     if (currentPixelRaw.a > threshold && input.UV.x > uvPix.x && input.UV.y > uvPix.y)
@@ -75,11 +54,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         
         if (outlineThickness > 1)
         {
+            float2 thicknessPix = outlineThickness * uvPix; // Calculate thickness in pixel coordinates
+                        
             if (false
-			    || !thickPixelRightOn
-			    || !thickPixelDownOn
-			    || !thickPixelLeftOn
-			    || !thickPixelUpOn
+                || (!rightEdge && tex2D(InputSampler, float2(thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold)
+			    || (!bottomEdge && tex2D(InputSampler, float2(input.UV.x, thicknessPix.y + input.UV.y)).a <= threshold)
+			    || (!leftEdge && tex2D(InputSampler, float2(-thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold)
+			    || (!topEdge && tex2D(InputSampler, float2(input.UV.x, -thicknessPix.y + input.UV.y)).a <= threshold)
 		    )
             {
                 isOutlinePixel = true;
@@ -90,19 +71,20 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     {
         // thin outline fill
         // checking transparent pixels for their non-transparent neighbours (and ALWAYS first row / column, regardless of transparency)  
-      
+          
+        // TODO check why outline is drawn incorrectly
+        
         if (false
-			|| normalPixelRightOn
-			|| normalPixelDownOn
-			|| normalPixelLeftOn
-			|| normalPixelUpOn
+			|| (!rightEdge && tex2D(InputSampler, float2(uvPix.x + input.UV.x, input.UV.y)).a > threshold)
+			|| (!bottomEdge && tex2D(InputSampler, float2(input.UV.x, uvPix.y + input.UV.y)).a > threshold)
+			|| (!leftEdge && tex2D(InputSampler, float2(-uvPix.x + input.UV.x, input.UV.y)).a > threshold)
+			|| (!topEdge && tex2D(InputSampler, float2(input.UV.x, -uvPix.y + input.UV.y)).a > threshold)
 		)
         {
             isOutlinePixel = true;
         }
     }
 
-    // return isOutlinePixel && !isOutsideCrop ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
     return isOutlinePixel ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
 }
 

@@ -189,16 +189,16 @@ namespace SonOfRobin
             {
                 this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
-                this.effect.Parameters["outlineThickness"].SetValue((int)(1f / this.currentAnimFrame.scale));
+                this.effect.Parameters["outlineThickness"].SetValue((int)(1f)); // 1f / this.currentAnimFrame.scale
                 this.effect.Parameters["drawFill"].SetValue(true);
                 this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
 
                 Rectangle cropRect = this.currentAnimFrame.cropRect;
 
-                this.effect.Parameters["cropXMin"].SetValue((float)cropRect.Left / (float)this.currentAnimFrame.Texture.Width);
-                this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)this.currentAnimFrame.Texture.Width);
-                this.effect.Parameters["cropYMin"].SetValue((float)cropRect.Top / (float)this.currentAnimFrame.Texture.Height);
-                this.effect.Parameters["cropYMax"].SetValue((float)cropRect.Bottom / (float)this.currentAnimFrame.Texture.Height);
+                this.effect.Parameters["cropXMin"].SetValue(cropRect.Left);
+                this.effect.Parameters["cropXMax"].SetValue(cropRect.Right);
+                this.effect.Parameters["cropYMin"].SetValue(cropRect.Top);
+                this.effect.Parameters["cropYMax"].SetValue(cropRect.Bottom);
 
                 this.effect.CurrentTechnique.Passes[0].Apply();
             }
