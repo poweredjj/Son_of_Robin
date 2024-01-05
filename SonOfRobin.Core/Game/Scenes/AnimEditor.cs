@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SonOfRobin
@@ -51,15 +52,19 @@ namespace SonOfRobin
                 frameArray:
                 [
                     new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
+                    //new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
+                    //new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
+                    //new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
                 ]
                 ));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f, cropRect: new Rectangle(0,0,32,33))]));
+                [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, scale: 5f, cropRect: new Rectangle(0, 0, 44, 44))]));
+
+            animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f, cropRect: new Rectangle(0,0,32,33))])); 
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
@@ -74,6 +79,9 @@ namespace SonOfRobin
 
             this.AssignCurrentAnim();
             this.UpdateRects();
+
+            this.viewParams.ScaleX = 0.5f;
+            this.viewParams.ScaleY = 0.5f;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
         }
@@ -115,8 +123,8 @@ namespace SonOfRobin
             }
             if (Keyboard.IsPressed(Keys.T))
             {
-                this.viewParams.ScaleX = 1f;
-                this.viewParams.ScaleY = 1f;
+                this.viewParams.ScaleX = 0.5f;
+                this.viewParams.ScaleY = 0.5f;
             }
 
             bool animIndexChanged = false;
@@ -181,7 +189,7 @@ namespace SonOfRobin
             {
                 this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
-                this.effect.Parameters["outlineThickness"].SetValue(1);
+                this.effect.Parameters["outlineThickness"].SetValue((int)(1f / this.currentAnimFrame.scale));
                 this.effect.Parameters["drawFill"].SetValue(true);
                 this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
 
