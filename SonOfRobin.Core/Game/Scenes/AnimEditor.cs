@@ -155,6 +155,8 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.D1)) this.outlineThickness = 1;
             if (Keyboard.HasBeenPressed(Keys.D2)) this.outlineThickness = 2;
             if (Keyboard.HasBeenPressed(Keys.D3)) this.outlineThickness = 3;
+            if (Keyboard.HasBeenPressed(Keys.D4)) this.outlineThickness = 4;
+            if (Keyboard.HasBeenPressed(Keys.D5)) this.outlineThickness = 5;
 
             if (animIndexChanged)
             {

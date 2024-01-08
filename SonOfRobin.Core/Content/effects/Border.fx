@@ -38,33 +38,43 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 currentPixel = currentPixelRaw * input.Color;
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
+    
+    bool isOnEdge = abs(input.UV.x - cropXMin) < uvPix.x ||
+                    abs(input.UV.x - cropXMax) < uvPix.x ||
+                    abs(input.UV.y - cropYMin) < uvPix.y ||
+                    abs(input.UV.y - cropYMax) < uvPix.y;
                	
     bool isOutlinePixel = false;  
 	
-    if (currentPixelRaw.a > threshold)
+    if (currentPixelRaw.a > threshold && isOnEdge)
+    {
+        isOutlinePixel = true;
+    }
+    else if (currentPixelRaw.a > threshold && !isOnEdge)
     {
         // thick inside fill
         // checking non-transparent pixels for their transparent neighbours   
-        
-        bool isOnEdge = abs(input.UV.x - cropXMin) < uvPix.x ||
-                        abs(input.UV.x - cropXMax) < uvPix.x ||
-                        abs(input.UV.y - cropYMin) < uvPix.y ||
-                        abs(input.UV.y - cropYMax) < uvPix.y;
-        
-        if (isOnEdge) isOutlinePixel = true;
-        else if (outlineThickness > 1)
+                        
+        if (outlineThickness > 1)
         {
             float2 thicknessPix = outlineThickness * uvPix; // Calculate thickness in pixel coordinates
             
             float2 cLeft = float2(input.UV.x - thicknessPix.x, input.UV.y);
             float2 cRight = float2(input.UV.x + thicknessPix.x, input.UV.y);
             float2 cTop = float2(input.UV.x, input.UV.y - thicknessPix.y);
-            float2 cBottom = float2(input.UV.x, input.UV.y + thicknessPix.y);
-                        
-            if ((cLeft.x >= cropXMin && tex2D(InputSampler, cLeft).a <= threshold) ||
-                (cRight.x <= cropXMax && tex2D(InputSampler, cRight).a <= threshold) ||
-                (cTop.y >= cropYMin && tex2D(InputSampler, cTop).a <= threshold) ||
-                (cBottom.y <= cropYMax && tex2D(InputSampler, cBottom).a <= threshold)
+            float2 cBottom = float2(input.UV.x, input.UV.y + thicknessPix.y);         
+               
+            // if pixel is outside crop     
+            if (cLeft.x < cropXMin ||
+                cRight.x > cropXMax ||
+                cTop.y < cropYMin || 
+                cBottom.y > cropYMax ||  
+                
+                // if pixel is transparent     
+                (tex2D(InputSampler, cLeft).a <= threshold) ||
+                (tex2D(InputSampler, cRight).a <= threshold) ||
+                (tex2D(InputSampler, cTop).a <= threshold) ||
+                (tex2D(InputSampler, cBottom).a <= threshold)
 		    )
             {
                 isOutlinePixel = true;
