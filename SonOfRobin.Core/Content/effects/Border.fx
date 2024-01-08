@@ -44,9 +44,15 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     if (currentPixelRaw.a > threshold)
     {
         // thick inside fill
-        // checking non-transparent pixels for their transparent neighbours       
+        // checking non-transparent pixels for their transparent neighbours   
         
-        if (outlineThickness > 1)
+        bool isOnEdge = abs(input.UV.x - cropXMin) < uvPix.x ||
+                        abs(input.UV.x - cropXMax) < uvPix.x ||
+                        abs(input.UV.y - cropYMin) < uvPix.y ||
+                        abs(input.UV.y - cropYMax) < uvPix.y;
+        
+        if (isOnEdge) isOutlinePixel = true;
+        else if (outlineThickness > 1)
         {
             float2 thicknessPix = outlineThickness * uvPix; // Calculate thickness in pixel coordinates
             

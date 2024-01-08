@@ -40,8 +40,8 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(130, 130);
             this.rot = 0f;
-            this.showColRect = true;
-            this.showGfxRect = true;
+            this.showColRect = false;
+            this.showGfxRect = false;
             this.showEffect = true;
             this.outlineThickness = 1;
 
