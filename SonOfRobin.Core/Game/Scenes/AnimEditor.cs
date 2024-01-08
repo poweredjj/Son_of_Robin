@@ -210,6 +210,9 @@ namespace SonOfRobin
                 Texture2D texture = this.currentAnimFrame.Texture;
 
                 this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+
+                // border
+
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineThickness"].SetValue(this.outlineThickness);
                 this.effect.Parameters["drawFill"].SetValue(true);
@@ -219,6 +222,19 @@ namespace SonOfRobin
                 this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)texture.Width);
                 this.effect.Parameters["cropYMin"].SetValue((float)cropRect.Top / (float)texture.Height);
                 this.effect.Parameters["cropYMax"].SetValue((float)cropRect.Bottom / (float)texture.Height);
+
+                // burn
+
+                //this.effect.Parameters["intensity"].SetValue(1f);
+                //this.effect.Parameters["time"].SetValue(SonOfRobinGame.CurrentUpdate / 35f);
+                //this.effect.Parameters["phaseModifier"].SetValue(1f);
+                //this.effect.Parameters["checkAlpha"].SetValue(true);
+
+                // colorize
+
+                //this.effect.Parameters["colorizeColor"].SetValue(Color.Blue.ToVector4());
+                //this.effect.Parameters["opacity"].SetValue(1f);
+                //this.effect.Parameters["checkAlpha"].SetValue(true);
 
                 this.effect.CurrentTechnique.Passes[0].Apply();
             }
