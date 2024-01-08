@@ -61,6 +61,8 @@ namespace SonOfRobin
 
         public Rectangle GetGfxRectForPos(Vector2 position)
         {
+            // TODO check why it doesn't match rotated position
+
             return new(
                 x: (int)(position.X + this.gfxOffset.X),
                 y: (int)(position.Y + this.gfxOffset.Y),

@@ -2090,7 +2090,7 @@ namespace SonOfRobin
             AddFrameArray(pkgName: pkgName, animName: "open", frameArray: ConvertImageToFrameArray(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
         }
 
-        public static void AddRPGMakerPackageV1(PkgName pkgName, string atlasName, byte setNoX, byte setNoY, int animSize, bool crop = false, float scale = 1f)
+        public static void AddRPGMakerPackageV1(PkgName pkgName, string atlasName, int setNoX, int setNoY, int animSize, bool crop = false, float scale = 1f)
         {
             int offsetX = setNoX * 96;
             int offsetY = setNoY * 128;
