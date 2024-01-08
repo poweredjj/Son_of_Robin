@@ -38,11 +38,9 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 currentPixel = currentPixelRaw * input.Color;
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
-    
-               	
+                 	
     bool isOutlinePixel = false;  
-    
-    
+     
     if (currentPixelRaw.a >= threshold)
     {
         bool isOnEdge = abs(input.UV.x - cropXMin) < uvPix.x ||

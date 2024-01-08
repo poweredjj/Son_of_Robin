@@ -37,5 +37,18 @@ namespace SonOfRobin
                 width: this.colRect.Width,
                 height: this.colRect.Height);
         }
+
+        public static AnimPkg GetPackageForFrame(AnimData.PkgName pkgName, int width, int height, string altasName, bool hasOnePixelMargin = false, int size = 1, int layer = 1, float scale = 1f, bool mirrorX = false, bool mirrorY = false)
+        {
+            int colWidth = (int)((hasOnePixelMargin ? width - 2 : width) * scale);
+            int colHeight = (int)((hasOnePixelMargin ? height - 2 : height) * scale);
+
+            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+
+            animPkg.AddAnim(new(animPkg: animPkg, size: size, frameArray:
+                [new AnimFrameNew(atlasName: altasName, layer: layer, cropRect: new Rectangle(x: 0, y: 0, width: width, height: height), duration: 0, mirrorX: mirrorX, mirrorY: mirrorY, scale: scale)]));
+
+            return animPkg;
+        }
     }
 }
