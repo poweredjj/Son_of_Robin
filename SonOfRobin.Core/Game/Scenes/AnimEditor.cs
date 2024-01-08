@@ -47,7 +47,9 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
+            animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, size: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
+
+            animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, size: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
