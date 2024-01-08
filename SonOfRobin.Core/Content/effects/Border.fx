@@ -38,14 +38,6 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 currentPixel = currentPixelRaw * input.Color;
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
-    
-    //bool xInRange = input.UV.x >= cropXMin && input.UV.x <= cropXMax;
-    //bool yInRange = input.UV.y >= cropYMin && input.UV.y <= cropYMax;
-    
-    bool leftEdge = input.UV.x <= cropXMin;
-    bool rightEdge = input.UV.x >= cropXMax;
-    bool topEdge = input.UV.y <= cropYMin;
-    bool bottomEdge = input.UV.y >= cropYMax;
                	
     bool isOutlinePixel = false;  
 	
@@ -63,29 +55,34 @@ float4 MainPS(VertexShaderOutput input) : COLOR
             float2 cTop = float2(input.UV.x, input.UV.y - thicknessPix.y);
             float2 cBottom = float2(input.UV.x, input.UV.y + thicknessPix.y);
                         
-            if ((!cLeft.x >= cropXMin && tex2D(InputSampler, cLeft).a <= threshold) ||
-                (!cRight.x <= cropXMax && tex2D(InputSampler, cRight).a <= threshold) ||
-                (!cTop.x >= cropYMin && tex2D(InputSampler, cTop).a <= threshold) ||
-                (!cBottom.x <= cropYMax && tex2D(InputSampler, cBottom).a <= threshold)
+            if ((cLeft.x >= cropXMin && tex2D(InputSampler, cLeft).a <= threshold) ||
+                (cRight.x <= cropXMax && tex2D(InputSampler, cRight).a <= threshold) ||
+                (cTop.y >= cropYMin && tex2D(InputSampler, cTop).a <= threshold) ||
+                (cBottom.y <= cropYMax && tex2D(InputSampler, cBottom).a <= threshold)
 		    )
             {
                 isOutlinePixel = true;
-            }       
+            }
         }
     }
     else
     {
         // thin outline fill
         // checking transparent pixels for their non-transparent neighbours
-                      
-        if ((!rightEdge && tex2D(InputSampler, float2(uvPix.x + input.UV.x, input.UV.y)).a > threshold) ||
-			(!bottomEdge && tex2D(InputSampler, float2(input.UV.x, uvPix.y + input.UV.y)).a > threshold) ||
-			(!leftEdge && tex2D(InputSampler, float2(-uvPix.x + input.UV.x, input.UV.y)).a > threshold) ||
-			(!topEdge && tex2D(InputSampler, float2(input.UV.x, -uvPix.y + input.UV.y)).a > threshold)
-		)
+        
+        float2 cLeft = float2(input.UV.x - uvPix.x, input.UV.y);
+        float2 cRight = float2(input.UV.x + uvPix.x, input.UV.y);
+        float2 cTop = float2(input.UV.x, input.UV.y - uvPix.y);
+        float2 cBottom = float2(input.UV.x, input.UV.y + uvPix.y);
+        
+        if ((cLeft.x >= cropXMin && tex2D(InputSampler, cLeft).a > threshold) ||
+            (cRight.x <= cropXMax && tex2D(InputSampler, cRight).a > threshold) ||
+            (cTop.y >= cropYMin && tex2D(InputSampler, cTop).a > threshold) ||
+            (cBottom.y <= cropYMax && tex2D(InputSampler, cBottom).a > threshold)
+		    )
         {
             isOutlinePixel = true;
-        }
+        }                               
     }
 
     return isOutlinePixel ? outlineColor * drawColor : (drawFill ? currentPixel : float4(0, 0, 0, 0)) * drawColor;
