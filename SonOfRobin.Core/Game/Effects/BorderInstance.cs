@@ -9,10 +9,10 @@ namespace SonOfRobin
         private readonly int outlineThickness;
         private readonly bool drawFill;
         private readonly Vector2 textureSize;
-        private readonly int cropXMin;
-        private readonly int cropXMax;
-        private readonly int cropYMin;
-        private readonly int cropYMax;
+        private readonly float cropXMin;
+        private readonly float cropXMax;
+        private readonly float cropYMin;
+        private readonly float cropYMax;
 
         public BorderInstance(Color outlineColor, Vector2 textureSize, bool drawFill = true, int borderThickness = 1, int framesLeft = 1, int priority = 1, Rectangle cropRect = default) : base(effect: SonOfRobinGame.EffectBorder, framesLeft: framesLeft, priority: priority)
         {
@@ -23,17 +23,17 @@ namespace SonOfRobin
 
             if (cropRect == default)
             {
-                this.cropXMin = 0;
-                this.cropXMax = (int)textureSize.X;
-                this.cropYMin = 0;
-                this.cropYMax = (int)textureSize.Y;
+                this.cropXMin = 0f;
+                this.cropXMax = 1f;
+                this.cropYMin = 0f;
+                this.cropYMax = 1f;
             }
             else
             {
-                this.cropXMin = cropRect.Left;
-                this.cropXMax = cropRect.Right;
-                this.cropYMin = cropRect.Top;
-                this.cropYMax = cropRect.Bottom;
+                this.cropXMin = (float)cropRect.Left / textureSize.X;
+                this.cropXMax = (float)cropRect.Right / textureSize.X;
+                this.cropYMin = (float)cropRect.Top / textureSize.Y;
+                this.cropYMax = (float)cropRect.Bottom / textureSize.Y;
             }
         }
 

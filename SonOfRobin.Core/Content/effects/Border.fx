@@ -8,16 +8,15 @@
 #endif
 
 Texture2D SpriteTexture;
-float2 textureSize : VPOS;
 float4 outlineColor;
 bool drawFill;
 float outlineThickness;
 float4 drawColor;
-int cropXMin;
-int cropXMax;
-int cropYMin;
-int cropYMax;
-
+float2 textureSize;
+float cropXMin;
+float cropXMax;
+float cropYMin;
+float cropYMax;
 
 sampler2D InputSampler = sampler_state
 {
@@ -39,46 +38,40 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 currentPixel = currentPixelRaw * input.Color;
     float2 uvPix = float2(1 / textureSize.x, 1 / textureSize.y);
     float threshold = 0.4f;
-     
-    bool leftEdge = uvPix.x < cropXMin;
-    bool rightEdge = uvPix.x > cropXMax;
-    bool topEdge = uvPix.y < cropYMin;
-    bool bottomEdge = uvPix.y > cropYMax;
+    
+    bool xInRange = input.UV.x >= cropXMin && input.UV.x <= cropXMax;
+    bool yInRange = input.UV.y >= cropYMin && input.UV.y <= cropYMax;
                	
     bool isOutlinePixel = false;  
 	
-    if (currentPixelRaw.a > threshold && input.UV.x > uvPix.x && input.UV.y > uvPix.y)
+    if (currentPixelRaw.a > threshold)
     {
         // thick inside fill
-        // checking non-transparent pixels for their non-transparent neighbours (and NOT first row / column)        
+        // checking non-transparent pixels for their transparent neighbours       
         
         if (outlineThickness > 1)
         {
             float2 thicknessPix = outlineThickness * uvPix; // Calculate thickness in pixel coordinates
                         
-            if (false
-                || (!rightEdge && tex2D(InputSampler, float2(thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold)
-			    || (!bottomEdge && tex2D(InputSampler, float2(input.UV.x, thicknessPix.y + input.UV.y)).a <= threshold)
-			    || (!leftEdge && tex2D(InputSampler, float2(-thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold)
-			    || (!topEdge && tex2D(InputSampler, float2(input.UV.x, -thicknessPix.y + input.UV.y)).a <= threshold)
+            if ((xInRange && tex2D(InputSampler, float2(thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold) ||
+			    (yInRange && tex2D(InputSampler, float2(input.UV.x, thicknessPix.y + input.UV.y)).a <= threshold) ||
+			    (xInRange && tex2D(InputSampler, float2(-thicknessPix.x + input.UV.x, input.UV.y)).a <= threshold) ||
+			    (yInRange && tex2D(InputSampler, float2(input.UV.x, -thicknessPix.y + input.UV.y)).a <= threshold)
 		    )
             {
                 isOutlinePixel = true;
-            }            
+            }       
         }
     }
     else
     {
         // thin outline fill
-        // checking transparent pixels for their non-transparent neighbours (and ALWAYS first row / column, regardless of transparency)  
-          
-        // TODO check why outline is drawn incorrectly
-        
-        if (false
-			|| (!rightEdge && tex2D(InputSampler, float2(uvPix.x + input.UV.x, input.UV.y)).a > threshold)
-			|| (!bottomEdge && tex2D(InputSampler, float2(input.UV.x, uvPix.y + input.UV.y)).a > threshold)
-			|| (!leftEdge && tex2D(InputSampler, float2(-uvPix.x + input.UV.x, input.UV.y)).a > threshold)
-			|| (!topEdge && tex2D(InputSampler, float2(input.UV.x, -uvPix.y + input.UV.y)).a > threshold)
+        // checking transparent pixels for their non-transparent neighbours
+                      
+        if ((xInRange && tex2D(InputSampler, float2(uvPix.x + input.UV.x, input.UV.y)).a > threshold) ||
+			(yInRange && tex2D(InputSampler, float2(input.UV.x, uvPix.y + input.UV.y)).a > threshold) ||
+			(xInRange && tex2D(InputSampler, float2(-uvPix.x + input.UV.x, input.UV.y)).a > threshold) ||
+			(yInRange && tex2D(InputSampler, float2(input.UV.x, -uvPix.y + input.UV.y)).a > threshold)
 		)
         {
             isOutlinePixel = true;

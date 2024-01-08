@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace SonOfRobin
@@ -34,6 +33,7 @@ namespace SonOfRobin
         private bool showEffect;
 
         private readonly Effect effect;
+        private int outlineThickness;
 
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -43,6 +43,7 @@ namespace SonOfRobin
             this.showColRect = true;
             this.showGfxRect = true;
             this.showEffect = true;
+            this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
 
@@ -58,13 +59,25 @@ namespace SonOfRobin
                 ]
                 ));
 
+            animPkgList.Add(new(pkgName: AnimData.PkgName.BearBrown, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "characters/bear", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
+
+            animPkgList.Add(new(pkgName: AnimData.PkgName.RabbitBlack, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "characters/rabbits", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
+
+            animPkgList.Add(new(pkgName: AnimData.PkgName.PlayerGirl, colWidth: 16, colHeight: 15));
+            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+                [new AnimFrameNew(atlasName: "characters/recolor_pt2", layer: 1, cropRect: new Rectangle(x: 32 * 1, y: 32 * 2, width: 32, height: 32), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
+
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
                 [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, scale: 5f, cropRect: new Rectangle(0, 0, 44, 44))]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.PlantPoison, colWidth: 16, colHeight: 15));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f, cropRect: new Rectangle(0,0,32,33))])); 
+                [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, scale: 2.5f, cropRect: new Rectangle(0, 0, 32, 33))]));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
@@ -80,8 +93,8 @@ namespace SonOfRobin
             this.AssignCurrentAnim();
             this.UpdateRects();
 
-            this.viewParams.ScaleX = 0.5f;
-            this.viewParams.ScaleY = 0.5f;
+            this.viewParams.ScaleX = 1.0f;
+            this.viewParams.ScaleY = 1.0f;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
         }
@@ -123,8 +136,8 @@ namespace SonOfRobin
             }
             if (Keyboard.IsPressed(Keys.T))
             {
-                this.viewParams.ScaleX = 0.5f;
-                this.viewParams.ScaleY = 0.5f;
+                this.viewParams.ScaleX = 1.0f;
+                this.viewParams.ScaleY = 1.0f;
             }
 
             bool animIndexChanged = false;
@@ -138,6 +151,10 @@ namespace SonOfRobin
                 this.currentAnimPkgIndex++;
                 animIndexChanged = true;
             }
+
+            if (Keyboard.HasBeenPressed(Keys.D1)) this.outlineThickness = 1;
+            if (Keyboard.HasBeenPressed(Keys.D2)) this.outlineThickness = 2;
+            if (Keyboard.HasBeenPressed(Keys.D3)) this.outlineThickness = 3;
 
             if (animIndexChanged)
             {
@@ -187,18 +204,19 @@ namespace SonOfRobin
 
             if (this.showEffect)
             {
+                Rectangle cropRect = this.currentAnimFrame.cropRect;
+                Texture2D texture = this.currentAnimFrame.Texture;
+
                 this.effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
-                this.effect.Parameters["outlineThickness"].SetValue((int)(1f)); // 1f / this.currentAnimFrame.scale
+                this.effect.Parameters["outlineThickness"].SetValue(this.outlineThickness);
                 this.effect.Parameters["drawFill"].SetValue(true);
-                this.effect.Parameters["textureSize"].SetValue(new Vector2(this.gfxRect.Width, this.gfxRect.Height));
+                this.effect.Parameters["textureSize"].SetValue(new Vector2(this.currentAnimFrame.Texture.Width, this.currentAnimFrame.Texture.Height));
 
-                Rectangle cropRect = this.currentAnimFrame.cropRect;
-
-                this.effect.Parameters["cropXMin"].SetValue(cropRect.Left);
-                this.effect.Parameters["cropXMax"].SetValue(cropRect.Right);
-                this.effect.Parameters["cropYMin"].SetValue(cropRect.Top);
-                this.effect.Parameters["cropYMax"].SetValue(cropRect.Bottom);
+                this.effect.Parameters["cropXMin"].SetValue((float)cropRect.Left / (float)texture.Width);
+                this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)texture.Width);
+                this.effect.Parameters["cropYMin"].SetValue((float)cropRect.Top / (float)texture.Height);
+                this.effect.Parameters["cropYMax"].SetValue((float)cropRect.Bottom / (float)texture.Height);
 
                 this.effect.CurrentTechnique.Passes[0].Apply();
             }
