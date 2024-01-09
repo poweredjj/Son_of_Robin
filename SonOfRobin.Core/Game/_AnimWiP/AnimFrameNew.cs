@@ -30,11 +30,9 @@ namespace SonOfRobin
             this.gfxWidth = (int)(this.cropRect.Width * this.scale);
             this.gfxHeight = (int)(this.cropRect.Height * this.scale);
 
-            //this.gfxOffset = gfxOffsetCorrection == default ?
-            //    new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale :
-            //    gfxOffsetCorrection * this.scale;
-
+            // base - needed to properly align rect with position
             this.gfxOffsetBase = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale;
+            // correction - added on top of base, as a way to control final offset value
             this.gfxOffsetCorrection = (gfxOffsetCorrection == default ? Vector2.Zero : gfxOffsetCorrection) * this.scale;
 
             this.rotationOrigin = new Vector2((float)this.cropRect.Width / 2f, (float)this.cropRect.Height / 2f);

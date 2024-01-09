@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.GetPackageForRpgMakerV1(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 32, colHeight: 20, altasName: "characters/recolor_pt2", gfxOffset: new Vector2(0, -10), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimPkg.GetPackageForRpgMakerV1(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 32, colHeight: 20, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, 0), setNoX: 0, setNoY: 0));
 
             animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 

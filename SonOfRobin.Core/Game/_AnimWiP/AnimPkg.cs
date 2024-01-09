@@ -50,7 +50,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg GetPackageForRpgMakerV1(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffset, int setNoX, int setNoY, int animSize, float scale = 1f)
+        public static AnimPkg GetPackageForRpgMakerV1(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
         {
             colWidth = (int)(colWidth * scale);
             colHeight = (int)(colHeight * scale);
@@ -77,7 +77,7 @@ namespace SonOfRobin
 
                 var frameList = new List<AnimFrameNew>
                 {
-                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffset)
+                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
                 };
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"stand-{animName}", size: animSize, frameArray: frameList.ToArray()));
