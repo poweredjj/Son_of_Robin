@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -9,12 +10,15 @@ namespace SonOfRobin
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
+        public List<Anim> AllAnimList { get; private set; } // "flat" list of all anims
+        public int[] AllAnimSizes { get { return this.animDict.Keys.ToArray(); } }
 
         public AnimPkg(AnimData.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
         {
             this.pkgName = pkgName;
             this.colRect = new Rectangle(x: -colWidth / 2, y: -colHeight / 2, width: colWidth, height: colHeight); // colRect should always be centered
             this.animDict = [];
+            this.AllAnimList = [];
             this.horizontalOrientationsOnly = horizontalOrientationsOnly;
         }
 
@@ -22,11 +26,17 @@ namespace SonOfRobin
         {
             if (!this.animDict.ContainsKey(anim.size)) this.animDict[anim.size] = [];
             this.animDict[anim.size][anim.name] = anim;
+            this.AllAnimList.Add(anim);
         }
 
         public Anim GetAnim(int size, string name)
         {
             return this.animDict[size][name];
+        }
+
+        public string[] GetAnimNamesForSize(int size)
+        {
+            return this.animDict[size].Keys.ToArray();
         }
 
         public Rectangle GetColRectForPos(Vector2 position)
@@ -38,7 +48,7 @@ namespace SonOfRobin
                 height: this.colRect.Height);
         }
 
-        public static AnimPkg GetPackageForFrame(AnimData.PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false)
+        public static AnimPkg MakePackageForSingleImage(AnimData.PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false)
         {
             int colWidth = (int)((hasOnePixelMargin ? width - 2 : width) * scale);
             int colHeight = (int)((hasOnePixelMargin ? height - 2 : height) * scale);
@@ -50,7 +60,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg GetPackageForRpgMakerV1(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
+        public static AnimPkg MakePackageForRpgMakerV1Data(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
         {
             colWidth = (int)(colWidth * scale);
             colHeight = (int)(colHeight * scale);
@@ -84,7 +94,21 @@ namespace SonOfRobin
                 animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: animSize, frameArray: new AnimFrameNew[] { frameList[0] }));
             }
 
-            // TODO add walking anims
+            // walking
+            foreach (var kvp in yByDirection)
+            {
+                string animName = kvp.Key;
+                int directionOffsetY = kvp.Value;
+
+                var frameList = new List<AnimFrameNew>
+                {
+                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection),
+
+                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: (width * 2) + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
+                };
+
+                animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
+            }
 
             return animPkg;
         }

@@ -14,10 +14,19 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
 
         private readonly AnimPkg[] animPkgArray;
+        private Anim CurrentAnim
+        {
+            get
+            {
+                if (this.currentAnimIndex >= this.currentAnimPkg.AllAnimList.Count) this.currentAnimIndex = 0;
+                return this.currentAnimPkg.AllAnimList[this.currentAnimIndex];
+            }
+        }
+
         private int currentAnimPkgIndex;
+        private int currentAnimIndex;
 
         private AnimPkg currentAnimPkg;
-        private Anim currentAnim;
         private AnimFrameNew currentAnimFrame;
         private Vector2 pos;
         private float rot;
@@ -47,11 +56,11 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.GetPackageForRpgMakerV1(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 32, colHeight: 20, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, 0), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 32, colHeight: 20, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, 0), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
+            animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 
-            animPkgList.Add(AnimPkg.GetPackageForFrame(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
+            animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
 
             animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             animPkgList.LastOrDefault().AddAnim(
@@ -91,7 +100,9 @@ namespace SonOfRobin
 
             this.animPkgArray = animPkgList.ToArray();
             this.currentAnimPkgIndex = 0;
+            this.currentAnimIndex = 0;
 
+            this.currentAnimIndex = -1;
             this.AssignCurrentAnim();
             this.UpdateRects();
 
@@ -103,10 +114,10 @@ namespace SonOfRobin
 
         private void AssignCurrentAnim()
         {
+            this.currentAnimIndex++;
             this.currentAnimPkg = this.animPkgArray[this.currentAnimPkgIndex];
-            this.currentAnim = this.currentAnimPkg.GetAnim(size: 1, name: "default");
             this.RewindAnim();
-            this.currentAnimFrame = this.currentAnim.frameArray[0];
+            this.currentAnimFrame = this.CurrentAnim.frameArray[0];
         }
 
         public override void Update()
@@ -154,17 +165,28 @@ namespace SonOfRobin
                 animIndexChanged = true;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.D1)) this.outlineThickness = 1;
-            if (Keyboard.HasBeenPressed(Keys.D2)) this.outlineThickness = 2;
-            if (Keyboard.HasBeenPressed(Keys.D3)) this.outlineThickness = 3;
-            if (Keyboard.HasBeenPressed(Keys.D4)) this.outlineThickness = 4;
-            if (Keyboard.HasBeenPressed(Keys.D5)) this.outlineThickness = 5;
-
             if (animIndexChanged)
             {
                 if (this.currentAnimPkgIndex < 0) this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
                 if (this.currentAnimPkgIndex > this.animPkgArray.Length - 1) this.currentAnimPkgIndex = 0;
                 this.AssignCurrentAnim();
+            }
+
+            foreach (var kvp in new Dictionary<Keys, int> {
+                { Keys.D1, 1 },
+                { Keys.D2, 2 },
+                { Keys.D3, 3 },
+                { Keys.D4, 4 },
+                { Keys.D5, 5 },
+                { Keys.D6, 6 },
+                { Keys.D7, 7 },
+                { Keys.D8, 8 }})
+            {
+                if (Keyboard.HasBeenPressed(kvp.Key))
+                {
+                    this.outlineThickness = kvp.Value;
+                    break;
+                }
             }
 
             this.UpdateAnimation();
@@ -176,7 +198,7 @@ namespace SonOfRobin
         public void RewindAnim()
         {
             this.currentFrameIndex = 0;
-            this.currentAnimFrame = this.currentAnim.frameArray[this.currentFrameIndex];
+            this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
             this.currentFrameTimeLeft = this.currentAnimFrame.duration;
         }
 
@@ -188,8 +210,12 @@ namespace SonOfRobin
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
-                if (this.currentFrameIndex >= this.currentAnim.frameArray.Length) this.RewindAnim();
-                this.currentAnimFrame = this.currentAnim.frameArray[this.currentFrameIndex];
+                if (this.currentFrameIndex >= this.CurrentAnim.frameArray.Length)
+                {
+                    this.currentAnimIndex++;
+                    this.RewindAnim();
+                }
+                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
                 this.currentFrameTimeLeft = this.currentAnimFrame.duration;
             }
         }
