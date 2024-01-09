@@ -30,6 +30,18 @@ namespace SonOfRobin
             this.AllAnimList.Add(anim);
         }
 
+        public AnimPkg MakeCopyWithEditedOffset(int colWidth, int colHeight)
+        {
+            AnimPkg animPkg = new AnimPkg(pkgName: this.pkgName, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
+
+            foreach (Anim anim in this.AllAnimList)
+            {
+                animPkg.AddAnim(anim);
+            }
+
+            return animPkg;
+        }
+
         public Anim GetAnim(int size, string name)
         {
             return this.animDict[size][name];

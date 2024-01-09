@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using static SonOfRobin.AnimData;
 
 namespace SonOfRobin
 {
@@ -43,7 +41,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(130, 130);
+            this.pos = new Vector2(80, 80);
             this.rot = 0f;
             this.showColRect = true;
             this.showGfxRect = true;
@@ -52,47 +50,47 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 20, colHeight: 17, gfxOffsetCorrection: new Vector2(0, 0), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } }));
+            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 15, colHeight: 19, gfxOffsetCorrection: new Vector2(0, -9), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
-            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 3f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
+            //animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 
-            animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
+            //animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
-            animPkgList.LastOrDefault().AddAnim(
-                new(animPkg: this.currentAnimPkg, size: 1,
-                frameArray:
-                [
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
-                    new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
-                ]
-                ));
+            //animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
+            //animPkgList.LastOrDefault().AddAnim(
+            //    new(animPkg: this.currentAnimPkg, size: 1,
+            //    frameArray:
+            //    [
+            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f),
+            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
+            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
+            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
+            //    ]
+            //    ));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.WoodLogHard, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, scale: 5f, cropRect: new Rectangle(0, 0, 44, 44))]));
+            //animPkgList.Add(new(pkgName: AnimData.PkgName.WoodLogHard, colWidth: 16, colHeight: 15));
+            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+            //    [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, scale: 5f, cropRect: new Rectangle(0, 0, 44, 44))]));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.BearBrown, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "characters/bear", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
+            //animPkgList.Add(new(pkgName: AnimData.PkgName.BearBrown, colWidth: 16, colHeight: 15));
+            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+            //    [new AnimFrameNew(atlasName: "characters/bear", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.RabbitBlack, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "characters/rabbits", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
+            //animPkgList.Add(new(pkgName: AnimData.PkgName.RabbitBlack, colWidth: 16, colHeight: 15));
+            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+            //    [new AnimFrameNew(atlasName: "characters/rabbits", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [
-                    new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 40, 46)),
-                    new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 41, 43)),
-                    new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 45, 44)),
-                ]));
+            //animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
+            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
+            //    [
+            //        new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 40, 46)),
+            //        new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 41, 43)),
+            //        new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 45, 44)),
+            //    ]));
 
             this.animPkgArray = animPkgList.ToArray();
             this.currentAnimPkgIndex = 0;
@@ -101,8 +99,8 @@ namespace SonOfRobin
             this.AssignCurrentAnim();
             this.UpdateRects();
 
-            this.viewParams.ScaleX = 1.0f;
-            this.viewParams.ScaleY = 1.0f;
+            this.viewParams.ScaleX = 0.5f;
+            this.viewParams.ScaleY = 0.5f;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
         }
@@ -144,8 +142,8 @@ namespace SonOfRobin
             }
             if (Keyboard.IsPressed(Keys.H))
             {
-                this.viewParams.ScaleX = 1.0f;
-                this.viewParams.ScaleY = 1.0f;
+                this.viewParams.ScaleX = 0.5f;
+                this.viewParams.ScaleY = 0.5f;
             }
 
             bool animPkgIndexChanged = false;
@@ -180,6 +178,20 @@ namespace SonOfRobin
 
                 if (this.currentAnimIndex >= this.currentAnimPkg.AllAnimList.Count) this.currentAnimIndex = 0;
                 this.RewindAnim();
+            }
+
+            int colWidthChange = 0;
+            int colHeightChange = 0;
+
+            if (Keyboard.HasBeenPressed(Keys.OemMinus)) colWidthChange--;
+            if (Keyboard.HasBeenPressed(Keys.OemPlus)) colWidthChange++;
+
+            if (colWidthChange != 0 || colHeightChange != 0)
+            {
+                AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedOffset(this.currentAnimPkg.colRect.Width + colWidthChange, this.currentAnimPkg.colRect.Height + colHeightChange);
+
+                this.animPkgArray[this.currentAnimPkgIndex] = animPkg;
+                this.currentAnimPkg = animPkg;
             }
 
             foreach (var kvp in new Dictionary<Keys, int> {
@@ -276,7 +288,7 @@ namespace SonOfRobin
             Vector2 rotationOriginOverride = default;
             //rotationOriginOverride = new Vector2(this.currentAnimFrame.cropRect.Width * 0.5f, this.currentAnimFrame.cropRect.Height); // emulating SwayEvent
 
-            this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, rotation: this.rot, opacity: 1f, submergeCorrection: 8, rotationOriginOverride: rotationOriginOverride);
+            this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, rotation: this.rot, opacity: 1f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
 
             if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
             if (this.showGfxRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.gfxRect, color: Color.White * 0.35f, thickness: 1f);
@@ -284,7 +296,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
-            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name} texture: {this.currentAnimFrame.Texture.Name}";
+            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name} offset: {this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale},{this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale}";
 
             SonOfRobinGame.SpriteBatch.End();
 
