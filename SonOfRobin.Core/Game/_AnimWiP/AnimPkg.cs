@@ -63,10 +63,7 @@ namespace SonOfRobin
 
         public static AnimPkg MakePackageForRpgMakerV1Data(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
         {
-            colWidth = (int)(colWidth * scale);
-            colHeight = (int)(colHeight * scale);
-
-            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+            AnimPkg animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
 
             int setOffsetX = setNoX * 96;
             int setOffsetY = setNoY * 128;
@@ -80,6 +77,8 @@ namespace SonOfRobin
                 { "left", height },
                 };
 
+            bool defaultSet = false;
+
             // standing
             foreach (var kvp in yByDirection)
             {
@@ -92,7 +91,11 @@ namespace SonOfRobin
                 };
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"stand-{animName}", size: animSize, frameArray: frameList.ToArray()));
-                animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: animSize, frameArray: new AnimFrameNew[] { frameList[0] }));
+                if (!defaultSet)
+                {
+                    animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: animSize, frameArray: new AnimFrameNew[] { frameList[0] }));
+                    defaultSet = true;
+                }
             }
 
             // walking
@@ -101,12 +104,82 @@ namespace SonOfRobin
                 string animName = kvp.Key;
                 int directionOffsetY = kvp.Value;
 
+                var frameList = new List<AnimFrameNew> { };
+
+                foreach (int x in new int[] { setOffsetX + width, setOffsetX + (width * 2) })
+                {
+                    frameList.Add(new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection));
+                }
+
+                animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
+            }
+
+            return animPkg;
+        }
+
+        public static AnimPkg AddRPGMakerPackageV2ForSizeDict(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
+        {
+            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+
+            foreach (var kvp in scaleForSizeDict)
+            {
+                byte animSize = kvp.Key;
+                float scale = kvp.Value;
+                MakePackageForRpgMakerV2Data(pkgName: pkgName, atlasName: atlasName, setNoX: setNoX, setNoY: setNoY, animSize: animSize, scale: scale, colWidth: colWidth, colHeight: colHeight, gfxOffsetCorrection: gfxOffsetCorrection, animPkg: animPkg);
+            }
+
+            return animPkg;
+        }
+
+        public static AnimPkg MakePackageForRpgMakerV2Data(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, AnimPkg animPkg = null)
+        {
+            if (animPkg == null) animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
+
+            int setOffsetX = setNoX * 144;
+            int setOffsetY = setNoY * 192;
+            int width = 48;
+            int height = 48;
+
+            var yByDirection = new Dictionary<string, int>(){
+                { "down", 0 },
+                { "up", height * 3 },
+                { "right", height * 2 },
+                { "left", height },
+                };
+
+            bool defaultSet = false;
+
+            // standing
+            foreach (var kvp in yByDirection)
+            {
+                string animName = kvp.Key;
+                int directionOffsetY = kvp.Value;
+
                 var frameList = new List<AnimFrameNew>
                 {
-                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection),
-
-                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: (width * 2) + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
+                    new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
                 };
+
+                animPkg.AddAnim(new(animPkg: animPkg, name: $"stand-{animName}", size: animSize, frameArray: frameList.ToArray()));
+                if (!defaultSet)
+                {
+                    animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: animSize, frameArray: new AnimFrameNew[] { frameList[0] }));
+                    defaultSet = true;
+                }
+            }
+
+            // walking
+            foreach (var kvp in yByDirection)
+            {
+                string animName = kvp.Key;
+                int directionOffsetY = kvp.Value;
+
+                var frameList = new List<AnimFrameNew> { };
+
+                foreach (int x in new int[] { setOffsetX, setOffsetX + width, setOffsetX + (width * 2), setOffsetX + width })
+                {
+                    frameList.Add(new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection));
+                }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
             }

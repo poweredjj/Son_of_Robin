@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.AnimData;
 
 namespace SonOfRobin
 {
@@ -50,6 +51,8 @@ namespace SonOfRobin
             this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
+
+            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 20, colHeight: 17, gfxOffsetCorrection: new Vector2(0, 0), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } }));
 
             animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
