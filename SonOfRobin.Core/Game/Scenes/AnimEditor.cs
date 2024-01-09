@@ -180,11 +180,15 @@ namespace SonOfRobin
                 this.RewindAnim();
             }
 
+            // TODO add controls for gfxOffsetCorrection
+
             int colWidthChange = 0;
             int colHeightChange = 0;
 
             if (Keyboard.HasBeenPressed(Keys.OemMinus)) colWidthChange--;
             if (Keyboard.HasBeenPressed(Keys.OemPlus)) colWidthChange++;
+            if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets)) colHeightChange--;
+            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) colHeightChange++;
 
             if (colWidthChange != 0 || colHeightChange != 0)
             {
