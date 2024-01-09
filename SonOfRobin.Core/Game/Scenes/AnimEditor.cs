@@ -44,14 +44,16 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(130, 130);
             this.rot = 0f;
-            this.showColRect = false;
+            this.showColRect = true;
             this.showGfxRect = true;
             this.showEffect = false;
             this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 32, colHeight: 20, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, 0), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 3f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+
+            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 3f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
             animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 
