@@ -73,26 +73,7 @@ namespace SonOfRobin
                 height: this.gfxHeight);
         }
 
-        public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0)
-        {
-            // invoke from Sprite class
-
-            int correctedSourceHeight = this.cropRect.Height;
-            if (submergeCorrection > 0)
-            {
-                // first pass - whole sprite visible through water
-                SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, destinationRectangle: destRect, sourceRectangle: this.cropRect, color: Color.Blue * opacity * 0.2f);
-
-                correctedSourceHeight = Math.Max(this.cropRect.Height / 2, this.cropRect.Height - submergeCorrection);
-                destRect.Height = (int)(correctedSourceHeight * this.scale);
-            }
-
-            Rectangle srcRect = new(x: this.cropRect.X, y: this.cropRect.Y, width: this.cropRect.Width, correctedSourceHeight);
-
-            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, origin: Vector2.Zero, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity, rotation: 0f, effects: this.spriteEffects, layerDepth: 0);
-        }
-
-        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride = default)
+        public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0, float rotation = 0f, Vector2 rotationOriginOverride = default)
         {
             // invoke from Sprite class
 
@@ -101,10 +82,26 @@ namespace SonOfRobin
             if (rotationOriginOverride != default)
             {
                 rotationOriginToUse = rotationOriginOverride;
-                position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
+                Vector2 offset = (rotationOriginToUse - this.rotationOrigin) * this.scale;
+                destRect.Offset(offset.X, offset.Y);
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: this.cropRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
+            destRect.Offset(-this.gfxOffsetBase.X, -this.gfxOffsetBase.Y); // because rotation origin will change draw position
+
+            int correctedSourceHeight = this.cropRect.Height;
+            if (submergeCorrection > 0)
+            {
+                // first pass - whole sprite visible through water
+
+                SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, origin: rotationOriginToUse, destinationRectangle: destRect, sourceRectangle: this.cropRect, color: Color.Blue * opacity * 0.2f, rotation: rotation, effects: this.spriteEffects, layerDepth: 0);
+
+                correctedSourceHeight = Math.Max(this.cropRect.Height / 2, this.cropRect.Height - submergeCorrection);
+                destRect.Height = (int)(correctedSourceHeight * this.scale);
+            }
+
+            Rectangle srcRect = new(x: this.cropRect.X, y: this.cropRect.Y, width: this.cropRect.Width, correctedSourceHeight);
+
+            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, origin: rotationOriginToUse, destinationRectangle: destRect, sourceRectangle: srcRect, color: color * opacity, rotation: rotation, effects: this.spriteEffects, layerDepth: 0);
         }
     }
 }

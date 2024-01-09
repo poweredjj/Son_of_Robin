@@ -83,10 +83,6 @@ namespace SonOfRobin
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
                 [new AnimFrameNew(atlasName: "characters/rabbits", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
 
-            animPkgList.Add(new(pkgName: AnimData.PkgName.PlayerGirl, colWidth: 16, colHeight: 15));
-            animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-                [new AnimFrameNew(atlasName: "characters/recolor_pt2", layer: 1, cropRect: new Rectangle(x: 32 * 1, y: 32 * 2, width: 32, height: 32), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
-
             animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
             animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
                 [
@@ -274,8 +270,10 @@ namespace SonOfRobin
                 this.effect.CurrentTechnique.Passes[0].Apply();
             }
 
-            this.currentAnimFrame.DrawWithRotation(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1f);
-            this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, opacity: 0.5f);
+            Vector2 rotationOriginOverride = default;
+            //rotationOriginOverride = new Vector2(this.currentAnimFrame.cropRect.Width * 0.5f, this.currentAnimFrame.cropRect.Height); // emulating SwayEvent
+
+            this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, rotation: this.rot, opacity: 1f, submergeCorrection: 8, rotationOriginOverride: rotationOriginOverride);
 
             if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
             if (this.showGfxRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.gfxRect, color: Color.White * 0.35f, thickness: 1f);
