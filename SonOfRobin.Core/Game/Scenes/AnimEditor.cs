@@ -256,7 +256,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            font.DrawText(
+            this.font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,
                 text: description,
                 position: new Vector2(4, 4),

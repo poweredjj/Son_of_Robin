@@ -8,7 +8,8 @@ namespace SonOfRobin
     {
         public readonly string atlasName;
         public readonly Rectangle cropRect;
-        public readonly Vector2 gfxOffset;
+        public readonly Vector2 gfxOffsetBase;
+        public readonly Vector2 gfxOffsetCorrection;
         public readonly int gfxWidth; // final draw size
         public readonly int gfxHeight; // final draw size
         public readonly Vector2 rotationOrigin;
@@ -20,16 +21,22 @@ namespace SonOfRobin
 
         private Texture2D texture;
 
-        public AnimFrameNew(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffset = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
+        public AnimFrameNew(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
             this.atlasName = atlasName;
             this.scale = scale;
             this.cropRect = cropRect;
+
             this.gfxWidth = (int)(this.cropRect.Width * this.scale);
             this.gfxHeight = (int)(this.cropRect.Height * this.scale);
-            this.gfxOffset = gfxOffset == default ?
-                new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale :
-                gfxOffset * this.scale;
+
+            //this.gfxOffset = gfxOffsetCorrection == default ?
+            //    new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale :
+            //    gfxOffsetCorrection * this.scale;
+
+            this.gfxOffsetBase = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale;
+            this.gfxOffsetCorrection = (gfxOffsetCorrection == default ? Vector2.Zero : gfxOffsetCorrection) * this.scale;
+
             this.rotationOrigin = new Vector2((float)this.cropRect.Width / 2f, (float)this.cropRect.Height / 2f);
 
             if (mirrorX && mirrorY) this.spriteEffects = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
@@ -61,11 +68,9 @@ namespace SonOfRobin
 
         public Rectangle GetGfxRectForPos(Vector2 position)
         {
-            // TODO check why it doesn't match rotated position
-
             return new(
-                x: (int)(position.X + this.gfxOffset.X),
-                y: (int)(position.Y + this.gfxOffset.Y),
+                x: (int)(position.X + this.gfxOffsetBase.X + this.gfxOffsetCorrection.X),
+                y: (int)(position.Y + this.gfxOffsetBase.Y + this.gfxOffsetCorrection.Y),
                 width: this.gfxWidth,
                 height: this.gfxHeight);
         }
@@ -101,7 +106,7 @@ namespace SonOfRobin
                 position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position, sourceRectangle: this.cropRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: this.cropRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
         }
     }
 }
