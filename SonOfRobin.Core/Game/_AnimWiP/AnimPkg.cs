@@ -25,6 +25,7 @@ namespace SonOfRobin
         public void AddAnim(Anim anim)
         {
             if (!this.animDict.ContainsKey(anim.size)) this.animDict[anim.size] = [];
+            if (this.animDict[anim.size].ContainsKey(anim.name)) return; // to prevent from adding multiple animations with the same size and name
             this.animDict[anim.size][anim.name] = anim;
             this.AllAnimList.Add(anim);
         }
@@ -102,9 +103,9 @@ namespace SonOfRobin
 
                 var frameList = new List<AnimFrameNew>
                 {
-                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection),
+                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection),
 
-                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: (width * 2) + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
+                    new AnimFrameNew(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: (width * 2) + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection)
                 };
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));

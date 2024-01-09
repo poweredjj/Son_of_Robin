@@ -14,14 +14,9 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
 
         private readonly AnimPkg[] animPkgArray;
+
         private Anim CurrentAnim
-        {
-            get
-            {
-                if (this.currentAnimIndex >= this.currentAnimPkg.AllAnimList.Count) this.currentAnimIndex = 0;
-                return this.currentAnimPkg.AllAnimList[this.currentAnimIndex];
-            }
-        }
+        { get { return this.currentAnimPkg.AllAnimList[this.currentAnimIndex]; } }
 
         private int currentAnimPkgIndex;
         private int currentAnimIndex;
@@ -49,9 +44,9 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(130, 130);
             this.rot = 0f;
-            this.showColRect = true;
+            this.showColRect = false;
             this.showGfxRect = true;
-            this.showEffect = true;
+            this.showEffect = false;
             this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
@@ -102,7 +97,6 @@ namespace SonOfRobin
             this.currentAnimPkgIndex = 0;
             this.currentAnimIndex = 0;
 
-            this.currentAnimIndex = -1;
             this.AssignCurrentAnim();
             this.UpdateRects();
 
@@ -114,7 +108,7 @@ namespace SonOfRobin
 
         private void AssignCurrentAnim()
         {
-            this.currentAnimIndex++;
+            this.currentAnimIndex = 0;
             this.currentAnimPkg = this.animPkgArray[this.currentAnimPkgIndex];
             this.RewindAnim();
             this.currentAnimFrame = this.CurrentAnim.frameArray[0];
@@ -137,39 +131,54 @@ namespace SonOfRobin
             if (Keyboard.IsPressed(Keys.D)) this.rot = 0f;
 
             float scaleVal = 0.005f;
-            if (Keyboard.IsPressed(Keys.E))
+            if (Keyboard.IsPressed(Keys.F))
             {
                 this.viewParams.ScaleX -= scaleVal;
                 this.viewParams.ScaleY -= scaleVal;
             }
-            if (Keyboard.IsPressed(Keys.R))
+            if (Keyboard.IsPressed(Keys.G))
             {
                 this.viewParams.ScaleX += scaleVal;
                 this.viewParams.ScaleY += scaleVal;
             }
-            if (Keyboard.IsPressed(Keys.T))
+            if (Keyboard.IsPressed(Keys.H))
             {
                 this.viewParams.ScaleX = 1.0f;
                 this.viewParams.ScaleY = 1.0f;
             }
 
-            bool animIndexChanged = false;
+            bool animPkgIndexChanged = false;
             if (Keyboard.HasBeenPressed(Keys.Q))
             {
                 this.currentAnimPkgIndex--;
-                animIndexChanged = true;
+                animPkgIndexChanged = true;
             }
             if (Keyboard.HasBeenPressed(Keys.W))
             {
                 this.currentAnimPkgIndex++;
-                animIndexChanged = true;
+                animPkgIndexChanged = true;
             }
 
-            if (animIndexChanged)
+            if (animPkgIndexChanged)
             {
                 if (this.currentAnimPkgIndex < 0) this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
                 if (this.currentAnimPkgIndex > this.animPkgArray.Length - 1) this.currentAnimPkgIndex = 0;
                 this.AssignCurrentAnim();
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.E))
+            {
+                this.currentAnimIndex--;
+
+                if (this.currentAnimIndex < 0) this.currentAnimIndex = this.currentAnimPkg.AllAnimList.Count - 1;
+                this.RewindAnim();
+            }
+            if (Keyboard.HasBeenPressed(Keys.R))
+            {
+                this.currentAnimIndex++;
+
+                if (this.currentAnimIndex >= this.currentAnimPkg.AllAnimList.Count) this.currentAnimIndex = 0;
+                this.RewindAnim();
             }
 
             foreach (var kvp in new Dictionary<Keys, int> {
@@ -210,11 +219,7 @@ namespace SonOfRobin
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
-                if (this.currentFrameIndex >= this.CurrentAnim.frameArray.Length)
-                {
-                    this.currentAnimIndex++;
-                    this.RewindAnim();
-                }
+                if (this.currentFrameIndex >= this.CurrentAnim.frameArray.Length) this.RewindAnim();
                 this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
                 this.currentFrameTimeLeft = this.currentAnimFrame.duration;
             }
@@ -276,7 +281,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
-            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} texture: {this.currentAnimFrame.Texture.Name}";
+            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name} texture: {this.currentAnimFrame.Texture.Name}";
 
             SonOfRobinGame.SpriteBatch.End();
 
