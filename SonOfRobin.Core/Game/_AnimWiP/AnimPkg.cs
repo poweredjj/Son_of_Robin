@@ -210,7 +210,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims, Dictionary<string, Vector2> offsetDict)
+        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict, string[] nonLoopedAnims, Dictionary<string, Vector2> offsetDict)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
@@ -232,7 +232,7 @@ namespace SonOfRobin
                     int frameNoIndex = underscoreIndex + 1;
 
                     string baseAnimName = name.Substring(0, underscoreIndex);
-                    short duration = durationDict.ContainsKey(baseAnimName) ? durationDict[baseAnimName] : (short)1;
+                    int duration = durationDict.ContainsKey(baseAnimName) ? durationDict[baseAnimName] : 1;
                     int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
 
                     int x = (int)animData["x"];
@@ -241,16 +241,24 @@ namespace SonOfRobin
                     int height = (int)animData["height"];
                     int frameX = (int)animData["frameX"];
                     int frameY = (int)animData["frameY"];
+                    int fullWidth = (int)animData["frameWidth"];
+                    int fullHeight = (int)animData["frameHeight"];
 
                     foreach (string direction in new string[] { "right", "left" })
                     {
                         string animNameWithDirection = $"{baseAnimName}-{direction}";
                         if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = [];
 
-                        Vector2 gfxOffsetCorrection = new(frameX, frameY);
+                        bool mirrorX = (direction == "left" && baseAnimsFaceRight) || (direction == "right" && !baseAnimsFaceRight);
+
+                        Vector2 gfxOffsetCorrection = new(mirrorX ? -frameX : frameX, frameY);
                         if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
 
-                        AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: width, height: height), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight);
+                        gfxOffsetCorrection = Vector2.Zero;
+
+                        gfxOffsetCorrection += new Vector2(fullWidth - width, fullHeight - height) / 2f;
+
+                        AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: width, height: height), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: mirrorX);
 
                         animDict[animNameWithDirection][frameNo] = animFrame;
                     }

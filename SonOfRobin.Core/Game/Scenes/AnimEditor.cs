@@ -10,6 +10,8 @@ namespace SonOfRobin
 {
     public class AnimEditor : Scene
     {
+        private const float baseScale = 1f; // 0.5f
+
         private readonly SpriteFontBase font;
         private readonly AnimPkg[] animPkgArray;
         private Anim CurrentAnim { get { return this.currentAnimPkg.AllAnimList[this.currentAnimIndex]; } }
@@ -38,23 +40,25 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(80, 80);
+            this.pos = new Vector2(80, 110);
             this.rot = 0f;
-            this.showColRect = true;
+            this.showColRect = false;
             this.showGfxRect = true;
             this.showEffect = false;
             this.outlineThickness = 1;
 
-
-
-
             var animPkgList = new List<AnimPkg> { };
 
             string[] jsonNameArray = new string[] {
-                            "female_mage_tex_test.json",
+                            "female_mage_tex_attack_cropped.json",
+                            "female_mage_tex_damage_cropped.json",
+                            "female_mage_tex_dead_cropped.json",
+                            "female_mage_tex_stand_cropped.json",
+                            "female_mage_tex_walk_cropped.json",
+                            "female_mage_tex_weak_cropped.json",
                         };
 
-            var durationDict = new Dictionary<string, short>
+            var durationDict = new Dictionary<string, int>
                         {
                             { "stand", 3 },
                             { "weak", 3 },
@@ -72,7 +76,7 @@ namespace SonOfRobin
                             { "walk-right", new Vector2(-6, -8) },
             };
 
-            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict));
+            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 1.0f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
 
 
 
@@ -126,8 +130,8 @@ namespace SonOfRobin
             this.AssignCurrentAnim();
             this.UpdateRects();
 
-            this.viewParams.ScaleX = 0.5f;
-            this.viewParams.ScaleY = 0.5f;
+            this.viewParams.ScaleX = baseScale;
+            this.viewParams.ScaleY = baseScale;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
         }
@@ -169,8 +173,8 @@ namespace SonOfRobin
             }
             if (Keyboard.IsPressed(Keys.H))
             {
-                this.viewParams.ScaleX = 0.5f;
-                this.viewParams.ScaleY = 0.5f;
+                this.viewParams.ScaleX = baseScale;
+                this.viewParams.ScaleY = baseScale;
             }
 
             bool animPkgIndexChanged = false;
