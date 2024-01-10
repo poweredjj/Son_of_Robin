@@ -11,11 +11,8 @@ namespace SonOfRobin
     public class AnimEditor : Scene
     {
         private readonly SpriteFontBase font;
-
         private readonly AnimPkg[] animPkgArray;
-
-        private Anim CurrentAnim
-        { get { return this.currentAnimPkg.AllAnimList[this.currentAnimIndex]; } }
+        private Anim CurrentAnim { get { return this.currentAnimPkg.AllAnimList[this.currentAnimIndex]; } }
 
         private int currentAnimPkgIndex;
         private int currentAnimIndex;
@@ -40,7 +37,7 @@ namespace SonOfRobin
 
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 2);
             this.pos = new Vector2(80, 80);
             this.rot = 0f;
             this.showColRect = true;
@@ -50,7 +47,7 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 15, colHeight: 19, gfxOffsetCorrection: new Vector2(0, -9), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
+            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
             animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
@@ -210,9 +207,9 @@ namespace SonOfRobin
                 gfxOffsetCorrection.Y = (float)Math.Round(gfxOffsetCorrection.Y);
 
                 this.currentAnimPkg.EditGfxOffsetCorrection(gfxOffsetCorrection: gfxOffsetCorrection);
+                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
 
                 this.UpdateAnimation();
-                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentAnimIndex];
             }
 
             foreach (var kvp in new Dictionary<Keys, int> {
@@ -321,7 +318,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.End();
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.SpriteBatch.Begin();
 
             this.font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,
@@ -330,7 +327,7 @@ namespace SonOfRobin
                 color: Color.White,
                 scale: Vector2.One,
                 effect: FontSystemEffect.Stroked,
-                effectAmount: 1);
+                effectAmount: 2);
 
             SonOfRobinGame.SpriteBatch.End();
         }
