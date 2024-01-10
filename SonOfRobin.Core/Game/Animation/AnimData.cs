@@ -2191,8 +2191,6 @@ namespace SonOfRobin
             // all animations should share one colBounds rect (to avoid jitter and anims not playing)
             Rectangle sharedColBounds = default;
 
-            // TODO replace sharedColBounds by changing colWidth, colHeight and colOffset within "completed" AnimFrame
-
             foreach (string jsonName in jsonNameArray)
             {
                 string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);

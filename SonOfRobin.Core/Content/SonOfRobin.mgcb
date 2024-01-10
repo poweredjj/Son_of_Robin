@@ -154,6 +154,21 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_stand.png
 
+#begin gfx/_DragonBones/female_mage_tex_test.json
+/copy:gfx/_DragonBones/female_mage_tex_test.json
+
+#begin gfx/_DragonBones/female_mage_tex_test.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/_DragonBones/female_mage_tex_test.png
+
 #begin gfx/_DragonBones/female_mage_tex_walk.json
 /copy:gfx/_DragonBones/female_mage_tex_walk.json
 

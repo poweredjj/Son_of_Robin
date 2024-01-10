@@ -37,7 +37,7 @@ namespace SonOfRobin
 
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 2);
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(80, 80);
             this.rot = 0f;
             this.showColRect = true;
@@ -45,9 +45,39 @@ namespace SonOfRobin
             this.showEffect = false;
             this.outlineThickness = 1;
 
+
+
+
             var animPkgList = new List<AnimPkg> { };
 
-            animPkgList.Add(AnimPkg.AddRPGMakerPackageV2ForSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
+            string[] jsonNameArray = new string[] {
+                            "female_mage_tex_test.json",
+                        };
+
+            var durationDict = new Dictionary<string, short>
+                        {
+                            { "stand", 3 },
+                            { "weak", 3 },
+                            { "walk", 2 },
+                            { "attack", 1 },
+                            { "dead", 2 },
+                            { "damage", 2 },
+                        };
+
+            string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
+
+            var offsetDict = new Dictionary<string, Vector2>
+                        {
+                            { "walk-left", new Vector2(-18, -8) },
+                            { "walk-right", new Vector2(-6, -8) },
+            };
+
+            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict));
+
+
+
+
+            animPkgList.Add(AnimPkg.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
             animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
@@ -327,7 +357,7 @@ namespace SonOfRobin
                 color: Color.White,
                 scale: Vector2.One,
                 effect: FontSystemEffect.Stroked,
-                effectAmount: 2);
+                effectAmount: 1);
 
             SonOfRobinGame.SpriteBatch.End();
         }

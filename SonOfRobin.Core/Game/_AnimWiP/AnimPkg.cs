@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -137,7 +140,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg AddRPGMakerPackageV2ForSizeDict(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
+        public static AnimPkg MakePackageForRPGMakerPackageV2UsingSizeDict(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
@@ -202,6 +205,81 @@ namespace SonOfRobin
                 }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
+            }
+
+            return animPkg;
+        }
+
+        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, short> durationDict, string[] nonLoopedAnims, Dictionary<string, Vector2> offsetDict)
+        {
+            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+
+            foreach (string jsonName in jsonNameArray)
+            {
+                string jsonPath = Path.Combine(SonOfRobinGame.ContentMgr.RootDirectory, "gfx", "_DragonBones", jsonName);
+                object jsonData = FileReaderWriter.LoadJson(path: jsonPath, useStreamReader: true); // StreamReader is necessary for Android (otherwise, DirectoryNotFound will occur)
+                JObject jsonDict = (JObject)jsonData;
+
+                string atlasName = $"_DragonBones/{((string)jsonDict["imagePath"]).Replace(".png", "")}";
+                var animDataList = jsonDict["SubTexture"];
+
+                var animDict = new Dictionary<string, Dictionary<int, AnimFrameNew>>();
+
+                foreach (var animData in animDataList)
+                {
+                    string name = ((string)animData["name"]).ToLower();
+                    int underscoreIndex = name.LastIndexOf('_');
+                    int frameNoIndex = underscoreIndex + 1;
+
+                    string baseAnimName = name.Substring(0, underscoreIndex);
+                    short duration = durationDict.ContainsKey(baseAnimName) ? durationDict[baseAnimName] : (short)1;
+                    int frameNo = Convert.ToInt32(name.Substring(frameNoIndex, name.Length - frameNoIndex));
+
+                    int x = (int)animData["x"];
+                    int y = (int)animData["y"];
+                    int width = (int)animData["width"];
+                    int height = (int)animData["height"];
+                    int frameX = (int)animData["frameX"];
+                    int frameY = (int)animData["frameY"];
+
+                    foreach (string direction in new string[] { "right", "left" })
+                    {
+                        string animNameWithDirection = $"{baseAnimName}-{direction}";
+                        if (!animDict.ContainsKey(animNameWithDirection)) animDict[animNameWithDirection] = [];
+
+                        Vector2 gfxOffsetCorrection = new(frameX, frameY);
+                        if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
+
+                        AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: width, height: height), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: direction == "left" ? baseAnimsFaceRight : !baseAnimsFaceRight);
+
+                        animDict[animNameWithDirection][frameNo] = animFrame;
+                    }
+                }
+
+                foreach (var kvp1 in animDict)
+                {
+                    string animName = (string)kvp1.Key;
+                    var frameDict = kvp1.Value;
+                    int framesCount = frameDict.Keys.Max() + 1;
+
+                    bool nonLoopedAnim = nonLoopedAnims.Where(n => animName.Contains(n)).Any();
+
+                    AnimFrameNew[] frameArray = new AnimFrameNew[framesCount];
+                    foreach (var kvp2 in frameDict)
+                    {
+                        int frameNo = kvp2.Key;
+                        AnimFrameNew animFrame = kvp2.Value;
+
+                        if (nonLoopedAnim && frameNo == framesCount - 1)
+                        {
+                            // animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: animFrame.srcAtlasX, atlasY: animFrame.srcAtlasY, width: animFrame.srcWidth, height: animFrame.srcHeight, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: animFrame.mirrorX, scale: scale, colBoundsOverride: animFrame.colBounds);
+                        }
+
+                        frameArray[frameNo] = animFrame;
+                    }
+
+                    animPkg.AddAnim(new(animPkg: animPkg, name: animName, size: animSize, frameArray: frameArray));
+                }
             }
 
             return animPkg;
