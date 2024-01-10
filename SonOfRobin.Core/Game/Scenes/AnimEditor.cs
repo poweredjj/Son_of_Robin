@@ -71,9 +71,17 @@ namespace SonOfRobin
             string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
 
             var offsetDict = new Dictionary<string, Vector2>
-                        {
+            {
                             { "walk-left", new Vector2(-18, -8) },
                             { "walk-right", new Vector2(-6, -8) },
+                            { "attack-left", new Vector2(-60, -8) },
+                            { "attack-right", new Vector2(0, -8) },
+                            { "weak-left", new Vector2(-12, -13f) },
+                            { "weak-right", new Vector2(-2, -13f) },
+                            { "dead-left", new Vector2(-16, -26f) },
+                            { "dead-right", new Vector2(-78, -26f) },
+                            { "damage-left", new Vector2(-3, -17.5f) },
+                            { "damage-right", new Vector2(-23, -17.5f) },
             };
 
             animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 1.0f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
