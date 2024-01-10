@@ -180,8 +180,6 @@ namespace SonOfRobin
                 this.RewindAnim();
             }
 
-            // TODO add controls for gfxOffsetCorrection
-
             int colWidthChange = 0;
             int colHeightChange = 0;
 
@@ -192,10 +190,29 @@ namespace SonOfRobin
 
             if (colWidthChange != 0 || colHeightChange != 0)
             {
-                AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedOffset(this.currentAnimPkg.colRect.Width + colWidthChange, this.currentAnimPkg.colRect.Height + colHeightChange);
+                AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedColOffset(this.currentAnimPkg.colRect.Width + colWidthChange, this.currentAnimPkg.colRect.Height + colHeightChange);
 
                 this.animPkgArray[this.currentAnimPkgIndex] = animPkg;
                 this.currentAnimPkg = animPkg;
+            }
+
+            Vector2 gfxOffsetCorrectionChange = Vector2.Zero;
+
+            if (Keyboard.HasBeenPressed(Keys.NumPad4)) gfxOffsetCorrectionChange.X--;
+            if (Keyboard.HasBeenPressed(Keys.NumPad6)) gfxOffsetCorrectionChange.X++;
+            if (Keyboard.HasBeenPressed(Keys.NumPad8)) gfxOffsetCorrectionChange.Y--;
+            if (Keyboard.HasBeenPressed(Keys.NumPad2)) gfxOffsetCorrectionChange.Y++;
+
+            if (gfxOffsetCorrectionChange != Vector2.Zero)
+            {
+                Vector2 gfxOffsetCorrection = (this.currentAnimFrame.gfxOffsetCorrection / this.currentAnimFrame.scale) + gfxOffsetCorrectionChange;
+                gfxOffsetCorrection.X = (float)Math.Round(gfxOffsetCorrection.X);
+                gfxOffsetCorrection.Y = (float)Math.Round(gfxOffsetCorrection.Y);
+
+                this.currentAnimPkg.EditGfxOffsetCorrection(gfxOffsetCorrection: gfxOffsetCorrection);
+
+                this.UpdateAnimation();
+                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentAnimIndex];
             }
 
             foreach (var kvp in new Dictionary<Keys, int> {
@@ -300,7 +317,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
-            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name} offset: {this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale},{this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale}";
+            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)}\ncolRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}";
 
             SonOfRobinGame.SpriteBatch.End();
 

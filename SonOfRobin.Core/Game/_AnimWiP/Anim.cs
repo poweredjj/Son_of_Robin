@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -39,6 +40,14 @@ namespace SonOfRobin
             this.duration = frameArray.Select(f => (int)f.duration).Sum();
             this.switchWhenComplete = switchName != "";
             this.switchName = switchName;
+        }
+
+        public void EditGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
+        {
+            for (int i = 0; i < this.frameArray.Length; i++)
+            {
+                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedGfxOffsetCorrection(gfxOffsetCorrection);
+            }
         }
     }
 }

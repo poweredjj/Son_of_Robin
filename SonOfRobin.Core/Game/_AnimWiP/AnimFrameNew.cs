@@ -47,6 +47,13 @@ namespace SonOfRobin
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
         }
 
+        public AnimFrameNew MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
+        {
+            // to make a copy with edited gfxOffsetCorrection
+
+            return new AnimFrameNew(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize);
+        }
+
         public Texture2D Texture
         {
             get

@@ -30,7 +30,7 @@ namespace SonOfRobin
             this.AllAnimList.Add(anim);
         }
 
-        public AnimPkg MakeCopyWithEditedOffset(int colWidth, int colHeight)
+        public AnimPkg MakeCopyWithEditedColOffset(int colWidth, int colHeight)
         {
             AnimPkg animPkg = new AnimPkg(pkgName: this.pkgName, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
 
@@ -40,6 +40,14 @@ namespace SonOfRobin
             }
 
             return animPkg;
+        }
+
+        public void EditGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
+        {
+            foreach (Anim anim in this.AllAnimList)
+            {
+                anim.EditGfxOffsetCorrection(gfxOffsetCorrection);
+            }
         }
 
         public Anim GetAnim(int size, string name)
