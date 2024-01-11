@@ -4,7 +4,7 @@ using System;
 
 namespace SonOfRobin
 {
-    public class AnimFrameNew
+    public readonly struct AnimFrameNew
     {
         public readonly string atlasName;
         public readonly Rectangle cropRect;
@@ -18,8 +18,6 @@ namespace SonOfRobin
         public readonly int duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
-
-        private Texture2D texture;
 
         public AnimFrameNew(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
@@ -58,17 +56,10 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.texture == null) this.LoadAtlasTexture();
-                return this.texture;
+                Texture2D texture = TextureBank.GetTexture(this.atlasName);
+                texture ??= TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
+                return texture;
             }
-        }
-
-        private void LoadAtlasTexture()
-        {
-            MessageLog.Add(debugMessage: true, text: $"Loading atlas texture: {this.atlasName}...");
-            this.texture = TextureBank.GetTexture(this.atlasName);
-            if (this.texture == null) this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
-            else AnimData.loadedFramesCount++;
         }
 
         public Rectangle GetGfxRectForPos(Vector2 position)

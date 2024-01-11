@@ -10,7 +10,7 @@ namespace SonOfRobin
 {
     public class AnimEditor : Scene
     {
-        private const float baseScale = 1f; // 0.5f
+        private const float baseScale = 0.6f; // 0.5f
 
         private readonly SpriteFontBase font;
         private readonly AnimPkg[] animPkgArray;
@@ -23,6 +23,7 @@ namespace SonOfRobin
         private AnimFrameNew currentAnimFrame;
         private Vector2 pos;
         private float rot;
+        private int playSpeed;
 
         private int currentFrameIndex;
         private int currentFrameTimeLeft;
@@ -40,8 +41,9 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(160, 130);
+            this.pos = new Vector2(90, 90);
             this.rot = 0f;
+            this.playSpeed = 50; // 1
             this.showColRect = false;
             this.showGfxRect = true;
             this.showEffect = false;
@@ -50,11 +52,11 @@ namespace SonOfRobin
             var animPkgList = new List<AnimPkg> { };
 
             string[] jsonNameArray = new string[] {
-                            "female_mage_tex_dead_cropped.json",
-                            "female_mage_tex_attack_cropped.json",
-                            "female_mage_tex_damage_cropped.json",
                             "female_mage_tex_stand_cropped.json",
+                            "female_mage_tex_attack_cropped.json",
                             "female_mage_tex_walk_cropped.json",
+                            "female_mage_tex_dead_cropped.json",
+                            "female_mage_tex_damage_cropped.json",
                             "female_mage_tex_weak_cropped.json",
                         };
 
@@ -72,16 +74,18 @@ namespace SonOfRobin
 
             var offsetDict = new Dictionary<string, Vector2>
             {
-                            { "walk-left", new Vector2(-18, -8) },
-                            { "walk-right", new Vector2(-6, -8) },
-                            { "attack-left", new Vector2(-60, -8) },
-                            { "attack-right", new Vector2(0, -8) },
-                            { "weak-left", new Vector2(-12, -13f) },
-                            { "weak-right", new Vector2(-2, -13f) },
-                            { "dead-left", new Vector2(-16, -26f) },
-                            { "dead-right", new Vector2(-78, -26f) },
-                            { "damage-left", new Vector2(-3, -17.5f) },
-                            { "damage-right", new Vector2(-23, -17.5f) },
+                            { "stand-left", new Vector2(-2, 0) },
+                            { "stand-right", new Vector2(2, 0) },
+                            { "walk-left", new Vector2(-12, -4) },
+                            { "walk-right", new Vector2(12, -4) },
+                            { "attack-left", new Vector2(-35, -4) },
+                            { "attack-right", new Vector2(35, -4) },
+                            { "weak-left", new Vector2(-6, -7.5f) },
+                            { "weak-right", new Vector2(-1, -7.5f) },
+                            { "dead-left", new Vector2(0, -13f) },
+                            { "dead-right", new Vector2(0, -13f) },
+                            { "damage-left", new Vector2(-1.5f, -9f) },
+                            { "damage-right", new Vector2(-11.5f, -9f) },
             };
 
             animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 1.0f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
@@ -219,6 +223,10 @@ namespace SonOfRobin
                 this.RewindAnim();
             }
 
+            if (Keyboard.HasBeenPressed(Keys.Insert)) this.playSpeed--;
+            if (Keyboard.HasBeenPressed(Keys.Delete)) this.playSpeed++;
+            this.playSpeed = Math.Clamp(value: this.playSpeed, min: 1, max: 50);
+
             int colWidthChange = 0;
             int colHeightChange = 0;
 
@@ -288,6 +296,8 @@ namespace SonOfRobin
         {
             if (this.currentAnimFrame.duration == 0) return; // duration == 0 will stop the animation
 
+            if (SonOfRobinGame.CurrentDraw % this.playSpeed != 0) return;
+
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
             {
@@ -356,7 +366,10 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
-            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)}\ncolRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\nAnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}";
+            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
+            description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\n";
+            description += $"AnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
+            description += $"offset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}";
 
             SonOfRobinGame.SpriteBatch.End();
 
