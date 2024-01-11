@@ -947,7 +947,7 @@ namespace SonOfRobin
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
                 Color originalColor = this.color;
-                this.color = color;
+                this.color = color * this.opacity;
                 this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
                 this.color = originalColor;
             }

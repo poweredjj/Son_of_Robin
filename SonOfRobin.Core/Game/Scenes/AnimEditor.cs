@@ -34,6 +34,7 @@ namespace SonOfRobin
         private bool showColRect;
         private bool showGfxRect;
         private bool showEffect;
+        private bool flatShadow;
 
         private readonly Effect effect;
         private int outlineThickness;
@@ -47,6 +48,7 @@ namespace SonOfRobin
             this.showColRect = false;
             this.showGfxRect = true;
             this.showEffect = false;
+            this.flatShadow = false;
             this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
@@ -73,7 +75,7 @@ namespace SonOfRobin
 
             List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
 
-            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims)); // scale: 0.5f
+            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 20, colHeight: 25, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -34))); // scale: 0.5f
 
             animPkgList.Add(AnimPkg.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
@@ -148,6 +150,7 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.Z)) this.showColRect = !this.showColRect;
             if (Keyboard.HasBeenPressed(Keys.X)) this.showGfxRect = !this.showGfxRect;
             if (Keyboard.HasBeenPressed(Keys.C)) this.showEffect = !this.showEffect;
+            if (Keyboard.HasBeenPressed(Keys.B)) this.flatShadow = !this.flatShadow;
 
             float rotVal = 0.03f;
             if (Keyboard.IsPressed(Keys.A)) this.rot -= rotVal;
@@ -357,7 +360,16 @@ namespace SonOfRobin
             Vector2 rotationOriginOverride = default;
             //rotationOriginOverride = new Vector2(this.currentAnimFrame.cropRect.Width * 0.5f, this.currentAnimFrame.cropRect.Height); // emulating SwayEvent
 
+            Vector2 lightPos = new(70, 70);
+            int lightSize = 40;
+            Rectangle lightRect = new(x: 0, y: 0, width: lightSize, height: lightSize);
+            lightRect.Offset((int)(lightPos.X - (lightSize / 2)), (int)(lightPos.Y - (lightSize / 2)));
+
+            this.DrawShadow(color: Color.Black, lightPos: lightPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightPos, end: this.pos));
+
             this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
+
+            Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(textureName: TextureBank.TextureName.LightSphereWhite), rectangle: lightRect, color: Color.Yellow * 0.8f);
 
             if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
             if (this.showGfxRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.gfxRect, color: Color.White * 0.35f, thickness: 1f);
@@ -384,6 +396,60 @@ namespace SonOfRobin
                 effectAmount: 1);
 
             SonOfRobinGame.SpriteBatch.End();
+        }
+
+        private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        {
+            float distance = Vector2.Distance(lightPos, this.pos);
+
+            AnimFrameNew animFrame = this.currentAnimFrame;
+            Vector2 spritePos = this.pos;
+            float opacity = 1f;
+
+            if (this.flatShadow)
+            {
+                float xDiff = this.pos.X - lightPos.X;
+                float yDiff = this.pos.Y - lightPos.Y;
+
+                float xLimit = this.gfxRect.Width / 8;
+                float yLimit = this.gfxRect.Height / 8;
+
+                float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
+                float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
+
+                Rectangle simulRect = this.gfxRect;
+                simulRect.X += (int)offsetX;
+                simulRect.Y += (int)offsetY;
+
+                this.currentAnimFrame.Draw(position: this.pos + new Vector2(offsetX + drawOffsetX, offsetY + drawOffsetY), color: color * opacity, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0);
+            }
+            else
+            {
+                float xScale = animFrame.scale;
+                float yScale = Math.Max(animFrame.scale / distance * 100f, animFrame.scale * 0.3f);
+                yScale = Math.Min(yScale, animFrame.scale * 3f);
+                if (yScaleForce != 0) yScale = animFrame.scale * yScaleForce;
+
+                SonOfRobinGame.SpriteBatch.Draw(
+                    animFrame.Texture,
+                    position:
+                    new Vector2(spritePos.X + drawOffsetX, spritePos.Y + drawOffsetY),
+                    sourceRectangle: animFrame.cropRect,
+                    color: color * opacity,
+                    rotation: shadowAngle + (float)(Math.PI / 2f),
+
+                    // origin: new Vector2(-frame.gfxOffset.X / animFrame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / animFrame.scale),
+
+                    origin: new Vector2(
+                        -(animFrame.gfxOffsetBase.X + animFrame.gfxOffsetCorrection.X) / animFrame.scale,
+                        -(animFrame.gfxOffsetBase.Y + animFrame.gfxOffsetCorrection.Y + this.currentAnimPkg.colRect.Height) / animFrame.scale),
+
+                    scale: new Vector2(xScale, yScale),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+            }
+
+
         }
     }
 }
