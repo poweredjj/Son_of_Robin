@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -252,7 +253,9 @@ namespace SonOfRobin
                         bool mirrorX = (direction == "left" && baseAnimsFaceRight) || (direction == "right" && !baseAnimsFaceRight);
 
                         Vector2 gfxOffsetCorrection = new Vector2(mirrorX ? drawXOffset : -drawXOffset, -drawYOffset) / 2f;
-                        if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
+                        gfxOffsetCorrection.X += fullWidth / 6.0f * (mirrorX ? 1f : -1f);
+
+                        //if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
 
                         AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: croppedWidth, height: croppedHeight), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: mirrorX);
 
@@ -276,7 +279,7 @@ namespace SonOfRobin
 
                         if (nonLoopedAnim && frameNo == framesCount - 1)
                         {
-                            // animFrame = AnimFrame.GetFrame(atlasName: atlasName, atlasX: animFrame.srcAtlasX, atlasY: animFrame.srcAtlasY, width: animFrame.srcWidth, height: animFrame.srcHeight, layer: 1, duration: 0, crop: false, padding: 0, mirrorX: animFrame.mirrorX, scale: scale, colBoundsOverride: animFrame.colBounds);
+                            animFrame = new AnimFrameNew(atlasName: animFrame.atlasName, layer: animFrame.layer, cropRect: animFrame.cropRect, duration: 0, scale: animFrame.scale, gfxOffsetCorrection: animFrame.gfxOffsetCorrection / animFrame.scale, mirrorX: animFrame.spriteEffects == SpriteEffects.FlipHorizontally, ignoreWhenCalculatingMaxSize: animFrame.ignoreWhenCalculatingMaxSize);
                         }
 
                         frameArray[frameNo] = animFrame;

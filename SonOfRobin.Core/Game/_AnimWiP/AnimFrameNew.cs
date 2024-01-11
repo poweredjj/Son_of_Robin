@@ -78,6 +78,8 @@ namespace SonOfRobin
 
         public void Draw(Vector2 position, Color color, float rotation, float opacity, int submergeCorrection = 0, Vector2 rotationOriginOverride = default)
         {
+            // destRect should not be used to draw, because of reduced (integer only) draw precision
+
             Vector2 rotationOriginToUse = this.rotationOrigin;
 
             if (rotationOriginOverride != default)

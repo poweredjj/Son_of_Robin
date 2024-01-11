@@ -109,10 +109,10 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_attack.png
 
-#begin gfx/_DragonBones/female_mage_tex_attack_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_attack_cropped.json
+#begin gfx/_DragonBones/female_mage_tex_cropped.json
+/copy:gfx/_DragonBones/female_mage_tex_cropped.json
 
-#begin gfx/_DragonBones/female_mage_tex_attack_cropped.png
+#begin gfx/_DragonBones/female_mage_tex_cropped.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -122,7 +122,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_attack_cropped.png
+/build:gfx/_DragonBones/female_mage_tex_cropped.png
 
 #begin gfx/_DragonBones/female_mage_tex_damage.json
 /copy:gfx/_DragonBones/female_mage_tex_damage.json
@@ -139,21 +139,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_damage.png
 
-#begin gfx/_DragonBones/female_mage_tex_damage_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_damage_cropped.json
-
-#begin gfx/_DragonBones/female_mage_tex_damage_cropped.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_damage_cropped.png
-
 #begin gfx/_DragonBones/female_mage_tex_dead.json
 /copy:gfx/_DragonBones/female_mage_tex_dead.json
 
@@ -168,21 +153,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_dead.png
-
-#begin gfx/_DragonBones/female_mage_tex_dead_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_dead_cropped.json
-
-#begin gfx/_DragonBones/female_mage_tex_dead_cropped.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_dead_cropped.png
 
 #begin gfx/_DragonBones/female_mage_tex_stand.json
 /copy:gfx/_DragonBones/female_mage_tex_stand.json
@@ -199,21 +169,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_stand.png
 
-#begin gfx/_DragonBones/female_mage_tex_stand_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_stand_cropped.json
-
-#begin gfx/_DragonBones/female_mage_tex_stand_cropped.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_stand_cropped.png
-
 #begin gfx/_DragonBones/female_mage_tex_walk.json
 /copy:gfx/_DragonBones/female_mage_tex_walk.json
 
@@ -229,21 +184,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_walk.png
 
-#begin gfx/_DragonBones/female_mage_tex_walk_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_walk_cropped.json
-
-#begin gfx/_DragonBones/female_mage_tex_walk_cropped.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_walk_cropped.png
-
 #begin gfx/_DragonBones/female_mage_tex_weak.json
 /copy:gfx/_DragonBones/female_mage_tex_weak.json
 
@@ -258,21 +198,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_weak.png
-
-#begin gfx/_DragonBones/female_mage_tex_weak_cropped.json
-/copy:gfx/_DragonBones/female_mage_tex_weak_cropped.json
-
-#begin gfx/_DragonBones/female_mage_tex_weak_cropped.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_weak_cropped.png
 
 #begin gfx/_processed_acorn.png
 /importer:TextureImporter

@@ -41,7 +41,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(90, 90);
+            this.pos = new Vector2(60, 60);
             this.rot = 0f;
             this.playSpeed = 1; // 1
             this.showColRect = false;
@@ -52,12 +52,7 @@ namespace SonOfRobin
             var animPkgList = new List<AnimPkg> { };
 
             string[] jsonNameArray = new string[] {
-                            "female_mage_tex_stand_cropped.json",
-                            "female_mage_tex_weak_cropped.json",
-                            "female_mage_tex_damage_cropped.json",
-                            "female_mage_tex_dead_cropped.json",
-                            "female_mage_tex_walk_cropped.json",
-                            "female_mage_tex_attack_cropped.json",
+                            "female_mage_tex_cropped.json",
                         };
 
             var durationDict = new Dictionary<string, int>
@@ -74,18 +69,18 @@ namespace SonOfRobin
 
             var offsetDict = new Dictionary<string, Vector2>
             {
-                            { "stand-left", new Vector2(-2, 0) },
-                            { "stand-right", new Vector2(2, 0) },
-                            { "walk-left", new Vector2(-12, -4) },
-                            { "walk-right", new Vector2(12, -4) },
-                            { "attack-left", new Vector2(-33, -3.2f) },
-                            { "attack-right", new Vector2(33, -3.2f) },
-                            { "weak-left", new Vector2(-6f, -6.5f) },
-                            { "weak-right", new Vector2(6f, -6.5f) },
-                            { "dead-left", new Vector2(-11f, -13.5f) },
-                            { "dead-right", new Vector2(11f, -13.5f) },
-                            { "damage-left", new Vector2(-4f, -8.7f) },
-                            { "damage-right", new Vector2(4f, -8.7f) },
+                //{ "stand-left", new Vector2(-2, 0) },
+                //{ "stand-right", new Vector2(2, 0) },
+                //{ "walk-left", new Vector2(-12, -4) },
+                //{ "walk-right", new Vector2(12, -4) },
+                //{ "attack-left", new Vector2(-33, -3.2f) },
+                //{ "attack-right", new Vector2(33, -3.2f) },
+                //{ "weak-left", new Vector2(-6f, -6.5f) },
+                //{ "weak-right", new Vector2(6f, -6.5f) },
+                //{ "dead-left", new Vector2(-11f, -13.5f) },
+                //{ "dead-right", new Vector2(11f, -13.5f) },
+                //{ "damage-left", new Vector2(-4f, -8.7f) },
+                //{ "damage-right", new Vector2(4f, -8.7f) },
             };
 
             animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
