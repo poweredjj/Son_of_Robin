@@ -398,7 +398,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, float drawOffsetX = 0f, float drawOffsetY = 0f, float yScaleForce = 0f)
         {
             float distance = Vector2.Distance(lightPos, this.pos);
 
@@ -408,32 +408,25 @@ namespace SonOfRobin
 
             if (this.flatShadow)
             {
-                float xDiff = this.pos.X - lightPos.X;
-                float yDiff = this.pos.Y - lightPos.Y;
-
-                float xLimit = this.gfxRect.Width / 8;
-                float yLimit = this.gfxRect.Height / 8;
-
-                float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
-                float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
-
+                Vector2 diff = this.pos - lightPos;
+                Vector2 limit = new(this.gfxRect.Width / 8, this.gfxRect.Height / 8);
+                Vector2 offset = Vector2.Clamp(value1: diff / 6f, min: -limit, max: limit);
                 Rectangle simulRect = this.gfxRect;
-                simulRect.X += (int)offsetX;
-                simulRect.Y += (int)offsetY;
+                simulRect.Offset(offset);
 
-                this.currentAnimFrame.Draw(position: this.pos + new Vector2(offsetX + drawOffsetX, offsetY + drawOffsetY), color: color * opacity, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0);
+                // if (!this.world.camera.viewRect.Intersects(simulRect)) return;
+
+                this.currentAnimFrame.Draw(position: this.pos + offset, color: color * opacity, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0);
             }
             else
             {
                 float xScale = animFrame.scale;
                 float yScale = Math.Max(animFrame.scale / distance * 100f, animFrame.scale * 0.3f);
-                yScale = Math.Min(yScale, animFrame.scale * 3f);
-                if (yScaleForce != 0) yScale = animFrame.scale * yScaleForce;
+                yScale = yScaleForce == 0 ? Math.Min(yScale, animFrame.scale * 3f) : animFrame.scale * yScaleForce;
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     animFrame.Texture,
-                    position:
-                    new Vector2(spritePos.X + drawOffsetX, spritePos.Y + drawOffsetY),
+                    position: new Vector2(spritePos.X + drawOffsetX, spritePos.Y + drawOffsetY),
                     sourceRectangle: animFrame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
@@ -448,8 +441,6 @@ namespace SonOfRobin
                     effects: SpriteEffects.None,
                     layerDepth: 0);
             }
-
-
         }
     }
 }

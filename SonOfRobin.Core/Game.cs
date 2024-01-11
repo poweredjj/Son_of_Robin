@@ -202,7 +202,7 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            //new InitialLoader();
+            // new InitialLoader();
             new AnimEditor(); // for testing
         }
 

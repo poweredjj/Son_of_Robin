@@ -932,31 +932,24 @@ namespace SonOfRobin
 
             if (this.boardPiece.HasFlatShadow)
             {
-                float xDiff = this.position.X - lightPos.X;
-                float yDiff = this.position.Y - lightPos.Y;
-
-                float xLimit = this.GfxRect.Width / 8;
-                float yLimit = this.GfxRect.Height / 8;
-
-                float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
-                float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
-
+                Vector2 diff = this.position - lightPos;
+                Vector2 limit = new(this.GfxRect.Width / 8, this.GfxRect.Height / 8);
+                Vector2 offset = Vector2.Clamp(value1: diff / 6f, min: -limit, max: limit);
                 Rectangle simulRect = this.GfxRect;
-                simulRect.X += (int)offsetX;
-                simulRect.Y += (int)offsetY;
+                simulRect.Offset(offset);
+
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
                 Color originalColor = this.color;
                 this.color = color * this.opacity;
-                this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
+                this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offset.X + drawOffsetX, offsetY: (int)offset.Y + drawOffsetY);
                 this.color = originalColor;
             }
             else
             {
                 float xScale = frame.scale;
                 float yScale = Math.Max(frame.scale / distance * 100f, frame.scale * 0.3f);
-                yScale = Math.Min(yScale, frame.scale * 3f);
-                if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
+                yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
