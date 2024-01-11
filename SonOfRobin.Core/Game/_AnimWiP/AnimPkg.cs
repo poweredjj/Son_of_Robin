@@ -211,9 +211,16 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict, string[] nonLoopedAnims, Dictionary<string, Vector2> offsetDict)
+        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict = null, List<string> nonLoopedAnims = null, Dictionary<string, Vector2> offsetDict = null, Dictionary<string, string> switchDict = null)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+
+            durationDict ??= [];
+            offsetDict ??= [];
+            switchDict ??= [];
+            nonLoopedAnims ??= [];
+
+            // in case an offset is needed for individual animations: var offsetDict = new Dictionary<string, Vector2> { { "stand-left", new Vector2(0, 0) }, };
 
             foreach (string jsonName in jsonNameArray)
             {
@@ -253,9 +260,9 @@ namespace SonOfRobin
                         bool mirrorX = (direction == "left" && baseAnimsFaceRight) || (direction == "right" && !baseAnimsFaceRight);
 
                         Vector2 gfxOffsetCorrection = new Vector2(mirrorX ? drawXOffset : -drawXOffset, -drawYOffset) / 2f;
-                        gfxOffsetCorrection.X += fullWidth / 6.0f * (mirrorX ? 1f : -1f);
+                        gfxOffsetCorrection.X += fullWidth / 6.2f * (mirrorX ? 1f : -1f); // 6.2f seems to center animation properly, TODO check if gonna work in other anims
 
-                        //if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
+                        if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
 
                         AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: croppedWidth, height: croppedHeight), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: mirrorX);
 
@@ -265,11 +272,16 @@ namespace SonOfRobin
 
                 foreach (var kvp1 in animDict)
                 {
-                    string animName = (string)kvp1.Key;
+                    string animNameWithDirection = (string)kvp1.Key;
+
+                    int joinerIndex = animNameWithDirection.LastIndexOf('-');
+                    string animName = animNameWithDirection.Substring(0, joinerIndex);
+                    string direction = animNameWithDirection.Substring(joinerIndex + 1, animNameWithDirection.Length - joinerIndex - 1);
+
                     var frameDict = kvp1.Value;
                     int framesCount = frameDict.Keys.Max() + 1;
 
-                    bool nonLoopedAnim = nonLoopedAnims.Where(n => animName.Contains(n)).Any();
+                    bool nonLoopedAnim = nonLoopedAnims.Where(n => animNameWithDirection.Contains(n)).Any();
 
                     AnimFrameNew[] frameArray = new AnimFrameNew[framesCount];
                     foreach (var kvp2 in frameDict)
@@ -285,7 +297,8 @@ namespace SonOfRobin
                         frameArray[frameNo] = animFrame;
                     }
 
-                    animPkg.AddAnim(new(animPkg: animPkg, name: animName, size: animSize, frameArray: frameArray));
+                    string switchName = switchDict.ContainsKey(animName) ? $"{switchDict[animName]}-{direction}" : "";
+                    animPkg.AddAnim(new(animPkg: animPkg, name: animNameWithDirection, size: animSize, frameArray: frameArray, switchName: switchName));
                 }
             }
 

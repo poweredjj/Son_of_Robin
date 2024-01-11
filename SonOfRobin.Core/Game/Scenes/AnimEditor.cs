@@ -65,25 +65,15 @@ namespace SonOfRobin
                             { "damage", 2 },
                         };
 
-            string[] nonLoopedAnims = new string[] { "dead", "attack", "damage" };
-
-            var offsetDict = new Dictionary<string, Vector2>
+            var switchDict = new Dictionary<string, string>
             {
-                //{ "stand-left", new Vector2(-2, 0) },
-                //{ "stand-right", new Vector2(2, 0) },
-                //{ "walk-left", new Vector2(-12, -4) },
-                //{ "walk-right", new Vector2(12, -4) },
-                //{ "attack-left", new Vector2(-33, -3.2f) },
-                //{ "attack-right", new Vector2(33, -3.2f) },
-                //{ "weak-left", new Vector2(-6f, -6.5f) },
-                //{ "weak-right", new Vector2(6f, -6.5f) },
-                //{ "dead-left", new Vector2(-11f, -13.5f) },
-                //{ "dead-right", new Vector2(11f, -13.5f) },
-                //{ "damage-left", new Vector2(-4f, -8.7f) },
-                //{ "damage-right", new Vector2(4f, -8.7f) },
+                { "attack", "stand" },
+                { "damage", "stand" },
             };
 
-            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
+            List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
+
+            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims)); // scale: 0.5f
 
             animPkgList.Add(AnimPkg.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
@@ -286,7 +276,26 @@ namespace SonOfRobin
 
         public void UpdateAnimation()
         {
-            if (this.currentAnimFrame.duration == 0) return; // duration == 0 will stop the animation
+            if (this.currentAnimFrame.duration == 0)
+            {
+                if (this.CurrentAnim.switchWhenComplete)
+                {
+                    string switchName = this.CurrentAnim.switchName;
+                    var allAnimList = this.currentAnimPkg.AllAnimList;
+
+                    for (int i = 0; i < allAnimList.Count; i++)
+                    {
+                        Anim anim = allAnimList[i];
+                        if (anim.name == switchName)
+                        {
+                            this.currentAnimIndex = i;
+                            this.RewindAnim();
+                        }
+                    }
+                }
+
+                return; // duration == 0 will stop the animation
+            }
 
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
