@@ -341,8 +341,6 @@ namespace SonOfRobin
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride)
         {
-            // TODO remove and replace usings with AnimFrameNew.Draw()
-
             // invoke from Sprite class
 
             Vector2 rotationOriginToUse = this.rotationOrigin;

@@ -10,7 +10,7 @@ namespace SonOfRobin
 {
     public class AnimEditor : Scene
     {
-        private const float baseScale = 0.6f; // 0.5f
+        private const float baseScale = 0.5f; // 0.5f
 
         private readonly SpriteFontBase font;
         private readonly AnimPkg[] animPkgArray;
@@ -88,10 +88,7 @@ namespace SonOfRobin
                             { "damage-right", new Vector2(4f, -8.7f) },
             };
 
-            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 1.0f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
-
-
-
+            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
 
             animPkgList.Add(AnimPkg.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
@@ -356,7 +353,7 @@ namespace SonOfRobin
             Vector2 rotationOriginOverride = default;
             //rotationOriginOverride = new Vector2(this.currentAnimFrame.cropRect.Width * 0.5f, this.currentAnimFrame.cropRect.Height); // emulating SwayEvent
 
-            this.currentAnimFrame.Draw(destRect: this.gfxRect, color: Color.White, rotation: this.rot, opacity: 1f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
+            this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
 
             if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
             if (this.showGfxRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.gfxRect, color: Color.White * 0.35f, thickness: 1f);
