@@ -404,7 +404,7 @@ namespace SonOfRobin
         {
             if (!textureByNamePersistent.ContainsKey(fileName))
             {
-                MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
+                // MessageLog.Add(debugMessage: true, text: $"Loading texture: {fileName}");
                 textureByNamePersistent[fileName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{fileName}");
             }
 

@@ -958,7 +958,7 @@ namespace SonOfRobin
                     sourceRectangle: frame.textureRect,
                     color: color * this.opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
+                    origin: new Vector2(-frame.gfxOffset.X, -(frame.gfxOffset.Y + frame.colOffset.Y)) / frame.scale,
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

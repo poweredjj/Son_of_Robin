@@ -367,7 +367,7 @@ namespace SonOfRobin
 
             this.DrawShadow(color: Color.Black, lightPos: lightPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightPos, end: this.pos));
 
-            this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
+            this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 0.5f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
 
             Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(textureName: TextureBank.TextureName.LightSphereWhite), rectangle: lightRect, color: Color.Yellow * 0.8f);
 
@@ -431,11 +431,17 @@ namespace SonOfRobin
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
 
-                    // origin: new Vector2(-frame.gfxOffset.X / animFrame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / animFrame.scale),
-
                     origin: new Vector2(
-                        -(animFrame.gfxOffsetBase.X + animFrame.gfxOffsetCorrection.X) / animFrame.scale,
-                        -(animFrame.gfxOffsetBase.Y + animFrame.gfxOffsetCorrection.Y + this.currentAnimPkg.colRect.Height) / animFrame.scale),
+                        (float)animFrame.cropRect.Width * 0.5f,
+                        (float)animFrame.cropRect.Height * 1.0f),
+
+                    //origin: new Vector2(
+                    //    (float)animFrame.cropRect.Width * 0.5f,
+                    //    ((float)animFrame.cropRect.Height * 1.0f) + (animFrame.gfxOffsetCorrection.Y * animFrame.scale)),
+
+                    //origin: new Vector2(
+                    //    (float)animFrame.cropRect.Width * 0.5f,
+                    //    (animFrame.gfxOffsetBase.Y + animFrame.gfxOffsetCorrection.Y) * animFrame.scale * 0.5f),
 
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
