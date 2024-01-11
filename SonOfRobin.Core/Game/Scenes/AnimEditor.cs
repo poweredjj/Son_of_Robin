@@ -43,7 +43,7 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(90, 90);
             this.rot = 0f;
-            this.playSpeed = 50; // 1
+            this.playSpeed = 1; // 1
             this.showColRect = false;
             this.showGfxRect = true;
             this.showEffect = false;
@@ -53,11 +53,11 @@ namespace SonOfRobin
 
             string[] jsonNameArray = new string[] {
                             "female_mage_tex_stand_cropped.json",
-                            "female_mage_tex_attack_cropped.json",
-                            "female_mage_tex_walk_cropped.json",
-                            "female_mage_tex_dead_cropped.json",
-                            "female_mage_tex_damage_cropped.json",
                             "female_mage_tex_weak_cropped.json",
+                            "female_mage_tex_damage_cropped.json",
+                            "female_mage_tex_dead_cropped.json",
+                            "female_mage_tex_walk_cropped.json",
+                            "female_mage_tex_attack_cropped.json",
                         };
 
             var durationDict = new Dictionary<string, int>
@@ -78,14 +78,14 @@ namespace SonOfRobin
                             { "stand-right", new Vector2(2, 0) },
                             { "walk-left", new Vector2(-12, -4) },
                             { "walk-right", new Vector2(12, -4) },
-                            { "attack-left", new Vector2(-35, -4) },
-                            { "attack-right", new Vector2(35, -4) },
-                            { "weak-left", new Vector2(-6, -7.5f) },
-                            { "weak-right", new Vector2(-1, -7.5f) },
-                            { "dead-left", new Vector2(0, -13f) },
-                            { "dead-right", new Vector2(0, -13f) },
-                            { "damage-left", new Vector2(-1.5f, -9f) },
-                            { "damage-right", new Vector2(-11.5f, -9f) },
+                            { "attack-left", new Vector2(-33, -3.2f) },
+                            { "attack-right", new Vector2(33, -3.2f) },
+                            { "weak-left", new Vector2(-6f, -6.5f) },
+                            { "weak-right", new Vector2(6f, -6.5f) },
+                            { "dead-left", new Vector2(-11f, -13.5f) },
+                            { "dead-right", new Vector2(11f, -13.5f) },
+                            { "damage-left", new Vector2(-4f, -8.7f) },
+                            { "damage-right", new Vector2(4f, -8.7f) },
             };
 
             animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 50, colHeight: 30, jsonNameArray: jsonNameArray, animSize: 0, scale: 1.0f, baseAnimsFaceRight: false, durationDict: durationDict, nonLoopedAnims: nonLoopedAnims, offsetDict: offsetDict)); // scale: 0.5f
@@ -296,15 +296,13 @@ namespace SonOfRobin
         {
             if (this.currentAnimFrame.duration == 0) return; // duration == 0 will stop the animation
 
-            if (SonOfRobinGame.CurrentDraw % this.playSpeed != 0) return;
-
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
                 if (this.currentFrameIndex >= this.CurrentAnim.frameArray.Length) this.RewindAnim();
                 this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
-                this.currentFrameTimeLeft = this.currentAnimFrame.duration;
+                this.currentFrameTimeLeft = this.currentAnimFrame.duration * this.playSpeed;
             }
         }
 
