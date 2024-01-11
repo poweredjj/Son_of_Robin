@@ -237,12 +237,12 @@ namespace SonOfRobin
 
                     int x = (int)animData["x"];
                     int y = (int)animData["y"];
-                    int width = (int)animData["width"];
-                    int height = (int)animData["height"];
-                    int frameX = (int)animData["frameX"];
-                    int frameY = (int)animData["frameY"];
+                    int croppedWidth = (int)animData["width"];
+                    int croppedHeight = (int)animData["height"];
                     int fullWidth = (int)animData["frameWidth"];
                     int fullHeight = (int)animData["frameHeight"];
+                    int drawXOffset = (int)animData["frameX"]; // draw offset needed to maintain uncropped pos
+                    int drawYOffset = (int)animData["frameY"]; // draw offset needed to maintain uncropped pos
 
                     foreach (string direction in new string[] { "right", "left" })
                     {
@@ -251,14 +251,10 @@ namespace SonOfRobin
 
                         bool mirrorX = (direction == "left" && baseAnimsFaceRight) || (direction == "right" && !baseAnimsFaceRight);
 
-                        Vector2 gfxOffsetCorrection = new(mirrorX ? -frameX : frameX, frameY);
+                        Vector2 gfxOffsetCorrection = new Vector2(mirrorX ? drawXOffset : -drawXOffset, -drawYOffset) / 2f;
                         if (offsetDict.ContainsKey(animNameWithDirection)) gfxOffsetCorrection += offsetDict[animNameWithDirection];
 
-                        gfxOffsetCorrection = Vector2.Zero;
-
-                        gfxOffsetCorrection += new Vector2(fullWidth - width, fullHeight - height) / 2f;
-
-                        AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: width, height: height), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: mirrorX);
+                        AnimFrameNew animFrame = new AnimFrameNew(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: y, width: croppedWidth, height: croppedHeight), duration: duration, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: mirrorX);
 
                         animDict[animNameWithDirection][frameNo] = animFrame;
                     }

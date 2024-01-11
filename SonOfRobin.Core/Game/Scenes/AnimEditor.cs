@@ -40,7 +40,7 @@ namespace SonOfRobin
         public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
-            this.pos = new Vector2(80, 110);
+            this.pos = new Vector2(160, 130);
             this.rot = 0f;
             this.showColRect = false;
             this.showGfxRect = true;
@@ -50,9 +50,9 @@ namespace SonOfRobin
             var animPkgList = new List<AnimPkg> { };
 
             string[] jsonNameArray = new string[] {
+                            "female_mage_tex_dead_cropped.json",
                             "female_mage_tex_attack_cropped.json",
                             "female_mage_tex_damage_cropped.json",
-                            "female_mage_tex_dead_cropped.json",
                             "female_mage_tex_stand_cropped.json",
                             "female_mage_tex_walk_cropped.json",
                             "female_mage_tex_weak_cropped.json",
