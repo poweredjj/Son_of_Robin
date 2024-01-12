@@ -226,7 +226,7 @@ namespace SonOfRobin
                 gfxOffsetCorrection.X = (float)Math.Round(gfxOffsetCorrection.X);
                 gfxOffsetCorrection.Y = (float)Math.Round(gfxOffsetCorrection.Y);
 
-                this.currentAnimPkg.EditGfxOffsetCorrection(gfxOffsetCorrection: gfxOffsetCorrection);
+                this.CurrentAnim.EditGfxOffsetCorrection(gfxOffsetCorrection);
                 this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
 
                 this.UpdateAnimation();
@@ -362,8 +362,10 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.Blue, thickness: 3f);
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: new Rectangle((int)this.pos.X, (int)this.pos.Y, 1, 1), color: Color.White);
 
-            string description = $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
+            string description = "";
+
             description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\n";
+            description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.pkgName} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
             description += $"offset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}";
 
@@ -415,7 +417,7 @@ namespace SonOfRobin
                     sourceRectangle: animFrame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2((float)animFrame.cropRect.Width * 0.5f, animFrame.cropRect.Height * 0.9f),
+                    origin: new Vector2((float)animFrame.cropRect.Width * 0.5f, animFrame.cropRect.Height * 0.98f),
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

@@ -99,69 +99,71 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 12);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 21))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 19), gfxOffsetCorrection: new Vector2(0, 0))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 19))]));
                         break;
                     }
 
-                //case AnimData.PkgName.GrassRegular:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
-                //    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 1));
-                //    AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_regular_x3", layer: 1));
+                case AnimData.PkgName.GrassRegular:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), gfxOffsetCorrection: new Vector2(0, -2))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1.2f, gfxOffsetCorrection: new Vector2(0, -3))]));
 
-                //    break;
+                        break;
+                    }
 
-                //case AnimData.PkgName.PlantPoison:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 0, scale: 0.4f));
-                //    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 1, scale: 0.6f));
-                //    break;
+                case AnimData.PkgName.PlantPoison:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 11);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -1))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.CoffeeShrub:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.CoffeeShrub:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 15);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.05f, gfxOffsetCorrection: new Vector2(0, -136))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.06f, gfxOffsetCorrection: new Vector2(0, -160))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_shrub", layer: layer, scale: 0.06f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_shrub", layer: layer, scale: 0.06f));
-                //        break;
-                //    }
+                case AnimData.PkgName.CarrotPlant:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_carrot_plant_empty", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 283), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -37))], name: "default"));
 
-                //case AnimData.PkgName.CarrotPlant:
-                //    {
-                //        int layer = 1;
+                        // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_carrot_plant_has_carrot", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 295, height: 351), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -70))], name: "has_fruits"));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot_plant_empty", layer: layer, scale: 0.1f));
-                //        AddFrameArray(pkgName: pkgName, animName: "has_fruits", frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot_plant_has_carrot", layer: layer, scale: 0.1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-                //        break;
-                //    }
+                case AnimData.PkgName.TomatoPlant:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 28, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tomato_plant_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 296, height: 288), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -13))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_tomato_plant_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 477, height: 459), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -64))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_tomato_plant_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 494, height: 980), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -332))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TomatoPlant:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.MushroomPlant:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 18, colHeight: 14);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -2))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.8f, gfxOffsetCorrection: new Vector2(1, -5))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 1.0f, gfxOffsetCorrection: new Vector2(1, -7))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_small", layer: layer, scale: 0.1f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_medium", layer: layer, scale: 0.08f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato_plant_big", layer: layer, scale: 0.08f));
-
-                //        break;
-                //    }
-
-                //case AnimData.PkgName.MushroomPlant:
-                //    {
-                //        int layer = 1;
-
-                //        AddFrameArray(pkgName: pkgName, animSize: 0, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 0.6f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 0.8f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom_plant", layer: layer, scale: 1.0f));
-                //        break;
-                //    }
-
-                //case AnimData.PkgName.Cactus:
-                //    {
-                //        int layer = 1;
-
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cactus_s0", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cactus_s1", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.Cactus:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 18);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cactus_s0", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 30), gfxOffsetCorrection: new Vector2(0, -5))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_cactus_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 53), gfxOffsetCorrection: new Vector2(0, -13))]));
+                        break;
+                    }
 
                 //case AnimData.PkgName.PalmTree:
                 //    {
