@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    public class AnimEditor : Scene
+    public class AnimViewer : Scene
     {
         private const float baseScale = 0.5f; // 0.5f
 
@@ -39,7 +39,7 @@ namespace SonOfRobin
         private readonly Effect effect;
         private int outlineThickness;
 
-        public AnimEditor() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(60, 60);
@@ -53,39 +53,21 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            string[] jsonNameArray = new string[] {
-                            "female_mage_tex_cropped.json",
-                        };
-
-            var durationDict = new Dictionary<string, int>
-                        {
-                            { "stand", 3 },
-                            { "weak", 3 },
-                            { "walk", 2 },
-                            { "attack", 1 },
-                            { "dead", 2 },
-                            { "damage", 2 },
-                        };
-
-            var switchDict = new Dictionary<string, string>
+            foreach (AnimData.PkgName pkgName in AnimDataNew.allPkgNames)
             {
-                { "attack", "stand" },
-                { "damage", "stand" },
-            };
+                AnimDataNew.LoadPackage(pkgName); // TODO move to InitialLoader
+                if (AnimDataNew.pkgByName[pkgName] != null) animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
+            }
 
-            List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
+            animPkgList.Add(AnimDataNew.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
-            animPkgList.Add(AnimPkg.MakePackageForDragonBonesAnims(pkgName: AnimData.PkgName.DragonBonesTestFemaleMage, colWidth: 20, colHeight: 25, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -34))); // scale: 0.5f
+            animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimPkg.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
+            animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+            animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 
-            animPkgList.Add(AnimPkg.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
-
-            //animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
-
-            //animPkgList.Add(AnimPkg.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 4f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
+            animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 1f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
 
             //animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             //animPkgList.LastOrDefault().AddAnim(

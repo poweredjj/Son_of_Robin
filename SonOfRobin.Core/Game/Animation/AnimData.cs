@@ -10,12 +10,6 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        // new anim system parameters below
-
-        public static readonly Dictionary<PkgName, AnimPkg> pkgByName = new();
-
-        // old anim system parameters below
-
         // _content_template.json should be updated after making any changes to assets
         public const float currentVersion = 1.000042f; // version number should be incremented when any existing asset is updated
 
