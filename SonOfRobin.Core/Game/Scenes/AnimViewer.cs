@@ -118,8 +118,8 @@ namespace SonOfRobin
 
         private void AssignCurrentAnim()
         {
-            this.currentAnimIndex = 0;
             this.currentAnimPkg = this.animPkgArray[this.currentAnimPkgIndex];
+            if (this.currentAnimIndex > this.currentAnimPkg.AllAnimList.Count - 1) this.currentAnimIndex = 0;
             this.RewindAnim();
             this.currentAnimFrame = this.CurrentAnim.frameArray[0];
         }
@@ -350,7 +350,7 @@ namespace SonOfRobin
             Rectangle lightRect = new(x: 0, y: 0, width: lightSize, height: lightSize);
             lightRect.Offset((int)(lightPos.X - (lightSize / 2)), (int)(lightPos.Y - (lightSize / 2)));
 
-            if (this.drawLightAndShadow) this.DrawShadow(color: Color.Black, lightPos: lightPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightPos, end: this.pos));
+            if (this.drawLightAndShadow) this.DrawShadow(color: Color.Black * 0.5f, lightPos: lightPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightPos, end: this.pos));
 
             this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
 

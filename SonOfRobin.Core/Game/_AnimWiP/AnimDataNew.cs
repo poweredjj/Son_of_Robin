@@ -165,66 +165,71 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.PalmTree:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.PalmTree:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 14);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_palmtree_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 39), scale: 0.7f, gfxOffsetCorrection: new Vector2(0, -8))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_palmtree_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 71, height: 82), gfxOffsetCorrection: new Vector2(1, -20))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_palmtree_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 68, height: 104), gfxOffsetCorrection: new Vector2(15, -36))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 3, frameArray: [new AnimFrameNew(atlasName: "_processed_palmtree_s3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 74, height: 104), gfxOffsetCorrection: new Vector2(14, -37))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_small", layer: layer, scale: 0.7f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s1", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s2", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 3, frameArray: ConvertImageToFrameArray(atlasName: "_processed_palmtree_s3", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.TreeBig:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 14);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -32))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_big_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 49, height: 64), gfxOffsetCorrection: new Vector2(0, -22))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_big_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 65, height: 96), gfxOffsetCorrection: new Vector2(0, -38))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TreeBig:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.TreeSmall1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_small_1_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 33, height: 34), gfxOffsetCorrection: new Vector2(0, -6))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_small_1_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_tall", layer: layer, scale: 0.5f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_big_s1", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_big_s2", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.TreeSmall2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_small_2_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 32), gfxOffsetCorrection: new Vector2(0, -6))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_small_2_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TreeSmall1:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.TreeStump:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 17);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_stump", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1f)]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_1_s1", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_1_s2", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.WaterLily1:
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily1", hasOnePixelMargin: true);
+                    break;
 
-                //case AnimData.PkgName.TreeSmall2:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.WaterLily2:
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 32, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily2", hasOnePixelMargin: true);
+                    break;
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_sapling_short", layer: layer, scale: 0.5f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s1", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_small_2_s2", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.WaterLily3:
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily3", hasOnePixelMargin: true);
+                    break;
 
-                //case AnimData.PkgName.TreeStump:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_stump", layer: 1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.MineralsBig1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 222, height: 310), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.WaterLily1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily1", layer: 0));
-                //    break;
-
-                //case AnimData.PkgName.WaterLily2:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily2", layer: 0));
-                //    break;
-
-                //case AnimData.PkgName.WaterLily3:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily3", layer: 0));
-                //    break;
-
-                //case AnimData.PkgName.MineralsBig1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
-                //    break;
+                // AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
+                // break;
 
                 //case AnimData.PkgName.MineralsBig2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
