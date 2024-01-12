@@ -59,15 +59,15 @@ namespace SonOfRobin
                 if (AnimDataNew.pkgByName[pkgName] != null) animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
             }
 
-            animPkgList.Add(AnimDataNew.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
+            //animPkgList.Add(AnimDataNew.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
 
-            animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+            //animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
+            //animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
 
-            animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
+            //animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
 
-            animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 1f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
+            //animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 1f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
 
             //animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
             //animPkgList.LastOrDefault().AddAnim(
