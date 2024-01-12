@@ -54,64 +54,68 @@ namespace SonOfRobin
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 3, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                //case PkgName.FlowersWhite:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
-                //    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 0));
-                //    break;
+                case AnimData.PkgName.FlowersWhite:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_white", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 19), gfxOffsetCorrection: new Vector2(0, -1))]));
 
-                //case PkgName.FlowersYellow1:
-                //    {
-                //        int layer = 0;
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_1_s1", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.FlowersYellow1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_yellow_1_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 17), gfxOffsetCorrection: new Vector2(0, 1))]));
+                        break;
+                    }
 
-                //case PkgName.FlowersYellow2:
-                //    {
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_2_s0", layer: 0, scale: 0.5f));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_yellow_2_s1", layer: 1, scale: 0.5f));
-                //        break;
-                //    }
+                case AnimData.PkgName.FlowersYellow2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_yellow_2_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 46, height: 41), scale: 0.5f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_yellow_2_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 38, height: 49), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -7))]));
+                        break;
+                    }
 
-                //case PkgName.FlowersRed:
-                //    {
-                //        int layer = 0;
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_red", layer: layer));
-                //        break;
-                //    }
+                case AnimData.PkgName.FlowersRed:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_red", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 25), gfxOffsetCorrection: new Vector2(0, -2))]));
+                        break;
+                    }
 
-                //case PkgName.Rushes:
-                //    {
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_rushes", layer: 1));
-                //        break;
-                //    }
+                case AnimData.PkgName.Rushes:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_rushes", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 34), gfxOffsetCorrection: new Vector2(0, -8))]));
+                        break;
+                    }
 
-                //case PkgName.GrassDesert:
-                //    {
-                //        int layer = 0;
+                case AnimData.PkgName.GrassDesert:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 12);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 21))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 19), gfxOffsetCorrection: new Vector2(0, 0))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_desert_s0", layer: layer));
-                //        AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_desert_s1", layer: layer));
-                //        break;
-                //    }
-
-                //case PkgName.GrassRegular:
+                //case AnimData.PkgName.GrassRegular:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
                 //    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 1));
                 //    AddFrameArray(pkgName: pkgName, animSize: 2, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_regular_x3", layer: 1));
 
                 //    break;
 
-                //case PkgName.PlantPoison:
+                //case AnimData.PkgName.PlantPoison:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 0, scale: 0.4f));
                 //    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_plant_poison", layer: 1, scale: 0.6f));
                 //    break;
 
-                //case PkgName.CoffeeShrub:
+                //case AnimData.PkgName.CoffeeShrub:
                 //    {
                 //        int layer = 1;
 
@@ -120,7 +124,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CarrotPlant:
+                //case AnimData.PkgName.CarrotPlant:
                 //    {
                 //        int layer = 1;
 
@@ -129,7 +133,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.TomatoPlant:
+                //case AnimData.PkgName.TomatoPlant:
                 //    {
                 //        int layer = 1;
 
@@ -140,7 +144,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.MushroomPlant:
+                //case AnimData.PkgName.MushroomPlant:
                 //    {
                 //        int layer = 1;
 
@@ -150,7 +154,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.Cactus:
+                //case AnimData.PkgName.Cactus:
                 //    {
                 //        int layer = 1;
 
@@ -159,7 +163,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.PalmTree:
+                //case AnimData.PkgName.PalmTree:
                 //    {
                 //        int layer = 1;
 
@@ -170,7 +174,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.TreeBig:
+                //case AnimData.PkgName.TreeBig:
                 //    {
                 //        int layer = 1;
 
@@ -180,7 +184,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.TreeSmall1:
+                //case AnimData.PkgName.TreeSmall1:
                 //    {
                 //        int layer = 1;
 
@@ -190,7 +194,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.TreeSmall2:
+                //case AnimData.PkgName.TreeSmall2:
                 //    {
                 //        int layer = 1;
 
@@ -200,224 +204,224 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.TreeStump:
+                //case AnimData.PkgName.TreeStump:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tree_stump", layer: 1, scale: 1f));
                 //    break;
 
-                //case PkgName.WaterLily1:
+                //case AnimData.PkgName.WaterLily1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily1", layer: 0));
                 //    break;
 
-                //case PkgName.WaterLily2:
+                //case AnimData.PkgName.WaterLily2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily2", layer: 0));
                 //    break;
 
-                //case PkgName.WaterLily3:
+                //case AnimData.PkgName.WaterLily3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_waterlily3", layer: 0));
                 //    break;
 
-                //case PkgName.MineralsBig1:
+                //case AnimData.PkgName.MineralsBig1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_1", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig2:
+                //case AnimData.PkgName.MineralsBig2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_2", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig3:
+                //case AnimData.PkgName.MineralsBig3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_3", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig4:
+                //case AnimData.PkgName.MineralsBig4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_4", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig5:
+                //case AnimData.PkgName.MineralsBig5:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_5", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig6:
+                //case AnimData.PkgName.MineralsBig6:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_6", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig7:
+                //case AnimData.PkgName.MineralsBig7:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_7", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig8:
+                //case AnimData.PkgName.MineralsBig8:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_8", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig9:
+                //case AnimData.PkgName.MineralsBig9:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_9", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig10:
+                //case AnimData.PkgName.MineralsBig10:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_10", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig11:
+                //case AnimData.PkgName.MineralsBig11:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_11", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig12:
+                //case AnimData.PkgName.MineralsBig12:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_12", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig13:
+                //case AnimData.PkgName.MineralsBig13:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_13", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsBig14:
+                //case AnimData.PkgName.MineralsBig14:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_big_14", layer: 1, scale: 0.3f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsSmall1:
+                //case AnimData.PkgName.MineralsSmall1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_1", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                 //    break;
 
-                //case PkgName.MineralsSmall2:
+                //case AnimData.PkgName.MineralsSmall2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                 //    break;
 
-                //case PkgName.MineralsSmall3:
+                //case AnimData.PkgName.MineralsSmall3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_3", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                 //    break;
 
-                //case PkgName.MineralsSmall4:
+                //case AnimData.PkgName.MineralsSmall4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig1:
+                //case AnimData.PkgName.MineralsMossyBig1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig2:
+                //case AnimData.PkgName.MineralsMossyBig2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig3:
+                //case AnimData.PkgName.MineralsMossyBig3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig4:
+                //case AnimData.PkgName.MineralsMossyBig4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig5:
+                //case AnimData.PkgName.MineralsMossyBig5:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig6:
+                //case AnimData.PkgName.MineralsMossyBig6:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig7:
+                //case AnimData.PkgName.MineralsMossyBig7:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.4f));
 
                 //    break;
 
-                //case PkgName.MineralsMossyBig8:
+                //case AnimData.PkgName.MineralsMossyBig8:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig9:
+                //case AnimData.PkgName.MineralsMossyBig9:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig10:
+                //case AnimData.PkgName.MineralsMossyBig10:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig11:
+                //case AnimData.PkgName.MineralsMossyBig11:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossyBig12:
+                //case AnimData.PkgName.MineralsMossyBig12:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.4f));
                 //    break;
 
-                //case PkgName.MineralsMossySmall1:
+                //case AnimData.PkgName.MineralsMossySmall1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.MineralsMossySmall2:
+                //case AnimData.PkgName.MineralsMossySmall2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.MineralsMossySmall3:
+                //case AnimData.PkgName.MineralsMossySmall3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.MineralsMossySmall4:
+                //case AnimData.PkgName.MineralsMossySmall4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.MineralsCave:
+                //case AnimData.PkgName.MineralsCave:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_minerals", layer: 1, scale: 0.3f, depthPercent: 0.75f));
                 //    break;
 
-                //case PkgName.JarWhole:
+                //case AnimData.PkgName.JarWhole:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_jar_sealed", layer: 1, scale: 0.6f));
                 //    break;
 
-                //case PkgName.JarBroken:
+                //case AnimData.PkgName.JarBroken:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_jar_broken", layer: 1, scale: 0.6f));
                 //    break;
 
-                //case PkgName.ChestWooden:
+                //case AnimData.PkgName.ChestWooden:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.ChestStone:
+                //case AnimData.PkgName.ChestStone:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.ChestIron:
+                //case AnimData.PkgName.ChestIron:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.ChestCrystal:
+                //case AnimData.PkgName.ChestCrystal:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.ChestTreasureBlue:
+                //case AnimData.PkgName.ChestTreasureBlue:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.ChestTreasureRed:
+                //case AnimData.PkgName.ChestTreasureRed:
                 //    AddChestPackage(pkgName);
                 //    break;
 
-                //case PkgName.WoodLogRegular:
+                //case AnimData.PkgName.WoodLogRegular:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wood_regular", layer: 1, scale: 0.75f));
                 //    break;
 
-                //case PkgName.WoodLogHard:
+                //case AnimData.PkgName.WoodLogHard:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wood_hard", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.WoodPlank:
+                //case AnimData.PkgName.WoodPlank:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wood_plank", layer: 0, scale: 0.8f));
                 //    break;
 
-                //case PkgName.Nail:
+                //case AnimData.PkgName.Nail:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_nail", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Rope:
+                //case AnimData.PkgName.Rope:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_rope", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.HideCloth:
+                //case AnimData.PkgName.HideCloth:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hidecloth", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.Crate:
+                //case AnimData.PkgName.Crate:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crate", layer: 1));
                 //    break;
 
-                //case PkgName.WorkshopEssential:
+                //case AnimData.PkgName.WorkshopEssential:
                 //    {
                 //        int layer = 1;
 
@@ -427,7 +431,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopBasic:
+                //case AnimData.PkgName.WorkshopBasic:
                 //    {
                 //        int layer = 1;
 
@@ -437,7 +441,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopAdvanced:
+                //case AnimData.PkgName.WorkshopAdvanced:
                 //    {
                 //        int layer = 1;
 
@@ -447,7 +451,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopMaster:
+                //case AnimData.PkgName.WorkshopMaster:
                 //    {
                 //        int layer = 1;
 
@@ -457,7 +461,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopMeatHarvesting:
+                //case AnimData.PkgName.WorkshopMeatHarvesting:
                 //    {
                 //        int layer = 1;
 
@@ -466,7 +470,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopLeatherBasic:
+                //case AnimData.PkgName.WorkshopLeatherBasic:
                 //    {
                 //        int layer = 1;
 
@@ -476,7 +480,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.WorkshopLeatherAdvanced:
+                //case AnimData.PkgName.WorkshopLeatherAdvanced:
                 //    {
                 //        int layer = 1;
 
@@ -486,7 +490,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.MeatDryingRackRegular:
+                //case AnimData.PkgName.MeatDryingRackRegular:
                 //    {
                 //        float depthPercent = 0.6f;
 
@@ -499,7 +503,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.MeatDryingRackWide:
+                //case AnimData.PkgName.MeatDryingRackWide:
                 //    {
                 //        float depthPercent = 0.6f;
 
@@ -512,7 +516,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.AlchemyLabStandard:
+                //case AnimData.PkgName.AlchemyLabStandard:
                 //    {
                 //        int layer = 1;
                 //        float scale = 0.5f;
@@ -523,7 +527,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.AlchemyLabAdvanced:
+                //case AnimData.PkgName.AlchemyLabAdvanced:
                 //    {
                 //        int layer = 1;
                 //        float scale = 0.5f;
@@ -534,7 +538,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.FurnaceConstructionSite:
+                //case AnimData.PkgName.FurnaceConstructionSite:
                 //    {
                 //        float scale = 0.2f;
 
@@ -546,7 +550,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.FurnaceComplete:
+                //case AnimData.PkgName.FurnaceComplete:
                 //    {
                 //        int layer = 1;
                 //        float scale = 0.2f;
@@ -556,7 +560,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.Anvil:
+                //case AnimData.PkgName.Anvil:
                 //    {
                 //        int layer = 1;
 
@@ -566,7 +570,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.HotPlate:
+                //case AnimData.PkgName.HotPlate:
                 //    {
                 //        int layer = 1;
 
@@ -581,7 +585,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CookingPot:
+                //case AnimData.PkgName.CookingPot:
                 //    {
                 //        int layer = 1;
 
@@ -598,219 +602,219 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.Totem:
+                //case AnimData.PkgName.Totem:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
                 //    break;
 
-                //case PkgName.RuinsWallHorizontal1:
+                //case AnimData.PkgName.RuinsWallHorizontal1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_1", layer: 1));
                 //    break;
 
-                //case PkgName.RuinsWallHorizontal2:
+                //case AnimData.PkgName.RuinsWallHorizontal2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_2", layer: 1));
                 //    break;
 
-                //case PkgName.RuinsWallWallVertical:
+                //case AnimData.PkgName.RuinsWallWallVertical:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
                 //    break;
 
-                //case PkgName.RuinsColumn:
+                //case AnimData.PkgName.RuinsColumn:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_column", layer: 1));
                 //    break;
 
-                //case PkgName.RuinsRubble:
+                //case AnimData.PkgName.RuinsRubble:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_rubble", layer: 1));
                 //    break;
 
-                //case PkgName.Stick:
+                //case AnimData.PkgName.Stick:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stick", layer: 0));
                 //    break;
 
-                //case PkgName.Stone:
+                //case AnimData.PkgName.Stone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stone", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Granite:
+                //case AnimData.PkgName.Granite:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_granite", layer: 1, scale: 1f));
                 //    break;
 
-                //case PkgName.Clay:
+                //case AnimData.PkgName.Clay:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clay", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.Apple:
+                //case AnimData.PkgName.Apple:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_apple", layer: 0, scale: 0.075f));
                 //    break;
 
-                //case PkgName.Banana:
+                //case AnimData.PkgName.Banana:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_banana", layer: 0, scale: 0.08f));
                 //    break;
 
-                //case PkgName.Cherry:
+                //case AnimData.PkgName.Cherry:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cherry", layer: 0, scale: 0.12f));
                 //    break;
 
-                //case PkgName.Tomato:
+                //case AnimData.PkgName.Tomato:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato", layer: 0, scale: 0.07f));
                 //    break;
 
-                //case PkgName.Carrot:
+                //case AnimData.PkgName.Carrot:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot", layer: 0, scale: 0.08f));
                 //    break;
 
-                //case PkgName.Acorn:
+                //case AnimData.PkgName.Acorn:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_acorn", layer: 0, scale: 0.13f));
                 //    break;
 
-                //case PkgName.Mushroom:
+                //case AnimData.PkgName.Mushroom:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.SeedBag:
+                //case AnimData.PkgName.SeedBag:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_seed_bag", layer: 0, scale: 0.08f));
                 //    break;
 
-                //case PkgName.CoffeeRaw:
+                //case AnimData.PkgName.CoffeeRaw:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_raw", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.CoffeeRoasted:
+                //case AnimData.PkgName.CoffeeRoasted:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_roasted", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.Clam:
+                //case AnimData.PkgName.Clam:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clam", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.MeatRawRegular:
+                //case AnimData.PkgName.MeatRawRegular:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_regular", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.MeatRawPrime:
+                //case AnimData.PkgName.MeatRawPrime:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_prime", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.MeatDried:
+                //case AnimData.PkgName.MeatDried:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_dried", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.Fat:
+                //case AnimData.PkgName.Fat:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fat", layer: 0, scale: 0.08f));
                 //    break;
 
-                //case PkgName.Burger:
+                //case AnimData.PkgName.Burger:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_burger", layer: 0, scale: 0.07f));
                 //    break;
 
-                //case PkgName.MealStandard:
+                //case AnimData.PkgName.MealStandard:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meal_standard", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Leather:
+                //case AnimData.PkgName.Leather:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_leather", layer: 0, scale: 0.75f));
                 //    break;
 
-                //case PkgName.KnifeSimple:
+                //case AnimData.PkgName.KnifeSimple:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_knife_simple", layer: 1, scale: 1f));
                 //    break;
 
-                //case PkgName.AxeWood:
+                //case AnimData.PkgName.AxeWood:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_wooden", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.AxeStone:
+                //case AnimData.PkgName.AxeStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_stone", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.AxeIron:
+                //case AnimData.PkgName.AxeIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_iron", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.AxeCrystal:
+                //case AnimData.PkgName.AxeCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_crystal", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PickaxeWood:
+                //case AnimData.PkgName.PickaxeWood:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_wood", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.PickaxeStone:
+                //case AnimData.PkgName.PickaxeStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_stone", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.PickaxeIron:
+                //case AnimData.PkgName.PickaxeIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_iron", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.PickaxeCrystal:
+                //case AnimData.PkgName.PickaxeCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_crystal", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.ScytheStone:
+                //case AnimData.PkgName.ScytheStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_stone", layer: 0));
                 //    break;
 
-                //case PkgName.ScytheIron:
+                //case AnimData.PkgName.ScytheIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_iron", layer: 0));
                 //    break;
 
-                //case PkgName.ScytheCrystal:
+                //case AnimData.PkgName.ScytheCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_crystal", layer: 0));
                 //    break;
 
-                //case PkgName.SpearWood:
+                //case AnimData.PkgName.SpearWood:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_wood", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.SpearStone:
+                //case AnimData.PkgName.SpearStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_stone", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.SpearIron:
+                //case AnimData.PkgName.SpearIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_iron", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.SpearCrystal:
+                //case AnimData.PkgName.SpearCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_crystal", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.ShovelStone:
+                //case AnimData.PkgName.ShovelStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_stone", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.ShovelIron:
+                //case AnimData.PkgName.ShovelIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_iron", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.ShovelCrystal:
+                //case AnimData.PkgName.ShovelCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_crystal", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.BowBasic:
+                //case AnimData.PkgName.BowBasic:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_basic", layer: 0, scale: 0.25f));
                 //    break;
 
-                //case PkgName.BowAdvanced:
+                //case AnimData.PkgName.BowAdvanced:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_advanced", layer: 0, scale: 0.25f));
                 //    break;
 
-                //case PkgName.ArrowWood:
+                //case AnimData.PkgName.ArrowWood:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_wood", layer: 0, scale: 0.75f));
                 //    break;
 
-                //case PkgName.ArrowStone:
+                //case AnimData.PkgName.ArrowStone:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_stone", layer: 0, scale: 0.75f));
                 //    break;
 
-                //case PkgName.ArrowIron:
+                //case AnimData.PkgName.ArrowIron:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_iron", layer: 0, scale: 0.75f));
                 //    break;
 
-                //case PkgName.ArrowCrystal:
+                //case AnimData.PkgName.ArrowCrystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_crystal", layer: 0, scale: 0.75f));
                 //    break;
 
-                //case PkgName.ArrowExploding:
+                //case AnimData.PkgName.ArrowExploding:
                 //    {
                 //        int layer = 0;
                 //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_burning_off", layer: layer, scale: 0.75f));
@@ -818,27 +822,27 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CoalDeposit:
+                //case AnimData.PkgName.CoalDeposit:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal_deposit", layer: 1, scale: 1f));
                 //    break;
 
-                //case PkgName.IronDeposit:
+                //case AnimData.PkgName.IronDeposit:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_deposit", layer: 1, scale: 1f));
                 //    break;
 
-                //case PkgName.CrystalDepositSmall:
+                //case AnimData.PkgName.CrystalDepositSmall:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_small", layer: 1));
                 //    break;
 
-                //case PkgName.CrystalDepositBig:
+                //case AnimData.PkgName.CrystalDepositBig:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_big", layer: 1));
                 //    break;
 
-                //case PkgName.DigSite:
+                //case AnimData.PkgName.DigSite:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site", layer: 0));
                 //    break;
 
-                //case PkgName.DigSiteGlass:
+                //case AnimData.PkgName.DigSiteGlass:
                 //    {
                 //        int layer = 0;
                 //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: new AnimFrame[]
@@ -853,280 +857,280 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.DigSiteRuins:
+                //case AnimData.PkgName.DigSiteRuins:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site_ruins", layer: 0, scale: 0.35f));
                 //    break;
 
-                //case PkgName.Coal:
+                //case AnimData.PkgName.Coal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.IronOre:
+                //case AnimData.PkgName.IronOre:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_ore", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.IronBar:
+                //case AnimData.PkgName.IronBar:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_bar", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.IronRod:
+                //case AnimData.PkgName.IronRod:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_rod", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.IronPlate:
+                //case AnimData.PkgName.IronPlate:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_plate", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.GlassSand:
+                //case AnimData.PkgName.GlassSand:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glass_sand", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Crystal:
+                //case AnimData.PkgName.Crystal:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PlayerBoy:
+                //case AnimData.PkgName.PlayerBoy:
                 //    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
                 //    break;
 
-                //case PkgName.PlayerGirl:
+                //case AnimData.PkgName.PlayerGirl:
                 //    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
                 //    break;
 
-                //case PkgName.FoxGinger:
+                //case AnimData.PkgName.FoxGinger:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxRed:
+                //case AnimData.PkgName.FoxRed:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxWhite:
+                //case AnimData.PkgName.FoxWhite:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxGray:
+                //case AnimData.PkgName.FoxGray:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxBlack:
+                //case AnimData.PkgName.FoxBlack:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxChocolate:
+                //case AnimData.PkgName.FoxChocolate:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxBrown:
+                //case AnimData.PkgName.FoxBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.FoxYellow:
+                //case AnimData.PkgName.FoxYellow:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog1:
+                //case AnimData.PkgName.Frog1:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog2:
+                //case AnimData.PkgName.Frog2:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 0, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog3:
+                //case AnimData.PkgName.Frog3:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 0, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog4:
+                //case AnimData.PkgName.Frog4:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 0, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog5:
+                //case AnimData.PkgName.Frog5:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 1, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog6:
+                //case AnimData.PkgName.Frog6:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 1, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog7:
+                //case AnimData.PkgName.Frog7:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.Frog8:
+                //case AnimData.PkgName.Frog8:
                 //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: 1f);
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitBrown:
+                //case AnimData.PkgName.RabbitBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitDarkBrown:
+                //case AnimData.PkgName.RabbitDarkBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitGray:
+                //case AnimData.PkgName.RabbitGray:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitBlack:
+                //case AnimData.PkgName.RabbitBlack:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitLightGray:
+                //case AnimData.PkgName.RabbitLightGray:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitBeige:
+                //case AnimData.PkgName.RabbitBeige:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitWhite:
+                //case AnimData.PkgName.RabbitWhite:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.RabbitLightBrown:
+                //case AnimData.PkgName.RabbitLightBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
                 //    break;
 
-                //case PkgName.BearBrown:
+                //case AnimData.PkgName.BearBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearWhite:
+                //case AnimData.PkgName.BearWhite:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearOrange:
+                //case AnimData.PkgName.BearOrange:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearBlack:
+                //case AnimData.PkgName.BearBlack:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearDarkBrown:
+                //case AnimData.PkgName.BearDarkBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearGray:
+                //case AnimData.PkgName.BearGray:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearRed:
+                //case AnimData.PkgName.BearRed:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.BearBeige:
+                //case AnimData.PkgName.BearBeige:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
                 //    break;
 
-                //case PkgName.TentModern:
+                //case AnimData.PkgName.TentModern:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
                 //    break;
 
-                //case PkgName.TentModernPacked:
+                //case AnimData.PkgName.TentModernPacked:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern_packed", layer: 1, scale: 0.12f));
                 //    break;
 
-                //case PkgName.TentSmall:
+                //case AnimData.PkgName.TentSmall:
                 //    // TODO replace with A - frame tent asset(when found)
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 0.5f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.TentMedium:
+                //case AnimData.PkgName.TentMedium:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 1f, depthPercent: 0.45f));
                 //    break;
 
-                //case PkgName.TentBig:
+                //case AnimData.PkgName.TentBig:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_big", layer: 1, scale: 1f, depthPercent: 0.6f));
                 //    break;
 
-                //case PkgName.BackpackSmall:
+                //case AnimData.PkgName.BackpackSmall:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_small", layer: 1, scale: 0.1f));
                 //    break;
 
-                //case PkgName.BackpackMedium:
+                //case AnimData.PkgName.BackpackMedium:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_medium", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.BackpackBig:
+                //case AnimData.PkgName.BackpackBig:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_big", layer: 1, scale: 0.1f));
                 //    break;
 
-                //case PkgName.BackpackLuxurious:
+                //case AnimData.PkgName.BackpackLuxurious:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_luxurious", layer: 1, scale: 0.1f));
                 //    break;
 
-                //case PkgName.BeltSmall:
+                //case AnimData.PkgName.BeltSmall:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_small", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.BeltMedium:
+                //case AnimData.PkgName.BeltMedium:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_medium", layer: 0, scale: 0.12f));
                 //    break;
 
-                //case PkgName.BeltBig:
+                //case AnimData.PkgName.BeltBig:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_big", layer: 0, scale: 0.06f));
                 //    break;
 
-                //case PkgName.BeltLuxurious:
+                //case AnimData.PkgName.BeltLuxurious:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_luxurious", layer: 0, scale: 0.06f));
                 //    break;
 
-                //case PkgName.Map:
+                //case AnimData.PkgName.Map:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_item", layer: 0, scale: 0.06f, crop: false));
                 //    break;
 
-                //case PkgName.HatSimple:
+                //case AnimData.PkgName.HatSimple:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hat_simple", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.BootsProtective:
+                //case AnimData.PkgName.BootsProtective:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_protective", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.BootsMountain:
+                //case AnimData.PkgName.BootsMountain:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_mountain", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.BootsSpeed:
+                //case AnimData.PkgName.BootsSpeed:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_speed", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.BootsAllTerrain:
+                //case AnimData.PkgName.BootsAllTerrain:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_all_terrain", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.GlovesStrength:
+                //case AnimData.PkgName.GlovesStrength:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_gloves_strength", layer: 0, scale: 0.7f));
                 //    break;
 
-                //case PkgName.GlassesBlue:
+                //case AnimData.PkgName.GlassesBlue:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glasses_blue", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Dungarees:
+                //case AnimData.PkgName.Dungarees:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dungarees", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.LanternFrame:
+                //case AnimData.PkgName.LanternFrame:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_frame", layer: 0, scale: 0.075f));
                 //    break;
 
-                //case PkgName.Candle:
+                //case AnimData.PkgName.Candle:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_candle", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.Lantern:
+                //case AnimData.PkgName.Lantern:
                 //    {
                 //        float scale = 0.075f;
                 //        int layer = 0;
@@ -1138,7 +1142,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.SmallTorch:
+                //case AnimData.PkgName.SmallTorch:
                 //    {
                 //        float scale = 0.07f;
                 //        int layer = 0;
@@ -1150,7 +1154,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.BigTorch:
+                //case AnimData.PkgName.BigTorch:
                 //    {
                 //        float scale = 0.1f;
                 //        int layer = 0;
@@ -1162,7 +1166,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CampfireSmall:
+                //case AnimData.PkgName.CampfireSmall:
                 //    {
                 //        int layer = 1;
 
@@ -1181,7 +1185,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CampfireMedium:
+                //case AnimData.PkgName.CampfireMedium:
                 //    {
                 //        int layer = 1;
 
@@ -1198,7 +1202,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.BoatConstruction:
+                //case AnimData.PkgName.BoatConstruction:
                 //    {
                 //        float depthPercent = 0.7f;
                 //        float scale = 0.7f;
@@ -1211,135 +1215,135 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.BoatCompleteStanding:
+                //case AnimData.PkgName.BoatCompleteStanding:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                 //    break;
 
-                //case PkgName.BoatCompleteCruising:
+                //case AnimData.PkgName.BoatCompleteCruising:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
                 //    break;
 
-                //case PkgName.ShipRescue:
+                //case AnimData.PkgName.ShipRescue:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.HerbsBlack:
+                //case AnimData.PkgName.HerbsBlack:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_black", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsCyan:
+                //case AnimData.PkgName.HerbsCyan:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_cyan", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsBlue:
+                //case AnimData.PkgName.HerbsBlue:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_blue", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsGreen:
+                //case AnimData.PkgName.HerbsGreen:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_green", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsYellow:
+                //case AnimData.PkgName.HerbsYellow:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_yellow", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsRed:
+                //case AnimData.PkgName.HerbsRed:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_red", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsViolet:
+                //case AnimData.PkgName.HerbsViolet:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_violet", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsBrown:
+                //case AnimData.PkgName.HerbsBrown:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_brown", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsDarkViolet:
+                //case AnimData.PkgName.HerbsDarkViolet:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_violet", layer: 0));
                 //    break;
 
-                //case PkgName.HerbsDarkGreen:
+                //case AnimData.PkgName.HerbsDarkGreen:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_green", layer: 0));
                 //    break;
 
-                //case PkgName.EmptyBottle:
+                //case AnimData.PkgName.EmptyBottle:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_empty", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionRed:
+                //case AnimData.PkgName.PotionRed:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_red", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionBlue:
+                //case AnimData.PkgName.PotionBlue:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_blue", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionViolet:
+                //case AnimData.PkgName.PotionViolet:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_violet", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionYellow:
+                //case AnimData.PkgName.PotionYellow:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_yellow", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionCyan:
+                //case AnimData.PkgName.PotionCyan:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_cyan", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionGreen:
+                //case AnimData.PkgName.PotionGreen:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_green", layer: 1, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionBlack:
+                //case AnimData.PkgName.PotionBlack:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_black", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionDarkViolet:
+                //case AnimData.PkgName.PotionDarkViolet:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_violet", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionDarkYellow:
+                //case AnimData.PkgName.PotionDarkYellow:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_yellow", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionDarkGreen:
+                //case AnimData.PkgName.PotionDarkGreen:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_green", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionLightYellow:
+                //case AnimData.PkgName.PotionLightYellow:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_oil", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionTransparent:
+                //case AnimData.PkgName.PotionTransparent:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_transparent", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.PotionBrown:
+                //case AnimData.PkgName.PotionBrown:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_brown", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.BloodSplatter1:
+                //case AnimData.PkgName.BloodSplatter1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_1", layer: 0));
                 //    break;
 
-                //case PkgName.BloodSplatter2:
+                //case AnimData.PkgName.BloodSplatter2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_2", layer: 0));
                 //    break;
 
-                //case PkgName.BloodSplatter3:
+                //case AnimData.PkgName.BloodSplatter3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_3", layer: 0));
                 //    break;
 
-                //case PkgName.HumanSkeleton:
+                //case AnimData.PkgName.HumanSkeleton:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_human_skeleton", layer: 0));
                 //    break;
 
-                //case PkgName.Hole:
+                //case AnimData.PkgName.Hole:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hole", layer: 0, scale: 1f));
                 //    break;
 
-                //case PkgName.Explosion:
+                //case AnimData.PkgName.Explosion:
                 //    {
                 //        for (byte size = 0; size < 4; size++)
                 //        {
@@ -1359,23 +1363,23 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.SkullAndBones:
+                //case AnimData.PkgName.SkullAndBones:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_skull_and_bones", layer: 2, scale: 1f));
                 //    break;
 
-                //case PkgName.MusicNoteSmall:
+                //case AnimData.PkgName.MusicNoteSmall:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2));
                 //    break;
 
-                //case PkgName.MusicNoteBig:
+                //case AnimData.PkgName.MusicNoteBig:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2, scale: 2.5f));
                 //    break;
 
-                //case PkgName.Miss:
+                //case AnimData.PkgName.Miss:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_miss", layer: 2));
                 //    break;
 
-                //case PkgName.Attack:
+                //case AnimData.PkgName.Attack:
                 //    {
                 //        int layer = 2;
 
@@ -1390,11 +1394,11 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.MapMarker:
+                //case AnimData.PkgName.MapMarker:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.Backlight:
+                //case AnimData.PkgName.Backlight:
                 //    {
                 //        int layer = 0;
 
@@ -1412,11 +1416,11 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.Crosshair:
+                //case AnimData.PkgName.Crosshair:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crosshair", layer: 2));
                 //    break;
 
-                //case PkgName.Flame:
+                //case AnimData.PkgName.Flame:
                 //    {
                 //        byte animSize = 0;
                 //        int layer = 1;
@@ -1450,56 +1454,56 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.Upgrade:
+                //case AnimData.PkgName.Upgrade:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WaterDrop:
+                //case AnimData.PkgName.WaterDrop:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_water_drop", layer: 0, scale: 0.5f));
                 //    break;
 
-                //case PkgName.Zzz:
+                //case AnimData.PkgName.Zzz:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_zzz", layer: 2));
                 //    break;
 
-                //case PkgName.Heart:
+                //case AnimData.PkgName.Heart:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_heart_16x16", layer: 2));
                 //    break;
 
-                //case PkgName.Hammer:
+                //case AnimData.PkgName.Hammer:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hammer", layer: 0, scale: 0.1f));
                 //    break;
 
-                //case PkgName.Fog1:
+                //case AnimData.PkgName.Fog1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.Fog2:
+                //case AnimData.PkgName.Fog2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
 
                 //    break;
 
-                //case PkgName.Fog3:
+                //case AnimData.PkgName.Fog3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.Fog4:
+                //case AnimData.PkgName.Fog4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.BubbleExclamationRed:
+                //case AnimData.PkgName.BubbleExclamationRed:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_red", layer: 2, scale: 0.2f));
                 //    break;
 
-                //case PkgName.BubbleExclamationBlue:
+                //case AnimData.PkgName.BubbleExclamationBlue:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_blue", layer: 2, scale: 0.2f));
                 //    break;
 
-                //case PkgName.BubbleCraftGreen:
+                //case AnimData.PkgName.BubbleCraftGreen:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_craft_green", layer: 2, scale: 0.2f));
                 //    break;
 
-                //case PkgName.SeaWave:
+                //case AnimData.PkgName.SeaWave:
                 //    foreach (var kvp in new Dictionary<int, float> { { 0, 0.2f }, { 1, 0.3f }, { 2, 0.4f }, { 3, 0.5f }, { 4, 0.6f }, { 5, 0.7f }, { 6, 0.8f } })
                 //    {
                 //        int animSize = kvp.Key;
@@ -1510,71 +1514,71 @@ namespace SonOfRobin
 
                 //    break;
 
-                //case PkgName.WeatherFog1:
+                //case AnimData.PkgName.WeatherFog1:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog2:
+                //case AnimData.PkgName.WeatherFog2:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog3:
+                //case AnimData.PkgName.WeatherFog3:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog4:
+                //case AnimData.PkgName.WeatherFog4:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog5:
+                //case AnimData.PkgName.WeatherFog5:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog6:
+                //case AnimData.PkgName.WeatherFog6:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog7:
+                //case AnimData.PkgName.WeatherFog7:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog8:
+                //case AnimData.PkgName.WeatherFog8:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.WeatherFog9:
+                //case AnimData.PkgName.WeatherFog9:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
                 //    break;
 
-                //case PkgName.FertileGroundSmall:
+                //case AnimData.PkgName.FertileGroundSmall:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_small", layer: -1, scale: 1f));
                 //    break;
 
-                //case PkgName.FertileGroundMedium:
+                //case AnimData.PkgName.FertileGroundMedium:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_medium", layer: -1, scale: 1f));
                 //    break;
 
-                //case PkgName.FertileGroundLarge:
+                //case AnimData.PkgName.FertileGroundLarge:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_big", layer: -1, scale: 1.3f));
                 //    break;
 
-                //case PkgName.FenceHorizontalShort:
+                //case AnimData.PkgName.FenceHorizontalShort:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_short", layer: 1, depthPercent: 0.2f));
                 //    break;
 
-                //case PkgName.FenceVerticalShort:
+                //case AnimData.PkgName.FenceVerticalShort:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_short", layer: 1, depthPercent: 0.9f));
                 //    break;
 
-                //case PkgName.FenceHorizontalLong:
+                //case AnimData.PkgName.FenceHorizontalLong:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_long", layer: 1, depthPercent: 0.2f));
                 //    break;
 
-                //case PkgName.FenceVerticalLong:
+                //case AnimData.PkgName.FenceVerticalLong:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_long", layer: 1, depthPercent: 0.95f));
                 //    break;
 
-                //case PkgName.CaveEntrance:
+                //case AnimData.PkgName.CaveEntrance:
                 //    {
                 //        float scale = 2f;
                 //        float depthPercent = 0.95f;
@@ -1585,7 +1589,7 @@ namespace SonOfRobin
                 //        break;
                 //    }
 
-                //case PkgName.CaveExit:
+                //case AnimData.PkgName.CaveExit:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
                 //    break;
 
@@ -1614,6 +1618,8 @@ namespace SonOfRobin
                     List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
 
                     animPkg = MakePackageForDragonBonesAnims(pkgName: pkgName, colWidth: 20, colHeight: 20, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -39));
+
+                    animPkg = null; // for testing
 
                     break;
 

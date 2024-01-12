@@ -439,7 +439,7 @@ namespace SonOfRobin
 
                 case PkgName.FlowersWhite:
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s0", layer: 0));
-                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_grass_s1", layer: 0));
+                    AddFrameArray(pkgName: pkgName, animSize: 1, frameArray: ConvertImageToFrameArray(atlasName: "_processed_flowers_white", layer: 0));
                     break;
 
                 case PkgName.FlowersYellow1:
