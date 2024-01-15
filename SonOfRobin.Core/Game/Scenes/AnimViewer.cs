@@ -48,7 +48,7 @@ namespace SonOfRobin
             this.rot = 0f;
             this.playSpeed = 1; // 1
             this.showColRect = true;
-            this.showGfxRect = true;
+            this.showGfxRect = false;
             this.showEffect = false;
             this.flatShadow = true;
             this.drawLightAndShadow = false;

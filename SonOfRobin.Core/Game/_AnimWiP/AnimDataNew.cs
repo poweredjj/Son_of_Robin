@@ -782,53 +782,84 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.Totem:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
-                //    break;
+                case AnimData.PkgName.Totem:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 21, colHeight: 40);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_totem", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 186, height: 467), scale: 0.25f, gfxOffsetCorrection: new Vector2(-1, -149))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.RuinsWallHorizontal1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_1", layer: 1));
-                //    break;
+                case AnimData.PkgName.RuinsWallHorizontal1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 79, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_horizontal_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 81, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(1, -19))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.RuinsWallHorizontal2:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_horizontal_2", layer: 1));
-                //    break;
+                case AnimData.PkgName.RuinsWallHorizontal2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_horizontal_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 64, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(1, -19))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.RuinsWallWallVertical:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_wall_vertical", layer: 1, depthPercent: 0.75f));
-                //    break;
+                case AnimData.PkgName.RuinsWallWallVertical:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 35);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_vertical", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(0, -14))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.RuinsColumn:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_column", layer: 1));
-                //    break;
+                case AnimData.PkgName.RuinsColumn:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 27, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_column", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 32), scale: 1f, gfxOffsetCorrection: new Vector2(0, -5))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.RuinsRubble:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ruins_rubble", layer: 1));
-                //    break;
+                case AnimData.PkgName.RuinsRubble:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 29, colHeight: 18);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_rubble", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 28), scale: 1f, gfxOffsetCorrection: new Vector2(0, -3))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.Stick:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stick", layer: 0));
-                //    break;
+                case AnimData.PkgName.Stick:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 22, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_stick", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Stone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_stone", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.Stone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 20, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Granite:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_granite", layer: 1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.Granite:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 19, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_granite", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 21, height: 19), scale: 1f, gfxOffsetCorrection: new Vector2(0, -2))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.Clay:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clay", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.Clay:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 25, height: 23, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_clay", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Apple:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_apple", layer: 0, scale: 0.075f));
-                //    break;
+                case AnimData.PkgName.Apple:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 218, height: 264, scale: 0.075f, layer: 0, animSize: 0, altasName: "_processed_apple", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Banana:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_banana", layer: 0, scale: 0.08f));
-                //    break;
+                case AnimData.PkgName.Banana:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 432, height: 342, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_banana", hasOnePixelMargin: true);
+                        break;
+                    }
 
                 //case AnimData.PkgName.Cherry:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cherry", layer: 0, scale: 0.12f));
