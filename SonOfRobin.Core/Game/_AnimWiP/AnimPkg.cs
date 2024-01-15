@@ -10,6 +10,7 @@ namespace SonOfRobin
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
+        public AnimFrameNew presentationFrame; // to be used in messages, menus, etc.
         public List<Anim> AllAnimList { get; private set; } // "flat" list of all anims
         public int[] AllAnimSizes { get { return this.animDict.Keys.ToArray(); } }
 
@@ -28,6 +29,7 @@ namespace SonOfRobin
             if (this.animDict[anim.size].ContainsKey(anim.name)) return; // to prevent from adding multiple animations with the same size and name
             this.animDict[anim.size][anim.name] = anim;
             this.AllAnimList.Add(anim);
+            this.presentationFrame = anim.frameArray[0];
         }
 
         public AnimPkg MakeCopyWithEditedColOffset(int colWidth, int colHeight)
@@ -38,6 +40,8 @@ namespace SonOfRobin
             {
                 animPkg.AddAnim(anim);
             }
+
+            animPkg.presentationFrame = this.presentationFrame;
 
             return animPkg;
         }
