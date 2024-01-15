@@ -608,7 +608,7 @@ namespace SonOfRobin
 
                         animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame])); // the same as "off"
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
                         break;
                     }
 
@@ -618,7 +618,7 @@ namespace SonOfRobin
 
                         animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame])); // the same as "off"
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
                         break;
                     }
 
@@ -628,96 +628,93 @@ namespace SonOfRobin
 
                         animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame])); // the same as "off"
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
                         break;
                     }
 
-                //case AnimData.PkgName.WorkshopMaster:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.WorkshopMaster:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_master", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_master", layer: layer, scale: 0.5f));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_master", layer: layer, scale: 0.5f));
-                //        break;
-                //    }
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.WorkshopMeatHarvesting:
-                //    {
-                //        int layer = 1;
+                case AnimData.PkgName.WorkshopMeatHarvesting:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_workshop_meat_harvesting_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_workshop_meat_harvesting_on", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14))]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_meat_harvesting_off", layer: layer, scale: 0.5f));
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_meat_harvesting_on", layer: layer, scale: 0.5f));
-                //        break;
-                //    }
+                case AnimData.PkgName.WorkshopLeatherBasic:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_leather_basic", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
-                //case AnimData.PkgName.WorkshopLeatherBasic:
-                //    {
-                //        int layer = 1;
+                        animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_basic", layer: layer, scale: 0.5f));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_basic", layer: layer, scale: 0.5f));
-                //        break;
-                //    }
+                case AnimData.PkgName.WorkshopLeatherAdvanced:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_leather_advanced", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
-                //case AnimData.PkgName.WorkshopLeatherAdvanced:
-                //    {
-                //        int layer = 1;
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_advanced", layer: layer, scale: 0.5f));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_workshop_leather_advanced", layer: layer, scale: 0.5f));
-                //        break;
-                //    }
+                case AnimData.PkgName.MeatDryingRackRegular:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 75, colHeight: 35);
 
-                //case AnimData.PkgName.MeatDryingRackRegular:
-                //    {
-                //        float depthPercent = 0.6f;
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_meat_drying_rack_regular_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 77, height: 77), scale: 1f, gfxOffsetCorrection: new Vector2(1, -18))]));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_drying_rack_regular_off", layer: 1, depthPercent: depthPercent));
+                        for (int i = 1; i <= 4; i++)
+                        {
+                            animPkg.AddAnim(new(animPkg: animPkg, name: $"on_{i}", size: 0, frameArray: [new AnimFrameNew(atlasName: $"_processed_meat_drying_rack_regular_on_{i}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 77, height: 77), scale: 1f, gfxOffsetCorrection: new Vector2(1, -18))]));
+                        }
+                        break;
+                    }
 
-                //        for (int i = 1; i <= 4; i++)
-                //        {
-                //            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"_processed_meat_drying_rack_regular_on_{i}", layer: 1, depthPercent: depthPercent));
-                //        }
-                //        break;
-                //    }
+                case AnimData.PkgName.MeatDryingRackWide:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 100, colHeight: 35);
 
-                //case AnimData.PkgName.MeatDryingRackWide:
-                //    {
-                //        float depthPercent = 0.6f;
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_meat_drying_rack_wide_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 102, height: 77), scale: 1f, gfxOffsetCorrection: new Vector2(1, -18))]));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_drying_rack_wide_off", layer: 1, depthPercent: depthPercent));
+                        for (int i = 1; i <= 6; i++)
+                        {
+                            animPkg.AddAnim(new(animPkg: animPkg, name: $"on_{i}", size: 0, frameArray: [new AnimFrameNew(atlasName: $"_processed_meat_drying_rack_wide_on_{i}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 102, height: 77), scale: 1f, gfxOffsetCorrection: new Vector2(1, -18))]));
+                        }
+                        break;
+                    }
 
-                //        for (int i = 1; i <= 6; i++)
-                //        {
-                //            AddFrameArray(pkgName: pkgName, animName: $"on_{i}", frameArray: ConvertImageToFrameArray(atlasName: $"_processed_meat_drying_rack_wide_on_{i}", layer: 1, depthPercent: depthPercent));
-                //        }
-                //        break;
-                //    }
+                case AnimData.PkgName.AlchemyLabStandard:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_alchemy_lab_standard", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 64, height: 90), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -19));
 
-                //case AnimData.PkgName.AlchemyLabStandard:
-                //    {
-                //        int layer = 1;
-                //        float scale = 0.5f;
+                        animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
 
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_standard", layer: layer, scale: scale));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_standard", layer: layer, scale: scale));
-                //        break;
-                //    }
+                case AnimData.PkgName.AlchemyLabAdvanced:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_alchemy_lab_advanced", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 90), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -19));
 
-                //case AnimData.PkgName.AlchemyLabAdvanced:
-                //    {
-                //        int layer = 1;
-                //        float scale = 0.5f;
-
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_advanced", layer: layer, scale: scale));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_alchemy_lab_advanced", layer: layer, scale: scale));
-                //        break;
-                //    }
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
 
                 //case AnimData.PkgName.FurnaceConstructionSite:
                 //    {
