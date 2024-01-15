@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -103,7 +104,7 @@ namespace SonOfRobin
             //        new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 45, 44)),
             //    ]));
 
-            this.animPkgArray = animPkgList.ToArray();
+            this.animPkgArray = animPkgList.OrderBy(a => a.pkgName).ToArray();
             this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
             this.currentAnimIndex = 0;
 

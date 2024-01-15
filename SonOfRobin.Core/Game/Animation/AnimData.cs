@@ -93,6 +93,7 @@ namespace SonOfRobin
             MineralsSmall7 = 304,
             MineralsSmall8 = 305,
             MineralsSmall9 = 306,
+            MineralsSmall10 = 307,
 
             MineralsMossyBig1 = 46,
             MineralsMossyBig2 = 47,
@@ -694,6 +695,10 @@ namespace SonOfRobin
 
                 case PkgName.MineralsSmall9:
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_9", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall10:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_10", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsMossyBig1:

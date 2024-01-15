@@ -698,7 +698,7 @@ namespace SonOfRobin
 
                 case Name.MineralsSmall:
                     {
-                        var packageNames = new AnimData.PkgName[] { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4, AnimData.PkgName.MineralsSmall5, AnimData.PkgName.MineralsSmall6, AnimData.PkgName.MineralsSmall7, AnimData.PkgName.MineralsSmall8, AnimData.PkgName.MineralsSmall9 };
+                        var packageNames = new AnimData.PkgName[] { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4, AnimData.PkgName.MineralsSmall5, AnimData.PkgName.MineralsSmall6, AnimData.PkgName.MineralsSmall7, AnimData.PkgName.MineralsSmall8, AnimData.PkgName.MineralsSmall9, AnimData.PkgName.MineralsSmall10 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Length)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
