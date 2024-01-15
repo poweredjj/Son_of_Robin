@@ -716,69 +716,71 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FurnaceConstructionSite:
-                    {
-                        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
+                //case AnimData.PkgName.FurnaceConstructionSite:
+                //    {
+                //        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
 
-                        for (int animSize = 0; animSize <= 2; animSize++)
+                //        for (int animSize = 0; animSize <= 2; animSize++)
+                //        {
+                //            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"furnace/_processed_furnace_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                //        }
+
+                //        animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
+
+                //        break;
+                //    }
+
+                //case AnimData.PkgName.FurnaceComplete:
+                //    {
+                //        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
+                //        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                //        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_on", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                //        break;
+                //    }
+
+                case AnimData.PkgName.Anvil:
+                    {
+                        AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_anvil", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 50, height: 33), scale: 1f, gfxOffsetCorrection: new Vector2(1, -4));
+
+                        animPkg = new(pkgName: pkgName, colWidth: 34, colHeight: 21);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
+                        break;
+                    }
+
+                case AnimData.PkgName.HotPlate:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 32, colHeight: 24);
+
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_hot_plate_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 40, height: 43), scale: 1f, gfxOffsetCorrection: new Vector2(1, -8))]));
+
+                        var frameList = new List<AnimFrameNew>();
+
+                        for (int i = 0; i < 3; i++)
                         {
-                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"furnace/_processed_furnace_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                            frameList.Add(new AnimFrameNew(atlasName: $"_processed_hot_plate_on_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 40, height: 43), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, -8)));
                         }
 
-                        animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
-
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: frameList.ToArray()));
                         break;
                     }
 
-                case AnimData.PkgName.FurnaceComplete:
+                case AnimData.PkgName.CookingPot:
                     {
-                        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_on", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                        animPkg = new(pkgName: pkgName, colWidth: 32, colHeight: 17);
+
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cooking_pot_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 30), scale: 1f, gfxOffsetCorrection: new Vector2(1, -4))]));
+
+                        var frameList = new List<AnimFrameNew>();
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            frameList.Add(new AnimFrameNew(atlasName: $"_processed_cooking_pot_on_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 30), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, -4)));
+                        }
+
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: frameList.ToArray()));
                         break;
                     }
-
-                //case AnimData.PkgName.Anvil:
-                //    {
-                //        int layer = 1;
-
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_anvil", layer: layer));
-                //        // the same as "off"
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_anvil", layer: layer));
-                //        break;
-                //    }
-
-                //case AnimData.PkgName.HotPlate:
-                //    {
-                //        int layer = 1;
-
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_hot_plate_off", layer: layer));
-                //        var frameArray = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_1", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_2", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_hot_plate_on_3", layer: layer, duration: 6)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
-                //        break;
-                //    }
-
-                //case AnimData.PkgName.CookingPot:
-                //    {
-                //        int layer = 1;
-
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cooking_pot_off", layer: layer));
-
-                //        var frameArrayOn = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_1", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_2", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_cooking_pot_on_3", layer: layer, duration: 6)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArrayOn);
-
-                //        break;
-                //    }
 
                 //case AnimData.PkgName.Totem:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_totem", layer: 1, scale: 0.25f, depthPercent: 0.15f));
