@@ -88,6 +88,11 @@ namespace SonOfRobin
             MineralsSmall2 = 43,
             MineralsSmall3 = 44,
             MineralsSmall4 = 45,
+            MineralsSmall5 = 302,
+            MineralsSmall6 = 303,
+            MineralsSmall7 = 304,
+            MineralsSmall8 = 305,
+            MineralsSmall9 = 306,
 
             MineralsMossyBig1 = 46,
             MineralsMossyBig2 = 47,
@@ -669,6 +674,26 @@ namespace SonOfRobin
 
                 case PkgName.MineralsSmall4:
                     AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_4", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall5:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_5", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall6:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_6", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall7:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_7", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall8:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_8", layer: 1, scale: 0.3f, depthPercent: 0.35f));
+                    break;
+
+                case PkgName.MineralsSmall9:
+                    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_minerals_small_9", layer: 1, scale: 0.3f, depthPercent: 0.35f));
                     break;
 
                 case PkgName.MineralsMossyBig1:
