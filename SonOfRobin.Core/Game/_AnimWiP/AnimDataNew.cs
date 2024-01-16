@@ -1607,183 +1607,246 @@ namespace SonOfRobin
                         break;
                     }
 
+                case AnimData.PkgName.CampfireSmall:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 16);
 
-                //case AnimData.PkgName.CampfireSmall:
-                //    {
-                //        int layer = 1;
+                        var frameList = new List<AnimFrameNew>();
 
-                //        var frameArray = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_on_1", layer: layer, duration: 6, crop: false),
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_on_2", layer: layer, duration: 6, crop: false),
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_on_3", layer: layer, duration: 6, crop: false)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            frameList.Add(new AnimFrameNew(atlasName: $"_processed_campfire_on_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 50, height: 50), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, -8)));
+                        }
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: frameList.ToArray()));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: frameList.ToArray()));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_campfire_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 50, height: 50), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, -8))]));
+                        break;
+                    }
 
-                //        frameArray = ConvertImageToFrameArray(atlasName: "_processed_campfire_off", layer: layer, crop: false);
-                //        AddFrameArray(pkgName: pkgName, frameArray);
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: frameArray);
+                case AnimData.PkgName.CampfireMedium:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 33, colHeight: 20);
 
-                //        break;
-                //    }
+                        var frameList = new List<AnimFrameNew>();
 
-                //case AnimData.PkgName.CampfireMedium:
-                //    {
-                //        int layer = 1;
+                        for (int i = 0; i < 3; i++)
+                        {
+                            frameList.Add(new AnimFrameNew(atlasName: $"_processed_campfire_medium_on_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 36, height: 45), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, -8)));
+                        }
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: frameList.ToArray()));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: frameList.ToArray()));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_campfire_medium_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 36, height: 45), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, -8))]));
+                        break;
+                    }
 
-                //        var frameArray = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_1", layer: layer, duration: 6, crop: false),
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_2", layer: layer, duration: 6, crop: false),
-                //            ConvertImageToFrame(atlasName: "_processed_campfire_medium_on_3", layer: layer, duration: 6, crop: false)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: frameArray);
-                //        AddFrameArray(pkgName: pkgName, ConvertImageToFrameArray(atlasName: "_processed_campfire_medium_off", layer: layer, crop: false));
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: frameArray);
+                case AnimData.PkgName.BoatConstruction:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
 
-                //        break;
-                //    }
+                        for (int animSize = 0; animSize <= 5; animSize++)
+                        {
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"boat/_processed_boat_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                        }
 
-                //case AnimData.PkgName.BoatConstruction:
-                //    {
-                //        float depthPercent = 0.7f;
-                //        float scale = 0.7f;
+                        animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
 
-                //        for (int animSize = 0; animSize <= 5; animSize++)
-                //        {
-                //            AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: $"boat/_processed_boat_construction_{animSize}", layer: 1, scale: scale, depthPercent: depthPercent, ignoreWhenCalculatingMaxSize: true, crop: false), animSize: animSize, updateCroppedFramesForPkgs: animSize == 0); // animSize == 0 should serve as an example (whole blueprint visible)
-                //        }
+                        break;
+                    }
 
-                //        break;
-                //    }
+                case AnimData.PkgName.BoatCompleteStanding:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.BoatCompleteStanding:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 1, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
-                //    break;
+                case AnimData.PkgName.BoatCompleteCruising:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.BoatCompleteCruising:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "boat/_processed_boat_complete", layer: 0, scale: 0.7f, depthPercent: 0.7f, ignoreWhenCalculatingMaxSize: true, crop: false));
-                //    break;
+                case AnimData.PkgName.ShipRescue:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 1310, colHeight: 1041);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ship_rescue", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 873, height: 694), scale: 1.5f, gfxOffsetCorrection: Vector2.Zero)]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.ShipRescue:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_ship_rescue", layer: 1, scale: 1.5f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.HerbsBlack:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_black", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsBlack:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_black", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsCyan:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_cyan", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsCyan:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_cyan", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsBlue:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_blue", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsBlue:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_blue", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsGreen:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_green", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsGreen:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_green", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsYellow:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_yellow", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsYellow:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_yellow", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsRed:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_red", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsRed:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_red", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsViolet:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_violet", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsViolet:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_violet", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsBrown:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_brown", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsBrown:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_brown", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsDarkViolet:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_dark_violet", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsDarkViolet:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_violet", layer: 0));
-                //    break;
+                case AnimData.PkgName.HerbsDarkGreen:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_dark_green", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HerbsDarkGreen:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_herbs_dark_green", layer: 0));
-                //    break;
+                case AnimData.PkgName.EmptyBottle:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_bottle_empty", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.EmptyBottle:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_empty", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionRed:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_red", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionRed:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_red", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionBlue:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_blue", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionBlue:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_blue", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionViolet:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_violet", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionViolet:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_violet", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionYellow:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_yellow", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionYellow:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_yellow", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionCyan:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_cyan", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionCyan:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_cyan", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionGreen:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_green", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionGreen:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_green", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionBlack:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_black", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionBlack:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_black", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionDarkViolet:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_violet", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionDarkViolet:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_violet", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionDarkYellow:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_yellow", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionDarkYellow:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_yellow", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionDarkGreen:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_green", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionDarkGreen:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_dark_green", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionLightYellow:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_bottle_oil", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionLightYellow:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bottle_oil", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionTransparent:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_transparent", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionTransparent:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_transparent", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.PotionBrown:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_brown", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.PotionBrown:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_potion_brown", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.BloodSplatter1:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_1", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BloodSplatter1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_1", layer: 0));
-                //    break;
+                case AnimData.PkgName.BloodSplatter2:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_2", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BloodSplatter2:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_2", layer: 0));
-                //    break;
+                case AnimData.PkgName.BloodSplatter3:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_3", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BloodSplatter3:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_blood_splatter_3", layer: 0));
-                //    break;
+                case AnimData.PkgName.HumanSkeleton:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_human_skeleton", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HumanSkeleton:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_human_skeleton", layer: 0));
-                //    break;
-
-                //case AnimData.PkgName.Hole:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hole", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.Hole:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 31, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_hole", hasOnePixelMargin: true);
+                        break;
+                    };
 
                 //case AnimData.PkgName.Explosion:
                 //    {
