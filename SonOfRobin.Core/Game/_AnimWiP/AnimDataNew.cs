@@ -1215,85 +1215,113 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.PlayerBoy:
-                //    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-                //    break;
+                case AnimData.PkgName.PlayerBoy:
+                    {
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        break;
+                    }
 
-                //case AnimData.PkgName.PlayerGirl:
-                //    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-                //    break;
+                case AnimData.PkgName.PlayerGirl:
+                    {
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxGinger:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxGinger:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxRed:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxRed:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxWhite:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxWhite:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxGray:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxGray:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxBlack:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxBlack:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxChocolate:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxChocolate:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.FoxYellow:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/fox", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.FoxYellow:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog1:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog1:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog2:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 0, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog2:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog3:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 0, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog3:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog4:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 0, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog4:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog5:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 0, setNoY: 1, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog5:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog6:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 1, setNoY: 1, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog6:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog7:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog7:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.Frog8:
-                //    AddRPGMakerPackageV2(pkgName: pkgName, atlasName: "characters/frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: 1f);
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/frogs_big", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.Frog8:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
                 //case AnimData.PkgName.RabbitBrown:
                 //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
