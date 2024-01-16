@@ -1110,80 +1110,110 @@ namespace SonOfRobin
                 case AnimData.PkgName.ArrowExploding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 20);
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 27, height: 27), scale: 0.75f, gfxOffsetCorrection: new Vector2(0, 0))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 27, height: 27), scale: 0.75f, gfxOffsetCorrection: new Vector2(0, 0))]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 32), scale: 0.75f, gfxOffsetCorrection: new Vector2(-3, -2))]));
                         break;
                     }
 
+                case AnimData.PkgName.CoalDeposit:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 22);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_coal_deposit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -9))]));
+                        break;
+                    }
 
+                case AnimData.PkgName.IronDeposit:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 22);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_iron_deposit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -9))]));
+                        break;
+                    }
 
+                case AnimData.PkgName.CrystalDepositSmall:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 19);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal_deposit_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -10))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.CoalDeposit:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal_deposit", layer: 1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.CrystalDepositBig:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 45, colHeight: 30);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal_deposit_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 96), scale: 1f, gfxOffsetCorrection: new Vector2(0, -29))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.IronDeposit:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_deposit", layer: 1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.DigSite:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_dig_site", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.CrystalDepositSmall:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_small", layer: 1));
-                //    break;
+                case AnimData.PkgName.DigSiteGlass:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 80, colHeight: 80);
 
-                //case AnimData.PkgName.CrystalDepositBig:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal_deposit_big", layer: 1));
-                //    break;
+                        var frameList = new List<AnimFrameNew>();
 
-                //case AnimData.PkgName.DigSite:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site", layer: 0));
-                //    break;
+                        frameList.Add(new AnimFrameNew(atlasName: "_processed_dig_site_glass", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 450));
 
-                //case AnimData.PkgName.DigSiteGlass:
-                //    {
-                //        int layer = 0;
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass", layer: layer, duration: 450),
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_1", layer: layer, duration: 1),
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_2", layer: layer, duration: 1),
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_3", layer: layer, duration: 1),
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_2", layer: layer, duration: 1),
-                //            ConvertImageToFrame(atlasName: "_processed_dig_site_glass_shine_1", layer: layer, duration: 1),
-                //        });
-                //        break;
-                //    }
+                        foreach (int frameNo in new List<int> { 1, 2, 3, 2, 1 })
+                        {
+                            frameList.Add(new AnimFrameNew(atlasName: $"_processed_dig_site_glass_shine_{frameNo}", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 2));
+                        }
 
-                //case AnimData.PkgName.DigSiteRuins:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dig_site_ruins", layer: 0, scale: 0.35f));
-                //    break;
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: frameList.ToArray()));
+                        break;
+                    }
 
-                //case AnimData.PkgName.Coal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.DigSiteRuins:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 162, height: 164, scale: 0.35f, layer: 0, animSize: 0, altasName: "_processed_dig_site_ruins", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.IronOre:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_ore", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.Coal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_coal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.IronBar:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_bar", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.IronOre:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_iron_ore", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.IronRod:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_rod", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.IronBar:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 24, height: 39, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_iron_bar", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.IronPlate:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_iron_plate", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.IronRod:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 22, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_iron_rod", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.GlassSand:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glass_sand", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.IronPlate:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 26, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_iron_plate", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Crystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crystal", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.GlassSand:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_glass_sand", hasOnePixelMargin: true);
+                        break;
+                    }
+
+                case AnimData.PkgName.Crystal:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 32), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -5))]));
+                        break;
+                    }
 
                 //case AnimData.PkgName.PlayerBoy:
                 //    AddRPGMakerPackageV1(pkgName: pkgName, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
