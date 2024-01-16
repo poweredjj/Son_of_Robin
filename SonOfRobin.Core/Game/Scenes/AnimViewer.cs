@@ -41,6 +41,8 @@ namespace SonOfRobin
         private readonly Effect effect;
         private int outlineThickness;
 
+        private AnimFrameObj animFrameObj;
+
         public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
@@ -62,48 +64,6 @@ namespace SonOfRobin
                 if (AnimDataNew.pkgByName[pkgName] != null) animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
             }
 
-            //animPkgList.Add(AnimDataNew.MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: AnimData.PkgName.FoxGinger, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }));
-
-            //animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerGirl, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
-
-            //animPkgList.Add(AnimDataNew.MakePackageForRpgMakerV1Data(pkgName: AnimData.PkgName.PlayerBoy, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0));
-
-            //animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.GrassRegular, width: 24, height: 20, scale: 3f, layer: 1, animSize: 1, altasName: "_processed_grass_s1", hasOnePixelMargin: true));
-
-            //animPkgList.Add(AnimDataNew.MakePackageForSingleImage(pkgName: AnimData.PkgName.PlantPoison, width: 32, height: 33, scale: 1f, layer: 0, animSize: 1, altasName: "_processed_plant_poison", hasOnePixelMargin: true));
-
-            //animPkgList.Add(new(pkgName: AnimData.PkgName.FoxWhite, colWidth: 20, colHeight: 20));
-            //animPkgList.LastOrDefault().AddAnim(
-            //    new(animPkg: this.currentAnimPkg, size: 1,
-            //    frameArray:
-            //    [
-            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f),
-            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: false, scale: 4f),
-            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: true, scale: 4f),
-            //        new AnimFrameNew(atlasName: "characters/fox", layer: 1, cropRect: new Rectangle(x: 48 * 3, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: true, mirrorY: true, scale: 4f),
-            //    ]
-            //    ));
-
-            //animPkgList.Add(new(pkgName: AnimData.PkgName.WoodLogHard, colWidth: 16, colHeight: 15));
-            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-            //    [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, scale: 5f, cropRect: new Rectangle(0, 0, 44, 44))]));
-
-            //animPkgList.Add(new(pkgName: AnimData.PkgName.BearBrown, colWidth: 16, colHeight: 15));
-            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-            //    [new AnimFrameNew(atlasName: "characters/bear", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
-
-            //animPkgList.Add(new(pkgName: AnimData.PkgName.RabbitBlack, colWidth: 16, colHeight: 15));
-            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-            //    [new AnimFrameNew(atlasName: "characters/rabbits", layer: 1, cropRect: new Rectangle(x: 48 * 4, y: 48 * 2, width: 48, height: 48), duration: 60, mirrorX: false, mirrorY: false, scale: 4f)]));
-
-            //animPkgList.Add(new(pkgName: AnimData.PkgName.Flame, colWidth: 8, colHeight: 4));
-            //animPkgList.LastOrDefault().AddAnim(new(animPkg: this.currentAnimPkg, size: 1, frameArray:
-            //    [
-            //        new AnimFrameNew(atlasName: "_processed_flame_small_1", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 40, 46)),
-            //        new AnimFrameNew(atlasName: "_processed_flame_small_2", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 41, 43)),
-            //        new AnimFrameNew(atlasName: "_processed_flame_small_3", layer: 1, duration: 6, cropRect: new Rectangle(0, 0, 45, 44)),
-            //    ]));
-
             this.animPkgArray = animPkgList.OrderBy(a => a.pkgName).ToArray();
             this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
             this.currentAnimIndex = 0;
@@ -115,6 +75,8 @@ namespace SonOfRobin
             this.viewParams.ScaleY = baseScale;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
+
+            this.animFrameObj = new AnimFrameObj(AnimDataNew.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame);
         }
 
         private void AssignCurrentAnim()
@@ -369,6 +331,8 @@ namespace SonOfRobin
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.pkgName} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
+
+            // this.animFrameObj.Draw(rect: new Rectangle(x: 10, y: 10, width: 100, height: 80), color: Color.White);
 
             SonOfRobinGame.SpriteBatch.End();
 

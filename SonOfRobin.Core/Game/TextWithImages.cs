@@ -272,7 +272,7 @@ namespace SonOfRobin
 
             string currentText = this.AnimatedText;
 
-            Vector2 textScaleVector = new Vector2(textScale);
+            Vector2 textScaleVector = new(textScale);
 
             if (drawShadow && shadowColor.A > 0)
             {
@@ -293,7 +293,7 @@ namespace SonOfRobin
 
                     if (drawShadow)
                     {
-                        Rectangle imageShadowRect = new Rectangle(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
+                        Rectangle imageShadowRect = new(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
                         Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false, alignX: this.imageAlignX);
                     }
 

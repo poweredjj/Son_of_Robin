@@ -1253,8 +1253,6 @@ namespace SonOfRobin
 
                     animPkg = MakePackageForDragonBonesAnims(pkgName: pkgName, colWidth: 20, colHeight: 20, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -39));
 
-                    animPkg = null; // for testing
-
                     break;
 
                 case AnimData.PkgName.FoxGinger:
