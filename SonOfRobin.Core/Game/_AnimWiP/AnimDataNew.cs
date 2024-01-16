@@ -1915,61 +1915,64 @@ namespace SonOfRobin
                         break;
                     };
 
-                //case AnimData.PkgName.Backlight:
-                //    {
-                //        int layer = 0;
+                case AnimData.PkgName.Backlight:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 13);
 
-                //        var frameArray = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_1", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_2", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_3", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_4", layer: layer, duration: 20),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_3", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_2", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_backlight_1", layer: layer, duration: 6)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, frameArray: frameArray);
-                //        break;
-                //    }
+                        AnimFrameNew frame1 = new AnimFrameNew(atlasName: "_processed_backlight_1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 17, height: 9), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
+                        AnimFrameNew frame2 = new AnimFrameNew(atlasName: "_processed_backlight_2", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 21, height: 11), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
+                        AnimFrameNew frame3 = new AnimFrameNew(atlasName: "_processed_backlight_3", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 13), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
+                        AnimFrameNew frame4 = new AnimFrameNew(atlasName: "_processed_backlight_4", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 14), scale: 1f, duration: 20, gfxOffsetCorrection: new Vector2(1, 1));
 
-                //case AnimData.PkgName.Crosshair:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_crosshair", layer: 2));
-                //    break;
+                        var frameList = new List<AnimFrameNew> { frame1, frame2, frame3, frame4, frame3, frame2, frame1 };
 
-                //case AnimData.PkgName.Flame:
-                //    {
-                //        byte animSize = 0;
-                //        int layer = 1;
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: frameList.ToArray()));
 
-                //        foreach (float scale in new List<float> { 0.5f, 0.75f, 1f, 1.25f })
-                //        {
-                //            var frameArray = new AnimFrame[]
-                //            {
-                //                ConvertImageToFrame(atlasName: "_processed_flame_small_1", layer: layer, duration: 6, crop: true, scale: scale),
-                //                ConvertImageToFrame(atlasName: "_processed_flame_small_2", layer: layer, duration: 6, crop: true, scale: scale),
-                //                ConvertImageToFrame(atlasName: "_processed_flame_small_3", layer: layer, duration: 6, crop: true, scale: scale)
-                //            };
-                //            AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
+                        break;
+                    }
 
-                //            animSize++;
-                //        }
+                case AnimData.PkgName.Crosshair:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 40, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_crosshair", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //        foreach (float scale in new List<float> { 1f, 1.5f, 1.8f, 2f })
-                //        {
-                //            var frameArray = new AnimFrame[]
-                //            {
-                //                ConvertImageToFrame(atlasName: "_processed_flame_big_1", layer: layer, duration: 6, crop: true, scale: scale),
-                //                ConvertImageToFrame(atlasName: "_processed_flame_big_2", layer: layer, duration: 6, crop: true, scale: scale),
-                //                ConvertImageToFrame(atlasName: "_processed_flame_big_3", layer: layer, duration: 6, crop: true, scale: scale)
-                //            };
-                //            AddFrameArray(pkgName: pkgName, animSize: animSize, frameArray: frameArray);
+                case AnimData.PkgName.Flame:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 46); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
-                //            animSize++;
-                //        }
+                        int animSize = 0;
 
-                //        break;
-                //    }
+                        foreach (float scale in new List<float> { 0.5f, 0.75f, 1f, 1.25f })
+                        {
+                            var frameList = new List<AnimFrameNew>();
+
+                            for (int i = 0; i < 3; i++)
+                            {
+                                frameList.Add(new AnimFrameNew(atlasName: $"_processed_flame_small_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 40, height: 46), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1)));
+                            }
+
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: frameList.ToArray()));
+
+                            animSize++;
+                        }
+
+                        foreach (float scale in new List<float> { 1f, 1.5f, 1.8f, 2f })
+                        {
+                            var frameList = new List<AnimFrameNew>();
+
+                            for (int i = 0; i < 3; i++)
+                            {
+                                frameList.Add(new AnimFrameNew(atlasName: $"_processed_flame_big_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 70, height: 66), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1)));
+                            }
+
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: frameList.ToArray()));
+
+                            animSize++;
+                        }
+
+                        break;
+                    }
 
                 //case AnimData.PkgName.Upgrade:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
