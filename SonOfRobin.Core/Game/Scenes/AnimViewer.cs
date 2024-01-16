@@ -368,7 +368,7 @@ namespace SonOfRobin
             description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
-            description += $"AnimPkg: {this.currentAnimPkg.pkgName} layer: {this.currentAnimFrame.layer} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
+            description += $"AnimPkg: {this.currentAnimPkg.pkgName} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
 
             SonOfRobinGame.SpriteBatch.End();
 

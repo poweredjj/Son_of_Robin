@@ -1645,7 +1645,7 @@ namespace SonOfRobin
 
                         for (int animSize = 0; animSize <= 5; animSize++)
                         {
-                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"boat/_processed_boat_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"boat/_processed_boat_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24), ignoreWhenCalculatingMaxSize: true)]));
                         }
 
                         animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
@@ -1656,21 +1656,21 @@ namespace SonOfRobin
                 case AnimData.PkgName.BoatCompleteStanding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24), ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
                 case AnimData.PkgName.BoatCompleteCruising:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24), ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
                 case AnimData.PkgName.ShipRescue:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 1310, colHeight: 1041);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ship_rescue", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 873, height: 694), scale: 1.5f, gfxOffsetCorrection: Vector2.Zero)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ship_rescue", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 873, height: 694), scale: 1.5f, ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
@@ -1848,60 +1848,72 @@ namespace SonOfRobin
                         break;
                     };
 
-                //case AnimData.PkgName.Explosion:
-                //    {
-                //        for (byte size = 0; size < 4; size++)
-                //        {
-                //            var frameList = new List<AnimFrame> { };
+                case AnimData.PkgName.Explosion:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 48, colHeight: 48); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
-                //            for (int y = 0; y < 4; y++)
-                //            {
-                //                for (int x = 0; x < 4; x++)
-                //                {
-                //                    frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false, ignoreWhenCalculatingMaxSize: true));
-                //                }
-                //            }
+                        for (byte size = 0; size < 4; size++)
+                        {
+                            var frameList = new List<AnimFrameNew>();
 
-                //            AddFrameArray(pkgName: pkgName, animSize: size, animName: "default", frameArray: frameList.ToArray());
-                //        }
+                            for (int y = 0; y < 4; y++)
+                            {
+                                for (int x = 0; x < 4; x++)
+                                {
+                                    frameList.Add(new AnimFrameNew(atlasName: "explosion", layer: 1, cropRect: new Rectangle(x: x * 32, y: y * 32, width: 32, height: 32), scale: 1.5f * (size + 1), duration: 2, ignoreWhenCalculatingMaxSize: true));
+                                }
+                            }
 
-                //        break;
-                //    }
+                            animPkg.AddAnim(new(animPkg: animPkg, size: size, frameArray: frameList.ToArray()));
+                        }
 
-                //case AnimData.PkgName.SkullAndBones:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_skull_and_bones", layer: 2, scale: 1f));
-                //    break;
+                        break;
+                    }
 
-                //case AnimData.PkgName.MusicNoteSmall:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2));
-                //    break;
+                case AnimData.PkgName.SkullAndBones:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 32, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_skull_and_bones", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.MusicNoteBig:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_music_note", layer: 2, scale: 2.5f));
-                //    break;
+                case AnimData.PkgName.MusicNoteSmall:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_music_note", hasOnePixelMargin: false);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Miss:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_miss", layer: 2));
-                //    break;
+                case AnimData.PkgName.MusicNoteBig:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 2.5f, layer: 2, animSize: 0, altasName: "_processed_music_note", hasOnePixelMargin: false);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Attack:
-                //    {
-                //        int layer = 2;
+                case AnimData.PkgName.Miss:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_miss", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //        var frameArray = new AnimFrame[]
-                //        {
-                //            ConvertImageToFrame(atlasName: "_processed_attack_1", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_attack_2", layer: layer, duration: 6),
-                //            ConvertImageToFrame(atlasName: "_processed_attack_3", layer: layer, duration: 6)
-                //        };
-                //        AddFrameArray(pkgName: pkgName, frameArray: frameArray);
+                case AnimData.PkgName.Attack:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 34, colHeight: 58);
 
-                //        break;
-                //    }
+                        var frameList = new List<AnimFrameNew>();
 
-                //case AnimData.PkgName.MapMarker:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_marker", layer: 2, crop: false, padding: 0, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                        frameList.Add(new AnimFrameNew(atlasName: "_processed_attack_1", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 18, height: 18), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
+                        frameList.Add(new AnimFrameNew(atlasName: "_processed_attack_2", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 28, height: 30), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
+                        frameList.Add(new AnimFrameNew(atlasName: "_processed_attack_3", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 58), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
+
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: frameList.ToArray()));
+
+                        break;
+                    }
+
+                case AnimData.PkgName.MapMarker:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 16, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_map_marker", hasOnePixelMargin: false);
+                        break;
+                    };
 
                 //case AnimData.PkgName.Backlight:
                 //    {
