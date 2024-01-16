@@ -1323,94 +1323,143 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.RabbitBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitDarkBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitDarkBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitGray:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitGray:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitBlack:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitBlack:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitLightGray:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitLightGray:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitBeige:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitBeige:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitWhite:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitWhite:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.RabbitLightBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } });
-                //    break;
+                case AnimData.PkgName.RabbitLightBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearWhite:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearWhite:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearOrange:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearOrange:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearBlack:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearBlack:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearDarkBrown:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearDarkBrown:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearGray:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearGray:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearRed:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearRed:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.BearBeige:
-                //    AddRPGMakerPackageV2ForSizeDict(pkgName: pkgName, atlasName: "characters/bear", setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } });
-                //    break;
+                case AnimData.PkgName.BearBeige:
+                    {
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        break;
+                    }
 
-                //case AnimData.PkgName.TentModern:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern", layer: 1, scale: 0.6f, depthPercent: 0.6f));
-                //    break;
+                case AnimData.PkgName.TentModern:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 87, colHeight: 75);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_modern", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 146, height: 205), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -39))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TentModernPacked:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_modern_packed", layer: 1, scale: 0.12f));
-                //    break;
+                case AnimData.PkgName.TentModernPacked:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 33, colHeight: 9);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_modern_packed", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 188), scale: 0.12f, gfxOffsetCorrection: new Vector2(4, -50))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TentSmall:
-                //    // TODO replace with A - frame tent asset(when found)
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 0.5f, depthPercent: 0.45f));
-                //    break;
+                case AnimData.PkgName.TentSmall: // TODO replace with A - frame tent asset(when found)
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 50, colHeight: 27);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 118, height: 103), scale: 0.5f, gfxOffsetCorrection: new Vector2(2, -22))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TentMedium:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_medium", layer: 1, scale: 1f, depthPercent: 0.45f));
-                //    break;
+                case AnimData.PkgName.TentMedium:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 102, colHeight: 48);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 118, height: 103), scale: 1f, gfxOffsetCorrection: new Vector2(1, -24))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.TentBig:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tent_big", layer: 1, scale: 1f, depthPercent: 0.6f));
-                //    break;
+                case AnimData.PkgName.TentBig:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 176, colHeight: 92);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 190, height: 162), scale: 1f, gfxOffsetCorrection: new Vector2(0, -28))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.BackpackSmall:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_small", layer: 1, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.BackpackSmall:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_backpack_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 208, height: 181), scale: 0.1f, gfxOffsetCorrection: new Vector2(1, -40))]));
+                        break;
+                    }
 
                 //case AnimData.PkgName.BackpackMedium:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_medium", layer: 1, scale: 0.5f));
