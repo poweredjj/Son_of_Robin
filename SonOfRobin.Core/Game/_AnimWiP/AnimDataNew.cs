@@ -861,177 +861,262 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.Cherry:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cherry", layer: 0, scale: 0.12f));
-                //    break;
+                case AnimData.PkgName.Cherry:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 242, height: 158, scale: 0.12f, layer: 0, animSize: 0, altasName: "_processed_cherry", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Tomato:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_tomato", layer: 0, scale: 0.07f));
-                //    break;
+                case AnimData.PkgName.Tomato:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 234, height: 257, scale: 0.07f, layer: 0, animSize: 0, altasName: "_processed_tomato", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Carrot:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_carrot", layer: 0, scale: 0.08f));
-                //    break;
+                case AnimData.PkgName.Carrot:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 195, height: 445, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_carrot", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Acorn:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_acorn", layer: 0, scale: 0.13f));
-                //    break;
+                case AnimData.PkgName.Acorn:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 131, height: 202, scale: 0.13f, layer: 0, animSize: 0, altasName: "_processed_acorn", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Mushroom:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_mushroom", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.Mushroom:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 30, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_mushroom", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.SeedBag:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_seed_bag", layer: 0, scale: 0.08f));
-                //    break;
+                case AnimData.PkgName.SeedBag:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 211, height: 258, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_seed_bag", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.CoffeeRaw:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_raw", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.CoffeeRaw:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_coffee_raw", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.CoffeeRoasted:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coffee_roasted", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.CoffeeRoasted:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_coffee_roasted", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Clam:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_clam", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.Clam:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 30, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_clam", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.MeatRawRegular:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_regular", layer: 0, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.MeatRawRegular:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 228, height: 161, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_raw_regular", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.MeatRawPrime:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_raw_prime", layer: 0, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.MeatRawPrime:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 249, height: 221, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_raw_prime", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.MeatDried:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meat_dried", layer: 0, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.MeatDried:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 298, height: 145, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_dried", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Fat:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fat", layer: 0, scale: 0.08f));
-                //    break;
+                case AnimData.PkgName.Fat:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 201, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_fat", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Burger:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_burger", layer: 0, scale: 0.07f));
-                //    break;
+                case AnimData.PkgName.Burger:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 256, height: 233, scale: 0.07f, layer: 0, animSize: 0, altasName: "_processed_burger", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.MealStandard:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_meal_standard", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.MealStandard:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_meal_standard", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.Leather:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_leather", layer: 0, scale: 0.75f));
-                //    break;
+                case AnimData.PkgName.Leather:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 23, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_leather", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.KnifeSimple:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_knife_simple", layer: 1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.KnifeSimple:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 24, height: 26, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_knife_simple", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.AxeWood:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_wooden", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.AxeWood:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_axe_wooden", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.AxeStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_stone", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.AxeStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.AxeIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_iron", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.AxeIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.AxeCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_axe_crystal", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.AxeCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.PickaxeWood:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_wood", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.PickaxeWood:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_wood", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.PickaxeStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_stone", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.PickaxeStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.PickaxeIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_iron", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.PickaxeIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.PickaxeCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_pickaxe_crystal", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.PickaxeCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ScytheStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_stone", layer: 0));
-                //    break;
+                case AnimData.PkgName.ScytheStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ScytheIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_iron", layer: 0));
-                //    break;
+                case AnimData.PkgName.ScytheIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ScytheCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_scythe_crystal", layer: 0));
-                //    break;
+                case AnimData.PkgName.ScytheCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.SpearWood:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_wood", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.SpearWood:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 54, height: 54, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_wood", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.SpearStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_stone", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.SpearStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 54, height: 54, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.SpearIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_iron", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.SpearIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.SpearCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_spear_crystal", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.SpearCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ShovelStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_stone", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.ShovelStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ShovelIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_iron", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.ShovelIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ShovelCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_shovel_crystal", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.ShovelCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.BowBasic:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_basic", layer: 0, scale: 0.25f));
-                //    break;
+                case AnimData.PkgName.BowBasic:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 116, scale: 0.25f, layer: 0, animSize: 0, altasName: "_processed_bow_basic", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.BowAdvanced:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bow_advanced", layer: 0, scale: 0.25f));
-                //    break;
+                case AnimData.PkgName.BowAdvanced:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 116, scale: 0.25f, layer: 0, animSize: 0, altasName: "_processed_bow_advanced", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ArrowWood:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_wood", layer: 0, scale: 0.75f));
-                //    break;
+                case AnimData.PkgName.ArrowWood:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_wood", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ArrowStone:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_stone", layer: 0, scale: 0.75f));
-                //    break;
+                case AnimData.PkgName.ArrowStone:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_stone", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ArrowIron:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_iron", layer: 0, scale: 0.75f));
-                //    break;
+                case AnimData.PkgName.ArrowIron:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 27, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_iron", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ArrowCrystal:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_crystal", layer: 0, scale: 0.75f));
-                //    break;
+                case AnimData.PkgName.ArrowCrystal:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 27, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_crystal", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.ArrowExploding:
-                //    {
-                //        int layer = 0;
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_burning_off", layer: layer, scale: 0.75f));
-                //        AddFrameArray(pkgName: pkgName, animName: "burning", frameArray: ConvertImageToFrameArray(atlasName: "_processed_arrow_burning_on", layer: layer, scale: 0.75f));
-                //        break;
-                //    }
+                case AnimData.PkgName.ArrowExploding:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 27, height: 27), scale: 0.75f, gfxOffsetCorrection: new Vector2(0, 0))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 32), scale: 0.75f, gfxOffsetCorrection: new Vector2(-3, -2))]));
+                        break;
+                    }
+
+
+
 
                 //case AnimData.PkgName.CoalDeposit:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_coal_deposit", layer: 1, scale: 1f));
