@@ -1974,113 +1974,163 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.Upgrade:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_upgrade", layer: 0, scale: 1f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.Upgrade:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 31, height: 31, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_upgrade", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WaterDrop:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_water_drop", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.WaterDrop:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 124, height: 183, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_water_drop", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Zzz:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_zzz", layer: 2));
-                //    break;
+                case AnimData.PkgName.Zzz:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 39, height: 15, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_zzz", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Heart:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_heart_16x16", layer: 2));
-                //    break;
+                case AnimData.PkgName.Heart:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 18, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_heart_16x16", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Hammer:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hammer", layer: 0, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.Hammer:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 182, height: 336, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_hammer", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Fog1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.Fog1:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Fog2:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+                case AnimData.PkgName.Fog2:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //    break;
+                case AnimData.PkgName.Fog3:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "_processed_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Fog3:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.Fog4:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "_processed_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Fog4:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.BubbleExclamationRed:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_exclamation_red", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BubbleExclamationRed:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_red", layer: 2, scale: 0.2f));
-                //    break;
+                case AnimData.PkgName.BubbleExclamationBlue:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_exclamation_blue", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BubbleExclamationBlue:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_exclamation_blue", layer: 2, scale: 0.2f));
-                //    break;
+                case AnimData.PkgName.BubbleCraftGreen:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_craft_green", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BubbleCraftGreen:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_bubble_craft_green", layer: 2, scale: 0.2f));
-                //    break;
+                case AnimData.PkgName.SeaWave:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 40);
 
-                //case AnimData.PkgName.SeaWave:
-                //    foreach (var kvp in new Dictionary<int, float> { { 0, 0.2f }, { 1, 0.3f }, { 2, 0.4f }, { 3, 0.5f }, { 4, 0.6f }, { 5, 0.7f }, { 6, 0.8f } })
-                //    {
-                //        int animSize = kvp.Key;
-                //        float scale = kvp.Value;
+                        foreach (var kvp in new Dictionary<int, float> { { 0, 0.2f }, { 1, 0.3f }, { 2, 0.4f }, { 3, 0.5f }, { 4, 0.6f }, { 5, 0.7f }, { 6, 0.8f } })
+                        {
+                            int animSize = kvp.Key;
+                            float scale = kvp.Value;
 
-                //        AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_wave", layer: 0, scale: scale, ignoreWhenCalculatingMaxSize: true), animSize: animSize);
-                //    }
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: "_processed_wave", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 89, height: 315), scale: scale, ignoreWhenCalculatingMaxSize: true)]));
+                        }
+                        break;
+                    }
 
-                //    break;
+                case AnimData.PkgName.WeatherFog1:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog1:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog2:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog2:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog3:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog3:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog4:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog4:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog5:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog5:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog6:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog6:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog7:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog7:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_1", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog8:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog8:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_2", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.WeatherFog9:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.WeatherFog9:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_weather_fog_3", layer: 2, scale: 2.0f, ignoreWhenCalculatingMaxSize: true));
-                //    break;
+                case AnimData.PkgName.FertileGroundSmall:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 65, height: 55, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_small", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.FertileGroundSmall:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_small", layer: -1, scale: 1f));
-                //    break;
+                case AnimData.PkgName.FertileGroundMedium:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 102, height: 75, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_medium", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.FertileGroundMedium:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_medium", layer: -1, scale: 1f));
-                //    break;
-
-                //case AnimData.PkgName.FertileGroundLarge:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fertile_ground_big", layer: -1, scale: 1.3f));
-                //    break;
+                case AnimData.PkgName.FertileGroundLarge:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 134, height: 134, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_big", hasOnePixelMargin: true);
+                        break;
+                    };
 
                 //case AnimData.PkgName.FenceHorizontalShort:
                 //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_short", layer: 1, depthPercent: 0.2f));
@@ -2152,14 +2202,14 @@ namespace SonOfRobin
             pkgByName[pkgName] = animPkg;
         }
 
-        public static AnimPkg MakePackageForSingleImage(AnimData.PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false)
+        public static AnimPkg MakePackageForSingleImage(AnimData.PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
             int colWidth = (int)((hasOnePixelMargin ? width - 2 : width) * scale);
             int colHeight = (int)((hasOnePixelMargin ? height - 2 : height) * scale);
 
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
-            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: altasName, layer: layer, cropRect: new Rectangle(x: 0, y: 0, width: width, height: height), duration: 0, mirrorX: mirrorX, mirrorY: mirrorY, scale: scale)]));
+            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: altasName, layer: layer, cropRect: new Rectangle(x: 0, y: 0, width: width, height: height), duration: 0, mirrorX: mirrorX, mirrorY: mirrorY, scale: scale, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize)]));
 
             return animPkg;
         }
