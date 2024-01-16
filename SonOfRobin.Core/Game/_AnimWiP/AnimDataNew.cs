@@ -1456,118 +1456,157 @@ namespace SonOfRobin
 
                 case AnimData.PkgName.BackpackSmall:
                     {
-                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 10);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_backpack_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 208, height: 181), scale: 0.1f, gfxOffsetCorrection: new Vector2(1, -40))]));
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 208, height: 181, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_small", hasOnePixelMargin: true);
                         break;
                     }
 
-                //case AnimData.PkgName.BackpackMedium:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_medium", layer: 1, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.BackpackMedium:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 46, height: 46, scale: 0.5f, layer: 1, animSize: 0, altasName: "_processed_backpack_medium", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.BackpackBig:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_big", layer: 1, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.BackpackBig:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_big", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.BackpackLuxurious:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_backpack_luxurious", layer: 1, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.BackpackLuxurious:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_luxurious", hasOnePixelMargin: true);
+                        break;
+                    }
 
-                //case AnimData.PkgName.BeltSmall:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_small", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.BeltSmall:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_belt_small", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BeltMedium:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_medium", layer: 0, scale: 0.12f));
-                //    break;
+                case AnimData.PkgName.BeltMedium:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 243, height: 134, scale: 0.12f, layer: 0, animSize: 0, altasName: "_processed_belt_medium", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BeltBig:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_big", layer: 0, scale: 0.06f));
-                //    break;
+                case AnimData.PkgName.BeltBig:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 494, height: 192, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_belt_big", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BeltLuxurious:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_belt_luxurious", layer: 0, scale: 0.06f));
-                //    break;
+                case AnimData.PkgName.BeltLuxurious:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 494, height: 192, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_belt_luxurious", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Map:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_map_item", layer: 0, scale: 0.06f, crop: false));
-                //    break;
+                case AnimData.PkgName.Map:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 319, height: 240, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_map_item", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.HatSimple:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_hat_simple", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.HatSimple:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 28, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_hat_simple", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BootsProtective:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_protective", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.BootsProtective:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 20, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_protective", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BootsMountain:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_mountain", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.BootsMountain:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_mountain", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BootsSpeed:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_speed", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.BootsSpeed:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 31, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_speed", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.BootsAllTerrain:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_boots_all_terrain", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.BootsAllTerrain:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 26, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_all_terrain", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.GlovesStrength:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_gloves_strength", layer: 0, scale: 0.7f));
-                //    break;
+                case AnimData.PkgName.GlovesStrength:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 31, height: 25, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_gloves_strength", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.GlassesBlue:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_glasses_blue", layer: 0, scale: 0.5f));
-                //    break;
+                case AnimData.PkgName.GlassesBlue:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 24, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_glasses_blue", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Dungarees:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_dungarees", layer: 0, scale: 1f));
-                //    break;
+                case AnimData.PkgName.Dungarees:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 27, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_dungarees", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.LanternFrame:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_frame", layer: 0, scale: 0.075f));
-                //    break;
+                case AnimData.PkgName.LanternFrame:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 203, height: 438, scale: 0.075f, layer: 0, animSize: 0, altasName: "_processed_lantern_frame", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Candle:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_candle", layer: 0, scale: 0.1f));
-                //    break;
+                case AnimData.PkgName.Candle:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 182, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_candle", hasOnePixelMargin: true);
+                        break;
+                    };
 
-                //case AnimData.PkgName.Lantern:
-                //    {
-                //        float scale = 0.075f;
-                //        int layer = 0;
+                case AnimData.PkgName.Lantern:
+                    {
+                        AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_lantern_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 201, height: 437), scale: 0.075f, gfxOffsetCorrection: new Vector2(8, -3));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_on", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_off", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_lantern_off", layer: layer, scale: scale));
+                        AnimFrameNew frameOff = new AnimFrameNew(atlasName: "_processed_lantern_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 201, height: 437), scale: 0.075f, gfxOffsetCorrection: new Vector2(8, -3));
 
-                //        break;
-                //    }
+                        animPkg = new(pkgName: pkgName, colWidth: 15, colHeight: 32);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frameOn]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.SmallTorch:
-                //    {
-                //        float scale = 0.07f;
-                //        int layer = 0;
+                case AnimData.PkgName.SmallTorch:
+                    {
+                        AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_small_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.07f, gfxOffsetCorrection: new Vector2(-31, -59));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_on", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_off", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_small_torch_off", layer: layer, scale: scale));
+                        AnimFrameNew frameOff = new AnimFrameNew(atlasName: "_processed_small_torch_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 180, height: 157), scale: 0.07f, gfxOffsetCorrection: new Vector2(8, 1));
 
-                //        break;
-                //    }
+                        animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 12);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frameOn]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.BigTorch:
-                //    {
-                //        float scale = 0.1f;
-                //        int layer = 0;
+                case AnimData.PkgName.BigTorch:
+                    {
+                        AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_big_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.1f, gfxOffsetCorrection: new Vector2(44, -59));
 
-                //        AddFrameArray(pkgName: pkgName, animName: "on", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_on", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_off", layer: layer, scale: scale));
-                //        AddFrameArray(pkgName: pkgName, animName: "off", frameArray: ConvertImageToFrameArray(atlasName: "_processed_big_torch_off", layer: layer, scale: scale));
+                        AnimFrameNew frameOff = new AnimFrameNew(atlasName: "_processed_big_torch_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 180, height: 157), scale: 0.1f, gfxOffsetCorrection: new Vector2(5, 0));
 
-                //        break;
-                //    }
+                        animPkg = new(pkgName: pkgName, colWidth: 17, colHeight: 16);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [frameOff]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frameOn]));
+                        break;
+                    }
+
 
                 //case AnimData.PkgName.CampfireSmall:
                 //    {
