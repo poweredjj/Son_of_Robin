@@ -202,8 +202,8 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            // new InitialLoader();
-            new AnimViewer(); // for testing
+            new InitialLoader();
+            // new AnimViewer(); // for testing
         }
 
         public void OnResize(Object sender, EventArgs e)

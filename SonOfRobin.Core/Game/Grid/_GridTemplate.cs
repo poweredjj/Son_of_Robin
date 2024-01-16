@@ -11,7 +11,7 @@ namespace SonOfRobin
         private const float currentVersion = 1.321f;
         private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
-        public static readonly Point ProperCellSize = new(228, 246); // must be calculated manually after updating anim packages
+        public static readonly Point ProperCellSize = new(282, 266); // must be calculated manually after updating anim packages
 
         public readonly int seed;
         public readonly int width;
