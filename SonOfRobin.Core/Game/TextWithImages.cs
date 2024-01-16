@@ -34,7 +34,7 @@ namespace SonOfRobin
 
             public Rectangle GetAdjustedRectangle(float scale, Vector2 basePos, bool treatImagesAsSquares)
             {
-                Rectangle scaledRect = new Rectangle(
+                Rectangle scaledRect = new(
                     x: (int)(this.rectangle.X * scale) + (int)basePos.X,
                     y: (int)(this.rectangle.Y * scale) + (int)basePos.Y,
                     width: (int)((treatImagesAsSquares ? this.rectangle.Height : this.rectangle.Width) * scale),

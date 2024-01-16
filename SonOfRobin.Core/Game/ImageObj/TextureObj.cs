@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.texture = texture;
         }
 
-        public override void Draw(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center)
+        public override void DrawInsideRect(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center)
         {
             if (color == default) color = Color.White;
 

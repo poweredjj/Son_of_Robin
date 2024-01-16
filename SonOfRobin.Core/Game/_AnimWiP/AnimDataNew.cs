@@ -716,27 +716,27 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case AnimData.PkgName.FurnaceConstructionSite:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
+                case AnimData.PkgName.FurnaceConstructionSite:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
 
-                //        for (int animSize = 0; animSize <= 2; animSize++)
-                //        {
-                //            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"furnace/_processed_furnace_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
-                //        }
+                        for (int animSize = 0; animSize <= 2; animSize++)
+                        {
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrameNew(atlasName: $"furnace/_processed_furnace_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                        }
 
-                //        animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
+                        animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
 
-                //        break;
-                //    }
+                        break;
+                    }
 
-                //case AnimData.PkgName.FurnaceComplete:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
-                //        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
-                //        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_on", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.FurnaceComplete:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_on", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
+                        break;
+                    }
 
                 case AnimData.PkgName.Anvil:
                     {
@@ -2204,9 +2204,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    // throw new ArgumentException($"Unsupported pkgName - {pkgName}."); // TODO enable after removing original AnimData
-                    animPkg = null; // TODO remove after removing original AnimData
-                    break;
+                    throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
             }
 
             pkgByName[pkgName] = animPkg;

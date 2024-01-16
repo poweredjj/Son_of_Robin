@@ -10,7 +10,7 @@ namespace SonOfRobin
         public ImageObj()
         { }
 
-        public virtual void Draw(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center)
+        public virtual void DrawInsideRect(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center)
         { }
     }
 }
