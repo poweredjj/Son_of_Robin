@@ -222,284 +222,284 @@ namespace SonOfRobin
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily3", hasOnePixelMargin: true);
                     break;
 
-                //case AnimData.PkgName.MineralsBig1:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 222, height: 310), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 222, height: 310), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig2:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 210, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -76))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 210, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -76))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig3:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 41);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 312, height: 346), scale: 0.3f, gfxOffsetCorrection: new Vector2(14, -67))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig3:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 41);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 312, height: 346), scale: 0.3f, gfxOffsetCorrection: new Vector2(14, -67))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig4:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 213, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -77))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig4:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 213, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -77))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig5:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 294), scale: 0.3f, gfxOffsetCorrection: new Vector2(16, -66))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig5:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 294), scale: 0.3f, gfxOffsetCorrection: new Vector2(16, -66))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig6:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 306), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -80))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig6:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 306), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -80))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig7:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 69, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 251, height: 297), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -75))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig7:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 69, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 251, height: 297), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -75))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig8:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 56, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 228, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -81))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig8:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 56, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 228, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -81))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig9:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 230, height: 342), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -97))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig9:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 230, height: 342), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -97))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig10:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 301), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -85))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig10:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 301), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -85))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig11:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 90, colHeight: 44);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 321, height: 333), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -78))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig11:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 90, colHeight: 44);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 321, height: 333), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -78))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig12:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 60, colHeight: 42);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 328), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -84))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig12:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 60, colHeight: 42);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 328), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -84))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig13:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 59, colHeight: 42);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_13", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 229, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -81))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig13:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 59, colHeight: 42);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_13", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 229, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -81))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsBig14:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_14", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 269), scale: 0.3f, gfxOffsetCorrection: new Vector2(-10, -54))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsBig14:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_14", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 269), scale: 0.3f, gfxOffsetCorrection: new Vector2(-10, -54))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall1:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 25);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 163), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -21))]));
-                //        break;
-                //    }
-                //case AnimData.PkgName.MineralsSmall2:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 45, colHeight: 22);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 186, height: 186), scale: 0.3f, gfxOffsetCorrection: new Vector2(11, -47))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 163), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -21))]));
+                        break;
+                    }
+                case AnimData.PkgName.MineralsSmall2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 45, colHeight: 22);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 186, height: 186), scale: 0.3f, gfxOffsetCorrection: new Vector2(11, -47))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall3:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 26);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 256, height: 164), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -25))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall3:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 26);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 256, height: 164), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -25))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall4:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 24);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 261, height: 145), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -19))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall4:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 24);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 261, height: 145), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -19))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall5:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 26);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 161, height: 175), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -35))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall5:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 26);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 161, height: 175), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -35))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall6:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 25);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 216, height: 156), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -32))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall6:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 216, height: 156), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -32))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall7:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 195, height: 181), scale: 0.3f, gfxOffsetCorrection: new Vector2(8, -32))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall7:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 195, height: 181), scale: 0.3f, gfxOffsetCorrection: new Vector2(8, -32))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall8:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 182, height: 172), scale: 0.3f, gfxOffsetCorrection: new Vector2(-6, -33))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall8:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 182, height: 172), scale: 0.3f, gfxOffsetCorrection: new Vector2(-6, -33))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall9:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 23);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 151, height: 154), scale: 0.3f, gfxOffsetCorrection: new Vector2(-3, -33))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall9:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 23);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 151, height: 154), scale: 0.3f, gfxOffsetCorrection: new Vector2(-3, -33))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsSmall10:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 22);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 150), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -26))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsSmall10:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 22);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 150), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -26))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig1:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 387), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -122))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 387), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -122))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig2:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 35);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-8, -72))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 35);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-8, -72))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig3:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 34);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 233, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -69))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig3:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 34);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 233, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -69))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig4:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 72, colHeight: 36);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 304, height: 394), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -130))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig4:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 72, colHeight: 36);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 304, height: 394), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -130))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig5:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 384), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig5:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 384), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig6:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 270, height: 381), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig6:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 270, height: 381), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig7:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 65, colHeight: 34);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 307), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -88))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig7:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 65, colHeight: 34);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 307), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -88))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig8:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 58, colHeight: 38);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 209, height: 305), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig8:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 58, colHeight: 38);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 209, height: 305), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig9:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 25);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 302), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -103))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig9:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 25);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 302), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -103))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig10:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 79, colHeight: 18);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 275, height: 291), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig10:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 79, colHeight: 18);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 275, height: 291), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig11:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 19);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 292), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig11:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 19);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 292), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossyBig12:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 20);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -104))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossyBig12:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -104))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossySmall1:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 199), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossySmall1:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 199), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossySmall2:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 272, height: 286), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossySmall2:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 272, height: 286), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossySmall3:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 20);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 252, height: 166), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -36))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossySmall3:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 252, height: 166), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -36))]));
+                        break;
+                    }
 
-                //case AnimData.PkgName.MineralsMossySmall4:
-                //    {
-                //        animPkg = new(pkgName: pkgName, colWidth: 67, colHeight: 20);
-                //        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 246, height: 183), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -43))]));
-                //        break;
-                //    }
+                case AnimData.PkgName.MineralsMossySmall4:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 67, colHeight: 20);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 246, height: 183), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -43))]));
+                        break;
+                    }
 
                 case AnimData.PkgName.MineralsCave:
                     {
@@ -1226,6 +1226,36 @@ namespace SonOfRobin
                         animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
                         break;
                     }
+
+                case AnimData.PkgName.DragonBonesTestFemaleMage:
+
+                    string[] jsonNameArray = new string[] {
+                            "female_mage_tex_cropped.json",
+                        };
+
+                    var durationDict = new Dictionary<string, int>
+                    {
+                        { "stand", 3 },
+                        { "weak", 3 },
+                        { "walk", 2 },
+                        { "attack", 1 },
+                        { "dead", 2 },
+                        { "damage", 2 },
+                    };
+
+                    var switchDict = new Dictionary<string, string>
+                    {
+                        { "attack", "stand" },
+                        { "damage", "stand" },
+                    };
+
+                    List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
+
+                    animPkg = MakePackageForDragonBonesAnims(pkgName: pkgName, colWidth: 20, colHeight: 20, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -39));
+
+                    animPkg = null; // for testing
+
+                    break;
 
                 case AnimData.PkgName.FoxGinger:
                     {
@@ -2048,7 +2078,7 @@ namespace SonOfRobin
 
                 case AnimData.PkgName.SeaWave:
                     {
-                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 40);
+                        animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 40); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
                         foreach (var kvp in new Dictionary<int, float> { { 0, 0.2f }, { 1, 0.3f }, { 2, 0.4f }, { 3, 0.5f }, { 4, 0.6f }, { 5, 0.7f }, { 6, 0.8f } })
                         {
@@ -2132,66 +2162,48 @@ namespace SonOfRobin
                         break;
                     };
 
-                //case AnimData.PkgName.FenceHorizontalShort:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_short", layer: 1, depthPercent: 0.2f));
-                //    break;
-
-                //case AnimData.PkgName.FenceVerticalShort:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_short", layer: 1, depthPercent: 0.9f));
-                //    break;
-
-                //case AnimData.PkgName.FenceHorizontalLong:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_horizontal_long", layer: 1, depthPercent: 0.2f));
-                //    break;
-
-                //case AnimData.PkgName.FenceVerticalLong:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_fence_vertical_long", layer: 1, depthPercent: 0.95f));
-                //    break;
-
-                //case AnimData.PkgName.CaveEntrance:
-                //    {
-                //        float scale = 2f;
-                //        float depthPercent = 0.95f;
-
-                //        AddFrameArray(pkgName: pkgName, animName: "default", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_entrance_open", scale: scale, layer: 1, depthPercent: depthPercent));
-                //        AddFrameArray(pkgName: pkgName, animName: "blocked", frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_entrance_blocked", scale: scale, layer: 1, depthPercent: depthPercent));
-
-                //        break;
-                //    }
-
-                //case AnimData.PkgName.CaveExit:
-                //    AddFrameArray(pkgName: pkgName, frameArray: ConvertImageToFrameArray(atlasName: "_processed_cave_exit", scale: 2f, layer: 1, depthPercent: 0.95f));
-                //    break;
-
-                case AnimData.PkgName.DragonBonesTestFemaleMage:
-
-                    string[] jsonNameArray = new string[] {
-                            "female_mage_tex_cropped.json",
-                        };
-
-                    var durationDict = new Dictionary<string, int>
+                case AnimData.PkgName.FenceHorizontalShort:
                     {
-                        { "stand", 3 },
-                        { "weak", 3 },
-                        { "walk", 2 },
-                        { "attack", 1 },
-                        { "dead", 2 },
-                        { "damage", 2 },
-                    };
+                        animPkg = new(pkgName: pkgName, colWidth: 120, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_horizontal_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 122, height: 50), scale: 1f, gfxOffsetCorrection: new Vector2(0, -19))]));
+                        break;
+                    }
 
-                    var switchDict = new Dictionary<string, string>
+                case AnimData.PkgName.FenceVerticalShort:
                     {
-                        { "attack", "stand" },
-                        { "damage", "stand" },
-                    };
+                        animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 121);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_vertical_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 146), scale: 1f, gfxOffsetCorrection: new Vector2(0, -11))]));
+                        break;
+                    }
 
-                    List<string> nonLoopedAnims = new List<string> { "dead", "attack", "damage" };
+                case AnimData.PkgName.FenceHorizontalLong:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 224, colHeight: 10);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_horizontal_long", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 226, height: 50), scale: 1f, gfxOffsetCorrection: new Vector2(0, -19))]));
+                        break;
+                    }
 
-                    animPkg = MakePackageForDragonBonesAnims(pkgName: pkgName, colWidth: 20, colHeight: 20, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -39));
+                case AnimData.PkgName.FenceVerticalLong:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 219);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_vertical_long", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 244), scale: 1f, gfxOffsetCorrection: new Vector2(0, -11))]));
+                        break;
+                    }
 
-                    animPkg = null; // for testing
+                case AnimData.PkgName.CaveEntrance:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 92, colHeight: 53);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_entrance_open", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "blocked", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_entrance_blocked", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
+                        break;
+                    }
 
-                    break;
+                case AnimData.PkgName.CaveExit:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 55);
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_exit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 43, height: 29), scale: 2f, gfxOffsetCorrection: new Vector2(-0, -0))]));
+                        break;
+                    }
 
                 default:
                     // throw new ArgumentException($"Unsupported pkgName - {pkgName}."); // TODO enable after removing original AnimData
