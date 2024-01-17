@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,21 @@ namespace SonOfRobin
             this.animDict = [];
             this.AllAnimList = [];
             this.horizontalOrientationsOnly = horizontalOrientationsOnly;
+        }
+
+        public static void CreateAllAnims()
+        {
+            // TODO use in InitialLoader
+
+            DateTime startTime = DateTime.Now;
+
+            foreach (AnimData.PkgName pkgName in AnimDataNew.allPkgNames)
+            {
+                AnimDataNew.LoadPackage(pkgName);
+            }
+
+            TimeSpan creationDuration = DateTime.Now - startTime;
+            MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
         public void AddAnim(Anim anim)

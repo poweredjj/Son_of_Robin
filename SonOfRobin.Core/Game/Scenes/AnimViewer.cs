@@ -58,16 +58,12 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            DateTime startTime = DateTime.Now;
+            AnimPkg.CreateAllAnims(); // move to InitialLoader
 
             foreach (AnimData.PkgName pkgName in AnimDataNew.allPkgNames)
             {
-                AnimDataNew.LoadPackage(pkgName); // TODO move to InitialLoader
-                if (AnimDataNew.pkgByName[pkgName] != null) animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
+                animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
             }
-
-            TimeSpan creationDuration = DateTime.Now - startTime;
-            MessageLog.Add(debugMessage: true, text: $"anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
 
             this.animPkgArray = animPkgList.OrderBy(a => a.pkgName).ToArray();
             this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
